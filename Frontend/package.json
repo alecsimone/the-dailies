@@ -1,7 +1,7 @@
 {
    "name": "the-dailies-frontend",
    "version": "2.0.0",
-   "description": "A social note-taking app to help you organize and share your thoughts and keep up with what your friends are learning",
+   "description": "A social note-taking app to help you organize and share your thoughts and keep up with what your friends are learning.",
    "main": "index.js",
    "scripts": {
       "dev": "next -p 6969",
