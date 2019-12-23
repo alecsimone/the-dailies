@@ -1,0 +1,117 @@
+type Thing {
+  id: ID! @id @unique
+  title: String!
+  author: Member!
+  featuredImage: String
+  originalSource: String! @unique
+  summary: [String!] @scalarList(strategy:RELATION)
+  includedLinks: [Link]
+  includedThings: [Thing]
+  partOfNarratives: [Narrative]
+  votes: [Vote]
+  passes: [Pass]
+  score: Int! @default(value: 0)
+  winner: DateTime
+  comments: [Comment]
+  eliminated: Boolean! @default(value: false)
+  finalistDate: DateTime
+  privacy: PrivacySetting
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime @updatedAt
+}
+
+type Narrative {
+  id: ID! @id @unique
+  title: String! @unique
+  featuredImage: String
+  summary: [String!] @scalarList(strategy:RELATION)
+  includedLinks: [Link]
+  connectedThings: [Thing]
+  comments: [Comment]
+  score: Int! @default(value: 0)
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime @updatedAt
+}
+
+type Comment {
+  id: ID! @id @unique
+  author: Member!
+  comment: String!
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime @updatedAt
+  onThing: Thing
+  onLink: Link
+  onComment: Comment
+  onNarrative: Narrative
+}
+
+type Link {
+  id: ID! @id @unique
+  title: String!
+  url: String!
+  onThing: Thing
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime @updatedAt
+}
+
+type Vote {
+  id: ID! @id @unique
+  voter: Member!
+  onThing: Thing
+  onComment: Comment
+  value: Int!
+  createdAt: DateTime! @createdAt
+}
+
+type Pass {
+   id: ID! @id @unique
+   passer: Member!
+   onThing: Thing
+   createdAt: DateTime! @createdAt
+}
+
+type Member {
+  id: ID! @id @unique
+  displayName: String!
+  name: String
+  avatar: String
+  rep: Int! @default(value: 0)
+  points: Int! @default(value: 1)
+  giveableRep: Int! @default(value: 0)
+  friends: [Member]
+  twitchName: String
+  email: String! @unique
+  votes: [Vote]
+  passes: [Pass]
+  submissions: [Thing]
+  comments: [Comment]
+  password: String!
+  roles: [Role!] @scalarList(strategy: RELATION)
+  resetToken: String
+  resetTokenExpiry: Float
+  twitterTokenSecret: String
+  twitterUserName: String
+  twitterUserID: String
+  twitterUserToken: String
+  twitterUserTokenSecret: String
+  twitterSinceIDsObject: String
+  twitterSeenIDs: [String] @scalarList(strategy: RELATION)
+  someRandomJsonField: Json
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime @updatedAt
+}
+
+enum Role {
+  Admin
+  Editor
+  Moderator
+  Member
+  LiteMember
+}
+
+enum PrivacySetting {
+   Public
+   Private
+   Friends
+   FriendsOfFriends
+}

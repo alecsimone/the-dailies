@@ -1,0 +1,69 @@
+{
+   "name": "the-dailies-frontend",
+   "version": "2.0.0",
+   "description": "A social note-taking app to help you organize and share your thoughts and keep up with what your friends are learning",
+   "main": "index.js",
+   "scripts": {
+      "dev": "next -p 6969",
+      "build": "next build",
+      "start": "next start",
+      "test": "NODE_ENV=test jest --watch",
+      "test-win": "SET NODE_ENV=test&& jest --watch",
+      "heroku-postbuild": "next build"
+   },
+   "author": "Alec Simone",
+   "license": "GPL",
+   "babel": {
+      "env": {
+         "development": {
+            "presets": [
+               "next/babel"
+            ],
+            "plugins": [
+               [
+                  "styled-components",
+                  {
+                     "ssr": true,
+                     "displayName": true
+                  }
+               ]
+            ]
+         },
+         "production": {
+            "presets": [
+               "next/babel"
+            ],
+            "plugins": [
+               [
+                  "styled-components",
+                  {
+                     "ssr": true,
+                     "displayName": true
+                  }
+               ]
+            ]
+         },
+         "test": {
+            "presets": [
+               [
+                  "next/babel",
+                  {
+                     "preset-env": {
+                        "modules": "commonjs"
+                     }
+                  }
+               ]
+            ],
+            "plugins": [
+               [
+                  "styled-components",
+                  {
+                     "ssr": true,
+                     "displayName": true
+                  }
+               ]
+            ]
+         }
+      }
+   }
+}

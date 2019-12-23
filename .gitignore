@@ -1,0 +1,7 @@
+node_modules/
+variables.env
+.next/
+Chat/sounds/
+Chat/third-party/
+Chat/privateData.js
+Frontend/lib/privateData.js
