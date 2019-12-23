@@ -8,8 +8,8 @@
       "test": "jest",
       "deploy": "prisma deploy --env-file variables.env"
    },
-   "license": "GPL",
+   "license": "GPL-3.0-or-later",
    "repository": {
-      "url": "https://github.com/alecsimone/OurDailies"
-   },
+      "url": "https://github.com/alecsimone/the-dailies"
+   }
 }

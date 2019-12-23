@@ -1,0 +1,3543 @@
+type AggregateComment {
+  count: Int!
+}
+
+type AggregateLink {
+  count: Int!
+}
+
+type AggregateMember {
+  count: Int!
+}
+
+type AggregateNarrative {
+  count: Int!
+}
+
+type AggregatePass {
+  count: Int!
+}
+
+type AggregateThing {
+  count: Int!
+}
+
+type AggregateVote {
+  count: Int!
+}
+
+type BatchPayload {
+  count: Long!
+}
+
+type Comment {
+  id: ID!
+  author: Member!
+  comment: String!
+  createdAt: DateTime!
+  updatedAt: DateTime
+  onThing: Thing
+  onLink: Link
+  onComment: Comment
+  onNarrative: Narrative
+}
+
+type CommentConnection {
+  pageInfo: PageInfo!
+  edges: [CommentEdge]!
+  aggregate: AggregateComment!
+}
+
+input CommentCreateInput {
+  id: ID
+  author: MemberCreateOneWithoutCommentsInput!
+  comment: String!
+  onThing: ThingCreateOneWithoutCommentsInput
+  onLink: LinkCreateOneInput
+  onComment: CommentCreateOneInput
+  onNarrative: NarrativeCreateOneWithoutCommentsInput
+}
+
+input CommentCreateManyWithoutAuthorInput {
+  create: [CommentCreateWithoutAuthorInput!]
+  connect: [CommentWhereUniqueInput!]
+}
+
+input CommentCreateManyWithoutOnNarrativeInput {
+  create: [CommentCreateWithoutOnNarrativeInput!]
+  connect: [CommentWhereUniqueInput!]
+}
+
+input CommentCreateManyWithoutOnThingInput {
+  create: [CommentCreateWithoutOnThingInput!]
+  connect: [CommentWhereUniqueInput!]
+}
+
+input CommentCreateOneInput {
+  create: CommentCreateInput
+  connect: CommentWhereUniqueInput
+}
+
+input CommentCreateWithoutAuthorInput {
+  id: ID
+  comment: String!
+  onThing: ThingCreateOneWithoutCommentsInput
+  onLink: LinkCreateOneInput
+  onComment: CommentCreateOneInput
+  onNarrative: NarrativeCreateOneWithoutCommentsInput
+}
+
+input CommentCreateWithoutOnNarrativeInput {
+  id: ID
+  author: MemberCreateOneWithoutCommentsInput!
+  comment: String!
+  onThing: ThingCreateOneWithoutCommentsInput
+  onLink: LinkCreateOneInput
+  onComment: CommentCreateOneInput
+}
+
+input CommentCreateWithoutOnThingInput {
+  id: ID
+  author: MemberCreateOneWithoutCommentsInput!
+  comment: String!
+  onLink: LinkCreateOneInput
+  onComment: CommentCreateOneInput
+  onNarrative: NarrativeCreateOneWithoutCommentsInput
+}
+
+type CommentEdge {
+  node: Comment!
+  cursor: String!
+}
+
+enum CommentOrderByInput {
+  id_ASC
+  id_DESC
+  comment_ASC
+  comment_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+type CommentPreviousValues {
+  id: ID!
+  comment: String!
+  createdAt: DateTime!
+  updatedAt: DateTime
+}
+
+input CommentScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  comment: String
+  comment_not: String
+  comment_in: [String!]
+  comment_not_in: [String!]
+  comment_lt: String
+  comment_lte: String
+  comment_gt: String
+  comment_gte: String
+  comment_contains: String
+  comment_not_contains: String
+  comment_starts_with: String
+  comment_not_starts_with: String
+  comment_ends_with: String
+  comment_not_ends_with: String
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  AND: [CommentScalarWhereInput!]
+  OR: [CommentScalarWhereInput!]
+  NOT: [CommentScalarWhereInput!]
+}
+
+type CommentSubscriptionPayload {
+  mutation: MutationType!
+  node: Comment
+  updatedFields: [String!]
+  previousValues: CommentPreviousValues
+}
+
+input CommentSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: CommentWhereInput
+  AND: [CommentSubscriptionWhereInput!]
+  OR: [CommentSubscriptionWhereInput!]
+  NOT: [CommentSubscriptionWhereInput!]
+}
+
+input CommentUpdateDataInput {
+  author: MemberUpdateOneRequiredWithoutCommentsInput
+  comment: String
+  onThing: ThingUpdateOneWithoutCommentsInput
+  onLink: LinkUpdateOneInput
+  onComment: CommentUpdateOneInput
+  onNarrative: NarrativeUpdateOneWithoutCommentsInput
+}
+
+input CommentUpdateInput {
+  author: MemberUpdateOneRequiredWithoutCommentsInput
+  comment: String
+  onThing: ThingUpdateOneWithoutCommentsInput
+  onLink: LinkUpdateOneInput
+  onComment: CommentUpdateOneInput
+  onNarrative: NarrativeUpdateOneWithoutCommentsInput
+}
+
+input CommentUpdateManyDataInput {
+  comment: String
+}
+
+input CommentUpdateManyMutationInput {
+  comment: String
+}
+
+input CommentUpdateManyWithoutAuthorInput {
+  create: [CommentCreateWithoutAuthorInput!]
+  delete: [CommentWhereUniqueInput!]
+  connect: [CommentWhereUniqueInput!]
+  set: [CommentWhereUniqueInput!]
+  disconnect: [CommentWhereUniqueInput!]
+  update: [CommentUpdateWithWhereUniqueWithoutAuthorInput!]
+  upsert: [CommentUpsertWithWhereUniqueWithoutAuthorInput!]
+  deleteMany: [CommentScalarWhereInput!]
+  updateMany: [CommentUpdateManyWithWhereNestedInput!]
+}
+
+input CommentUpdateManyWithoutOnNarrativeInput {
+  create: [CommentCreateWithoutOnNarrativeInput!]
+  delete: [CommentWhereUniqueInput!]
+  connect: [CommentWhereUniqueInput!]
+  set: [CommentWhereUniqueInput!]
+  disconnect: [CommentWhereUniqueInput!]
+  update: [CommentUpdateWithWhereUniqueWithoutOnNarrativeInput!]
+  upsert: [CommentUpsertWithWhereUniqueWithoutOnNarrativeInput!]
+  deleteMany: [CommentScalarWhereInput!]
+  updateMany: [CommentUpdateManyWithWhereNestedInput!]
+}
+
+input CommentUpdateManyWithoutOnThingInput {
+  create: [CommentCreateWithoutOnThingInput!]
+  delete: [CommentWhereUniqueInput!]
+  connect: [CommentWhereUniqueInput!]
+  set: [CommentWhereUniqueInput!]
+  disconnect: [CommentWhereUniqueInput!]
+  update: [CommentUpdateWithWhereUniqueWithoutOnThingInput!]
+  upsert: [CommentUpsertWithWhereUniqueWithoutOnThingInput!]
+  deleteMany: [CommentScalarWhereInput!]
+  updateMany: [CommentUpdateManyWithWhereNestedInput!]
+}
+
+input CommentUpdateManyWithWhereNestedInput {
+  where: CommentScalarWhereInput!
+  data: CommentUpdateManyDataInput!
+}
+
+input CommentUpdateOneInput {
+  create: CommentCreateInput
+  update: CommentUpdateDataInput
+  upsert: CommentUpsertNestedInput
+  delete: Boolean
+  disconnect: Boolean
+  connect: CommentWhereUniqueInput
+}
+
+input CommentUpdateWithoutAuthorDataInput {
+  comment: String
+  onThing: ThingUpdateOneWithoutCommentsInput
+  onLink: LinkUpdateOneInput
+  onComment: CommentUpdateOneInput
+  onNarrative: NarrativeUpdateOneWithoutCommentsInput
+}
+
+input CommentUpdateWithoutOnNarrativeDataInput {
+  author: MemberUpdateOneRequiredWithoutCommentsInput
+  comment: String
+  onThing: ThingUpdateOneWithoutCommentsInput
+  onLink: LinkUpdateOneInput
+  onComment: CommentUpdateOneInput
+}
+
+input CommentUpdateWithoutOnThingDataInput {
+  author: MemberUpdateOneRequiredWithoutCommentsInput
+  comment: String
+  onLink: LinkUpdateOneInput
+  onComment: CommentUpdateOneInput
+  onNarrative: NarrativeUpdateOneWithoutCommentsInput
+}
+
+input CommentUpdateWithWhereUniqueWithoutAuthorInput {
+  where: CommentWhereUniqueInput!
+  data: CommentUpdateWithoutAuthorDataInput!
+}
+
+input CommentUpdateWithWhereUniqueWithoutOnNarrativeInput {
+  where: CommentWhereUniqueInput!
+  data: CommentUpdateWithoutOnNarrativeDataInput!
+}
+
+input CommentUpdateWithWhereUniqueWithoutOnThingInput {
+  where: CommentWhereUniqueInput!
+  data: CommentUpdateWithoutOnThingDataInput!
+}
+
+input CommentUpsertNestedInput {
+  update: CommentUpdateDataInput!
+  create: CommentCreateInput!
+}
+
+input CommentUpsertWithWhereUniqueWithoutAuthorInput {
+  where: CommentWhereUniqueInput!
+  update: CommentUpdateWithoutAuthorDataInput!
+  create: CommentCreateWithoutAuthorInput!
+}
+
+input CommentUpsertWithWhereUniqueWithoutOnNarrativeInput {
+  where: CommentWhereUniqueInput!
+  update: CommentUpdateWithoutOnNarrativeDataInput!
+  create: CommentCreateWithoutOnNarrativeInput!
+}
+
+input CommentUpsertWithWhereUniqueWithoutOnThingInput {
+  where: CommentWhereUniqueInput!
+  update: CommentUpdateWithoutOnThingDataInput!
+  create: CommentCreateWithoutOnThingInput!
+}
+
+input CommentWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  author: MemberWhereInput
+  comment: String
+  comment_not: String
+  comment_in: [String!]
+  comment_not_in: [String!]
+  comment_lt: String
+  comment_lte: String
+  comment_gt: String
+  comment_gte: String
+  comment_contains: String
+  comment_not_contains: String
+  comment_starts_with: String
+  comment_not_starts_with: String
+  comment_ends_with: String
+  comment_not_ends_with: String
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  onThing: ThingWhereInput
+  onLink: LinkWhereInput
+  onComment: CommentWhereInput
+  onNarrative: NarrativeWhereInput
+  AND: [CommentWhereInput!]
+  OR: [CommentWhereInput!]
+  NOT: [CommentWhereInput!]
+}
+
+input CommentWhereUniqueInput {
+  id: ID
+}
+
+scalar DateTime
+
+scalar Json
+
+type Link {
+  id: ID!
+  title: String!
+  url: String!
+  onThing: Thing
+  createdAt: DateTime!
+  updatedAt: DateTime
+}
+
+type LinkConnection {
+  pageInfo: PageInfo!
+  edges: [LinkEdge]!
+  aggregate: AggregateLink!
+}
+
+input LinkCreateInput {
+  id: ID
+  title: String!
+  url: String!
+  onThing: ThingCreateOneWithoutIncludedLinksInput
+}
+
+input LinkCreateManyInput {
+  create: [LinkCreateInput!]
+  connect: [LinkWhereUniqueInput!]
+}
+
+input LinkCreateManyWithoutOnThingInput {
+  create: [LinkCreateWithoutOnThingInput!]
+  connect: [LinkWhereUniqueInput!]
+}
+
+input LinkCreateOneInput {
+  create: LinkCreateInput
+  connect: LinkWhereUniqueInput
+}
+
+input LinkCreateWithoutOnThingInput {
+  id: ID
+  title: String!
+  url: String!
+}
+
+type LinkEdge {
+  node: Link!
+  cursor: String!
+}
+
+enum LinkOrderByInput {
+  id_ASC
+  id_DESC
+  title_ASC
+  title_DESC
+  url_ASC
+  url_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+type LinkPreviousValues {
+  id: ID!
+  title: String!
+  url: String!
+  createdAt: DateTime!
+  updatedAt: DateTime
+}
+
+input LinkScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  title: String
+  title_not: String
+  title_in: [String!]
+  title_not_in: [String!]
+  title_lt: String
+  title_lte: String
+  title_gt: String
+  title_gte: String
+  title_contains: String
+  title_not_contains: String
+  title_starts_with: String
+  title_not_starts_with: String
+  title_ends_with: String
+  title_not_ends_with: String
+  url: String
+  url_not: String
+  url_in: [String!]
+  url_not_in: [String!]
+  url_lt: String
+  url_lte: String
+  url_gt: String
+  url_gte: String
+  url_contains: String
+  url_not_contains: String
+  url_starts_with: String
+  url_not_starts_with: String
+  url_ends_with: String
+  url_not_ends_with: String
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  AND: [LinkScalarWhereInput!]
+  OR: [LinkScalarWhereInput!]
+  NOT: [LinkScalarWhereInput!]
+}
+
+type LinkSubscriptionPayload {
+  mutation: MutationType!
+  node: Link
+  updatedFields: [String!]
+  previousValues: LinkPreviousValues
+}
+
+input LinkSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: LinkWhereInput
+  AND: [LinkSubscriptionWhereInput!]
+  OR: [LinkSubscriptionWhereInput!]
+  NOT: [LinkSubscriptionWhereInput!]
+}
+
+input LinkUpdateDataInput {
+  title: String
+  url: String
+  onThing: ThingUpdateOneWithoutIncludedLinksInput
+}
+
+input LinkUpdateInput {
+  title: String
+  url: String
+  onThing: ThingUpdateOneWithoutIncludedLinksInput
+}
+
+input LinkUpdateManyDataInput {
+  title: String
+  url: String
+}
+
+input LinkUpdateManyInput {
+  create: [LinkCreateInput!]
+  update: [LinkUpdateWithWhereUniqueNestedInput!]
+  upsert: [LinkUpsertWithWhereUniqueNestedInput!]
+  delete: [LinkWhereUniqueInput!]
+  connect: [LinkWhereUniqueInput!]
+  set: [LinkWhereUniqueInput!]
+  disconnect: [LinkWhereUniqueInput!]
+  deleteMany: [LinkScalarWhereInput!]
+  updateMany: [LinkUpdateManyWithWhereNestedInput!]
+}
+
+input LinkUpdateManyMutationInput {
+  title: String
+  url: String
+}
+
+input LinkUpdateManyWithoutOnThingInput {
+  create: [LinkCreateWithoutOnThingInput!]
+  delete: [LinkWhereUniqueInput!]
+  connect: [LinkWhereUniqueInput!]
+  set: [LinkWhereUniqueInput!]
+  disconnect: [LinkWhereUniqueInput!]
+  update: [LinkUpdateWithWhereUniqueWithoutOnThingInput!]
+  upsert: [LinkUpsertWithWhereUniqueWithoutOnThingInput!]
+  deleteMany: [LinkScalarWhereInput!]
+  updateMany: [LinkUpdateManyWithWhereNestedInput!]
+}
+
+input LinkUpdateManyWithWhereNestedInput {
+  where: LinkScalarWhereInput!
+  data: LinkUpdateManyDataInput!
+}
+
+input LinkUpdateOneInput {
+  create: LinkCreateInput
+  update: LinkUpdateDataInput
+  upsert: LinkUpsertNestedInput
+  delete: Boolean
+  disconnect: Boolean
+  connect: LinkWhereUniqueInput
+}
+
+input LinkUpdateWithoutOnThingDataInput {
+  title: String
+  url: String
+}
+
+input LinkUpdateWithWhereUniqueNestedInput {
+  where: LinkWhereUniqueInput!
+  data: LinkUpdateDataInput!
+}
+
+input LinkUpdateWithWhereUniqueWithoutOnThingInput {
+  where: LinkWhereUniqueInput!
+  data: LinkUpdateWithoutOnThingDataInput!
+}
+
+input LinkUpsertNestedInput {
+  update: LinkUpdateDataInput!
+  create: LinkCreateInput!
+}
+
+input LinkUpsertWithWhereUniqueNestedInput {
+  where: LinkWhereUniqueInput!
+  update: LinkUpdateDataInput!
+  create: LinkCreateInput!
+}
+
+input LinkUpsertWithWhereUniqueWithoutOnThingInput {
+  where: LinkWhereUniqueInput!
+  update: LinkUpdateWithoutOnThingDataInput!
+  create: LinkCreateWithoutOnThingInput!
+}
+
+input LinkWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  title: String
+  title_not: String
+  title_in: [String!]
+  title_not_in: [String!]
+  title_lt: String
+  title_lte: String
+  title_gt: String
+  title_gte: String
+  title_contains: String
+  title_not_contains: String
+  title_starts_with: String
+  title_not_starts_with: String
+  title_ends_with: String
+  title_not_ends_with: String
+  url: String
+  url_not: String
+  url_in: [String!]
+  url_not_in: [String!]
+  url_lt: String
+  url_lte: String
+  url_gt: String
+  url_gte: String
+  url_contains: String
+  url_not_contains: String
+  url_starts_with: String
+  url_not_starts_with: String
+  url_ends_with: String
+  url_not_ends_with: String
+  onThing: ThingWhereInput
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  AND: [LinkWhereInput!]
+  OR: [LinkWhereInput!]
+  NOT: [LinkWhereInput!]
+}
+
+input LinkWhereUniqueInput {
+  id: ID
+}
+
+scalar Long
+
+type Member {
+  id: ID!
+  displayName: String!
+  name: String
+  avatar: String
+  rep: Int!
+  points: Int!
+  giveableRep: Int!
+  friends(where: MemberWhereInput, orderBy: MemberOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Member!]
+  twitchName: String
+  email: String!
+  votes(where: VoteWhereInput, orderBy: VoteOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Vote!]
+  passes(where: PassWhereInput, orderBy: PassOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Pass!]
+  submissions(where: ThingWhereInput, orderBy: ThingOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Thing!]
+  comments(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Comment!]
+  password: String!
+  roles: [Role!]!
+  resetToken: String
+  resetTokenExpiry: Float
+  twitterTokenSecret: String
+  twitterUserName: String
+  twitterUserID: String
+  twitterUserToken: String
+  twitterUserTokenSecret: String
+  twitterSinceIDsObject: String
+  twitterSeenIDs: [String!]!
+  someRandomJsonField: Json
+  createdAt: DateTime!
+  updatedAt: DateTime
+}
+
+type MemberConnection {
+  pageInfo: PageInfo!
+  edges: [MemberEdge]!
+  aggregate: AggregateMember!
+}
+
+input MemberCreateInput {
+  id: ID
+  displayName: String!
+  name: String
+  avatar: String
+  rep: Int
+  points: Int
+  giveableRep: Int
+  friends: MemberCreateManyInput
+  twitchName: String
+  email: String!
+  votes: VoteCreateManyWithoutVoterInput
+  passes: PassCreateManyWithoutPasserInput
+  submissions: ThingCreateManyWithoutAuthorInput
+  comments: CommentCreateManyWithoutAuthorInput
+  password: String!
+  roles: MemberCreaterolesInput
+  resetToken: String
+  resetTokenExpiry: Float
+  twitterTokenSecret: String
+  twitterUserName: String
+  twitterUserID: String
+  twitterUserToken: String
+  twitterUserTokenSecret: String
+  twitterSinceIDsObject: String
+  twitterSeenIDs: MemberCreatetwitterSeenIDsInput
+  someRandomJsonField: Json
+}
+
+input MemberCreateManyInput {
+  create: [MemberCreateInput!]
+  connect: [MemberWhereUniqueInput!]
+}
+
+input MemberCreateOneWithoutCommentsInput {
+  create: MemberCreateWithoutCommentsInput
+  connect: MemberWhereUniqueInput
+}
+
+input MemberCreateOneWithoutPassesInput {
+  create: MemberCreateWithoutPassesInput
+  connect: MemberWhereUniqueInput
+}
+
+input MemberCreateOneWithoutSubmissionsInput {
+  create: MemberCreateWithoutSubmissionsInput
+  connect: MemberWhereUniqueInput
+}
+
+input MemberCreateOneWithoutVotesInput {
+  create: MemberCreateWithoutVotesInput
+  connect: MemberWhereUniqueInput
+}
+
+input MemberCreaterolesInput {
+  set: [Role!]
+}
+
+input MemberCreatetwitterSeenIDsInput {
+  set: [String!]
+}
+
+input MemberCreateWithoutCommentsInput {
+  id: ID
+  displayName: String!
+  name: String
+  avatar: String
+  rep: Int
+  points: Int
+  giveableRep: Int
+  friends: MemberCreateManyInput
+  twitchName: String
+  email: String!
+  votes: VoteCreateManyWithoutVoterInput
+  passes: PassCreateManyWithoutPasserInput
+  submissions: ThingCreateManyWithoutAuthorInput
+  password: String!
+  roles: MemberCreaterolesInput
+  resetToken: String
+  resetTokenExpiry: Float
+  twitterTokenSecret: String
+  twitterUserName: String
+  twitterUserID: String
+  twitterUserToken: String
+  twitterUserTokenSecret: String
+  twitterSinceIDsObject: String
+  twitterSeenIDs: MemberCreatetwitterSeenIDsInput
+  someRandomJsonField: Json
+}
+
+input MemberCreateWithoutPassesInput {
+  id: ID
+  displayName: String!
+  name: String
+  avatar: String
+  rep: Int
+  points: Int
+  giveableRep: Int
+  friends: MemberCreateManyInput
+  twitchName: String
+  email: String!
+  votes: VoteCreateManyWithoutVoterInput
+  submissions: ThingCreateManyWithoutAuthorInput
+  comments: CommentCreateManyWithoutAuthorInput
+  password: String!
+  roles: MemberCreaterolesInput
+  resetToken: String
+  resetTokenExpiry: Float
+  twitterTokenSecret: String
+  twitterUserName: String
+  twitterUserID: String
+  twitterUserToken: String
+  twitterUserTokenSecret: String
+  twitterSinceIDsObject: String
+  twitterSeenIDs: MemberCreatetwitterSeenIDsInput
+  someRandomJsonField: Json
+}
+
+input MemberCreateWithoutSubmissionsInput {
+  id: ID
+  displayName: String!
+  name: String
+  avatar: String
+  rep: Int
+  points: Int
+  giveableRep: Int
+  friends: MemberCreateManyInput
+  twitchName: String
+  email: String!
+  votes: VoteCreateManyWithoutVoterInput
+  passes: PassCreateManyWithoutPasserInput
+  comments: CommentCreateManyWithoutAuthorInput
+  password: String!
+  roles: MemberCreaterolesInput
+  resetToken: String
+  resetTokenExpiry: Float
+  twitterTokenSecret: String
+  twitterUserName: String
+  twitterUserID: String
+  twitterUserToken: String
+  twitterUserTokenSecret: String
+  twitterSinceIDsObject: String
+  twitterSeenIDs: MemberCreatetwitterSeenIDsInput
+  someRandomJsonField: Json
+}
+
+input MemberCreateWithoutVotesInput {
+  id: ID
+  displayName: String!
+  name: String
+  avatar: String
+  rep: Int
+  points: Int
+  giveableRep: Int
+  friends: MemberCreateManyInput
+  twitchName: String
+  email: String!
+  passes: PassCreateManyWithoutPasserInput
+  submissions: ThingCreateManyWithoutAuthorInput
+  comments: CommentCreateManyWithoutAuthorInput
+  password: String!
+  roles: MemberCreaterolesInput
+  resetToken: String
+  resetTokenExpiry: Float
+  twitterTokenSecret: String
+  twitterUserName: String
+  twitterUserID: String
+  twitterUserToken: String
+  twitterUserTokenSecret: String
+  twitterSinceIDsObject: String
+  twitterSeenIDs: MemberCreatetwitterSeenIDsInput
+  someRandomJsonField: Json
+}
+
+type MemberEdge {
+  node: Member!
+  cursor: String!
+}
+
+enum MemberOrderByInput {
+  id_ASC
+  id_DESC
+  displayName_ASC
+  displayName_DESC
+  name_ASC
+  name_DESC
+  avatar_ASC
+  avatar_DESC
+  rep_ASC
+  rep_DESC
+  points_ASC
+  points_DESC
+  giveableRep_ASC
+  giveableRep_DESC
+  twitchName_ASC
+  twitchName_DESC
+  email_ASC
+  email_DESC
+  password_ASC
+  password_DESC
+  resetToken_ASC
+  resetToken_DESC
+  resetTokenExpiry_ASC
+  resetTokenExpiry_DESC
+  twitterTokenSecret_ASC
+  twitterTokenSecret_DESC
+  twitterUserName_ASC
+  twitterUserName_DESC
+  twitterUserID_ASC
+  twitterUserID_DESC
+  twitterUserToken_ASC
+  twitterUserToken_DESC
+  twitterUserTokenSecret_ASC
+  twitterUserTokenSecret_DESC
+  twitterSinceIDsObject_ASC
+  twitterSinceIDsObject_DESC
+  someRandomJsonField_ASC
+  someRandomJsonField_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+type MemberPreviousValues {
+  id: ID!
+  displayName: String!
+  name: String
+  avatar: String
+  rep: Int!
+  points: Int!
+  giveableRep: Int!
+  twitchName: String
+  email: String!
+  password: String!
+  roles: [Role!]!
+  resetToken: String
+  resetTokenExpiry: Float
+  twitterTokenSecret: String
+  twitterUserName: String
+  twitterUserID: String
+  twitterUserToken: String
+  twitterUserTokenSecret: String
+  twitterSinceIDsObject: String
+  twitterSeenIDs: [String!]!
+  someRandomJsonField: Json
+  createdAt: DateTime!
+  updatedAt: DateTime
+}
+
+input MemberScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  displayName: String
+  displayName_not: String
+  displayName_in: [String!]
+  displayName_not_in: [String!]
+  displayName_lt: String
+  displayName_lte: String
+  displayName_gt: String
+  displayName_gte: String
+  displayName_contains: String
+  displayName_not_contains: String
+  displayName_starts_with: String
+  displayName_not_starts_with: String
+  displayName_ends_with: String
+  displayName_not_ends_with: String
+  name: String
+  name_not: String
+  name_in: [String!]
+  name_not_in: [String!]
+  name_lt: String
+  name_lte: String
+  name_gt: String
+  name_gte: String
+  name_contains: String
+  name_not_contains: String
+  name_starts_with: String
+  name_not_starts_with: String
+  name_ends_with: String
+  name_not_ends_with: String
+  avatar: String
+  avatar_not: String
+  avatar_in: [String!]
+  avatar_not_in: [String!]
+  avatar_lt: String
+  avatar_lte: String
+  avatar_gt: String
+  avatar_gte: String
+  avatar_contains: String
+  avatar_not_contains: String
+  avatar_starts_with: String
+  avatar_not_starts_with: String
+  avatar_ends_with: String
+  avatar_not_ends_with: String
+  rep: Int
+  rep_not: Int
+  rep_in: [Int!]
+  rep_not_in: [Int!]
+  rep_lt: Int
+  rep_lte: Int
+  rep_gt: Int
+  rep_gte: Int
+  points: Int
+  points_not: Int
+  points_in: [Int!]
+  points_not_in: [Int!]
+  points_lt: Int
+  points_lte: Int
+  points_gt: Int
+  points_gte: Int
+  giveableRep: Int
+  giveableRep_not: Int
+  giveableRep_in: [Int!]
+  giveableRep_not_in: [Int!]
+  giveableRep_lt: Int
+  giveableRep_lte: Int
+  giveableRep_gt: Int
+  giveableRep_gte: Int
+  twitchName: String
+  twitchName_not: String
+  twitchName_in: [String!]
+  twitchName_not_in: [String!]
+  twitchName_lt: String
+  twitchName_lte: String
+  twitchName_gt: String
+  twitchName_gte: String
+  twitchName_contains: String
+  twitchName_not_contains: String
+  twitchName_starts_with: String
+  twitchName_not_starts_with: String
+  twitchName_ends_with: String
+  twitchName_not_ends_with: String
+  email: String
+  email_not: String
+  email_in: [String!]
+  email_not_in: [String!]
+  email_lt: String
+  email_lte: String
+  email_gt: String
+  email_gte: String
+  email_contains: String
+  email_not_contains: String
+  email_starts_with: String
+  email_not_starts_with: String
+  email_ends_with: String
+  email_not_ends_with: String
+  password: String
+  password_not: String
+  password_in: [String!]
+  password_not_in: [String!]
+  password_lt: String
+  password_lte: String
+  password_gt: String
+  password_gte: String
+  password_contains: String
+  password_not_contains: String
+  password_starts_with: String
+  password_not_starts_with: String
+  password_ends_with: String
+  password_not_ends_with: String
+  resetToken: String
+  resetToken_not: String
+  resetToken_in: [String!]
+  resetToken_not_in: [String!]
+  resetToken_lt: String
+  resetToken_lte: String
+  resetToken_gt: String
+  resetToken_gte: String
+  resetToken_contains: String
+  resetToken_not_contains: String
+  resetToken_starts_with: String
+  resetToken_not_starts_with: String
+  resetToken_ends_with: String
+  resetToken_not_ends_with: String
+  resetTokenExpiry: Float
+  resetTokenExpiry_not: Float
+  resetTokenExpiry_in: [Float!]
+  resetTokenExpiry_not_in: [Float!]
+  resetTokenExpiry_lt: Float
+  resetTokenExpiry_lte: Float
+  resetTokenExpiry_gt: Float
+  resetTokenExpiry_gte: Float
+  twitterTokenSecret: String
+  twitterTokenSecret_not: String
+  twitterTokenSecret_in: [String!]
+  twitterTokenSecret_not_in: [String!]
+  twitterTokenSecret_lt: String
+  twitterTokenSecret_lte: String
+  twitterTokenSecret_gt: String
+  twitterTokenSecret_gte: String
+  twitterTokenSecret_contains: String
+  twitterTokenSecret_not_contains: String
+  twitterTokenSecret_starts_with: String
+  twitterTokenSecret_not_starts_with: String
+  twitterTokenSecret_ends_with: String
+  twitterTokenSecret_not_ends_with: String
+  twitterUserName: String
+  twitterUserName_not: String
+  twitterUserName_in: [String!]
+  twitterUserName_not_in: [String!]
+  twitterUserName_lt: String
+  twitterUserName_lte: String
+  twitterUserName_gt: String
+  twitterUserName_gte: String
+  twitterUserName_contains: String
+  twitterUserName_not_contains: String
+  twitterUserName_starts_with: String
+  twitterUserName_not_starts_with: String
+  twitterUserName_ends_with: String
+  twitterUserName_not_ends_with: String
+  twitterUserID: String
+  twitterUserID_not: String
+  twitterUserID_in: [String!]
+  twitterUserID_not_in: [String!]
+  twitterUserID_lt: String
+  twitterUserID_lte: String
+  twitterUserID_gt: String
+  twitterUserID_gte: String
+  twitterUserID_contains: String
+  twitterUserID_not_contains: String
+  twitterUserID_starts_with: String
+  twitterUserID_not_starts_with: String
+  twitterUserID_ends_with: String
+  twitterUserID_not_ends_with: String
+  twitterUserToken: String
+  twitterUserToken_not: String
+  twitterUserToken_in: [String!]
+  twitterUserToken_not_in: [String!]
+  twitterUserToken_lt: String
+  twitterUserToken_lte: String
+  twitterUserToken_gt: String
+  twitterUserToken_gte: String
+  twitterUserToken_contains: String
+  twitterUserToken_not_contains: String
+  twitterUserToken_starts_with: String
+  twitterUserToken_not_starts_with: String
+  twitterUserToken_ends_with: String
+  twitterUserToken_not_ends_with: String
+  twitterUserTokenSecret: String
+  twitterUserTokenSecret_not: String
+  twitterUserTokenSecret_in: [String!]
+  twitterUserTokenSecret_not_in: [String!]
+  twitterUserTokenSecret_lt: String
+  twitterUserTokenSecret_lte: String
+  twitterUserTokenSecret_gt: String
+  twitterUserTokenSecret_gte: String
+  twitterUserTokenSecret_contains: String
+  twitterUserTokenSecret_not_contains: String
+  twitterUserTokenSecret_starts_with: String
+  twitterUserTokenSecret_not_starts_with: String
+  twitterUserTokenSecret_ends_with: String
+  twitterUserTokenSecret_not_ends_with: String
+  twitterSinceIDsObject: String
+  twitterSinceIDsObject_not: String
+  twitterSinceIDsObject_in: [String!]
+  twitterSinceIDsObject_not_in: [String!]
+  twitterSinceIDsObject_lt: String
+  twitterSinceIDsObject_lte: String
+  twitterSinceIDsObject_gt: String
+  twitterSinceIDsObject_gte: String
+  twitterSinceIDsObject_contains: String
+  twitterSinceIDsObject_not_contains: String
+  twitterSinceIDsObject_starts_with: String
+  twitterSinceIDsObject_not_starts_with: String
+  twitterSinceIDsObject_ends_with: String
+  twitterSinceIDsObject_not_ends_with: String
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  AND: [MemberScalarWhereInput!]
+  OR: [MemberScalarWhereInput!]
+  NOT: [MemberScalarWhereInput!]
+}
+
+type MemberSubscriptionPayload {
+  mutation: MutationType!
+  node: Member
+  updatedFields: [String!]
+  previousValues: MemberPreviousValues
+}
+
+input MemberSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: MemberWhereInput
+  AND: [MemberSubscriptionWhereInput!]
+  OR: [MemberSubscriptionWhereInput!]
+  NOT: [MemberSubscriptionWhereInput!]
+}
+
+input MemberUpdateDataInput {
+  displayName: String
+  name: String
+  avatar: String
+  rep: Int
+  points: Int
+  giveableRep: Int
+  friends: MemberUpdateManyInput
+  twitchName: String
+  email: String
+  votes: VoteUpdateManyWithoutVoterInput
+  passes: PassUpdateManyWithoutPasserInput
+  submissions: ThingUpdateManyWithoutAuthorInput
+  comments: CommentUpdateManyWithoutAuthorInput
+  password: String
+  roles: MemberUpdaterolesInput
+  resetToken: String
+  resetTokenExpiry: Float
+  twitterTokenSecret: String
+  twitterUserName: String
+  twitterUserID: String
+  twitterUserToken: String
+  twitterUserTokenSecret: String
+  twitterSinceIDsObject: String
+  twitterSeenIDs: MemberUpdatetwitterSeenIDsInput
+  someRandomJsonField: Json
+}
+
+input MemberUpdateInput {
+  displayName: String
+  name: String
+  avatar: String
+  rep: Int
+  points: Int
+  giveableRep: Int
+  friends: MemberUpdateManyInput
+  twitchName: String
+  email: String
+  votes: VoteUpdateManyWithoutVoterInput
+  passes: PassUpdateManyWithoutPasserInput
+  submissions: ThingUpdateManyWithoutAuthorInput
+  comments: CommentUpdateManyWithoutAuthorInput
+  password: String
+  roles: MemberUpdaterolesInput
+  resetToken: String
+  resetTokenExpiry: Float
+  twitterTokenSecret: String
+  twitterUserName: String
+  twitterUserID: String
+  twitterUserToken: String
+  twitterUserTokenSecret: String
+  twitterSinceIDsObject: String
+  twitterSeenIDs: MemberUpdatetwitterSeenIDsInput
+  someRandomJsonField: Json
+}
+
+input MemberUpdateManyDataInput {
+  displayName: String
+  name: String
+  avatar: String
+  rep: Int
+  points: Int
+  giveableRep: Int
+  twitchName: String
+  email: String
+  password: String
+  roles: MemberUpdaterolesInput
+  resetToken: String
+  resetTokenExpiry: Float
+  twitterTokenSecret: String
+  twitterUserName: String
+  twitterUserID: String
+  twitterUserToken: String
+  twitterUserTokenSecret: String
+  twitterSinceIDsObject: String
+  twitterSeenIDs: MemberUpdatetwitterSeenIDsInput
+  someRandomJsonField: Json
+}
+
+input MemberUpdateManyInput {
+  create: [MemberCreateInput!]
+  update: [MemberUpdateWithWhereUniqueNestedInput!]
+  upsert: [MemberUpsertWithWhereUniqueNestedInput!]
+  delete: [MemberWhereUniqueInput!]
+  connect: [MemberWhereUniqueInput!]
+  set: [MemberWhereUniqueInput!]
+  disconnect: [MemberWhereUniqueInput!]
+  deleteMany: [MemberScalarWhereInput!]
+  updateMany: [MemberUpdateManyWithWhereNestedInput!]
+}
+
+input MemberUpdateManyMutationInput {
+  displayName: String
+  name: String
+  avatar: String
+  rep: Int
+  points: Int
+  giveableRep: Int
+  twitchName: String
+  email: String
+  password: String
+  roles: MemberUpdaterolesInput
+  resetToken: String
+  resetTokenExpiry: Float
+  twitterTokenSecret: String
+  twitterUserName: String
+  twitterUserID: String
+  twitterUserToken: String
+  twitterUserTokenSecret: String
+  twitterSinceIDsObject: String
+  twitterSeenIDs: MemberUpdatetwitterSeenIDsInput
+  someRandomJsonField: Json
+}
+
+input MemberUpdateManyWithWhereNestedInput {
+  where: MemberScalarWhereInput!
+  data: MemberUpdateManyDataInput!
+}
+
+input MemberUpdateOneRequiredWithoutCommentsInput {
+  create: MemberCreateWithoutCommentsInput
+  update: MemberUpdateWithoutCommentsDataInput
+  upsert: MemberUpsertWithoutCommentsInput
+  connect: MemberWhereUniqueInput
+}
+
+input MemberUpdateOneRequiredWithoutPassesInput {
+  create: MemberCreateWithoutPassesInput
+  update: MemberUpdateWithoutPassesDataInput
+  upsert: MemberUpsertWithoutPassesInput
+  connect: MemberWhereUniqueInput
+}
+
+input MemberUpdateOneRequiredWithoutSubmissionsInput {
+  create: MemberCreateWithoutSubmissionsInput
+  update: MemberUpdateWithoutSubmissionsDataInput
+  upsert: MemberUpsertWithoutSubmissionsInput
+  connect: MemberWhereUniqueInput
+}
+
+input MemberUpdateOneRequiredWithoutVotesInput {
+  create: MemberCreateWithoutVotesInput
+  update: MemberUpdateWithoutVotesDataInput
+  upsert: MemberUpsertWithoutVotesInput
+  connect: MemberWhereUniqueInput
+}
+
+input MemberUpdaterolesInput {
+  set: [Role!]
+}
+
+input MemberUpdatetwitterSeenIDsInput {
+  set: [String!]
+}
+
+input MemberUpdateWithoutCommentsDataInput {
+  displayName: String
+  name: String
+  avatar: String
+  rep: Int
+  points: Int
+  giveableRep: Int
+  friends: MemberUpdateManyInput
+  twitchName: String
+  email: String
+  votes: VoteUpdateManyWithoutVoterInput
+  passes: PassUpdateManyWithoutPasserInput
+  submissions: ThingUpdateManyWithoutAuthorInput
+  password: String
+  roles: MemberUpdaterolesInput
+  resetToken: String
+  resetTokenExpiry: Float
+  twitterTokenSecret: String
+  twitterUserName: String
+  twitterUserID: String
+  twitterUserToken: String
+  twitterUserTokenSecret: String
+  twitterSinceIDsObject: String
+  twitterSeenIDs: MemberUpdatetwitterSeenIDsInput
+  someRandomJsonField: Json
+}
+
+input MemberUpdateWithoutPassesDataInput {
+  displayName: String
+  name: String
+  avatar: String
+  rep: Int
+  points: Int
+  giveableRep: Int
+  friends: MemberUpdateManyInput
+  twitchName: String
+  email: String
+  votes: VoteUpdateManyWithoutVoterInput
+  submissions: ThingUpdateManyWithoutAuthorInput
+  comments: CommentUpdateManyWithoutAuthorInput
+  password: String
+  roles: MemberUpdaterolesInput
+  resetToken: String
+  resetTokenExpiry: Float
+  twitterTokenSecret: String
+  twitterUserName: String
+  twitterUserID: String
+  twitterUserToken: String
+  twitterUserTokenSecret: String
+  twitterSinceIDsObject: String
+  twitterSeenIDs: MemberUpdatetwitterSeenIDsInput
+  someRandomJsonField: Json
+}
+
+input MemberUpdateWithoutSubmissionsDataInput {
+  displayName: String
+  name: String
+  avatar: String
+  rep: Int
+  points: Int
+  giveableRep: Int
+  friends: MemberUpdateManyInput
+  twitchName: String
+  email: String
+  votes: VoteUpdateManyWithoutVoterInput
+  passes: PassUpdateManyWithoutPasserInput
+  comments: CommentUpdateManyWithoutAuthorInput
+  password: String
+  roles: MemberUpdaterolesInput
+  resetToken: String
+  resetTokenExpiry: Float
+  twitterTokenSecret: String
+  twitterUserName: String
+  twitterUserID: String
+  twitterUserToken: String
+  twitterUserTokenSecret: String
+  twitterSinceIDsObject: String
+  twitterSeenIDs: MemberUpdatetwitterSeenIDsInput
+  someRandomJsonField: Json
+}
+
+input MemberUpdateWithoutVotesDataInput {
+  displayName: String
+  name: String
+  avatar: String
+  rep: Int
+  points: Int
+  giveableRep: Int
+  friends: MemberUpdateManyInput
+  twitchName: String
+  email: String
+  passes: PassUpdateManyWithoutPasserInput
+  submissions: ThingUpdateManyWithoutAuthorInput
+  comments: CommentUpdateManyWithoutAuthorInput
+  password: String
+  roles: MemberUpdaterolesInput
+  resetToken: String
+  resetTokenExpiry: Float
+  twitterTokenSecret: String
+  twitterUserName: String
+  twitterUserID: String
+  twitterUserToken: String
+  twitterUserTokenSecret: String
+  twitterSinceIDsObject: String
+  twitterSeenIDs: MemberUpdatetwitterSeenIDsInput
+  someRandomJsonField: Json
+}
+
+input MemberUpdateWithWhereUniqueNestedInput {
+  where: MemberWhereUniqueInput!
+  data: MemberUpdateDataInput!
+}
+
+input MemberUpsertWithoutCommentsInput {
+  update: MemberUpdateWithoutCommentsDataInput!
+  create: MemberCreateWithoutCommentsInput!
+}
+
+input MemberUpsertWithoutPassesInput {
+  update: MemberUpdateWithoutPassesDataInput!
+  create: MemberCreateWithoutPassesInput!
+}
+
+input MemberUpsertWithoutSubmissionsInput {
+  update: MemberUpdateWithoutSubmissionsDataInput!
+  create: MemberCreateWithoutSubmissionsInput!
+}
+
+input MemberUpsertWithoutVotesInput {
+  update: MemberUpdateWithoutVotesDataInput!
+  create: MemberCreateWithoutVotesInput!
+}
+
+input MemberUpsertWithWhereUniqueNestedInput {
+  where: MemberWhereUniqueInput!
+  update: MemberUpdateDataInput!
+  create: MemberCreateInput!
+}
+
+input MemberWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  displayName: String
+  displayName_not: String
+  displayName_in: [String!]
+  displayName_not_in: [String!]
+  displayName_lt: String
+  displayName_lte: String
+  displayName_gt: String
+  displayName_gte: String
+  displayName_contains: String
+  displayName_not_contains: String
+  displayName_starts_with: String
+  displayName_not_starts_with: String
+  displayName_ends_with: String
+  displayName_not_ends_with: String
+  name: String
+  name_not: String
+  name_in: [String!]
+  name_not_in: [String!]
+  name_lt: String
+  name_lte: String
+  name_gt: String
+  name_gte: String
+  name_contains: String
+  name_not_contains: String
+  name_starts_with: String
+  name_not_starts_with: String
+  name_ends_with: String
+  name_not_ends_with: String
+  avatar: String
+  avatar_not: String
+  avatar_in: [String!]
+  avatar_not_in: [String!]
+  avatar_lt: String
+  avatar_lte: String
+  avatar_gt: String
+  avatar_gte: String
+  avatar_contains: String
+  avatar_not_contains: String
+  avatar_starts_with: String
+  avatar_not_starts_with: String
+  avatar_ends_with: String
+  avatar_not_ends_with: String
+  rep: Int
+  rep_not: Int
+  rep_in: [Int!]
+  rep_not_in: [Int!]
+  rep_lt: Int
+  rep_lte: Int
+  rep_gt: Int
+  rep_gte: Int
+  points: Int
+  points_not: Int
+  points_in: [Int!]
+  points_not_in: [Int!]
+  points_lt: Int
+  points_lte: Int
+  points_gt: Int
+  points_gte: Int
+  giveableRep: Int
+  giveableRep_not: Int
+  giveableRep_in: [Int!]
+  giveableRep_not_in: [Int!]
+  giveableRep_lt: Int
+  giveableRep_lte: Int
+  giveableRep_gt: Int
+  giveableRep_gte: Int
+  friends_every: MemberWhereInput
+  friends_some: MemberWhereInput
+  friends_none: MemberWhereInput
+  twitchName: String
+  twitchName_not: String
+  twitchName_in: [String!]
+  twitchName_not_in: [String!]
+  twitchName_lt: String
+  twitchName_lte: String
+  twitchName_gt: String
+  twitchName_gte: String
+  twitchName_contains: String
+  twitchName_not_contains: String
+  twitchName_starts_with: String
+  twitchName_not_starts_with: String
+  twitchName_ends_with: String
+  twitchName_not_ends_with: String
+  email: String
+  email_not: String
+  email_in: [String!]
+  email_not_in: [String!]
+  email_lt: String
+  email_lte: String
+  email_gt: String
+  email_gte: String
+  email_contains: String
+  email_not_contains: String
+  email_starts_with: String
+  email_not_starts_with: String
+  email_ends_with: String
+  email_not_ends_with: String
+  votes_every: VoteWhereInput
+  votes_some: VoteWhereInput
+  votes_none: VoteWhereInput
+  passes_every: PassWhereInput
+  passes_some: PassWhereInput
+  passes_none: PassWhereInput
+  submissions_every: ThingWhereInput
+  submissions_some: ThingWhereInput
+  submissions_none: ThingWhereInput
+  comments_every: CommentWhereInput
+  comments_some: CommentWhereInput
+  comments_none: CommentWhereInput
+  password: String
+  password_not: String
+  password_in: [String!]
+  password_not_in: [String!]
+  password_lt: String
+  password_lte: String
+  password_gt: String
+  password_gte: String
+  password_contains: String
+  password_not_contains: String
+  password_starts_with: String
+  password_not_starts_with: String
+  password_ends_with: String
+  password_not_ends_with: String
+  resetToken: String
+  resetToken_not: String
+  resetToken_in: [String!]
+  resetToken_not_in: [String!]
+  resetToken_lt: String
+  resetToken_lte: String
+  resetToken_gt: String
+  resetToken_gte: String
+  resetToken_contains: String
+  resetToken_not_contains: String
+  resetToken_starts_with: String
+  resetToken_not_starts_with: String
+  resetToken_ends_with: String
+  resetToken_not_ends_with: String
+  resetTokenExpiry: Float
+  resetTokenExpiry_not: Float
+  resetTokenExpiry_in: [Float!]
+  resetTokenExpiry_not_in: [Float!]
+  resetTokenExpiry_lt: Float
+  resetTokenExpiry_lte: Float
+  resetTokenExpiry_gt: Float
+  resetTokenExpiry_gte: Float
+  twitterTokenSecret: String
+  twitterTokenSecret_not: String
+  twitterTokenSecret_in: [String!]
+  twitterTokenSecret_not_in: [String!]
+  twitterTokenSecret_lt: String
+  twitterTokenSecret_lte: String
+  twitterTokenSecret_gt: String
+  twitterTokenSecret_gte: String
+  twitterTokenSecret_contains: String
+  twitterTokenSecret_not_contains: String
+  twitterTokenSecret_starts_with: String
+  twitterTokenSecret_not_starts_with: String
+  twitterTokenSecret_ends_with: String
+  twitterTokenSecret_not_ends_with: String
+  twitterUserName: String
+  twitterUserName_not: String
+  twitterUserName_in: [String!]
+  twitterUserName_not_in: [String!]
+  twitterUserName_lt: String
+  twitterUserName_lte: String
+  twitterUserName_gt: String
+  twitterUserName_gte: String
+  twitterUserName_contains: String
+  twitterUserName_not_contains: String
+  twitterUserName_starts_with: String
+  twitterUserName_not_starts_with: String
+  twitterUserName_ends_with: String
+  twitterUserName_not_ends_with: String
+  twitterUserID: String
+  twitterUserID_not: String
+  twitterUserID_in: [String!]
+  twitterUserID_not_in: [String!]
+  twitterUserID_lt: String
+  twitterUserID_lte: String
+  twitterUserID_gt: String
+  twitterUserID_gte: String
+  twitterUserID_contains: String
+  twitterUserID_not_contains: String
+  twitterUserID_starts_with: String
+  twitterUserID_not_starts_with: String
+  twitterUserID_ends_with: String
+  twitterUserID_not_ends_with: String
+  twitterUserToken: String
+  twitterUserToken_not: String
+  twitterUserToken_in: [String!]
+  twitterUserToken_not_in: [String!]
+  twitterUserToken_lt: String
+  twitterUserToken_lte: String
+  twitterUserToken_gt: String
+  twitterUserToken_gte: String
+  twitterUserToken_contains: String
+  twitterUserToken_not_contains: String
+  twitterUserToken_starts_with: String
+  twitterUserToken_not_starts_with: String
+  twitterUserToken_ends_with: String
+  twitterUserToken_not_ends_with: String
+  twitterUserTokenSecret: String
+  twitterUserTokenSecret_not: String
+  twitterUserTokenSecret_in: [String!]
+  twitterUserTokenSecret_not_in: [String!]
+  twitterUserTokenSecret_lt: String
+  twitterUserTokenSecret_lte: String
+  twitterUserTokenSecret_gt: String
+  twitterUserTokenSecret_gte: String
+  twitterUserTokenSecret_contains: String
+  twitterUserTokenSecret_not_contains: String
+  twitterUserTokenSecret_starts_with: String
+  twitterUserTokenSecret_not_starts_with: String
+  twitterUserTokenSecret_ends_with: String
+  twitterUserTokenSecret_not_ends_with: String
+  twitterSinceIDsObject: String
+  twitterSinceIDsObject_not: String
+  twitterSinceIDsObject_in: [String!]
+  twitterSinceIDsObject_not_in: [String!]
+  twitterSinceIDsObject_lt: String
+  twitterSinceIDsObject_lte: String
+  twitterSinceIDsObject_gt: String
+  twitterSinceIDsObject_gte: String
+  twitterSinceIDsObject_contains: String
+  twitterSinceIDsObject_not_contains: String
+  twitterSinceIDsObject_starts_with: String
+  twitterSinceIDsObject_not_starts_with: String
+  twitterSinceIDsObject_ends_with: String
+  twitterSinceIDsObject_not_ends_with: String
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  AND: [MemberWhereInput!]
+  OR: [MemberWhereInput!]
+  NOT: [MemberWhereInput!]
+}
+
+input MemberWhereUniqueInput {
+  id: ID
+  email: String
+}
+
+type Mutation {
+  createComment(data: CommentCreateInput!): Comment!
+  updateComment(data: CommentUpdateInput!, where: CommentWhereUniqueInput!): Comment
+  updateManyComments(data: CommentUpdateManyMutationInput!, where: CommentWhereInput): BatchPayload!
+  upsertComment(where: CommentWhereUniqueInput!, create: CommentCreateInput!, update: CommentUpdateInput!): Comment!
+  deleteComment(where: CommentWhereUniqueInput!): Comment
+  deleteManyComments(where: CommentWhereInput): BatchPayload!
+  createLink(data: LinkCreateInput!): Link!
+  updateLink(data: LinkUpdateInput!, where: LinkWhereUniqueInput!): Link
+  updateManyLinks(data: LinkUpdateManyMutationInput!, where: LinkWhereInput): BatchPayload!
+  upsertLink(where: LinkWhereUniqueInput!, create: LinkCreateInput!, update: LinkUpdateInput!): Link!
+  deleteLink(where: LinkWhereUniqueInput!): Link
+  deleteManyLinks(where: LinkWhereInput): BatchPayload!
+  createMember(data: MemberCreateInput!): Member!
+  updateMember(data: MemberUpdateInput!, where: MemberWhereUniqueInput!): Member
+  updateManyMembers(data: MemberUpdateManyMutationInput!, where: MemberWhereInput): BatchPayload!
+  upsertMember(where: MemberWhereUniqueInput!, create: MemberCreateInput!, update: MemberUpdateInput!): Member!
+  deleteMember(where: MemberWhereUniqueInput!): Member
+  deleteManyMembers(where: MemberWhereInput): BatchPayload!
+  createNarrative(data: NarrativeCreateInput!): Narrative!
+  updateNarrative(data: NarrativeUpdateInput!, where: NarrativeWhereUniqueInput!): Narrative
+  updateManyNarratives(data: NarrativeUpdateManyMutationInput!, where: NarrativeWhereInput): BatchPayload!
+  upsertNarrative(where: NarrativeWhereUniqueInput!, create: NarrativeCreateInput!, update: NarrativeUpdateInput!): Narrative!
+  deleteNarrative(where: NarrativeWhereUniqueInput!): Narrative
+  deleteManyNarratives(where: NarrativeWhereInput): BatchPayload!
+  createPass(data: PassCreateInput!): Pass!
+  updatePass(data: PassUpdateInput!, where: PassWhereUniqueInput!): Pass
+  upsertPass(where: PassWhereUniqueInput!, create: PassCreateInput!, update: PassUpdateInput!): Pass!
+  deletePass(where: PassWhereUniqueInput!): Pass
+  deleteManyPasses(where: PassWhereInput): BatchPayload!
+  createThing(data: ThingCreateInput!): Thing!
+  updateThing(data: ThingUpdateInput!, where: ThingWhereUniqueInput!): Thing
+  updateManyThings(data: ThingUpdateManyMutationInput!, where: ThingWhereInput): BatchPayload!
+  upsertThing(where: ThingWhereUniqueInput!, create: ThingCreateInput!, update: ThingUpdateInput!): Thing!
+  deleteThing(where: ThingWhereUniqueInput!): Thing
+  deleteManyThings(where: ThingWhereInput): BatchPayload!
+  createVote(data: VoteCreateInput!): Vote!
+  updateVote(data: VoteUpdateInput!, where: VoteWhereUniqueInput!): Vote
+  updateManyVotes(data: VoteUpdateManyMutationInput!, where: VoteWhereInput): BatchPayload!
+  upsertVote(where: VoteWhereUniqueInput!, create: VoteCreateInput!, update: VoteUpdateInput!): Vote!
+  deleteVote(where: VoteWhereUniqueInput!): Vote
+  deleteManyVotes(where: VoteWhereInput): BatchPayload!
+}
+
+enum MutationType {
+  CREATED
+  UPDATED
+  DELETED
+}
+
+type Narrative {
+  id: ID!
+  title: String!
+  featuredImage: String
+  summary: [String!]!
+  includedLinks(where: LinkWhereInput, orderBy: LinkOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Link!]
+  connectedThings(where: ThingWhereInput, orderBy: ThingOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Thing!]
+  comments(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Comment!]
+  score: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime
+}
+
+type NarrativeConnection {
+  pageInfo: PageInfo!
+  edges: [NarrativeEdge]!
+  aggregate: AggregateNarrative!
+}
+
+input NarrativeCreateInput {
+  id: ID
+  title: String!
+  featuredImage: String
+  summary: NarrativeCreatesummaryInput
+  includedLinks: LinkCreateManyInput
+  connectedThings: ThingCreateManyWithoutPartOfNarrativesInput
+  comments: CommentCreateManyWithoutOnNarrativeInput
+  score: Int
+}
+
+input NarrativeCreateManyWithoutConnectedThingsInput {
+  create: [NarrativeCreateWithoutConnectedThingsInput!]
+  connect: [NarrativeWhereUniqueInput!]
+}
+
+input NarrativeCreateOneWithoutCommentsInput {
+  create: NarrativeCreateWithoutCommentsInput
+  connect: NarrativeWhereUniqueInput
+}
+
+input NarrativeCreatesummaryInput {
+  set: [String!]
+}
+
+input NarrativeCreateWithoutCommentsInput {
+  id: ID
+  title: String!
+  featuredImage: String
+  summary: NarrativeCreatesummaryInput
+  includedLinks: LinkCreateManyInput
+  connectedThings: ThingCreateManyWithoutPartOfNarrativesInput
+  score: Int
+}
+
+input NarrativeCreateWithoutConnectedThingsInput {
+  id: ID
+  title: String!
+  featuredImage: String
+  summary: NarrativeCreatesummaryInput
+  includedLinks: LinkCreateManyInput
+  comments: CommentCreateManyWithoutOnNarrativeInput
+  score: Int
+}
+
+type NarrativeEdge {
+  node: Narrative!
+  cursor: String!
+}
+
+enum NarrativeOrderByInput {
+  id_ASC
+  id_DESC
+  title_ASC
+  title_DESC
+  featuredImage_ASC
+  featuredImage_DESC
+  score_ASC
+  score_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+type NarrativePreviousValues {
+  id: ID!
+  title: String!
+  featuredImage: String
+  summary: [String!]!
+  score: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime
+}
+
+input NarrativeScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  title: String
+  title_not: String
+  title_in: [String!]
+  title_not_in: [String!]
+  title_lt: String
+  title_lte: String
+  title_gt: String
+  title_gte: String
+  title_contains: String
+  title_not_contains: String
+  title_starts_with: String
+  title_not_starts_with: String
+  title_ends_with: String
+  title_not_ends_with: String
+  featuredImage: String
+  featuredImage_not: String
+  featuredImage_in: [String!]
+  featuredImage_not_in: [String!]
+  featuredImage_lt: String
+  featuredImage_lte: String
+  featuredImage_gt: String
+  featuredImage_gte: String
+  featuredImage_contains: String
+  featuredImage_not_contains: String
+  featuredImage_starts_with: String
+  featuredImage_not_starts_with: String
+  featuredImage_ends_with: String
+  featuredImage_not_ends_with: String
+  score: Int
+  score_not: Int
+  score_in: [Int!]
+  score_not_in: [Int!]
+  score_lt: Int
+  score_lte: Int
+  score_gt: Int
+  score_gte: Int
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  AND: [NarrativeScalarWhereInput!]
+  OR: [NarrativeScalarWhereInput!]
+  NOT: [NarrativeScalarWhereInput!]
+}
+
+type NarrativeSubscriptionPayload {
+  mutation: MutationType!
+  node: Narrative
+  updatedFields: [String!]
+  previousValues: NarrativePreviousValues
+}
+
+input NarrativeSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: NarrativeWhereInput
+  AND: [NarrativeSubscriptionWhereInput!]
+  OR: [NarrativeSubscriptionWhereInput!]
+  NOT: [NarrativeSubscriptionWhereInput!]
+}
+
+input NarrativeUpdateInput {
+  title: String
+  featuredImage: String
+  summary: NarrativeUpdatesummaryInput
+  includedLinks: LinkUpdateManyInput
+  connectedThings: ThingUpdateManyWithoutPartOfNarrativesInput
+  comments: CommentUpdateManyWithoutOnNarrativeInput
+  score: Int
+}
+
+input NarrativeUpdateManyDataInput {
+  title: String
+  featuredImage: String
+  summary: NarrativeUpdatesummaryInput
+  score: Int
+}
+
+input NarrativeUpdateManyMutationInput {
+  title: String
+  featuredImage: String
+  summary: NarrativeUpdatesummaryInput
+  score: Int
+}
+
+input NarrativeUpdateManyWithoutConnectedThingsInput {
+  create: [NarrativeCreateWithoutConnectedThingsInput!]
+  delete: [NarrativeWhereUniqueInput!]
+  connect: [NarrativeWhereUniqueInput!]
+  set: [NarrativeWhereUniqueInput!]
+  disconnect: [NarrativeWhereUniqueInput!]
+  update: [NarrativeUpdateWithWhereUniqueWithoutConnectedThingsInput!]
+  upsert: [NarrativeUpsertWithWhereUniqueWithoutConnectedThingsInput!]
+  deleteMany: [NarrativeScalarWhereInput!]
+  updateMany: [NarrativeUpdateManyWithWhereNestedInput!]
+}
+
+input NarrativeUpdateManyWithWhereNestedInput {
+  where: NarrativeScalarWhereInput!
+  data: NarrativeUpdateManyDataInput!
+}
+
+input NarrativeUpdateOneWithoutCommentsInput {
+  create: NarrativeCreateWithoutCommentsInput
+  update: NarrativeUpdateWithoutCommentsDataInput
+  upsert: NarrativeUpsertWithoutCommentsInput
+  delete: Boolean
+  disconnect: Boolean
+  connect: NarrativeWhereUniqueInput
+}
+
+input NarrativeUpdatesummaryInput {
+  set: [String!]
+}
+
+input NarrativeUpdateWithoutCommentsDataInput {
+  title: String
+  featuredImage: String
+  summary: NarrativeUpdatesummaryInput
+  includedLinks: LinkUpdateManyInput
+  connectedThings: ThingUpdateManyWithoutPartOfNarrativesInput
+  score: Int
+}
+
+input NarrativeUpdateWithoutConnectedThingsDataInput {
+  title: String
+  featuredImage: String
+  summary: NarrativeUpdatesummaryInput
+  includedLinks: LinkUpdateManyInput
+  comments: CommentUpdateManyWithoutOnNarrativeInput
+  score: Int
+}
+
+input NarrativeUpdateWithWhereUniqueWithoutConnectedThingsInput {
+  where: NarrativeWhereUniqueInput!
+  data: NarrativeUpdateWithoutConnectedThingsDataInput!
+}
+
+input NarrativeUpsertWithoutCommentsInput {
+  update: NarrativeUpdateWithoutCommentsDataInput!
+  create: NarrativeCreateWithoutCommentsInput!
+}
+
+input NarrativeUpsertWithWhereUniqueWithoutConnectedThingsInput {
+  where: NarrativeWhereUniqueInput!
+  update: NarrativeUpdateWithoutConnectedThingsDataInput!
+  create: NarrativeCreateWithoutConnectedThingsInput!
+}
+
+input NarrativeWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  title: String
+  title_not: String
+  title_in: [String!]
+  title_not_in: [String!]
+  title_lt: String
+  title_lte: String
+  title_gt: String
+  title_gte: String
+  title_contains: String
+  title_not_contains: String
+  title_starts_with: String
+  title_not_starts_with: String
+  title_ends_with: String
+  title_not_ends_with: String
+  featuredImage: String
+  featuredImage_not: String
+  featuredImage_in: [String!]
+  featuredImage_not_in: [String!]
+  featuredImage_lt: String
+  featuredImage_lte: String
+  featuredImage_gt: String
+  featuredImage_gte: String
+  featuredImage_contains: String
+  featuredImage_not_contains: String
+  featuredImage_starts_with: String
+  featuredImage_not_starts_with: String
+  featuredImage_ends_with: String
+  featuredImage_not_ends_with: String
+  includedLinks_every: LinkWhereInput
+  includedLinks_some: LinkWhereInput
+  includedLinks_none: LinkWhereInput
+  connectedThings_every: ThingWhereInput
+  connectedThings_some: ThingWhereInput
+  connectedThings_none: ThingWhereInput
+  comments_every: CommentWhereInput
+  comments_some: CommentWhereInput
+  comments_none: CommentWhereInput
+  score: Int
+  score_not: Int
+  score_in: [Int!]
+  score_not_in: [Int!]
+  score_lt: Int
+  score_lte: Int
+  score_gt: Int
+  score_gte: Int
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  AND: [NarrativeWhereInput!]
+  OR: [NarrativeWhereInput!]
+  NOT: [NarrativeWhereInput!]
+}
+
+input NarrativeWhereUniqueInput {
+  id: ID
+  title: String
+}
+
+interface Node {
+  id: ID!
+}
+
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+  endCursor: String
+}
+
+type Pass {
+  id: ID!
+  passer: Member!
+  onThing: Thing
+  createdAt: DateTime!
+}
+
+type PassConnection {
+  pageInfo: PageInfo!
+  edges: [PassEdge]!
+  aggregate: AggregatePass!
+}
+
+input PassCreateInput {
+  id: ID
+  passer: MemberCreateOneWithoutPassesInput!
+  onThing: ThingCreateOneWithoutPassesInput
+}
+
+input PassCreateManyWithoutOnThingInput {
+  create: [PassCreateWithoutOnThingInput!]
+  connect: [PassWhereUniqueInput!]
+}
+
+input PassCreateManyWithoutPasserInput {
+  create: [PassCreateWithoutPasserInput!]
+  connect: [PassWhereUniqueInput!]
+}
+
+input PassCreateWithoutOnThingInput {
+  id: ID
+  passer: MemberCreateOneWithoutPassesInput!
+}
+
+input PassCreateWithoutPasserInput {
+  id: ID
+  onThing: ThingCreateOneWithoutPassesInput
+}
+
+type PassEdge {
+  node: Pass!
+  cursor: String!
+}
+
+enum PassOrderByInput {
+  id_ASC
+  id_DESC
+  createdAt_ASC
+  createdAt_DESC
+}
+
+type PassPreviousValues {
+  id: ID!
+  createdAt: DateTime!
+}
+
+input PassScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  AND: [PassScalarWhereInput!]
+  OR: [PassScalarWhereInput!]
+  NOT: [PassScalarWhereInput!]
+}
+
+type PassSubscriptionPayload {
+  mutation: MutationType!
+  node: Pass
+  updatedFields: [String!]
+  previousValues: PassPreviousValues
+}
+
+input PassSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: PassWhereInput
+  AND: [PassSubscriptionWhereInput!]
+  OR: [PassSubscriptionWhereInput!]
+  NOT: [PassSubscriptionWhereInput!]
+}
+
+input PassUpdateInput {
+  passer: MemberUpdateOneRequiredWithoutPassesInput
+  onThing: ThingUpdateOneWithoutPassesInput
+}
+
+input PassUpdateManyWithoutOnThingInput {
+  create: [PassCreateWithoutOnThingInput!]
+  delete: [PassWhereUniqueInput!]
+  connect: [PassWhereUniqueInput!]
+  set: [PassWhereUniqueInput!]
+  disconnect: [PassWhereUniqueInput!]
+  update: [PassUpdateWithWhereUniqueWithoutOnThingInput!]
+  upsert: [PassUpsertWithWhereUniqueWithoutOnThingInput!]
+  deleteMany: [PassScalarWhereInput!]
+}
+
+input PassUpdateManyWithoutPasserInput {
+  create: [PassCreateWithoutPasserInput!]
+  delete: [PassWhereUniqueInput!]
+  connect: [PassWhereUniqueInput!]
+  set: [PassWhereUniqueInput!]
+  disconnect: [PassWhereUniqueInput!]
+  update: [PassUpdateWithWhereUniqueWithoutPasserInput!]
+  upsert: [PassUpsertWithWhereUniqueWithoutPasserInput!]
+  deleteMany: [PassScalarWhereInput!]
+}
+
+input PassUpdateWithoutOnThingDataInput {
+  passer: MemberUpdateOneRequiredWithoutPassesInput
+}
+
+input PassUpdateWithoutPasserDataInput {
+  onThing: ThingUpdateOneWithoutPassesInput
+}
+
+input PassUpdateWithWhereUniqueWithoutOnThingInput {
+  where: PassWhereUniqueInput!
+  data: PassUpdateWithoutOnThingDataInput!
+}
+
+input PassUpdateWithWhereUniqueWithoutPasserInput {
+  where: PassWhereUniqueInput!
+  data: PassUpdateWithoutPasserDataInput!
+}
+
+input PassUpsertWithWhereUniqueWithoutOnThingInput {
+  where: PassWhereUniqueInput!
+  update: PassUpdateWithoutOnThingDataInput!
+  create: PassCreateWithoutOnThingInput!
+}
+
+input PassUpsertWithWhereUniqueWithoutPasserInput {
+  where: PassWhereUniqueInput!
+  update: PassUpdateWithoutPasserDataInput!
+  create: PassCreateWithoutPasserInput!
+}
+
+input PassWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  passer: MemberWhereInput
+  onThing: ThingWhereInput
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  AND: [PassWhereInput!]
+  OR: [PassWhereInput!]
+  NOT: [PassWhereInput!]
+}
+
+input PassWhereUniqueInput {
+  id: ID
+}
+
+enum PrivacySetting {
+  Public
+  Private
+  Friends
+  FriendsOfFriends
+}
+
+type Query {
+  comment(where: CommentWhereUniqueInput!): Comment
+  comments(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Comment]!
+  commentsConnection(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): CommentConnection!
+  link(where: LinkWhereUniqueInput!): Link
+  links(where: LinkWhereInput, orderBy: LinkOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Link]!
+  linksConnection(where: LinkWhereInput, orderBy: LinkOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): LinkConnection!
+  member(where: MemberWhereUniqueInput!): Member
+  members(where: MemberWhereInput, orderBy: MemberOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Member]!
+  membersConnection(where: MemberWhereInput, orderBy: MemberOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): MemberConnection!
+  narrative(where: NarrativeWhereUniqueInput!): Narrative
+  narratives(where: NarrativeWhereInput, orderBy: NarrativeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Narrative]!
+  narrativesConnection(where: NarrativeWhereInput, orderBy: NarrativeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): NarrativeConnection!
+  pass(where: PassWhereUniqueInput!): Pass
+  passes(where: PassWhereInput, orderBy: PassOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Pass]!
+  passesConnection(where: PassWhereInput, orderBy: PassOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): PassConnection!
+  thing(where: ThingWhereUniqueInput!): Thing
+  things(where: ThingWhereInput, orderBy: ThingOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Thing]!
+  thingsConnection(where: ThingWhereInput, orderBy: ThingOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ThingConnection!
+  vote(where: VoteWhereUniqueInput!): Vote
+  votes(where: VoteWhereInput, orderBy: VoteOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Vote]!
+  votesConnection(where: VoteWhereInput, orderBy: VoteOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): VoteConnection!
+  node(id: ID!): Node
+}
+
+enum Role {
+  Admin
+  Editor
+  Moderator
+  Member
+  LiteMember
+}
+
+type Subscription {
+  comment(where: CommentSubscriptionWhereInput): CommentSubscriptionPayload
+  link(where: LinkSubscriptionWhereInput): LinkSubscriptionPayload
+  member(where: MemberSubscriptionWhereInput): MemberSubscriptionPayload
+  narrative(where: NarrativeSubscriptionWhereInput): NarrativeSubscriptionPayload
+  pass(where: PassSubscriptionWhereInput): PassSubscriptionPayload
+  thing(where: ThingSubscriptionWhereInput): ThingSubscriptionPayload
+  vote(where: VoteSubscriptionWhereInput): VoteSubscriptionPayload
+}
+
+type Thing {
+  id: ID!
+  title: String!
+  author: Member!
+  featuredImage: String
+  originalSource: String!
+  summary: [String!]!
+  includedLinks(where: LinkWhereInput, orderBy: LinkOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Link!]
+  includedThings(where: ThingWhereInput, orderBy: ThingOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Thing!]
+  partOfNarratives(where: NarrativeWhereInput, orderBy: NarrativeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Narrative!]
+  votes(where: VoteWhereInput, orderBy: VoteOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Vote!]
+  passes(where: PassWhereInput, orderBy: PassOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Pass!]
+  score: Int!
+  winner: DateTime
+  comments(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Comment!]
+  eliminated: Boolean!
+  finalistDate: DateTime
+  privacy: PrivacySetting
+  createdAt: DateTime!
+  updatedAt: DateTime
+}
+
+type ThingConnection {
+  pageInfo: PageInfo!
+  edges: [ThingEdge]!
+  aggregate: AggregateThing!
+}
+
+input ThingCreateInput {
+  id: ID
+  title: String!
+  author: MemberCreateOneWithoutSubmissionsInput!
+  featuredImage: String
+  originalSource: String!
+  summary: ThingCreatesummaryInput
+  includedLinks: LinkCreateManyWithoutOnThingInput
+  includedThings: ThingCreateManyInput
+  partOfNarratives: NarrativeCreateManyWithoutConnectedThingsInput
+  votes: VoteCreateManyWithoutOnThingInput
+  passes: PassCreateManyWithoutOnThingInput
+  score: Int
+  winner: DateTime
+  comments: CommentCreateManyWithoutOnThingInput
+  eliminated: Boolean
+  finalistDate: DateTime
+  privacy: PrivacySetting
+}
+
+input ThingCreateManyInput {
+  create: [ThingCreateInput!]
+  connect: [ThingWhereUniqueInput!]
+}
+
+input ThingCreateManyWithoutAuthorInput {
+  create: [ThingCreateWithoutAuthorInput!]
+  connect: [ThingWhereUniqueInput!]
+}
+
+input ThingCreateManyWithoutPartOfNarrativesInput {
+  create: [ThingCreateWithoutPartOfNarrativesInput!]
+  connect: [ThingWhereUniqueInput!]
+}
+
+input ThingCreateOneWithoutCommentsInput {
+  create: ThingCreateWithoutCommentsInput
+  connect: ThingWhereUniqueInput
+}
+
+input ThingCreateOneWithoutIncludedLinksInput {
+  create: ThingCreateWithoutIncludedLinksInput
+  connect: ThingWhereUniqueInput
+}
+
+input ThingCreateOneWithoutPassesInput {
+  create: ThingCreateWithoutPassesInput
+  connect: ThingWhereUniqueInput
+}
+
+input ThingCreateOneWithoutVotesInput {
+  create: ThingCreateWithoutVotesInput
+  connect: ThingWhereUniqueInput
+}
+
+input ThingCreatesummaryInput {
+  set: [String!]
+}
+
+input ThingCreateWithoutAuthorInput {
+  id: ID
+  title: String!
+  featuredImage: String
+  originalSource: String!
+  summary: ThingCreatesummaryInput
+  includedLinks: LinkCreateManyWithoutOnThingInput
+  includedThings: ThingCreateManyInput
+  partOfNarratives: NarrativeCreateManyWithoutConnectedThingsInput
+  votes: VoteCreateManyWithoutOnThingInput
+  passes: PassCreateManyWithoutOnThingInput
+  score: Int
+  winner: DateTime
+  comments: CommentCreateManyWithoutOnThingInput
+  eliminated: Boolean
+  finalistDate: DateTime
+  privacy: PrivacySetting
+}
+
+input ThingCreateWithoutCommentsInput {
+  id: ID
+  title: String!
+  author: MemberCreateOneWithoutSubmissionsInput!
+  featuredImage: String
+  originalSource: String!
+  summary: ThingCreatesummaryInput
+  includedLinks: LinkCreateManyWithoutOnThingInput
+  includedThings: ThingCreateManyInput
+  partOfNarratives: NarrativeCreateManyWithoutConnectedThingsInput
+  votes: VoteCreateManyWithoutOnThingInput
+  passes: PassCreateManyWithoutOnThingInput
+  score: Int
+  winner: DateTime
+  eliminated: Boolean
+  finalistDate: DateTime
+  privacy: PrivacySetting
+}
+
+input ThingCreateWithoutIncludedLinksInput {
+  id: ID
+  title: String!
+  author: MemberCreateOneWithoutSubmissionsInput!
+  featuredImage: String
+  originalSource: String!
+  summary: ThingCreatesummaryInput
+  includedThings: ThingCreateManyInput
+  partOfNarratives: NarrativeCreateManyWithoutConnectedThingsInput
+  votes: VoteCreateManyWithoutOnThingInput
+  passes: PassCreateManyWithoutOnThingInput
+  score: Int
+  winner: DateTime
+  comments: CommentCreateManyWithoutOnThingInput
+  eliminated: Boolean
+  finalistDate: DateTime
+  privacy: PrivacySetting
+}
+
+input ThingCreateWithoutPartOfNarrativesInput {
+  id: ID
+  title: String!
+  author: MemberCreateOneWithoutSubmissionsInput!
+  featuredImage: String
+  originalSource: String!
+  summary: ThingCreatesummaryInput
+  includedLinks: LinkCreateManyWithoutOnThingInput
+  includedThings: ThingCreateManyInput
+  votes: VoteCreateManyWithoutOnThingInput
+  passes: PassCreateManyWithoutOnThingInput
+  score: Int
+  winner: DateTime
+  comments: CommentCreateManyWithoutOnThingInput
+  eliminated: Boolean
+  finalistDate: DateTime
+  privacy: PrivacySetting
+}
+
+input ThingCreateWithoutPassesInput {
+  id: ID
+  title: String!
+  author: MemberCreateOneWithoutSubmissionsInput!
+  featuredImage: String
+  originalSource: String!
+  summary: ThingCreatesummaryInput
+  includedLinks: LinkCreateManyWithoutOnThingInput
+  includedThings: ThingCreateManyInput
+  partOfNarratives: NarrativeCreateManyWithoutConnectedThingsInput
+  votes: VoteCreateManyWithoutOnThingInput
+  score: Int
+  winner: DateTime
+  comments: CommentCreateManyWithoutOnThingInput
+  eliminated: Boolean
+  finalistDate: DateTime
+  privacy: PrivacySetting
+}
+
+input ThingCreateWithoutVotesInput {
+  id: ID
+  title: String!
+  author: MemberCreateOneWithoutSubmissionsInput!
+  featuredImage: String
+  originalSource: String!
+  summary: ThingCreatesummaryInput
+  includedLinks: LinkCreateManyWithoutOnThingInput
+  includedThings: ThingCreateManyInput
+  partOfNarratives: NarrativeCreateManyWithoutConnectedThingsInput
+  passes: PassCreateManyWithoutOnThingInput
+  score: Int
+  winner: DateTime
+  comments: CommentCreateManyWithoutOnThingInput
+  eliminated: Boolean
+  finalistDate: DateTime
+  privacy: PrivacySetting
+}
+
+type ThingEdge {
+  node: Thing!
+  cursor: String!
+}
+
+enum ThingOrderByInput {
+  id_ASC
+  id_DESC
+  title_ASC
+  title_DESC
+  featuredImage_ASC
+  featuredImage_DESC
+  originalSource_ASC
+  originalSource_DESC
+  score_ASC
+  score_DESC
+  winner_ASC
+  winner_DESC
+  eliminated_ASC
+  eliminated_DESC
+  finalistDate_ASC
+  finalistDate_DESC
+  privacy_ASC
+  privacy_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+type ThingPreviousValues {
+  id: ID!
+  title: String!
+  featuredImage: String
+  originalSource: String!
+  summary: [String!]!
+  score: Int!
+  winner: DateTime
+  eliminated: Boolean!
+  finalistDate: DateTime
+  privacy: PrivacySetting
+  createdAt: DateTime!
+  updatedAt: DateTime
+}
+
+input ThingScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  title: String
+  title_not: String
+  title_in: [String!]
+  title_not_in: [String!]
+  title_lt: String
+  title_lte: String
+  title_gt: String
+  title_gte: String
+  title_contains: String
+  title_not_contains: String
+  title_starts_with: String
+  title_not_starts_with: String
+  title_ends_with: String
+  title_not_ends_with: String
+  featuredImage: String
+  featuredImage_not: String
+  featuredImage_in: [String!]
+  featuredImage_not_in: [String!]
+  featuredImage_lt: String
+  featuredImage_lte: String
+  featuredImage_gt: String
+  featuredImage_gte: String
+  featuredImage_contains: String
+  featuredImage_not_contains: String
+  featuredImage_starts_with: String
+  featuredImage_not_starts_with: String
+  featuredImage_ends_with: String
+  featuredImage_not_ends_with: String
+  originalSource: String
+  originalSource_not: String
+  originalSource_in: [String!]
+  originalSource_not_in: [String!]
+  originalSource_lt: String
+  originalSource_lte: String
+  originalSource_gt: String
+  originalSource_gte: String
+  originalSource_contains: String
+  originalSource_not_contains: String
+  originalSource_starts_with: String
+  originalSource_not_starts_with: String
+  originalSource_ends_with: String
+  originalSource_not_ends_with: String
+  score: Int
+  score_not: Int
+  score_in: [Int!]
+  score_not_in: [Int!]
+  score_lt: Int
+  score_lte: Int
+  score_gt: Int
+  score_gte: Int
+  winner: DateTime
+  winner_not: DateTime
+  winner_in: [DateTime!]
+  winner_not_in: [DateTime!]
+  winner_lt: DateTime
+  winner_lte: DateTime
+  winner_gt: DateTime
+  winner_gte: DateTime
+  eliminated: Boolean
+  eliminated_not: Boolean
+  finalistDate: DateTime
+  finalistDate_not: DateTime
+  finalistDate_in: [DateTime!]
+  finalistDate_not_in: [DateTime!]
+  finalistDate_lt: DateTime
+  finalistDate_lte: DateTime
+  finalistDate_gt: DateTime
+  finalistDate_gte: DateTime
+  privacy: PrivacySetting
+  privacy_not: PrivacySetting
+  privacy_in: [PrivacySetting!]
+  privacy_not_in: [PrivacySetting!]
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  AND: [ThingScalarWhereInput!]
+  OR: [ThingScalarWhereInput!]
+  NOT: [ThingScalarWhereInput!]
+}
+
+type ThingSubscriptionPayload {
+  mutation: MutationType!
+  node: Thing
+  updatedFields: [String!]
+  previousValues: ThingPreviousValues
+}
+
+input ThingSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: ThingWhereInput
+  AND: [ThingSubscriptionWhereInput!]
+  OR: [ThingSubscriptionWhereInput!]
+  NOT: [ThingSubscriptionWhereInput!]
+}
+
+input ThingUpdateDataInput {
+  title: String
+  author: MemberUpdateOneRequiredWithoutSubmissionsInput
+  featuredImage: String
+  originalSource: String
+  summary: ThingUpdatesummaryInput
+  includedLinks: LinkUpdateManyWithoutOnThingInput
+  includedThings: ThingUpdateManyInput
+  partOfNarratives: NarrativeUpdateManyWithoutConnectedThingsInput
+  votes: VoteUpdateManyWithoutOnThingInput
+  passes: PassUpdateManyWithoutOnThingInput
+  score: Int
+  winner: DateTime
+  comments: CommentUpdateManyWithoutOnThingInput
+  eliminated: Boolean
+  finalistDate: DateTime
+  privacy: PrivacySetting
+}
+
+input ThingUpdateInput {
+  title: String
+  author: MemberUpdateOneRequiredWithoutSubmissionsInput
+  featuredImage: String
+  originalSource: String
+  summary: ThingUpdatesummaryInput
+  includedLinks: LinkUpdateManyWithoutOnThingInput
+  includedThings: ThingUpdateManyInput
+  partOfNarratives: NarrativeUpdateManyWithoutConnectedThingsInput
+  votes: VoteUpdateManyWithoutOnThingInput
+  passes: PassUpdateManyWithoutOnThingInput
+  score: Int
+  winner: DateTime
+  comments: CommentUpdateManyWithoutOnThingInput
+  eliminated: Boolean
+  finalistDate: DateTime
+  privacy: PrivacySetting
+}
+
+input ThingUpdateManyDataInput {
+  title: String
+  featuredImage: String
+  originalSource: String
+  summary: ThingUpdatesummaryInput
+  score: Int
+  winner: DateTime
+  eliminated: Boolean
+  finalistDate: DateTime
+  privacy: PrivacySetting
+}
+
+input ThingUpdateManyInput {
+  create: [ThingCreateInput!]
+  update: [ThingUpdateWithWhereUniqueNestedInput!]
+  upsert: [ThingUpsertWithWhereUniqueNestedInput!]
+  delete: [ThingWhereUniqueInput!]
+  connect: [ThingWhereUniqueInput!]
+  set: [ThingWhereUniqueInput!]
+  disconnect: [ThingWhereUniqueInput!]
+  deleteMany: [ThingScalarWhereInput!]
+  updateMany: [ThingUpdateManyWithWhereNestedInput!]
+}
+
+input ThingUpdateManyMutationInput {
+  title: String
+  featuredImage: String
+  originalSource: String
+  summary: ThingUpdatesummaryInput
+  score: Int
+  winner: DateTime
+  eliminated: Boolean
+  finalistDate: DateTime
+  privacy: PrivacySetting
+}
+
+input ThingUpdateManyWithoutAuthorInput {
+  create: [ThingCreateWithoutAuthorInput!]
+  delete: [ThingWhereUniqueInput!]
+  connect: [ThingWhereUniqueInput!]
+  set: [ThingWhereUniqueInput!]
+  disconnect: [ThingWhereUniqueInput!]
+  update: [ThingUpdateWithWhereUniqueWithoutAuthorInput!]
+  upsert: [ThingUpsertWithWhereUniqueWithoutAuthorInput!]
+  deleteMany: [ThingScalarWhereInput!]
+  updateMany: [ThingUpdateManyWithWhereNestedInput!]
+}
+
+input ThingUpdateManyWithoutPartOfNarrativesInput {
+  create: [ThingCreateWithoutPartOfNarrativesInput!]
+  delete: [ThingWhereUniqueInput!]
+  connect: [ThingWhereUniqueInput!]
+  set: [ThingWhereUniqueInput!]
+  disconnect: [ThingWhereUniqueInput!]
+  update: [ThingUpdateWithWhereUniqueWithoutPartOfNarrativesInput!]
+  upsert: [ThingUpsertWithWhereUniqueWithoutPartOfNarrativesInput!]
+  deleteMany: [ThingScalarWhereInput!]
+  updateMany: [ThingUpdateManyWithWhereNestedInput!]
+}
+
+input ThingUpdateManyWithWhereNestedInput {
+  where: ThingScalarWhereInput!
+  data: ThingUpdateManyDataInput!
+}
+
+input ThingUpdateOneWithoutCommentsInput {
+  create: ThingCreateWithoutCommentsInput
+  update: ThingUpdateWithoutCommentsDataInput
+  upsert: ThingUpsertWithoutCommentsInput
+  delete: Boolean
+  disconnect: Boolean
+  connect: ThingWhereUniqueInput
+}
+
+input ThingUpdateOneWithoutIncludedLinksInput {
+  create: ThingCreateWithoutIncludedLinksInput
+  update: ThingUpdateWithoutIncludedLinksDataInput
+  upsert: ThingUpsertWithoutIncludedLinksInput
+  delete: Boolean
+  disconnect: Boolean
+  connect: ThingWhereUniqueInput
+}
+
+input ThingUpdateOneWithoutPassesInput {
+  create: ThingCreateWithoutPassesInput
+  update: ThingUpdateWithoutPassesDataInput
+  upsert: ThingUpsertWithoutPassesInput
+  delete: Boolean
+  disconnect: Boolean
+  connect: ThingWhereUniqueInput
+}
+
+input ThingUpdateOneWithoutVotesInput {
+  create: ThingCreateWithoutVotesInput
+  update: ThingUpdateWithoutVotesDataInput
+  upsert: ThingUpsertWithoutVotesInput
+  delete: Boolean
+  disconnect: Boolean
+  connect: ThingWhereUniqueInput
+}
+
+input ThingUpdatesummaryInput {
+  set: [String!]
+}
+
+input ThingUpdateWithoutAuthorDataInput {
+  title: String
+  featuredImage: String
+  originalSource: String
+  summary: ThingUpdatesummaryInput
+  includedLinks: LinkUpdateManyWithoutOnThingInput
+  includedThings: ThingUpdateManyInput
+  partOfNarratives: NarrativeUpdateManyWithoutConnectedThingsInput
+  votes: VoteUpdateManyWithoutOnThingInput
+  passes: PassUpdateManyWithoutOnThingInput
+  score: Int
+  winner: DateTime
+  comments: CommentUpdateManyWithoutOnThingInput
+  eliminated: Boolean
+  finalistDate: DateTime
+  privacy: PrivacySetting
+}
+
+input ThingUpdateWithoutCommentsDataInput {
+  title: String
+  author: MemberUpdateOneRequiredWithoutSubmissionsInput
+  featuredImage: String
+  originalSource: String
+  summary: ThingUpdatesummaryInput
+  includedLinks: LinkUpdateManyWithoutOnThingInput
+  includedThings: ThingUpdateManyInput
+  partOfNarratives: NarrativeUpdateManyWithoutConnectedThingsInput
+  votes: VoteUpdateManyWithoutOnThingInput
+  passes: PassUpdateManyWithoutOnThingInput
+  score: Int
+  winner: DateTime
+  eliminated: Boolean
+  finalistDate: DateTime
+  privacy: PrivacySetting
+}
+
+input ThingUpdateWithoutIncludedLinksDataInput {
+  title: String
+  author: MemberUpdateOneRequiredWithoutSubmissionsInput
+  featuredImage: String
+  originalSource: String
+  summary: ThingUpdatesummaryInput
+  includedThings: ThingUpdateManyInput
+  partOfNarratives: NarrativeUpdateManyWithoutConnectedThingsInput
+  votes: VoteUpdateManyWithoutOnThingInput
+  passes: PassUpdateManyWithoutOnThingInput
+  score: Int
+  winner: DateTime
+  comments: CommentUpdateManyWithoutOnThingInput
+  eliminated: Boolean
+  finalistDate: DateTime
+  privacy: PrivacySetting
+}
+
+input ThingUpdateWithoutPartOfNarrativesDataInput {
+  title: String
+  author: MemberUpdateOneRequiredWithoutSubmissionsInput
+  featuredImage: String
+  originalSource: String
+  summary: ThingUpdatesummaryInput
+  includedLinks: LinkUpdateManyWithoutOnThingInput
+  includedThings: ThingUpdateManyInput
+  votes: VoteUpdateManyWithoutOnThingInput
+  passes: PassUpdateManyWithoutOnThingInput
+  score: Int
+  winner: DateTime
+  comments: CommentUpdateManyWithoutOnThingInput
+  eliminated: Boolean
+  finalistDate: DateTime
+  privacy: PrivacySetting
+}
+
+input ThingUpdateWithoutPassesDataInput {
+  title: String
+  author: MemberUpdateOneRequiredWithoutSubmissionsInput
+  featuredImage: String
+  originalSource: String
+  summary: ThingUpdatesummaryInput
+  includedLinks: LinkUpdateManyWithoutOnThingInput
+  includedThings: ThingUpdateManyInput
+  partOfNarratives: NarrativeUpdateManyWithoutConnectedThingsInput
+  votes: VoteUpdateManyWithoutOnThingInput
+  score: Int
+  winner: DateTime
+  comments: CommentUpdateManyWithoutOnThingInput
+  eliminated: Boolean
+  finalistDate: DateTime
+  privacy: PrivacySetting
+}
+
+input ThingUpdateWithoutVotesDataInput {
+  title: String
+  author: MemberUpdateOneRequiredWithoutSubmissionsInput
+  featuredImage: String
+  originalSource: String
+  summary: ThingUpdatesummaryInput
+  includedLinks: LinkUpdateManyWithoutOnThingInput
+  includedThings: ThingUpdateManyInput
+  partOfNarratives: NarrativeUpdateManyWithoutConnectedThingsInput
+  passes: PassUpdateManyWithoutOnThingInput
+  score: Int
+  winner: DateTime
+  comments: CommentUpdateManyWithoutOnThingInput
+  eliminated: Boolean
+  finalistDate: DateTime
+  privacy: PrivacySetting
+}
+
+input ThingUpdateWithWhereUniqueNestedInput {
+  where: ThingWhereUniqueInput!
+  data: ThingUpdateDataInput!
+}
+
+input ThingUpdateWithWhereUniqueWithoutAuthorInput {
+  where: ThingWhereUniqueInput!
+  data: ThingUpdateWithoutAuthorDataInput!
+}
+
+input ThingUpdateWithWhereUniqueWithoutPartOfNarrativesInput {
+  where: ThingWhereUniqueInput!
+  data: ThingUpdateWithoutPartOfNarrativesDataInput!
+}
+
+input ThingUpsertWithoutCommentsInput {
+  update: ThingUpdateWithoutCommentsDataInput!
+  create: ThingCreateWithoutCommentsInput!
+}
+
+input ThingUpsertWithoutIncludedLinksInput {
+  update: ThingUpdateWithoutIncludedLinksDataInput!
+  create: ThingCreateWithoutIncludedLinksInput!
+}
+
+input ThingUpsertWithoutPassesInput {
+  update: ThingUpdateWithoutPassesDataInput!
+  create: ThingCreateWithoutPassesInput!
+}
+
+input ThingUpsertWithoutVotesInput {
+  update: ThingUpdateWithoutVotesDataInput!
+  create: ThingCreateWithoutVotesInput!
+}
+
+input ThingUpsertWithWhereUniqueNestedInput {
+  where: ThingWhereUniqueInput!
+  update: ThingUpdateDataInput!
+  create: ThingCreateInput!
+}
+
+input ThingUpsertWithWhereUniqueWithoutAuthorInput {
+  where: ThingWhereUniqueInput!
+  update: ThingUpdateWithoutAuthorDataInput!
+  create: ThingCreateWithoutAuthorInput!
+}
+
+input ThingUpsertWithWhereUniqueWithoutPartOfNarrativesInput {
+  where: ThingWhereUniqueInput!
+  update: ThingUpdateWithoutPartOfNarrativesDataInput!
+  create: ThingCreateWithoutPartOfNarrativesInput!
+}
+
+input ThingWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  title: String
+  title_not: String
+  title_in: [String!]
+  title_not_in: [String!]
+  title_lt: String
+  title_lte: String
+  title_gt: String
+  title_gte: String
+  title_contains: String
+  title_not_contains: String
+  title_starts_with: String
+  title_not_starts_with: String
+  title_ends_with: String
+  title_not_ends_with: String
+  author: MemberWhereInput
+  featuredImage: String
+  featuredImage_not: String
+  featuredImage_in: [String!]
+  featuredImage_not_in: [String!]
+  featuredImage_lt: String
+  featuredImage_lte: String
+  featuredImage_gt: String
+  featuredImage_gte: String
+  featuredImage_contains: String
+  featuredImage_not_contains: String
+  featuredImage_starts_with: String
+  featuredImage_not_starts_with: String
+  featuredImage_ends_with: String
+  featuredImage_not_ends_with: String
+  originalSource: String
+  originalSource_not: String
+  originalSource_in: [String!]
+  originalSource_not_in: [String!]
+  originalSource_lt: String
+  originalSource_lte: String
+  originalSource_gt: String
+  originalSource_gte: String
+  originalSource_contains: String
+  originalSource_not_contains: String
+  originalSource_starts_with: String
+  originalSource_not_starts_with: String
+  originalSource_ends_with: String
+  originalSource_not_ends_with: String
+  includedLinks_every: LinkWhereInput
+  includedLinks_some: LinkWhereInput
+  includedLinks_none: LinkWhereInput
+  includedThings_every: ThingWhereInput
+  includedThings_some: ThingWhereInput
+  includedThings_none: ThingWhereInput
+  partOfNarratives_every: NarrativeWhereInput
+  partOfNarratives_some: NarrativeWhereInput
+  partOfNarratives_none: NarrativeWhereInput
+  votes_every: VoteWhereInput
+  votes_some: VoteWhereInput
+  votes_none: VoteWhereInput
+  passes_every: PassWhereInput
+  passes_some: PassWhereInput
+  passes_none: PassWhereInput
+  score: Int
+  score_not: Int
+  score_in: [Int!]
+  score_not_in: [Int!]
+  score_lt: Int
+  score_lte: Int
+  score_gt: Int
+  score_gte: Int
+  winner: DateTime
+  winner_not: DateTime
+  winner_in: [DateTime!]
+  winner_not_in: [DateTime!]
+  winner_lt: DateTime
+  winner_lte: DateTime
+  winner_gt: DateTime
+  winner_gte: DateTime
+  comments_every: CommentWhereInput
+  comments_some: CommentWhereInput
+  comments_none: CommentWhereInput
+  eliminated: Boolean
+  eliminated_not: Boolean
+  finalistDate: DateTime
+  finalistDate_not: DateTime
+  finalistDate_in: [DateTime!]
+  finalistDate_not_in: [DateTime!]
+  finalistDate_lt: DateTime
+  finalistDate_lte: DateTime
+  finalistDate_gt: DateTime
+  finalistDate_gte: DateTime
+  privacy: PrivacySetting
+  privacy_not: PrivacySetting
+  privacy_in: [PrivacySetting!]
+  privacy_not_in: [PrivacySetting!]
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  AND: [ThingWhereInput!]
+  OR: [ThingWhereInput!]
+  NOT: [ThingWhereInput!]
+}
+
+input ThingWhereUniqueInput {
+  id: ID
+  originalSource: String
+}
+
+type Vote {
+  id: ID!
+  voter: Member!
+  onThing: Thing
+  onComment: Comment
+  value: Int!
+  createdAt: DateTime!
+}
+
+type VoteConnection {
+  pageInfo: PageInfo!
+  edges: [VoteEdge]!
+  aggregate: AggregateVote!
+}
+
+input VoteCreateInput {
+  id: ID
+  voter: MemberCreateOneWithoutVotesInput!
+  onThing: ThingCreateOneWithoutVotesInput
+  onComment: CommentCreateOneInput
+  value: Int!
+}
+
+input VoteCreateManyWithoutOnThingInput {
+  create: [VoteCreateWithoutOnThingInput!]
+  connect: [VoteWhereUniqueInput!]
+}
+
+input VoteCreateManyWithoutVoterInput {
+  create: [VoteCreateWithoutVoterInput!]
+  connect: [VoteWhereUniqueInput!]
+}
+
+input VoteCreateWithoutOnThingInput {
+  id: ID
+  voter: MemberCreateOneWithoutVotesInput!
+  onComment: CommentCreateOneInput
+  value: Int!
+}
+
+input VoteCreateWithoutVoterInput {
+  id: ID
+  onThing: ThingCreateOneWithoutVotesInput
+  onComment: CommentCreateOneInput
+  value: Int!
+}
+
+type VoteEdge {
+  node: Vote!
+  cursor: String!
+}
+
+enum VoteOrderByInput {
+  id_ASC
+  id_DESC
+  value_ASC
+  value_DESC
+  createdAt_ASC
+  createdAt_DESC
+}
+
+type VotePreviousValues {
+  id: ID!
+  value: Int!
+  createdAt: DateTime!
+}
+
+input VoteScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  value: Int
+  value_not: Int
+  value_in: [Int!]
+  value_not_in: [Int!]
+  value_lt: Int
+  value_lte: Int
+  value_gt: Int
+  value_gte: Int
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  AND: [VoteScalarWhereInput!]
+  OR: [VoteScalarWhereInput!]
+  NOT: [VoteScalarWhereInput!]
+}
+
+type VoteSubscriptionPayload {
+  mutation: MutationType!
+  node: Vote
+  updatedFields: [String!]
+  previousValues: VotePreviousValues
+}
+
+input VoteSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: VoteWhereInput
+  AND: [VoteSubscriptionWhereInput!]
+  OR: [VoteSubscriptionWhereInput!]
+  NOT: [VoteSubscriptionWhereInput!]
+}
+
+input VoteUpdateInput {
+  voter: MemberUpdateOneRequiredWithoutVotesInput
+  onThing: ThingUpdateOneWithoutVotesInput
+  onComment: CommentUpdateOneInput
+  value: Int
+}
+
+input VoteUpdateManyDataInput {
+  value: Int
+}
+
+input VoteUpdateManyMutationInput {
+  value: Int
+}
+
+input VoteUpdateManyWithoutOnThingInput {
+  create: [VoteCreateWithoutOnThingInput!]
+  delete: [VoteWhereUniqueInput!]
+  connect: [VoteWhereUniqueInput!]
+  set: [VoteWhereUniqueInput!]
+  disconnect: [VoteWhereUniqueInput!]
+  update: [VoteUpdateWithWhereUniqueWithoutOnThingInput!]
+  upsert: [VoteUpsertWithWhereUniqueWithoutOnThingInput!]
+  deleteMany: [VoteScalarWhereInput!]
+  updateMany: [VoteUpdateManyWithWhereNestedInput!]
+}
+
+input VoteUpdateManyWithoutVoterInput {
+  create: [VoteCreateWithoutVoterInput!]
+  delete: [VoteWhereUniqueInput!]
+  connect: [VoteWhereUniqueInput!]
+  set: [VoteWhereUniqueInput!]
+  disconnect: [VoteWhereUniqueInput!]
+  update: [VoteUpdateWithWhereUniqueWithoutVoterInput!]
+  upsert: [VoteUpsertWithWhereUniqueWithoutVoterInput!]
+  deleteMany: [VoteScalarWhereInput!]
+  updateMany: [VoteUpdateManyWithWhereNestedInput!]
+}
+
+input VoteUpdateManyWithWhereNestedInput {
+  where: VoteScalarWhereInput!
+  data: VoteUpdateManyDataInput!
+}
+
+input VoteUpdateWithoutOnThingDataInput {
+  voter: MemberUpdateOneRequiredWithoutVotesInput
+  onComment: CommentUpdateOneInput
+  value: Int
+}
+
+input VoteUpdateWithoutVoterDataInput {
+  onThing: ThingUpdateOneWithoutVotesInput
+  onComment: CommentUpdateOneInput
+  value: Int
+}
+
+input VoteUpdateWithWhereUniqueWithoutOnThingInput {
+  where: VoteWhereUniqueInput!
+  data: VoteUpdateWithoutOnThingDataInput!
+}
+
+input VoteUpdateWithWhereUniqueWithoutVoterInput {
+  where: VoteWhereUniqueInput!
+  data: VoteUpdateWithoutVoterDataInput!
+}
+
+input VoteUpsertWithWhereUniqueWithoutOnThingInput {
+  where: VoteWhereUniqueInput!
+  update: VoteUpdateWithoutOnThingDataInput!
+  create: VoteCreateWithoutOnThingInput!
+}
+
+input VoteUpsertWithWhereUniqueWithoutVoterInput {
+  where: VoteWhereUniqueInput!
+  update: VoteUpdateWithoutVoterDataInput!
+  create: VoteCreateWithoutVoterInput!
+}
+
+input VoteWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  voter: MemberWhereInput
+  onThing: ThingWhereInput
+  onComment: CommentWhereInput
+  value: Int
+  value_not: Int
+  value_in: [Int!]
+  value_not_in: [Int!]
+  value_lt: Int
+  value_lte: Int
+  value_gt: Int
+  value_gte: Int
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  AND: [VoteWhereInput!]
+  OR: [VoteWhereInput!]
+  NOT: [VoteWhereInput!]
+}
+
+input VoteWhereUniqueInput {
+  id: ID
+}
