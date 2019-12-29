@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { useContext, useState } from 'react';
 import Link from 'next/link';
 import { MemberContext } from './MemberProvider';
+import MemberMenu from './MemberMenu';
 
 const StyledMemberBox = styled.div`
    color: ${props => props.theme.secondaryAccent};
@@ -62,10 +63,29 @@ const StyledMemberBox = styled.div`
 const MemberBox = () => {
    const me = useContext(MemberContext);
    console.log(me);
-   const [userMenuOpen, setUserMenuOpen] = useState(false);
+   const [memberMenuOpen, setMemberMenuOpen] = useState(false);
 
-   const toggleUserMenu = () => {
-      console.log('He wants to show the user menu');
+   const toggleMemberMenu = () => {
+      window.addEventListener('keydown', escapeDetector);
+      window.addEventListener('click', clickOutsideDetector);
+      setMemberMenuOpen(!memberMenuOpen);
+   };
+
+   const escapeDetector = e => {
+      if (e.which === 27) {
+         setMemberMenuOpen(false);
+         window.removeEventListener('click', escapeDetector);
+      }
+   };
+
+   const clickOutsideDetector = e => {
+      if (
+         !e.target.classList.contains('MemberMenu') &&
+         e.target.id !== 'avatar'
+      ) {
+         setMemberMenuOpen(false);
+         window.removeEventListener('click', clickOutsideDetector);
+      }
    };
 
    if (me === 'loading')
@@ -94,7 +114,7 @@ const MemberBox = () => {
          <Link href={{ pathname: '/me' }}>
             <a
                className={
-                  userMenuOpen ? 'profileLink open' : 'profileLink closed'
+                  memberMenuOpen ? 'profileLink open' : 'profileLink closed'
                }
             >
                [{me.rep}] {me.displayName}
@@ -104,8 +124,9 @@ const MemberBox = () => {
             src={me.avatar != null ? me.avatar : '/defaultAvatar.jpg'}
             alt="avatar"
             id="avatar"
-            onClick={() => toggleUserMenu()}
+            onClick={() => toggleMemberMenu()}
          />
+         {memberMenuOpen && <MemberMenu />}
       </StyledMemberBox>
    );
 };
