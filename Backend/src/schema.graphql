@@ -1,0 +1,51 @@
+# import * from './generated/prisma.graphql'
+
+type Query {
+   me: Member
+}
+
+type Mutation {
+   signup(
+    email: String!
+    password: String!
+    displayName: String!
+    name: String
+    twitchName: String
+  ): Member!
+  login(email: String!, password: String!): Member!
+}
+
+type Subscription {
+   thing(IDs: [ID!]): ThingSubscriptionPayload
+}
+
+type Member {
+  id: ID!
+  displayName: String!
+  name: String
+  avatar: String
+  rep: Int!
+  points: Int!
+  giveableRep: Int!
+  friends: [Member]
+  twitchName: String
+  email: String!
+  votes: [Vote]
+  passes: [Pass]
+  createdThings: [Thing]
+  defaultPrivacy: PrivacySetting
+  comments: [Comment]
+  password: String!
+  roles: [Role!]
+  resetToken: String
+  resetTokenExpiry: Float
+  twitterTokenSecret: String
+  twitterUserName: String
+  twitterUserID: String
+  twitterUserToken: String
+  twitterUserTokenSecret: String
+  twitterSinceIDsObject: String
+  twitterSeenIDs: [String]
+  createdAt: DateTime!
+  updatedAt: DateTime
+}

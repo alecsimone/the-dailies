@@ -7,7 +7,8 @@ type Thing {
   summary: [String!] @scalarList(strategy:RELATION)
   includedLinks: [Link]
   includedThings: [Thing]
-  partOfNarratives: [Narrative]
+  partOfTags: [Tag]
+  partOfCategories: [Category]
   votes: [Vote]
   passes: [Pass]
   score: Int! @default(value: 0)
@@ -20,7 +21,7 @@ type Thing {
   updatedAt: DateTime @updatedAt
 }
 
-type Narrative {
+type Tag {
   id: ID! @id @unique
   title: String! @unique
   featuredImage: String
@@ -29,6 +30,16 @@ type Narrative {
   connectedThings: [Thing]
   comments: [Comment]
   score: Int! @default(value: 0)
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime @updatedAt
+}
+
+type Category {
+  id: ID! @id @unique
+  title: String! @unique
+  featuredImage: String
+  summary: [String!] @scalarList(strategy:RELATION)
+  connectedThings: [Thing]
   createdAt: DateTime! @createdAt
   updatedAt: DateTime @updatedAt
 }
@@ -42,7 +53,7 @@ type Comment {
   onThing: Thing
   onLink: Link
   onComment: Comment
-  onNarrative: Narrative
+  onTag: Tag
 }
 
 type Link {
@@ -76,14 +87,15 @@ type Member {
   name: String
   avatar: String
   rep: Int! @default(value: 0)
-  points: Int! @default(value: 1)
+  points: Int! @default(value: 0)
   giveableRep: Int! @default(value: 0)
   friends: [Member]
   twitchName: String
   email: String! @unique
   votes: [Vote]
   passes: [Pass]
-  submissions: [Thing]
+  createdThings: [Thing]
+  defaultPrivacy: PrivacySetting
   comments: [Comment]
   password: String!
   roles: [Role!] @scalarList(strategy: RELATION)
@@ -96,7 +108,6 @@ type Member {
   twitterUserTokenSecret: String
   twitterSinceIDsObject: String
   twitterSeenIDs: [String] @scalarList(strategy: RELATION)
-  someRandomJsonField: Json
   createdAt: DateTime! @createdAt
   updatedAt: DateTime @updatedAt
 }

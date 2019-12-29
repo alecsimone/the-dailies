@@ -1,5 +1,3 @@
-import React from 'react';
-
-const Home = props => <p>Hey!</p>;
+const Home = () => <p>Index</p>;
 
 export default Home;
