@@ -1,16 +1,12 @@
+const { forwardTo } = require('prisma-binding');
+const { categories } = require('./Query/PageQueries');
+const { me } = require('./Query/MemberQueries');
+
 const Query = {
-   async me(parent, args, ctx, info) {
-      console.log(ctx.req.memberId);
-      if (!ctx.req.memberId) {
-         return null;
-      }
-      return await ctx.db.query.member(
-         {
-            where: { id: ctx.req.memberId }
-         },
-         info
-      );
-   }
+   me,
+   categories,
+   thing: forwardTo('db'),
+   things: forwardTo('db')
 };
 
 module.exports = Query;

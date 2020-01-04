@@ -3,12 +3,12 @@ type Thing {
   title: String!
   author: Member!
   featuredImage: String
-  originalSource: String! @unique
-  summary: [String!] @scalarList(strategy:RELATION)
+  link: String
+  content: [ContentPiece!] @scalarList(strategy:RELATION)
   includedLinks: [Link]
   includedThings: [Thing]
   partOfTags: [Tag]
-  partOfCategories: [Category]
+  partOfCategory: [Category]
   votes: [Vote]
   passes: [Pass]
   score: Int! @default(value: 0)
@@ -16,15 +16,23 @@ type Thing {
   comments: [Comment]
   eliminated: Boolean! @default(value: false)
   finalistDate: DateTime
-  privacy: PrivacySetting
+  privacy: PrivacySetting @default(value: Private)
   createdAt: DateTime! @createdAt
   updatedAt: DateTime @updatedAt
 }
 
+type ContentPiece {
+   id: ID! @id @unique
+   content: String!
+   onThing: Thing
+}
+
 type Tag {
   id: ID! @id @unique
-  title: String! @unique
+  title: String!
   featuredImage: String
+  owner: Member
+  public: Boolean
   summary: [String!] @scalarList(strategy:RELATION)
   includedLinks: [Link]
   connectedThings: [Thing]
@@ -38,6 +46,7 @@ type Category {
   id: ID! @id @unique
   title: String! @unique
   featuredImage: String
+  owner: Member @relation(name: "OwnedCategories")
   summary: [String!] @scalarList(strategy:RELATION)
   connectedThings: [Thing]
   createdAt: DateTime! @createdAt
@@ -95,6 +104,9 @@ type Member {
   votes: [Vote]
   passes: [Pass]
   createdThings: [Thing]
+  ownedTags: [Tag]
+  ownedCategories: [Category] @relation(name: "OwnedCategories")
+  defaultCategory: Category @relation(name: "DefaultCategory")
   defaultPrivacy: PrivacySetting
   comments: [Comment]
   password: String!

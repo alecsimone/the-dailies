@@ -8,6 +8,10 @@ const CURRENT_MEMBER_QUERY = gql`
          id
          displayName
          rep
+         defaultPrivacy
+         defaultCategory {
+            title
+         }
       }
    }
 `;
@@ -16,10 +20,17 @@ const MemberContext = React.createContext();
 
 const MemberProvider = props => {
    const { loading, error, data } = useQuery(CURRENT_MEMBER_QUERY);
-   console.log(data);
    let memberData;
    if (loading) {
-      memberData = 'loading';
+      memberData = {
+         id: 'Loading...',
+         displayName: 'Loading...',
+         rep: 'Loading...',
+         defaultPrivacy: 'Loading...',
+         defaultCategory: {
+            title: 'Loading...'
+         }
+      };
    } else if (data == null) {
       memberData = null;
    } else {

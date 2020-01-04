@@ -1,7 +1,8 @@
 import styled, { ThemeProvider, createGlobalStyle } from 'styled-components';
-import Meta from './Meta';
-import Header from './Header';
-import MemberProvider from './MemberProvider';
+import Meta from './Header/Meta';
+import Header from './Header/Header';
+import MemberProvider from './Account/MemberProvider';
+import { makeTransparent } from '../styles/functions';
 
 const theme = {
    tinyText: '1.25rem',
@@ -21,16 +22,13 @@ const theme = {
    primaryAccent: 'hsl(120, 100%, 25%)',
 
    secondaryAccent: 'hsl(42, 79%, 64%)',
-   secondaryAccent40: 'hsla(42, 79%, 80%, .4)',
    secondaryAccentGlow: 'hsl(42, 100%, 100%, .1)',
    highContrastSecondaryAccent: 'hsla(42, 95%, 75%, .9)',
 
    lowContrastGrey: 'hsl(30, 10%, 33%)',
-   veryLowContrastGrey: 'hsla(30, 10%, 33%, .5)',
 
    lowContrastCoolGrey: 'hsla(210, 15%, 48%, .6)',
    solidLowContrastCoolGrey: 'hsl(210, 25%, 25%)',
-   veryLowContrastCoolGrey: 'hsla(210, 15%, 48%, .1)',
    superLowContrastCoolTint: 'hsla(210, 40%, 40%, 0.07)',
 
    highContrastGrey: 'hsla(28, 9%, 64%, .9)'
@@ -87,7 +85,7 @@ const GlobalStyle = createGlobalStyle`
       border: none;
    }
    input {
-      background: ${theme.veryLowContrastCoolGrey};
+      background: none;
       color: ${theme.mainText};
       font-family: "Proxima Nova", sans-serif;
       border-radius: 3px;
@@ -101,16 +99,30 @@ const GlobalStyle = createGlobalStyle`
    textarea {
       background: none;
       color: ${theme.mainText};
-      border: none;
+      border: 1px solid ${makeTransparent(theme.lowContrastGrey, 0.25)};
       border-radius: 3px;
-      border-bottom: 1px solid ${theme.highContrastGrey};
-      box-sizing: border-box;
+      border-bottom: 1px solid ${theme.lowContrastGrey};
       padding: 1rem 1rem calc(1rem - 1px) 1rem;
       font-family: "Proxima Nova", sans-serif;
       &:focus {
-         border: 1px solid ${theme.lowContrastGrey};
+         border: 1px solid ${makeTransparent(theme.highContrastGrey, 0.4)};
          border-bottom: 1px solid ${theme.highContrastGrey};
-         padding: calc(1rem - 1px) calc(1rem - 1px) calc(1rem - 1px) calc(1rem - 1px);
+         box-shadow: 0 1px 4px ${makeTransparent(theme.highContrastGrey, 0.2)};
+      }
+   }
+   select {
+      background: none;
+      color: ${theme.mainText};
+      /* These properties control the arrow image */
+      /* -moz-appearance: none;
+      -webkit-appearance: none;
+      appearance: none;
+      background-image:  */
+      option {
+         background: ${theme.background};
+         &:focus {
+            background: red;
+         }
       }
    }
    button {
@@ -121,7 +133,21 @@ const GlobalStyle = createGlobalStyle`
       font-family: "Proxima Nova", sans-serif;
       cursor: pointer;
       &:hover {
-         background: ${theme.veryLowContrastCoolGrey};
+         background: ${makeTransparent(theme.lowContrastCoolGrey, 0.1)};
+      }
+   }
+   .embed-container {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      overflow: hidden;
+      max-width: 100%;
+      iframe {
+         position: absolute;
+         top: 0;
+         left: 0;
+         width: 100%;
+         height: 100%;
       }
    }
 `;

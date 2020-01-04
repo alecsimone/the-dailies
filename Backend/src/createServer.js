@@ -1,4 +1,4 @@
-const { ApolloServer, gql } = require('apollo-server-express');
+const { ApolloServer, gql, PubSub } = require('apollo-server-express');
 const { importSchema } = require('graphql-import');
 const db = require('./db');
 const Mutation = require('./resolvers/Mutation');
@@ -6,6 +6,8 @@ const Query = require('./resolvers/Query');
 const Subscription = require('./resolvers/Subscription');
 
 const typeDefs = gql(importSchema('./src/schema.graphql'));
+
+const pubsub = new PubSub();
 
 function createServer() {
    return new ApolloServer({
@@ -16,7 +18,7 @@ function createServer() {
          Subscription
       },
       subscriptions: '/subscriptions',
-      context: req => ({ ...req, db })
+      context: req => ({ ...req, db, pubsub })
    });
 }
 

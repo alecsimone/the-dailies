@@ -2,49 +2,57 @@ import { useMutation } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 import { useState } from 'react';
 import Router from 'next/router';
-import Error from './ErrorMessage.js';
-import StyledForm from '../styles/StyledForm';
+import Error from '../ErrorMessage.js';
+import StyledForm from '../../styles/StyledForm';
 import { CURRENT_MEMBER_QUERY } from './MemberProvider';
 
-const LOGIN_MUTATION = gql`
-   mutation LOGIN_MUTATION($email: String!, $password: String!) {
-      login(email: $email, password: $password) {
+const SIGNUP_MUTATION = gql`
+   mutation SIGNUP_MUTATION(
+      $email: String!
+      $displayName: String!
+      $password: String!
+   ) {
+      signup(email: $email, displayName: $displayName, password: $password) {
          id
          email
          displayName
+         rep
+         avatar
       }
    }
 `;
 
-const Login = props => {
-   const [email, setEmail] = useState('');
+const Signup = props => {
+   const [displayName, setDisplayName] = useState('');
    const [password, setPassword] = useState('');
-
-   const [login, { data, loading, error }] = useMutation(LOGIN_MUTATION);
+   const [email, setEmail] = useState('');
 
    const saveToState = function(e) {
-      if (e.target.name === 'email') {
-         setEmail(e.target.value);
+      if (e.target.name === 'displayName') {
+         setDisplayName(e.target.value);
       }
       if (e.target.name === 'password') {
          setPassword(e.target.value);
       }
+      if (e.target.name === 'email') {
+         setEmail(e.target.value);
+      }
    };
+
+   const [signup, { data, loading, error }] = useMutation(SIGNUP_MUTATION);
 
    return (
       <StyledForm
          method="post"
          onSubmit={async e => {
             e.preventDefault();
-            await login({
-               variables: { email, password },
+            await signup({
+               variables: { email, displayName, password },
                refetchQueries: [{ query: CURRENT_MEMBER_QUERY }]
             });
-            if (props.redirect !== false) {
-               Router.push({
-                  pathname: '/'
-               });
-            }
+            Router.push({
+               pathname: '/'
+            });
             if (props.callBack) {
                props.callBack();
             }
@@ -52,6 +60,15 @@ const Login = props => {
       >
          <fieldset disabled={loading} aria-busy={loading}>
             <Error error={error} />
+            <label htmlFor="displayName">
+               <input
+                  type="text"
+                  name="displayName"
+                  placeholder="Display Name"
+                  value={displayName}
+                  onChange={saveToState}
+               />
+            </label>
             <label htmlFor="email">
                <input
                   type="email"
@@ -71,10 +88,10 @@ const Login = props => {
                />
             </label>
 
-            <button type="submit">Log In</button>
+            <button type="submit">Sign Up</button>
          </fieldset>
       </StyledForm>
    );
 };
 
-export default Login;
+export default Signup;

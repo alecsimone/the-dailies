@@ -1,12 +1,13 @@
 import styled from 'styled-components';
 import { useContext, useState } from 'react';
 import Link from 'next/link';
-import { MemberContext } from './MemberProvider';
+import { MemberContext } from '../Account/MemberProvider';
 import MemberMenu from './MemberMenu';
 
 const StyledMemberBox = styled.div`
    color: ${props => props.theme.secondaryAccent};
    background: ${props => props.theme.background};
+   height: 6rem;
    display: inline-flex;
    align-items: center;
    font-size: ${props => props.theme.bigText};
@@ -26,7 +27,7 @@ const StyledMemberBox = styled.div`
       height: 6rem;
       object-fit: cover;
       border-radius: 50%;
-      margin-left: 3rem;
+      margin-left: 2rem;
       cursor: pointer;
    }
    .userMenu {
@@ -62,7 +63,6 @@ const StyledMemberBox = styled.div`
 
 const MemberBox = () => {
    const me = useContext(MemberContext);
-   console.log(me);
    const [memberMenuOpen, setMemberMenuOpen] = useState(false);
 
    const toggleMemberMenu = () => {
@@ -88,12 +88,6 @@ const MemberBox = () => {
       }
    };
 
-   if (me === 'loading')
-      return (
-         <StyledMemberBox className="memberBox">
-            <p>...</p>
-         </StyledMemberBox>
-      );
    if (me == null) {
       return (
          <StyledMemberBox className="memberBox">
@@ -109,6 +103,12 @@ const MemberBox = () => {
          </StyledMemberBox>
       );
    }
+   if (me.id === 'Loading...')
+      return (
+         <StyledMemberBox className="memberBox">
+            <p>...</p>
+         </StyledMemberBox>
+      );
    return (
       <StyledMemberBox className="memberBox">
          <Link href={{ pathname: '/me' }}>

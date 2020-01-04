@@ -2,6 +2,9 @@
 
 type Query {
    me: Member
+   categories: [Category]
+   thing(where: ThingWhereUniqueInput!): Thing
+   things(where: ThingWhereInput): [Thing]!
 }
 
 type Mutation {
@@ -13,39 +16,24 @@ type Mutation {
     twitchName: String
   ): Member!
   login(email: String!, password: String!): Member!
+  logout: SuccessMessage
+  createThing(
+      title: String!
+      link: String
+      category: String
+      content: String
+      tags: String
+      privacy: String
+  ): Thing
+  addContentPieceToThing(content: String, thingID: ID!): Thing
+  deleteContentPieceFromThing(contentPieceID: ID!, thingID: ID!): Thing
+  editContentPieceOnThing(contentPieceID: ID!, content: String!, thingID: ID!): Thing
 }
 
 type Subscription {
-   thing(IDs: [ID!]): ThingSubscriptionPayload
+   thing(id: ID!): ThingSubscriptionPayload
 }
 
-type Member {
-  id: ID!
-  displayName: String!
-  name: String
-  avatar: String
-  rep: Int!
-  points: Int!
-  giveableRep: Int!
-  friends: [Member]
-  twitchName: String
-  email: String!
-  votes: [Vote]
-  passes: [Pass]
-  createdThings: [Thing]
-  defaultPrivacy: PrivacySetting
-  comments: [Comment]
-  password: String!
-  roles: [Role!]
-  resetToken: String
-  resetTokenExpiry: Float
-  twitterTokenSecret: String
-  twitterUserName: String
-  twitterUserID: String
-  twitterUserToken: String
-  twitterUserTokenSecret: String
-  twitterSinceIDsObject: String
-  twitterSeenIDs: [String]
-  createdAt: DateTime!
-  updatedAt: DateTime
+type SuccessMessage {
+  message: String
 }
