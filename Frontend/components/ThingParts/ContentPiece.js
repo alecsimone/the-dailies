@@ -1,16 +1,11 @@
 import { useState } from 'react';
 import ContentInput from './ContentInput';
+import LinkyText from '../LinkyText';
 
 const ContentPiece = props => {
    const [editable, setEditable] = useState(false);
 
-   const {
-      id,
-      paragraphElements,
-      rawContentString,
-      deleteContentPiece,
-      editContentPiece
-   } = props;
+   const { id, rawContentString, deleteContentPiece, editContentPiece } = props;
 
    const [editedContent, setEditedContent] = useState(rawContentString);
 
@@ -27,7 +22,7 @@ const ContentPiece = props => {
 
    let content;
    if (!editable) {
-      content = paragraphElements;
+      content = <LinkyText text={rawContentString} key={id} />;
    } else {
       content = (
          <ContentInput
@@ -40,7 +35,9 @@ const ContentPiece = props => {
 
    return (
       <div className="contentBlock" key={id}>
-         <div className="contentPiece">{content}</div>
+         <div className="contentPiece" key={id}>
+            {content}
+         </div>
          <div className="buttons">
             <img
                src="/edit-this.png"

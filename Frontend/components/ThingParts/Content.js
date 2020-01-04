@@ -66,6 +66,8 @@ const StyledContent = styled.section`
    .graph {
       line-height: 1.25;
       margin: 1.25rem 0;
+   }
+   p {
       max-width: 1000px;
    }
    .contentBlock {
@@ -85,6 +87,7 @@ const StyledContent = styled.section`
       .contentPiece {
          margin: 0rem 0;
          flex-grow: 1;
+         max-width: 1200px;
          img,
          video,
          iframe {
@@ -192,30 +195,15 @@ const Content = () => {
       });
    };
 
-   const contentElements = content.map(contentPiece => {
-      const paragraphsAndEmptyStrings = contentPiece.content.split('\n');
-      const paragraphs = paragraphsAndEmptyStrings.filter(
-         string => string != ''
-      );
-      const paragraphElements = paragraphs.map((graph, index) => {
-         const processedGraph = processLinksInText(graph);
-         return (
-            <div className="graph" key={index}>
-               {processedGraph}
-            </div>
-         );
-      });
-      return (
-         <ContentPiece
-            id={contentPiece.id}
-            paragraphElements={paragraphElements}
-            rawContentString={contentPiece.content}
-            deleteContentPiece={deleteContentPiece}
-            editContentPiece={editContentPiece}
-            key={contentPiece.id}
-         />
-      );
-   });
+   const contentElements = content.map(contentPiece => (
+      <ContentPiece
+         id={contentPiece.id}
+         rawContentString={contentPiece.content}
+         deleteContentPiece={deleteContentPiece}
+         editContentPiece={editContentPiece}
+         key={contentPiece.id}
+      />
+   ));
 
    return (
       <StyledContent>

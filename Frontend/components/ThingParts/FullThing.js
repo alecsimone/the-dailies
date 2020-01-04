@@ -5,7 +5,8 @@ import Meta from './Meta';
 import { makeTransparent } from '../../styles/functions';
 
 const StyledFullThing = styled.article`
-   background: ${props => makeTransparent(props.theme.majorColorGlass, 0.03)};
+   /* background: ${props =>
+      makeTransparent(props.theme.majorColorGlass, 0.03)}; */
    padding: 3rem;
    padding-top: 0;
    border-radius: 8px;
