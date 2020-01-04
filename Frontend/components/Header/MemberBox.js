@@ -62,7 +62,7 @@ const StyledMemberBox = styled.div`
 `;
 
 const MemberBox = () => {
-   const me = useContext(MemberContext);
+   const { me, loading: memberLoading } = useContext(MemberContext);
    const [memberMenuOpen, setMemberMenuOpen] = useState(false);
 
    const toggleMemberMenu = () => {
@@ -103,12 +103,19 @@ const MemberBox = () => {
          </StyledMemberBox>
       );
    }
-   if (me.id === 'Loading...')
+   if (memberLoading) {
       return (
          <StyledMemberBox className="memberBox">
-            <p>...</p>
+            <a>...</a>
+            <img
+               src="/defaultAvatar.jpg"
+               alt="avatar"
+               id="avatar"
+               onClick={() => toggleMemberMenu()}
+            />
          </StyledMemberBox>
       );
+   }
    return (
       <StyledMemberBox className="memberBox">
          <Link href={{ pathname: '/me' }}>

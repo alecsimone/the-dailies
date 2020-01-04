@@ -16,9 +16,9 @@ const THINGS_BY_MEMBER_QUERY = gql`
 `;
 
 const Home = () => {
-   const { id } = useContext(MemberContext);
+   const { me, loading: memberLoading } = useContext(MemberContext);
    const { loading, error, data } = useQuery(THINGS_BY_MEMBER_QUERY, {
-      variables: { id }
+      variables: { id: memberLoading ? '' : me.id }
    });
 
    if (loading) return <LoadingRing />;

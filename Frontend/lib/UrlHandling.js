@@ -52,7 +52,11 @@ const makeLinkorMedia = (url, key = 'link') => {
       lowerCaseURL.includes('.jpeg') ||
       lowerCaseURL.includes('.gif')
    ) {
-      return <img src={url} key={key} />;
+      return (
+         <a href={url} target="_blank" key={key}>
+            <img src={url} />
+         </a>
+      );
    }
    if (lowerCaseURL.includes('.mp4') || lowerCaseURL.includes('.webm')) {
       return <video src={url} key={key} controls />;

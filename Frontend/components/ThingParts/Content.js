@@ -6,6 +6,7 @@ import { ThingContext } from '../../pages/thing';
 import { makeTransparent } from '../../styles/functions';
 import { processLinksInText } from '../../lib/UrlHandling';
 import ContentPiece from './ContentPiece';
+import ContentInput from './ContentInput';
 
 const ADD_CONTENTPIECE_MUTATION = gql`
    mutation ADD_CONTENTPIECE_MUTATION($content: String!, $thingID: ID!) {
@@ -71,6 +72,7 @@ const StyledContent = styled.section`
       display: flex;
       flex-wrap: nowrap;
       align-items: baseline;
+      margin: 0.6rem 0;
       img.buttons {
          width: ${props => props.theme.smallText};
          opacity: 0.2;
@@ -93,12 +95,17 @@ const StyledContent = styled.section`
          }
       }
    }
+   form {
+      display: flex;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+   }
    textarea {
       width: 100%;
       font-size: ${props => props.theme.smallText};
    }
    button {
-      margin: 1rem auto;
+      margin: 1rem 0;
       padding: 0.6rem;
       font-size: ${props => props.theme.smallText};
       font-weight: 500;
@@ -152,13 +159,13 @@ const Content = () => {
    ] = useMutation(EDIT_CONTENTPIECE_MUTATION);
 
    const sendNewContentPiece = async () => {
+      setNewContentPiece('');
       await addContentPieceToThing({
          variables: {
             content: newContentPiece,
             thingID: id
          }
       });
-      setNewContentPiece('');
    };
 
    const deleteContentPiece = async contentPieceID => {
@@ -210,33 +217,14 @@ const Content = () => {
       );
    });
 
-   const handleKeyDown = e => {
-      if (e.key === 'Enter' && e.ctrlKey) {
-         sendNewContentPiece();
-      }
-   };
-
    return (
       <StyledContent>
          {contentElements}
-         <form
-            onSubmit={async e => {
-               e.preventDefault();
-               sendNewContentPiece();
-            }}
-         >
-            <textarea
-               type="textarea"
-               id="content"
-               name="content"
-               value={newContentPiece}
-               onChange={e => setNewContentPiece(e.target.value)}
-               onKeyDown={e => handleKeyDown(e)}
-            />
-            <button type="submit" className="post">
-               add
-            </button>
-         </form>
+         <ContentInput
+            currentContent={newContentPiece}
+            updateContent={setNewContentPiece}
+            postContent={sendNewContentPiece}
+         />
       </StyledContent>
    );
 };

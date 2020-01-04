@@ -56,28 +56,31 @@ async function addTagsToThing(tagTitleArray, thingID, ctx) {
 
 async function createThing(parent, args, ctx, info) {
    const { title, link, category, content, tags, privacy } = args;
+   const dataObj = {
+      title,
+      link,
+      partOfCategory: {
+         connect: {
+            title: category
+         }
+      },
+      privacy,
+      author: {
+         connect: {
+            id: ctx.req.memberId
+         }
+      }
+   };
+   if (content !== '') {
+      dataObj.content = {
+         create: {
+            content
+         }
+      };
+   }
    const thing = await ctx.db.mutation.createThing(
       {
-         data: {
-            title,
-            link,
-            partOfCategory: {
-               connect: {
-                  title: category
-               }
-            },
-            content: {
-               create: {
-                  content
-               }
-            },
-            privacy,
-            author: {
-               connect: {
-                  id: ctx.req.memberId
-               }
-            }
-         }
+         data: dataObj
       },
       info
    );

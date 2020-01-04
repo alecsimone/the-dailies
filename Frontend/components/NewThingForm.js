@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 import styled from 'styled-components';
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { useMutation, useQuery } from '@apollo/react-hooks';
 import Router from 'next/router';
 import Error from './ErrorMessage.js';
@@ -91,7 +91,7 @@ const NewThingForm = props => {
       { data: createData, loading: createLoading, error: createError }
    ] = useMutation(CREATE_THING_MUTATION);
 
-   const me = useContext(MemberContext);
+   const { me, loading: memberLoading } = useContext(MemberContext);
 
    const [formData, setFormData] = useState({
       title: '',
@@ -144,7 +144,7 @@ const NewThingForm = props => {
       data: privacyOptionsData
    } = useQuery(GET_PRIVACY_OPTIONS_QUERY);
    let privacyOptions;
-   if (privacyOptionsLoading || me.defaultPrivacy === 'Loading...') {
+   if (privacyOptionsLoading || memberLoading) {
       privacyOptions = (
          <option value="" key="loadingPrivacy">
             Loading Privacy Settings...
@@ -159,6 +159,15 @@ const NewThingForm = props => {
          )
       );
    }
+
+   useEffect(() => {
+      if (formData.category === '' && !memberLoading) {
+         setFormData({ ...formData, category: me.defaultCategory.title });
+      }
+      if (formData.privacy === '' && !memberLoading) {
+         setFormData({ ...formData, privacy: me.defaultPrivacy });
+      }
+   });
 
    return (
       <StyledNewThingForm
@@ -208,9 +217,7 @@ const NewThingForm = props => {
                id="category-select"
                onChange={handleChange}
                value={
-                  formData.category == ''
-                     ? me.defaultCategory.title
-                     : formData.category
+                  memberLoading ? formData.category : me.defaultCategory.title
                }
             >
                {categoryOptions}
@@ -235,9 +242,7 @@ const NewThingForm = props => {
                name="privacy"
                id="privacy-select"
                onChange={handleChange}
-               value={
-                  formData.privacy == '' ? me.defaultPrivacy : formData.privacy
-               }
+               value={memberLoading ? formData.privacy : me.defaultPrivacy}
             >
                {privacyOptions}
             </select>

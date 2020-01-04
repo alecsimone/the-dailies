@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import ContentInput from './ContentInput';
 
 const ContentPiece = props => {
    const [editable, setEditable] = useState(false);
@@ -13,28 +14,29 @@ const ContentPiece = props => {
 
    const [editedContent, setEditedContent] = useState(rawContentString);
 
+   const handleKeyDown = e => {
+      if (e.key === 'Enter' && e.ctrlKey) {
+         postContent();
+      }
+   };
+
+   const postContent = () => {
+      editContentPiece(id, editedContent);
+      setEditable(false);
+   };
+
    let content;
    if (!editable) {
       content = paragraphElements;
    } else {
       content = (
-         <textarea
-            type="textarea"
-            id="content"
-            name="content"
-            value={editedContent}
-            onChange={e => setEditedContent(e.target.value)}
-            onKeyDown={e => handleKeyDown(e)}
+         <ContentInput
+            currentContent={editedContent}
+            updateContent={setEditedContent}
+            postContent={postContent}
          />
       );
    }
-
-   const handleKeyDown = e => {
-      if (e.key === 'Enter' && e.ctrlKey) {
-         editContentPiece(id, editedContent);
-         setEditable(false);
-      }
-   };
 
    return (
       <div className="contentBlock" key={id}>
