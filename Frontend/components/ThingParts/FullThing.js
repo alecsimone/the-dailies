@@ -1,7 +1,8 @@
 import styled from 'styled-components';
 import TitleBar from './TitleBar';
 import Content from './Content';
-import Meta from './Meta';
+import TagBox from './TagBox';
+import ThingMeta from './ThingMeta';
 import { makeTransparent } from '../../styles/functions';
 
 const StyledFullThing = styled.article`
@@ -16,8 +17,9 @@ const StyledFullThing = styled.article`
 const FullThing = () => (
    <StyledFullThing>
       <TitleBar />
+      <ThingMeta />
       <Content />
-      <Meta />
+      <TagBox />
    </StyledFullThing>
 );
 

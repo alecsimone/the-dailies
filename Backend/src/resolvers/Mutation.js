@@ -3,7 +3,10 @@ const {
    createThing,
    addContentPieceToThing,
    deleteContentPieceFromThing,
-   editContentPieceOnThing
+   editContentPieceOnThing,
+   setThingPrivacy,
+   setThingCategory,
+   addTagToThingHandler
 } = require('./Mutation/ThingMutations/Editing');
 
 const Mutations = {
@@ -13,7 +16,10 @@ const Mutations = {
    createThing,
    addContentPieceToThing,
    deleteContentPieceFromThing,
-   editContentPieceOnThing
+   editContentPieceOnThing,
+   setThingPrivacy,
+   setThingCategory,
+   addTagToThing: addTagToThingHandler
 };
 
 module.exports = Mutations;

@@ -64,11 +64,6 @@ input CategoryCreateInput {
   connectedThings: ThingCreateManyWithoutPartOfCategoryInput
 }
 
-input CategoryCreateManyWithoutConnectedThingsInput {
-  create: [CategoryCreateWithoutConnectedThingsInput!]
-  connect: [CategoryWhereUniqueInput!]
-}
-
 input CategoryCreateManyWithoutOwnerInput {
   create: [CategoryCreateWithoutOwnerInput!]
   connect: [CategoryWhereUniqueInput!]
@@ -76,6 +71,11 @@ input CategoryCreateManyWithoutOwnerInput {
 
 input CategoryCreateOneInput {
   create: CategoryCreateInput
+  connect: CategoryWhereUniqueInput
+}
+
+input CategoryCreateOneWithoutConnectedThingsInput {
+  create: CategoryCreateWithoutConnectedThingsInput
   connect: CategoryWhereUniqueInput
 }
 
@@ -236,18 +236,6 @@ input CategoryUpdateManyMutationInput {
   summary: CategoryUpdatesummaryInput
 }
 
-input CategoryUpdateManyWithoutConnectedThingsInput {
-  create: [CategoryCreateWithoutConnectedThingsInput!]
-  delete: [CategoryWhereUniqueInput!]
-  connect: [CategoryWhereUniqueInput!]
-  set: [CategoryWhereUniqueInput!]
-  disconnect: [CategoryWhereUniqueInput!]
-  update: [CategoryUpdateWithWhereUniqueWithoutConnectedThingsInput!]
-  upsert: [CategoryUpsertWithWhereUniqueWithoutConnectedThingsInput!]
-  deleteMany: [CategoryScalarWhereInput!]
-  updateMany: [CategoryUpdateManyWithWhereNestedInput!]
-}
-
 input CategoryUpdateManyWithoutOwnerInput {
   create: [CategoryCreateWithoutOwnerInput!]
   delete: [CategoryWhereUniqueInput!]
@@ -274,6 +262,13 @@ input CategoryUpdateOneInput {
   connect: CategoryWhereUniqueInput
 }
 
+input CategoryUpdateOneRequiredWithoutConnectedThingsInput {
+  create: CategoryCreateWithoutConnectedThingsInput
+  update: CategoryUpdateWithoutConnectedThingsDataInput
+  upsert: CategoryUpsertWithoutConnectedThingsInput
+  connect: CategoryWhereUniqueInput
+}
+
 input CategoryUpdatesummaryInput {
   set: [String!]
 }
@@ -292,11 +287,6 @@ input CategoryUpdateWithoutOwnerDataInput {
   connectedThings: ThingUpdateManyWithoutPartOfCategoryInput
 }
 
-input CategoryUpdateWithWhereUniqueWithoutConnectedThingsInput {
-  where: CategoryWhereUniqueInput!
-  data: CategoryUpdateWithoutConnectedThingsDataInput!
-}
-
 input CategoryUpdateWithWhereUniqueWithoutOwnerInput {
   where: CategoryWhereUniqueInput!
   data: CategoryUpdateWithoutOwnerDataInput!
@@ -307,8 +297,7 @@ input CategoryUpsertNestedInput {
   create: CategoryCreateInput!
 }
 
-input CategoryUpsertWithWhereUniqueWithoutConnectedThingsInput {
-  where: CategoryWhereUniqueInput!
+input CategoryUpsertWithoutConnectedThingsInput {
   update: CategoryUpdateWithoutConnectedThingsDataInput!
   create: CategoryCreateWithoutConnectedThingsInput!
 }
@@ -3348,7 +3337,7 @@ type Thing {
   includedLinks(where: LinkWhereInput, orderBy: LinkOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Link!]
   includedThings(where: ThingWhereInput, orderBy: ThingOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Thing!]
   partOfTags(where: TagWhereInput, orderBy: TagOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Tag!]
-  partOfCategory(where: CategoryWhereInput, orderBy: CategoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Category!]
+  partOfCategory: Category!
   votes(where: VoteWhereInput, orderBy: VoteOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Vote!]
   passes(where: PassWhereInput, orderBy: PassOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Pass!]
   score: Int!
@@ -3377,7 +3366,7 @@ input ThingCreateInput {
   includedLinks: LinkCreateManyWithoutOnThingInput
   includedThings: ThingCreateManyInput
   partOfTags: TagCreateManyWithoutConnectedThingsInput
-  partOfCategory: CategoryCreateManyWithoutConnectedThingsInput
+  partOfCategory: CategoryCreateOneWithoutConnectedThingsInput!
   votes: VoteCreateManyWithoutOnThingInput
   passes: PassCreateManyWithoutOnThingInput
   score: Int
@@ -3442,7 +3431,7 @@ input ThingCreateWithoutAuthorInput {
   includedLinks: LinkCreateManyWithoutOnThingInput
   includedThings: ThingCreateManyInput
   partOfTags: TagCreateManyWithoutConnectedThingsInput
-  partOfCategory: CategoryCreateManyWithoutConnectedThingsInput
+  partOfCategory: CategoryCreateOneWithoutConnectedThingsInput!
   votes: VoteCreateManyWithoutOnThingInput
   passes: PassCreateManyWithoutOnThingInput
   score: Int
@@ -3463,7 +3452,7 @@ input ThingCreateWithoutCommentsInput {
   includedLinks: LinkCreateManyWithoutOnThingInput
   includedThings: ThingCreateManyInput
   partOfTags: TagCreateManyWithoutConnectedThingsInput
-  partOfCategory: CategoryCreateManyWithoutConnectedThingsInput
+  partOfCategory: CategoryCreateOneWithoutConnectedThingsInput!
   votes: VoteCreateManyWithoutOnThingInput
   passes: PassCreateManyWithoutOnThingInput
   score: Int
@@ -3482,7 +3471,7 @@ input ThingCreateWithoutContentInput {
   includedLinks: LinkCreateManyWithoutOnThingInput
   includedThings: ThingCreateManyInput
   partOfTags: TagCreateManyWithoutConnectedThingsInput
-  partOfCategory: CategoryCreateManyWithoutConnectedThingsInput
+  partOfCategory: CategoryCreateOneWithoutConnectedThingsInput!
   votes: VoteCreateManyWithoutOnThingInput
   passes: PassCreateManyWithoutOnThingInput
   score: Int
@@ -3502,7 +3491,7 @@ input ThingCreateWithoutIncludedLinksInput {
   content: ContentPieceCreateManyWithoutOnThingInput
   includedThings: ThingCreateManyInput
   partOfTags: TagCreateManyWithoutConnectedThingsInput
-  partOfCategory: CategoryCreateManyWithoutConnectedThingsInput
+  partOfCategory: CategoryCreateOneWithoutConnectedThingsInput!
   votes: VoteCreateManyWithoutOnThingInput
   passes: PassCreateManyWithoutOnThingInput
   score: Int
@@ -3542,7 +3531,7 @@ input ThingCreateWithoutPartOfTagsInput {
   content: ContentPieceCreateManyWithoutOnThingInput
   includedLinks: LinkCreateManyWithoutOnThingInput
   includedThings: ThingCreateManyInput
-  partOfCategory: CategoryCreateManyWithoutConnectedThingsInput
+  partOfCategory: CategoryCreateOneWithoutConnectedThingsInput!
   votes: VoteCreateManyWithoutOnThingInput
   passes: PassCreateManyWithoutOnThingInput
   score: Int
@@ -3563,7 +3552,7 @@ input ThingCreateWithoutPassesInput {
   includedLinks: LinkCreateManyWithoutOnThingInput
   includedThings: ThingCreateManyInput
   partOfTags: TagCreateManyWithoutConnectedThingsInput
-  partOfCategory: CategoryCreateManyWithoutConnectedThingsInput
+  partOfCategory: CategoryCreateOneWithoutConnectedThingsInput!
   votes: VoteCreateManyWithoutOnThingInput
   score: Int
   winner: DateTime
@@ -3583,7 +3572,7 @@ input ThingCreateWithoutVotesInput {
   includedLinks: LinkCreateManyWithoutOnThingInput
   includedThings: ThingCreateManyInput
   partOfTags: TagCreateManyWithoutConnectedThingsInput
-  partOfCategory: CategoryCreateManyWithoutConnectedThingsInput
+  partOfCategory: CategoryCreateOneWithoutConnectedThingsInput!
   passes: PassCreateManyWithoutOnThingInput
   score: Int
   winner: DateTime
@@ -3772,7 +3761,7 @@ input ThingUpdateDataInput {
   includedLinks: LinkUpdateManyWithoutOnThingInput
   includedThings: ThingUpdateManyInput
   partOfTags: TagUpdateManyWithoutConnectedThingsInput
-  partOfCategory: CategoryUpdateManyWithoutConnectedThingsInput
+  partOfCategory: CategoryUpdateOneRequiredWithoutConnectedThingsInput
   votes: VoteUpdateManyWithoutOnThingInput
   passes: PassUpdateManyWithoutOnThingInput
   score: Int
@@ -3792,7 +3781,7 @@ input ThingUpdateInput {
   includedLinks: LinkUpdateManyWithoutOnThingInput
   includedThings: ThingUpdateManyInput
   partOfTags: TagUpdateManyWithoutConnectedThingsInput
-  partOfCategory: CategoryUpdateManyWithoutConnectedThingsInput
+  partOfCategory: CategoryUpdateOneRequiredWithoutConnectedThingsInput
   votes: VoteUpdateManyWithoutOnThingInput
   passes: PassUpdateManyWithoutOnThingInput
   score: Int
@@ -3931,7 +3920,7 @@ input ThingUpdateWithoutAuthorDataInput {
   includedLinks: LinkUpdateManyWithoutOnThingInput
   includedThings: ThingUpdateManyInput
   partOfTags: TagUpdateManyWithoutConnectedThingsInput
-  partOfCategory: CategoryUpdateManyWithoutConnectedThingsInput
+  partOfCategory: CategoryUpdateOneRequiredWithoutConnectedThingsInput
   votes: VoteUpdateManyWithoutOnThingInput
   passes: PassUpdateManyWithoutOnThingInput
   score: Int
@@ -3951,7 +3940,7 @@ input ThingUpdateWithoutCommentsDataInput {
   includedLinks: LinkUpdateManyWithoutOnThingInput
   includedThings: ThingUpdateManyInput
   partOfTags: TagUpdateManyWithoutConnectedThingsInput
-  partOfCategory: CategoryUpdateManyWithoutConnectedThingsInput
+  partOfCategory: CategoryUpdateOneRequiredWithoutConnectedThingsInput
   votes: VoteUpdateManyWithoutOnThingInput
   passes: PassUpdateManyWithoutOnThingInput
   score: Int
@@ -3969,7 +3958,7 @@ input ThingUpdateWithoutContentDataInput {
   includedLinks: LinkUpdateManyWithoutOnThingInput
   includedThings: ThingUpdateManyInput
   partOfTags: TagUpdateManyWithoutConnectedThingsInput
-  partOfCategory: CategoryUpdateManyWithoutConnectedThingsInput
+  partOfCategory: CategoryUpdateOneRequiredWithoutConnectedThingsInput
   votes: VoteUpdateManyWithoutOnThingInput
   passes: PassUpdateManyWithoutOnThingInput
   score: Int
@@ -3988,7 +3977,7 @@ input ThingUpdateWithoutIncludedLinksDataInput {
   content: ContentPieceUpdateManyWithoutOnThingInput
   includedThings: ThingUpdateManyInput
   partOfTags: TagUpdateManyWithoutConnectedThingsInput
-  partOfCategory: CategoryUpdateManyWithoutConnectedThingsInput
+  partOfCategory: CategoryUpdateOneRequiredWithoutConnectedThingsInput
   votes: VoteUpdateManyWithoutOnThingInput
   passes: PassUpdateManyWithoutOnThingInput
   score: Int
@@ -4026,7 +4015,7 @@ input ThingUpdateWithoutPartOfTagsDataInput {
   content: ContentPieceUpdateManyWithoutOnThingInput
   includedLinks: LinkUpdateManyWithoutOnThingInput
   includedThings: ThingUpdateManyInput
-  partOfCategory: CategoryUpdateManyWithoutConnectedThingsInput
+  partOfCategory: CategoryUpdateOneRequiredWithoutConnectedThingsInput
   votes: VoteUpdateManyWithoutOnThingInput
   passes: PassUpdateManyWithoutOnThingInput
   score: Int
@@ -4046,7 +4035,7 @@ input ThingUpdateWithoutPassesDataInput {
   includedLinks: LinkUpdateManyWithoutOnThingInput
   includedThings: ThingUpdateManyInput
   partOfTags: TagUpdateManyWithoutConnectedThingsInput
-  partOfCategory: CategoryUpdateManyWithoutConnectedThingsInput
+  partOfCategory: CategoryUpdateOneRequiredWithoutConnectedThingsInput
   votes: VoteUpdateManyWithoutOnThingInput
   score: Int
   winner: DateTime
@@ -4065,7 +4054,7 @@ input ThingUpdateWithoutVotesDataInput {
   includedLinks: LinkUpdateManyWithoutOnThingInput
   includedThings: ThingUpdateManyInput
   partOfTags: TagUpdateManyWithoutConnectedThingsInput
-  partOfCategory: CategoryUpdateManyWithoutConnectedThingsInput
+  partOfCategory: CategoryUpdateOneRequiredWithoutConnectedThingsInput
   passes: PassUpdateManyWithoutOnThingInput
   score: Int
   winner: DateTime
@@ -4214,9 +4203,7 @@ input ThingWhereInput {
   partOfTags_every: TagWhereInput
   partOfTags_some: TagWhereInput
   partOfTags_none: TagWhereInput
-  partOfCategory_every: CategoryWhereInput
-  partOfCategory_some: CategoryWhereInput
-  partOfCategory_none: CategoryWhereInput
+  partOfCategory: CategoryWhereInput
   votes_every: VoteWhereInput
   votes_some: VoteWhereInput
   votes_none: VoteWhereInput

@@ -3,13 +3,13 @@ async function categories(parent, args, ctx, info) {
       {
          where: { owner: null }
       },
-      `{title}`
+      `{id title}`
    );
    const personalCategories = await ctx.db.query.categories(
       {
          where: { owner: { id: ctx.req.memberId } }
       },
-      `{title}`
+      `{id title}`
    );
    const allCategories = globalCategories.concat(personalCategories);
    return allCategories;

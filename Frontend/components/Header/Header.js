@@ -3,6 +3,7 @@ import NProgress from 'nprogress';
 import styled from 'styled-components';
 import LogoBox from './LogoBox';
 import MemberBox from './MemberBox';
+import NavButtons from './NavButtons';
 
 Router.onRouteChangeStart = () => {
    NProgress.start();
@@ -15,24 +16,25 @@ Router.onRouteChangeError = () => {
 };
 
 const StyledHeader = styled.div`
-   display: flex;
-   align-items: center;
-   justify-content: space-between;
-   flex-wrap: wrap;
+   display: grid;
+   grid-template-columns: 1fr auto 1fr;
    width: 94%;
    margin: auto;
    @media screen and (min-width: 800px) {
       width: 100%;
    }
-   .logoBox {
-      margin-right: 2rem;
+   .memberColumn {
+      text-align: right;
    }
 `;
 
 const Header = () => (
    <StyledHeader id="header">
+      <NavButtons />
       <LogoBox />
-      <MemberBox />
+      <div className="memberColumn">
+         <MemberBox />
+      </div>
    </StyledHeader>
 );
 

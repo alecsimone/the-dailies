@@ -47,6 +47,14 @@ async function addTagToThing(tagTitle, thingID, ctx) {
    const updatedThing = await updateThingAndNotifySubs(dataObj, thingID, ctx);
    return updatedThing;
 }
+async function addTagToThingHandler(parent, { tag, thingID }, ctx, info) {
+   if (tag === '') {
+      throw new Error('Tag cannot be empty');
+   }
+   const updatedThing = await addTagToThing(tag, thingID, ctx);
+   return updatedThing;
+}
+exports.addTagToThingHandler = addTagToThingHandler;
 
 async function addTagsToThing(tagTitleArray, thingID, ctx) {
    tagTitleArray.forEach(tagTitle =>
@@ -145,3 +153,25 @@ async function editContentPieceOnThing(
    return updatedThing;
 }
 exports.editContentPieceOnThing = editContentPieceOnThing;
+
+async function setThingPrivacy(parent, { privacySetting, thingID }, ctx, info) {
+   const dataObj = {
+      privacy: privacySetting
+   };
+   const updatedThing = await updateThingAndNotifySubs(dataObj, thingID, ctx);
+   return updatedThing;
+}
+exports.setThingPrivacy = setThingPrivacy;
+
+async function setThingCategory(parent, { category, thingID }, ctx, info) {
+   const dataObj = {
+      partOfCategory: {
+         connect: {
+            title: category
+         }
+      }
+   };
+   const updatedThing = await updateThingAndNotifySubs(dataObj, thingID, ctx);
+   return updatedThing;
+}
+exports.setThingCategory = setThingCategory;

@@ -8,7 +8,7 @@ type Thing {
   includedLinks: [Link]
   includedThings: [Thing]
   partOfTags: [Tag]
-  partOfCategory: [Category]
+  partOfCategory: Category!
   votes: [Vote]
   passes: [Pass]
   score: Int! @default(value: 0)

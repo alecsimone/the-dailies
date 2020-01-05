@@ -29,16 +29,20 @@ const CREATE_THING_MUTATION = gql`
 `;
 
 const GET_CATEGORIES_QUERY = gql`
-   query categories {
+   query GET_CATEGORIES_QUERY {
       categories {
+         __typename
+         id
          title
       }
    }
 `;
+export { GET_CATEGORIES_QUERY };
 
 const GET_PRIVACY_OPTIONS_QUERY = gql`
    query enumValuesOfPrivacySetting {
       __type(name: "PrivacySetting") {
+         __typename
          name
          enumValues {
             name
@@ -46,6 +50,7 @@ const GET_PRIVACY_OPTIONS_QUERY = gql`
       }
    }
 `;
+export { GET_PRIVACY_OPTIONS_QUERY };
 
 const StyledNewThingForm = styled.form`
    max-width: 800px;

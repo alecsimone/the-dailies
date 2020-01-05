@@ -62,6 +62,7 @@ const fullThingFields = `
    score
    winner
    finalistDate
+   privacy
    eliminated
    createdAt
    updatedAt

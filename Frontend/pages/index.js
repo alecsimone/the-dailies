@@ -21,10 +21,9 @@ const Home = () => {
       variables: { id: memberLoading ? '' : me.id }
    });
 
-   if (loading) return <LoadingRing />;
    if (error) return <Error error={error} />;
-
-   return <Things things={data.things} />;
+   if (data) return <Things things={data.things} />;
+   if (loading) return <LoadingRing />;
 };
 
 export default Home;

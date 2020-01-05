@@ -112,7 +112,11 @@ const GlobalStyle = createGlobalStyle`
    }
    select {
       background: none;
+      border: 1px solid ${theme.lowContrastGrey};
+      border-radius: 3px;
       color: ${theme.mainText};
+      padding: .25rem;
+      font-size: ${theme.smallText};
       /* These properties control the arrow image */
       /* -moz-appearance: none;
       -webkit-appearance: none;

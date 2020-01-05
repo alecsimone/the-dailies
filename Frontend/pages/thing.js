@@ -2,6 +2,7 @@ import gql from 'graphql-tag';
 import { useQuery, useSubscription } from '@apollo/react-hooks';
 import styled from 'styled-components';
 import React, { useEffect } from 'react';
+import Head from 'next/head';
 import Error from '../components/ErrorMessage';
 import LoadingRing from '../components/LoadingRing';
 import { fullThingFields } from '../lib/CardInterfaces';
@@ -45,15 +46,20 @@ const SingleThing = props => {
    });
 
    if (error) return <Error error={error} />;
-   if (loading) return <LoadingRing />;
 
-   return (
-      <ThingContext.Provider value={data.thing}>
-         <SingleThingContainer>
-            <FullThing />
-         </SingleThingContainer>
-      </ThingContext.Provider>
-   );
+   if (data)
+      return (
+         <ThingContext.Provider value={data.thing}>
+            <SingleThingContainer>
+               <Head>
+                  <title>{data.thing.title} - OurDailies</title>
+               </Head>
+               <FullThing />
+            </SingleThingContainer>
+         </ThingContext.Provider>
+      );
+
+   if (loading) return <LoadingRing />;
 };
 
 export { ThingContext };

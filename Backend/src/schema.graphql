@@ -28,6 +28,9 @@ type Mutation {
   addContentPieceToThing(content: String, thingID: ID!): Thing
   deleteContentPieceFromThing(contentPieceID: ID!, thingID: ID!): Thing
   editContentPieceOnThing(contentPieceID: ID!, content: String!, thingID: ID!): Thing
+  setThingPrivacy(privacySetting: PrivacySetting!, thingID: ID!): Thing
+  setThingCategory(category: String!, thingID: ID!): Thing
+  addTagToThing(tag: String!, thingID: ID!): Thing
 }
 
 type Subscription {

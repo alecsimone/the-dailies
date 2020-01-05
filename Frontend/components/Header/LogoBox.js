@@ -5,7 +5,7 @@ const StyledLogoBox = styled.div`
    display: inline-flex;
    align-items: center;
    img {
-      width: 7rem;
+      width: ${props => props.theme.bigHead};
       margin-top: -4px;
       cursor: pointer;
    }
@@ -32,7 +32,7 @@ const LogoBox = () => (
          <img src="/logo.png" alt="logo" />
       </Link>
       <Link href="/">
-         <a>Our Dailies</a>
+         <a>OurDailies</a>
       </Link>
    </StyledLogoBox>
 );

@@ -23,8 +23,8 @@ const StyledMemberBox = styled.div`
    }
    img {
       z-index: 3;
-      width: 6rem;
-      height: 6rem;
+      width: ${props => props.theme.bigHead};
+      height: ${props => props.theme.bigHead};
       object-fit: cover;
       border-radius: 50%;
       margin-left: 2rem;
