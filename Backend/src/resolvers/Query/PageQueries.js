@@ -1,3 +1,5 @@
+const { searchAvailableTags } = require('../../utils/ThingHandling');
+
 async function categories(parent, args, ctx, info) {
    const globalCategories = await ctx.db.query.categories(
       {
@@ -15,3 +17,9 @@ async function categories(parent, args, ctx, info) {
    return allCategories;
 }
 exports.categories = categories;
+
+async function searchTags(parent, { searchTerm }, ctx, info) {
+   const availableTags = await searchAvailableTags(searchTerm, ctx, false);
+   return availableTags;
+}
+exports.searchTags = searchTags;

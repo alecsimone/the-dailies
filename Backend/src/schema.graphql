@@ -5,6 +5,7 @@ type Query {
    categories: [Category]
    thing(where: ThingWhereUniqueInput!): Thing
    things(where: ThingWhereInput): [Thing]!
+   searchTags(searchTerm: String): [Tag]!
 }
 
 type Mutation {

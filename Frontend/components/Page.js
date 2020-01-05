@@ -159,7 +159,7 @@ const GlobalStyle = createGlobalStyle`
 const StyledPage = styled.div`
    width: 100%;
    @media screen and (min-width: 800px) {
-      width: 94%;
+      /* width: 94%; */
    }
    margin: 2rem auto;
 `;

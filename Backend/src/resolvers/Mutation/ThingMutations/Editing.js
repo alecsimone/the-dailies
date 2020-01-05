@@ -13,7 +13,7 @@ async function addTagToThing(tagTitle, thingID, ctx) {
                   OR: [
                      {
                         owner: {
-                           id: ctx.req.memberID
+                           id: ctx.req.memberId
                         }
                      },
                      {
@@ -39,7 +39,12 @@ async function addTagToThing(tagTitle, thingID, ctx) {
       dataObj = {
          partOfTags: {
             create: {
-               title: tagTitle
+               title: tagTitle,
+               owner: {
+                  connect: {
+                     id: ctx.req.memberId
+                  }
+               }
             }
          }
       };
@@ -57,9 +62,11 @@ async function addTagToThingHandler(parent, { tag, thingID }, ctx, info) {
 exports.addTagToThingHandler = addTagToThingHandler;
 
 async function addTagsToThing(tagTitleArray, thingID, ctx) {
-   tagTitleArray.forEach(tagTitle =>
-      addTagToThing(tagTitle.trim(), thingID, ctx)
-   );
+   tagTitleArray.forEach(tagTitle => {
+      if (tagTitle !== '') {
+         addTagToThing(tagTitle.trim(), thingID, ctx);
+      }
+   });
 }
 
 async function createThing(parent, args, ctx, info) {

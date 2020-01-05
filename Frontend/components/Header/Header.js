@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import LogoBox from './LogoBox';
 import MemberBox from './MemberBox';
 import NavButtons from './NavButtons';
+import { makeTransparent } from '../../styles/functions';
 
 Router.onRouteChangeStart = () => {
    NProgress.start();
@@ -16,24 +17,29 @@ Router.onRouteChangeError = () => {
 };
 
 const StyledHeader = styled.div`
-   display: grid;
-   grid-template-columns: 1fr auto 1fr;
-   width: 94%;
-   margin: auto;
-   @media screen and (min-width: 800px) {
-      width: 100%;
-   }
-   .memberColumn {
-      text-align: right;
+   border-bottom: 3px solid
+      ${props => makeTransparent(props.theme.lowContrastCoolGrey, 0.25)};
+   margin-bottom: 2rem;
+   .headerContents {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      width: 94%;
+      margin: auto;
+      margin-bottom: 2rem;
+      .memberColumn {
+         text-align: right;
+      }
    }
 `;
 
 const Header = () => (
    <StyledHeader id="header">
-      <NavButtons />
-      <LogoBox />
-      <div className="memberColumn">
-         <MemberBox />
+      <div className="headerContents">
+         <NavButtons />
+         <LogoBox />
+         <div className="memberColumn">
+            <MemberBox />
+         </div>
       </div>
    </StyledHeader>
 );

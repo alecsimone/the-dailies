@@ -32,7 +32,7 @@ type Tag {
   title: String!
   featuredImage: String
   owner: Member
-  public: Boolean
+  public: Boolean @default(value: false)
   summary: [String!] @scalarList(strategy:RELATION)
   includedLinks: [Link]
   connectedThings: [Thing]

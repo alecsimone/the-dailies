@@ -1,11 +1,13 @@
 import { useContext } from 'react';
 import gql from 'graphql-tag';
 import { useMutation, useQuery } from '@apollo/react-hooks';
+import styled from 'styled-components';
 import { ThingContext } from '../../pages/thing';
 import {
    GET_PRIVACY_OPTIONS_QUERY,
    GET_CATEGORIES_QUERY
 } from '../NewThingForm';
+import { convertISOtoAgo } from '../../lib/ThingHandling';
 
 const SET_THING_PRIVACY_MUTATION = gql`
    mutation SET_THING_PRIVACY_MUTATION(
@@ -30,6 +32,27 @@ const SET_THING_CATEGORY_MUTATION = gql`
             title
             id
          }
+      }
+   }
+`;
+
+const StyledThingMeta = styled.section`
+   display: flex;
+   justify-content: space-between;
+   select {
+      border-top: none;
+      border-right: none;
+      border-left: none;
+      margin-left: 2rem;
+      background: url('/dropdown.png') no-repeat right;
+      appearance: none;
+      padding-right: 30px;
+   }
+   .info {
+      color: ${props => props.theme.highContrastGrey};
+      font-size: ${props => props.theme.tinyText};
+      span {
+         margin-right: 1rem;
       }
    }
 `;
@@ -129,14 +152,20 @@ const ThingMeta = props => {
    };
 
    return (
-      <div className="thingMeta">
-         <select onChange={selectPrivacy} value={privacy}>
-            {privacyOptions}
-         </select>
-         <select onChange={selectCategory} value={partOfCategory.title}>
-            {categoryOptions}
-         </select>
-      </div>
+      <StyledThingMeta className="thingMeta">
+         <div className="info">
+            <span className="author">By {author.displayName}</span>
+            <span className="ago">{convertISOtoAgo(createdAt)} AGO</span>
+         </div>
+         <div className="selections">
+            <select onChange={selectPrivacy} value={privacy}>
+               {privacyOptions}
+            </select>
+            <select onChange={selectCategory} value={partOfCategory.title}>
+               {categoryOptions}
+            </select>
+         </div>
+      </StyledThingMeta>
    );
 };
 
