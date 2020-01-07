@@ -1,7 +1,11 @@
-const { updateThingAndNotifySubs } = require('../../../utils/ThingHandling');
+const { properUpdateThing } = require('../../../utils/ThingHandling');
+const {
+   loggedInGate,
+   fullMemberGate,
+   canEditThing
+} = require('../../../utils/Authentication');
 
 async function addTagToThing(tagTitle, thingID, ctx) {
-   console.log(thingID);
    const existingTags = await ctx.db.query.tags(
       {
          where: {
@@ -49,12 +53,20 @@ async function addTagToThing(tagTitle, thingID, ctx) {
          }
       };
    }
-   const updatedThing = await updateThingAndNotifySubs(dataObj, thingID, ctx);
+   const updatedThing = await properUpdateThing(dataObj, thingID, ctx);
    return updatedThing;
 }
 async function addTagToThingHandler(parent, { tag, thingID }, ctx, info) {
    if (tag === '') {
       throw new Error('Tag cannot be empty');
+   }
+   loggedInGate(ctx);
+   fullMemberGate(ctx.req.member);
+
+   if (tag.includes(',')) {
+      const tagsArray = tag.split(',');
+      addTagsToThing(tagsArray, thingID, ctx);
+      return;
    }
    const updatedThing = await addTagToThing(tag, thingID, ctx);
    return updatedThing;
@@ -70,6 +82,9 @@ async function addTagsToThing(tagTitleArray, thingID, ctx) {
 }
 
 async function createThing(parent, args, ctx, info) {
+   loggedInGate(ctx);
+   fullMemberGate(ctx.req.member);
+
    const { title, link, category, content, tags, privacy } = args;
    const dataObj = {
       title,
@@ -108,6 +123,9 @@ async function createThing(parent, args, ctx, info) {
 exports.createThing = createThing;
 
 async function addContentPieceToThing(parent, { content, thingID }, ctx, info) {
+   loggedInGate(ctx);
+   fullMemberGate(ctx.req.member);
+
    const dataObj = {
       content: {
          create: {
@@ -115,7 +133,7 @@ async function addContentPieceToThing(parent, { content, thingID }, ctx, info) {
          }
       }
    };
-   const updatedThing = await updateThingAndNotifySubs(dataObj, thingID, ctx);
+   const updatedThing = await properUpdateThing(dataObj, thingID, ctx);
    return updatedThing;
 }
 exports.addContentPieceToThing = addContentPieceToThing;
@@ -126,6 +144,9 @@ async function deleteContentPieceFromThing(
    ctx,
    info
 ) {
+   loggedInGate(ctx);
+   fullMemberGate(ctx.req.member);
+
    const dataObj = {
       content: {
          delete: {
@@ -133,7 +154,7 @@ async function deleteContentPieceFromThing(
          }
       }
    };
-   const updatedThing = await updateThingAndNotifySubs(dataObj, thingID, ctx);
+   const updatedThing = await properUpdateThing(dataObj, thingID, ctx);
    return updatedThing;
 }
 exports.deleteContentPieceFromThing = deleteContentPieceFromThing;
@@ -144,6 +165,9 @@ async function editContentPieceOnThing(
    ctx,
    info
 ) {
+   loggedInGate(ctx);
+   fullMemberGate(ctx.req.member);
+
    const dataObj = {
       content: {
          update: {
@@ -156,21 +180,27 @@ async function editContentPieceOnThing(
          }
       }
    };
-   const updatedThing = await updateThingAndNotifySubs(dataObj, thingID, ctx);
+   const updatedThing = await properUpdateThing(dataObj, thingID, ctx);
    return updatedThing;
 }
 exports.editContentPieceOnThing = editContentPieceOnThing;
 
 async function setThingPrivacy(parent, { privacySetting, thingID }, ctx, info) {
+   loggedInGate(ctx);
+   fullMemberGate(ctx.req.member);
+
    const dataObj = {
       privacy: privacySetting
    };
-   const updatedThing = await updateThingAndNotifySubs(dataObj, thingID, ctx);
+   const updatedThing = await properUpdateThing(dataObj, thingID, ctx);
    return updatedThing;
 }
 exports.setThingPrivacy = setThingPrivacy;
 
 async function setThingCategory(parent, { category, thingID }, ctx, info) {
+   loggedInGate(ctx);
+   fullMemberGate(ctx.req.member);
+
    const dataObj = {
       partOfCategory: {
          connect: {
@@ -178,7 +208,32 @@ async function setThingCategory(parent, { category, thingID }, ctx, info) {
          }
       }
    };
-   const updatedThing = await updateThingAndNotifySubs(dataObj, thingID, ctx);
+   const updatedThing = await properUpdateThing(dataObj, thingID, ctx);
    return updatedThing;
 }
 exports.setThingCategory = setThingCategory;
+
+async function setFeaturedImage(parent, { featuredImage, thingID }, ctx, info) {
+   loggedInGate(ctx);
+   fullMemberGate(ctx.req.member);
+
+   const dataObj = {
+      featuredImage
+   };
+
+   const updatedThing = await properUpdateThing(dataObj, thingID, ctx);
+   return updatedThing;
+}
+exports.setFeaturedImage = setFeaturedImage;
+
+async function setThingTitle(parent, { title, thingID }, ctx, info) {
+   loggedInGate(ctx);
+   fullMemberGate(ctx.req.member);
+
+   const dataObj = {
+      title
+   };
+   const updatedThing = await properUpdateThing(dataObj, thingID, ctx);
+   return updatedThing;
+}
+exports.setThingTitle = setThingTitle;

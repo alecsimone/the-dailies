@@ -1,4 +1,4 @@
-import Login from '../components/Login.js';
+import Login from '../components/Account/Login.js';
 
 const LoginPage = props => <Login />;
 

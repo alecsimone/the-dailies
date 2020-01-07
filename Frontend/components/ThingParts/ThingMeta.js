@@ -39,6 +39,8 @@ const SET_THING_CATEGORY_MUTATION = gql`
 const StyledThingMeta = styled.section`
    display: flex;
    justify-content: space-between;
+   padding-left: 1.25rem;
+   padding-top: 0.25rem;
    select {
       border-top: none;
       border-right: none;
@@ -158,11 +160,11 @@ const ThingMeta = props => {
             <span className="ago">{convertISOtoAgo(createdAt)} AGO</span>
          </div>
          <div className="selections">
-            <select onChange={selectPrivacy} value={privacy}>
-               {privacyOptions}
-            </select>
             <select onChange={selectCategory} value={partOfCategory.title}>
                {categoryOptions}
+            </select>
+            <select onChange={selectPrivacy} value={privacy}>
+               {privacyOptions}
             </select>
          </div>
       </StyledThingMeta>

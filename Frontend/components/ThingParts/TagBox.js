@@ -1,9 +1,9 @@
-import { useContext, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import gql from 'graphql-tag';
 import { useMutation, useLazyQuery } from '@apollo/react-hooks';
 import styled from 'styled-components';
 import Link from 'next/link';
-import { debounce } from 'debounce';
+import debounce from 'lodash.debounce';
 import { useCombobox } from 'downshift';
 import { ThingContext } from '../../pages/thing';
 import { makeTransparent } from '../../styles/functions';
@@ -34,36 +34,47 @@ const SEARCH_TAGS_QUERY = gql`
 `;
 
 const StyledTagBox = styled.section`
+   max-width: 100%;
+   margin: 5rem 0;
    h5 {
       display: inline-block;
       font-weight: 500;
-      font-size: ${props => props.theme.bigText};
+      font-size: ${props => props.theme.smallText};
       color: ${props => props.theme.primaryAccent};
-      margin-right: 0.5rem;
-   }
-   span {
-      margin-right: 0.25rem;
+      margin: 0.3rem 0rem;
+      margin-left: 0;
    }
    a {
-      font-size: ${props => props.theme.bigText};
+      display: inline-block;
+      margin: 0.3rem 0;
+      font-size: ${props => props.theme.smallText};
       font-weight: 300;
+      &.final {
+         margin-right: 1.25rem;
+      }
    }
    .tagboxContainer {
       display: inline-block;
-      margin-left: 1rem;
       position: relative;
+      margin-top: 0.8rem;
+      input {
+         width: 30rem;
+      }
       .resultsContainer {
          position: absolute;
          /* The container must be positioned down 1em for the font size, 2 * .25rem for the padding on the input, and then 1px for the border */
          top: calc(1em + 2 * 0.25rem + 1px);
          left: 0;
          width: 100%;
-         font-size: ${props => props.theme.bigText};
+         font-size: ${props => props.theme.smallText};
          border: 1px solid
             ${props => makeTransparent(props.theme.highContrastGrey, 0.4)};
          border-top: none;
          .searchResult {
             padding: 0.25rem 1rem;
+            &.highlighted {
+               background: ${props => props.theme.majorColor};
+            }
             &.loading,
             &.empty {
                color: ${props => makeTransparent(props.theme.mainText, 0.6)};
@@ -72,130 +83,199 @@ const StyledTagBox = styled.section`
       }
    }
    input {
-      font-size: ${props => props.theme.bigText};
+      font-size: ${props => props.theme.smallText};
       line-height: 1;
       border-radius: 0;
       &.loading {
-         background: ${props => props.theme.lowContrastGrey};
+         background: ${props =>
+            makeTransparent(props.theme.lowContrastGrey, 0.4)};
       }
    }
 `;
 
+const debouncedAutocomplete = debounce(
+   (generateAutocomplete, inputValue) => generateAutocomplete(inputValue),
+   250,
+   true
+);
+
 const TagBox = () => {
    const { id, partOfTags: tags } = useContext(ThingContext);
+
    const tagElements = tags.map((tag, index) => {
       if (index < tags.length - 1)
          return (
-            <span key={tag.id}>
+            <React.Fragment key={tag.id}>
                <Link href={{ pathname: '/tag', query: { title: tag.title } }}>
                   <a>{tag.title}</a>
                </Link>
                ,{' '}
-            </span>
+            </React.Fragment>
          );
       return (
-         <Link
-            href={{ pathname: '/tag', query: { title: tag.title } }}
-            key={tag.id}
-         >
-            <a key={tag.id}>{tag.title}</a>
-         </Link>
+         <React.Fragment key={tag.id}>
+            <Link href={{ pathname: '/tag', query: { title: tag.title } }}>
+               <a key={tag.id} className="final">
+                  {tag.title}
+               </a>
+            </Link>
+         </React.Fragment>
       );
    });
-
-   const [addTagToThing, { loading: addTagLoading }] = useMutation(
-      ADD_TAG_MUTATION
-   );
-   const [tagInput, setTagInput] = useState('');
-
-   const sendNewTag = async e => {
-      e.preventDefault();
-      setTagInput('');
-      await addTagToThing({
-         variables: {
-            tag: tagInput,
-            thingID: id
-         }
-      });
-   };
 
    const [
       searchTags,
       { loading: searchLoading, data: searchData }
    ] = useLazyQuery(SEARCH_TAGS_QUERY);
 
-   const handleTagInput = e => {
-      setTagInput(e.target.value);
-      generateAutocomplete(e);
-   };
-
-   const generateAutocomplete = debounce(async e => {
-      console.log(e.target);
-      setTagInput(e.target.value);
-      if (e.target.value === '') {
+   const generateAutocomplete = async inputValue => {
+      let searchTerm;
+      if (inputValue.includes(',')) {
+         const finalCommaLocation = inputValue.lastIndexOf(',');
+         const finalSearchTermRaw = inputValue.substring(
+            finalCommaLocation + 1
+         );
+         searchTerm = finalSearchTermRaw.trim();
+      } else {
+         searchTerm = inputValue;
+      }
+      if (searchTerm === '') {
          return;
       }
       await searchTags({
          variables: {
-            searchTerm: e.target.value
+            searchTerm
          }
       });
-   }, 250);
+   };
 
-   // const {
-   //    isOpen,
-   //    selectedItem,
-   //    getInputProps,
-   //    getComboboxProps,
-   //    highlightedIndex,
-   //    getItemProps
-   // } = useCombobox({
-   //    items: searchData.searchTags,
-   //    onInputValueChange: ({ inputValue }) => {
-   //       console.log(inputValue);
-   //    }
-   // });
+   const handleTagInput = async inputValue => {
+      setTagInput(inputValue);
+      debouncedAutocomplete(generateAutocomplete, inputValue);
+   };
+
+   const alreadyUsedTags = tags.map(tagObj => tagObj.title);
+
+   const filterResults = results =>
+      results.filter(tagResult => !alreadyUsedTags.includes(tagResult.title));
+
+   const {
+      isOpen,
+      selectedItem,
+      getInputProps,
+      getComboboxProps,
+      highlightedIndex,
+      getItemProps
+   } = useCombobox({
+      items: searchData ? filterResults(searchData.searchTags) : [],
+      itemToString: i => (i == null ? '' : i.title),
+      onInputValueChange: changes => {
+         handleTagInput(changes.inputValue);
+      }
+   });
+   /*
+   A couple notes, because this downshift implementation was not as clean as I'd like.
+
+   When the user types into the add tag box, it calls the onInputValueChange function in the useCombobox options, which in turn calls the handleTagInput function.
+
+   That function updates state with the input value, which is necessary because the displayed text on the input reads from state. It then calls debouncedAutocomplete (which has to be declared outside of this functional component so it doesn't regenerate with each state output, breaking the debounce)
+
+   generateAutocomplete runs the searchTags lazy query with the value passed into it
+
+   The searchResults are generated directly from the data returned from the searchTags query, so that happens on every render based on what data we currently have from that query
+
+   So the processes are:
+   text input -> update state -> display input text
+   text input -> searchTags -> update searchData
+   searchData -> display search results
+
+   To actually add a tag, we use the onKeyDown prop on the input. This calls handleKeyDown, which checks if the key was enter. If it was, it either adds the highlighted tag from downshift, or if nothing is highlighted, the text in the input.
+   */
 
    let searchResults;
    if (searchLoading) {
       searchResults = <div className="searchResult loading">Loading...</div>;
    }
    if (searchData) {
-      console.log(searchData);
-      if (searchData.searchTags.length === 0) {
+      const filteredResults = filterResults(searchData.searchTags);
+      if (filteredResults.length === 0) {
          searchResults = (
             <div className="searchResult empty">No Results For {tagInput}</div>
          );
       } else {
-         searchResults = searchData.searchTags.map((result, index) => (
-            <div className="searchResult" key={index}>
+         searchResults = filteredResults.map((result, index) => (
+            <div
+               className={`searchResult${
+                  highlightedIndex === index ? ' highlighted' : ''
+               }`}
+               key={index}
+               {...getItemProps({ result, index })}
+            >
                {result.title}
             </div>
          ));
       }
    }
 
+   const [tagInput, setTagInput] = useState('');
+   const [addTagToThing, { loading: addTagLoading }] = useMutation(
+      ADD_TAG_MUTATION
+   );
+
+   const handleKeyDown = async e => {
+      if (e.key === 'Enter') {
+         if (highlightedIndex > -1) {
+            const filteredResults = filterResults(searchData.searchTags);
+            if (tagInput.includes(',')) {
+               const finalCommaLocation = tagInput.lastIndexOf(',');
+               const preCommaInput = tagInput.substring(0, finalCommaLocation);
+               console.log(preCommaInput);
+               await sendNewTag({ title: preCommaInput });
+            }
+            await sendNewTag(filteredResults[highlightedIndex]);
+         } else {
+            await sendNewTag({ title: tagInput });
+         }
+      }
+   };
+
+   const sendNewTag = async newTagObj => {
+      if (newTagObj == null) {
+         setTagInput('');
+         return;
+      }
+      const { title } = newTagObj;
+      await addTagToThing({
+         variables: {
+            tag: title,
+            thingID: id
+         }
+      });
+      setTagInput('');
+   };
+
    return (
       <StyledTagBox>
          <h5>Tags:</h5> {tagElements}
          <div className="tagboxContainer">
-            <form onSubmit={sendNewTag}>
+            <form {...getComboboxProps()}>
                <input
-                  type="text"
-                  id="addTag"
-                  name="addTag"
-                  placeholder="+ Add Tag"
-                  value={tagInput}
-                  onChange={e => {
-                     e.persist();
-                     handleTagInput(e);
-                  }}
-                  disabled={addTagLoading}
-                  className={`addTag ${addTagLoading ? 'loading' : 'ready'}`}
-                  required
+                  {...getInputProps({
+                     type: 'text',
+                     id: 'addTag',
+                     name: 'addTag',
+                     placeholder: '+ Add Tag',
+                     value: tagInput,
+                     disabled: addTagLoading,
+                     className: `addTag ${addTagLoading ? 'loading' : 'ready'}`,
+                     onKeyDown: e => {
+                        e.persist();
+                        handleKeyDown(e);
+                     }
+                  })}
                />
             </form>
-            {(searchData || searchLoading) && tagInput !== '' && (
+            {(searchData || searchLoading) && tagInput !== '' && isOpen && (
                <div className="resultsContainer">{searchResults}</div>
             )}
          </div>

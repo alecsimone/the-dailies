@@ -2,6 +2,7 @@ const smallThingCardFields = `
    __typename
    id
    title
+   featuredImage
    author {
       __typename
       id

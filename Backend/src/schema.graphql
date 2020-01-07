@@ -32,6 +32,8 @@ type Mutation {
   setThingPrivacy(privacySetting: PrivacySetting!, thingID: ID!): Thing
   setThingCategory(category: String!, thingID: ID!): Thing
   addTagToThing(tag: String!, thingID: ID!): Thing
+  setFeaturedImage(featuredImage: String!, thingID: ID!): Thing
+  setThingTitle(title: String!, thingID: ID!): Thing
 }
 
 type Subscription {

@@ -62,6 +62,7 @@ const EDIT_CONTENTPIECE_MUTATION = gql`
 `;
 
 const StyledContent = styled.section`
+   margin: 5rem 0;
    p,
    .graph {
       line-height: 1.25;
@@ -102,6 +103,7 @@ const StyledContent = styled.section`
       display: flex;
       justify-content: flex-end;
       flex-wrap: wrap;
+      margin-top: 4rem;
    }
    textarea {
       width: 100%;

@@ -3,6 +3,7 @@ import { useMutation } from '@apollo/react-hooks';
 import styled from 'styled-components';
 import Link from 'next/link';
 import { CURRENT_MEMBER_QUERY } from '../Account/MemberProvider';
+import { makeTransparent } from '../../styles/functions';
 
 const LOGOUT_MUTATION = gql`
    mutation LOG_OUT_MUTATION {
@@ -15,16 +16,19 @@ const LOGOUT_MUTATION = gql`
 const StyledMemberMenu = styled.div`
    position: absolute;
    display: block;
-   border-radius: 4px;
+   border-radius: 0 0 4px 4px;
    right: -2rem;
-   top: -1rem;
-   width: calc(100% + 3rem);
-   background: ${props => props.theme.solidLowContrastCoolGrey};
-   padding-top: 8rem;
+   top: calc(100% + 0.5rem);
+   width: 20rem;
+   background: hsla(210, 40%, 4%, 1);
    z-index: 2;
    color: ${props => props.theme.mainText};
    font-size: ${props => props.theme.smallText};
-   border: 1px solid ${props => props.theme.lowContrastGrey};
+   text-align: center;
+   border: 3px solid
+      ${props => makeTransparent(props.theme.lowContrastCoolGrey, 0.25)};
+   border-top: 3px solid
+      ${props => makeTransparent(props.theme.lowContrastCoolGrey, 0.05)};
    .userMenuLinkRow {
       padding: 1rem;
       cursor: pointer;
@@ -36,6 +40,9 @@ const StyledMemberMenu = styled.div`
    }
    a {
       color: ${props => props.theme.mainText};
+   }
+   &.closed {
+      display: none;
    }
 `;
 

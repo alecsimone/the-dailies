@@ -3,12 +3,14 @@ import Link from 'next/link';
 import { makeTransparent } from '../../styles/functions';
 
 const StyledNav = styled.nav`
+   display: flex;
+   align-items: center;
    img {
-      width: ${props => props.theme.smallHead};
+      width: ${props => props.theme.bigText};
       cursor: pointer;
-      border: 1px solid ${props => props.theme.highContrastGrey};
+      /* border: 1px solid ${props => props.theme.highContrastGrey}; */
       border-radius: 50%;
-      padding: 0.8rem;
+      padding: 0rem;
       opacity: 0.8;
       &:hover {
          opacity: 1;

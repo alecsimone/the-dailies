@@ -3,14 +3,13 @@ import { useContext, useState } from 'react';
 import Link from 'next/link';
 import { MemberContext } from '../Account/MemberProvider';
 import MemberMenu from './MemberMenu';
+import { makeTransparent } from '../../styles/functions';
 
 const StyledMemberBox = styled.div`
    color: ${props => props.theme.secondaryAccent};
-   background: ${props => props.theme.background};
-   height: 6rem;
    display: inline-flex;
    align-items: center;
-   font-size: ${props => props.theme.bigText};
+   font-size: ${props => props.theme.smallText};
    font-weight: 600;
    position: relative;
    z-index: 3;
@@ -23,41 +22,12 @@ const StyledMemberBox = styled.div`
    }
    img {
       z-index: 3;
-      width: ${props => props.theme.bigHead};
-      height: ${props => props.theme.bigHead};
+      width: ${props => props.theme.smallHead};
+      height: ${props => props.theme.smallHead};
       object-fit: cover;
       border-radius: 50%;
-      margin-left: 2rem;
+      margin-left: 1rem;
       cursor: pointer;
-   }
-   .userMenu {
-      position: absolute;
-      display: block;
-      border-radius: 4px;
-      right: -2rem;
-      top: -1rem;
-      width: calc(100% + 3rem);
-      background: ${props => props.theme.solidLowContrastCoolGrey};
-      padding-top: 8rem;
-      z-index: 2;
-      color: ${props => props.theme.mainText};
-      font-size: ${props => props.theme.smallText};
-      border: 1px solid ${props => props.theme.lowContrastGrey};
-      .userMenuLinkRow {
-         padding: 1rem;
-         cursor: pointer;
-         text-align: center;
-         &:hover {
-            background: ${props => props.theme.lowContrastCoolGrey};
-            text-decoration: underline;
-         }
-      }
-      a {
-         color: ${props => props.theme.mainText};
-      }
-      &.closed {
-         display: none;
-      }
    }
 `;
 

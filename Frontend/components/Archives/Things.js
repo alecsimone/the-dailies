@@ -2,7 +2,6 @@ import styled from 'styled-components';
 import SmallThingCard from '../ThingCards/SmallThingCard';
 
 const StyledThings = styled.div`
-   width: 94%;
    margin: auto;
 `;
 

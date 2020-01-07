@@ -28,7 +28,14 @@ const SINGLE_THING_SUBSCRIPTION = gql`
 
 const SingleThingContainer = styled.div`
    display: flex;
-   justify-content: center;
+   justify-content: flex-start;
+   padding: 2rem 2.5rem;
+   position: absolute;
+   height: 100%;
+   width: 100%;
+   overflow-y: scroll;
+   scrollbar-color: #262626 black;
+   scrollbar-width: thin;
 `;
 
 const ThingContext = React.createContext();
@@ -54,7 +61,7 @@ const SingleThing = props => {
                <Head>
                   <title>{data.thing.title} - OurDailies</title>
                </Head>
-               <FullThing />
+               <FullThing id={props.query.id} />
             </SingleThingContainer>
          </ThingContext.Provider>
       );

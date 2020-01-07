@@ -5,7 +5,7 @@ const StyledLogoBox = styled.div`
    display: inline-flex;
    align-items: center;
    img {
-      width: ${props => props.theme.bigHead};
+      width: ${props => props.theme.smallHead};
       margin-top: -4px;
       cursor: pointer;
    }
@@ -15,7 +15,7 @@ const StyledLogoBox = styled.div`
       @media screen and (min-width: 800px) {
          display: block;
       }
-      font-size: ${props => props.theme.smallHead};
+      font-size: ${props => props.theme.bigText};
       font-weight: 300;
       opacity: 0.9;
       margin-left: 2rem;

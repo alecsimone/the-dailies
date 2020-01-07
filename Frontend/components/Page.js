@@ -1,6 +1,7 @@
 import styled, { ThemeProvider, createGlobalStyle } from 'styled-components';
 import Meta from './Header/Meta';
 import Header from './Header/Header';
+import Sidebar from './Sidebar';
 import MemberProvider from './Account/MemberProvider';
 import { makeTransparent } from '../styles/functions';
 
@@ -157,11 +158,19 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 const StyledPage = styled.div`
-   width: 100%;
+   width: 100vw;
+   height: 100vh;
    @media screen and (min-width: 800px) {
       /* width: 94%; */
    }
-   margin: 2rem auto;
+   display: grid;
+   grid-template-columns: 7fr 24fr;
+   grid-template-rows: auto 1fr;
+   position: relative;
+   .mainSectionContainer {
+      position: relative;
+      height: 100%;
+   }
 `;
 
 const Page = props => (
@@ -170,10 +179,11 @@ const Page = props => (
          <StyledPage id="page">
             <Meta />
             <Header />
-            <>
+            <Sidebar />
+            <div className="mainSectionContainer">
                <GlobalStyle />
                {props.children}
-            </>
+            </div>
          </StyledPage>
       </ThemeProvider>
    </MemberProvider>

@@ -33,7 +33,7 @@ app.use(async (req, res, next) => {
    if (!req.memberId) return next();
    const member = await db.query.member(
       { where: { id: req.memberId } },
-      '{id}'
+      '{id roles rep}'
    );
    req.member = member;
    next();

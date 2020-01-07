@@ -6,7 +6,9 @@ const {
    editContentPieceOnThing,
    setThingPrivacy,
    setThingCategory,
-   addTagToThingHandler
+   addTagToThingHandler,
+   setFeaturedImage,
+   setThingTitle
 } = require('./Mutation/ThingMutations/Editing');
 
 const Mutations = {
@@ -19,7 +21,9 @@ const Mutations = {
    editContentPieceOnThing,
    setThingPrivacy,
    setThingCategory,
-   addTagToThing: addTagToThingHandler
+   addTagToThing: addTagToThingHandler,
+   setFeaturedImage,
+   setThingTitle
 };
 
 module.exports = Mutations;

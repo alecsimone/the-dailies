@@ -17,15 +17,16 @@ Router.onRouteChangeError = () => {
 };
 
 const StyledHeader = styled.div`
+   grid-column: -1 / 1;
    border-bottom: 3px solid
       ${props => makeTransparent(props.theme.lowContrastCoolGrey, 0.25)};
-   margin-bottom: 2rem;
+   background: hsla(210, 40%, 4%, 0.8);
+   padding: 0.5rem 0;
    .headerContents {
       display: grid;
       grid-template-columns: 1fr auto 1fr;
-      width: 94%;
+      padding: 0 4rem;
       margin: auto;
-      margin-bottom: 2rem;
       .memberColumn {
          text-align: right;
       }
