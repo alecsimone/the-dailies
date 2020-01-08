@@ -1,4 +1,8 @@
-const { properUpdateThing } = require('../../../utils/ThingHandling');
+const {
+   properUpdateThing,
+   properUpdateTag,
+   isExplodingLink
+} = require('../../../utils/ThingHandling');
 const {
    loggedInGate,
    fullMemberGate,
@@ -101,6 +105,11 @@ async function createThing(parent, args, ctx, info) {
          }
       }
    };
+
+   if (isExplodingLink(link)) {
+      dataObj.featuredImage = link;
+   }
+
    if (content !== '') {
       dataObj.content = {
          create: {
@@ -213,16 +222,31 @@ async function setThingCategory(parent, { category, thingID }, ctx, info) {
 }
 exports.setThingCategory = setThingCategory;
 
-async function setFeaturedImage(parent, { featuredImage, thingID }, ctx, info) {
+async function setFeaturedImage(
+   parent,
+   { featuredImage, id, type },
+   ctx,
+   info
+) {
    loggedInGate(ctx);
    fullMemberGate(ctx.req.member);
+
+   if (!isExplodingLink(featuredImage)) {
+      throw new Error("That's not a valid featured image");
+   }
 
    const dataObj = {
       featuredImage
    };
 
-   const updatedThing = await properUpdateThing(dataObj, thingID, ctx);
-   return updatedThing;
+   if (type === 'Tag') {
+      const updatedTag = await properUpdateTag(dataObj, id, ctx);
+      return updatedTag;
+   }
+   if (type === 'Thing') {
+      const updatedThing = await properUpdateThing(dataObj, id, ctx);
+      return updatedThing;
+   }
 }
 exports.setFeaturedImage = setFeaturedImage;
 

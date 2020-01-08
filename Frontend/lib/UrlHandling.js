@@ -1,3 +1,41 @@
+const isVideo = url => {
+   if (url == null) return false;
+   const lowerCasedURL = url.toLowerCase();
+   if (
+      lowerCasedURL.includes('.mp4') ||
+      lowerCasedURL.includes('.webm') ||
+      lowerCasedURL.includes('gfycat.com/') ||
+      lowerCasedURL.includes('youtube.com/watch?v=') ||
+      lowerCasedURL.includes('youtu.be/')
+   ) {
+      return true;
+   }
+   return false;
+};
+export { isVideo };
+
+const isExplodingLink = url => {
+   if (url == null) return false;
+   const lowerCaseURL = url.toLowerCase();
+   if (
+      lowerCaseURL.includes('.jpg') ||
+      lowerCaseURL.includes('.png') ||
+      lowerCaseURL.includes('.jpeg') ||
+      lowerCaseURL.includes('.gif') ||
+      lowerCaseURL.includes('.mp4') ||
+      lowerCaseURL.includes('.webm') ||
+      lowerCaseURL.includes('gfycat.com/') ||
+      lowerCaseURL.includes('youtube.com/watch?v=') ||
+      lowerCaseURL.includes('youtu.be/') ||
+      (lowerCaseURL.includes('twitter.com/') &&
+         lowerCaseURL.includes('/status/'))
+   ) {
+      return true;
+   }
+   return false;
+};
+export { isExplodingLink };
+
 const getYoutubeVideoIdFromLink = url => {
    const lowerCaseURL = url.toLowerCase();
    if (lowerCaseURL.includes('youtube.com/watch?v=')) {

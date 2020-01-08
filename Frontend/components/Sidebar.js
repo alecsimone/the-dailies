@@ -1,13 +1,12 @@
-import styled from 'styled-components';
 import gql from 'graphql-tag';
 import { useQuery } from '@apollo/react-hooks';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { MemberContext } from './Account/MemberProvider';
 import { smallThingCardFields } from '../lib/CardInterfaces';
-import { makeTransparent } from '../styles/functions';
 import Things from './Archives/Things';
 import Error from './ErrorMessage';
 import LoadingRing from './LoadingRing';
+import StyledSidebar from '../styles/StyledSidebar';
 
 const THINGS_BY_MEMBER_QUERY = gql`
    query THINGS_BY_MEMBER_QUERY($id: ID!) {
@@ -17,37 +16,59 @@ const THINGS_BY_MEMBER_QUERY = gql`
    }
 `;
 
-const StyledSidebar = styled.section`
-   background: hsla(30, 1%, 3%, 0.9);
-   border-right: 2px solid
-      ${props => makeTransparent(props.theme.highContrastGrey, 0.1)};
-   padding: 2rem;
-`;
-
 const Sidebar = props => {
+   const { extraColumnTitle, extraColumnContent } = props;
    const { me, loading: memberLoading } = useContext(MemberContext);
    const { loading, error, data } = useQuery(THINGS_BY_MEMBER_QUERY, {
       variables: { id: memberLoading || me == null ? '' : me.id }
    });
 
-   if (error)
-      return (
-         <StyledSidebar>
-            <Error error={error} />
-         </StyledSidebar>
+   const [selectedTab, setSelectedTab] = useState(
+      extraColumnTitle == null ? 'You' : extraColumnTitle
+   );
+
+   const headerColumns = ['You', 'Friends', 'Public'];
+   if (extraColumnTitle != null) {
+      headerColumns.push(extraColumnTitle);
+   }
+   const sidebarHeader = headerColumns.map(column => (
+      <div
+         className={selectedTab === column ? 'headerTab selected' : 'headerTab'}
+         key={column}
+         onClick={() => setSelectedTab(column)}
+      >
+         {column}
+      </div>
+   ));
+
+   let sidebarContent;
+   if (selectedTab === 'You') {
+      sidebarContent = (
+         <Things things={loading ? [] : data.things} style="list" />
       );
-   if (data)
-      return (
-         <StyledSidebar>
-            <Things things={data.things} />
-         </StyledSidebar>
+   } else if (selectedTab === extraColumnTitle) {
+      sidebarContent = extraColumnContent;
+   }
+
+   let sidebarContents;
+   if (error) {
+      sidebarContents = <Error error={error} />;
+   }
+   if (data) {
+      sidebarContents = (
+         <>
+            <header className="sidebarHeader">{sidebarHeader}</header>
+            <div className="sidebarContainer">
+               <div className="sidebarContent">{sidebarContent}</div>
+            </div>
+         </>
       );
-   if (loading)
-      return (
-         <StyledSidebar>
-            <LoadingRing />
-         </StyledSidebar>
-      );
+   }
+   if (loading) {
+      sidebarContents = <LoadingRing />;
+   }
+
+   return <StyledSidebar className="sidebar">{sidebarContents}</StyledSidebar>;
 };
 
 export default Sidebar;

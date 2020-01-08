@@ -6,7 +6,7 @@ import {
 } from '../lib/UrlHandling';
 
 const ExplodingLink = props => {
-   const { url, keyString } = props;
+   const { url, keyString, alt } = props;
    const lowerCaseURL = url.toLowerCase();
 
    // Images
@@ -18,7 +18,7 @@ const ExplodingLink = props => {
    ) {
       return (
          <a href={url} target="_blank" key={keyString}>
-            <img src={url} />
+            <img src={url} alt={alt == null ? '' : alt} />
          </a>
       );
    }

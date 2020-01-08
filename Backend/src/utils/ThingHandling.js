@@ -9,13 +9,13 @@ function publishThingUpdate(thing, ctx) {
 }
 exports.publishThingUpdate = publishThingUpdate;
 
-async function updateThingAndNotifySubs(dataObj, thingID, ctx) {
+async function updateThingAndNotifySubs(data, thingID, ctx) {
    const updatedThing = await ctx.db.mutation.updateThing(
       {
          where: {
             id: thingID
          },
-         data: dataObj
+         data
       },
       `{${fullThingFields}}`
    );
@@ -23,6 +23,19 @@ async function updateThingAndNotifySubs(dataObj, thingID, ctx) {
    return updatedThing;
 }
 exports.updateThingAndNotifySubs = updateThingAndNotifySubs;
+
+async function updateTagAndNotifySubs(data, tagID, ctx) {
+   const updatedTag = await ctx.db.mutation.updateTag(
+      {
+         where: {
+            id: tagID
+         },
+         data
+      },
+      `{__typename id featuredImage}`
+   );
+   return updatedTag;
+}
 
 async function properUpdateThing(dataObj, thingID, ctx) {
    const oldThing = await ctx.db.query.thing(
@@ -47,8 +60,29 @@ async function properUpdateThing(dataObj, thingID, ctx) {
 }
 exports.properUpdateThing = properUpdateThing;
 
+async function properUpdateTag(dataObj, tagID, ctx) {
+   const oldTag = await ctx.db.query.tag(
+      {
+         where: {
+            id: tagID
+         }
+      },
+      `{owner {id} public}`
+   );
+   if (
+      oldTag.owner.id !== ctx.req.memberId &&
+      !ctx.req.member.roles.some(role =>
+         ['Admin', 'Editor', 'Moderator'].includes(role)
+      ) && !public
+   ) {
+      throw new Error('You do not have permission to edit that tag');
+   }
+   const updatedTag = await updateTagAndNotifySubs(dataObj, tagID, ctx);
+   return updatedTag;
+}
+exports.properUpdateTag = properUpdateTag;
+
 async function searchAvailableTags(searchTerm, ctx, exact) {
-   console.log('Searching available tags...');
    return ctx.db.query.tags(
       {
          where: {
@@ -75,3 +109,24 @@ async function searchAvailableTags(searchTerm, ctx, exact) {
    );
 }
 exports.searchAvailableTags = searchAvailableTags;
+
+const isExplodingLink = url => {
+   const lowerCaseURL = url.toLowerCase();
+   if (
+      lowerCaseURL.includes('.jpg') ||
+      lowerCaseURL.includes('.png') ||
+      lowerCaseURL.includes('.jpeg') ||
+      lowerCaseURL.includes('.gif') ||
+      lowerCaseURL.includes('.mp4') ||
+      lowerCaseURL.includes('.webm') ||
+      lowerCaseURL.includes('gfycat.com/') ||
+      lowerCaseURL.includes('youtube.com/watch?v=') ||
+      lowerCaseURL.includes('youtu.be/') ||
+      (lowerCaseURL.includes('twitter.com/') &&
+         lowerCaseURL.includes('/status/'))
+   ) {
+      return true;
+   }
+   return false;
+};
+exports.isExplodingLink = isExplodingLink;

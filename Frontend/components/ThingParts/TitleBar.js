@@ -2,8 +2,7 @@ import gql from 'graphql-tag';
 import { useMutation } from '@apollo/react-hooks';
 import styled from 'styled-components';
 import { useContext, useState } from 'react';
-import { ThingContext } from '../../pages/thing';
-import { makeTransparent } from '../../styles/functions';
+import { setAlpha } from '../../styles/functions';
 
 const SET_THING_TITLE_MUTATION = gql`
    mutation SET_THING_TITLE_MUTATION($title: String!, $thingID: ID!) {
@@ -20,7 +19,7 @@ const StyledTitleBar = styled.div`
    input {
       font-size: ${props => props.theme.smallHead};
       font-weight: 600;
-      color: ${props => makeTransparent(props.theme.mainText, 1)};
+      color: ${props => setAlpha(props.theme.mainText, 1)};
       padding: 0 1rem;
       margin: 0 0 1rem 0;
       line-height: 1.1;
@@ -28,13 +27,13 @@ const StyledTitleBar = styled.div`
       border: none;
    }
    input {
-      background: ${props =>
-         makeTransparent(props.theme.lowContrastCoolGrey, 0.4)};
+      background: ${props => setAlpha(props.theme.lowContrastCoolGrey, 0.4)};
    }
 `;
 
-const TitleBar = () => {
-   const { title, id: thingID } = useContext(ThingContext);
+const TitleBar = props => {
+   const { context } = props;
+   const { title, id: thingID } = useContext(context);
    const [editable, setEditable] = useState(false);
    const [editedTitle, setEditedTitle] = useState(title);
    const [setThingTitle, { data }] = useMutation(SET_THING_TITLE_MUTATION);

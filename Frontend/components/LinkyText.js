@@ -1,4 +1,4 @@
-import { urlFinder } from '../lib/UrlHandling';
+import { urlFinder, isExplodingLink } from '../lib/UrlHandling';
 import ExplodingLink from './ExplodingLink';
 
 const processLinksInText = (rawText, keyString = 0) => {
@@ -58,26 +58,6 @@ const processLinksInText = (rawText, keyString = 0) => {
       return <p key={keyString}>{elementsArray}</p>;
    }
    return <p key={keyString}>{rawText}</p>;
-};
-
-const isExplodingLink = url => {
-   const lowerCaseURL = url.toLowerCase();
-   if (
-      lowerCaseURL.includes('.jpg') ||
-      lowerCaseURL.includes('.png') ||
-      lowerCaseURL.includes('.jpeg') ||
-      lowerCaseURL.includes('.gif') ||
-      lowerCaseURL.includes('.mp4') ||
-      lowerCaseURL.includes('.webm') ||
-      lowerCaseURL.includes('gfycat.com/') ||
-      lowerCaseURL.includes('youtube.com/watch?v=') ||
-      lowerCaseURL.includes('youtu.be/') ||
-      (lowerCaseURL.includes('twitter.com/') &&
-         lowerCaseURL.includes('/status/'))
-   ) {
-      return true;
-   }
-   return false;
 };
 
 const LinkyText = props => {

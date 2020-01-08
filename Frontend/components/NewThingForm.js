@@ -54,8 +54,9 @@ export { GET_PRIVACY_OPTIONS_QUERY };
 
 const StyledNewThingForm = styled.form`
    max-width: 800px;
-   margin: auto;
+   margin: 2rem auto;
    text-align: center;
+   height: 100%;
    h2 {
       margin: 1rem auto;
    }
@@ -247,7 +248,7 @@ const NewThingForm = props => {
                name="privacy"
                id="privacy-select"
                onChange={handleChange}
-               value={memberLoading ? formData.privacy : me.defaultPrivacy}
+               value={formData.privacy}
             >
                {privacyOptions}
             </select>

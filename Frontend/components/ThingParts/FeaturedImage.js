@@ -2,19 +2,28 @@ import gql from 'graphql-tag';
 import styled from 'styled-components';
 import { useContext, useState } from 'react';
 import { useMutation } from '@apollo/react-hooks';
-import { ThingContext } from '../../pages/thing';
 import TitleBar from './TitleBar';
-import { makeTransparent } from '../../styles/functions';
+import ExplodingLink from '../ExplodingLink';
+import { setAlpha } from '../../styles/functions';
+import { isVideo, isExplodingLink } from '../../lib/UrlHandling';
 
 const SET_FEATURED_IMAGE_MUTATION = gql`
    mutation SET_FEATURED_IMAGE_MUTATION(
       $featuredImage: String!
-      $thingID: ID!
+      $id: ID!
+      $type: String!
    ) {
-      setFeaturedImage(featuredImage: $featuredImage, thingID: $thingID) {
-         __typename
-         id
-         featuredImage
+      setFeaturedImage(featuredImage: $featuredImage, id: $id, type: $type) {
+         ... on Tag {
+            __typename
+            id
+            featuredImage
+         }
+         ... on Thing {
+            __typename
+            id
+            featuredImage
+         }
       }
    }
 `;
@@ -24,7 +33,8 @@ const StyledFeaturedImage = styled.div`
    position: relative;
    line-height: 0;
    width: 100%;
-   img {
+   img,
+   video {
       width: 100%;
       max-height: 1440px;
       object-fit: cover;
@@ -41,7 +51,7 @@ const StyledFeaturedImage = styled.div`
       justify-content: center;
       z-index: 2;
       &.full {
-         background: ${props => makeTransparent(props.theme.background, 0.8)};
+         background: ${props => setAlpha(props.theme.background, 0.8)};
       }
       input#featuredImageInput {
          font-size: ${props => props.theme.smallText};
@@ -49,8 +59,7 @@ const StyledFeaturedImage = styled.div`
          max-width: 50rem;
          margin-bottom: 3rem;
          text-align: center;
-         background: ${props =>
-            makeTransparent(props.theme.lowContrastGrey, 0.4)};
+         background: ${props => setAlpha(props.theme.lowContrastGrey, 0.4)};
       }
    }
    img.editThis {
@@ -66,49 +75,60 @@ const StyledFeaturedImage = styled.div`
       align-items: center;
       justify-content: center;
    }
-   .titleBarContainer {
-      z-index: 1;
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      padding: 12rem 0 0.25rem;
-      margin: 0;
-      text-shadow: 0px 0px 2px black;
-      background: black;
-      background: -moz-linear-gradient(
-         top,
-         rgba(0, 0, 0, 0) 0%,
-         rgba(0, 0, 0, 0.85) 75%
-      ); /* FF3.6-15 */
-      background: -webkit-linear-gradient(
-         top,
-         rgba(0, 0, 0, 0) 0%,
-         rgba(0, 0, 0, 0.85) 75%
-      ); /* Chrome10-25,Safari5.1-6 */
-      background: linear-gradient(
-         to bottom,
-         rgba(0, 0, 0, 0) 0%,
-         rgba(0, 0, 0, 0.85) 75%
-      );
-      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00000000', endColorstr='#000000',GradientType=0 );
+   &.image {
+      .titleBarContainer {
+         z-index: 1;
+         position: absolute;
+         bottom: 0;
+         left: 0;
+         width: 100%;
+         padding: 12rem 0 0.25rem;
+         margin: 0;
+         text-shadow: 0px 0px 2px black;
+         background: black;
+         background: -moz-linear-gradient(
+            top,
+            rgba(0, 0, 0, 0) 0%,
+            rgba(0, 0, 0, 0.85) 75%
+         ); /* FF3.6-15 */
+         background: -webkit-linear-gradient(
+            top,
+            rgba(0, 0, 0, 0) 0%,
+            rgba(0, 0, 0, 0.85) 75%
+         ); /* Chrome10-25,Safari5.1-6 */
+         background: linear-gradient(
+            to bottom,
+            rgba(0, 0, 0, 0) 0%,
+            rgba(0, 0, 0, 0.85) 75%
+         );
+         filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00000000', endColorstr='#000000',GradientType=0 );
+      }
    }
 `;
 
 const FeaturedImage = props => {
-   const { featuredImage, id: thingID } = useContext(ThingContext);
+   const { context } = props;
+   const { featuredImage, id, __typename: type } = useContext(context);
+
    const [featuredImageInput, setFeaturedImageInput] = useState(
       featuredImage == null ? '' : featuredImage
    );
    const [showInput, setShowInput] = useState(featuredImage == null);
 
-   const [setFeaturedImage] = useMutation(SET_FEATURED_IMAGE_MUTATION);
+   const [setFeaturedImage, { data: fimgdata }] = useMutation(
+      SET_FEATURED_IMAGE_MUTATION
+   );
 
    const sendNewFeaturedImage = () => {
+      if (!isExplodingLink(featuredImageInput)) {
+         window.alert("That's not a valid featured image, sorry");
+         return;
+      }
       setFeaturedImage({
          variables: {
             featuredImage: featuredImageInput,
-            thingID
+            id,
+            type
          }
       });
       setShowInput(false);
@@ -130,9 +150,11 @@ const FeaturedImage = props => {
    };
 
    return (
-      <StyledFeaturedImage>
-         {featuredImage && <img src={featuredImage} alt="Featured" />}
-         <TitleBar />
+      <StyledFeaturedImage
+         className={isVideo(featuredImage) ? 'video' : 'image'}
+      >
+         {featuredImage && <ExplodingLink url={featuredImage} alt="Featured" />}
+         <TitleBar context={context} />
          {showInput && (
             <form
                id="featuredImageForm"

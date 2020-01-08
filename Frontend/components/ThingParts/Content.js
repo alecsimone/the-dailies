@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useMutation } from '@apollo/react-hooks';
 import { useContext, useState } from 'react';
 import { ThingContext } from '../../pages/thing';
-import { makeTransparent } from '../../styles/functions';
+import { setAlpha } from '../../styles/functions';
 import { processLinksInText } from '../../lib/UrlHandling';
 import ContentPiece from './ContentPiece';
 import ContentInput from './ContentInput';
@@ -115,12 +115,12 @@ const StyledContent = styled.section`
       font-size: ${props => props.theme.smallText};
       font-weight: 500;
       &.post {
-         background: ${props => makeTransparent(props.theme.majorColor, 0.8)};
+         background: ${props => setAlpha(props.theme.majorColor, 0.8)};
          color: ${props => props.theme.mainText};
          &:hover {
             background: ${props => props.theme.majorColor};
             box-shadow: 0 0 6px
-               ${props => makeTransparent(props.theme.majorColor, 0.6)};
+               ${props => setAlpha(props.theme.majorColor, 0.6)};
          }
       }
       &.showToggle {

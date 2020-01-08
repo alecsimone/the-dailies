@@ -3,7 +3,7 @@ import { useMutation } from '@apollo/react-hooks';
 import styled from 'styled-components';
 import Link from 'next/link';
 import { CURRENT_MEMBER_QUERY } from '../Account/MemberProvider';
-import { makeTransparent } from '../../styles/functions';
+import { setAlpha } from '../../styles/functions';
 
 const LOGOUT_MUTATION = gql`
    mutation LOG_OUT_MUTATION {
@@ -25,10 +25,9 @@ const StyledMemberMenu = styled.div`
    color: ${props => props.theme.mainText};
    font-size: ${props => props.theme.smallText};
    text-align: center;
-   border: 3px solid
-      ${props => makeTransparent(props.theme.lowContrastCoolGrey, 0.25)};
+   border: 3px solid ${props => setAlpha(props.theme.lowContrastCoolGrey, 0.25)};
    border-top: 3px solid
-      ${props => makeTransparent(props.theme.lowContrastCoolGrey, 0.05)};
+      ${props => setAlpha(props.theme.lowContrastCoolGrey, 0.05)};
    .userMenuLinkRow {
       padding: 1rem;
       cursor: pointer;

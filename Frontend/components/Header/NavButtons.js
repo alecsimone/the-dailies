@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import Link from 'next/link';
-import { makeTransparent } from '../../styles/functions';
+import { setAlpha } from '../../styles/functions';
 
 const StyledNav = styled.nav`
    display: flex;
@@ -14,8 +14,7 @@ const StyledNav = styled.nav`
       opacity: 0.8;
       &:hover {
          opacity: 1;
-         background: ${props =>
-            makeTransparent(props.theme.lowContrastCoolGrey, 0.1)};
+         background: ${props => setAlpha(props.theme.lowContrastCoolGrey, 0.1)};
       }
       &.newPost {
          filter: saturate(0);

@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import LogoBox from './LogoBox';
 import MemberBox from './MemberBox';
 import NavButtons from './NavButtons';
-import { makeTransparent } from '../../styles/functions';
+import { setAlpha } from '../../styles/functions';
 
 Router.onRouteChangeStart = () => {
    NProgress.start();
@@ -19,7 +19,7 @@ Router.onRouteChangeError = () => {
 const StyledHeader = styled.div`
    grid-column: -1 / 1;
    border-bottom: 3px solid
-      ${props => makeTransparent(props.theme.lowContrastCoolGrey, 0.25)};
+      ${props => setAlpha(props.theme.lowContrastCoolGrey, 0.25)};
    background: hsla(210, 40%, 4%, 0.8);
    padding: 0.5rem 0;
    .headerContents {

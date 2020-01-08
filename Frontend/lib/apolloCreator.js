@@ -10,7 +10,11 @@ import { getMainDefinition } from 'apollo-utilities';
 import { endpoint, endpointNoHTTP } from '../config';
 
 function createClient({ headers }) {
-   const cache = new InMemoryCache();
+   const cache = new InMemoryCache({
+      possibleTypes: {
+         Stuff: ['Tag', 'Thing']
+      }
+   });
    cache.writeData({
       data: {
          modalOpen: false,

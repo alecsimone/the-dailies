@@ -7,6 +7,7 @@ import Error from '../components/ErrorMessage';
 import LoadingRing from '../components/LoadingRing';
 import { fullThingFields } from '../lib/CardInterfaces';
 import FullThing from '../components/ThingParts/FullThing';
+import Sidebar from '../components/Sidebar';
 
 const SINGLE_THING_QUERY = gql`
    query SINGLE_THING_QUERY($id: ID!) {
@@ -28,22 +29,37 @@ const SINGLE_THING_SUBSCRIPTION = gql`
 
 const SingleThingContainer = styled.div`
    display: flex;
-   justify-content: flex-start;
-   padding: 2rem 2.5rem;
-   position: absolute;
-   height: 100%;
-   width: 100%;
-   overflow-y: scroll;
-   scrollbar-color: #262626 black;
-   scrollbar-width: thin;
+   .sidebar {
+      flex-basis: 25%;
+   }
+   .fullThingContainer {
+      flex-basis: 75%;
+      flex-grow: 1;
+      position: relative;
+      max-height: 100%;
+      overflow-y: auto;
+      scrollbar-color: #262626 black;
+      scrollbar-width: thin;
+   }
 `;
 
 const ThingContext = React.createContext();
+export { ThingContext };
 
 const SingleThing = props => {
    const { loading, error, data } = useQuery(SINGLE_THING_QUERY, {
       variables: { id: props.query.id }
    });
+
+   /* eslint-disable react-hooks/exhaustive-deps */
+   // We need to make our thing container scroll to the top when we route to a new thing, but wesbos's eslint rules don't let you use a dependency for an effect that isn't referenced in the effect. I can't find any reason why that is or any better way of doing it, so I'm just turning off that rule for a minute.
+   useEffect(() => {
+      const containerArray = document.getElementsByClassName(
+         'fullThingContainer'
+      );
+      containerArray[0].scrollTo(0, 0);
+   }, [props.query.id]);
+   /* eslint-enable */
 
    const {
       data: subscriptionData,
@@ -61,7 +77,10 @@ const SingleThing = props => {
                <Head>
                   <title>{data.thing.title} - OurDailies</title>
                </Head>
-               <FullThing id={props.query.id} />
+               <Sidebar />
+               <div className="fullThingContainer">
+                  <FullThing id={props.query.id} key={props.query.id} />
+               </div>
             </SingleThingContainer>
          </ThingContext.Provider>
       );
@@ -69,5 +88,4 @@ const SingleThing = props => {
    if (loading) return <LoadingRing />;
 };
 
-export { ThingContext };
 export default SingleThing;

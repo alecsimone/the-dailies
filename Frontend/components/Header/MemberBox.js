@@ -3,7 +3,7 @@ import { useContext, useState } from 'react';
 import Link from 'next/link';
 import { MemberContext } from '../Account/MemberProvider';
 import MemberMenu from './MemberMenu';
-import { makeTransparent } from '../../styles/functions';
+import { setAlpha } from '../../styles/functions';
 
 const StyledMemberBox = styled.div`
    color: ${props => props.theme.secondaryAccent};

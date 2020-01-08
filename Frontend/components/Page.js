@@ -3,7 +3,7 @@ import Meta from './Header/Meta';
 import Header from './Header/Header';
 import Sidebar from './Sidebar';
 import MemberProvider from './Account/MemberProvider';
-import { makeTransparent } from '../styles/functions';
+import { setAlpha } from '../styles/functions';
 
 const theme = {
    tinyText: '1.25rem',
@@ -100,15 +100,15 @@ const GlobalStyle = createGlobalStyle`
    textarea {
       background: none;
       color: ${theme.mainText};
-      border: 1px solid ${makeTransparent(theme.lowContrastGrey, 0.25)};
+      border: 1px solid ${setAlpha(theme.lowContrastGrey, 0.25)};
       border-radius: 3px;
       border-bottom: 1px solid ${theme.lowContrastGrey};
       padding: 1rem 1rem calc(1rem - 1px) 1rem;
       font-family: "Proxima Nova", sans-serif;
       &:focus {
-         border: 1px solid ${makeTransparent(theme.highContrastGrey, 0.4)};
+         border: 1px solid ${setAlpha(theme.highContrastGrey, 0.4)};
          border-bottom: 1px solid ${theme.highContrastGrey};
-         box-shadow: 0 1px 4px ${makeTransparent(theme.highContrastGrey, 0.2)};
+         box-shadow: 0 1px 4px ${setAlpha(theme.highContrastGrey, 0.2)};
       }
    }
    select {
@@ -138,7 +138,7 @@ const GlobalStyle = createGlobalStyle`
       font-family: "Proxima Nova", sans-serif;
       cursor: pointer;
       &:hover {
-         background: ${makeTransparent(theme.lowContrastCoolGrey, 0.1)};
+         background: ${setAlpha(theme.lowContrastCoolGrey, 0.1)};
       }
    }
    .embed-container {
@@ -158,19 +158,10 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 const StyledPage = styled.div`
-   width: 100vw;
-   height: 100vh;
-   @media screen and (min-width: 800px) {
-      /* width: 94%; */
-   }
-   display: grid;
-   grid-template-columns: 7fr 24fr;
-   grid-template-rows: auto 1fr;
    position: relative;
-   .mainSectionContainer {
-      position: relative;
-      height: 100%;
-   }
+   display: grid;
+   grid-template-rows: auto 1fr;
+   height: 100vh;
 `;
 
 const Page = props => (
@@ -179,11 +170,10 @@ const Page = props => (
          <StyledPage id="page">
             <Meta />
             <Header />
-            <Sidebar />
-            <div className="mainSectionContainer">
+            <>
                <GlobalStyle />
                {props.children}
-            </div>
+            </>
          </StyledPage>
       </ThemeProvider>
    </MemberProvider>

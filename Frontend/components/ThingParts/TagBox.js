@@ -6,7 +6,7 @@ import Link from 'next/link';
 import debounce from 'lodash.debounce';
 import { useCombobox } from 'downshift';
 import { ThingContext } from '../../pages/thing';
-import { makeTransparent } from '../../styles/functions';
+import { setAlpha } from '../../styles/functions';
 
 const ADD_TAG_MUTATION = gql`
    mutation ADD_TAG_MUTATION($tag: String!, $thingID: ID!) {
@@ -32,6 +32,7 @@ const SEARCH_TAGS_QUERY = gql`
       }
    }
 `;
+export { SEARCH_TAGS_QUERY };
 
 const StyledTagBox = styled.section`
    max-width: 100%;
@@ -68,7 +69,7 @@ const StyledTagBox = styled.section`
          width: 100%;
          font-size: ${props => props.theme.smallText};
          border: 1px solid
-            ${props => makeTransparent(props.theme.highContrastGrey, 0.4)};
+            ${props => setAlpha(props.theme.highContrastGrey, 0.4)};
          border-top: none;
          .searchResult {
             padding: 0.25rem 1rem;
@@ -77,7 +78,7 @@ const StyledTagBox = styled.section`
             }
             &.loading,
             &.empty {
-               color: ${props => makeTransparent(props.theme.mainText, 0.6)};
+               color: ${props => setAlpha(props.theme.mainText, 0.6)};
             }
          }
       }
@@ -87,8 +88,7 @@ const StyledTagBox = styled.section`
       line-height: 1;
       border-radius: 0;
       &.loading {
-         background: ${props =>
-            makeTransparent(props.theme.lowContrastGrey, 0.4)};
+         background: ${props => setAlpha(props.theme.lowContrastGrey, 0.4)};
       }
    }
 `;
