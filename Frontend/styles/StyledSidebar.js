@@ -2,6 +2,19 @@ import styled from 'styled-components';
 import { setAlpha, setLightness, setSaturation } from './functions';
 
 const StyledSidebar = styled.section`
+   &.hidden {
+      max-width: 3rem;
+      overflow: hidden;
+      position: relative;
+      .sidebarHeader {
+         position: absolute;
+         right: 0;
+      }
+      .sidebarContainer {
+         display: none;
+      }
+   }
+   transition: all 0.25s;
    background: ${props =>
       setLightness(setSaturation(props.theme.primaryAccent, 30), 5)};
    border-right: 2px solid
@@ -42,6 +55,12 @@ const StyledSidebar = styled.section`
          }
          &:hover {
             background: ${props => setAlpha(props.theme.lowContrastGrey, 0.15)};
+         }
+         &.toggle {
+            max-width: 3rem;
+            line-height: 1;
+            font-weight: 700;
+            color: ${props => props.theme.lowContrastGrey};
          }
       }
    }

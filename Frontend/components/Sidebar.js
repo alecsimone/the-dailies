@@ -27,6 +27,8 @@ const Sidebar = props => {
       extraColumnTitle == null ? 'You' : extraColumnTitle
    );
 
+   const [hidden, setHidden] = useState(false);
+
    if (error) return <Error error={error} />;
    if (loading) return <LoadingRing />;
 
@@ -34,15 +36,33 @@ const Sidebar = props => {
    if (extraColumnTitle != null) {
       headerColumns.push(extraColumnTitle);
    }
-   const sidebarHeader = headerColumns.map(column => (
+   let sidebarHeader = headerColumns.map(column => (
       <div
-         className={selectedTab === column ? 'headerTab selected' : 'headerTab'}
+         className={
+            selectedTab === column
+               ? `headerTab ${column} selected`
+               : `headerTab ${column}`
+         }
          key={column}
          onClick={() => setSelectedTab(column)}
       >
          <img src={`${column}.png`} alt={column} title={column} />
       </div>
    ));
+   const toggleButton = (
+      <div
+         className="headerTab toggle"
+         key="toggle"
+         onClick={() => setHidden(!hidden)}
+      >
+         {hidden ? '>' : '<'}
+      </div>
+   );
+   if (hidden) {
+      sidebarHeader = toggleButton;
+   } else {
+      sidebarHeader.push(toggleButton);
+   }
 
    let sidebarContent;
    if (selectedTab === 'You') {
@@ -71,7 +91,11 @@ const Sidebar = props => {
       sidebarContents = <LoadingRing />;
    }
 
-   return <StyledSidebar className="sidebar">{sidebarContents}</StyledSidebar>;
+   return (
+      <StyledSidebar className={`sidebar${hidden ? ' hidden' : ''}`}>
+         {sidebarContents}
+      </StyledSidebar>
+   );
 };
 
 export default Sidebar;
