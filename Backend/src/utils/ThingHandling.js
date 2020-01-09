@@ -1,86 +1,82 @@
-const { fullThingFields } = require('./CardInterfaces');
+const { fullThingFields, tagFields } = require('./CardInterfaces');
 
-function publishThingUpdate(thing, ctx) {
-   ctx.pubsub.publish('thing', {
-      thing: {
-         node: thing
+function publishStuffUpdate(type, stuff, ctx) {
+   const lowerCasedType = type.toLowerCase();
+   ctx.pubsub.publish(lowerCasedType, {
+      [lowerCasedType]: {
+         node: stuff
       }
    });
 }
-exports.publishThingUpdate = publishThingUpdate;
 
-async function updateThingAndNotifySubs(data, thingID, ctx) {
-   const updatedThing = await ctx.db.mutation.updateThing(
+async function updateStuffAndNotifySubs(data, id, type, ctx) {
+   let mutationType;
+   let fields;
+   if (type === 'Tag') {
+      mutationType = 'updateTag';
+      fields = tagFields;
+   } else if (type === 'Thing') {
+      mutationType = 'updateThing';
+      fields = fullThingFields;
+   }
+
+   const updatedStuff = await ctx.db.mutation[mutationType](
       {
          where: {
-            id: thingID
+            id
          },
          data
       },
-      `{${fullThingFields}}`
+      `{${fields}}`
    );
-   publishThingUpdate(updatedThing, ctx);
-   return updatedThing;
-}
-exports.updateThingAndNotifySubs = updateThingAndNotifySubs;
-
-async function updateTagAndNotifySubs(data, tagID, ctx) {
-   const updatedTag = await ctx.db.mutation.updateTag(
-      {
-         where: {
-            id: tagID
-         },
-         data
-      },
-      `{__typename id featuredImage}`
-   );
-   return updatedTag;
+   publishStuffUpdate(type, updatedStuff, ctx);
+   return updatedStuff;
 }
 
-async function properUpdateThing(dataObj, thingID, ctx) {
-   const oldThing = await ctx.db.query.thing(
-      {
-         where: {
-            id: thingID
-         }
-      },
-      `{author {id}}`
-   );
-   if (
-      oldThing.author.id !== ctx.req.memberId ||
-      !ctx.req.member.roles.some(role =>
-         ['Admin', 'Editor', 'Moderator'].includes(role)
-      )
-   ) {
-      throw new Error('You do not have permission to edit that thing');
+async function properUpdateStuff(dataObj, id, type, ctx) {
+   const lowerCasedType = type.toLowerCase();
+   let fields;
+   if (type === 'Tag') {
+      fields = `{owner {id} public}`;
+   } else if (type === 'Thing') {
+      fields = `{author {id}}`;
    }
 
-   const updatedThing = await updateThingAndNotifySubs(dataObj, thingID, ctx);
-   return updatedThing;
-}
-exports.properUpdateThing = properUpdateThing;
-
-async function properUpdateTag(dataObj, tagID, ctx) {
-   const oldTag = await ctx.db.query.tag(
+   const oldStuff = await ctx.db.query[lowerCasedType](
       {
          where: {
-            id: tagID
+            id
          }
       },
-      `{owner {id} public}`
+      `${fields}`
    );
-   if (
-      oldTag.owner.id !== ctx.req.memberId &&
-      !ctx.req.member.roles.some(role =>
-         ['Admin', 'Editor', 'Moderator'].includes(role)
-      ) && !public
-   ) {
-      throw new Error('You do not have permission to edit that tag');
+
+   if (type === 'Tag') {
+      if (
+         oldStuff.owner.id !== ctx.req.memberId &&
+         !ctx.req.member.roles.some(role =>
+            ['Admin', 'Editor', 'Moderator'].includes(role)
+         ) &&
+         !oldStuff.public
+      ) {
+         throw new Error('You do not have permission to edit that tag');
+      }
    }
-   const updatedTag = await updateTagAndNotifySubs(dataObj, tagID, ctx);
-   return updatedTag;
+   if (type === 'Thing') {
+      if (
+         oldStuff.author.id !== ctx.req.memberId ||
+         !ctx.req.member.roles.some(role =>
+            ['Admin', 'Editor', 'Moderator'].includes(role)
+         )
+      ) {
+         throw new Error('You do not have permission to edit that thing');
+      }
+   }
+
+   const updatedStuff = await updateStuffAndNotifySubs(dataObj, id, type, ctx);
+   return updatedStuff;
 }
-exports.properUpdateTag = properUpdateTag;
+exports.properUpdateStuff = properUpdateStuff;
 
 async function searchAvailableTags(searchTerm, ctx, exact) {
    return ctx.db.query.tags(

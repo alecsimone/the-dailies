@@ -4,9 +4,9 @@ type Query {
    me: Member
    categories: [Category]
    thing(where: ThingWhereUniqueInput!): Thing
-   things(where: ThingWhereInput): [Thing]!
+   things(where: ThingWhereInput, orderBy: ThingOrderByInput): [Thing]!
    searchTags(searchTerm: String): [Tag]!
-   tagByTitle(title: String!): Tag!
+   tagByTitle(title: String!): Tag
 }
 
 type Mutation {
@@ -27,20 +27,22 @@ type Mutation {
       tags: String
       privacy: String
   ): Thing
-  addContentPieceToThing(content: String, thingID: ID!): Thing
-  deleteContentPieceFromThing(contentPieceID: ID!, thingID: ID!): Thing
-  editContentPieceOnThing(contentPieceID: ID!, content: String!, thingID: ID!): Thing
+  addContentPiece(content: String, id: ID!, type: String!): Stuff
+  deleteContentPiece(contentPieceID: ID!, id: ID!, type: String!): Stuff
+  editContentPiece(contentPieceID: ID!, content: String!, id: ID!, type: String!): Stuff
   setThingPrivacy(privacySetting: PrivacySetting!, thingID: ID!): Thing
   setThingCategory(category: String!, thingID: ID!): Thing
   addTagToThing(tag: String!, thingID: ID!): Thing
   setFeaturedImage(featuredImage: String!, id: ID!, type: String!): Stuff
-  setThingTitle(title: String!, thingID: ID!): Thing
+  setThingTitle(title: String!, thingID: ID!): Thing,
+  setPublicity(public: Boolean!, id: ID!, type: String!): Stuff
 }
 
 union Stuff = Thing | Tag
 
 type Subscription {
    thing(id: ID!): ThingSubscriptionPayload
+   tag: TagSubscriptionPayload
 }
 
 type SuccessMessage {

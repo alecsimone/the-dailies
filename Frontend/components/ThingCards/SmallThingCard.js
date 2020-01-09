@@ -1,6 +1,7 @@
-import styled from 'styled-components';
+import styled, { ThemeContext } from 'styled-components';
 import Link from 'next/link';
-import { setAlpha } from '../../styles/functions';
+import { useContext } from 'react';
+import { setAlpha, setLightness } from '../../styles/functions';
 import { isVideo } from '../../lib/UrlHandling';
 
 const StyledSmallThingCard = styled.article`
@@ -10,7 +11,7 @@ const StyledSmallThingCard = styled.article`
    display: inline-block;
    /* background: hsla(45, 1%, 7.5%, 0.9); */
    background: ${props => props.theme.background};
-   border: 1px solid ${props => setAlpha(props.theme.lowContrastCoolGrey, 0.1)};
+   border: 1px solid ${props => setAlpha(props.theme.lowContrastGrey, 0.1)};
    padding: 1.2rem;
    border-radius: 0 2px 2px 0;
    border-left: 0.5rem solid ${props => setAlpha(props.theme.majorColor, 0.6)};
@@ -25,11 +26,11 @@ const StyledSmallThingCard = styled.article`
    }
    .meta {
       padding: 0 1.2rem;
-      color: ${props => setAlpha(props.theme.mainText, 1)};
+      color: ${props => props.theme.mainText};
       line-height: 1;
       .tinyMeta {
          font-size: ${props => props.theme.tinyText};
-         color: ${props => setAlpha(props.theme.mainText, 0.35)};
+         color: ${props => setLightness(props.theme.lowContrastGrey, 35)};
          font-weight: 300;
          margin-top: 0.6rem;
       }
@@ -38,10 +39,20 @@ const StyledSmallThingCard = styled.article`
 
 const SmallThingCard = props => {
    const {
-      data: { id, title, featuredImage }
+      data: { id, title, featuredImage, partOfCategory: category }
    } = props;
+
+   const { majorColor } = useContext(ThemeContext);
+
+   let highlightColor = setAlpha(majorColor, 0.6);
+   if (category && category.color != null) {
+      highlightColor = category.color;
+   }
+
    return (
-      <StyledSmallThingCard>
+      <StyledSmallThingCard
+         style={{ borderLeft: `0.5rem solid ${highlightColor}` }}
+      >
          <img
             className="thumb"
             src={

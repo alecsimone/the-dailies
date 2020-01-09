@@ -8,6 +8,7 @@ const CURRENT_MEMBER_QUERY = gql`
          id
          displayName
          rep
+         avatar
          defaultPrivacy
          defaultCategory {
             title

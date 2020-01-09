@@ -25,15 +25,14 @@ const StyledMemberMenu = styled.div`
    color: ${props => props.theme.mainText};
    font-size: ${props => props.theme.smallText};
    text-align: center;
-   border: 3px solid ${props => setAlpha(props.theme.lowContrastCoolGrey, 0.25)};
-   border-top: 3px solid
-      ${props => setAlpha(props.theme.lowContrastCoolGrey, 0.05)};
+   border: 3px solid ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
+   border-top: 3px solid ${props => setAlpha(props.theme.lowContrastGrey, 0.05)};
    .userMenuLinkRow {
       padding: 1rem;
       cursor: pointer;
       text-align: center;
       &:hover {
-         background: ${props => props.theme.lowContrastCoolGrey};
+         background: ${props => props.theme.lowContrastGrey};
          text-decoration: underline;
       }
    }

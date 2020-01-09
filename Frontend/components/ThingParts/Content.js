@@ -2,38 +2,67 @@ import gql from 'graphql-tag';
 import styled from 'styled-components';
 import { useMutation } from '@apollo/react-hooks';
 import { useContext, useState } from 'react';
-import { ThingContext } from '../../pages/thing';
 import { setAlpha } from '../../styles/functions';
-import { processLinksInText } from '../../lib/UrlHandling';
 import ContentPiece from './ContentPiece';
 import ContentInput from './ContentInput';
 
 const ADD_CONTENTPIECE_MUTATION = gql`
-   mutation ADD_CONTENTPIECE_MUTATION($content: String!, $thingID: ID!) {
-      addContentPieceToThing(content: $content, thingID: $thingID) {
-         __typename
-         id
-         content {
+   mutation ADD_CONTENTPIECE_MUTATION(
+      $content: String!
+      $id: ID!
+      $type: String!
+   ) {
+      addContentPiece(content: $content, id: $id, type: $type) {
+         ... on Tag {
             __typename
             id
-            content
+            content {
+               __typename
+               id
+               content
+            }
+         }
+         ... on Thing {
+            __typename
+            id
+            content {
+               __typename
+               id
+               content
+            }
          }
       }
    }
 `;
 
 const DELETE_CONTENTPIECE_MUTATION = gql`
-   mutation DELETE_CONTENTPIECE_MUTATION($contentPieceID: ID!, $thingID: ID!) {
-      deleteContentPieceFromThing(
+   mutation DELETE_CONTENTPIECE_MUTATION(
+      $contentPieceID: ID!
+      $id: ID!
+      $type: String!
+   ) {
+      deleteContentPiece(
          contentPieceID: $contentPieceID
-         thingID: $thingID
+         id: $id
+         type: $type
       ) {
-         __typename
-         id
-         content {
+         ... on Tag {
             __typename
             id
-            content
+            content {
+               __typename
+               id
+               content
+            }
+         }
+         ... on Thing {
+            __typename
+            id
+            content {
+               __typename
+               id
+               content
+            }
          }
       }
    }
@@ -43,19 +72,32 @@ const EDIT_CONTENTPIECE_MUTATION = gql`
    mutation EDIT_CONTENTPIECE_MUTATION(
       $contentPieceID: ID!
       $content: String!
-      $thingID: ID!
+      $id: ID!
+      $type: String!
    ) {
-      editContentPieceOnThing(
+      editContentPiece(
          contentPieceID: $contentPieceID
          content: $content
-         thingID: $thingID
+         id: $id
+         type: $type
       ) {
-         __typename
-         id
-         content {
+         ... on Tag {
             __typename
             id
-            content
+            content {
+               __typename
+               id
+               content
+            }
+         }
+         ... on Tag {
+            __typename
+            id
+            content {
+               __typename
+               id
+               content
+            }
          }
       }
    }
@@ -144,55 +186,59 @@ const StyledContent = styled.section`
    }
 `;
 
-const Content = () => {
-   const { content, id } = useContext(ThingContext);
+const Content = props => {
+   const { context } = props;
+   const { content, id, __typename: type } = useContext(context);
    const [newContentPiece, setNewContentPiece] = useState('');
 
    const [
-      addContentPieceToThing,
+      addContentPiece,
       { data: addData, loading: addLoading, error: addError }
    ] = useMutation(ADD_CONTENTPIECE_MUTATION);
 
    const [
-      deleteContentPieceFromThing,
+      deleteContentPiece,
       { data: deleteData, loading: deleteLoading, error: deleteError }
    ] = useMutation(DELETE_CONTENTPIECE_MUTATION);
 
    const [
-      editContentPieceOnThing,
+      editContentPiece,
       { data: editData, loading: editLoading, error: editError }
    ] = useMutation(EDIT_CONTENTPIECE_MUTATION);
 
    const sendNewContentPiece = async () => {
       setNewContentPiece('');
-      await addContentPieceToThing({
+      await addContentPiece({
          variables: {
             content: newContentPiece,
-            thingID: id
+            id,
+            type
          }
       });
    };
 
-   const deleteContentPiece = async contentPieceID => {
-      await deleteContentPieceFromThing({
+   const deletePiece = async contentPieceID => {
+      await deleteContentPiece({
          variables: {
             contentPieceID,
-            thingID: id
+            id,
+            type
          }
       });
    };
 
-   const editContentPiece = async (contentPieceID, newContent) => {
+   const editPiece = async (contentPieceID, newContent) => {
       const indexOfEditedContentPiece = content.findIndex(
          contentPiece => contentPiece.id === contentPieceID
       );
       content[indexOfEditedContentPiece].content = newContent;
 
-      await editContentPieceOnThing({
+      await editContentPiece({
          variables: {
             contentPieceID,
             content: newContent,
-            thingID: id
+            id,
+            type
          }
       });
    };
@@ -201,8 +247,8 @@ const Content = () => {
       <ContentPiece
          id={contentPiece.id}
          rawContentString={contentPiece.content}
-         deleteContentPiece={deleteContentPiece}
-         editContentPiece={editContentPiece}
+         deleteContentPiece={deletePiece}
+         editContentPiece={editPiece}
          key={contentPiece.id}
       />
    ));

@@ -1,4 +1,5 @@
 import styled, { ThemeProvider, createGlobalStyle } from 'styled-components';
+import { removeDirectivesFromDocument } from 'apollo-utilities';
 import Meta from './Header/Meta';
 import Header from './Header/Header';
 import Sidebar from './Sidebar';
@@ -12,27 +13,23 @@ const theme = {
    smallHead: '4rem',
    bigHead: '5rem',
 
-   background: 'hsl(216, 24%, 5%)',
-   mainText: 'hsla(33, 17%, 88%, .9)',
-   solidMainText: 'hsl(33, 17%, 88%)',
+   black: 'hsla(345, 25%, 2%, 1)',
+
+   background: 'hsl(210, 30%, 6%)',
+   mainText: 'hsl(30, 10%, 80%)',
 
    majorColor: 'hsl(210, 100%, 40%)',
-   lightMajorColor: 'hsla(210, 100%, 70%, .9)',
-   majorColorGlass: 'hsla(210, 100%, 60%, .15)',
-
    primaryAccent: 'hsl(120, 100%, 25%)',
-
    secondaryAccent: 'hsl(42, 79%, 64%)',
-   secondaryAccentGlow: 'hsl(42, 100%, 100%, .1)',
-   highContrastSecondaryAccent: 'hsla(42, 95%, 75%, .9)',
 
-   lowContrastGrey: 'hsl(30, 10%, 33%)',
+   lowContrastGrey: 'hsl(210, 10%, 30%)',
+   highContrastGrey: 'hsl(30, 10%, 60%)',
 
-   lowContrastCoolGrey: 'hsla(210, 15%, 48%, .6)',
-   solidLowContrastCoolGrey: 'hsl(210, 25%, 25%)',
-   superLowContrastCoolTint: 'hsla(210, 40%, 40%, 0.07)',
-
-   highContrastGrey: 'hsla(28, 9%, 64%, .9)'
+   scroll: {
+      overflowY: 'auto',
+      scrollbarWidth: 'thin',
+      scrollbarColor: 'hsl(210, 10%, 30%) hsla(345, 25%, 2%, 1)'
+   }
 };
 
 const GlobalStyle = createGlobalStyle`
@@ -42,8 +39,7 @@ const GlobalStyle = createGlobalStyle`
       font-family: "Proxima Nova", sans-serif;
       box-sizing: border-box;
       font-size: 8px;
-      scrollbar-color: #262626 black;
-      scrollbar-width: thin;
+      ${props => props.theme.scroll};
       @media screen and (min-width: 800px) {
          font-size: 10px;
       }
@@ -91,7 +87,7 @@ const GlobalStyle = createGlobalStyle`
       font-family: "Proxima Nova", sans-serif;
       border-radius: 3px;
       border: none;
-      border-bottom: 1px solid ${theme.highContrastGrey};
+      border-bottom: 1px solid ${theme.lowContrastGrey};
       padding: .25rem 1rem;
       &:disabled {
          background: ${theme.veryLowContrastGrey};
@@ -138,7 +134,7 @@ const GlobalStyle = createGlobalStyle`
       font-family: "Proxima Nova", sans-serif;
       cursor: pointer;
       &:hover {
-         background: ${setAlpha(theme.lowContrastCoolGrey, 0.1)};
+         background: ${setAlpha(theme.lowContrastGrey, 0.1)};
       }
    }
    .embed-container {

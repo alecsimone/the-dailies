@@ -10,10 +10,8 @@ const StyledHomepage = styled.div`
       flex-basis: 75%;
       position: relative;
       max-height: 100%;
-      overflow-y: auto;
-      scrollbar-color: #262626 black;
-      scrollbar-width: thin;
       padding: 2rem;
+      ${props => props.theme.scroll};
    }
 `;
 

@@ -14,7 +14,7 @@ const StyledNav = styled.nav`
       opacity: 0.8;
       &:hover {
          opacity: 1;
-         background: ${props => setAlpha(props.theme.lowContrastCoolGrey, 0.1)};
+         background: ${props => setAlpha(props.theme.lowContrastGrey, 0.1)};
       }
       &.newPost {
          filter: saturate(0);

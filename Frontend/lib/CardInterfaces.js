@@ -23,6 +23,7 @@ const smallThingCardFields = `
       __typename
       id
       title
+      color
    }
    createdAt
    updatedAt
@@ -100,3 +101,38 @@ const fullThingFields = `
    updatedAt
 `;
 export { fullThingFields };
+
+const tagFields = `
+   __typename
+   id
+   title
+   featuredImage
+   owner {
+      __typename
+      id
+      displayName
+   }
+   public
+   content {
+      __typename
+      id
+      content
+   }
+   connectedThings {
+      ${smallThingCardFields}
+   }
+   comments {
+      __typename
+      id
+      createdAt
+      author {
+         __typename
+         id
+         displayName
+         avatar
+         rep
+      }
+   }
+   createdAt
+`;
+export { tagFields };

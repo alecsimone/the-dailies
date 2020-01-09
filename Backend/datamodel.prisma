@@ -5,8 +5,6 @@ type Thing {
   featuredImage: String
   link: String
   content: [ContentPiece!] @scalarList(strategy:RELATION)
-  includedLinks: [Link]
-  includedThings: [Thing]
   partOfTags: [Tag]
   partOfCategory: Category!
   votes: [Vote]
@@ -25,6 +23,8 @@ type ContentPiece {
    id: ID! @id @unique
    content: String!
    onThing: Thing
+   onTag: Tag
+   onCategory: Category
 }
 
 type Tag {
@@ -33,8 +33,7 @@ type Tag {
   featuredImage: String
   owner: Member
   public: Boolean @default(value: false)
-  summary: [String!] @scalarList(strategy:RELATION)
-  includedLinks: [Link]
+  content: [ContentPiece!] @scalarList(strategy:RELATION)
   connectedThings: [Thing]
   comments: [Comment]
   score: Int! @default(value: 0)
@@ -46,9 +45,10 @@ type Category {
   id: ID! @id @unique
   title: String! @unique
   featuredImage: String
-  owner: Member @relation(name: "OwnedCategories")
-  summary: [String!] @scalarList(strategy:RELATION)
+  color: String
+  content: [ContentPiece!] @scalarList(strategy:RELATION)
   connectedThings: [Thing]
+  comments: [Comment]
   createdAt: DateTime! @createdAt
   updatedAt: DateTime @updatedAt
 }
@@ -60,18 +60,9 @@ type Comment {
   createdAt: DateTime! @createdAt
   updatedAt: DateTime @updatedAt
   onThing: Thing
-  onLink: Link
   onComment: Comment
   onTag: Tag
-}
-
-type Link {
-  id: ID! @id @unique
-  title: String!
-  url: String!
-  onThing: Thing
-  createdAt: DateTime! @createdAt
-  updatedAt: DateTime @updatedAt
+  onCategory: Category
 }
 
 type Vote {
@@ -105,7 +96,6 @@ type Member {
   passes: [Pass]
   createdThings: [Thing]
   ownedTags: [Tag]
-  ownedCategories: [Category] @relation(name: "OwnedCategories")
   defaultCategory: Category @relation(name: "DefaultCategory")
   defaultPrivacy: PrivacySetting
   comments: [Comment]

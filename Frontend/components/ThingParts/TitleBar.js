@@ -27,7 +27,7 @@ const StyledTitleBar = styled.div`
       border: none;
    }
    input {
-      background: ${props => setAlpha(props.theme.lowContrastCoolGrey, 0.4)};
+      background: ${props => setAlpha(props.theme.lowContrastGrey, 0.4)};
    }
 `;
 

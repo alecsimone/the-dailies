@@ -10,7 +10,7 @@ import StyledSidebar from '../styles/StyledSidebar';
 
 const THINGS_BY_MEMBER_QUERY = gql`
    query THINGS_BY_MEMBER_QUERY($id: ID!) {
-      things(where: {author: {id: $id}}) {
+      things(where: {author: {id: $id}}, orderBy:createdAt_DESC) {
          ${smallThingCardFields}
       }
    }
@@ -27,6 +27,9 @@ const Sidebar = props => {
       extraColumnTitle == null ? 'You' : extraColumnTitle
    );
 
+   if (error) return <Error error={error} />;
+   if (loading) return <LoadingRing />;
+
    const headerColumns = ['You', 'Friends', 'Public'];
    if (extraColumnTitle != null) {
       headerColumns.push(extraColumnTitle);
@@ -37,7 +40,7 @@ const Sidebar = props => {
          key={column}
          onClick={() => setSelectedTab(column)}
       >
-         {column}
+         <img src={`${column}.png`} alt={column} title={column} />
       </div>
    ));
 

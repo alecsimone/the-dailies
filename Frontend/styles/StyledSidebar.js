@@ -1,8 +1,9 @@
 import styled from 'styled-components';
-import { setAlpha } from './functions';
+import { setAlpha, setLightness, setSaturation } from './functions';
 
 const StyledSidebar = styled.section`
-   background: hsla(30, 5%, 5%, 0.9);
+   background: ${props =>
+      setLightness(setSaturation(props.theme.primaryAccent, 30), 5)};
    border-right: 2px solid
       ${props => setAlpha(props.theme.highContrastGrey, 0.1)};
    position: relative;
@@ -13,6 +14,7 @@ const StyledSidebar = styled.section`
    .sidebarHeader {
       display: flex;
       width: 100%;
+      line-height: 0;
       .headerTab {
          &:last-child {
             /* border-right: none; */
@@ -24,16 +26,22 @@ const StyledSidebar = styled.section`
          border: 3px solid ${props => setAlpha(props.theme.mainText, 0.1)};
          border-top: none;
          border-left: none;
-         padding: 1rem;
-         font-size: ${props => props.theme.bigText};
+         padding: 0.5rem;
+         font-size: 3rem;
          cursor: pointer;
+         img {
+            height: 3rem;
+            width: auto;
+            opacity: 0.75;
+            &[alt] {
+               line-height: 1;
+            }
+         }
          &.selected {
-            background: ${props =>
-               setAlpha(props.theme.lowContrastCoolGrey, 0.1)};
+            background: ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
          }
          &:hover {
-            background: ${props =>
-               setAlpha(props.theme.lowContrastCoolGrey, 0.05)};
+            background: ${props => setAlpha(props.theme.lowContrastGrey, 0.15)};
          }
       }
    }
@@ -46,9 +54,7 @@ const StyledSidebar = styled.section`
          left: 0;
          width: 100%;
          max-height: 100%;
-         overflow-y: auto;
-         scrollbar-color: #262626 black;
-         scrollbar-width: thin;
+         ${props => props.theme.scroll};
       }
    }
 `;

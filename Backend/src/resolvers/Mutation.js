@@ -1,14 +1,15 @@
 const { signup, login, logout } = require('./Mutation/MemberMutations');
 const {
    createThing,
-   addContentPieceToThing,
-   deleteContentPieceFromThing,
-   editContentPieceOnThing,
+   addContentPiece,
+   deleteContentPiece,
+   editContentPiece,
    setThingPrivacy,
    setThingCategory,
    addTagToThingHandler,
    setFeaturedImage,
-   setThingTitle
+   setThingTitle,
+   setPublicity
 } = require('./Mutation/ThingMutations/Editing');
 
 const Mutations = {
@@ -16,14 +17,15 @@ const Mutations = {
    login,
    logout,
    createThing,
-   addContentPieceToThing,
-   deleteContentPieceFromThing,
-   editContentPieceOnThing,
+   addContentPiece,
+   deleteContentPiece,
+   editContentPiece,
    setThingPrivacy,
    setThingCategory,
    addTagToThing: addTagToThingHandler,
    setFeaturedImage,
-   setThingTitle
+   setThingTitle,
+   setPublicity
 };
 
 module.exports = Mutations;

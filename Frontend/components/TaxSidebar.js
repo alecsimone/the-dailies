@@ -1,10 +1,19 @@
 import { useContext } from 'react';
-import { TagContext } from '../pages/tag';
 import FeaturedImage from './ThingParts/FeaturedImage';
+import Content from './ThingParts/Content';
+import TaxMeta from './TaxMeta';
 
 const TaxSidebar = props => {
-   const { title } = useContext(TagContext);
-   return <FeaturedImage context={TagContext} key={`${title}-FeaturedImage`} />;
+   const { context } = props;
+   const { title } = useContext(context);
+
+   return (
+      <div>
+         <FeaturedImage context={context} key={`${title}-FeaturedImage`} />
+         <TaxMeta context={context} key={`${title}-Meta`} />
+         <Content context={context} key={`${title}-Content`} />
+      </div>
+   );
 };
 
 export default TaxSidebar;

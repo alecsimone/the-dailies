@@ -8,6 +8,7 @@ import {
    GET_CATEGORIES_QUERY
 } from '../NewThingForm';
 import { convertISOtoAgo } from '../../lib/ThingHandling';
+import { setLightness } from '../../styles/functions';
 
 const SET_THING_PRIVACY_MUTATION = gql`
    mutation SET_THING_PRIVACY_MUTATION(
@@ -41,7 +42,9 @@ const StyledThingMeta = styled.section`
    justify-content: space-between;
    padding-left: 1.25rem;
    padding-top: 0.25rem;
+   color: ${props => setLightness(props.theme.highContrastGrey, 40)};
    select {
+      color: ${props => setLightness(props.theme.highContrastGrey, 40)};
       border-top: none;
       border-right: none;
       border-left: none;
@@ -51,7 +54,6 @@ const StyledThingMeta = styled.section`
       padding-right: 30px;
    }
    .info {
-      color: ${props => props.theme.highContrastGrey};
       font-size: ${props => props.theme.tinyText};
       span {
          margin-right: 1rem;

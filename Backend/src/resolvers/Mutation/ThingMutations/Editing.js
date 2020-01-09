@@ -1,6 +1,6 @@
 const {
-   properUpdateThing,
    properUpdateTag,
+   properUpdateStuff,
    isExplodingLink
 } = require('../../../utils/ThingHandling');
 const {
@@ -57,7 +57,7 @@ async function addTagToThing(tagTitle, thingID, ctx) {
          }
       };
    }
-   const updatedThing = await properUpdateThing(dataObj, thingID, ctx);
+   const updatedThing = await properUpdateStuff(dataObj, thingID, 'Thing', ctx);
    return updatedThing;
 }
 async function addTagToThingHandler(parent, { tag, thingID }, ctx, info) {
@@ -131,7 +131,7 @@ async function createThing(parent, args, ctx, info) {
 }
 exports.createThing = createThing;
 
-async function addContentPieceToThing(parent, { content, thingID }, ctx, info) {
+async function addContentPiece(parent, { content, id, type }, ctx, info) {
    loggedInGate(ctx);
    fullMemberGate(ctx.req.member);
 
@@ -142,14 +142,14 @@ async function addContentPieceToThing(parent, { content, thingID }, ctx, info) {
          }
       }
    };
-   const updatedThing = await properUpdateThing(dataObj, thingID, ctx);
+   const updatedThing = await properUpdateStuff(dataObj, id, type, ctx);
    return updatedThing;
 }
-exports.addContentPieceToThing = addContentPieceToThing;
+exports.addContentPiece = addContentPiece;
 
-async function deleteContentPieceFromThing(
+async function deleteContentPiece(
    parent,
-   { contentPieceID, thingID },
+   { contentPieceID, id, type },
    ctx,
    info
 ) {
@@ -163,14 +163,14 @@ async function deleteContentPieceFromThing(
          }
       }
    };
-   const updatedThing = await properUpdateThing(dataObj, thingID, ctx);
+   const updatedThing = await properUpdateStuff(dataObj, id, type, ctx);
    return updatedThing;
 }
-exports.deleteContentPieceFromThing = deleteContentPieceFromThing;
+exports.deleteContentPiece = deleteContentPiece;
 
-async function editContentPieceOnThing(
+async function editContentPiece(
    parent,
-   { contentPieceID, content, thingID },
+   { contentPieceID, content, id, type },
    ctx,
    info
 ) {
@@ -189,10 +189,10 @@ async function editContentPieceOnThing(
          }
       }
    };
-   const updatedThing = await properUpdateThing(dataObj, thingID, ctx);
+   const updatedThing = await properUpdateStuff(dataObj, id, type, ctx);
    return updatedThing;
 }
-exports.editContentPieceOnThing = editContentPieceOnThing;
+exports.editContentPiece = editContentPiece;
 
 async function setThingPrivacy(parent, { privacySetting, thingID }, ctx, info) {
    loggedInGate(ctx);
@@ -201,7 +201,7 @@ async function setThingPrivacy(parent, { privacySetting, thingID }, ctx, info) {
    const dataObj = {
       privacy: privacySetting
    };
-   const updatedThing = await properUpdateThing(dataObj, thingID, ctx);
+   const updatedThing = await properUpdateStuff(dataObj, thingID, 'Thing', ctx);
    return updatedThing;
 }
 exports.setThingPrivacy = setThingPrivacy;
@@ -217,7 +217,7 @@ async function setThingCategory(parent, { category, thingID }, ctx, info) {
          }
       }
    };
-   const updatedThing = await properUpdateThing(dataObj, thingID, ctx);
+   const updatedThing = await properUpdateStuff(dataObj, thingID, 'Thing', ctx);
    return updatedThing;
 }
 exports.setThingCategory = setThingCategory;
@@ -239,14 +239,8 @@ async function setFeaturedImage(
       featuredImage
    };
 
-   if (type === 'Tag') {
-      const updatedTag = await properUpdateTag(dataObj, id, ctx);
-      return updatedTag;
-   }
-   if (type === 'Thing') {
-      const updatedThing = await properUpdateThing(dataObj, id, ctx);
-      return updatedThing;
-   }
+   const updatedStuff = await properUpdateStuff(dataObj, id, type, ctx);
+   return updatedStuff;
 }
 exports.setFeaturedImage = setFeaturedImage;
 
@@ -257,7 +251,19 @@ async function setThingTitle(parent, { title, thingID }, ctx, info) {
    const dataObj = {
       title
    };
-   const updatedThing = await properUpdateThing(dataObj, thingID, ctx);
+   const updatedThing = await properUpdateStuff(dataObj, thingID, 'Thing', ctx);
    return updatedThing;
 }
 exports.setThingTitle = setThingTitle;
+
+async function setPublicity(parent, {public, id, type}, ctx, info) {
+   loggedInGate(ctx);
+   fullMemberGate(ctx.req.member);
+
+   const dataObj = {
+      public
+   };
+   const updatedStuff = await properUpdateStuff(dataObj, id, type, ctx);
+   return updatedStuff;
+}
+exports.setPublicity = setPublicity;

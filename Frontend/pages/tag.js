@@ -8,43 +8,22 @@ import Error from '../components/ErrorMessage';
 import LoadingRing from '../components/LoadingRing';
 import TaxSidebar from '../components/TaxSidebar';
 import Things from '../components/Archives/Things';
-import { smallThingCardFields } from '../lib/CardInterfaces';
+import { tagFields } from '../lib/CardInterfaces';
 
 const SINGLE_TAG_QUERY = gql`
    query SINGLE_TAG_QUERY($title: String!) {
       tagByTitle(title: $title) {
-         __typename
-         id
-         title
-         featuredImage
-         owner {
-            __typename
-            id
+         ${tagFields}
+      }
+   }
+`;
+
+const SINGLE_TAG_SUBSCRIPTION = gql`
+   subscription SINGLE_TAG_SUBSCRIPTION {
+      tag {
+         node {
+            ${tagFields}
          }
-         public
-         summary
-         connectedThings {
-            ${smallThingCardFields}
-         }
-         includedLinks {
-            __typename
-            id
-            title
-            url
-         }
-         comments {
-            __typename
-            id
-            createdAt
-            author {
-               __typename
-               id
-               displayName
-               avatar
-               rep
-            }
-         }
-         createdAt
       }
    }
 `;
@@ -58,10 +37,8 @@ const StyledTagPage = styled.div`
       flex-basis: 75%;
       position: relative;
       max-height: 100%;
-      overflow-y: auto;
-      scrollbar-color: #262626 black;
-      scrollbar-width: thin;
       padding: 2rem;
+      ${props => props.theme.scroll};
    }
 `;
 
@@ -75,6 +52,13 @@ const tag = props => {
       }
    });
 
+   const {
+      data: subscriptionData,
+      loading: subscriptionLoading
+   } = useSubscription(SINGLE_TAG_SUBSCRIPTION, {
+      variables: { id: props.query.id }
+   });
+
    if (error) {
       return <Error error={error} />;
    }
@@ -82,17 +66,27 @@ const tag = props => {
       return <LoadingRing />;
    }
 
-   const sidebarContent = <TaxSidebar />;
-
-   const tagInfo = (
-      <Things things={data.tagByTitle.connectedThings} style="grid" />
-   );
+   let tagInfo;
+   let sidebarContent;
+   if (data.tagByTitle == null) {
+      tagInfo = <p>Tag not found.</p>;
+   } else {
+      tagInfo = (
+         <Things things={data.tagByTitle.connectedThings} style="grid" />
+      );
+      sidebarContent = <TaxSidebar context={TagContext} />;
+   }
 
    return (
       <TagContext.Provider value={data.tagByTitle}>
          <StyledTagPage>
             <Head>
-               <title>{props.query.title} - OurDailies</title>
+               <title>
+                  {loading || data.tagByTitle == null
+                     ? props.query.title
+                     : data.tagByTitle.title}{' '}
+                  - OurDailies
+               </title>
             </Head>
             <Sidebar
                extraColumnContent={sidebarContent}

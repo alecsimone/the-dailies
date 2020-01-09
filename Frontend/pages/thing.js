@@ -37,9 +37,7 @@ const SingleThingContainer = styled.div`
       flex-grow: 1;
       position: relative;
       max-height: 100%;
-      overflow-y: auto;
-      scrollbar-color: #262626 black;
-      scrollbar-width: thin;
+      ${props => props.theme.scroll};
    }
 `;
 
@@ -57,7 +55,9 @@ const SingleThing = props => {
       const containerArray = document.getElementsByClassName(
          'fullThingContainer'
       );
-      containerArray[0].scrollTo(0, 0);
+      if (containerArray.length >= 1) {
+         containerArray[0].scrollTo(0, 0);
+      }
    }, [props.query.id]);
    /* eslint-enable */
 
@@ -70,17 +70,27 @@ const SingleThing = props => {
 
    if (error) return <Error error={error} />;
 
+   let thing;
+   if (data && data.thing != null) {
+      thing = <FullThing id={props.query.id} key={props.query.id} />;
+   } else {
+      thing = <p>Thing not found.</p>;
+   }
+
    if (data)
       return (
          <ThingContext.Provider value={data.thing}>
             <SingleThingContainer>
                <Head>
-                  <title>{data.thing.title} - OurDailies</title>
+                  <title>
+                     {data.thing == null
+                        ? "Couldn't find thing"
+                        : data.thing.title}{' '}
+                     - OurDailies
+                  </title>
                </Head>
                <Sidebar />
-               <div className="fullThingContainer">
-                  <FullThing id={props.query.id} key={props.query.id} />
-               </div>
+               <div className="fullThingContainer">{thing}</div>
             </SingleThingContainer>
          </ThingContext.Provider>
       );

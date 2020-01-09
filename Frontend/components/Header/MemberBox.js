@@ -58,6 +58,19 @@ const MemberBox = () => {
       }
    };
 
+   if (memberLoading) {
+      return (
+         <StyledMemberBox className="memberBox">
+            <a>...</a>
+            <img
+               src="/defaultAvatar.jpg"
+               alt="avatar"
+               id="avatar"
+               onClick={() => toggleMemberMenu()}
+            />
+         </StyledMemberBox>
+      );
+   }
    if (me == null) {
       return (
          <StyledMemberBox className="memberBox">
@@ -70,19 +83,6 @@ const MemberBox = () => {
                   <a>Log in</a>
                </Link>
             </p>
-         </StyledMemberBox>
-      );
-   }
-   if (memberLoading) {
-      return (
-         <StyledMemberBox className="memberBox">
-            <a>...</a>
-            <img
-               src="/defaultAvatar.jpg"
-               alt="avatar"
-               id="avatar"
-               onClick={() => toggleMemberMenu()}
-            />
          </StyledMemberBox>
       );
    }

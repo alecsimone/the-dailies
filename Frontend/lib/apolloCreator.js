@@ -93,7 +93,8 @@ function createClient({ headers }) {
                      locations
                   )
                );
-            if (networkError) console.log(`[Network error]: ${networkError}`);
+            if (networkError)
+               console.log(`[Network error]: ${networkError}`, networkError);
          }),
          requestLink,
          link
