@@ -15,13 +15,15 @@ const SET_THING_TITLE_MUTATION = gql`
 `;
 
 const StyledTitleBar = styled.div`
+   padding: 0;
+   margin-top: 1rem;
    h3,
    input {
       font-size: ${props => props.theme.smallHead};
       font-weight: 600;
       color: ${props => setAlpha(props.theme.mainText, 1)};
-      padding: 0 1rem;
-      margin: 0 0 1rem 0;
+      padding: 0;
+      margin: 0;
       line-height: 1.1;
       width: 100%;
       border: none;
@@ -32,7 +34,7 @@ const StyledTitleBar = styled.div`
 `;
 
 const TitleBar = props => {
-   const { context, limit } = props;
+   const { context, limit, canEdit = true } = props;
    const { title, id: thingID } = useContext(context);
    const [editable, setEditable] = useState(false);
    const [editedTitle, setEditedTitle] = useState(title);
@@ -50,6 +52,9 @@ const TitleBar = props => {
    };
 
    const editabilityHandler = () => {
+      if (!canEdit) {
+         return;
+      }
       setEditable(true);
       addEventListener('click', killEditability);
       addEventListener('keydown', killEditability);

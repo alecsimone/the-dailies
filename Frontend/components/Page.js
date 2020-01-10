@@ -54,6 +54,7 @@ const GlobalStyle = createGlobalStyle`
       padding: 0;
       margin: 0;
       font-size: ${theme.smallText};
+      line-height: 1.5;
       font-weight: 400;
    }
    body::-webkit-scrollbar {

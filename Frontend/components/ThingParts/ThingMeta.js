@@ -8,7 +8,9 @@ import {
    GET_CATEGORIES_QUERY
 } from '../NewThingForm';
 import { convertISOtoAgo } from '../../lib/ThingHandling';
-import { setLightness } from '../../styles/functions';
+import { setLightness, setAlpha } from '../../styles/functions';
+import AuthorLink from './AuthorLink';
+import ShortLink from './ShortLink';
 
 const SET_THING_PRIVACY_MUTATION = gql`
    mutation SET_THING_PRIVACY_MUTATION(
@@ -40,9 +42,10 @@ const SET_THING_CATEGORY_MUTATION = gql`
 const StyledThingMeta = styled.section`
    display: flex;
    justify-content: space-between;
+   flex-wrap: wrap;
    padding-left: 1.25rem;
    padding-top: 0.25rem;
-   color: ${props => setLightness(props.theme.highContrastGrey, 40)};
+   color: ${props => setLightness(props.theme.lowContrastGrey, 40)};
    select {
       color: ${props => setLightness(props.theme.highContrastGrey, 40)};
       border-top: none;
@@ -55,13 +58,25 @@ const StyledThingMeta = styled.section`
    }
    .info {
       font-size: ${props => props.theme.tinyText};
-      span {
-         margin-right: 1rem;
-      }
-      a {
-         color: ${props => setLightness(props.theme.highContrastGrey, 40)};
+      a.authorLink,
+      a.authorLink:visited {
+         color: ${props =>
+            setAlpha(setLightness(props.theme.majorColor, 80), 0.7)};
          &:hover {
-            color: ${props => props.theme.highContrastGrey};
+            color: ${props => setLightness(props.theme.majorColor, 50)};
+         }
+      }
+   }
+   .link {
+      font-size: ${props => props.theme.smallText};
+      width: 100%;
+      margin-top: 1rem;
+      a,
+      a:visited {
+         color: ${props => setLightness(props.theme.lowContrastGrey, 60)};
+         &:hover {
+            color: ${props => setLightness(props.theme.lowContrastGrey, 80)};
+            text-decoration: none;
          }
       }
    }
@@ -172,12 +187,10 @@ const ThingMeta = props => {
    return (
       <StyledThingMeta className="thingMeta">
          <div className="info">
-            <span className="author">By {author.displayName}</span>
-            <span className="ago">{convertISOtoAgo(createdAt)} ago</span>
-            via{' '}
-            <a href={link} target="_blank">
-               {link.length <= 60 ? link : `${link.substring(0, 60).trim()}...`}
-            </a>
+            <span className="ago">{convertISOtoAgo(createdAt)} ago</span>{' '}
+            <span className="author">
+               by <AuthorLink author={author} />
+            </span>
          </div>
          <div className="selections">
             <select onChange={selectCategory} value={partOfCategory.title}>
@@ -187,6 +200,11 @@ const ThingMeta = props => {
                {privacyOptions}
             </select>
          </div>
+         {link && (
+            <div className="link">
+               re: <ShortLink link={link} limit={100} />
+            </div>
+         )}
       </StyledThingMeta>
    );
 };

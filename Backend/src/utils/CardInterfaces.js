@@ -71,6 +71,7 @@ const fullThingFields = `
       __typename
       id
       title
+      color
    }
    comments {
       ${commentFields}

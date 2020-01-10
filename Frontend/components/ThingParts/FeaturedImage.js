@@ -29,14 +29,12 @@ const SET_FEATURED_IMAGE_MUTATION = gql`
 `;
 
 const StyledFeaturedImage = styled.div`
-   min-height: 18rem;
    position: relative;
    line-height: 0;
    width: 100%;
    img,
    video {
       width: 100%;
-      max-height: 1440px;
       object-fit: cover;
       z-index: 0;
    }
@@ -50,6 +48,12 @@ const StyledFeaturedImage = styled.div`
       align-items: center;
       justify-content: center;
       z-index: 2;
+      &.empty {
+         position: relative;
+         display: flex;
+         align-items: center;
+         justify-content: center;
+      }
       &.full {
          background: ${props => setAlpha(props.theme.background, 0.8)};
       }
@@ -74,15 +78,10 @@ const StyledFeaturedImage = styled.div`
          opacity: 0.8;
       }
    }
-   &.empty {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-   }
    &.image {
-      .titleBarContainer {
+      /* .titleBarContainer {
          z-index: 1;
-         position: absolute;
+         position: relative;
          bottom: 0;
          left: 0;
          width: 100%;
@@ -96,12 +95,12 @@ const StyledFeaturedImage = styled.div`
             rgba(0, 0, 0, 0.9) 60%
          );
          filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00000000', endColorstr='#000000',GradientType=0 );
-      }
+      } */
    }
 `;
 
 const FeaturedImage = props => {
-   const { context, titleLimit } = props;
+   const { context, titleLimit, canEdit } = props;
    const { featuredImage, id, __typename: type } = useContext(context);
 
    const [featuredImageInput, setFeaturedImageInput] = useState(
@@ -155,10 +154,9 @@ const FeaturedImage = props => {
             <ExplodingLink
                url={featuredImage}
                alt="Featured"
-               className="featuredImage"
+               className="featured"
             />
          )}
-         <TitleBar context={context} limit={titleLimit} />
          {showInput && (
             <form
                id="featuredImageForm"
@@ -178,6 +176,7 @@ const FeaturedImage = props => {
                />
             </form>
          )}
+         <TitleBar context={context} limit={titleLimit} canEdit={canEdit} />
          <img
             src={showInput ? '/red-x.png' : '/edit-this.png'}
             className="editThis"

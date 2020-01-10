@@ -103,3 +103,23 @@ export { getTweetIDFromLink };
 
 const urlFinder = /(?:(?:https?|ftp|file):\/\/|www\.|ftp\.)(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[-A-Z0-9+&@#\/%=~_|$?!:,.])*(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[A-Z0-9+&@#\/%=~_|$])/gim;
 export { urlFinder };
+
+const extractHostname = function(url) {
+   let hostname;
+   // find & remove protocol (http, ftp, etc.) and get hostname
+
+   if (url.indexOf('//') > -1) {
+      hostname = url.split('/')[2];
+   } else {
+      hostname = url.split('/')[0];
+   }
+
+   // find & remove port number
+   hostname = hostname.split(':')[0];
+   // find & remove "?"
+   hostname = hostname.split('?')[0];
+
+   return hostname;
+};
+
+export { extractHostname };

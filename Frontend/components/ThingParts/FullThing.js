@@ -10,14 +10,14 @@ import { setAlpha } from '../../styles/functions';
 
 const StyledFullThing = styled.article`
    margin: 1rem 0;
-   border-radius: 8px;
+   border-radius: 1rem;
    max-width: 1440px;
    position: absolute;
    top: 2rem;
    left: 4%;
    width: 100%;
-   /* padding: 2rem; */
-   /* background: ${props => setAlpha(props.theme.black, 0.4)}; */
+   padding: 3rem;
+   background: ${props => setAlpha(props.theme.black, 0.25)};
    &:after {
       position: absolute;
       content: '';

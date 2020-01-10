@@ -107,7 +107,6 @@ const StyledContent = styled.section`
    margin: 5rem 0;
    p,
    .graph {
-      line-height: 1.25;
       margin: 1.25rem 0;
    }
    p {

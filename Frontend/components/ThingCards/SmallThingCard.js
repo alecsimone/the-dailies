@@ -4,6 +4,7 @@ import { useContext } from 'react';
 import { setAlpha, setLightness } from '../../styles/functions';
 import { isVideo } from '../../lib/UrlHandling';
 import { convertISOtoAgo } from '../../lib/ThingHandling';
+import AuthorLink from '../ThingParts/AuthorLink';
 
 const StyledSmallThingCard = styled.article`
    margin: 0;
@@ -27,13 +28,28 @@ const StyledSmallThingCard = styled.article`
    }
    .meta {
       padding: 0 1.2rem;
-      color: ${props => props.theme.mainText};
       line-height: 1;
+      a,
+      a:visited {
+         color: ${props => setLightness(props.theme.mainText, 75)};
+         &:hover {
+            color: ${props => setLightness(props.theme.mainText, 90)};
+         }
+      }
       .tinyMeta {
          font-size: ${props => props.theme.tinyText};
          color: ${props => setLightness(props.theme.lowContrastGrey, 35)};
          font-weight: 300;
          margin-top: 0.6rem;
+         a,
+         a:visited {
+            color: ${props =>
+               setAlpha(setLightness(props.theme.majorColor, 80), 0.7)};
+            &:hover {
+               color: ${props => setLightness(props.theme.majorColor, 50)};
+               text-decoration: none;
+            }
+         }
       }
    }
 `;
@@ -81,7 +97,8 @@ const SmallThingCard = props => {
                </a>
             </Link>
             <div className="tinyMeta">
-               {timeAgo} ago by {author.displayName} in {category.title}
+               {timeAgo} ago by <AuthorLink author={author} /> in{' '}
+               {category.title}
             </div>
          </div>
       </StyledSmallThingCard>

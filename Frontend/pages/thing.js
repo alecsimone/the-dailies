@@ -74,22 +74,17 @@ const SingleThing = props => {
    let content;
    let pageTitle;
    let thing;
-   if (data) {
+   if (loading) {
+      content = <LoadingRing />;
+      pageTitle = 'Loading Thing';
+   } else if (data) {
       if (data.thing != null) {
          thing = <FullThing id={props.query.id} key={props.query.id} />;
       } else {
          thing = <p>Thing not found.</p>;
       }
-      content = (
-         <>
-            <Sidebar />
-            <div className="fullThingContainer">{thing}</div>
-         </>
-      );
+      content = thing;
       pageTitle = data.thing == null ? "Couldn't find thing" : data.thing.title;
-   } else if (loading) {
-      content = <LoadingRing />;
-      pageTitle = 'Loading Thing';
    }
 
    return (
@@ -98,7 +93,8 @@ const SingleThing = props => {
             <Head>
                <title>{pageTitle} - OurDailies</title>
             </Head>
-            {content}
+            <Sidebar />
+            <div className="fullThingContainer">{content}</div>
          </SingleThingContainer>
       </ThingContext.Provider>
    );
