@@ -1,3 +1,18 @@
+const commentFields = `
+   __typename
+   id
+   author {
+      __typename
+      id
+      displayName
+      avatar
+      rep
+   }
+   comment
+   createdAt
+   updatedAt
+`;
+
 const smallThingCardFields = `
    __typename
    id
@@ -56,20 +71,10 @@ const fullThingFields = `
       __typename
       id
       title
+      color
    }
    comments {
-      __typename
-      id
-      author {
-         __typename
-         id
-         displayName
-         avatar
-         rep
-      }
-      comment
-      createdAt
-      updatedAt
+      ${commentFields}
    }
    votes {
       __typename
@@ -122,16 +127,7 @@ const tagFields = `
       ${smallThingCardFields}
    }
    comments {
-      __typename
-      id
-      createdAt
-      author {
-         __typename
-         id
-         displayName
-         avatar
-         rep
-      }
+      ${commentFields}
    }
    createdAt
 `;

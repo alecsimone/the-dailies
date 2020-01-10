@@ -36,6 +36,9 @@ type Mutation {
   setFeaturedImage(featuredImage: String!, id: ID!, type: String!): Stuff
   setThingTitle(title: String!, thingID: ID!): Thing,
   setPublicity(public: Boolean!, id: ID!, type: String!): Stuff
+  addComment(comment: String!, id: ID!, type: String!): Stuff
+  editComment(commentID: ID!, stuffID: ID!, type: String!, newComment: String!): Stuff
+  deleteComment(commentID: ID!, stuffID: ID!, type: String!): Stuff
 }
 
 union Stuff = Thing | Tag

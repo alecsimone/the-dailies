@@ -31,14 +31,25 @@ const SINGLE_TAG_SUBSCRIPTION = gql`
 const StyledTagPage = styled.div`
    display: flex;
    .sidebar {
-      flex-basis: 25%;
+      flex-basis: 100%;
+      flex-wrap: wrap;
+      @media screen and (min-width: 800px) {
+         flex-basis: 25%;
+      }
    }
    .tagContainer {
       flex-basis: 75%;
+      flex-grow: 1;
       position: relative;
       max-height: 100%;
-      padding: 2rem;
       ${props => props.theme.scroll};
+      .things {
+         position: absolute;
+         top: 3rem;
+         left: 3%;
+         width: 94%;
+         max-height: 100%;
+      }
    }
 `;
 
@@ -66,13 +77,18 @@ const tag = props => {
       return <LoadingRing />;
    }
 
-   let tagInfo;
+   let tagThings;
    let sidebarContent;
    if (data.tagByTitle == null) {
-      tagInfo = <p>Tag not found.</p>;
+      tagThings = <p>Tag not found.</p>;
    } else {
-      tagInfo = (
-         <Things things={data.tagByTitle.connectedThings} style="grid" />
+      const sortedThings = data.tagByTitle.connectedThings.sort((a, b) => {
+         const aDate = new Date(a.createdAt);
+         const bDate = new Date(b.createdAt);
+         return bDate - aDate;
+      });
+      tagThings = (
+         <Things things={sortedThings} style="grid" cardSize="regular" />
       );
       sidebarContent = <TaxSidebar context={TagContext} />;
    }
@@ -92,7 +108,7 @@ const tag = props => {
                extraColumnContent={sidebarContent}
                extraColumnTitle="Tag"
             />
-            <div className="tagContainer">{tagInfo}</div>
+            <div className="tagContainer">{tagThings}</div>
          </StyledTagPage>
       </TagContext.Provider>
    );

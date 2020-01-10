@@ -18,7 +18,8 @@ function createClient({ headers }) {
    cache.writeData({
       data: {
          modalOpen: false,
-         modalContent: "You shouldn't be seeing this"
+         modalContent: "You shouldn't be seeing this",
+         sidebarOpen: true
       }
    });
 
@@ -99,7 +100,8 @@ function createClient({ headers }) {
          requestLink,
          link
       ]),
-      cache
+      cache,
+      resolvers: {}
    });
 }
 

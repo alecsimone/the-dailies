@@ -1,5 +1,5 @@
 const {
-   properUpdateTag,
+   properDeleteStuff,
    properUpdateStuff,
    isExplodingLink
 } = require('../../../utils/ThingHandling');
@@ -267,3 +267,64 @@ async function setPublicity(parent, {public, id, type}, ctx, info) {
    return updatedStuff;
 }
 exports.setPublicity = setPublicity;
+
+async function addComment(parent, {comment, id, type}, ctx, info) {
+   loggedInGate(ctx);
+   fullMemberGate(ctx.req.member);
+
+   const dataObj = {
+      comments: {
+         create:{
+            comment,
+            author: {
+               connect: {
+                  id: ctx.req.memberId
+               }
+            }
+         }
+      }
+   }
+
+   const updatedStuff = await properUpdateStuff(dataObj, id, type, ctx);
+   return updatedStuff;
+}
+exports.addComment = addComment;
+
+async function editComment(parent, { commentID, stuffID, type, newComment}, ctx, info) {
+   loggedInGate(ctx);
+   fullMemberGate(ctx.req.member);
+
+   const dataObj = {
+      comments: {
+         update: {
+            where: {
+               id: commentID,
+            },
+            data: {
+               comment: newComment
+            }
+         }
+      }
+   }
+
+   const updatedStuff = await properUpdateStuff(dataObj, stuffID, type, ctx);
+   return updatedStuff;
+}
+exports.editComment = editComment;
+
+async function deleteComment(parent, { commentID, stuffID, type }, ctx, info) {
+   loggedInGate(ctx);
+   fullMemberGate(ctx.req.member);
+
+   const dataObj = {
+      comments: {
+         delete: {
+            id: commentID
+         }
+      }
+   }
+
+   const updatedStuff = await properUpdateStuff(dataObj, stuffID, type, ctx);
+   return updatedStuff;
+}
+exports.deleteComment = deleteComment;

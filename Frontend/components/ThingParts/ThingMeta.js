@@ -58,6 +58,12 @@ const StyledThingMeta = styled.section`
       span {
          margin-right: 1rem;
       }
+      a {
+         color: ${props => setLightness(props.theme.highContrastGrey, 40)};
+         &:hover {
+            color: ${props => props.theme.highContrastGrey};
+         }
+      }
    }
 `;
 
@@ -155,11 +161,23 @@ const ThingMeta = props => {
       });
    };
 
+   if (id == null) {
+      return (
+         <StyledThingMeta>
+            <div className="info">Loading...</div>
+         </StyledThingMeta>
+      );
+   }
+
    return (
       <StyledThingMeta className="thingMeta">
          <div className="info">
             <span className="author">By {author.displayName}</span>
-            <span className="ago">{convertISOtoAgo(createdAt)} AGO</span>
+            <span className="ago">{convertISOtoAgo(createdAt)} ago</span>
+            via{' '}
+            <a href={link} target="_blank">
+               {link.length <= 60 ? link : `${link.substring(0, 60).trim()}...`}
+            </a>
          </div>
          <div className="selections">
             <select onChange={selectCategory} value={partOfCategory.title}>

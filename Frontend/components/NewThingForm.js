@@ -5,6 +5,7 @@ import { useMutation, useQuery } from '@apollo/react-hooks';
 import Router from 'next/router';
 import Error from './ErrorMessage.js';
 import { MemberContext } from './Account/MemberProvider';
+import { fullThingFields } from '../lib/CardInterfaces';
 
 const CREATE_THING_MUTATION = gql`
    mutation CREATE_THING_MUTATION(
@@ -23,7 +24,7 @@ const CREATE_THING_MUTATION = gql`
          tags: $tags
          privacy: $privacy
       ) {
-         id
+         ${fullThingFields}
       }
    }
 `;
@@ -189,13 +190,13 @@ const NewThingForm = props => {
                   privacy: formData.privacy
                }
             });
-            resetForm();
             Router.push({
                pathname: '/thing',
                query: {
                   id: res.data.createThing.id
                }
             });
+            resetForm();
          }}
       >
          <h2>New Thing</h2>
@@ -222,9 +223,7 @@ const NewThingForm = props => {
                name="category"
                id="category-select"
                onChange={handleChange}
-               value={
-                  memberLoading ? formData.category : me.defaultCategory.title
-               }
+               value={formData.category}
             >
                {categoryOptions}
             </select>

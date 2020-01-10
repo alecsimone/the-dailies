@@ -1,12 +1,14 @@
 import { TwitterTweetEmbed } from 'react-twitter-embed';
+import CardGenerator from './ThingCards/CardGenerator';
 import {
    getYoutubeVideoIdFromLink,
    getGfycatSlugFromLink,
    getTweetIDFromLink
 } from '../lib/UrlHandling';
+import { homeNoHTTP } from '../config';
 
 const ExplodingLink = props => {
-   const { url, keyString, alt } = props;
+   const { url, keyString, alt, className } = props;
    const lowerCaseURL = url.toLowerCase();
 
    // Images
@@ -18,14 +20,14 @@ const ExplodingLink = props => {
    ) {
       return (
          <a href={url} target="_blank" key={keyString}>
-            <img src={url} alt={alt == null ? '' : alt} />
+            <img src={url} className={className} alt={alt == null ? '' : alt} />
          </a>
       );
    }
 
    // Videos
    if (lowerCaseURL.includes('.mp4') || lowerCaseURL.includes('.webm')) {
-      return <video src={url} key={keyString} controls />;
+      return <video src={url} key={keyString} className={className} controls />;
    }
 
    // GfyCat
@@ -38,6 +40,7 @@ const ExplodingLink = props => {
                frameBorder="0"
                scrolling="no"
                allowFullScreen
+               className={className}
             />
          </div>
       );
@@ -70,6 +73,19 @@ const ExplodingLink = props => {
       return (
          <TwitterTweetEmbed tweetId={tweetID} options={{ theme: 'dark' }} />
       );
+   }
+
+   // Things on OurDailies
+   if (lowerCaseURL.includes(`${homeNoHTTP}/thing?id=`)) {
+      const thingIDPos = lowerCaseURL.indexOf('/thing?id=') + 10;
+      let thingID;
+      if (lowerCaseURL.includes('&')) {
+         const thingIDEnd = lowerCaseURL.indexOf('&');
+         thingID = url.substring(thingIDPos, thingIDEnd);
+      } else {
+         thingID = url.substring(thingIDPos);
+      }
+      return <CardGenerator key={thingID} id={thingID} cardType="small" />;
    }
 
    // General Links

@@ -10,13 +10,11 @@ function publishStuffUpdate(type, stuff, ctx) {
 }
 
 async function updateStuffAndNotifySubs(data, id, type, ctx) {
-   let mutationType;
+   const mutationType = `update${type}`;
    let fields;
    if (type === 'Tag') {
-      mutationType = 'updateTag';
       fields = tagFields;
    } else if (type === 'Thing') {
-      mutationType = 'updateThing';
       fields = fullThingFields;
    }
 
@@ -33,7 +31,41 @@ async function updateStuffAndNotifySubs(data, id, type, ctx) {
    return updatedStuff;
 }
 
-async function properUpdateStuff(dataObj, id, type, ctx) {
+async function editPermissionGate(dataObj, id, type, ctx) {
+   // Mods can edit anything
+   if (
+      ctx.req.member.roles.some(role =>
+         ['Admin', 'Editor', 'Moderator'].includes(role)
+      )
+   ) {
+      return true;
+   }
+
+   if (dataObj.comments) {
+      if (dataObj.comments.create) {
+         // Anyone can comment on anything
+         return true;
+      }
+      let commentID;
+      if (dataObj.comments.delete) {
+         commentID = dataObj.comments.delete.id;
+      } else if (dataObj.comments.update) {
+         commentID = dataObj.comments.update.id;
+      }
+      const comment = await ctx.db.query.comment(
+         {
+            where: {
+               id: commentID
+            }
+         },
+         `{author {id}}`
+      );
+      if (comment.author.id !== ctx.req.memberId) {
+         throw new Error('You do not have permission to edit that comment');
+      }
+      return true;
+   }
+
    const lowerCasedType = type.toLowerCase();
    let fields;
    if (type === 'Tag') {
@@ -41,7 +73,6 @@ async function properUpdateStuff(dataObj, id, type, ctx) {
    } else if (type === 'Thing') {
       fields = `{author {id}}`;
    }
-
    const oldStuff = await ctx.db.query[lowerCasedType](
       {
          where: {
@@ -51,27 +82,31 @@ async function properUpdateStuff(dataObj, id, type, ctx) {
       `${fields}`
    );
 
+   let ownerOrAuthor;
    if (type === 'Tag') {
-      if (
-         oldStuff.owner.id !== ctx.req.memberId &&
-         !ctx.req.member.roles.some(role =>
-            ['Admin', 'Editor', 'Moderator'].includes(role)
-         ) &&
-         !oldStuff.public
-      ) {
-         throw new Error('You do not have permission to edit that tag');
-      }
+      ownerOrAuthor = 'owner';
+   } else {
+      ownerOrAuthor = 'author';
    }
-   if (type === 'Thing') {
-      if (
-         oldStuff.author.id !== ctx.req.memberId ||
-         !ctx.req.member.roles.some(role =>
-            ['Admin', 'Editor', 'Moderator'].includes(role)
-         )
-      ) {
-         throw new Error('You do not have permission to edit that thing');
-      }
+
+   if (oldStuff[ownerOrAuthor].id !== ctx.req.memberId && !oldStuff.public) {
+      throw new Error(
+         `You do not have permission to edit that ${lowerCasedType}`
+      );
    }
+   return true;
+}
+
+async function properUpdateStuff(dataObj, id, type, ctx) {
+   const lowerCasedType = type.toLowerCase();
+   let fields;
+   if (type === 'Tag') {
+      fields = `{owner {id} public}`;
+   } else if (type === 'Thing') {
+      fields = `{author {id}}`;
+   }
+
+   editPermissionGate(dataObj, id, type, ctx);
 
    const updatedStuff = await updateStuffAndNotifySubs(dataObj, id, type, ctx);
    return updatedStuff;

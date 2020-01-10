@@ -27,10 +27,20 @@ const Sidebar = props => {
       extraColumnTitle == null ? 'You' : extraColumnTitle
    );
 
-   const [hidden, setHidden] = useState(false);
-
-   if (error) return <Error error={error} />;
-   if (loading) return <LoadingRing />;
+   // let localIsOpen = true;
+   // if (process.browser) {
+   //    localIsOpen = localStorage.getItem('sidebarOpen');
+   //    if (localIsOpen == null) {
+   //       localIsOpen = true;
+   //    }
+   //    if (localIsOpen == 'true') {
+   //       localIsOpen = true;
+   //    }
+   //    if (localIsOpen == 'false') {
+   //       localIsOpen = false;
+   //    }
+   // }
+   const [isOpen, setIsOpen] = useState(true);
 
    const headerColumns = ['You', 'Friends', 'Public'];
    if (extraColumnTitle != null) {
@@ -53,21 +63,28 @@ const Sidebar = props => {
       <div
          className="headerTab toggle"
          key="toggle"
-         onClick={() => setHidden(!hidden)}
+         onClick={() => {
+            localStorage.setItem('sidebarOpen', !isOpen);
+            setIsOpen(!isOpen);
+         }}
       >
-         {hidden ? '>' : '<'}
+         {isOpen ? '<' : '>'}
       </div>
    );
-   if (hidden) {
-      sidebarHeader = toggleButton;
-   } else {
+   if (isOpen) {
       sidebarHeader.push(toggleButton);
+   } else {
+      sidebarHeader = toggleButton;
    }
 
    let sidebarContent;
    if (selectedTab === 'You') {
       sidebarContent = (
-         <Things things={loading ? [] : data.things} style="list" />
+         <Things
+            things={loading ? [] : data.things}
+            style="list"
+            cardSize="small"
+         />
       );
    } else if (selectedTab === extraColumnTitle) {
       sidebarContent = extraColumnContent;
@@ -78,22 +95,17 @@ const Sidebar = props => {
       sidebarContents = <Error error={error} />;
    }
    if (data) {
-      sidebarContents = (
-         <>
-            <header className="sidebarHeader">{sidebarHeader}</header>
-            <div className="sidebarContainer">
-               <div className="sidebarContent">{sidebarContent}</div>
-            </div>
-         </>
-      );
-   }
-   if (loading) {
+      sidebarContents = sidebarContent;
+   } else if (loading) {
       sidebarContents = <LoadingRing />;
    }
 
    return (
-      <StyledSidebar className={`sidebar${hidden ? ' hidden' : ''}`}>
-         {sidebarContents}
+      <StyledSidebar className={`sidebar${!isOpen ? ' hidden' : ''}`}>
+         <header className="sidebarHeader">{sidebarHeader}</header>
+         <div className="sidebarContainer">
+            <div className="sidebarContent">{sidebarContents}</div>
+         </div>
       </StyledSidebar>
    );
 };

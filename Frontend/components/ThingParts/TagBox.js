@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import Link from 'next/link';
 import debounce from 'lodash.debounce';
 import { useCombobox } from 'downshift';
+import Tags from './Tags';
 import { ThingContext } from '../../pages/thing';
 import { setAlpha } from '../../styles/functions';
 
@@ -37,23 +38,6 @@ export { SEARCH_TAGS_QUERY };
 const StyledTagBox = styled.section`
    max-width: 100%;
    margin: 5rem 0;
-   h5 {
-      display: inline-block;
-      font-weight: 500;
-      font-size: ${props => props.theme.smallText};
-      color: ${props => props.theme.primaryAccent};
-      margin: 0.3rem 0rem;
-      margin-left: 0;
-   }
-   a {
-      display: inline-block;
-      margin: 0.3rem 0;
-      font-size: ${props => props.theme.smallText};
-      font-weight: 300;
-      &.final {
-         margin-right: 1.25rem;
-      }
-   }
    .tagboxContainer {
       display: inline-block;
       position: relative;
@@ -101,27 +85,6 @@ const debouncedAutocomplete = debounce(
 
 const TagBox = () => {
    const { id, partOfTags: tags } = useContext(ThingContext);
-
-   const tagElements = tags.map((tag, index) => {
-      if (index < tags.length - 1)
-         return (
-            <React.Fragment key={tag.id}>
-               <Link href={{ pathname: '/tag', query: { title: tag.title } }}>
-                  <a>{tag.title}</a>
-               </Link>
-               ,{' '}
-            </React.Fragment>
-         );
-      return (
-         <React.Fragment key={tag.id}>
-            <Link href={{ pathname: '/tag', query: { title: tag.title } }}>
-               <a key={tag.id} className="final">
-                  {tag.title}
-               </a>
-            </Link>
-         </React.Fragment>
-      );
-   });
 
    const [
       searchTags,
@@ -256,7 +219,7 @@ const TagBox = () => {
 
    return (
       <StyledTagBox>
-         <h5>Tags:</h5> {tagElements}
+         <Tags tags={tags} />
          <div className="tagboxContainer">
             <form {...getComboboxProps()}>
                <input

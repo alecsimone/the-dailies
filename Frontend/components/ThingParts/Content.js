@@ -130,7 +130,6 @@ const StyledContent = styled.section`
       .contentPiece {
          margin: 0rem 0;
          flex-grow: 1;
-         max-width: 1200px;
          img,
          video,
          iframe {
@@ -138,6 +137,9 @@ const StyledContent = styled.section`
          }
          iframe {
             width: 100%;
+         }
+         .smallThingCard {
+            margin: 2rem 0;
          }
       }
    }
@@ -149,7 +151,6 @@ const StyledContent = styled.section`
    }
    textarea {
       width: 100%;
-      font-size: ${props => props.theme.smallText};
    }
    button {
       margin: 1rem 0;
@@ -163,24 +164,6 @@ const StyledContent = styled.section`
             background: ${props => props.theme.majorColor};
             box-shadow: 0 0 6px
                ${props => setAlpha(props.theme.majorColor, 0.6)};
-         }
-      }
-      &.showToggle {
-         display: block;
-         border: none;
-         border-radius: 50%;
-         line-height: 0;
-         padding: 0.6rem;
-         font-size: 2rem;
-         font-weight: 900;
-         img {
-            filter: saturate(0) brightness(2);
-            opacity: 0.9;
-            width: 2rem;
-            transition: transform 0.75s;
-            &.down {
-               transform: rotateX(-180deg);
-            }
          }
       }
    }

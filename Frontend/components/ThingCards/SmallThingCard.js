@@ -3,9 +3,10 @@ import Link from 'next/link';
 import { useContext } from 'react';
 import { setAlpha, setLightness } from '../../styles/functions';
 import { isVideo } from '../../lib/UrlHandling';
+import { convertISOtoAgo } from '../../lib/ThingHandling';
 
 const StyledSmallThingCard = styled.article`
-   margin: 2rem 0;
+   margin: 0;
    width: 100%;
    max-width: 800px;
    display: inline-block;
@@ -39,7 +40,14 @@ const StyledSmallThingCard = styled.article`
 
 const SmallThingCard = props => {
    const {
-      data: { id, title, featuredImage, partOfCategory: category }
+      data: {
+         id,
+         title,
+         featuredImage,
+         partOfCategory: category,
+         createdAt,
+         author
+      }
    } = props;
 
    const { majorColor } = useContext(ThemeContext);
@@ -49,8 +57,11 @@ const SmallThingCard = props => {
       highlightColor = category.color;
    }
 
+   const timeAgo = convertISOtoAgo(createdAt);
+
    return (
       <StyledSmallThingCard
+         className="smallThingCard"
          style={{ borderLeft: `0.5rem solid ${highlightColor}` }}
       >
          <img
@@ -63,9 +74,15 @@ const SmallThingCard = props => {
          />
          <div className="meta">
             <Link href={{ pathname: '/thing', query: { id } }}>
-               <a>{title}</a>
+               <a>
+                  {title.length > 60
+                     ? `${title.substring(0, 60).trim()}...`
+                     : title}
+               </a>
             </Link>
-            <div className="tinyMeta">Some more metadata here</div>
+            <div className="tinyMeta">
+               {timeAgo} ago by {author.displayName} in {category.title}
+            </div>
          </div>
       </StyledSmallThingCard>
    );

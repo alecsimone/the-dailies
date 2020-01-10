@@ -9,7 +9,10 @@ const {
    addTagToThingHandler,
    setFeaturedImage,
    setThingTitle,
-   setPublicity
+   setPublicity,
+   addComment,
+   editComment,
+   deleteComment
 } = require('./Mutation/ThingMutations/Editing');
 
 const Mutations = {
@@ -25,7 +28,10 @@ const Mutations = {
    addTagToThing: addTagToThingHandler,
    setFeaturedImage,
    setThingTitle,
-   setPublicity
+   setPublicity,
+   addComment,
+   editComment,
+   deleteComment
 };
 
 module.exports = Mutations;

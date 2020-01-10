@@ -15,7 +15,7 @@ const SET_THING_TITLE_MUTATION = gql`
 `;
 
 const StyledTitleBar = styled.div`
-   h2,
+   h3,
    input {
       font-size: ${props => props.theme.smallHead};
       font-weight: 600;
@@ -32,7 +32,7 @@ const StyledTitleBar = styled.div`
 `;
 
 const TitleBar = props => {
-   const { context } = props;
+   const { context, limit } = props;
    const { title, id: thingID } = useContext(context);
    const [editable, setEditable] = useState(false);
    const [editedTitle, setEditedTitle] = useState(title);
@@ -88,9 +88,11 @@ const TitleBar = props => {
       );
    } else {
       titleElement = (
-         <h2 className="titleBar" id="titleBar" onClick={editabilityHandler}>
-            {title}
-         </h2>
+         <h3 className="titleBar" id="titleBar" onClick={editabilityHandler}>
+            {limit == null || limit >= title.length
+               ? title
+               : `${title.substring(0, limit).trim()}...`}
+         </h3>
       );
    }
 

@@ -101,6 +101,7 @@ const GlobalStyle = createGlobalStyle`
       border-bottom: 1px solid ${theme.lowContrastGrey};
       padding: 1rem 1rem calc(1rem - 1px) 1rem;
       font-family: "Proxima Nova", sans-serif;
+      font-size: ${props => props.theme.smallText};
       &:focus {
          border: 1px solid ${setAlpha(theme.highContrastGrey, 0.4)};
          border-bottom: 1px solid ${theme.highContrastGrey};
@@ -157,7 +158,9 @@ const StyledPage = styled.div`
    position: relative;
    display: grid;
    grid-template-rows: auto 1fr;
-   height: 100vh;
+   @media screen and (min-width: 800px) {
+      height: 100vh;
+   }
 `;
 
 const Page = props => (

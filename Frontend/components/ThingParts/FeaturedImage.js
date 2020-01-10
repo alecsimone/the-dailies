@@ -69,6 +69,10 @@ const StyledFeaturedImage = styled.div`
       width: ${props => props.theme.smallText};
       cursor: pointer;
       z-index: 3;
+      opacity: 0.4;
+      &:hover {
+         opacity: 0.8;
+      }
    }
    &.empty {
       display: flex;
@@ -86,20 +90,10 @@ const StyledFeaturedImage = styled.div`
          margin: 0;
          text-shadow: 0px 0px 2px black;
          background: black;
-         background: -moz-linear-gradient(
-            top,
-            rgba(0, 0, 0, 0) 0%,
-            rgba(0, 0, 0, 0.85) 75%
-         ); /* FF3.6-15 */
-         background: -webkit-linear-gradient(
-            top,
-            rgba(0, 0, 0, 0) 0%,
-            rgba(0, 0, 0, 0.85) 75%
-         ); /* Chrome10-25,Safari5.1-6 */
          background: linear-gradient(
             to bottom,
             rgba(0, 0, 0, 0) 0%,
-            rgba(0, 0, 0, 0.85) 75%
+            rgba(0, 0, 0, 0.9) 60%
          );
          filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00000000', endColorstr='#000000',GradientType=0 );
       }
@@ -107,7 +101,7 @@ const StyledFeaturedImage = styled.div`
 `;
 
 const FeaturedImage = props => {
-   const { context } = props;
+   const { context, titleLimit } = props;
    const { featuredImage, id, __typename: type } = useContext(context);
 
    const [featuredImageInput, setFeaturedImageInput] = useState(
@@ -151,10 +145,20 @@ const FeaturedImage = props => {
 
    return (
       <StyledFeaturedImage
-         className={isVideo(featuredImage) ? 'video' : 'image'}
+         className={
+            isVideo(featuredImage)
+               ? 'featuredImage video'
+               : 'featuredImage image'
+         }
       >
-         {featuredImage && <ExplodingLink url={featuredImage} alt="Featured" />}
-         <TitleBar context={context} />
+         {featuredImage && (
+            <ExplodingLink
+               url={featuredImage}
+               alt="Featured"
+               className="featuredImage"
+            />
+         )}
+         <TitleBar context={context} limit={titleLimit} />
          {showInput && (
             <form
                id="featuredImageForm"

@@ -1,3 +1,5 @@
+import { homeNoHTTP } from '../config';
+
 const isVideo = url => {
    if (url == null) return false;
    const lowerCasedURL = url.toLowerCase();
@@ -27,6 +29,7 @@ const isExplodingLink = url => {
       lowerCaseURL.includes('gfycat.com/') ||
       lowerCaseURL.includes('youtube.com/watch?v=') ||
       lowerCaseURL.includes('youtu.be/') ||
+      lowerCaseURL.includes(`${homeNoHTTP}/thing?id=`) ||
       (lowerCaseURL.includes('twitter.com/') &&
          lowerCaseURL.includes('/status/'))
    ) {

@@ -18,7 +18,7 @@ const StyledLogoBox = styled.div`
       font-size: ${props => props.theme.bigText};
       font-weight: 300;
       opacity: 0.9;
-      margin-left: 2rem;
+      margin-left: 1rem;
       color: ${props => props.theme.secondaryAccent};
       :hover {
          text-decoration: none;

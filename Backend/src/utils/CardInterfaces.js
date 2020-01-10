@@ -30,6 +30,22 @@ const smallThingCardFields = `
    privacy
 `;
 
+const commentFields = `
+   __typename
+   id
+   author {
+      __typename
+      id
+      displayName
+      avatar
+      rep
+   }
+   comment
+   createdAt
+   updatedAt
+`;
+exports.commentFields = commentFields;
+
 const fullThingFields = `
    __typename
    id
@@ -57,18 +73,7 @@ const fullThingFields = `
       title
    }
    comments {
-      __typename
-      id
-      author {
-         __typename
-         id
-         displayName
-         avatar
-         rep
-      }
-      comment
-      createdAt
-      updatedAt
+      ${commentFields}
    }
    votes {
       __typename
@@ -120,23 +125,8 @@ const tagFields = `
    connectedThings {
       ${smallThingCardFields}
    }
-   includedLinks {
-      __typename
-      id
-      title
-      url
-   }
    comments {
-      __typename
-      id
-      createdAt
-      author {
-         __typename
-         id
-         displayName
-         avatar
-         rep
-      }
+      ${commentFields}
    }
    createdAt
 `;

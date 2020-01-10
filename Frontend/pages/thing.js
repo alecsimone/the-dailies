@@ -16,6 +16,7 @@ const SINGLE_THING_QUERY = gql`
       }
    }
 `;
+export { SINGLE_THING_QUERY };
 
 const SINGLE_THING_SUBSCRIPTION = gql`
    subscription SINGLE_THING_SUBSCRIPTION($id: ID!) {
@@ -70,32 +71,37 @@ const SingleThing = props => {
 
    if (error) return <Error error={error} />;
 
+   let content;
+   let pageTitle;
    let thing;
-   if (data && data.thing != null) {
-      thing = <FullThing id={props.query.id} key={props.query.id} />;
-   } else {
-      thing = <p>Thing not found.</p>;
+   if (data) {
+      if (data.thing != null) {
+         thing = <FullThing id={props.query.id} key={props.query.id} />;
+      } else {
+         thing = <p>Thing not found.</p>;
+      }
+      content = (
+         <>
+            <Sidebar />
+            <div className="fullThingContainer">{thing}</div>
+         </>
+      );
+      pageTitle = data.thing == null ? "Couldn't find thing" : data.thing.title;
+   } else if (loading) {
+      content = <LoadingRing />;
+      pageTitle = 'Loading Thing';
    }
 
-   if (data)
-      return (
-         <ThingContext.Provider value={data.thing}>
-            <SingleThingContainer>
-               <Head>
-                  <title>
-                     {data.thing == null
-                        ? "Couldn't find thing"
-                        : data.thing.title}{' '}
-                     - OurDailies
-                  </title>
-               </Head>
-               <Sidebar />
-               <div className="fullThingContainer">{thing}</div>
-            </SingleThingContainer>
-         </ThingContext.Provider>
-      );
-
-   if (loading) return <LoadingRing />;
+   return (
+      <ThingContext.Provider value={loading || data.thing}>
+         <SingleThingContainer>
+            <Head>
+               <title>{pageTitle} - OurDailies</title>
+            </Head>
+            {content}
+         </SingleThingContainer>
+      </ThingContext.Provider>
+   );
 };
 
 export default SingleThing;
