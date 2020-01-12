@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 
 const LoadingContainer = styled.div`
    width: 100%;
@@ -52,4 +53,6 @@ const LoadingRing = () => (
       </div>
    </LoadingContainer>
 );
+LoadingRing.propTypes = {};
+
 export default LoadingRing;

@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import gql from 'graphql-tag';
 import { useQuery } from '@apollo/react-hooks';
 
@@ -20,6 +21,7 @@ const CURRENT_MEMBER_QUERY = gql`
 const MemberContext = React.createContext();
 
 const MemberProvider = props => {
+   const { children } = props;
    const { loading, error, data } = useQuery(CURRENT_MEMBER_QUERY);
    const memberData = {
       me: data == null ? null : data.me,
@@ -42,9 +44,12 @@ const MemberProvider = props => {
    // }
    return (
       <MemberContext.Provider value={memberData}>
-         {props.children}
+         {children}
       </MemberContext.Provider>
    );
+};
+MemberProvider.propTypes = {
+   children: PropTypes.node
 };
 
 export { MemberContext, CURRENT_MEMBER_QUERY };

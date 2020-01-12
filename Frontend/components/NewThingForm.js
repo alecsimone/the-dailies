@@ -1,6 +1,7 @@
 import gql from 'graphql-tag';
 import styled from 'styled-components';
 import { useContext, useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { useMutation, useQuery } from '@apollo/react-hooks';
 import Router from 'next/router';
 import Error from './ErrorMessage.js';
@@ -92,7 +93,7 @@ const StyledNewThingForm = styled.form`
    }
 `;
 
-const NewThingForm = props => {
+const NewThingForm = () => {
    const [
       createThing,
       { data: createData, loading: createLoading, error: createError }
@@ -256,5 +257,6 @@ const NewThingForm = props => {
       </StyledNewThingForm>
    );
 };
+NewThingForm.propTypes = {};
 
 export default NewThingForm;

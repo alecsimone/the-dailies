@@ -2,6 +2,7 @@ import gql from 'graphql-tag';
 import styled from 'styled-components';
 import { useMutation } from '@apollo/react-hooks';
 import { useContext, useState } from 'react';
+import PropTypes from 'prop-types';
 import { setAlpha } from '../../styles/functions';
 import ContentPiece from './ContentPiece';
 import ContentInput from './ContentInput';
@@ -107,7 +108,7 @@ const StyledContent = styled.section`
    margin: 5rem 0;
    p,
    .graph {
-      margin: 1.25rem 0;
+      margin: 1.6rem 0;
    }
    p {
       max-width: 1000px;
@@ -245,6 +246,12 @@ const Content = props => {
          />
       </StyledContent>
    );
+};
+Content.propTypes = {
+   context: PropTypes.shape({
+      Consumer: PropTypes.object.isRequired,
+      Provider: PropTypes.object.isRequired
+   }).isRequired
 };
 
 export default Content;

@@ -1,4 +1,5 @@
 import { useContext } from 'react';
+import PropTypes from 'prop-types';
 import gql from 'graphql-tag';
 import { useMutation, useQuery } from '@apollo/react-hooks';
 import styled from 'styled-components';
@@ -87,8 +88,11 @@ const MetaOption = props => (
       {props.name}
    </option>
 );
+MetaOption.propTypes = {
+   name: PropTypes.string.isRequired
+};
 
-const ThingMeta = props => {
+const ThingMeta = () => {
    const {
       id,
       author,
@@ -208,5 +212,6 @@ const ThingMeta = props => {
       </StyledThingMeta>
    );
 };
+ThingMeta.propTypes = {};
 
 export default ThingMeta;

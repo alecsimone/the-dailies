@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import Link from 'next/link';
+import PropTypes from 'prop-types';
 import { setAlpha } from '../../styles/functions';
 
 const StyledNav = styled.nav`
@@ -22,12 +23,13 @@ const StyledNav = styled.nav`
    }
 `;
 
-const NavButtons = props => (
+const NavButtons = () => (
    <StyledNav className="navButtons">
       <Link href="/new">
          <img src="/green-plus.png" className="newPost" alt="New Post" />
       </Link>
    </StyledNav>
 );
+NavButtons.propTypes = {};
 
 export default NavButtons;

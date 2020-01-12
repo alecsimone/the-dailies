@@ -2,6 +2,7 @@ import gql from 'graphql-tag';
 import { useMutation } from '@apollo/react-hooks';
 import styled from 'styled-components';
 import Link from 'next/link';
+import PropTypes from 'prop-types';
 import { CURRENT_MEMBER_QUERY } from '../Account/MemberProvider';
 import { setAlpha } from '../../styles/functions';
 
@@ -44,7 +45,7 @@ const StyledMemberMenu = styled.div`
    }
 `;
 
-const MemberMenu = props => {
+const MemberMenu = () => {
    const [logout, { data, loading, error }] = useMutation(LOGOUT_MUTATION);
 
    return (
@@ -93,5 +94,6 @@ const MemberMenu = props => {
       </StyledMemberMenu>
    );
 };
+MemberMenu.propTypes = {};
 
 export default MemberMenu;

@@ -1,6 +1,7 @@
 import Router from 'next/router';
 import NProgress from 'nprogress';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 import LogoBox from './LogoBox';
 import MemberBox from './MemberBox';
 import NavButtons from './NavButtons';
@@ -44,5 +45,6 @@ const Header = () => (
       </div>
    </StyledHeader>
 );
+Header.propTypes = {};
 
 export default Header;

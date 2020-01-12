@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { useMutation } from '@apollo/react-hooks';
 import Link from 'next/link';
 import { useContext, useState } from 'react';
+import PropTypes from 'prop-types';
 import { MemberContext } from '../Account/MemberProvider';
 import LinkyText from '../LinkyText';
 import { setAlpha } from '../../styles/functions';
@@ -214,6 +215,19 @@ const Comment = props => {
          </div>
       </StyledComment>
    );
+};
+Comment.propTypes = {
+   comment: PropTypes.shape({
+      comment: PropTypes.string.isRequired,
+      id: PropTypes.string.isRequired,
+      author: PropTypes.shape({
+         avatar: PropTypes.string,
+         id: PropTypes.string.isRequired,
+         displayName: PropTypes.string.isRequired
+      })
+   }),
+   type: PropTypes.oneOf(['Tag', 'Thing']).isRequired,
+   id: PropTypes.string.isRequired
 };
 
 export default Comment;

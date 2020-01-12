@@ -1,4 +1,5 @@
 import { useContext } from 'react';
+import PropTypes from 'prop-types';
 import FeaturedImage from './ThingParts/FeaturedImage';
 import Content from './ThingParts/Content';
 import TaxMeta from './TaxMeta';
@@ -16,6 +17,12 @@ const TaxSidebar = props => {
          <Comments context={context} key={`${title}-Comments`} />
       </div>
    );
+};
+TaxSidebar.propTypes = {
+   context: PropTypes.shape({
+      Consumer: PropTypes.object.isRequired,
+      Provider: PropTypes.object.isRequired
+   }).isRequired
 };
 
 export default TaxSidebar;

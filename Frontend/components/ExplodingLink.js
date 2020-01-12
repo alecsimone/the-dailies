@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { TwitterTweetEmbed } from 'react-twitter-embed';
 import CardGenerator from './ThingCards/CardGenerator';
 import {
@@ -94,6 +95,12 @@ const ExplodingLink = props => {
          {url}
       </a>
    );
+};
+ExplodingLink.propTypes = {
+   url: PropTypes.string.isRequired,
+   keyString: PropTypes.string,
+   alt: PropTypes.string,
+   className: PropTypes.string
 };
 
 export default ExplodingLink;

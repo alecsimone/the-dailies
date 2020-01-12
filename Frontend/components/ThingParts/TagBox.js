@@ -1,6 +1,7 @@
 import React, { useContext, useState } from 'react';
 import gql from 'graphql-tag';
 import { useMutation, useLazyQuery } from '@apollo/react-hooks';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Link from 'next/link';
 import debounce from 'lodash.debounce';
@@ -245,5 +246,6 @@ const TagBox = () => {
       </StyledTagBox>
    );
 };
+TagBox.propTypes = {};
 
 export default TagBox;

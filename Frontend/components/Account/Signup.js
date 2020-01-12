@@ -1,6 +1,7 @@
 import { useMutation } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 import { useState } from 'react';
+import PropTypes from 'prop-types';
 import Router from 'next/router';
 import Error from '../ErrorMessage.js';
 import StyledForm from '../../styles/StyledForm';
@@ -23,6 +24,7 @@ const SIGNUP_MUTATION = gql`
 `;
 
 const Signup = props => {
+   const { callBack } = props;
    const [displayName, setDisplayName] = useState('');
    const [password, setPassword] = useState('');
    const [email, setEmail] = useState('');
@@ -53,8 +55,8 @@ const Signup = props => {
             Router.push({
                pathname: '/'
             });
-            if (props.callBack) {
-               props.callBack();
+            if (callBack) {
+               callBack();
             }
          }}
       >
@@ -92,6 +94,9 @@ const Signup = props => {
          </fieldset>
       </StyledForm>
    );
+};
+Signup.propTypes = {
+   callBack: PropTypes.func
 };
 
 export default Signup;

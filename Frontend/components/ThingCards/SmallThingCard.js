@@ -1,6 +1,7 @@
 import styled, { ThemeContext } from 'styled-components';
 import Link from 'next/link';
 import { useContext } from 'react';
+import PropTypes from 'prop-types';
 import { setAlpha, setLightness } from '../../styles/functions';
 import { isVideo } from '../../lib/UrlHandling';
 import { convertISOtoAgo } from '../../lib/ThingHandling';
@@ -103,6 +104,19 @@ const SmallThingCard = props => {
          </div>
       </StyledSmallThingCard>
    );
+};
+SmallThingCard.propTypes = {
+   data: PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      title: PropTypes.string.isRequired,
+      featuredImage: PropTypes.string,
+      partOfCategory: PropTypes.shape({
+         color: PropTypes.string,
+         title: PropTypes.string.isRequired
+      }),
+      createdAt: PropTypes.string,
+      author: PropTypes.object.isRequired
+   })
 };
 
 export default SmallThingCard;

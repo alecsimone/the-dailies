@@ -1,6 +1,7 @@
 import gql from 'graphql-tag';
 import { useQuery } from '@apollo/react-hooks';
 import { useContext, useState } from 'react';
+import PropTypes from 'prop-types';
 import { MemberContext } from './Account/MemberProvider';
 import { smallThingCardFields } from '../lib/CardInterfaces';
 import Things from './Archives/Things';
@@ -20,26 +21,14 @@ const Sidebar = props => {
    const { extraColumnTitle, extraColumnContent } = props;
    const { me, loading: memberLoading } = useContext(MemberContext);
    const { loading, error, data } = useQuery(THINGS_BY_MEMBER_QUERY, {
-      variables: { id: memberLoading || me == null ? '' : me.id }
+      variables: { id: memberLoading || me == null ? '' : me.id },
+      pollInterval: 15000
    });
 
    const [selectedTab, setSelectedTab] = useState(
       extraColumnTitle == null ? 'You' : extraColumnTitle
    );
 
-   // let localIsOpen = true;
-   // if (process.browser) {
-   //    localIsOpen = localStorage.getItem('sidebarOpen');
-   //    if (localIsOpen == null) {
-   //       localIsOpen = true;
-   //    }
-   //    if (localIsOpen == 'true') {
-   //       localIsOpen = true;
-   //    }
-   //    if (localIsOpen == 'false') {
-   //       localIsOpen = false;
-   //    }
-   // }
    const [isOpen, setIsOpen] = useState(true);
 
    const headerColumns = ['You', 'Friends', 'Public'];
@@ -108,6 +97,10 @@ const Sidebar = props => {
          </div>
       </StyledSidebar>
    );
+};
+Sidebar.propTypes = {
+   extraColumnTitle: PropTypes.string,
+   extraColumnContent: PropTypes.node
 };
 
 export default Sidebar;

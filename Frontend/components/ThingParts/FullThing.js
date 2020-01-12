@@ -14,10 +14,10 @@ const StyledFullThing = styled.article`
    max-width: 1440px;
    position: absolute;
    top: 2rem;
-   left: 4%;
-   width: 100%;
+   left: 3%;
+   width: 94%;
    padding: 3rem;
-   background: ${props => setAlpha(props.theme.black, 0.25)};
+   background: ${props => setAlpha(props.theme.black, 0.6)};
    &:after {
       position: absolute;
       content: '';

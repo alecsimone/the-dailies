@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 const ContentInput = props => {
    const { currentContent, updateContent, postContent } = props;
 
@@ -27,6 +29,11 @@ const ContentInput = props => {
          </button>
       </form>
    );
+};
+ContentInput.propTypes = {
+   currentContent: PropTypes.string.isRequired,
+   updateContent: PropTypes.func.isRequired,
+   postContent: PropTypes.func.isRequired
 };
 
 export default ContentInput;

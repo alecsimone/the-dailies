@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import PropTypes from 'prop-types';
 import ContentInput from './ContentInput';
 import LinkyText from '../LinkyText';
 
@@ -52,6 +53,12 @@ const ContentPiece = props => {
          </div>
       </div>
    );
+};
+ContentPiece.propTypes = {
+   id: PropTypes.string.isRequired,
+   rawContentString: PropTypes.string.isRequired,
+   deleteContentPiece: PropTypes.func.isRequired,
+   editContentPiece: PropTypes.func.isRequired
 };
 
 export default ContentPiece;

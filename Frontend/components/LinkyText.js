@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { urlFinder, isExplodingLink } from '../lib/UrlHandling';
 import ExplodingLink from './ExplodingLink';
 
@@ -70,6 +71,9 @@ const LinkyText = props => {
    );
 
    return paragraphElements;
+};
+LinkyText.propTypes = {
+   text: PropTypes.string.isRequired
 };
 
 export default LinkyText;

@@ -1,4 +1,5 @@
 import { useQuery } from '@apollo/react-hooks';
+import PropTypes from 'prop-types';
 import { SINGLE_THING_QUERY } from '../../pages/thing';
 import SmallThingCard from './SmallThingCard';
 import Error from '../ErrorMessage';
@@ -19,6 +20,10 @@ const CardGenerator = props => {
       return <Error error={error} />;
    }
    return <LoadingRing />;
+};
+CardGenerator.propTypes = {
+   id: PropTypes.string.isRequired,
+   cardType: PropTypes.oneOf(['small', 'regular'])
 };
 
 export default CardGenerator;

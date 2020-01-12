@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 import SmallThingCard from '../ThingCards/SmallThingCard';
 import ThingCard from '../ThingCards/ThingCard';
 
@@ -35,6 +36,11 @@ const Things = props => {
    return (
       <StyledThings className={`things ${style}`}>{thingCards}</StyledThings>
    );
+};
+Things.propTypes = {
+   things: PropTypes.array.isRequired,
+   style: PropTypes.oneOf(['list', 'grid']),
+   cardSize: PropTypes.oneOf(['regular', 'small'])
 };
 
 export default Things;

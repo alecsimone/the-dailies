@@ -1,4 +1,5 @@
 import Head from 'next/head';
+import PropTypes from 'prop-types';
 
 const Meta = () => (
    <Head>
@@ -18,5 +19,6 @@ const Meta = () => (
       <title>Our Dailies</title>
    </Head>
 );
+Meta.propTypes = {};
 
 export default Meta;

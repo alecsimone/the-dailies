@@ -2,6 +2,7 @@ import gql from 'graphql-tag';
 import { useMutation } from '@apollo/react-hooks';
 import styled from 'styled-components';
 import { useContext, useState } from 'react';
+import PropTypes from 'prop-types';
 import { setAlpha } from '../../styles/functions';
 
 const SET_THING_TITLE_MUTATION = gql`
@@ -106,6 +107,14 @@ const TitleBar = props => {
          {titleElement}
       </StyledTitleBar>
    );
+};
+TitleBar.propTypes = {
+   context: PropTypes.shape({
+      Consumer: PropTypes.object.isRequired,
+      Provider: PropTypes.object.isRequired
+   }),
+   limit: PropTypes.number,
+   canEdit: PropTypes.bool
 };
 
 export default TitleBar;

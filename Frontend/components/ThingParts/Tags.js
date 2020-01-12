@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import Link from 'next/link';
 import styled from 'styled-components';
 
@@ -52,6 +53,14 @@ const Tags = props => {
          <h5>Tags:</h5> {tagElements}
       </StyledTags>
    );
+};
+Tags.propTypes = {
+   tags: PropTypes.arrayOf(
+      PropTypes.shape({
+         id: PropTypes.string.isRequired,
+         title: PropTypes.string.isRequired
+      })
+   )
 };
 
 export default Tags;

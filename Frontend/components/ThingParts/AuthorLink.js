@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import PropTypes from 'prop-types';
 
 const AuthorLink = props => {
    const { author } = props;
@@ -7,6 +8,12 @@ const AuthorLink = props => {
          <a className="authorLink">{author.displayName}</a>
       </Link>
    );
+};
+AuthorLink.propTypes = {
+   author: PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      displayName: PropTypes.string.isRequired
+   })
 };
 
 export default AuthorLink;

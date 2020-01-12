@@ -1,6 +1,7 @@
 import gql from 'graphql-tag';
 import styled from 'styled-components';
 import { useContext, useState } from 'react';
+import PropTypes from 'prop-types';
 import { useMutation } from '@apollo/react-hooks';
 import TitleBar from './TitleBar';
 import ExplodingLink from '../ExplodingLink';
@@ -185,6 +186,14 @@ const FeaturedImage = props => {
          />
       </StyledFeaturedImage>
    );
+};
+FeaturedImage.propTypes = {
+   context: PropTypes.shape({
+      Consumer: PropTypes.object.isRequired,
+      Provider: PropTypes.object.isRequired
+   }),
+   titleLimit: PropTypes.number,
+   canEdit: PropTypes.bool
 };
 
 export default FeaturedImage;

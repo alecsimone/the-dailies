@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 import { setAlpha } from '../../styles/functions';
 
 const StyledCommentInput = styled.form`
@@ -49,6 +50,11 @@ const CommentInput = props => {
          </button>
       </StyledCommentInput>
    );
+};
+CommentInput.propTypes = {
+   currentComment: PropTypes.string.isRequired,
+   updateComment: PropTypes.func.isRequired,
+   postComment: PropTypes.func.isRequired
 };
 
 export default CommentInput;

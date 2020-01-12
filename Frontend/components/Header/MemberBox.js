@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { useContext, useState } from 'react';
+import PropTypes from 'prop-types';
 import Link from 'next/link';
 import { MemberContext } from '../Account/MemberProvider';
 import MemberMenu from './MemberMenu';
@@ -107,5 +108,6 @@ const MemberBox = () => {
       </StyledMemberBox>
    );
 };
+MemberBox.propTypes = {};
 
 export default MemberBox;

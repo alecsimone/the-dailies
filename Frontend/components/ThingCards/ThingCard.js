@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import PropTypes from 'prop-types';
 import styled, { ThemeContext } from 'styled-components';
 import Link from 'next/link';
 import FeaturedImage from '../ThingParts/FeaturedImage';
@@ -110,6 +111,18 @@ const ThingCard = props => {
          </StyledThingCard>
       </ThingCardContext.Provider>
    );
+};
+ThingCard.propTypes = {
+   data: PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      featuredImage: PropTypes.string,
+      partOfCategory: PropTypes.object,
+      author: PropTypes.object,
+      privacy: PropTypes.bool,
+      content: PropTypes.arrayOf(PropTypes.object),
+      partOfTags: PropTypes.arrayOf(PropTypes.object),
+      createdAt: PropTypes.string
+   })
 };
 
 export default ThingCard;

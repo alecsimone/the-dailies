@@ -1,6 +1,7 @@
 import { useMutation } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 import { useState } from 'react';
+import PropTypes from 'prop-types';
 import Router from 'next/router';
 import Error from '../ErrorMessage.js';
 import StyledForm from '../../styles/StyledForm';
@@ -17,6 +18,8 @@ const LOGIN_MUTATION = gql`
 `;
 
 const Login = props => {
+   const { redirect, callBack } = props;
+
    const [email, setEmail] = useState('');
    const [password, setPassword] = useState('');
 
@@ -40,13 +43,13 @@ const Login = props => {
                variables: { email, password },
                refetchQueries: [{ query: CURRENT_MEMBER_QUERY }]
             });
-            if (props.redirect !== false) {
+            if (redirect !== false) {
                Router.push({
                   pathname: '/'
                });
             }
-            if (props.callBack) {
-               props.callBack();
+            if (callBack) {
+               callBack();
             }
          }}
       >
@@ -75,6 +78,10 @@ const Login = props => {
          </fieldset>
       </StyledForm>
    );
+};
+Login.propTypes = {
+   redirect: PropTypes.bool,
+   callBack: PropTypes.func
 };
 
 export default Login;

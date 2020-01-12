@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import psl from 'psl';
 import { extractHostname } from '../../lib/UrlHandling';
 
@@ -33,6 +34,10 @@ const ShortLink = props => {
          {shortlink}
       </a>
    );
+};
+ShortLink.propTypes = {
+   link: PropTypes.string.isRequired,
+   limit: PropTypes.number.isRequired
 };
 
 export default ShortLink;

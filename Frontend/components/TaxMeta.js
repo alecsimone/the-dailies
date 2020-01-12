@@ -1,6 +1,7 @@
 import gql from 'graphql-tag';
 import styled from 'styled-components';
 import { useContext, useState } from 'react';
+import PropTypes from 'prop-types';
 import { useMutation } from '@apollo/react-hooks';
 import { MemberContext } from './Account/MemberProvider';
 
@@ -129,6 +130,12 @@ const TaxMeta = props => {
          {checkbox}
       </StyledTaxMeta>
    );
+};
+TaxMeta.propTypes = {
+   context: PropTypes.shape({
+      Consumer: PropTypes.object.isRequired,
+      Provider: PropTypes.object.isRequired
+   }).isRequired
 };
 
 export default TaxMeta;

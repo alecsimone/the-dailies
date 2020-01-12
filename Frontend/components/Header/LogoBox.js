@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 
 const StyledLogoBox = styled.div`
    display: inline-flex;
@@ -36,5 +37,6 @@ const LogoBox = () => (
       </Link>
    </StyledLogoBox>
 );
+LogoBox.propTypes = {};
 
 export default LogoBox;

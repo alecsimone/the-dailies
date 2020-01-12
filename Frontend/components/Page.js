@@ -1,5 +1,6 @@
 import styled, { ThemeProvider, createGlobalStyle } from 'styled-components';
 import { removeDirectivesFromDocument } from 'apollo-utilities';
+import PropTypes from 'prop-types';
 import Meta from './Header/Meta';
 import Header from './Header/Header';
 import Sidebar from './Sidebar';
@@ -178,4 +179,7 @@ const Page = props => (
       </ThemeProvider>
    </MemberProvider>
 );
+Page.propTypes = {
+   children: PropTypes.node
+};
 export default Page;
