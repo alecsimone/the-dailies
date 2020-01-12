@@ -165,7 +165,7 @@ const StyledPage = styled.div`
    }
 `;
 
-const Page = props => (
+const Page = ({ children }) => (
    <MemberProvider>
       <ThemeProvider theme={theme}>
          <StyledPage id="page">
@@ -173,7 +173,7 @@ const Page = props => (
             <Header />
             <>
                <GlobalStyle />
-               {props.children}
+               {children}
             </>
          </StyledPage>
       </ThemeProvider>
