@@ -1,9 +1,7 @@
 import styled, { ThemeProvider, createGlobalStyle } from 'styled-components';
-import { removeDirectivesFromDocument } from 'apollo-utilities';
 import PropTypes from 'prop-types';
 import Meta from './Header/Meta';
 import Header from './Header/Header';
-import Sidebar from './Sidebar';
 import MemberProvider from './Account/MemberProvider';
 import { setAlpha } from '../styles/functions';
 
@@ -63,11 +61,11 @@ const GlobalStyle = createGlobalStyle`
       background: ${theme.background};
    }
    body::-webkit-scrollbar-track {
-      -webkit-box-shadow: inset 0 0 1px rgba(0,0,0,0.3);
+      box-shadow: inset 0 0 1px rgba(0,0,0,0.3);
    }
    body::-webkit-scrollbar-thumb {
       border-radius: 3px;
-      -webkit-box-shadow: inset 0 0 1px rgba(0,0,0,0.5);
+      box-shadow: inset 0 0 1px rgba(0,0,0,0.5);
       background: ${theme.lowContrastGrey};
    }
    a {
