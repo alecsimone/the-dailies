@@ -2,7 +2,7 @@ import styled, { ThemeContext } from 'styled-components';
 import Link from 'next/link';
 import { useContext } from 'react';
 import PropTypes from 'prop-types';
-import { setAlpha, setLightness } from '../../styles/functions';
+import { setAlpha, setLightness, setSaturation } from '../../styles/functions';
 import { isVideo } from '../../lib/UrlHandling';
 import { convertISOtoAgo } from '../../lib/ThingHandling';
 import AuthorLink from '../ThingParts/AuthorLink';
@@ -12,7 +12,6 @@ const StyledSmallThingCard = styled.article`
    width: 100%;
    max-width: 800px;
    display: inline-block;
-   /* background: hsla(45, 1%, 7.5%, 0.9); */
    background: ${props => props.theme.background};
    border: 1px solid ${props => setAlpha(props.theme.lowContrastGrey, 0.1)};
    padding: 1.2rem;

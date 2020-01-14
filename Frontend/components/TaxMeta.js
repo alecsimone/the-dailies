@@ -86,7 +86,7 @@ const StyledTaxMeta = styled.div`
 
 const TaxMeta = props => {
    const { context } = props;
-   const { __typename: type, public: isPublic, owner, id } = useContext(
+   const { __typename: type, public: isPublic, author, id } = useContext(
       context
    );
 
@@ -105,8 +105,10 @@ const TaxMeta = props => {
       });
    };
 
-   let checkbox;
-   if (owner.id === me.id) {
+   let checkbox = (
+      <span className="checkbox">{isPublic ? 'Public' : 'Private'}</span>
+   );
+   if (me && author.id === me.id) {
       checkbox = (
          <div className="checkbox">
             <label htmlFor="publicity">
@@ -126,7 +128,7 @@ const TaxMeta = props => {
 
    return (
       <StyledTaxMeta>
-         Owned by {owner.displayName}
+         Created by {author.displayName}
          {checkbox}
       </StyledTaxMeta>
    );

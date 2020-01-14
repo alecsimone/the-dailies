@@ -14,6 +14,9 @@ const StyledMemberBox = styled.div`
    font-weight: 600;
    position: relative;
    z-index: 3;
+   p {
+      margin: 0.5rem;
+   }
    a,
    a:visited {
       color: ${props => props.theme.secondaryAccent};

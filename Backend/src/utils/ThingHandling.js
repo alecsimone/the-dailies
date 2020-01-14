@@ -69,7 +69,7 @@ async function editPermissionGate(dataObj, id, type, ctx) {
    const lowerCasedType = type.toLowerCase();
    let fields;
    if (type === 'Tag') {
-      fields = `{owner {id} public}`;
+      fields = `{author {id} public}`;
    } else if (type === 'Thing') {
       fields = `{author {id}}`;
    }
@@ -82,14 +82,7 @@ async function editPermissionGate(dataObj, id, type, ctx) {
       `${fields}`
    );
 
-   let ownerOrAuthor;
-   if (type === 'Tag') {
-      ownerOrAuthor = 'owner';
-   } else {
-      ownerOrAuthor = 'author';
-   }
-
-   if (oldStuff[ownerOrAuthor].id !== ctx.req.memberId && !oldStuff.public) {
+   if (oldStuff.author.id !== ctx.req.memberId && !oldStuff.public) {
       throw new Error(
          `You do not have permission to edit that ${lowerCasedType}`
       );
@@ -98,14 +91,6 @@ async function editPermissionGate(dataObj, id, type, ctx) {
 }
 
 async function properUpdateStuff(dataObj, id, type, ctx) {
-   const lowerCasedType = type.toLowerCase();
-   let fields;
-   if (type === 'Tag') {
-      fields = `{owner {id} public}`;
-   } else if (type === 'Thing') {
-      fields = `{author {id}}`;
-   }
-
    editPermissionGate(dataObj, id, type, ctx);
 
    const updatedStuff = await updateStuffAndNotifySubs(dataObj, id, type, ctx);
@@ -124,7 +109,7 @@ async function searchAvailableTags(searchTerm, ctx, exact) {
                {
                   OR: [
                      {
-                        owner: {
+                        author: {
                            id: ctx.req.memberId
                         }
                      },
@@ -136,7 +121,7 @@ async function searchAvailableTags(searchTerm, ctx, exact) {
             ]
          }
       },
-      `{id title owner {id} public}`
+      `{id title author {id} public}`
    );
 }
 exports.searchAvailableTags = searchAvailableTags;
@@ -162,24 +147,59 @@ const isExplodingLink = url => {
 };
 exports.isExplodingLink = isExplodingLink;
 
-const canSeeThingGate = (thingData, ctx) => {
-   if (ctx.req.memberId === thingData.author.id) {
-   } else if (thingData.privacy === 'Private') {
-      throw new Error("You don't have permission to see that thing.");
-   } else if (
+const canSeeThing = (memberID, thingData) => {
+   if (memberID === thingData.author.id) {
+      return true;
+   }
+   if (thingData.privacy === 'Private') {
+      return false;
+   }
+   if (
       thingData.privacy === 'Friends' &&
-      !thingData.author.friends.some(friend => friend.id === ctx.req.memberId)
+      !thingData.author.friends.some(friend => friend.id === memberID)
    ) {
-      throw new Error("You don't have permission to see that thing.");
-   } else if (
+      return false;
+   }
+   if (
       thingData.privacy === 'FriendsOfFriends' &&
       !thingData.author.friends.some(friend =>
-         friend.friends.some(
-            friendOfFriend => friendOfFriend.id === ctx.req.memberId
-         )
+         friend.friends.some(friendOfFriend => friendOfFriend.id === memberID)
       )
    ) {
-      throw new Error("You don't have permission to see that thing.");
+      return false;
    }
+   return true;
+};
+exports.canSeeThing = canSeeThing;
+
+const canSeeThingGate = async (where, ctx) => {
+   const thingData = await ctx.db.query.thing(
+      {
+         where
+      },
+      `{privacy author {id friends {id friends {id}}}}`
+   );
+
+   if (canSeeThing(ctx.req.memberId, thingData)) {
+      return true;
+   }
+   throw new Error("You don't have permission to see that thing.");
 };
 exports.canSeeThingGate = canSeeThingGate;
+
+const canSeeTagGate = async (where, ctx) => {
+   const tagData = await ctx.db.query.tag(
+      {
+         where
+      },
+      `{public author {id friends {id friends {id}}}}`
+   );
+
+   if (tagData.public) {
+      return true;
+   }
+   if (ctx.req.memberId !== tagData.author.id) {
+      throw new Error("You don't have permission to see that tag.");
+   }
+};
+exports.canSeeTagGate = canSeeTagGate;

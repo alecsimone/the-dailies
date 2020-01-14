@@ -1,10 +1,11 @@
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { MemberContext } from './Account/MemberProvider';
 import StyledSidebar from '../styles/StyledSidebar';
 import MyThings from './Archives/MyThings';
 import MyFriendsThings from './Archives/MyFriendsThings';
 import PublicThings from './Archives/PublicThings';
+import LoadingRing from './LoadingRing';
 
 const Sidebar = props => {
    const { extraColumnTitle, extraColumnContent } = props;
@@ -14,9 +15,23 @@ const Sidebar = props => {
       extraColumnTitle == null ? 'You' : extraColumnTitle
    );
 
+   // useEffect(() => {
+   //    if (extraColumnTitle != null) {
+   //       setSelectedTab(extraColumnTitle);
+   //    }
+   // }, [extraColumnTitle]);
+
    const [isOpen, setIsOpen] = useState(true);
 
-   const headerColumns = ['You', 'Friends', 'Public'];
+   if (memberLoading) {
+      return (
+         <StyledSidebar>
+            <LoadingRing />
+         </StyledSidebar>
+      );
+   }
+
+   const headerColumns = me ? ['You', 'Friends', 'Public'] : ['Public'];
    if (extraColumnTitle != null) {
       headerColumns.push(extraColumnTitle);
    }

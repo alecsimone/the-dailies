@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { useMutation } from '@apollo/react-hooks';
 import { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
+import { MemberContext } from '../Account/MemberProvider';
 import { setAlpha } from '../../styles/functions';
 import ContentPiece from './ContentPiece';
 import ContentInput from './ContentInput';
@@ -171,8 +172,15 @@ const StyledContent = styled.section`
 
 const Content = props => {
    const { context } = props;
-   const { content, id, __typename: type } = useContext(context);
+   const { content, id, __typename: type, author } = useContext(context);
    const [newContentPiece, setNewContentPiece] = useState('');
+
+   const { me } = useContext(MemberContext);
+
+   let canEdit = false;
+   if (me && author.id === me.id) {
+      canEdit = true;
+   }
 
    const [
       addContentPiece,
@@ -229,6 +237,7 @@ const Content = props => {
    const contentElements = content.map(contentPiece => (
       <ContentPiece
          id={contentPiece.id}
+         canEdit={canEdit}
          rawContentString={contentPiece.content}
          deleteContentPiece={deletePiece}
          editContentPiece={editPiece}
@@ -239,11 +248,13 @@ const Content = props => {
    return (
       <StyledContent>
          {contentElements}
-         <ContentInput
-            currentContent={newContentPiece}
-            updateContent={setNewContentPiece}
-            postContent={sendNewContentPiece}
-         />
+         {canEdit && (
+            <ContentInput
+               currentContent={newContentPiece}
+               updateContent={setNewContentPiece}
+               postContent={sendNewContentPiece}
+            />
+         )}
       </StyledContent>
    );
 };

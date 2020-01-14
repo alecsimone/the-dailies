@@ -23,25 +23,22 @@ const MemberContext = React.createContext();
 const MemberProvider = props => {
    const { children } = props;
    const { loading, error, data } = useQuery(CURRENT_MEMBER_QUERY);
+
    const memberData = {
-      me: data == null ? null : data.me,
       loading
    };
-   // if (loading) {
-   //    memberData = {
-   //       id: 'Loading...',
-   //       displayName: 'Loading...',
-   //       rep: 'Loading...',
-   //       defaultPrivacy: 'Loading...',
-   //       defaultCategory: {
-   //          title: 'Loading...'
-   //       }
-   //    };
-   // } else if (data == null) {
-   //    memberData = null;
-   // } else {
-   //    memberData = data.me;
-   // }
+   if (error) {
+      memberData.me = 'error';
+   }
+
+   if (data) {
+      if (data.me == null) {
+         memberData.me = null;
+      } else {
+         memberData.me = data.me;
+      }
+   }
+
    return (
       <MemberContext.Provider value={memberData}>
          {children}

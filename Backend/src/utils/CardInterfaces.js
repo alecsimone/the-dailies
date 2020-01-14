@@ -112,7 +112,7 @@ const tagFields = `
    id
    title
    featuredImage
-   owner {
+   author {
       __typename
       id
       displayName

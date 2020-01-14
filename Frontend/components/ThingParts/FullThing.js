@@ -18,7 +18,7 @@ const StyledFullThing = styled.article`
    left: 3%;
    width: 94%;
    padding: 3rem;
-   background: ${props => setAlpha(props.theme.black, 0.6)};
+   background: ${props => setAlpha(props.theme.black, 0.8)};
    &:after {
       position: absolute;
       content: '';

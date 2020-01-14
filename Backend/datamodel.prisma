@@ -30,8 +30,8 @@ type ContentPiece {
 type Tag {
   id: ID! @id @unique
   title: String!
+  author: Member
   featuredImage: String
-  owner: Member
   public: Boolean @default(value: false)
   content: [ContentPiece!] @scalarList(strategy:RELATION)
   connectedThings: [Thing]

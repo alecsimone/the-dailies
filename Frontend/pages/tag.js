@@ -44,6 +44,7 @@ const StyledTagPage = styled.div`
       position: relative;
       max-height: 100%;
       ${props => props.theme.scroll};
+      padding: 2rem;
       .things {
          position: absolute;
          top: 3rem;
@@ -74,45 +75,63 @@ const tag = props => {
       variables: { id }
    });
 
+   let pageTitle;
+   let content;
+   let sidebar;
    if (error) {
-      return <Error error={error} />;
+      pageTitle = 'Unavailable Tag';
+      content = <Error error={error} />;
+      sidebar = <Sidebar key="error" />;
    }
    if (loading) {
-      return <LoadingRing />;
+      pageTitle = 'Loading Tag';
+      content = <LoadingRing />;
+      sidebar = (
+         <Sidebar
+            extraColumnContent={<p>Loading Tag...</p>}
+            extraColumnTitle="Tag"
+            key="loading"
+         />
+      );
+   } else if (data) {
+      if (data.tagByTitle != null) {
+         pageTitle = data.tagByTitle.title;
+         const sortedThings = data.tagByTitle.connectedThings.sort((a, b) => {
+            const aDate = new Date(a.createdAt);
+            const bDate = new Date(b.createdAt);
+            return bDate - aDate;
+         });
+         content = (
+            <Things
+               things={sortedThings}
+               displayType="grid"
+               cardSize="regular"
+            />
+         );
+         sidebar = (
+            <Sidebar
+               extraColumnContent={<TaxSidebar context={TagContext} />}
+               extraColumnTitle="Tag"
+               key="tagData"
+            />
+         );
+      } else {
+         pageTitle = "Couldn't find tag";
+         content = <p>Tag not found.</p>;
+         siidebar = <Sidebar key="missingTag" />;
+      }
    }
 
-   let tagThings;
-   let sidebarContent;
-   if (data.tagByTitle == null) {
-      tagThings = <p>Tag not found.</p>;
-   } else {
-      const sortedThings = data.tagByTitle.connectedThings.sort((a, b) => {
-         const aDate = new Date(a.createdAt);
-         const bDate = new Date(b.createdAt);
-         return bDate - aDate;
-      });
-      tagThings = (
-         <Things things={sortedThings} displayType="grid" cardSize="regular" />
-      );
-      sidebarContent = <TaxSidebar context={TagContext} />;
-   }
+   console.log(sidebar);
 
    return (
-      <TagContext.Provider value={data.tagByTitle}>
+      <TagContext.Provider value={loading || error || data.tagByTitle}>
          <StyledTagPage>
             <Head>
-               <title>
-                  {loading || data.tagByTitle == null
-                     ? title
-                     : data.tagByTitle.title}{' '}
-                  - OurDailies
-               </title>
+               <title>{pageTitle}- OurDailies</title>
             </Head>
-            <Sidebar
-               extraColumnContent={sidebarContent}
-               extraColumnTitle="Tag"
-            />
-            <div className="tagContainer">{tagThings}</div>
+            {sidebar}
+            <div className="tagContainer">{content}</div>
          </StyledTagPage>
       </TagContext.Provider>
    );

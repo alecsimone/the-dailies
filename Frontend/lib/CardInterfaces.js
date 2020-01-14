@@ -23,6 +23,12 @@ const smallThingCardFields = `
       id
       displayName
       avatar
+      friends {
+         id
+         friends {
+            id
+         }
+      }
    }
    content {
       __typename
@@ -112,7 +118,7 @@ const tagFields = `
    id
    title
    featuredImage
-   owner {
+   author {
       __typename
       id
       displayName

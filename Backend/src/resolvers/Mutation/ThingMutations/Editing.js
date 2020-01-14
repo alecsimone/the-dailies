@@ -20,7 +20,7 @@ async function addTagToThing(tagTitle, thingID, ctx) {
                {
                   OR: [
                      {
-                        owner: {
+                        author: {
                            id: ctx.req.memberId
                         }
                      },
@@ -32,7 +32,7 @@ async function addTagToThing(tagTitle, thingID, ctx) {
             ]
          }
       },
-      `{id owner {id} public}`
+      `{id author {id} public}`
    );
    let dataObj;
    if (existingTags[0] != null) {
@@ -48,7 +48,7 @@ async function addTagToThing(tagTitle, thingID, ctx) {
          partOfTags: {
             create: {
                title: tagTitle,
-               owner: {
+               author: {
                   connect: {
                      id: ctx.req.memberId
                   }

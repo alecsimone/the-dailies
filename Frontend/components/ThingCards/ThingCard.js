@@ -13,8 +13,9 @@ const StyledThingCard = styled.div`
    width: 100%;
    padding: 1.25rem;
    max-width: 60rem;
-   background: ${props => setAlpha(props.theme.black, 0.25)};
-   box-shadow: 0 2px 4px hsla(0, 0%, 0%, 0.4);
+   background: ${props => setAlpha(props.theme.black, 0.75)};
+   border: 1px solid ${props => setAlpha(props.theme.lowContrastGrey, 0.1)};
+   box-shadow: 0 3px 6px hsla(0, 0%, 0%, 0.4);
    border-radius: 3px;
    border-top: 0.5rem solid ${props => props.theme.majorColor};
    .featuredImage {
@@ -118,7 +119,7 @@ ThingCard.propTypes = {
       featuredImage: PropTypes.string,
       partOfCategory: PropTypes.object,
       author: PropTypes.object,
-      privacy: PropTypes.bool,
+      privacy: PropTypes.string,
       content: PropTypes.arrayOf(PropTypes.object),
       partOfTags: PropTypes.arrayOf(PropTypes.object),
       createdAt: PropTypes.string

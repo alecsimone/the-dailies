@@ -185,7 +185,7 @@ const Comment = props => {
                   )}
                </div>
             </div>
-            {me.id === comment.author.id && (
+            {me && me.id === comment.author.id && (
                <div className="buttons">
                   <img
                      className="deleteCommentButton"

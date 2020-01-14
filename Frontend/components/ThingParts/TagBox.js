@@ -3,9 +3,9 @@ import gql from 'graphql-tag';
 import { useMutation, useLazyQuery } from '@apollo/react-hooks';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import Link from 'next/link';
 import debounce from 'lodash.debounce';
 import { useCombobox } from 'downshift';
+import { MemberContext } from '../Account/MemberProvider';
 import Tags from './Tags';
 import { ThingContext } from '../../pages/thing';
 import { setAlpha } from '../../styles/functions';
@@ -85,7 +85,14 @@ const debouncedAutocomplete = debounce(
 );
 
 const TagBox = () => {
-   const { id, partOfTags: tags } = useContext(ThingContext);
+   const { id, partOfTags: tags, author } = useContext(ThingContext);
+
+   const { me } = useContext(MemberContext);
+
+   let canEdit = false;
+   if (me && author.id === me.id) {
+      canEdit = true;
+   }
 
    const [
       searchTags,
@@ -221,28 +228,32 @@ const TagBox = () => {
    return (
       <StyledTagBox>
          <Tags tags={tags} />
-         <div className="tagboxContainer">
-            <form {...getComboboxProps()}>
-               <input
-                  {...getInputProps({
-                     type: 'text',
-                     id: 'addTag',
-                     name: 'addTag',
-                     placeholder: '+ Add Tag',
-                     value: tagInput,
-                     disabled: addTagLoading,
-                     className: `addTag ${addTagLoading ? 'loading' : 'ready'}`,
-                     onKeyDown: e => {
-                        e.persist();
-                        handleKeyDown(e);
-                     }
-                  })}
-               />
-            </form>
-            {(searchData || searchLoading) && tagInput !== '' && isOpen && (
-               <div className="resultsContainer">{searchResults}</div>
-            )}
-         </div>
+         {canEdit && (
+            <div className="tagboxContainer">
+               <form {...getComboboxProps()}>
+                  <input
+                     {...getInputProps({
+                        type: 'text',
+                        id: 'addTag',
+                        name: 'addTag',
+                        placeholder: '+ Add Tag',
+                        value: tagInput,
+                        disabled: addTagLoading,
+                        className: `addTag ${
+                           addTagLoading ? 'loading' : 'ready'
+                        }`,
+                        onKeyDown: e => {
+                           e.persist();
+                           handleKeyDown(e);
+                        }
+                     })}
+                  />
+               </form>
+               {(searchData || searchLoading) && tagInput !== '' && isOpen && (
+                  <div className="resultsContainer">{searchResults}</div>
+               )}
+            </div>
+         )}
       </StyledTagBox>
    );
 };

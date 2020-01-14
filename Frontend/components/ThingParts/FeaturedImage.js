@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useMutation } from '@apollo/react-hooks';
+import { MemberContext } from '../Account/MemberProvider';
 import TitleBar from './TitleBar';
 import ExplodingLink from '../ExplodingLink';
 import { setAlpha } from '../../styles/functions';
@@ -101,8 +102,22 @@ const StyledFeaturedImage = styled.div`
 `;
 
 const FeaturedImage = props => {
-   const { context, titleLimit, canEdit } = props;
-   const { featuredImage, id, __typename: type } = useContext(context);
+   let { canEdit } = props;
+   const { context, titleLimit } = props;
+
+   const { author, featuredImage, id, __typename: type } = useContext(context);
+
+   const { me } = useContext(MemberContext);
+
+   if (me) {
+      if (author.id !== me.id) {
+         canEdit = false;
+      } else if (canEdit !== false) {
+         canEdit = true;
+      }
+   } else {
+      canEdit = false;
+   }
 
    const [featuredImageInput, setFeaturedImageInput] = useState(
       featuredImage == null ? '' : featuredImage
@@ -158,7 +173,7 @@ const FeaturedImage = props => {
                className="featured"
             />
          )}
-         {showInput && (
+         {canEdit && showInput && (
             <form
                id="featuredImageForm"
                className={featuredImage == null ? 'empty' : 'full'}
@@ -178,12 +193,14 @@ const FeaturedImage = props => {
             </form>
          )}
          <TitleBar context={context} limit={titleLimit} canEdit={canEdit} />
-         <img
-            src={showInput ? '/red-x.png' : '/edit-this.png'}
-            className="editThis"
-            alt="edit featured"
-            onClick={showInputHandler}
-         />
+         {canEdit && (
+            <img
+               src={showInput ? '/red-x.png' : '/edit-this.png'}
+               className="editThis"
+               alt="edit featured"
+               onClick={showInputHandler}
+            />
+         )}
       </StyledFeaturedImage>
    );
 };

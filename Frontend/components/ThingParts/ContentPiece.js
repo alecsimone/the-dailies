@@ -6,7 +6,13 @@ import LinkyText from '../LinkyText';
 const ContentPiece = props => {
    const [editable, setEditable] = useState(false);
 
-   const { id, rawContentString, deleteContentPiece, editContentPiece } = props;
+   const {
+      id,
+      rawContentString,
+      deleteContentPiece,
+      editContentPiece,
+      canEdit
+   } = props;
 
    const [editedContent, setEditedContent] = useState(rawContentString);
 
@@ -39,23 +45,26 @@ const ContentPiece = props => {
          <div className="contentPiece" key={id}>
             {content}
          </div>
-         <div className="buttons">
-            <img
-               src="/edit-this.png"
-               className="edit buttons"
-               onClick={() => setEditable(!editable)}
-            />
-            <img
-               src="/red-x.png"
-               className="delete buttons"
-               onClick={() => deleteContentPiece(id)}
-            />
-         </div>
+         {canEdit && (
+            <div className="buttons">
+               <img
+                  src="/edit-this.png"
+                  className="edit buttons"
+                  onClick={() => setEditable(!editable)}
+               />
+               <img
+                  src="/red-x.png"
+                  className="delete buttons"
+                  onClick={() => deleteContentPiece(id)}
+               />
+            </div>
+         )}
       </div>
    );
 };
 ContentPiece.propTypes = {
    id: PropTypes.string.isRequired,
+   canEdit: PropTypes.bool,
    rawContentString: PropTypes.string.isRequired,
    deleteContentPiece: PropTypes.func.isRequired,
    editContentPiece: PropTypes.func.isRequired
