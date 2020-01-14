@@ -1,4 +1,4 @@
-import Signup from '../components/Signup.js';
+import Signup from '../components/Account/Signup.js';
 
 const SignupPage = props => <Signup />;
 

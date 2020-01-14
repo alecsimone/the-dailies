@@ -26,7 +26,7 @@ const StyledThings = styled.div`
 `;
 
 const Things = props => {
-   const { things, style, cardSize } = props;
+   const { things, displayType, cardSize } = props;
    const thingCards = things.map(thing => {
       if (cardSize === 'regular') {
          return <ThingCard data={thing} key={thing.id} />;
@@ -34,12 +34,14 @@ const Things = props => {
       return <SmallThingCard data={thing} key={thing.id} />;
    });
    return (
-      <StyledThings className={`things ${style}`}>{thingCards}</StyledThings>
+      <StyledThings className={`things ${displayType}`}>
+         {thingCards}
+      </StyledThings>
    );
 };
 Things.propTypes = {
    things: PropTypes.array.isRequired,
-   style: PropTypes.oneOf(['list', 'grid']),
+   displayType: PropTypes.oneOf(['list', 'grid']),
    cardSize: PropTypes.oneOf(['regular', 'small'])
 };
 

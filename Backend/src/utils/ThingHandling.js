@@ -161,3 +161,25 @@ const isExplodingLink = url => {
    return false;
 };
 exports.isExplodingLink = isExplodingLink;
+
+const canSeeThingGate = (thingData, ctx) => {
+   if (ctx.req.memberId === thingData.author.id) {
+   } else if (thingData.privacy === 'Private') {
+      throw new Error("You don't have permission to see that thing.");
+   } else if (
+      thingData.privacy === 'Friends' &&
+      !thingData.author.friends.some(friend => friend.id === ctx.req.memberId)
+   ) {
+      throw new Error("You don't have permission to see that thing.");
+   } else if (
+      thingData.privacy === 'FriendsOfFriends' &&
+      !thingData.author.friends.some(friend =>
+         friend.friends.some(
+            friendOfFriend => friendOfFriend.id === ctx.req.memberId
+         )
+      )
+   ) {
+      throw new Error("You don't have permission to see that thing.");
+   }
+};
+exports.canSeeThingGate = canSeeThingGate;

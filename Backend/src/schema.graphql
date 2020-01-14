@@ -4,7 +4,9 @@ type Query {
    me: Member
    categories: [Category]
    thing(where: ThingWhereUniqueInput!): Thing
-   things(where: ThingWhereInput, orderBy: ThingOrderByInput): [Thing]!
+   myThings(orderBy: ThingOrderByInput): [Thing]!
+   myFriendsThings(orderBy: ThingOrderByInput): [Thing]!
+   publicThings(orderBy: ThingOrderByInput): [Thing]!
    searchTags(searchTerm: String): [Tag]!
    tagByTitle(title: String!): Tag
 }

@@ -39,6 +39,7 @@ const SingleThingContainer = styled.div`
       position: relative;
       max-height: 100%;
       ${props => props.theme.scroll};
+      padding: 2rem;
    }
 `;
 
@@ -69,11 +70,13 @@ const SingleThing = props => {
       variables: { id: props.query.id }
    });
 
-   if (error) return <Error error={error} />;
-
    let content;
    let pageTitle;
    let thing;
+   if (error) {
+      content = <Error error={error} />;
+      pageTitle = 'Unavailable Thing';
+   }
    if (loading) {
       content = <LoadingRing />;
       pageTitle = 'Loading Thing';
@@ -88,7 +91,7 @@ const SingleThing = props => {
    }
 
    return (
-      <ThingContext.Provider value={loading || data.thing}>
+      <ThingContext.Provider value={loading || error || data.thing}>
          <SingleThingContainer>
             <Head>
                <title>{pageTitle} - OurDailies</title>

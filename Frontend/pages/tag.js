@@ -2,7 +2,8 @@ import gql from 'graphql-tag';
 import { useQuery, useSubscription } from '@apollo/react-hooks';
 import styled from 'styled-components';
 import Head from 'next/head';
-import React, { useState } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import Sidebar from '../components/Sidebar';
 import Error from '../components/ErrorMessage';
 import LoadingRing from '../components/LoadingRing';
@@ -57,9 +58,12 @@ const TagContext = React.createContext();
 export { TagContext };
 
 const tag = props => {
+   const {
+      query: { id, title }
+   } = props;
    const { loading, error, data } = useQuery(SINGLE_TAG_QUERY, {
       variables: {
-         title: props.query.title
+         title
       }
    });
 
@@ -67,7 +71,7 @@ const tag = props => {
       data: subscriptionData,
       loading: subscriptionLoading
    } = useSubscription(SINGLE_TAG_SUBSCRIPTION, {
-      variables: { id: props.query.id }
+      variables: { id }
    });
 
    if (error) {
@@ -88,7 +92,7 @@ const tag = props => {
          return bDate - aDate;
       });
       tagThings = (
-         <Things things={sortedThings} style="grid" cardSize="regular" />
+         <Things things={sortedThings} displayType="grid" cardSize="regular" />
       );
       sidebarContent = <TaxSidebar context={TagContext} />;
    }
@@ -99,7 +103,7 @@ const tag = props => {
             <Head>
                <title>
                   {loading || data.tagByTitle == null
-                     ? props.query.title
+                     ? title
                      : data.tagByTitle.title}{' '}
                   - OurDailies
                </title>
@@ -112,6 +116,12 @@ const tag = props => {
          </StyledTagPage>
       </TagContext.Provider>
    );
+};
+tag.propTypes = {
+   query: PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      title: PropTypes.string.isRequired
+   }).isRequired
 };
 
 export default tag;

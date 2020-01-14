@@ -1,5 +1,6 @@
 import styled, { ThemeContext } from 'styled-components';
 import { useContext } from 'react';
+import PropTypes from 'prop-types';
 import { ThingContext } from '../../pages/thing';
 import Content from './Content';
 import TagBox from './TagBox';
@@ -27,7 +28,7 @@ const StyledFullThing = styled.article`
    }
 `;
 
-const FullThing = props => {
+const FullThing = () => {
    const { id, partOfCategory: category } = useContext(ThingContext);
 
    const { majorColor } = useContext(ThemeContext);
@@ -50,5 +51,6 @@ const FullThing = props => {
       </StyledFullThing>
    );
 };
+FullThing.propTypes = {};
 
 export default FullThing;

@@ -1,14 +1,24 @@
 const { forwardTo } = require('prisma-binding');
-const { categories, searchTags, tagByTitle } = require('./Query/PageQueries');
+const {
+   categories,
+   searchTags,
+   tagByTitle,
+   thing,
+   myThings,
+   myFriendsThings,
+   publicThings
+} = require('./Query/PageQueries');
 const { me } = require('./Query/MemberQueries');
 
 const Query = {
    me,
    categories,
-   thing: forwardTo('db'),
-   things: forwardTo('db'),
    searchTags,
-   tagByTitle
+   tagByTitle,
+   thing,
+   myThings,
+   myFriendsThings,
+   publicThings
 };
 
 module.exports = Query;

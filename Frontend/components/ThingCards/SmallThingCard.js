@@ -63,7 +63,8 @@ const SmallThingCard = props => {
          featuredImage,
          partOfCategory: category,
          createdAt,
-         author
+         author,
+         privacy
       }
    } = props;
 
@@ -99,7 +100,11 @@ const SmallThingCard = props => {
             </Link>
             <div className="tinyMeta">
                {timeAgo} ago by <AuthorLink author={author} /> in{' '}
-               {category.title}
+               {category.title}. It's{' '}
+               {privacy === 'Public' || privacy === 'Private'
+                  ? privacy
+                  : `for ${privacy} only`}
+               .
             </div>
          </div>
       </StyledSmallThingCard>
