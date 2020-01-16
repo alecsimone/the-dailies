@@ -54,6 +54,29 @@ async function tagByTitle(parent, { title }, ctx, info) {
 }
 exports.tagByTitle = tagByTitle;
 
+async function categoryByTitle(parent, { title }, ctx, info) {
+   const categories = await ctx.db.query.categories(
+      {
+         where: {
+            title
+         }
+      },
+      info
+   );
+
+   if (
+      categories[0].connectedThings &&
+      categories[0].connectedThings.length > 0
+   ) {
+      categories[0].connectedThings = categories[0].connectedThings.filter(
+         thing => canSeeThing(ctx.req.memberId, thing)
+      );
+   }
+
+   return categories[0];
+}
+exports.categoryByTitle = categoryByTitle;
+
 async function thing(parent, { where }, ctx, info) {
    await canSeeThingGate(where, ctx);
 

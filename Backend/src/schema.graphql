@@ -9,6 +9,7 @@ type Query {
    publicThings(orderBy: ThingOrderByInput): [Thing]!
    searchTags(searchTerm: String): [Tag]!
    tagByTitle(title: String!): Tag
+   categoryByTitle(title: String!): Category
 }
 
 type Mutation {
@@ -41,13 +42,15 @@ type Mutation {
   addComment(comment: String!, id: ID!, type: String!): Stuff
   editComment(commentID: ID!, stuffID: ID!, type: String!, newComment: String!): Stuff
   deleteComment(commentID: ID!, stuffID: ID!, type: String!): Stuff
+  editLink(link: String!, id: ID!): Thing
 }
 
-union Stuff = Thing | Tag
+union Stuff = Thing | Tag | Category
 
 type Subscription {
    thing(id: ID!): ThingSubscriptionPayload
    tag: TagSubscriptionPayload
+   category: CategorySubscriptionPayload
 }
 
 type SuccessMessage {

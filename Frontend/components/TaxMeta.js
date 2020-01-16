@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useMutation } from '@apollo/react-hooks';
-import { MemberContext } from './Account/MemberProvider';
 
 const SET_PUBLICITY_MUTATION = gql`
    mutation SET_PUBLICITY_MUTATION(
@@ -85,12 +84,10 @@ const StyledTaxMeta = styled.div`
 `;
 
 const TaxMeta = props => {
-   const { context } = props;
+   const { context, canEdit } = props;
    const { __typename: type, public: isPublic, author, id } = useContext(
       context
    );
-
-   const { me } = useContext(MemberContext);
 
    const [setPublicity] = useMutation(SET_PUBLICITY_MUTATION);
 
@@ -105,30 +102,33 @@ const TaxMeta = props => {
       });
    };
 
-   let checkbox = (
-      <span className="checkbox">{isPublic ? 'Public' : 'Private'}</span>
-   );
-   if (me && author.id === me.id) {
+   let checkbox;
+   if (type === 'Tag') {
       checkbox = (
-         <div className="checkbox">
-            <label htmlFor="publicity">
-               Public
-               <input
-                  type="checkbox"
-                  id="publicity"
-                  name="publicity"
-                  checked={isPublic}
-                  onChange={togglePublicity}
-               />
-               <span className="customCheckbox" />
-            </label>
-         </div>
+         <span className="checkbox">{isPublic ? 'Public' : 'Private'}</span>
       );
+      if (canEdit) {
+         checkbox = (
+            <div className="checkbox">
+               <label htmlFor="publicity">
+                  Public
+                  <input
+                     type="checkbox"
+                     id="publicity"
+                     name="publicity"
+                     checked={isPublic}
+                     onChange={togglePublicity}
+                  />
+                  <span className="customCheckbox" />
+               </label>
+            </div>
+         );
+      }
    }
 
    return (
       <StyledTaxMeta>
-         Created by {author.displayName}
+         {author && `Created by ${author.displayName}`}
          {checkbox}
       </StyledTaxMeta>
    );
@@ -137,7 +137,8 @@ TaxMeta.propTypes = {
    context: PropTypes.shape({
       Consumer: PropTypes.object.isRequired,
       Provider: PropTypes.object.isRequired
-   }).isRequired
+   }).isRequired,
+   canEdit: PropTypes.bool
 };
 
 export default TaxMeta;

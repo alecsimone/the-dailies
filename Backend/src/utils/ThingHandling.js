@@ -1,4 +1,4 @@
-const { fullThingFields, tagFields } = require('./CardInterfaces');
+const { fullThingFields, tagFields, catFields } = require('./CardInterfaces');
 
 function publishStuffUpdate(type, stuff, ctx) {
    const lowerCasedType = type.toLowerCase();
@@ -16,6 +16,8 @@ async function updateStuffAndNotifySubs(data, id, type, ctx) {
       fields = tagFields;
    } else if (type === 'Thing') {
       fields = fullThingFields;
+   } else if (type === 'Category') {
+      fields = catFields;
    }
 
    const updatedStuff = await ctx.db.mutation[mutationType](
@@ -64,6 +66,11 @@ async function editPermissionGate(dataObj, id, type, ctx) {
          throw new Error('You do not have permission to edit that comment');
       }
       return true;
+   }
+
+   if (type === 'Category') {
+      // Only mods can do anything to categories besides comment
+      return false;
    }
 
    const lowerCasedType = type.toLowerCase();

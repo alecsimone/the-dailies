@@ -2,13 +2,13 @@ import { useContext } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { ThingContext } from '../../pages/thing';
-import { MemberContext } from '../Account/MemberProvider';
 import { convertISOtoAgo } from '../../lib/ThingHandling';
 import { setLightness, setAlpha } from '../../styles/functions';
 import AuthorLink from './AuthorLink';
 import ShortLink from './ShortLink';
 import CategoryDropdown from './CategoryDropdown';
 import PrivacyDropdown from './PrivacyDropdown';
+import ThingSourceLink from './ThingSourceLink';
 
 const StyledThingMeta = styled.section`
    display: flex;
@@ -45,18 +45,47 @@ const StyledThingMeta = styled.section`
       font-size: ${props => props.theme.smallText};
       width: 100%;
       margin-top: 1rem;
+      display: flex;
+      align-items: center;
       a,
       a:visited {
          color: ${props => setLightness(props.theme.lowContrastGrey, 60)};
+         margin-left: 0.5rem;
          &:hover {
             color: ${props => setLightness(props.theme.lowContrastGrey, 80)};
             text-decoration: none;
          }
       }
+      img {
+         width: ${props => props.theme.smallText};
+         height: auto;
+         margin-left: 1rem;
+         cursor: pointer;
+         opacity: 0.4;
+         &:hover {
+            opacity: 0.8;
+         }
+      }
+      form {
+         display: inline-block;
+         max-width: 90%;
+         overflow: hidden;
+         margin-left: 0.5rem;
+         input {
+            font-size: ${props => props.theme.smallText};
+            color: ${props => setLightness(props.theme.lowContrastGrey, 60)};
+            padding: 0;
+            background: hsla(0, 0%, 100%, 0.1);
+            &[aria-disabled='true'] {
+               background: hsla(0, 0%, 100%, 0.25);
+            }
+         }
+      }
    }
 `;
 
-const ThingMeta = () => {
+const ThingMeta = props => {
+   const { canEdit } = props;
    const {
       id,
       author,
@@ -66,13 +95,6 @@ const ThingMeta = () => {
       createdAt,
       updatedAt
    } = useContext(ThingContext);
-
-   const { me } = useContext(MemberContext);
-
-   let canEdit = false;
-   if (me && author.id === me.id) {
-      canEdit = true;
-   }
 
    if (id == null) {
       return (
@@ -105,14 +127,12 @@ const ThingMeta = () => {
                <span className="uneditable">{privacy}</span>
             )}
          </div>
-         {link && (
-            <div className="link">
-               re: <ShortLink link={link} limit={100} />
-            </div>
-         )}
+         {link && <ThingSourceLink />}
       </StyledThingMeta>
    );
 };
-ThingMeta.propTypes = {};
+ThingMeta.propTypes = {
+   canEdit: PropTypes.bool
+};
 
 export default ThingMeta;

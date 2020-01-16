@@ -7,7 +7,7 @@ const StyledThings = styled.div`
    margin: auto;
    &.grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(48rem, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(40rem, 1fr));
       grid-gap: 4rem;
       justify-items: center;
       align-items: stretch;

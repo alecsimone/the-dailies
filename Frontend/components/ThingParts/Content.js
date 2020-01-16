@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { useMutation } from '@apollo/react-hooks';
 import { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
-import { MemberContext } from '../Account/MemberProvider';
 import { setAlpha } from '../../styles/functions';
 import ContentPiece from './ContentPiece';
 import ContentInput from './ContentInput';
@@ -25,6 +24,15 @@ const ADD_CONTENTPIECE_MUTATION = gql`
             }
          }
          ... on Thing {
+            __typename
+            id
+            content {
+               __typename
+               id
+               content
+            }
+         }
+         ... on Category {
             __typename
             id
             content {
@@ -66,6 +74,15 @@ const DELETE_CONTENTPIECE_MUTATION = gql`
                content
             }
          }
+         ... on Category {
+            __typename
+            id
+            content {
+               __typename
+               id
+               content
+            }
+         }
       }
    }
 `;
@@ -92,7 +109,16 @@ const EDIT_CONTENTPIECE_MUTATION = gql`
                content
             }
          }
-         ... on Tag {
+         ... on Thing {
+            __typename
+            id
+            content {
+               __typename
+               id
+               content
+            }
+         }
+         ... on Category {
             __typename
             id
             content {
@@ -171,16 +197,9 @@ const StyledContent = styled.section`
 `;
 
 const Content = props => {
-   const { context } = props;
+   const { context, canEdit } = props;
    const { content, id, __typename: type, author } = useContext(context);
    const [newContentPiece, setNewContentPiece] = useState('');
-
-   const { me } = useContext(MemberContext);
-
-   let canEdit = false;
-   if (me && author.id === me.id) {
-      canEdit = true;
-   }
 
    const [
       addContentPiece,
@@ -262,7 +281,8 @@ Content.propTypes = {
    context: PropTypes.shape({
       Consumer: PropTypes.object.isRequired,
       Provider: PropTypes.object.isRequired
-   }).isRequired
+   }).isRequired,
+   canEdit: PropTypes.bool
 };
 
 export default Content;

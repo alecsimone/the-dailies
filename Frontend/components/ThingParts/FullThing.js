@@ -28,7 +28,8 @@ const StyledFullThing = styled.article`
    }
 `;
 
-const FullThing = () => {
+const FullThing = props => {
+   const { canEdit } = props;
    const { id, partOfCategory: category } = useContext(ThingContext);
 
    const { majorColor } = useContext(ThemeContext);
@@ -43,14 +44,24 @@ const FullThing = () => {
          className="fullThing"
          style={{ borderTop: `0.6rem solid ${highlightColor}` }}
       >
-         <FeaturedImage context={ThingContext} key={`${id}-FeaturedImage`} />
-         <ThingMeta key={`${id}-ThingMeta`} />
-         <Content context={ThingContext} key={`${id}-Content`} />
-         <TagBox key={`${id}-TagBox`} />
+         <FeaturedImage
+            context={ThingContext}
+            key={`${id}-FeaturedImage`}
+            canEdit={canEdit}
+         />
+         <ThingMeta key={`${id}-ThingMeta`} canEdit={canEdit} />
+         <Content
+            context={ThingContext}
+            key={`${id}-Content`}
+            canEdit={canEdit}
+         />
+         <TagBox key={`${id}-TagBox`} canEdit={canEdit} />
          <Comments context={ThingContext} key={`${id}-Comments`} />
       </StyledFullThing>
    );
 };
-FullThing.propTypes = {};
+FullThing.propTypes = {
+   canEdit: PropTypes.bool
+};
 
 export default FullThing;

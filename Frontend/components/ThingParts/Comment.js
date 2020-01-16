@@ -24,6 +24,10 @@ const DELETE_COMMENT_MUTATION = gql`
             __typename
             id
          }
+         ... on Category {
+            __typename
+            id
+         }
       }
    }
 `;
@@ -51,6 +55,15 @@ const EDIT_COMMENT_MUTATION = gql`
             }
          }
          ... on Tag {
+            __typename
+            id
+            comments {
+               __typename
+               id
+               comment
+            }
+         }
+         ... on Category {
             __typename
             id
             comments {

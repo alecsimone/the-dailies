@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import debounce from 'lodash.debounce';
 import { useCombobox } from 'downshift';
-import { MemberContext } from '../Account/MemberProvider';
 import Tags from './Tags';
 import { ThingContext } from '../../pages/thing';
 import { setAlpha } from '../../styles/functions';
@@ -84,15 +83,9 @@ const debouncedAutocomplete = debounce(
    true
 );
 
-const TagBox = () => {
+const TagBox = props => {
+   const { canEdit } = props;
    const { id, partOfTags: tags, author } = useContext(ThingContext);
-
-   const { me } = useContext(MemberContext);
-
-   let canEdit = false;
-   if (me && author.id === me.id) {
-      canEdit = true;
-   }
 
    const [
       searchTags,
@@ -257,6 +250,8 @@ const TagBox = () => {
       </StyledTagBox>
    );
 };
-TagBox.propTypes = {};
+TagBox.propTypes = {
+   canEdit: PropTypes.bool
+};
 
 export default TagBox;

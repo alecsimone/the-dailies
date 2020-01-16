@@ -14,6 +14,7 @@ const CURRENT_MEMBER_QUERY = gql`
          defaultCategory {
             title
          }
+         roles
       }
    }
 `;

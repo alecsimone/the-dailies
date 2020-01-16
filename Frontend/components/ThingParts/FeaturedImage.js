@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useMutation } from '@apollo/react-hooks';
-import { MemberContext } from '../Account/MemberProvider';
 import TitleBar from './TitleBar';
 import ExplodingLink from '../ExplodingLink';
 import { setAlpha } from '../../styles/functions';
@@ -22,6 +21,11 @@ const SET_FEATURED_IMAGE_MUTATION = gql`
             featuredImage
          }
          ... on Thing {
+            __typename
+            id
+            featuredImage
+         }
+         ... on Category {
             __typename
             id
             featuredImage
@@ -102,22 +106,10 @@ const StyledFeaturedImage = styled.div`
 `;
 
 const FeaturedImage = props => {
-   let { canEdit } = props;
+   const { canEdit } = props;
    const { context, titleLimit } = props;
 
    const { author, featuredImage, id, __typename: type } = useContext(context);
-
-   const { me } = useContext(MemberContext);
-
-   if (me) {
-      if (author.id !== me.id) {
-         canEdit = false;
-      } else if (canEdit !== false) {
-         canEdit = true;
-      }
-   } else {
-      canEdit = false;
-   }
 
    const [featuredImageInput, setFeaturedImageInput] = useState(
       featuredImage == null ? '' : featuredImage

@@ -328,3 +328,17 @@ async function deleteComment(parent, { commentID, stuffID, type }, ctx, info) {
    return updatedStuff;
 }
 exports.deleteComment = deleteComment;
+
+async function editLink(parent, {link, id}, ctx, info) {
+   loggedInGate(ctx);
+   fullMemberGate(ctx.req.member);
+
+   const dataObj = {
+      link
+   }
+
+   const updatedStuff = await properUpdateStuff(dataObj, id, "Thing", ctx);
+   return updatedStuff;
+
+}
+exports.editLink = editLink;

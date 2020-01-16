@@ -138,3 +138,24 @@ const tagFields = `
    createdAt
 `;
 export { tagFields };
+
+const catFields = `
+   __typename,
+   id
+   title
+   featuredImage
+   color
+   content {
+      __typename
+      id
+      content
+   }
+   connectedThings {
+      ${smallThingCardFields}
+   }
+   comments {
+      ${commentFields}
+   }
+   createdAt
+`;
+export { catFields };

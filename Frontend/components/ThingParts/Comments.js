@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useMutation } from '@apollo/react-hooks';
+import { MemberContext } from '../Account/MemberProvider';
 import Comment from './Comment';
 import CommentInput from './CommentInput';
 
@@ -57,6 +58,24 @@ const ADD_COMMENT_MUTATION = gql`
                updatedAt
             }
          }
+         ... on Category {
+            __typename
+            id
+            comments {
+               __typename
+               id
+               author {
+                  __typename
+                  id
+                  displayName
+                  avatar
+                  rep
+               }
+               comment
+               createdAt
+               updatedAt
+            }
+         }
       }
    }
 `;
@@ -64,6 +83,8 @@ const ADD_COMMENT_MUTATION = gql`
 const Comments = props => {
    const { context } = props;
    const { comments, id, __typename: type } = useContext(context);
+
+   const { me } = useContext(MemberContext);
 
    const [currentComment, setCurrentComment] = useState('');
 
@@ -93,11 +114,13 @@ const Comments = props => {
       <StyledComments>
          <header>COMMENTS</header>
          {commentElements}
-         <CommentInput
-            currentComment={currentComment}
-            updateComment={setCurrentComment}
-            postComment={sendNewComment}
-         />
+         {me && (
+            <CommentInput
+               currentComment={currentComment}
+               updateComment={setCurrentComment}
+               postComment={sendNewComment}
+            />
+         )}
       </StyledComments>
    );
 };

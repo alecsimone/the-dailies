@@ -2,34 +2,35 @@ import gql from 'graphql-tag';
 import { useQuery, useSubscription } from '@apollo/react-hooks';
 import styled from 'styled-components';
 import Head from 'next/head';
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
+import { MemberContext } from '../components/Account/MemberProvider';
 import Sidebar from '../components/Sidebar';
 import Error from '../components/ErrorMessage';
 import LoadingRing from '../components/LoadingRing';
 import TaxSidebar from '../components/TaxSidebar';
 import Things from '../components/Archives/Things';
-import { tagFields } from '../lib/CardInterfaces';
+import { catFields } from '../lib/CardInterfaces';
 
-const SINGLE_TAG_QUERY = gql`
-   query SINGLE_TAG_QUERY($title: String!) {
-      tagByTitle(title: $title) {
-         ${tagFields}
+const SINGLE_CATEGORY_QUERY = gql`
+   query SINGLE_CATEGORY_QUERY($title: String!) {
+      categoryByTitle(title: $title) {
+         ${catFields}
       }
    }
 `;
 
-const SINGLE_TAG_SUBSCRIPTION = gql`
-   subscription SINGLE_TAG_SUBSCRIPTION {
-      tag {
+const SINGLE_CATEGORY_SUBSCRIPTION = gql`
+   subscription SINGLE_CATEGORY_SUBSCRIPTION {
+      category {
          node {
-            ${tagFields}
+            ${catFields}
          }
       }
    }
 `;
 
-const StyledTagPage = styled.div`
+const StyledCategoryPage = styled.div`
    display: flex;
    .sidebar {
       flex-basis: 100%;
@@ -38,7 +39,7 @@ const StyledTagPage = styled.div`
          flex-basis: 25%;
       }
    }
-   .tagContainer {
+   .categoryContainer {
       flex-basis: 75%;
       flex-grow: 1;
       position: relative;
@@ -55,14 +56,14 @@ const StyledTagPage = styled.div`
    }
 `;
 
-const TagContext = React.createContext();
-export { TagContext };
+const CategoryContext = React.createContext();
+export { CategoryContext };
 
-const tag = props => {
+const category = props => {
    const {
       query: { id, title }
    } = props;
-   const { loading, error, data } = useQuery(SINGLE_TAG_QUERY, {
+   const { loading, error, data } = useQuery(SINGLE_CATEGORY_QUERY, {
       variables: {
          title
       }
@@ -71,21 +72,17 @@ const tag = props => {
    const { me } = useContext(MemberContext);
 
    let canEdit = false;
-   if (data && me) {
-      if (data.author.id === me.id) {
-         canEdit = true;
-      }
-      if (
-         me.roles.some(role => ['Admin', 'Editor', 'Moderator'].includes(role))
-      ) {
-         canEdit = true;
-      }
+   if (
+      me &&
+      me.roles.some(role => ['Admin', 'Editor', 'Moderator'].includes(role))
+   ) {
+      canEdit = true;
    }
 
    const {
       data: subscriptionData,
       loading: subscriptionLoading
-   } = useSubscription(SINGLE_TAG_SUBSCRIPTION, {
+   } = useSubscription(SINGLE_CATEGORY_SUBSCRIPTION, {
       variables: { id }
    });
 
@@ -93,28 +90,30 @@ const tag = props => {
    let content;
    let sidebar;
    if (error) {
-      pageTitle = 'Unavailable Tag';
+      pageTitle = 'Unavailable Category';
       content = <Error error={error} />;
       sidebar = <Sidebar key="error" />;
    }
    if (loading) {
-      pageTitle = 'Loading Tag';
+      pageTitle = 'Loading Category';
       content = <LoadingRing />;
       sidebar = (
          <Sidebar
-            extraColumnContent={<p>Loading Tag...</p>}
-            extraColumnTitle="Tag"
+            extraColumnContent={<p>Loading Category...</p>}
+            extraColumnTitle="Category"
             key="loading"
          />
       );
    } else if (data) {
-      if (data.tagByTitle != null) {
-         pageTitle = data.tagByTitle.title;
-         const sortedThings = data.tagByTitle.connectedThings.sort((a, b) => {
-            const aDate = new Date(a.createdAt);
-            const bDate = new Date(b.createdAt);
-            return bDate - aDate;
-         });
+      if (data.categoryByTitle != null) {
+         pageTitle = data.categoryByTitle.title;
+         const sortedThings = data.categoryByTitle.connectedThings.sort(
+            (a, b) => {
+               const aDate = new Date(a.createdAt);
+               const bDate = new Date(b.createdAt);
+               return bDate - aDate;
+            }
+         );
          content = (
             <Things
                things={sortedThings}
@@ -125,36 +124,38 @@ const tag = props => {
          sidebar = (
             <Sidebar
                extraColumnContent={
-                  <TaxSidebar context={TagContext} canEdit={canEdit} />
+                  <TaxSidebar context={CategoryContext} canEdit={canEdit} />
                }
-               extraColumnTitle="Tag"
-               key="tagData"
+               extraColumnTitle="Category"
+               key="catData"
             />
          );
       } else {
-         pageTitle = "Couldn't find tag";
-         content = <p>Tag not found.</p>;
-         siidebar = <Sidebar key="missingTag" />;
+         pageTitle = "Couldn't find category";
+         content = <p>Category not found.</p>;
+         siidebar = <Sidebar key="missingCategory" />;
       }
    }
 
    return (
-      <TagContext.Provider value={loading || error || data.tagByTitle}>
-         <StyledTagPage>
+      <CategoryContext.Provider
+         value={loading || error || data.categoryByTitle}
+      >
+         <StyledCategoryPage>
             <Head>
                <title>{pageTitle}- OurDailies</title>
             </Head>
             {sidebar}
-            <div className="tagContainer">{content}</div>
-         </StyledTagPage>
-      </TagContext.Provider>
+            <div className="categoryContainer">{content}</div>
+         </StyledCategoryPage>
+      </CategoryContext.Provider>
    );
 };
-tag.propTypes = {
+category.propTypes = {
    query: PropTypes.shape({
       id: PropTypes.string.isRequired,
       title: PropTypes.string.isRequired
    }).isRequired
 };
 
-export default tag;
+export default category;

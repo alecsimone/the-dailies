@@ -1,8 +1,9 @@
 import gql from 'graphql-tag';
 import { useQuery, useSubscription } from '@apollo/react-hooks';
 import styled from 'styled-components';
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import Head from 'next/head';
+import { MemberContext } from '../components/Account/MemberProvider';
 import Error from '../components/ErrorMessage';
 import LoadingRing from '../components/LoadingRing';
 import { fullThingFields } from '../lib/CardInterfaces';
@@ -51,6 +52,20 @@ const SingleThing = props => {
       variables: { id: props.query.id }
    });
 
+   const { me } = useContext(MemberContext);
+
+   let canEdit = false;
+   if (data && me) {
+      if (data.author.id === me.id) {
+         canEdit = true;
+      }
+      if (
+         me.roles.some(role => ['Admin', 'Editor', 'Moderator'].includes(role))
+      ) {
+         canEdit = true;
+      }
+   }
+
    /* eslint-disable react-hooks/exhaustive-deps */
    // We need to make our thing container scroll to the top when we route to a new thing, but wesbos's eslint rules don't let you use a dependency for an effect that isn't referenced in the effect. I can't find any reason why that is or any better way of doing it, so I'm just turning off that rule for a minute.
    useEffect(() => {
@@ -82,7 +97,13 @@ const SingleThing = props => {
       pageTitle = 'Loading Thing';
    } else if (data) {
       if (data.thing != null) {
-         thing = <FullThing id={props.query.id} key={props.query.id} />;
+         thing = (
+            <FullThing
+               id={props.query.id}
+               key={props.query.id}
+               canEdit={canEdit}
+            />
+         );
       } else {
          thing = <p>Thing not found.</p>;
       }

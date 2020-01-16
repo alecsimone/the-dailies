@@ -12,7 +12,8 @@ const {
    setPublicity,
    addComment,
    editComment,
-   deleteComment
+   deleteComment,
+   editLink
 } = require('./Mutation/ThingMutations/Editing');
 
 const Mutations = {
@@ -31,7 +32,8 @@ const Mutations = {
    setPublicity,
    addComment,
    editComment,
-   deleteComment
+   deleteComment,
+   editLink
 };
 
 module.exports = Mutations;

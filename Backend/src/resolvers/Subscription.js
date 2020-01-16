@@ -9,6 +9,10 @@ const Subscription = {
    },
    tag: {
       subscribe: (parent, { id }, ctx, info) => ctx.pubsub.asyncIterator('tag')
+   },
+   category: {
+      subscribe: (parent, { id }, ctx, info) =>
+         ctx.pubsub.asyncIterator('category')
    }
 };
 
