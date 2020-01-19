@@ -56,7 +56,7 @@ const SingleThing = props => {
 
    let canEdit = false;
    if (data && me) {
-      if (data.author.id === me.id) {
+      if (data.thing.author.id === me.id) {
          canEdit = true;
       }
       if (

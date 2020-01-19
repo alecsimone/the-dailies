@@ -143,7 +143,7 @@ const category = props => {
       >
          <StyledCategoryPage>
             <Head>
-               <title>{pageTitle}- OurDailies</title>
+               <title>{pageTitle} - OurDailies</title>
             </Head>
             {sidebar}
             <div className="categoryContainer">{content}</div>

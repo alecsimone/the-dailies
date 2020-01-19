@@ -62,6 +62,10 @@ const StyledSidebar = styled.section`
             font-weight: 700;
             color: ${props => props.theme.lowContrastGrey};
          }
+         &.Me img,
+         &.Member img {
+            border-radius: 100%;
+         }
       }
    }
    .sidebarContainer {

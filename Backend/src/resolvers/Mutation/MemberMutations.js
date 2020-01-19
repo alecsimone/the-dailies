@@ -4,12 +4,19 @@ const jwt = require('jsonwebtoken');
 async function signup(parent, args, ctx, info) {
    args.email = args.email.toLowerCase();
    const password = await bcrypt.hash(args.password, 10);
+   console.log(args);
    const member = await ctx.db.mutation.createMember(
       {
          data: {
             ...args,
             password,
-            roles: { set: ['LiteMember'] }
+            roles: { set: ['LiteMember'] },
+            defaultPrivacy: 'Friends',
+            defaultCategory: {
+               connect: {
+                  title: 'Misc'
+               }
+            }
          }
       },
       info

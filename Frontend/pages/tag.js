@@ -2,7 +2,7 @@ import gql from 'graphql-tag';
 import { useQuery, useSubscription } from '@apollo/react-hooks';
 import styled from 'styled-components';
 import Head from 'next/head';
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import Sidebar from '../components/Sidebar';
 import Error from '../components/ErrorMessage';
@@ -10,6 +10,7 @@ import LoadingRing from '../components/LoadingRing';
 import TaxSidebar from '../components/TaxSidebar';
 import Things from '../components/Archives/Things';
 import { tagFields } from '../lib/CardInterfaces';
+import { MemberContext } from '../components/Account/MemberProvider';
 
 const SINGLE_TAG_QUERY = gql`
    query SINGLE_TAG_QUERY($title: String!) {
@@ -71,7 +72,7 @@ const tag = props => {
    const { me } = useContext(MemberContext);
 
    let canEdit = false;
-   if (data && me) {
+   if (data && data.author && me) {
       if (data.author.id === me.id) {
          canEdit = true;
       }
@@ -142,7 +143,7 @@ const tag = props => {
       <TagContext.Provider value={loading || error || data.tagByTitle}>
          <StyledTagPage>
             <Head>
-               <title>{pageTitle}- OurDailies</title>
+               <title>{pageTitle} - OurDailies</title>
             </Head>
             {sidebar}
             <div className="tagContainer">{content}</div>

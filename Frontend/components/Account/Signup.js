@@ -27,6 +27,7 @@ const Signup = props => {
    const { callBack } = props;
    const [displayName, setDisplayName] = useState('');
    const [password, setPassword] = useState('');
+   const [confirmedPassword, setConfirmedPassword] = useState('');
    const [email, setEmail] = useState('');
 
    const saveToState = function(e) {
@@ -35,6 +36,9 @@ const Signup = props => {
       }
       if (e.target.name === 'password') {
          setPassword(e.target.value);
+      }
+      if (e.target.name === 'confirmedPassword') {
+         setConfirmedPassword(e.target.value);
       }
       if (e.target.name === 'email') {
          setEmail(e.target.value);
@@ -48,6 +52,10 @@ const Signup = props => {
          method="post"
          onSubmit={async e => {
             e.preventDefault();
+            if (password !== confirmedPassword) {
+               alert("Yo, your passwords don't match");
+               return;
+            }
             await signup({
                variables: { email, displayName, password },
                refetchQueries: [{ query: CURRENT_MEMBER_QUERY }]
@@ -86,6 +94,15 @@ const Signup = props => {
                   name="password"
                   placeholder="Password"
                   value={password}
+                  onChange={saveToState}
+               />
+            </label>
+            <label htmlFor="confirmedPassword">
+               <input
+                  type="password"
+                  name="confirmedPassword"
+                  placeholder="Confirm Password"
+                  value={confirmedPassword}
                   onChange={saveToState}
                />
             </label>

@@ -108,7 +108,7 @@ type Member {
   twitterUserID: String
   twitterUserToken: String
   twitterUserTokenSecret: String
-  twitterSinceIDsObject: String
+  twitterListsObject: String
   twitterSeenIDs: [String] @scalarList(strategy: RELATION)
   createdAt: DateTime! @createdAt
   updatedAt: DateTime @updatedAt

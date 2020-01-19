@@ -45,7 +45,15 @@ const Sidebar = props => {
          key={column}
          onClick={() => setSelectedTab(column)}
       >
-         <img src={`${column}.png`} alt={column} title={column} />
+         <img
+            src={
+               column === 'Me' || column === 'Member'
+                  ? '/defaultAvatar.jpg'
+                  : `${column}.png`
+            }
+            alt={column}
+            title={column}
+         />
       </div>
    ));
    const toggleButton = (

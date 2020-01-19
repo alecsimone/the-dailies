@@ -2,6 +2,7 @@
 
 type Query {
    me: Member
+   member(id: ID, displayName: String): Member
    categories: [Category]
    thing(where: ThingWhereUniqueInput!): Thing
    myThings(orderBy: ThingOrderByInput): [Thing]!
@@ -10,6 +11,8 @@ type Query {
    searchTags(searchTerm: String): [Tag]!
    tagByTitle(title: String!): Tag
    categoryByTitle(title: String!): Category
+   finishTwitterLogin(token: String!, verifier: String!): SuccessMessage
+   getTwitterLists: SuccessMessage
 }
 
 type Mutation {
@@ -43,6 +46,7 @@ type Mutation {
   editComment(commentID: ID!, stuffID: ID!, type: String!, newComment: String!): Stuff
   deleteComment(commentID: ID!, stuffID: ID!, type: String!): Stuff
   editLink(link: String!, id: ID!): Thing
+  initiateTwitterLogin: SuccessMessage
 }
 
 union Stuff = Thing | Tag | Category

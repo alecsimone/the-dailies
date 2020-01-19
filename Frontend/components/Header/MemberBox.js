@@ -75,6 +75,7 @@ const MemberBox = () => {
          </StyledMemberBox>
       );
    }
+
    if (me == null) {
       return (
          <StyledMemberBox className="memberBox">

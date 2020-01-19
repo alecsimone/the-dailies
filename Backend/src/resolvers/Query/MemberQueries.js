@@ -16,3 +16,24 @@ async function me(parent, args, ctx, info) {
    return member;
 }
 exports.me = me;
+
+async function member(parent, { id, displayName }, ctx, info) {
+   let where;
+   if (id) {
+      where = {
+         id
+      };
+   } else if (displayName) {
+      where = {
+         displayName
+      };
+   }
+   const member = await ctx.db.query.member(
+      {
+         where
+      },
+      info
+   );
+   return member;
+}
+exports.member = member;

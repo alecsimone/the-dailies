@@ -9,10 +9,15 @@ const {
    myFriendsThings,
    publicThings
 } = require('./Query/PageQueries');
-const { me } = require('./Query/MemberQueries');
+const { me, member } = require('./Query/MemberQueries');
+const {
+   finishTwitterLogin,
+   getTwitterLists
+} = require('./Query/TwitterQueries');
 
 const Query = {
    me,
+   member,
    categories,
    searchTags,
    tagByTitle,
@@ -20,7 +25,9 @@ const Query = {
    thing,
    myThings,
    myFriendsThings,
-   publicThings
+   publicThings,
+   finishTwitterLogin,
+   getTwitterLists
 };
 
 module.exports = Query;

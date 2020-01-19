@@ -15,6 +15,7 @@ const CURRENT_MEMBER_QUERY = gql`
             title
          }
          roles
+         twitterUserName
       }
    }
 `;

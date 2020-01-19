@@ -1064,7 +1064,7 @@ type Member {
   twitterUserID: String
   twitterUserToken: String
   twitterUserTokenSecret: String
-  twitterSinceIDsObject: String
+  twitterListsObject: String
   twitterSeenIDs: [String!]!
   createdAt: DateTime!
   updatedAt: DateTime
@@ -1103,7 +1103,7 @@ input MemberCreateInput {
   twitterUserID: String
   twitterUserToken: String
   twitterUserTokenSecret: String
-  twitterSinceIDsObject: String
+  twitterListsObject: String
   twitterSeenIDs: MemberCreatetwitterSeenIDsInput
 }
 
@@ -1171,7 +1171,7 @@ input MemberCreateWithoutCommentsInput {
   twitterUserID: String
   twitterUserToken: String
   twitterUserTokenSecret: String
-  twitterSinceIDsObject: String
+  twitterListsObject: String
   twitterSeenIDs: MemberCreatetwitterSeenIDsInput
 }
 
@@ -1201,7 +1201,7 @@ input MemberCreateWithoutCreatedThingsInput {
   twitterUserID: String
   twitterUserToken: String
   twitterUserTokenSecret: String
-  twitterSinceIDsObject: String
+  twitterListsObject: String
   twitterSeenIDs: MemberCreatetwitterSeenIDsInput
 }
 
@@ -1231,7 +1231,7 @@ input MemberCreateWithoutOwnedTagsInput {
   twitterUserID: String
   twitterUserToken: String
   twitterUserTokenSecret: String
-  twitterSinceIDsObject: String
+  twitterListsObject: String
   twitterSeenIDs: MemberCreatetwitterSeenIDsInput
 }
 
@@ -1261,7 +1261,7 @@ input MemberCreateWithoutPassesInput {
   twitterUserID: String
   twitterUserToken: String
   twitterUserTokenSecret: String
-  twitterSinceIDsObject: String
+  twitterListsObject: String
   twitterSeenIDs: MemberCreatetwitterSeenIDsInput
 }
 
@@ -1291,7 +1291,7 @@ input MemberCreateWithoutVotesInput {
   twitterUserID: String
   twitterUserToken: String
   twitterUserTokenSecret: String
-  twitterSinceIDsObject: String
+  twitterListsObject: String
   twitterSeenIDs: MemberCreatetwitterSeenIDsInput
 }
 
@@ -1337,8 +1337,8 @@ enum MemberOrderByInput {
   twitterUserToken_DESC
   twitterUserTokenSecret_ASC
   twitterUserTokenSecret_DESC
-  twitterSinceIDsObject_ASC
-  twitterSinceIDsObject_DESC
+  twitterListsObject_ASC
+  twitterListsObject_DESC
   createdAt_ASC
   createdAt_DESC
   updatedAt_ASC
@@ -1365,7 +1365,7 @@ type MemberPreviousValues {
   twitterUserID: String
   twitterUserToken: String
   twitterUserTokenSecret: String
-  twitterSinceIDsObject: String
+  twitterListsObject: String
   twitterSeenIDs: [String!]!
   createdAt: DateTime!
   updatedAt: DateTime
@@ -1590,20 +1590,20 @@ input MemberScalarWhereInput {
   twitterUserTokenSecret_not_starts_with: String
   twitterUserTokenSecret_ends_with: String
   twitterUserTokenSecret_not_ends_with: String
-  twitterSinceIDsObject: String
-  twitterSinceIDsObject_not: String
-  twitterSinceIDsObject_in: [String!]
-  twitterSinceIDsObject_not_in: [String!]
-  twitterSinceIDsObject_lt: String
-  twitterSinceIDsObject_lte: String
-  twitterSinceIDsObject_gt: String
-  twitterSinceIDsObject_gte: String
-  twitterSinceIDsObject_contains: String
-  twitterSinceIDsObject_not_contains: String
-  twitterSinceIDsObject_starts_with: String
-  twitterSinceIDsObject_not_starts_with: String
-  twitterSinceIDsObject_ends_with: String
-  twitterSinceIDsObject_not_ends_with: String
+  twitterListsObject: String
+  twitterListsObject_not: String
+  twitterListsObject_in: [String!]
+  twitterListsObject_not_in: [String!]
+  twitterListsObject_lt: String
+  twitterListsObject_lte: String
+  twitterListsObject_gt: String
+  twitterListsObject_gte: String
+  twitterListsObject_contains: String
+  twitterListsObject_not_contains: String
+  twitterListsObject_starts_with: String
+  twitterListsObject_not_starts_with: String
+  twitterListsObject_ends_with: String
+  twitterListsObject_not_ends_with: String
   createdAt: DateTime
   createdAt_not: DateTime
   createdAt_in: [DateTime!]
@@ -1669,7 +1669,7 @@ input MemberUpdateDataInput {
   twitterUserID: String
   twitterUserToken: String
   twitterUserTokenSecret: String
-  twitterSinceIDsObject: String
+  twitterListsObject: String
   twitterSeenIDs: MemberUpdatetwitterSeenIDsInput
 }
 
@@ -1699,7 +1699,7 @@ input MemberUpdateInput {
   twitterUserID: String
   twitterUserToken: String
   twitterUserTokenSecret: String
-  twitterSinceIDsObject: String
+  twitterListsObject: String
   twitterSeenIDs: MemberUpdatetwitterSeenIDsInput
 }
 
@@ -1722,7 +1722,7 @@ input MemberUpdateManyDataInput {
   twitterUserID: String
   twitterUserToken: String
   twitterUserTokenSecret: String
-  twitterSinceIDsObject: String
+  twitterListsObject: String
   twitterSeenIDs: MemberUpdatetwitterSeenIDsInput
 }
 
@@ -1757,7 +1757,7 @@ input MemberUpdateManyMutationInput {
   twitterUserID: String
   twitterUserToken: String
   twitterUserTokenSecret: String
-  twitterSinceIDsObject: String
+  twitterListsObject: String
   twitterSeenIDs: MemberUpdatetwitterSeenIDsInput
 }
 
@@ -1836,7 +1836,7 @@ input MemberUpdateWithoutCommentsDataInput {
   twitterUserID: String
   twitterUserToken: String
   twitterUserTokenSecret: String
-  twitterSinceIDsObject: String
+  twitterListsObject: String
   twitterSeenIDs: MemberUpdatetwitterSeenIDsInput
 }
 
@@ -1865,7 +1865,7 @@ input MemberUpdateWithoutCreatedThingsDataInput {
   twitterUserID: String
   twitterUserToken: String
   twitterUserTokenSecret: String
-  twitterSinceIDsObject: String
+  twitterListsObject: String
   twitterSeenIDs: MemberUpdatetwitterSeenIDsInput
 }
 
@@ -1894,7 +1894,7 @@ input MemberUpdateWithoutOwnedTagsDataInput {
   twitterUserID: String
   twitterUserToken: String
   twitterUserTokenSecret: String
-  twitterSinceIDsObject: String
+  twitterListsObject: String
   twitterSeenIDs: MemberUpdatetwitterSeenIDsInput
 }
 
@@ -1923,7 +1923,7 @@ input MemberUpdateWithoutPassesDataInput {
   twitterUserID: String
   twitterUserToken: String
   twitterUserTokenSecret: String
-  twitterSinceIDsObject: String
+  twitterListsObject: String
   twitterSeenIDs: MemberUpdatetwitterSeenIDsInput
 }
 
@@ -1952,7 +1952,7 @@ input MemberUpdateWithoutVotesDataInput {
   twitterUserID: String
   twitterUserToken: String
   twitterUserTokenSecret: String
-  twitterSinceIDsObject: String
+  twitterListsObject: String
   twitterSeenIDs: MemberUpdatetwitterSeenIDsInput
 }
 
@@ -2230,20 +2230,20 @@ input MemberWhereInput {
   twitterUserTokenSecret_not_starts_with: String
   twitterUserTokenSecret_ends_with: String
   twitterUserTokenSecret_not_ends_with: String
-  twitterSinceIDsObject: String
-  twitterSinceIDsObject_not: String
-  twitterSinceIDsObject_in: [String!]
-  twitterSinceIDsObject_not_in: [String!]
-  twitterSinceIDsObject_lt: String
-  twitterSinceIDsObject_lte: String
-  twitterSinceIDsObject_gt: String
-  twitterSinceIDsObject_gte: String
-  twitterSinceIDsObject_contains: String
-  twitterSinceIDsObject_not_contains: String
-  twitterSinceIDsObject_starts_with: String
-  twitterSinceIDsObject_not_starts_with: String
-  twitterSinceIDsObject_ends_with: String
-  twitterSinceIDsObject_not_ends_with: String
+  twitterListsObject: String
+  twitterListsObject_not: String
+  twitterListsObject_in: [String!]
+  twitterListsObject_not_in: [String!]
+  twitterListsObject_lt: String
+  twitterListsObject_lte: String
+  twitterListsObject_gt: String
+  twitterListsObject_gte: String
+  twitterListsObject_contains: String
+  twitterListsObject_not_contains: String
+  twitterListsObject_starts_with: String
+  twitterListsObject_not_starts_with: String
+  twitterListsObject_ends_with: String
+  twitterListsObject_not_ends_with: String
   createdAt: DateTime
   createdAt_not: DateTime
   createdAt_in: [DateTime!]
