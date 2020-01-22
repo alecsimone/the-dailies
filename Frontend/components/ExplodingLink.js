@@ -1,5 +1,7 @@
+import { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { TwitterTweetEmbed } from 'react-twitter-embed';
+import { MemberContext } from './Account/MemberProvider';
 import CardGenerator from './ThingCards/CardGenerator';
 import {
    getYoutubeVideoIdFromLink,
@@ -7,10 +9,15 @@ import {
    getTweetIDFromLink
 } from '../lib/UrlHandling';
 import { homeNoHTTP } from '../config';
+import ShortLink from './ThingParts/ShortLink';
+import Tweet from './Twitter/Tweet';
+import TweetGetter from './Twitter/TweetGetter';
 
 const ExplodingLink = props => {
    const { url, keyString, alt, className } = props;
    const lowerCaseURL = url.toLowerCase();
+
+   const { me } = useContext(MemberContext);
 
    // Images
    if (
@@ -71,6 +78,9 @@ const ExplodingLink = props => {
       lowerCaseURL.includes('/status/')
    ) {
       const tweetID = getTweetIDFromLink(url);
+      if (me.twitterUserName != null) {
+         return <TweetGetter id={tweetID} />;
+      }
       return (
          <TwitterTweetEmbed tweetId={tweetID} options={{ theme: 'dark' }} />
       );
@@ -90,15 +100,11 @@ const ExplodingLink = props => {
    }
 
    // General Links
-   return (
-      <a href={url} target="_blank" key={keyString}>
-         {url}
-      </a>
-   );
+   return <ShortLink link={url} limit={80} />;
 };
 ExplodingLink.propTypes = {
    url: PropTypes.string.isRequired,
-   keyString: PropTypes.string,
+   keyString: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
    alt: PropTypes.string,
    className: PropTypes.string
 };

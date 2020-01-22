@@ -14,7 +14,7 @@ const theme = {
 
    black: 'hsla(345, 25%, 2%, 1)',
 
-   background: 'hsl(210, 30%, 6%)',
+   background: 'hsl(210, 60%, 3%)',
    mainText: 'hsl(30, 10%, 80%)',
 
    majorColor: 'hsl(210, 100%, 40%)',
@@ -28,6 +28,12 @@ const theme = {
       overflowY: 'auto',
       scrollbarWidth: 'thin',
       scrollbarColor: 'hsl(210, 10%, 30%) hsla(345, 25%, 2%, 1)'
+   },
+   spin: {
+      animationName: 'spin',
+      animationDuration: '750ms',
+      animationIterationCount: 'infinite',
+      animationTimingFunction: 'linear'
    }
 };
 
@@ -152,6 +158,14 @@ const GlobalStyle = createGlobalStyle`
          height: 100%;
       }
    }
+   @keyframes spin {
+         from {
+            transform: rotate(0deg);
+         }
+         to {
+            transform: rotate(-360deg);
+         }
+      }
 `;
 
 const StyledPage = styled.div`

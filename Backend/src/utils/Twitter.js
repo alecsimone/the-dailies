@@ -311,3 +311,67 @@ const fetchHomeTweets = async (userID, token, tokenSecret, sinceID) => {
    return JSON.stringify(tweetsJson);
 };
 exports.fetchHomeTweets = fetchHomeTweets;
+
+const fetchTweet = async (tweetID, ctx) => {
+   const { twitterUserToken, twitterUserTokenSecret } = await getTwitterInfo(
+      ctx
+   );
+
+   const baseURL = 'https://api.twitter.com/1.1/statuses/show.json';
+
+   const parameters = {
+      id: tweetID,
+      tweet_mode: 'extended'
+   };
+
+   const headerString = buildHeaderString(
+      process.env.TWITTER_CONSUMER_KEY,
+      process.env.TWITTER_CONSUMER_SECRET,
+      twitterUserToken,
+      twitterUserTokenSecret,
+      baseURL,
+      parameters,
+      'GET'
+   );
+
+   const requestURL = generateRequestURL(baseURL, parameters);
+
+   const tweet = await fetch(requestURL, {
+      method: 'GET',
+      headers: {
+         Authorization: headerString
+      }
+   });
+   const tweetJson = await tweet.json();
+   return tweetJson;
+};
+exports.fetchTweet = fetchTweet;
+
+const createOrDestroyLike = async (tweetID, action, token, tokenSecret) => {
+   const baseURL = `https://api.twitter.com/1.1/favorites/${action}.json`;
+   const parameters = {
+      id: tweetID
+   };
+
+   const headerString = buildHeaderString(
+      process.env.TWITTER_CONSUMER_KEY,
+      process.env.TWITTER_CONSUMER_SECRET,
+      token,
+      tokenSecret,
+      baseURL,
+      parameters,
+      'POST'
+   );
+
+   const requestURL = generateRequestURL(baseURL, parameters);
+
+   const response = await fetch(requestURL, {
+      method: 'POST',
+      headers: {
+         Authorization: headerString
+      }
+   });
+   const newTweetData = await response.json();
+   return newTweetData;
+};
+exports.createOrDestroyLike = createOrDestroyLike;

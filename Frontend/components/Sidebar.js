@@ -23,6 +23,71 @@ const Sidebar = props => {
 
    const [isOpen, setIsOpen] = useState(true);
 
+   if (me) {
+      const headerColumns = me ? ['You', 'Friends', 'Public'] : ['Public'];
+      if (extraColumnTitle != null) {
+         headerColumns.push(extraColumnTitle);
+      }
+      let sidebarHeader = headerColumns.map(column => (
+         <div
+            className={
+               selectedTab === column
+                  ? `headerTab ${column} selected`
+                  : `headerTab ${column}`
+            }
+            key={column}
+            onClick={() => setSelectedTab(column)}
+         >
+            <img
+               src={
+                  column === 'Me' || column === 'Member'
+                     ? '/defaultAvatar.jpg'
+                     : `${column}.png`
+               }
+               alt={column}
+               title={column}
+            />
+         </div>
+      ));
+      const toggleButton = (
+         <div
+            className="headerTab toggle"
+            key="toggle"
+            onClick={() => {
+               localStorage.setItem('sidebarOpen', !isOpen);
+               setIsOpen(!isOpen);
+            }}
+         >
+            {isOpen ? '<' : '>'}
+         </div>
+      );
+      if (isOpen) {
+         sidebarHeader.push(toggleButton);
+      } else {
+         sidebarHeader = toggleButton;
+      }
+
+      let sidebarContent;
+      if (selectedTab === 'You') {
+         sidebarContent = <MyThings />;
+      } else if (selectedTab === 'Friends') {
+         sidebarContent = <MyFriendsThings />;
+      } else if (selectedTab === 'Public') {
+         sidebarContent = <PublicThings />;
+      } else if (selectedTab === extraColumnTitle) {
+         sidebarContent = extraColumnContent;
+      }
+
+      return (
+         <StyledSidebar className={`sidebar${!isOpen ? ' hidden' : ''}`}>
+            <header className="sidebarHeader">{sidebarHeader}</header>
+            <div className="sidebarContainer">
+               <div className="sidebarContent">{sidebarContent}</div>
+            </div>
+         </StyledSidebar>
+      );
+   }
+
    if (memberLoading) {
       return (
          <StyledSidebar>
@@ -30,69 +95,6 @@ const Sidebar = props => {
          </StyledSidebar>
       );
    }
-
-   const headerColumns = me ? ['You', 'Friends', 'Public'] : ['Public'];
-   if (extraColumnTitle != null) {
-      headerColumns.push(extraColumnTitle);
-   }
-   let sidebarHeader = headerColumns.map(column => (
-      <div
-         className={
-            selectedTab === column
-               ? `headerTab ${column} selected`
-               : `headerTab ${column}`
-         }
-         key={column}
-         onClick={() => setSelectedTab(column)}
-      >
-         <img
-            src={
-               column === 'Me' || column === 'Member'
-                  ? '/defaultAvatar.jpg'
-                  : `${column}.png`
-            }
-            alt={column}
-            title={column}
-         />
-      </div>
-   ));
-   const toggleButton = (
-      <div
-         className="headerTab toggle"
-         key="toggle"
-         onClick={() => {
-            localStorage.setItem('sidebarOpen', !isOpen);
-            setIsOpen(!isOpen);
-         }}
-      >
-         {isOpen ? '<' : '>'}
-      </div>
-   );
-   if (isOpen) {
-      sidebarHeader.push(toggleButton);
-   } else {
-      sidebarHeader = toggleButton;
-   }
-
-   let sidebarContent;
-   if (selectedTab === 'You') {
-      sidebarContent = <MyThings />;
-   } else if (selectedTab === 'Friends') {
-      sidebarContent = <MyFriendsThings />;
-   } else if (selectedTab === 'Public') {
-      sidebarContent = <PublicThings />;
-   } else if (selectedTab === extraColumnTitle) {
-      sidebarContent = extraColumnContent;
-   }
-
-   return (
-      <StyledSidebar className={`sidebar${!isOpen ? ' hidden' : ''}`}>
-         <header className="sidebarHeader">{sidebarHeader}</header>
-         <div className="sidebarContainer">
-            <div className="sidebarContent">{sidebarContent}</div>
-         </div>
-      </StyledSidebar>
-   );
 };
 Sidebar.propTypes = {
    extraColumnTitle: PropTypes.string,

@@ -30,7 +30,7 @@ const ShortLink = props => {
    // }
 
    return (
-      <a className="shortlink" href={link} target="_blank">
+      <a className="shortlink" href={link} target="_blank" key={link}>
          {shortlink}
       </a>
    );

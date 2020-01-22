@@ -1,5 +1,10 @@
 const LoginWithTwitter = require('login-with-twitter');
-const { cipherString, decipherString } = require('../../utils/Twitter');
+const {
+   cipherString,
+   decipherString,
+   createOrDestroyLike,
+   getTwitterInfo
+} = require('../../utils/Twitter');
 
 async function initiateTwitterLogin(parent, args, ctx, info) {
    let message = false;
@@ -32,3 +37,27 @@ async function initiateTwitterLogin(parent, args, ctx, info) {
    return { message };
 }
 exports.initiateTwitterLogin = initiateTwitterLogin;
+
+async function likeTweet(parent, { tweetID, alreadyLiked }, ctx, info) {
+   let action;
+   if (alreadyLiked === 'true') {
+      console.log('destroy');
+      action = 'destroy';
+   } else {
+      console.log('create');
+      action = 'create';
+   }
+
+   const { twitterUserToken, twitterUserTokenSecret } = await getTwitterInfo(
+      ctx
+   );
+
+   const newTweetData = await createOrDestroyLike(
+      tweetID,
+      action,
+      twitterUserToken,
+      twitterUserTokenSecret
+   );
+   return { message: JSON.stringify(newTweetData) };
+}
+exports.likeTweet = likeTweet;

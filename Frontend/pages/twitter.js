@@ -1,3 +1,4 @@
+import Head from 'next/head';
 import { useContext } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
@@ -55,6 +56,9 @@ const twitter = props => {
       <StyledTwitterPage>
          {sidebar}
          <div className="twitterContent">{content}</div>
+         <Head>
+            <title>Twitter Reader - OurDailies</title>
+         </Head>
       </StyledTwitterPage>
    );
 };

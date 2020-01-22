@@ -12,7 +12,10 @@ const {
 const { me, member } = require('./Query/MemberQueries');
 const {
    finishTwitterLogin,
-   getTwitterLists
+   getTwitterLists,
+   getTweet,
+   refreshLists,
+   getTweetsForList
 } = require('./Query/TwitterQueries');
 
 const Query = {
@@ -27,7 +30,10 @@ const Query = {
    myFriendsThings,
    publicThings,
    finishTwitterLogin,
-   getTwitterLists
+   getTwitterLists,
+   getTweet,
+   refreshLists,
+   getTweetsForList
 };
 
 module.exports = Query;

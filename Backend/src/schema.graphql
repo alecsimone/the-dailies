@@ -13,6 +13,9 @@ type Query {
    categoryByTitle(title: String!): Category
    finishTwitterLogin(token: String!, verifier: String!): SuccessMessage
    getTwitterLists: SuccessMessage
+   refreshLists: SuccessMessage
+   getTweet(tweetID: String!): SuccessMessage!
+   getTweetsForList(listID: String!): SuccessMessage!
 }
 
 type Mutation {
@@ -47,6 +50,7 @@ type Mutation {
   deleteComment(commentID: ID!, stuffID: ID!, type: String!): Stuff
   editLink(link: String!, id: ID!): Thing
   initiateTwitterLogin: SuccessMessage
+  likeTweet(tweetID: String!, alreadyLiked: String!): SuccessMessage
 }
 
 union Stuff = Thing | Tag | Category

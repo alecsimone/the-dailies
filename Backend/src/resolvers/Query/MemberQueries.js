@@ -8,7 +8,7 @@ async function me(parent, args, ctx, info) {
       },
       info
    );
-   if (member.defaultCategory == null) {
+   if (member && member.defaultCategory == null) {
       member.defaultCategory = {
          title: 'Misc'
       };

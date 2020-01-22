@@ -12,15 +12,19 @@ const StyledSmallThingCard = styled.article`
    width: 100%;
    max-width: 800px;
    display: inline-block;
-   background: ${props => props.theme.background};
+   background: ${props => props.theme.black};
    border: 1px solid ${props => setAlpha(props.theme.lowContrastGrey, 0.1)};
    padding: 1.2rem;
    border-radius: 0 2px 2px 0;
    border-left: 0.5rem solid ${props => setAlpha(props.theme.majorColor, 0.6)};
-   box-shadow: 0 3px 6px hsla(0, 0%, 0%, 0.4);
+   box-shadow: 0 2px 2px hsla(0, 0%, 0%, 0.1);
    font-weight: 600;
    display: flex;
    align-items: center;
+   opacity: 0.9;
+   &:hover {
+      opacity: 1;
+   }
    img {
       width: 5rem;
       height: 5rem;
@@ -31,9 +35,9 @@ const StyledSmallThingCard = styled.article`
       line-height: 1;
       a,
       a:visited {
-         color: ${props => setLightness(props.theme.mainText, 75)};
+         color: ${props => setLightness(props.theme.mainText, 60)};
          &:hover {
-            color: ${props => setLightness(props.theme.mainText, 90)};
+            color: ${props => setLightness(props.theme.mainText, 75)};
          }
       }
       .tinyMeta {
