@@ -32,7 +32,7 @@ const CategoryDropdown = props => {
    } = useQuery(GET_CATEGORIES_QUERY);
 
    if (categoryOptionsLoading) {
-      categoryOptions = <MetaOption name={initialCategory.title} />;
+      categoryOptions = <MetaOption name={initialCategory} />;
    } else {
       categoryOptions = categoryOptionsData.categories.map(option => (
          <MetaOption name={option.title} key={option.title} />

@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import LogoBox from './LogoBox';
 import MemberBox from './MemberBox';
 import NavButtons from './NavButtons';
-import { setAlpha } from '../../styles/functions';
+import { setAlpha, setLightness } from '../../styles/functions';
 
 Router.onRouteChangeStart = () => {
    NProgress.start();
@@ -21,7 +21,7 @@ const StyledHeader = styled.div`
    grid-column: -1 / 1;
    border-bottom: 3px solid
       ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
-   background: ${props => props.theme.black};
+   background: ${props => setAlpha(setLightness(props.theme.black, 1), 1)};
    padding: 0.5rem 0;
    .headerContents {
       display: grid;

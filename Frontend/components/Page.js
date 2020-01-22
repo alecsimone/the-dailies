@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Meta from './Header/Meta';
 import Header from './Header/Header';
 import MemberProvider from './Account/MemberProvider';
-import { setAlpha } from '../styles/functions';
+import { setAlpha, setLightness, setSaturation } from '../styles/functions';
 
 const theme = {
    tinyText: '1.25rem',
@@ -12,10 +12,9 @@ const theme = {
    smallHead: '4rem',
    bigHead: '5rem',
 
-   black: 'hsla(345, 25%, 2%, 1)',
-
+   black: 'hsla(30, 1%, 5%, 1)',
+   mainText: 'hsl(210, 3%, 75%)',
    background: 'hsl(210, 60%, 3%)',
-   mainText: 'hsl(30, 10%, 80%)',
 
    majorColor: 'hsl(210, 100%, 40%)',
    primaryAccent: 'hsl(120, 100%, 25%)',
@@ -39,7 +38,7 @@ const theme = {
 
 const GlobalStyle = createGlobalStyle`
    html {
-      background: ${theme.background};
+      background: ${setLightness(setSaturation(theme.primaryAccent, 75), 3)};
       color: ${theme.mainText};
       font-family: "Proxima Nova", sans-serif;
       box-sizing: border-box;
@@ -59,7 +58,7 @@ const GlobalStyle = createGlobalStyle`
       padding: 0;
       margin: 0;
       font-size: ${theme.smallText};
-      line-height: 1.5;
+      line-height: 1.6;
       font-weight: 400;
    }
    body::-webkit-scrollbar {

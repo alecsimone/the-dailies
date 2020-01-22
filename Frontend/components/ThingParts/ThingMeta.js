@@ -19,7 +19,7 @@ const StyledThingMeta = styled.section`
    color: ${props => setLightness(props.theme.lowContrastGrey, 40)};
    select,
    span.uneditable {
-      color: ${props => setLightness(props.theme.highContrastGrey, 40)};
+      color: ${props => setLightness(props.theme.lowContrastGrey, 40)};
       margin-left: 2rem;
    }
    select {

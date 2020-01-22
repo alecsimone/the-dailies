@@ -133,9 +133,13 @@ const EDIT_CONTENTPIECE_MUTATION = gql`
 
 const StyledContent = styled.section`
    margin: 5rem 0;
+   background: ${props => props.theme.black};
+   padding: 1rem 3rem;
+   border: 1px solid ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
+   border-radius: 0.5rem;
    p,
    .graph {
-      margin: 1.6rem 0;
+      margin: 1.8rem 0;
    }
    p {
       max-width: 1000px;
@@ -145,6 +149,9 @@ const StyledContent = styled.section`
       flex-wrap: nowrap;
       align-items: baseline;
       margin: 0.6rem 0;
+      border-bottom: 1px solid
+         ${props => setAlpha(props.theme.lowContrastGrey, 0.2)};
+      padding: 1rem 0;
       img.buttons {
          width: ${props => props.theme.smallText};
          opacity: 0.2;

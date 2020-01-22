@@ -21,6 +21,7 @@ const StyledSmallThingCard = styled.article`
    font-weight: 600;
    display: flex;
    align-items: center;
+   cursor: pointer;
    opacity: 0.9;
    &:hover {
       opacity: 1;
@@ -35,9 +36,9 @@ const StyledSmallThingCard = styled.article`
       line-height: 1;
       a,
       a:visited {
-         color: ${props => setLightness(props.theme.mainText, 60)};
+         color: ${props => setLightness(props.theme.mainText, 75)};
          &:hover {
-            color: ${props => setLightness(props.theme.mainText, 75)};
+            color: ${props => setLightness(props.theme.mainText, 90)};
          }
       }
       .tinyMeta {
@@ -81,36 +82,36 @@ const SmallThingCard = props => {
    const timeAgo = convertISOtoAgo(createdAt);
 
    return (
-      <StyledSmallThingCard
-         className="smallThingCard"
-         style={{ borderLeft: `0.5rem solid ${highlightColor}` }}
-      >
-         <img
-            className="thumb"
-            src={
-               featuredImage == null || isVideo(featuredImage)
-                  ? '/defaultPic.jpg'
-                  : featuredImage
-            }
-         />
-         <div className="meta">
-            <Link href={{ pathname: '/thing', query: { id } }}>
+      <Link href={{ pathname: '/thing', query: { id } }}>
+         <StyledSmallThingCard
+            className="smallThingCard"
+            style={{ borderLeft: `0.5rem solid ${highlightColor}` }}
+         >
+            <img
+               className="thumb"
+               src={
+                  featuredImage == null || isVideo(featuredImage)
+                     ? '/defaultPic.jpg'
+                     : featuredImage
+               }
+            />
+            <div className="meta">
                <a>
                   {title.length > 60
                      ? `${title.substring(0, 60).trim()}...`
                      : title}
                </a>
-            </Link>
-            <div className="tinyMeta">
-               {timeAgo} ago by <AuthorLink author={author} /> in{' '}
-               {category.title}. It's{' '}
-               {privacy === 'Public' || privacy === 'Private'
-                  ? privacy
-                  : `for ${privacy} only`}
-               .
+               <div className="tinyMeta">
+                  {timeAgo} ago by <AuthorLink author={author} /> in{' '}
+                  {category.title}. It's{' '}
+                  {privacy === 'Public' || privacy === 'Private'
+                     ? privacy
+                     : `for ${privacy} only`}
+                  .
+               </div>
             </div>
-         </div>
-      </StyledSmallThingCard>
+         </StyledSmallThingCard>
+      </Link>
    );
 };
 SmallThingCard.propTypes = {

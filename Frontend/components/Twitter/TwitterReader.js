@@ -56,7 +56,10 @@ const GET_FRESH_LISTS = gql`
 const StyledTwitterReader = styled.div`
    display: flex;
    .sidebar {
-      flex-basis: 20%;
+      flex-basis: 25%;
+      @media screen and (min-width: 1800px) {
+         flex-basis: 20%;
+      }
       h5 {
          font-size: ${props => props.theme.bigText};
          position: relative;
@@ -105,7 +108,10 @@ const StyledTwitterReader = styled.div`
       }
    }
    .tweetArea {
-      flex-basis: 80%;
+      flex-basis: 75%;
+      @media screen and (min-width: 1800px) {
+         flex-basis: 80%;
+      }
       flex-grow: 1;
       position: relative;
       max-height: 100%;

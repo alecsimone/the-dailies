@@ -77,9 +77,10 @@ const EDIT_COMMENT_MUTATION = gql`
 `;
 
 const StyledComment = styled.div`
-   margin: 1rem 0;
-   background: ${props => setAlpha(props.theme.lowContrastGrey, 0.15)};
-   padding: 1rem;
+   margin: 2rem 0;
+   background: ${props => props.theme.black};
+   border: 1px solid ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
+   padding: 2rem;
    border-radius: 3px;
    .commentContent {
       display: flex;
@@ -90,8 +91,9 @@ const StyledComment = styled.div`
          align-items: flex-start;
          flex-grow: 1;
          img.avatar {
-            width: 3rem;
-            height: 3rem;
+            width: 4rem;
+            min-width: 4rem;
+            height: 4rem;
             border-radius: 100%;
             margin-right: 1.25rem;
          }
@@ -134,8 +136,9 @@ const StyledComment = styled.div`
       }
    }
    .commentMeta {
+      margin-top: 2rem;
       font-size: ${props => props.theme.tinyText};
-      color: ${props => props.theme.highContrastGrey};
+      color: ${props => props.theme.lowContrastGrey};
    }
 `;
 

@@ -7,7 +7,7 @@ import TagBox from './TagBox';
 import ThingMeta from './ThingMeta';
 import FeaturedImage from './FeaturedImage';
 import Comments from './Comments';
-import { setAlpha } from '../../styles/functions';
+import { setAlpha, setLightness, setSaturation } from '../../styles/functions';
 
 const StyledFullThing = styled.article`
    margin: 1rem 0;
@@ -15,10 +15,13 @@ const StyledFullThing = styled.article`
    max-width: 1440px;
    position: absolute;
    top: 2rem;
-   left: 3%;
+   left: 6rem;
    width: 94%;
    padding: 3rem;
-   background: ${props => setAlpha(props.theme.black, 0.8)};
+   background: ${props => setAlpha(setLightness(props.theme.black, 1), 1)};
+   border: 2px solid ${props => setAlpha(props.theme.lowContrastGrey, 0.15)};
+   box-shadow: 0 4px 4px
+      ${props => setAlpha(setLightness(props.theme.black, 1), 0.2)};
    &:after {
       position: absolute;
       content: '';

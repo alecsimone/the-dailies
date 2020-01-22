@@ -13,30 +13,30 @@ const StyledTweets = styled.section`
          .remainingCounters {
             width: 100%;
             margin: 1rem 2rem;
-            opacity: 0.5;
+            opacity: 0.8;
             font-weight: 200;
          }
          .tweeterColumnsContainer {
             display: flex;
+            overflow-x: auto;
+            ${props => props.theme.scroll};
          }
          .tweeterColumn {
             margin: 0 2rem;
             background: ${props =>
-               setAlpha(
-                  setLightness(
-                     setSaturation(props.theme.lowContrastGrey, 10),
-                     42
-                  ),
-                  0.2
-               )};
+               setAlpha(setLightness(props.theme.black, 1), 1)};
             border-radius: 3px;
             position: relative;
             width: 600px;
             flex-grow: 1;
-            min-width: 40rem;
+            min-width: 600px;
             max-width: 80rem;
             height: 100%;
             overflow: hidden;
+            border: 2px solid
+               ${props => setAlpha(props.theme.lowContrastGrey, 0.15)};
+            box-shadow: 0 4px 4px
+               ${props => setAlpha(setLightness(props.theme.black, 1), 0.2)};
             &.column1,
             &.column2 {
                @media screen and (max-width: 800px) {
@@ -95,6 +95,7 @@ const StyledTweets = styled.section`
             .tweetsContainer {
                ${props => props.theme.scroll};
                max-height: calc(100vh - 22rem);
+               padding: 0 1rem;
             }
             .scrollToBottomContainer {
                text-align: center;
@@ -130,10 +131,10 @@ const StyledTweets = styled.section`
          }
       }
       .tweet {
-         margin: 2rem 1rem;
+         margin: 5rem 1rem;
          padding: 0 1.5rem 2rem 1.5rem;
          border: 1px solid
-            ${props => setAlpha(props.theme.lowContrastGrey, 0.5)};
+            ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
          border-radius: 0.5rem;
          background: ${props => props.theme.black};
          .repliedToTweet {
@@ -152,7 +153,7 @@ const StyledTweets = styled.section`
             .retweeter {
                display: flex;
                align-items: center;
-               margin: 0 -1rem 1rem -1rem;
+               margin: 0 -1.5rem 1rem -1.5rem;
                padding: 2rem 1rem;
                background: ${props =>
                   setAlpha(setLightness(props.theme.majorColor, 30), 0.15)};
