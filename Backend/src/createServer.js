@@ -1,5 +1,6 @@
 const { ApolloServer, gql, PubSub } = require('apollo-server-express');
 const { importSchema } = require('graphql-import');
+const jwt = require('jsonwebtoken');
 const db = require('./db');
 const Mutation = require('./resolvers/Mutation');
 const Query = require('./resolvers/Query');
@@ -17,8 +18,16 @@ function createServer() {
          Query,
          Subscription
       },
-      subscriptions: '/subscriptions',
-      context: req => ({ ...req, db, pubsub })
+      subscriptions: {
+         onConnect: (connectionParams, webSocket) => {
+            const rawToken = webSocket.upgradeReq.headers.cookie;
+            const token = rawToken.substring(6);
+            const { memberId } = jwt.verify(token, process.env.APP_SECRET);
+            return { memberId };
+         },
+         path: '/subscriptions'
+      },
+      context: async req => ({ ...req, db, pubsub })
    });
 }
 

@@ -1,21 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import gql from 'graphql-tag';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery, useSubscription } from '@apollo/react-hooks';
+import { fullMemberFields } from '../../lib/CardInterfaces';
 
 const CURRENT_MEMBER_QUERY = gql`
    {
       me {
-         id
-         displayName
-         rep
-         avatar
-         defaultPrivacy
-         defaultCategory {
-            title
+         ${fullMemberFields}
+      }
+   }
+`;
+const ME_SUBSCRIPTION = gql`
+   subscription ME_SUBSCRIPTION {
+      me {
+         node {
+            ${fullMemberFields}
          }
-         roles
-         twitterUserName
       }
    }
 `;
@@ -25,6 +26,11 @@ const MemberContext = React.createContext();
 const MemberProvider = props => {
    const { children } = props;
    const { loading, error, data } = useQuery(CURRENT_MEMBER_QUERY);
+
+   const {
+      data: subscriptionData,
+      loading: subscriptionLoading
+   } = useSubscription(ME_SUBSCRIPTION);
 
    const memberData = {
       loading

@@ -55,8 +55,15 @@ const GET_FRESH_LISTS = gql`
 
 const StyledTwitterReader = styled.div`
    display: flex;
+   flex-wrap: wrap;
+   @media screen and (min-width: 800px) {
+      flex-wrap: nowrap;
+   }
    .sidebar {
-      flex-basis: 25%;
+      flex-basis: 100%;
+      @media screen and (min-width: 800px) {
+         flex-basis: 25%;
+      }
       @media screen and (min-width: 1800px) {
          flex-basis: 20%;
       }
@@ -69,18 +76,16 @@ const StyledTwitterReader = styled.div`
          }
       }
       .listLink {
-         padding: .6rem 1rem;
+         padding: 0.6rem 1rem;
          border-radius: 3px;
          line-height: 1;
          &.selected {
-            background: ${props =>
-               setAlpha(props.theme.lowContrastGrey, 0.25)};;
+            background: ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
          }
          &.loading {
-            background: ${props => setAlpha(props.theme.majorColor, 0.1)};;
+            background: ${props => setAlpha(props.theme.majorColor, 0.1)};
          }
          cursor: pointer;
-         }
          span {
             color: ${props => props.theme.lowContrastGrey};
             margin-left: 0.5rem;
@@ -96,10 +101,10 @@ const StyledTwitterReader = styled.div`
          img {
             margin-left: 1rem;
             width: ${props => props.theme.smallText};
-            opacity: .25;
+            opacity: 0.25;
             cursor: pointer;
             &:hover {
-               opacity: .6;
+               opacity: 0.6;
             }
             &.loading {
                ${props => props.theme.spin};
@@ -108,20 +113,27 @@ const StyledTwitterReader = styled.div`
       }
    }
    .tweetArea {
-      flex-basis: 75%;
+      flex-basis: 100%;
+      @media screen and (min-width: 800px) {
+         flex-basis: 75%;
+      }
       @media screen and (min-width: 1800px) {
          flex-basis: 80%;
       }
       flex-grow: 1;
       position: relative;
-      max-height: 100%;
-      overflow: hidden;
+      @media screen and (min-width: 800px) {
+         max-height: 100%;
+         overflow: hidden;
+      }
       padding: 2rem;
    }
 `;
 
 const TwitterReader = props => {
    const { list } = props;
+
+   const [activeList, setActiveList] = useState(false);
 
    const { loading, error, data } = useQuery(GET_TWITTER_LISTS, { ssr: false });
    const {
@@ -162,8 +174,6 @@ const TwitterReader = props => {
       fetchPolicy: 'network-only',
       onCompleted: changeLists
    });
-
-   const [activeList, setActiveList] = useState(false);
 
    const updateLists = () => {
       const el = document.querySelector('img.refreshLists');
@@ -255,17 +265,16 @@ const TwitterReader = props => {
             >
                <a>{listData[listID].name}</a>
                <span>
-                  {listData[listID].user.screen_name ===
-                  myTwitterInfo.me.twitterUserName
+                  {listData[listID].user === myTwitterInfo.me.twitterUserName
                      ? ''
-                     : `(@${listData[listID].user.screen_name}) `}
+                     : `(@${listData[listID].user}) `}
                   ({filteredTweets.length})
                </span>
             </div>
          );
       });
       listElements.unshift(
-         <h5 key="twiiterUsername">
+         <h5 key="twiterUsername">
             Welcome, @
             <a
                className="twitterName"

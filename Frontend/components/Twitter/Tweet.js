@@ -57,7 +57,8 @@ const Tweet = props => {
          retweeted_status: retweetedTweet,
          retweet_count: retweets,
          quoted_status: quotedTweet
-      }
+      },
+      nested
    } = props;
 
    const [liked, setLiked] = useState(
@@ -182,7 +183,17 @@ const Tweet = props => {
       <div className="tweet">
          {replyToID && (
             <div className="repliedToTweet">
-               <TweetGetter id={replyToID} />
+               {nested ? (
+                  <a
+                     href={`https://twitter.com/blank/status/${replyToID}`}
+                     target="_blank"
+                     rel="noopener noreferrer"
+                  >
+                     See thread
+                  </a>
+               ) : (
+                  <TweetGetter id={replyToID} />
+               )}
             </div>
          )}
          <LinkyText text={tcoReplacedText} />

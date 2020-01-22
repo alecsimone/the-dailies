@@ -3,15 +3,17 @@ import { setAlpha, setLightness, setSaturation } from './functions';
 
 const StyledSidebar = styled.section`
    &.hidden {
-      max-width: 3rem;
       overflow: hidden;
       position: relative;
-      .sidebarHeader {
-         position: absolute;
-         right: 0;
-      }
       .sidebarContainer {
          display: none;
+      }
+      @media screen and (min-width: 800px) {
+         max-width: 3rem;
+         .sidebarHeader {
+            position: absolute;
+            right: 0;
+         }
       }
    }
    transition: all 0.25s;
@@ -72,11 +74,13 @@ const StyledSidebar = styled.section`
       position: relative;
       .sidebarContent {
          padding: 3rem;
-         position: absolute;
-         top: 0;
-         left: 0;
-         width: 100%;
-         max-height: 100%;
+         @media screen and (min-width: 800px) {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            max-height: 100%;
+         }
          ${props => props.theme.scroll};
       }
    }

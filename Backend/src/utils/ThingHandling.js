@@ -1,4 +1,26 @@
-const { fullThingFields, tagFields, catFields } = require('./CardInterfaces');
+const {
+   fullThingFields,
+   tagFields,
+   catFields,
+   fullMemberFields
+} = require('./CardInterfaces');
+
+async function publishMeUpdate(ctx) {
+   const newMe = await ctx.db.query.member(
+      {
+         where: {
+            id: ctx.req.memberId
+         }
+      },
+      `{${fullMemberFields}}`
+   );
+   ctx.pubsub.publish('me', {
+      me: {
+         node: newMe
+      }
+   });
+}
+exports.publishMeUpdate = publishMeUpdate;
 
 function publishStuffUpdate(type, stuff, ctx) {
    const lowerCasedType = type.toLowerCase();
@@ -7,6 +29,9 @@ function publishStuffUpdate(type, stuff, ctx) {
          node: stuff
       }
    });
+   if (type === 'Thing') {
+      publishMeUpdate(ctx);
+   }
 }
 
 async function updateStuffAndNotifySubs(data, id, type, ctx) {
@@ -159,6 +184,7 @@ const canSeeThing = (memberID, thingData) => {
       return true;
    }
    if (thingData.privacy === 'Private') {
+      console.log('that shit private');
       return false;
    }
    if (

@@ -17,7 +17,8 @@ const {
 } = require('./Mutation/ThingMutations/Editing');
 const {
    initiateTwitterLogin,
-   likeTweet
+   likeTweet,
+   markTweetsSeen
 } = require('./Mutation/TwitterMutations');
 
 const Mutations = {
@@ -39,7 +40,8 @@ const Mutations = {
    deleteComment,
    editLink,
    initiateTwitterLogin,
-   likeTweet
+   likeTweet,
+   markTweetsSeen
 };
 
 module.exports = Mutations;

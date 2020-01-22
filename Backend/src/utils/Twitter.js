@@ -94,7 +94,7 @@ const getTwitterInfo = async ctx => {
       {
          where: { id: ctx.req.memberId }
       },
-      `{twitterUserID, twitterUserName, twitterListsObject, twitterUserToken, twitterUserTokenSecret}`
+      `{twitterUserID, twitterUserName, twitterListsObject, twitterUserToken, twitterUserTokenSecret, twitterSeenIDs}`
    );
    twitterInfo.twitterUserTokenSecret = decipherString(
       twitterInfo.twitterUserTokenSecret
@@ -230,11 +230,11 @@ const fetchListTweets = async (listID, ctx) => {
    const listsObject = JSON.parse(rawListsObject);
 
    let sinceID;
-   if (listsObject == null) {
-      sinceID = null;
+   if (listsObject == null || listsObject[listID] == null) {
+      sinceID = 1;
    } else {
       sinceID =
-         listsObject[listID] == null ? null : listsObject[listID].sinceID;
+         listsObject[listID].sinceID == null ? 1 : listsObject[listID].sinceID;
    }
 
    if (listID === 'home') {

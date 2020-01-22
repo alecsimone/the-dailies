@@ -132,7 +132,7 @@ const NewThingForm = () => {
       data: categoryData
    } = useQuery(GET_CATEGORIES_QUERY);
    let categoryOptions;
-   if (categoryLoading || me.defaultCategory === 'Loading...') {
+   if (categoryLoading || memberLoading) {
       categoryOptions = (
          <option value="" key="loadingCategories">
             Loading Categories...

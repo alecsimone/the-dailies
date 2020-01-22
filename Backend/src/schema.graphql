@@ -50,7 +50,8 @@ type Mutation {
   deleteComment(commentID: ID!, stuffID: ID!, type: String!): Stuff
   editLink(link: String!, id: ID!): Thing
   initiateTwitterLogin: SuccessMessage
-  likeTweet(tweetID: String!, alreadyLiked: String!): SuccessMessage
+  likeTweet(tweetID: String!, alreadyLiked: String!): SuccessMessage,
+  markTweetsSeen(listID: String!, tweetIDs: [String]!): Member
 }
 
 union Stuff = Thing | Tag | Category
@@ -59,6 +60,7 @@ type Subscription {
    thing(id: ID!): ThingSubscriptionPayload
    tag: TagSubscriptionPayload
    category: CategorySubscriptionPayload
+   me: MemberSubscriptionPayload
 }
 
 type SuccessMessage {

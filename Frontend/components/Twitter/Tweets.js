@@ -1,6 +1,19 @@
+import gql from 'graphql-tag';
+import { useMutation } from '@apollo/react-hooks';
 import styled from 'styled-components';
 import Tweet from './Tweet';
 import { setAlpha, setLightness, setSaturation } from '../../styles/functions';
+
+const MARK_TWEETS_SEEN = gql`
+   mutation MARK_TWEETS_SEEN($listID: String!, $tweetIDs: [String]!) {
+      markTweetsSeen(listID: $listID, tweetIDs: $tweetIDs) {
+         __typename
+         id
+         twitterListsObject
+         twitterSeenIDs
+      }
+   }
+`;
 
 const StyledTweets = styled.section`
    position: absolute;
@@ -12,25 +25,32 @@ const StyledTweets = styled.section`
       .tweeters {
          .remainingCounters {
             width: 100%;
-            margin: 1rem 2rem;
+            margin: 0;
+            padding: 2rem;
+            @media screen and (min-width: 800px) {
+               margin: 1rem 2rem;
+               padding: 0;
+            }
             opacity: 0.8;
             font-weight: 200;
          }
          .tweeterColumnsContainer {
             display: flex;
             overflow-x: auto;
+            max-width: 100%;
             ${props => props.theme.scroll};
          }
          .tweeterColumn {
-            margin: 0 2rem;
-            background: ${props =>
-               setAlpha(setLightness(props.theme.black, 1), 1)};
+            margin: 0;
+            @media screen and (min-width: 800px) {
+               margin: 0 2rem;
+            }
+            background: ${props => setLightness(props.theme.black, 1)};
             border-radius: 3px;
             position: relative;
             width: 600px;
             flex-grow: 1;
-            min-width: 600px;
-            max-width: 80rem;
+            max-width: 100%;
             height: 100%;
             overflow: hidden;
             border: 2px solid
@@ -77,18 +97,7 @@ const StyledTweets = styled.section`
                      opacity: 1;
                   }
                   &.loading {
-                     animation-name: spin;
-                     animation-duration: 750ms;
-                     animation-iteration-count: infinite;
-                     animation-timing-function: linear;
-                  }
-               }
-               @keyframes spin {
-                  from {
-                     transform: rotate(0deg);
-                  }
-                  to {
-                     transform: rotate(360deg);
+                     ${props => props.theme.spin};
                   }
                }
             }
@@ -132,6 +141,9 @@ const StyledTweets = styled.section`
       }
       .tweet {
          margin: 5rem 1rem;
+         &:first-child {
+            margin-top: 3rem;
+         }
          padding: 0 1.5rem 2rem 1.5rem;
          border: 1px solid
             ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
@@ -315,16 +327,14 @@ const Tweets = props => {
    } = props;
    const tweets = JSON.parse(list.tweets);
 
+   const [markTweetsSeen] = useMutation(MARK_TWEETS_SEEN);
+
    let tweetersRemaining;
    let tweetsRemaining;
    const tweetersArray = [];
    const seenTweeters = [];
 
    const filteredTweets = filterTweets(tweets, seenIDs);
-   filteredTweets.sort((a, b) => parseInt(a.id_str) - parseInt(b.id_str));
-   const oldestTweetID =
-      filteredTweets.length > 0 ? filteredTweets[0].id_str : '0';
-   tweetsRemaining = filteredTweets.length;
 
    let tweetsDisplay;
    if (filteredTweets.length === 0) {
@@ -335,6 +345,8 @@ const Tweets = props => {
          </div>
       );
    } else {
+      filteredTweets.sort((a, b) => parseInt(a.id_str) - parseInt(b.id_str));
+      tweetsRemaining = filteredTweets.length;
       filteredTweets.forEach(tweet => {
          const tweeter = tweet.user;
          if (!seenTweeters.includes(tweeter.screen_name)) {
@@ -399,6 +411,22 @@ const Tweets = props => {
                      src="/red-x.png"
                      className="markSeen"
                      alt="Mark tweeter seen"
+                     onClick={e => {
+                        e.target.classList.add('loading');
+                        const tweetIDs = [];
+                        tweetersArray[i].tweets.forEach(tweet => {
+                           tweetIDs.push(tweet.id_str);
+                           if (tweet.retweeted_status) {
+                              tweetIDs.push(tweet.retweeted_status.id_str);
+                           }
+                        });
+                        markTweetsSeen({
+                           variables: {
+                              listID: list.id,
+                              tweetIDs
+                           }
+                        });
+                     }}
                   />
                </h3>
                <div className="tweetsContainer">{thisTweetersTweets}</div>

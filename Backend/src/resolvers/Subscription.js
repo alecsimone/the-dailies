@@ -8,11 +8,18 @@ const Subscription = {
       )
    },
    tag: {
-      subscribe: (parent, { id }, ctx, info) => ctx.pubsub.asyncIterator('tag')
+      subscribe: (parent, args, ctx, info) => ctx.pubsub.asyncIterator('tag')
    },
    category: {
-      subscribe: (parent, { id }, ctx, info) =>
+      subscribe: (parent, args, ctx, info) =>
          ctx.pubsub.asyncIterator('category')
+   },
+   me: {
+      subscribe: withFilter(
+         (parent, args, ctx, info) => ctx.pubsub.asyncIterator('me'),
+         (payload, variables, ctx, info) =>
+            ctx.connection.context.memberId === payload.me.node.id
+      )
    }
 };
 

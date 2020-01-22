@@ -1,3 +1,5 @@
+const { canSeeThing } = require('../../utils/ThingHandling');
+
 async function me(parent, args, ctx, info) {
    if (!ctx.req.memberId) {
       return null;
@@ -12,6 +14,14 @@ async function me(parent, args, ctx, info) {
       member.defaultCategory = {
          title: 'Misc'
       };
+   }
+   console.log(member);
+   if (member && member.friends) {
+      member.friends.forEach((friend, index) => {
+         member.friends[index].createdThings = friend.createdThings.filter(
+            thing => canSeeThing(ctx.req.memberId, thing)
+         );
+      });
    }
    return member;
 }

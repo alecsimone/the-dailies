@@ -5,6 +5,7 @@ const {
    createOrDestroyLike,
    getTwitterInfo
 } = require('../../utils/Twitter');
+const { loggedInGate, fullMemberGate } = require('../../utils/Authentication');
 
 async function initiateTwitterLogin(parent, args, ctx, info) {
    let message = false;
@@ -61,3 +62,43 @@ async function likeTweet(parent, { tweetID, alreadyLiked }, ctx, info) {
    return { message: JSON.stringify(newTweetData) };
 }
 exports.likeTweet = likeTweet;
+
+async function markTweetsSeen(parent, { listID, tweetIDs }, ctx, info) {
+   loggedInGate(ctx);
+   fullMemberGate(ctx.req.member);
+
+   const { twitterListsObject, twitterSeenIDs } = await getTwitterInfo(ctx);
+
+   tweetIDs.sort();
+   const oldestTweetID = parseInt(tweetIDs[0]);
+
+   let listsObject;
+   if (twitterListsObject == null) {
+      listsObject = {};
+   } else {
+      listsObject = JSON.parse(twitterListsObject);
+      listsObject[listID].sinceID = oldestTweetID;
+   }
+   const seenIDs = [];
+   if (twitterSeenIDs != null) {
+      twitterSeenIDs.forEach(id => {
+         // if (parseInt(id) >= oldestTweetID) {
+         seenIDs.push(id);
+         // }
+      });
+   }
+   const newSeenIDs = seenIDs.concat(tweetIDs);
+
+   const updatedMember = await ctx.db.mutation.updateMember(
+      {
+         where: { id: ctx.req.memberId },
+         data: {
+            twitterListsObject: JSON.stringify(listsObject),
+            twitterSeenIDs: { set: newSeenIDs }
+         }
+      },
+      info
+   );
+   return updatedMember;
+}
+exports.markTweetsSeen = markTweetsSeen;

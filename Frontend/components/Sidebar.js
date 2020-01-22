@@ -21,7 +21,14 @@ const Sidebar = props => {
    //    }
    // }, [extraColumnTitle]);
 
-   const [isOpen, setIsOpen] = useState(true);
+   const [isOpen, setIsOpen] = useState(
+      !(
+         process.browser &&
+         window.outerWidth <= 800 &&
+         extraColumnTitle != 'Tag' &&
+         extraColumnTitle != 'Category'
+      )
+   );
 
    if (me) {
       const headerColumns = me ? ['You', 'Friends', 'Public'] : ['Public'];
@@ -49,6 +56,10 @@ const Sidebar = props => {
             />
          </div>
       ));
+      const openButton =
+         process.browser && window.outerWidth <= 800 ? 'v' : '>';
+      const closeButton =
+         process.browser && window.outerWidth <= 800 ? '^' : '<';
       const toggleButton = (
          <div
             className="headerTab toggle"
@@ -58,10 +69,10 @@ const Sidebar = props => {
                setIsOpen(!isOpen);
             }}
          >
-            {isOpen ? '<' : '>'}
+            {isOpen ? closeButton : openButton}
          </div>
       );
-      if (isOpen) {
+      if (isOpen || (process.browser && window.outerWidth <= 800)) {
          sidebarHeader.push(toggleButton);
       } else {
          sidebarHeader = toggleButton;

@@ -12,13 +12,16 @@ import { setAlpha, setLightness, setSaturation } from '../../styles/functions';
 const StyledFullThing = styled.article`
    margin: 1rem 0;
    border-radius: 1rem;
-   max-width: 1440px;
-   position: absolute;
-   top: 2rem;
-   left: 6rem;
-   width: 94%;
-   padding: 3rem;
-   background: ${props => setAlpha(setLightness(props.theme.black, 1), 1)};
+   padding: 2rem;
+   @media screen and (min-width: 800px) {
+      max-width: 1440px;
+      position: absolute;
+      top: 2rem;
+      left: 6rem;
+      width: 94%;
+      padding: 3rem;
+   }
+   background: ${props => setLightness(props.theme.black, 1)};
    border: 2px solid ${props => setAlpha(props.theme.lowContrastGrey, 0.15)};
    box-shadow: 0 4px 4px
       ${props => setAlpha(setLightness(props.theme.black, 1), 0.2)};

@@ -14,7 +14,9 @@ const PUBLIC_THINGS_QUERY = gql`
 `;
 
 const PublicThings = () => {
-   const { data, error, loading } = useQuery(PUBLIC_THINGS_QUERY);
+   const { data, error, loading } = useQuery(PUBLIC_THINGS_QUERY, {
+      pollInterval: 5000
+   });
 
    if (error) return <Error error={error} />;
 

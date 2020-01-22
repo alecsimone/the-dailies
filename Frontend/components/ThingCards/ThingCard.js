@@ -13,7 +13,7 @@ const StyledThingCard = styled.div`
    width: 100%;
    padding: 1.25rem;
    max-width: 60rem;
-   background: ${props => setAlpha(setLightness(props.theme.black, 1), 1)};
+   background: ${props => setLightness(props.theme.black, 1)};
    border: 2px solid ${props => setAlpha(props.theme.lowContrastGrey, 0.15)};
    box-shadow: 0 4px 4px
       ${props => setAlpha(setLightness(props.theme.black, 1), 0.2)};

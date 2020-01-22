@@ -153,3 +153,89 @@ const catFields = `
    createdAt
 `;
 exports.catFields = catFields;
+
+const fullMemberFields = `
+   __typename
+   id
+   displayName
+   name
+   avatar
+   rep
+   points
+   giveableRep
+   friends {
+      __typename
+      id
+      displayName
+      avatar
+      rep
+      roles
+      friends {
+         __typename
+         id
+         displayName
+         avatar
+         rep
+         createdThings {
+            ${smallThingCardFields}
+         }
+      }
+   }
+   twitchName
+   email
+   votes {
+      __typename
+      id
+      onThing {
+         ${smallThingCardFields}
+      }
+      value
+      createdAt
+   }
+   createdThings {
+      ${smallThingCardFields}
+   }
+   defaultCategory {
+      __typename
+      id
+      title
+   }
+   defaultPrivacy
+   comments {
+      __typename
+      id
+      author {
+         __typename
+         id
+         displayName
+         avatar
+         rep
+      }
+      comment
+      createdAt
+      updatedAt
+      onThing {
+         __typename
+         id
+         title
+      }
+      onComment {
+         __typename
+         id
+      }
+      onTag {
+         __typename
+         id
+         title
+      }
+      onCategory {
+         __typename
+         id
+         title
+      }
+   }
+   roles
+   twitterUserName
+   createdAt
+`;
+exports.fullMemberFields = fullMemberFields;

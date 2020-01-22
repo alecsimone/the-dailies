@@ -80,9 +80,9 @@ async function getTwitterLists(parent, args, ctx, info) {
       listData = {};
       const {
          twitterUserID,
-         twitterUserName,
          twitterUserToken,
-         twitterUserTokenSecret
+         twitterUserTokenSecret,
+         twitterListsObject
       } = await getTwitterInfo(ctx);
 
       const lists = await getFreshLists(
@@ -95,7 +95,10 @@ async function getTwitterLists(parent, args, ctx, info) {
          listData[listObject.id_str] = {
             id: listObject.id_str,
             name: listObject.name,
-            user: listObject.user,
+            user: listObject.user.screen_name,
+            sinceID: twitterListsObject[listObject.id_str]
+               ? twitterListsObject[listObject.id_str].sinceID
+               : 1,
             tweets: []
          };
       });
@@ -149,7 +152,8 @@ async function refreshLists(parent, arts, ctx, info) {
    const {
       twitterUserID,
       twitterUserToken,
-      twitterUserTokenSecret
+      twitterUserTokenSecret,
+      twitterListsObject
    } = await getTwitterInfo(ctx);
 
    const lists = await getFreshLists(
@@ -162,7 +166,10 @@ async function refreshLists(parent, arts, ctx, info) {
       listData[listObject.id_str] = {
          id: listObject.id_str,
          name: listObject.name,
-         user: listObject.user,
+         user: listObject.user.screen_name,
+         sinceID: twitterListsObject[listObject.id_str]
+            ? twitterListsObject[listObject.id_str].sinceID
+            : 1,
          tweets: []
       };
    });

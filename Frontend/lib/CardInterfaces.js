@@ -177,6 +177,9 @@ const fullMemberFields = `
       avatar
       rep
       roles
+      createdThings {
+         ${smallThingCardFields}
+      }
       friends {
          __typename
          id

@@ -1,38 +1,18 @@
-import gql from 'graphql-tag';
-import { useQuery } from '@apollo/react-hooks';
+import { useContext } from 'react';
+import { MemberContext } from '../Account/MemberProvider';
 import Things from './Things';
-import Error from '../ErrorMessage';
-import LoadingRing from '../LoadingRing';
-import { smallThingCardFields } from '../../lib/CardInterfaces';
-
-const MY_FRIENDS_THINGS_QUERY = gql`
-   query MY_FRIENDS_THINGS_QUERY {
-      myFriendsThings {
-         ${smallThingCardFields}
-      }
-   }
-`;
 
 const MyFriendsThings = () => {
-   const { data, error, loading } = useQuery(MY_FRIENDS_THINGS_QUERY);
+   const {
+      me: { friends }
+   } = useContext(MemberContext);
+   const friendsThings = [];
+   friends.forEach(friend => {
+      friend.createdThings.forEach(thing => friendsThings.push(thing));
+   });
+   friendsThings.sort((a, b) => a.id < b.id);
 
-   if (error) {
-      return <Error error={error} />;
-   }
-
-   if (data) {
-      return (
-         <Things
-            things={data.myFriendsThings}
-            displayType="list"
-            cardSize="small"
-         />
-      );
-   }
-
-   if (loading) {
-      return <LoadingRing />;
-   }
+   return <Things things={friendsThings} displayType="list" cardSize="small" />;
 };
 MyFriendsThings.propTypes = {};
 

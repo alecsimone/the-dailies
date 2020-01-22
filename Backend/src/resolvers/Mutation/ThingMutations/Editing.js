@@ -1,13 +1,15 @@
 const {
    properDeleteStuff,
    properUpdateStuff,
-   isExplodingLink
+   isExplodingLink,
+   publishMeUpdate
 } = require('../../../utils/ThingHandling');
 const {
    loggedInGate,
    fullMemberGate,
    canEditThing
 } = require('../../../utils/Authentication');
+const {fullMemberFields} = require('../../../utils/CardInterfaces');
 
 async function addTagToThing(tagTitle, thingID, ctx) {
    const existingTags = await ctx.db.query.tags(
@@ -126,6 +128,8 @@ async function createThing(parent, args, ctx, info) {
 
    const tagsArray = tags.split(',');
    await addTagsToThing(tagsArray, thing.id, ctx);
+
+   publishMeUpdate(ctx);
 
    return thing;
 }

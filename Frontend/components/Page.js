@@ -30,7 +30,7 @@ const theme = {
    },
    spin: {
       animationName: 'spin',
-      animationDuration: '750ms',
+      animationDuration: '1000ms',
       animationIterationCount: 'infinite',
       animationTimingFunction: 'linear'
    }
@@ -159,10 +159,10 @@ const GlobalStyle = createGlobalStyle`
    }
    @keyframes spin {
          from {
-            transform: rotate(0deg);
+            transform: rotate(360deg);
          }
          to {
-            transform: rotate(-360deg);
+            transform: rotate(0deg);
          }
       }
 `;
