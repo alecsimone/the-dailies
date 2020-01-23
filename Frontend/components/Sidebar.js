@@ -12,7 +12,9 @@ const Sidebar = props => {
    const { me, loading: memberLoading } = useContext(MemberContext);
 
    let defaultColumn;
-   if (me == null) {
+   if (memberLoading) {
+      defaultColumn = 'Loading';
+   } else if (me == null) {
       defaultColumn = 'Public';
    } else {
       defaultColumn = 'You';
@@ -44,7 +46,12 @@ const Sidebar = props => {
       );
    }
 
-   // if (me) {
+   if (selectedTab === 'Loading') {
+      setSelectedTab(
+         extraColumnTitle == null ? defaultColumn : extraColumnTitle
+      );
+   }
+
    const headerColumns = me ? ['You', 'Friends', 'Public'] : ['Public'];
    if (extraColumnTitle != null) {
       headerColumns.push(extraColumnTitle);
@@ -91,7 +98,9 @@ const Sidebar = props => {
    }
 
    let sidebarContent;
-   if (selectedTab === 'You') {
+   if (selectedTab === 'Loading') {
+      sidebarContent = <LoadingRing />;
+   } else if (selectedTab === 'You') {
       sidebarContent = <MyThings />;
    } else if (selectedTab === 'Friends') {
       sidebarContent = <MyFriendsThings />;
@@ -109,7 +118,6 @@ const Sidebar = props => {
          </div>
       </StyledSidebar>
    );
-   // }
 };
 Sidebar.propTypes = {
    extraColumnTitle: PropTypes.string,

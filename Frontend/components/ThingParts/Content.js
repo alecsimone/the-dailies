@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useMutation } from '@apollo/react-hooks';
 import { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
-import { setAlpha } from '../../styles/functions';
+import { setAlpha, setLightness } from '../../styles/functions';
 import ContentPiece from './ContentPiece';
 import ContentInput from './ContentInput';
 
@@ -143,6 +143,10 @@ const StyledContent = styled.section`
    }
    p {
       max-width: 1000px;
+   }
+   a,
+   a:visited {
+      color: ${props => setLightness(props.theme.majorColor, 75)};
    }
    .contentBlock {
       display: flex;
