@@ -1057,6 +1057,7 @@ type Member {
   comments(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Comment!]
   password: String!
   roles: [Role!]!
+  role: Role
   resetToken: String
   resetTokenExpiry: Float
   twitterTokenSecret: String
@@ -1096,6 +1097,7 @@ input MemberCreateInput {
   comments: CommentCreateManyWithoutAuthorInput
   password: String!
   roles: MemberCreaterolesInput
+  role: Role
   resetToken: String
   resetTokenExpiry: Float
   twitterTokenSecret: String
@@ -1164,6 +1166,7 @@ input MemberCreateWithoutCommentsInput {
   defaultPrivacy: PrivacySetting
   password: String!
   roles: MemberCreaterolesInput
+  role: Role
   resetToken: String
   resetTokenExpiry: Float
   twitterTokenSecret: String
@@ -1194,6 +1197,7 @@ input MemberCreateWithoutCreatedThingsInput {
   comments: CommentCreateManyWithoutAuthorInput
   password: String!
   roles: MemberCreaterolesInput
+  role: Role
   resetToken: String
   resetTokenExpiry: Float
   twitterTokenSecret: String
@@ -1224,6 +1228,7 @@ input MemberCreateWithoutOwnedTagsInput {
   comments: CommentCreateManyWithoutAuthorInput
   password: String!
   roles: MemberCreaterolesInput
+  role: Role
   resetToken: String
   resetTokenExpiry: Float
   twitterTokenSecret: String
@@ -1254,6 +1259,7 @@ input MemberCreateWithoutPassesInput {
   comments: CommentCreateManyWithoutAuthorInput
   password: String!
   roles: MemberCreaterolesInput
+  role: Role
   resetToken: String
   resetTokenExpiry: Float
   twitterTokenSecret: String
@@ -1284,6 +1290,7 @@ input MemberCreateWithoutVotesInput {
   comments: CommentCreateManyWithoutAuthorInput
   password: String!
   roles: MemberCreaterolesInput
+  role: Role
   resetToken: String
   resetTokenExpiry: Float
   twitterTokenSecret: String
@@ -1323,6 +1330,8 @@ enum MemberOrderByInput {
   defaultPrivacy_DESC
   password_ASC
   password_DESC
+  role_ASC
+  role_DESC
   resetToken_ASC
   resetToken_DESC
   resetTokenExpiry_ASC
@@ -1358,6 +1367,7 @@ type MemberPreviousValues {
   defaultPrivacy: PrivacySetting
   password: String!
   roles: [Role!]!
+  role: Role
   resetToken: String
   resetTokenExpiry: Float
   twitterTokenSecret: String
@@ -1498,6 +1508,10 @@ input MemberScalarWhereInput {
   password_not_starts_with: String
   password_ends_with: String
   password_not_ends_with: String
+  role: Role
+  role_not: Role
+  role_in: [Role!]
+  role_not_in: [Role!]
   resetToken: String
   resetToken_not: String
   resetToken_in: [String!]
@@ -1662,6 +1676,7 @@ input MemberUpdateDataInput {
   comments: CommentUpdateManyWithoutAuthorInput
   password: String
   roles: MemberUpdaterolesInput
+  role: Role
   resetToken: String
   resetTokenExpiry: Float
   twitterTokenSecret: String
@@ -1692,6 +1707,7 @@ input MemberUpdateInput {
   comments: CommentUpdateManyWithoutAuthorInput
   password: String
   roles: MemberUpdaterolesInput
+  role: Role
   resetToken: String
   resetTokenExpiry: Float
   twitterTokenSecret: String
@@ -1715,6 +1731,7 @@ input MemberUpdateManyDataInput {
   defaultPrivacy: PrivacySetting
   password: String
   roles: MemberUpdaterolesInput
+  role: Role
   resetToken: String
   resetTokenExpiry: Float
   twitterTokenSecret: String
@@ -1750,6 +1767,7 @@ input MemberUpdateManyMutationInput {
   defaultPrivacy: PrivacySetting
   password: String
   roles: MemberUpdaterolesInput
+  role: Role
   resetToken: String
   resetTokenExpiry: Float
   twitterTokenSecret: String
@@ -1829,6 +1847,7 @@ input MemberUpdateWithoutCommentsDataInput {
   defaultPrivacy: PrivacySetting
   password: String
   roles: MemberUpdaterolesInput
+  role: Role
   resetToken: String
   resetTokenExpiry: Float
   twitterTokenSecret: String
@@ -1858,6 +1877,7 @@ input MemberUpdateWithoutCreatedThingsDataInput {
   comments: CommentUpdateManyWithoutAuthorInput
   password: String
   roles: MemberUpdaterolesInput
+  role: Role
   resetToken: String
   resetTokenExpiry: Float
   twitterTokenSecret: String
@@ -1887,6 +1907,7 @@ input MemberUpdateWithoutOwnedTagsDataInput {
   comments: CommentUpdateManyWithoutAuthorInput
   password: String
   roles: MemberUpdaterolesInput
+  role: Role
   resetToken: String
   resetTokenExpiry: Float
   twitterTokenSecret: String
@@ -1916,6 +1937,7 @@ input MemberUpdateWithoutPassesDataInput {
   comments: CommentUpdateManyWithoutAuthorInput
   password: String
   roles: MemberUpdaterolesInput
+  role: Role
   resetToken: String
   resetTokenExpiry: Float
   twitterTokenSecret: String
@@ -1945,6 +1967,7 @@ input MemberUpdateWithoutVotesDataInput {
   comments: CommentUpdateManyWithoutAuthorInput
   password: String
   roles: MemberUpdaterolesInput
+  role: Role
   resetToken: String
   resetTokenExpiry: Float
   twitterTokenSecret: String
@@ -2138,6 +2161,10 @@ input MemberWhereInput {
   password_not_starts_with: String
   password_ends_with: String
   password_not_ends_with: String
+  role: Role
+  role_not: Role
+  role_in: [Role!]
+  role_not_in: [Role!]
   resetToken: String
   resetToken_not: String
   resetToken_in: [String!]

@@ -12,10 +12,10 @@ async function me(parent, args, ctx, info) {
    );
    if (member && member.defaultCategory == null) {
       member.defaultCategory = {
+         id: 'ck4rnitpbkot00b00slf26klu',
          title: 'Misc'
       };
    }
-   console.log(member);
    if (member && member.friends) {
       member.friends.forEach((friend, index) => {
          member.friends[index].createdThings = friend.createdThings.filter(

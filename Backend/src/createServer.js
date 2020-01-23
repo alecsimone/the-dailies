@@ -21,9 +21,12 @@ function createServer() {
       subscriptions: {
          onConnect: (connectionParams, webSocket) => {
             const rawToken = webSocket.upgradeReq.headers.cookie;
-            const token = rawToken.substring(6);
-            const { memberId } = jwt.verify(token, process.env.APP_SECRET);
-            return { memberId };
+            if (rawToken) {
+               const token = rawToken.substring(6);
+               const { memberId } = jwt.verify(token, process.env.APP_SECRET);
+               return { memberId };
+            }
+            return {};
          },
          path: '/subscriptions'
       },

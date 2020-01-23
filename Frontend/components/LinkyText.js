@@ -3,6 +3,10 @@ import { urlFinder, isExplodingLink } from '../lib/UrlHandling';
 import ExplodingLink from './ExplodingLink';
 
 const processLinksInText = (rawText, keyString = 0) => {
+   rawText = rawText.replace(
+      /@(\w+)/g,
+      (wholeMatch, username) => `https://www.twitter.com/${username}`
+   );
    const urls = rawText.match(urlFinder);
    if (urls == null) {
       return <p key={keyString}>{rawText}</p>;
@@ -61,9 +65,18 @@ const processLinksInText = (rawText, keyString = 0) => {
    return <p key={keyString}>{rawText}</p>;
 };
 
-const LinkyText = props => {
-   const { text } = props;
+const decodeHTML = text => {
+   const txt = document.createElement('textarea');
+   txt.innerHTML = text;
+   return txt.value;
+};
 
+const LinkyText = props => {
+   let { text } = props;
+
+   if (process.browser) {
+      text = decodeHTML(text);
+   }
    const paragraphsAndEmptyStrings = text.split('\n');
    const paragraphs = paragraphsAndEmptyStrings.filter(string => string != '');
    const paragraphElements = paragraphs.map((graph, index) =>

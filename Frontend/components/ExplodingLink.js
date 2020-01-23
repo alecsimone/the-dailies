@@ -12,12 +12,17 @@ import { homeNoHTTP } from '../config';
 import ShortLink from './ThingParts/ShortLink';
 import Tweet from './Twitter/Tweet';
 import TweetGetter from './Twitter/TweetGetter';
+import LoadingRing from './LoadingRing';
 
 const ExplodingLink = props => {
    const { url, keyString, alt, className } = props;
    const lowerCaseURL = url.toLowerCase();
 
    const { me } = useContext(MemberContext);
+
+   if (me == null) {
+      return <LoadingRing />;
+   }
 
    // Images
    if (
@@ -79,10 +84,31 @@ const ExplodingLink = props => {
    ) {
       const tweetID = getTweetIDFromLink(url);
       if (me.twitterUserName != null) {
-         return <TweetGetter id={tweetID} />;
+         return (
+            <div className="tweet" style={{ padding: 0, border: 'none' }}>
+               <TweetGetter id={tweetID} />
+            </div>
+         );
       }
       return (
          <TwitterTweetEmbed tweetId={tweetID} options={{ theme: 'dark' }} />
+      );
+   }
+
+   // Tweeter
+   if (lowerCaseURL.includes('twitter.com/')) {
+      const userStart = lowerCaseURL.indexOf('twitter.com/') + 12;
+      const userEnd = lowerCaseURL.indexOf('?');
+      let user;
+      if (userEnd > -1) {
+         user = url.substring(userStart, userEnd);
+      } else {
+         user = url.substring(userStart);
+      }
+      return (
+         <a href={url} target="_blank">
+            @{user}
+         </a>
       );
    }
 

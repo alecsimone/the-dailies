@@ -42,10 +42,8 @@ exports.initiateTwitterLogin = initiateTwitterLogin;
 async function likeTweet(parent, { tweetID, alreadyLiked }, ctx, info) {
    let action;
    if (alreadyLiked === 'true') {
-      console.log('destroy');
       action = 'destroy';
    } else {
-      console.log('create');
       action = 'create';
    }
 

@@ -37,7 +37,7 @@ const ProfileSidebar = props => {
          email,
          twitchName,
          twitterName,
-         roles
+         role
       },
       canEdit
    } = props;
@@ -73,7 +73,7 @@ const ProfileSidebar = props => {
             />
          </div>
          <div>Twitter Name: {twitterName || 'Not set'}</div>
-         <div>Role: {roles[0]}</div>
+         <div>Role: {role}</div>
       </StyledProfileSidebar>
    );
 };
@@ -87,7 +87,7 @@ ProfileSidebar.propTypes = {
       email: PropTypes.string.isRequired,
       twitchName: PropTypes.string,
       twitterName: PropTypes.string,
-      roles: PropTypes.array.isRequired
+      role: PropTypes.string.isRequired
    })
 };
 

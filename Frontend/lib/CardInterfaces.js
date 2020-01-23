@@ -90,7 +90,7 @@ const fullThingFields = `
          id
          displayName
          avatar
-         roles
+         role
       }
       value
    }
@@ -101,7 +101,7 @@ const fullThingFields = `
          id
          displayName
          avatar
-         roles
+         role
       }
    }
    score
@@ -176,7 +176,7 @@ const fullMemberFields = `
       displayName
       avatar
       rep
-      roles
+      role
       createdThings {
          ${smallThingCardFields}
       }
@@ -241,7 +241,7 @@ const fullMemberFields = `
          title
       }
    }
-   roles
+   role
    twitterUserName
    createdAt
 `;

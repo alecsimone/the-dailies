@@ -75,6 +75,7 @@ const Signup = props => {
                   type="text"
                   name="displayName"
                   placeholder="Display Name"
+                  maxLength={24}
                   value={displayName}
                   onChange={saveToState}
                />

@@ -36,6 +36,7 @@ const MemberProvider = props => {
       loading
    };
    if (error) {
+      console.log(error);
       memberData.me = 'error';
    }
 

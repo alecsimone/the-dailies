@@ -107,7 +107,7 @@ const StyledTwitterReader = styled.div`
                opacity: 0.6;
             }
             &.loading {
-               ${props => props.theme.spin};
+               ${props => props.theme.spinBackward};
             }
          }
       }

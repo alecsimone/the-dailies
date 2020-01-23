@@ -91,9 +91,7 @@ const tag = props => {
       if (data.author.id === me.id) {
          canEdit = true;
       }
-      if (
-         me.roles.some(role => ['Admin', 'Editor', 'Moderator'].includes(role))
-      ) {
+      if (['Admin', 'Editor', 'Moderator'].includes(me.role)) {
          canEdit = true;
       }
    }

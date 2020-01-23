@@ -60,11 +60,7 @@ async function updateStuffAndNotifySubs(data, id, type, ctx) {
 
 async function editPermissionGate(dataObj, id, type, ctx) {
    // Mods can edit anything
-   if (
-      ctx.req.member.roles.some(role =>
-         ['Admin', 'Editor', 'Moderator'].includes(role)
-      )
-   ) {
+   if (['Admin', 'Editor', 'Moderator'].includes(ctx.req.member.role)) {
       return true;
    }
 
@@ -184,7 +180,6 @@ const canSeeThing = (memberID, thingData) => {
       return true;
    }
    if (thingData.privacy === 'Private') {
-      console.log('that shit private');
       return false;
    }
    if (

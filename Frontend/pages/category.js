@@ -72,10 +72,7 @@ const category = props => {
    const { me } = useContext(MemberContext);
 
    let canEdit = false;
-   if (
-      me &&
-      me.roles.some(role => ['Admin', 'Editor', 'Moderator'].includes(role))
-   ) {
+   if (me && ['Admin', 'Editor', 'Moderator'].includes(me.role)) {
       canEdit = true;
    }
 

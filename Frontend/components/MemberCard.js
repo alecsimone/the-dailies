@@ -56,7 +56,7 @@ const MemberCard = props => {
                </Link>
             </div>
             <div className="meta">
-               {member.roles[0]}. {yourFriend ? 'Your Friend. ' : ''}
+               {member.role}. {yourFriend ? 'Your Friend. ' : ''}
             </div>
          </div>
       </StyledMemberCard>

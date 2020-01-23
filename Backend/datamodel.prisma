@@ -101,6 +101,7 @@ type Member {
   comments: [Comment]
   password: String!
   roles: [Role!] @scalarList(strategy: RELATION)
+  role: Role
   resetToken: String
   resetTokenExpiry: Float
   twitterTokenSecret: String

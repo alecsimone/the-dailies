@@ -33,6 +33,12 @@ const theme = {
       animationDuration: '1000ms',
       animationIterationCount: 'infinite',
       animationTimingFunction: 'linear'
+   },
+   spinBackward: {
+      animationName: 'spinBackward',
+      animationDuration: '1000ms',
+      animationIterationCount: 'infinite',
+      animationTimingFunction: 'linear'
    }
 };
 
@@ -158,13 +164,184 @@ const GlobalStyle = createGlobalStyle`
       }
    }
    @keyframes spin {
-         from {
-            transform: rotate(360deg);
-         }
-         to {
-            transform: rotate(0deg);
+      from {
+         transform: rotate(0deg);
+      }
+      to {
+         transform: rotate(360deg);
+      }
+   }
+   @keyframes spinBackward {
+      from {
+         transform: rotate(360deg);
+      }
+      to {
+         transform: rotate(0deg);
+      }
+   }
+   .tweet {
+      margin: 5rem 1rem;
+      &:first-child {
+         margin-top: 3rem;
+      }
+      padding: 0 1.5rem 2rem 1.5rem;
+      border: 1px solid ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
+      border-radius: 0.5rem;
+      background: ${props => props.theme.black};
+      .repliedToTweet {
+         margin-top: 0;
+         .quoteTweetContainer {
+            border-top: none;
+            border-radius: 0;
+            .repliedToTweet .quoteTweetContainer {
+               border-radius: 3px;
+               border-top: 1px solid
+                  ${props => setAlpha(props.theme.lowContrastGrey, 0.5)};
+            }
          }
       }
+      &.retweet {
+         .retweeter {
+            display: flex;
+            align-items: center;
+            margin: 0 -1.5rem 1rem -1.5rem;
+            padding: 2rem 1rem;
+            background: ${props =>
+               setAlpha(setLightness(props.theme.majorColor, 30), 0.15)};
+            a.retweetLink {
+               color: ${props =>
+                  setAlpha(setLightness(props.theme.majorColor, 70), 0.9)};
+               &:hover {
+                  color: ${props => props.theme.majorColor};
+               }
+            }
+            img.retweetedAvatar {
+               border-radius: 50%;
+               width: ${props => props.theme.smallHead};
+               height: auto;
+               margin-right: 1rem;
+            }
+         }
+         .repliedToTweet {
+            margin-top: -1rem;
+            .tweet {
+               border: 1px solid
+                  ${props => setAlpha(props.theme.lowContrastGrey, 0.5)};
+               border-top: none;
+            }
+         }
+         .tweet {
+            padding: 0;
+            border: 0;
+            margin: 0;
+         }
+      }
+      a,
+      a:visited {
+         color: ${props =>
+            setAlpha(setLightness(props.theme.majorColor, 70), 0.9)};
+         &:hover {
+            color: ${props => props.theme.majorColor};
+         }
+      }
+      img.embeddedPhoto,
+      .embeddedVideo video {
+         width: 500px;
+         max-width: 100%;
+         height: auto;
+         margin: 1rem 0;
+      }
+      .quoteTweetContainer {
+         border: 1px solid ${props =>
+            setAlpha(props.theme.lowContrastGrey, 0.5)};
+         border-radius: 3px;
+         margin: 2rem 0;
+         .tweet {
+            margin: 0;
+            padding: 1rem;
+            box-sizing: border-box;
+            border: none;
+         }
+         h5 {
+            a,
+            a:visited {
+               color: ${props => props.theme.mainText};
+            }
+            display: flex;
+            align-items: center;
+            background: ${props =>
+               setAlpha(setLightness(props.theme.majorColor, 30), 0.15)};
+            margin: 0;
+            padding: 1rem 0;
+            border-bottom: none;
+            border-radius: 3px 3px 0 0;
+         }
+         img.quotedTweeterAvatar {
+            border-radius: 50%;
+            max-width: ${props => props.theme.smallHead};
+            height: auto;
+            margin: 0 1rem;
+         }
+         article {
+            margin-top: 0;
+            border-top: none;
+            border-radius: 0 0 3px 3px;
+            p:first-of-type {
+               margin-top: 0;
+               padding-top: 2rem;
+            }
+            .replyInfo {
+               margin-top: 0;
+               padding-top: 2rem;
+            }
+         }
+      }
+      .tweetMeta {
+         margin-top: 1rem;
+         color: ${props =>
+            setAlpha(setLightness(props.theme.majorColor, 70), 0.9)};
+         font-size: ${props => props.theme.smallText};
+         @media screen and (min-width: 800px) {
+            font-size: ${props => props.theme.tinyText};
+         }
+         display: flex;
+         align-items: center;
+         justify-content: space-between;
+         opacity: 0.8;
+         a.linkToOriginalTweet {
+            color: ${props =>
+               setAlpha(setLightness(props.theme.majorColor, 70), 0.9)};
+            &:hover {
+               color: ${props => props.theme.majorColor};
+            }
+         }
+         .score {
+            display: inline-flex;
+            align-items: center;
+            img {
+               opacity: 1;
+               width: ${props => props.theme.smallText};
+               @media screen and (min-width: 800px) {
+                  width: ${props => props.theme.tinyText};
+               }
+               height: auto;
+               margin: 0 1rem 0 0.6rem;
+               filter: saturate(0%);
+               cursor: pointer;
+               transition: filter 0.1s;
+               &:hover {
+                  filter: saturate(100%);
+               }
+               &.on {
+                  filter: saturate(100%);
+                  &:hover {
+                     filter: saturate(0%);
+                  }
+               }
+            }
+         }
+      }
+   }
 `;
 
 const StyledPage = styled.div`

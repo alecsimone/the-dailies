@@ -83,7 +83,7 @@ const fullThingFields = `
          id
          displayName
          avatar
-         roles
+         role
       }
       value
    }
@@ -94,7 +94,7 @@ const fullThingFields = `
          id
          displayName
          avatar
-         roles
+         role
       }
    }
    score
@@ -169,7 +169,7 @@ const fullMemberFields = `
       displayName
       avatar
       rep
-      roles
+      role
       friends {
          __typename
          id
@@ -234,7 +234,7 @@ const fullMemberFields = `
          title
       }
    }
-   roles
+   role
    twitterUserName
    createdAt
 `;
