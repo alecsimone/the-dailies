@@ -50,7 +50,8 @@ const StyledTweets = styled.section`
             position: relative;
             width: 100%;
             flex-grow: 1;
-            max-width: 1000px;
+            min-width: 50rem;
+            max-width: 100rem;
             height: 100%;
             overflow: hidden;
             border: 2px solid
@@ -74,7 +75,7 @@ const StyledTweets = styled.section`
                margin: 0;
                padding: 1rem 0;
                background: ${props =>
-                  setAlpha(setLightness(props.theme.majorColor, 30), 0.15)};
+                  setAlpha(setLightness(props.theme.majorColor, 60), 0.15)};
                text-align: center;
                border-radius: 3px 3px 0 0;
                .bottom {
