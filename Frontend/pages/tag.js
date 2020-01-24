@@ -85,10 +85,11 @@ const tag = props => {
    });
 
    const { me } = useContext(MemberContext);
+   console.log(data);
 
    let canEdit = false;
-   if (data && data.author && me) {
-      if (data.author.id === me.id) {
+   if (data && data.tagByTitle && data.tagByTitle.author && me) {
+      if (data.tagByTitle.author.id === me.id) {
          canEdit = true;
       }
       if (['Admin', 'Editor', 'Moderator'].includes(me.role)) {
