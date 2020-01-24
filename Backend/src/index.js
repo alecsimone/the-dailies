@@ -47,7 +47,7 @@ server.applyMiddleware({
 const httpServer = http.createServer(app);
 server.installSubscriptionHandlers(httpServer);
 
-app.listen(process.env.PORT, () => {
+httpServer.listen(process.env.PORT, () => {
    console.log(
       `Server is now running at http://localhost:${process.env.PORT}${
          server.graphqlPath
