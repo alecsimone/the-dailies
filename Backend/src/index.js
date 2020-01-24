@@ -9,7 +9,6 @@ const db = require('./db');
 
 const server = createServer();
 
-const PORT = process.env.PORT || 4000;
 const app = express();
 
 const corsOptions = {
@@ -48,6 +47,8 @@ server.applyMiddleware({
 const httpServer = http.createServer(app);
 server.installSubscriptionHandlers(httpServer);
 
+const PORT = process.env.PORT || 4000;
+console.log(PORT);
 httpServer.listen(PORT, () => {
    console.log(
       `Server is now running at http://localhost:${PORT}${server.graphqlPath}`
