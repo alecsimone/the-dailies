@@ -33,6 +33,7 @@ const GET_MY_TWITTER_INFO = gql`
          twitterUserName
          twitterUserID
          twitterSeenIDs
+         twitterListsObject
       }
    }
 `;

@@ -147,7 +147,12 @@ export { filterTweets };
 const Tweets = props => {
    const {
       list,
-      myTwitterInfo: { twitterSeenIDs: seenIDs, twitterUserID: userID }
+      myTwitterInfo: {
+         id: dailiesID,
+         twitterSeenIDs: seenIDs,
+         twitterUserID: userID,
+         twitterListsObject: listsObject
+      }
    } = props;
    const tweets = JSON.parse(list.tweets);
 
@@ -248,6 +253,15 @@ const Tweets = props => {
                            variables: {
                               listID: list.id,
                               tweetIDs
+                           },
+                           optimisticResponse: {
+                              __typename: 'Mutation',
+                              markTweetsSeen: {
+                                 __typename: 'Member',
+                                 id: dailiesID,
+                                 twitterListsObject: listsObject,
+                                 twitterSeenIDs: seenIDs.concat(tweetIDs)
+                              }
                            }
                         });
                      }}
