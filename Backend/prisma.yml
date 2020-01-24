@@ -1,8 +1,7 @@
 #endpoint: ${env:PRISMA_ENDPOINT}
 endpoint: https://ourdailies-676b9a4267.herokuapp.com/Dailies-Database/Prod
-# endpoint: https://ourdailies-676b9a4267.herokuapp.com/OurDailies/prod
 datamodel: datamodel.prisma
-#secret: ${env:PRISMA_SECRET}
+secret: ${env:PRISMA_SECRET}
 
 generate:
   - generator: graphql-schema
