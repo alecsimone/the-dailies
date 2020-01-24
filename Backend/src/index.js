@@ -41,7 +41,7 @@ app.use(async (req, res, next) => {
 server.applyMiddleware({
    app,
    path: '/',
-   cors: false
+   cors: corsOptions
 });
 
 const httpServer = http.createServer(app);
