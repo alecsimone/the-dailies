@@ -9,7 +9,7 @@ const processLinksInText = (rawText, keyString = 0) => {
       (wholeMatch, username) => `https://www.twitter.com/${username}`
    );
    rawText = rawText.replace(
-      /^(?!\/\.)[-A-Z0-9]*\.(com|org|net|tv|gg|us|uk|co\.uk|edu|gov|mil|biz|info|moby|ly|tech|xyz|ca|cn|fr|au|in|de|jp|ru|br|es|se|ch|nl)\/[\w+]/gi,
+      /^(?!\/)[-A-Z0-9\.]*\.(com|org|net|tv|gg|us|uk|co\.uk|edu|gov|mil|biz|info|moby|ly|tech|xyz|ca|cn|fr|au|in|de|jp|ru|br|es|se|ch|nl)[\/]*[.]*/gi,
       wholeMatch => `https://${wholeMatch}`
    );
    const urls = rawText.match(urlFinder);
