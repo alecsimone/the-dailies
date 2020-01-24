@@ -61,16 +61,17 @@ async function finishTwitterLogin(parent, { token, verifier }, ctx, info) {
 exports.finishTwitterLogin = finishTwitterLogin;
 
 async function getTwitterLists(parent, args, ctx, info) {
-   const { twitterListsObject } = await ctx.db.query.member(
-      {
-         where: {
-            id: ctx.req.memberId
-         }
-      },
-      `{twitterListsObject}`
-   );
+   const {
+      twitterUserID,
+      twitterUserToken,
+      twitterUserTokenSecret,
+      twitterListsObject
+   } = await getTwitterInfo(ctx);
 
-   const listsObject = JSON.parse(twitterListsObject);
+   let listsObject = JSON.parse(twitterListsObject);
+   if (listsObject == null) {
+      listsObject = {};
+   }
 
    let listData;
    if (
@@ -78,12 +79,6 @@ async function getTwitterLists(parent, args, ctx, info) {
       listsObject.lastUpdateTime < Date.now() - 24 * 60 * 60 * 1000
    ) {
       listData = {};
-      const {
-         twitterUserID,
-         twitterUserToken,
-         twitterUserTokenSecret,
-         twitterListsObject
-      } = await getTwitterInfo(ctx);
 
       const lists = await getFreshLists(
          twitterUserID,
@@ -96,8 +91,8 @@ async function getTwitterLists(parent, args, ctx, info) {
             id: listObject.id_str,
             name: listObject.name,
             user: listObject.user.screen_name,
-            sinceID: twitterListsObject[listObject.id_str]
-               ? twitterListsObject[listObject.id_str].sinceID
+            sinceID: listsObject[listObject.id_str]
+               ? listsObject[listObject.id_str].sinceID
                : 1,
             tweets: []
          };
@@ -115,8 +110,9 @@ async function getTwitterLists(parent, args, ctx, info) {
             twitterListsObject: listDataString
          }
       });
+   } else {
+      listData = listsObject;
    }
-   listData = listsObject;
 
    const listIDs = Object.keys(listData);
    await Promise.all(
