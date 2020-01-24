@@ -18,6 +18,7 @@ function createServer() {
          Query,
          Subscription
       },
+      introspection: true,
       subscriptions: {
          onConnect: (connectionParams, webSocket) => {
             const rawToken = webSocket.upgradeReq.headers.cookie;
