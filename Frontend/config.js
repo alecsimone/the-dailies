@@ -1,11 +1,11 @@
 export const endpoint =
    process.env.NODE_ENV === 'development'
       ? `http://localhost:4000`
-      : `https://playground.ourdailies.org/`;
+      : `https://dailies-server.herokuapp.com/`;
 export const endpointNoHTTP =
    process.env.NODE_ENV === 'development'
       ? `localhost:4000`
-      : `playground.ourdailies.org/`;
+      : `dailies-server.herokuapp.com/`;
 export const home =
    process.env.NODE_ENV === 'development'
       ? 'http://localhost:6969'
