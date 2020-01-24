@@ -8,12 +8,12 @@ const Meta = () => (
       <link
          rel="icon"
          type="image/png"
-         href="https://ourdailies.org/static/logo-small.png"
+         href="https://ourdailies.org/logo-small.png"
       />
       <link
          rel="shortcut icon"
          type="image/x-icon"
-         href="https://ourdailies.org/static/favicon.ico"
+         href="https://ourdailies.org/favicon.ico"
       />
       <link rel="stylesheet" type="text/css" href="/nprogress.css" />
       <title>Our Dailies</title>
