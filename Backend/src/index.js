@@ -41,20 +41,20 @@ app.use(async (req, res, next) => {
 server.applyMiddleware({
    app,
    path: '/',
-   cors: false
+   cors: corsOptions
 });
 
 const httpServer = http.createServer(app);
 server.installSubscriptionHandlers(httpServer);
 
-const PORT = process.env.PORT || 4000;
-console.log(PORT);
-httpServer.listen(PORT, () => {
+app.listen(process.env.PORT, () => {
    console.log(
-      `Server is now running at http://localhost:${PORT}${server.graphqlPath}`
+      `Server is now running at http://localhost:${process.env.PORT}${
+         server.graphqlPath
+      }`
    );
    console.log(
-      `Subscriptions are available at ws://localhost:${PORT}${
+      `Subscriptions are available at ws://localhost:${process.env.PORT}${
          server.subscriptionsPath
       }`
    );
