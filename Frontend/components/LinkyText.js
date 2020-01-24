@@ -85,7 +85,7 @@ const processLinksInText = (rawText, keyString = 0) => {
       if (isExplodingText) {
          return (
             <div className="explodingLinkGraph" key={keyString}>
-               {elementsarray}
+               {elementsArray}
             </div>
          );
       }
@@ -104,8 +104,10 @@ const decodeHTML = text => {
    return txt.value;
 };
 
-const LinkyText = props => {
-   let { text } = props;
+const LinkyText = ({ text }) => {
+   if (text === '') {
+      return null;
+   }
 
    if (process.browser) {
       text = decodeHTML(text);

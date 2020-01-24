@@ -48,9 +48,9 @@ const StyledTweets = styled.section`
             background: ${props => setLightness(props.theme.black, 1)};
             border-radius: 3px;
             position: relative;
-            width: 600px;
+            width: 100%;
             flex-grow: 1;
-            max-width: 100%;
+            max-width: 1000px;
             height: 100%;
             overflow: hidden;
             border: 2px solid
@@ -105,20 +105,6 @@ const StyledTweets = styled.section`
                ${props => props.theme.scroll};
                max-height: calc(100vh - 22rem);
                padding: 0 1rem;
-            }
-            .scrollToBottomContainer {
-               text-align: center;
-               padding-top: 2rem;
-               img.scrollToBottom {
-                  width: ${props => props.theme.bigText};
-                  height: auto;
-                  transform: rotateX(180deg);
-                  cursor: pointer;
-                  opacity: 0.4;
-                  &:hover {
-                     opacity: 1;
-                  }
-               }
             }
          }
          &.empty {

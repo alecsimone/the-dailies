@@ -8,7 +8,9 @@ const MyFriendsThings = () => {
    } = useContext(MemberContext);
    const friendsThings = [];
    friends.forEach(friend => {
-      friend.createdThings.forEach(thing => friendsThings.push(thing));
+      if (friend.createdThings) {
+         friend.createdThings.forEach(thing => friendsThings.push(thing));
+      }
    });
    friendsThings.sort((a, b) => a.id < b.id);
 

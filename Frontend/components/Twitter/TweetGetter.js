@@ -28,7 +28,7 @@ const TweetGetter = props => {
    }
    const tweet = JSON.parse(data.getTweet.message);
    if (tweet.errors) {
-      return <div className="error">{tweet.errors[0].message}</div>;
+      return <ErrorMessage error={{ message: tweet.errors[0].message }} />;
    }
    return (
       <div className="quoteTweetContainer" key={tweet.id_str}>

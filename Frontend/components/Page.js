@@ -79,13 +79,19 @@ const GlobalStyle = createGlobalStyle`
       box-shadow: inset 0 0 1px rgba(0,0,0,0.5);
       background: ${theme.lowContrastGrey};
    }
+   p, .explodingLinkGraph, .embed-container {
+      margin: 1.8rem 0;
+   }
    a {
       text-decoration: none;
       color: ${theme.mainText};
-      :visited {
+      overflow-wrap: break-word;
+      word-wrap: break-word;
+      word-break: break-word;
+      &:visited {
          color: ${theme.mainText};
       }
-      :hover {
+      &:hover {
          text-decoration: underline;
       }
    }
@@ -192,6 +198,7 @@ const GlobalStyle = createGlobalStyle`
          margin-top: 0;
          .quoteTweetContainer {
             border-top: none;
+            margin-top: 0;
             border-radius: 0;
             .repliedToTweet .quoteTweetContainer {
                border-radius: 3px;
@@ -209,11 +216,8 @@ const GlobalStyle = createGlobalStyle`
             background: ${props =>
                setAlpha(setLightness(props.theme.majorColor, 30), 0.15)};
             a.retweetLink {
-               color: ${props =>
-                  setAlpha(setLightness(props.theme.majorColor, 70), 0.9)};
-               &:hover {
-                  color: ${props => props.theme.majorColor};
-               }
+               color: ${props => props.theme.mainText};
+               font-weight: 600;
             }
             img.retweetedAvatar {
                border-radius: 50%;
