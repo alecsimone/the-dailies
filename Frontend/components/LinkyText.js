@@ -5,7 +5,7 @@ import StylishText from './StylishText';
 
 const replaceTwitterMentions = rawText =>
    rawText.replace(
-      /@([a-z0-9_]*(?!.*\.com))/gim,
+      /@([a-z0-9_]+(?!\w*\.com))/gim,
       (wholeMatch, username) => `https://twitter.com/${username}`
    );
 
