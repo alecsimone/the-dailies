@@ -73,7 +73,6 @@ const StyledSidebar = styled.section`
    .sidebarContainer {
       position: relative;
       .sidebarContent {
-         padding: 3rem;
          @media screen and (min-width: 800px) {
             position: absolute;
             top: 0;

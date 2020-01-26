@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import SmallThingCard from '../ThingCards/SmallThingCard';
 import ThingCard from '../ThingCards/ThingCard';
+import { setAlpha } from '../../styles/functions';
 
 const StyledThings = styled.div`
    margin: auto;
@@ -17,7 +18,11 @@ const StyledThings = styled.div`
    }
    &.list {
       article {
-         margin: 2rem 0;
+         margin: 0;
+         border: none;
+         box-shadow: none;
+         border-bottom: 2px solid
+            ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
          &:first-child {
             margin-top: 0;
          }

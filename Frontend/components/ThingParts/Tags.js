@@ -49,7 +49,7 @@ const Tags = props => {
    });
 
    return (
-      <StyledTags>
+      <StyledTags className="tags">
          <h5>Tags:</h5> {tagElements}
       </StyledTags>
    );

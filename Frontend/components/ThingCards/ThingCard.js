@@ -11,7 +11,7 @@ import AuthorLink from '../ThingParts/AuthorLink';
 
 const StyledThingCard = styled.div`
    width: 100%;
-   padding: 1.25rem;
+   padding: 2rem;
    max-width: 60rem;
    background: ${props => setLightness(props.theme.black, 1)};
    border: 2px solid ${props => setAlpha(props.theme.lowContrastGrey, 0.15)};
@@ -41,6 +41,7 @@ const StyledThingCard = styled.div`
       font-size: ${props => props.theme.tinyText};
       color: ${props => props.theme.lowContrastGrey};
       margin-top: 0.75rem;
+      border-bottom: 1px solid ${props => props.theme.lowContrastGrey};
       a,
       a:visited {
          color: ${props =>
@@ -52,11 +53,14 @@ const StyledThingCard = styled.div`
       }
    }
    .truncCont {
-      margin: 3rem 0;
+      margin: 3rem 0 0;
       padding: 2rem 0.5rem;
-      border-top: 2px solid ${props => props.theme.lowContrastGrey};
       border-radius: 3px;
       opacity: .9;
+      background: ${props => props.theme.black};
+   }
+   .tags {
+      margin-top: 2rem;
    }
 `;
 

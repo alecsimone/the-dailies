@@ -68,6 +68,9 @@ const StyledTwitterReader = styled.div`
       @media screen and (min-width: 1800px) {
          flex-basis: 20%;
       }
+      .twitterSidebar {
+         padding: 0 2rem;
+      }
       h5 {
          font-size: ${props => props.theme.bigText};
          position: relative;
@@ -312,7 +315,12 @@ const TwitterReader = props => {
          <Head>
             <title>Twitter Reader - OurDailies</title>
          </Head>
-         <Sidebar extraColumnTitle="Tweets" extraColumnContent={listElements} />
+         <Sidebar
+            extraColumnTitle="Tweets"
+            extraColumnContent={
+               <div className="twitterSidebar">{listElements}</div>
+            }
+         />
          <div className="tweetArea">{content}</div>
       </StyledTwitterReader>
    );

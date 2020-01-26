@@ -18,8 +18,12 @@ const MARK_TWEETS_SEEN = gql`
 const StyledTweets = styled.section`
    position: absolute;
    top: 0;
-   left: 2%;
-   width: 96%;
+   left: 0%;
+   width: 100%;
+   @media screen and (min-width: 800px) {
+      left: 2%;
+      width: 96%;
+   }
    padding: 0;
    .tweets {
       .tweeters {
@@ -50,7 +54,6 @@ const StyledTweets = styled.section`
             position: relative;
             width: 100%;
             flex-grow: 1;
-            min-width: 50rem;
             max-width: 100rem;
             height: 100%;
             overflow: hidden;
@@ -104,8 +107,12 @@ const StyledTweets = styled.section`
             }
             .tweetsContainer {
                ${props => props.theme.scroll};
-               max-height: calc(100vh - 22rem);
-               padding: 0 1rem;
+               max-height: calc(100vh - 8rem);
+               padding: 0;
+               @media screen and (min-width: 800px) {
+                  max-height: calc(100vh - 22rem);
+                  padding: 0 1rem;
+               }
             }
          }
          &.empty {

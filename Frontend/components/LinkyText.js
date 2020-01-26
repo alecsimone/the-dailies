@@ -57,7 +57,7 @@ const processLinksInText = (rawText, keyString = 0) => {
       urls.forEach((url, urlNumber) => {
          const urlPosition = rawText.indexOf(url, stoppedAtIndex);
          const startingText = rawText.substring(stoppedAtIndex, urlPosition);
-         if (startingText !== '') {
+         if (startingText !== '' && startingText !== '') {
             elementsArray.push(
                <StylishText text={startingText} key={startingText} />
             );
@@ -75,7 +75,7 @@ const processLinksInText = (rawText, keyString = 0) => {
 
          if (urlNumber === urls.length - 1) {
             const endingText = rawText.substring(stoppedAtIndex);
-            if (endingText !== '') {
+            if (endingText !== '' && endingText !== ' ') {
                elementsArray.push(
                   <StylishText text={endingText} key={endingText} />
                );
@@ -105,10 +105,6 @@ const decodeHTML = text => {
 };
 
 const LinkyText = ({ text }) => {
-   if (text === '') {
-      return null;
-   }
-
    if (process.browser) {
       text = decodeHTML(text);
    }

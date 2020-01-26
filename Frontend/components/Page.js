@@ -186,7 +186,10 @@ const GlobalStyle = createGlobalStyle`
       }
    }
    .tweet {
-      margin: 5rem 1rem;
+      margin: 3rem 0;
+      @media screen and (min-width: 800px) {
+         margin: 5rem 1rem;
+      }
       &:first-child {
          margin-top: 3rem;
       }
