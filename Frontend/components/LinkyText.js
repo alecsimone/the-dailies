@@ -3,15 +3,13 @@ import { urlFinder, isExplodingLink } from '../lib/UrlHandling';
 import ExplodingLink from './ExplodingLink';
 import StylishText from './StylishText';
 
+const replaceTwitterMentions = rawText =>
+   rawText.replace(
+      /@(\w+)/gm,
+      (wholeMatch, username) => `https://twitter.com/${username}`
+   );
+
 const processLinksInText = (rawText, keyString = 0) => {
-   rawText = rawText.replace(
-      /@(\w+)/g,
-      (wholeMatch, username) => `https://www.twitter.com/${username}`
-   );
-   rawText = rawText.replace(
-      /^(?!\/)[-A-Z0-9\.]*\.(com|org|net|tv|gg|us|uk|co\.uk|edu|gov|mil|biz|info|moby|ly|tech|xyz|ca|cn|fr|au|in|de|jp|ru|br|es|se|ch|nl)[\/]*[.]*/gi,
-      wholeMatch => `https://${wholeMatch}`
-   );
    const urls = rawText.match(urlFinder);
    if (urls == null) {
       return (
@@ -22,11 +20,15 @@ const processLinksInText = (rawText, keyString = 0) => {
    }
    if (urls.length === 1) {
       const url = urls[0];
+      let fullUrl = url;
+      if (!url.includes('://')) {
+         fullUrl = `https://${url}`;
+      }
       const urlPosition = rawText.indexOf(url);
       const startingText = rawText.substring(0, urlPosition);
       const endingText = rawText.substring(urlPosition + url.length);
       const link = (
-         <ExplodingLink url={url} key={keyString} keyString={keyString} />
+         <ExplodingLink url={fullUrl} key={keyString} keyString={keyString} />
       );
       const wholeText = [
          startingText === '' ? (
@@ -55,6 +57,10 @@ const processLinksInText = (rawText, keyString = 0) => {
       let stoppedAtIndex = 0;
       let isExplodingText = false;
       urls.forEach((url, urlNumber) => {
+         let fullUrl = url;
+         if (!url.includes('://')) {
+            fullUrl = `https://${url}`;
+         }
          const urlPosition = rawText.indexOf(url, stoppedAtIndex);
          const startingText = rawText.substring(stoppedAtIndex, urlPosition);
          if (startingText !== '' && startingText !== '') {
@@ -64,7 +70,11 @@ const processLinksInText = (rawText, keyString = 0) => {
          }
 
          const link = (
-            <ExplodingLink url={url} keyString={urlNumber} key={urlNumber} />
+            <ExplodingLink
+               url={fullUrl}
+               keyString={urlNumber}
+               key={urlNumber}
+            />
          );
          elementsArray.push(link);
 
@@ -111,7 +121,7 @@ const LinkyText = ({ text }) => {
    const paragraphsAndEmptyStrings = text.split('\n');
    const paragraphs = paragraphsAndEmptyStrings.filter(string => string != '');
    const paragraphElements = paragraphs.map((graph, index) =>
-      processLinksInText(graph, index)
+      processLinksInText(replaceTwitterMentions(graph), index)
    );
 
    return paragraphElements;
