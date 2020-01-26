@@ -5,7 +5,7 @@ import StylishText from './StylishText';
 
 const replaceTwitterMentions = rawText =>
    rawText.replace(
-      /@(\w+)/gm,
+      /@([a-z0-9_]*(?!.*\.com))/gm,
       (wholeMatch, username) => `https://twitter.com/${username}`
    );
 
@@ -21,7 +21,7 @@ const processLinksInText = (rawText, keyString = 0) => {
    if (urls.length === 1) {
       const url = urls[0];
       let fullUrl = url;
-      if (!url.includes('://')) {
+      if (!url.includes('://') && !url.includes('mailto')) {
          fullUrl = `https://${url}`;
       }
       const urlPosition = rawText.indexOf(url);

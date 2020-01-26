@@ -5,12 +5,15 @@ import { extractHostname } from '../../lib/UrlHandling';
 const ShortLink = props => {
    const { link, limit } = props;
 
-   const { domain } = psl.parse(extractHostname(link));
+   const hostName = extractHostname(link);
+   const { domain } = psl.parse(hostName);
    const startOfDomain = link.indexOf(domain);
    const headlessLink = link.substring(startOfDomain);
 
    let shortlink;
-   if (limit === 0) {
+   if (!domain) {
+      shortlink = hostName;
+   } else if (limit === 0) {
       shortlink = domain;
    } else {
       shortlink =
