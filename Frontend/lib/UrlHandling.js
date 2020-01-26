@@ -103,7 +103,9 @@ export { getTweetIDFromLink };
 
 // const urlFinder = /\b(?:(?:https?|ftp|file):\/\/|www\.|ftp\.)(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[-A-Z0-9+&@#\/%=~_|$?!:,.])*(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[A-Z0-9+&@#\/%=~_|$])\b/gim;
 
-const urlFinder = /\b(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/|ftp:\/\/)?[a-z0-9]+([-.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?([a-z0-9-_/.?=]*)?\b/gim;
+// const urlFinder = /\b(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/|ftp:\/\/)?[a-z0-9]+([-.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?([a-z0-9-_/.?=]*)?\b/gim;
+
+const urlFinder = /\b((http[s]?:\/\/[-a-z0-9:?.=/_]*|ftp:\/\/[-a-z0-9:?.=/_]*)|([a-z0-9-.]+(\.com|\.org|\.net|\.tv|\.gg|\.us|\.uk|\.co\.uk|\.edu|\.gov|\.mil|\.biz|\.info|\.moby|\.ly|\.tech|\.xyz|\.ca|\.cn|\.fr|\.au|\.in|\.de|\.jp|\.ru|\.br|\.es|\.se|\.ch|\.nl)[-a-z0-9:?.=/_]*))\b/gim;
 export { urlFinder };
 
 const extractHostname = function(url) {

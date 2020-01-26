@@ -20,10 +20,6 @@ const ExplodingLink = props => {
 
    const { me } = useContext(MemberContext);
 
-   if (me == null) {
-      return <LoadingRing />;
-   }
-
    // Images
    if (
       lowerCaseURL.includes('.jpg') ||
@@ -83,7 +79,7 @@ const ExplodingLink = props => {
       lowerCaseURL.includes('/status/')
    ) {
       const tweetID = getTweetIDFromLink(url);
-      if (me.twitterUserName != null) {
+      if (me && me.twitterUserName != null) {
          return (
             <div className="tweet" style={{ padding: 0, border: 'none' }}>
                <TweetGetter id={tweetID} />
@@ -91,7 +87,10 @@ const ExplodingLink = props => {
          );
       }
       return (
-         <TwitterTweetEmbed tweetId={tweetID} options={{ theme: 'dark' }} />
+         <>
+            <ShortLink link={url} limit={80} />
+            <TwitterTweetEmbed tweetId={tweetID} options={{ theme: 'dark' }} />
+         </>
       );
    }
 
