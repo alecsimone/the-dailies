@@ -54,6 +54,7 @@ const StyledTweets = styled.section`
             position: relative;
             width: 100%;
             flex-grow: 1;
+            min-width: 45rem;
             max-width: 100rem;
             height: 100%;
             overflow: hidden;

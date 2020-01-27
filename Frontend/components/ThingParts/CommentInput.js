@@ -30,7 +30,7 @@ const CommentInput = props => {
    const { currentComment, updateComment, postComment } = props;
 
    const handleKeyDown = e => {
-      if (e.key === 'Enter' && e.ctrlKey) {
+      if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
          postComment();
       }
    };

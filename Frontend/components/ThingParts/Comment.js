@@ -154,7 +154,7 @@ const Comment = props => {
    const [editedComment, setEditedComment] = useState(comment.comment);
 
    const handleKeyDown = async e => {
-      if (e.key === 'Enter' && e.ctrlKey) {
+      if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
          await editComment({
             variables: {
                commentID: comment.id,

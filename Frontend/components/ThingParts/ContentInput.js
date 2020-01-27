@@ -4,7 +4,7 @@ const ContentInput = props => {
    const { currentContent, updateContent, postContent } = props;
 
    const handleKeyDown = e => {
-      if (e.key === 'Enter' && e.ctrlKey) {
+      if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
          postContent();
       }
    };
