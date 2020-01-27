@@ -82,6 +82,9 @@ const StyledSidebar = styled.section`
          }
          ${props => props.theme.scroll};
       }
+      p.emptyThings {
+         padding: 3rem;
+      }
    }
 `;
 

@@ -9,7 +9,7 @@ const MyThings = () => {
    myThings.sort((a, b) => a.id < b.id);
 
    if (myThings.length === 0) {
-      return <p>You haven't made any things yet.</p>;
+      return <p className="emptyThings">You haven't made any things yet.</p>;
    }
    return <Things things={myThings} displayType="list" cardSize="small" />;
 };

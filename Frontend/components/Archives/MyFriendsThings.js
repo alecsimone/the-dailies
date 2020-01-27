@@ -15,7 +15,11 @@ const MyFriendsThings = () => {
    friendsThings.sort((a, b) => a.id < b.id);
 
    if (friendsThings.length === 0) {
-      return <p>Your friends haven't made any things yet.</p>;
+      return (
+         <p className="emptyThings">
+            Your friends haven't made any things yet.
+         </p>
+      );
    }
    return <Things things={friendsThings} displayType="list" cardSize="small" />;
 };
