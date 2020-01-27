@@ -119,6 +119,46 @@ async function editPermissionGate(dataObj, id, type, ctx) {
 }
 
 async function properUpdateStuff(dataObj, id, type, ctx) {
+   if (id === 'new') {
+      const currentMember = await ctx.db.query.member(
+         {
+            where: {
+               id: ctx.req.memberId
+            }
+         },
+         `{id defaultCategory {title} defaultPrivacy}`
+      );
+      if (!dataObj.partOfCategory) {
+         dataObj.partOfCategory = {
+            connect: {
+               title: currentMember.defaultCategory.title
+            }
+         };
+      } else {
+         dataObj.title = `New ${dataObj.partOfCategory.connect.title} Thing`;
+      }
+      if (!dataObj.privacy) {
+         dataObj.privacy = currentMember.defaultPrivacy;
+      } else {
+         dataObj.title = `New ${dataObj.privacy} Thing`;
+      }
+      if (!dataObj.author) {
+         dataObj.author = {
+            connect: {
+               id: ctx.req.memberId
+            }
+         };
+      }
+      const newThing = await ctx.db.mutation.createThing(
+         {
+            data: dataObj
+         },
+         `{${fullThingFields}}`
+      );
+      publishMeUpdate(ctx);
+      return newThing;
+   }
+
    editPermissionGate(dataObj, id, type, ctx);
 
    const updatedStuff = await updateStuffAndNotifySubs(dataObj, id, type, ctx);
@@ -208,6 +248,10 @@ const canSeeThingGate = async (where, ctx) => {
       `{privacy author {id friends {id friends {id}}}}`
    );
 
+   if (thingData == null) {
+      return true;
+   }
+
    if (canSeeThing(ctx.req.memberId, thingData)) {
       return true;
    }
@@ -231,3 +275,6 @@ const canSeeTagGate = async (where, ctx) => {
    }
 };
 exports.canSeeTagGate = canSeeTagGate;
+
+const disabledCodewords = ['disabled', 'disable', 'false', 'no', 'off', 'x'];
+exports.disabledCodewords = disabledCodewords;

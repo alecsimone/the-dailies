@@ -30,3 +30,6 @@ const convertISOtoAgo = function(isoTime) {
 };
 
 export { convertISOtoAgo };
+
+const disabledCodewords = ['disabled', 'disable', 'false', 'no', 'off', 'x'];
+export { disabledCodewords };

@@ -1,8 +1,22 @@
 import gql from 'graphql-tag';
 import { useQuery, useMutation } from '@apollo/react-hooks';
+import { useContext } from 'react';
 import PropTypes from 'prop-types';
-import { GET_PRIVACY_OPTIONS_QUERY } from '../NewThingForm';
+import Router from 'next/router';
+import { MemberContext } from '../Account/MemberProvider';
 import MetaOption from './MetaOption';
+
+const GET_PRIVACY_OPTIONS_QUERY = gql`
+   query enumValuesOfPrivacySetting {
+      __type(name: "PrivacySetting") {
+         __typename
+         name
+         enumValues {
+            name
+         }
+      }
+   }
+`;
 
 const SET_THING_PRIVACY_MUTATION = gql`
    mutation SET_THING_PRIVACY_MUTATION(
@@ -19,7 +33,20 @@ const SET_THING_PRIVACY_MUTATION = gql`
 
 const PrivacyDropdown = props => {
    const { initialPrivacy, id } = props;
-   const [setThingPrivacy] = useMutation(SET_THING_PRIVACY_MUTATION);
+   const { me } = useContext(MemberContext);
+
+   const checkForRedirect = data => {
+      if (id === 'new') {
+         Router.push({
+            pathname: '/thing',
+            query: { id: data.setThingPrivacy.id }
+         });
+      }
+   };
+
+   const [setThingPrivacy] = useMutation(SET_THING_PRIVACY_MUTATION, {
+      onCompleted: data => checkForRedirect(data)
+   });
 
    const selectPrivacy = e => {
       const {
@@ -54,7 +81,10 @@ const PrivacyDropdown = props => {
    }
 
    return (
-      <select onChange={selectPrivacy} value={initialPrivacy}>
+      <select
+         onChange={selectPrivacy}
+         value={initialPrivacy || (me && me.defaultPrivacy)}
+      >
          {privacyOptions}
       </select>
    );

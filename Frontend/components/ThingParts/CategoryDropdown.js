@@ -1,8 +1,20 @@
 import gql from 'graphql-tag';
 import { useQuery, useMutation } from '@apollo/react-hooks';
+import { useContext } from 'react';
 import PropTypes from 'prop-types';
-import { GET_CATEGORIES_QUERY } from '../NewThingForm';
+import Router from 'next/router';
+import { MemberContext } from '../Account/MemberProvider';
 import MetaOption from './MetaOption';
+
+const GET_CATEGORIES_QUERY = gql`
+   query GET_CATEGORIES_QUERY {
+      categories {
+         __typename
+         id
+         title
+      }
+   }
+`;
 
 const SET_THING_CATEGORY_MUTATION = gql`
    mutation SET_THING_CATEGORY_MUTATION($category: String!, $thingID: ID!) {
@@ -20,8 +32,22 @@ const SET_THING_CATEGORY_MUTATION = gql`
 
 const CategoryDropdown = props => {
    const { initialCategory, id } = props;
+   const { me } = useContext(MemberContext);
+
+   const checkForRedirect = data => {
+      if (id === 'new') {
+         Router.push({
+            pathname: '/thing',
+            query: { id: data.setThingCategory.id }
+         });
+      }
+   };
+
    const [setThingCategory, { data: setCategoryData }] = useMutation(
-      SET_THING_CATEGORY_MUTATION
+      SET_THING_CATEGORY_MUTATION,
+      {
+         onCompleted: data => checkForRedirect(data)
+      }
    );
 
    let categoryOptions;
@@ -64,7 +90,13 @@ const CategoryDropdown = props => {
    };
 
    return (
-      <select onChange={selectCategory} value={initialCategory}>
+      <select
+         onChange={selectCategory}
+         value={
+            initialCategory ||
+            (me && me.defaultCategory && me.defaultCategory.title)
+         }
+      >
          {categoryOptions}
       </select>
    );

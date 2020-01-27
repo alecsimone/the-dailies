@@ -2,6 +2,7 @@ import gql from 'graphql-tag';
 import styled from 'styled-components';
 import { useMutation } from '@apollo/react-hooks';
 import { useContext, useState } from 'react';
+import Router from 'next/router';
 import PropTypes from 'prop-types';
 import { setAlpha, setLightness } from '../../styles/functions';
 import ContentPiece from './ContentPiece';
@@ -212,10 +213,20 @@ const Content = props => {
    const { content, id, __typename: type, author } = useContext(context);
    const [newContentPiece, setNewContentPiece] = useState('');
 
+   const checkForRedirect = data => {
+      if (id === 'new') {
+         Router.push({
+            pathname: '/thing',
+            query: { id: data.setThingTitle.id }
+         });
+      }
+   };
    const [
       addContentPiece,
       { data: addData, loading: addLoading, error: addError }
-   ] = useMutation(ADD_CONTENTPIECE_MUTATION);
+   ] = useMutation(ADD_CONTENTPIECE_MUTATION, {
+      onCompleted: data => checkForRedirect(data)
+   });
 
    const [
       deleteContentPiece,
@@ -264,16 +275,19 @@ const Content = props => {
       });
    };
 
-   const contentElements = content.map(contentPiece => (
-      <ContentPiece
-         id={contentPiece.id}
-         canEdit={canEdit}
-         rawContentString={contentPiece.content}
-         deleteContentPiece={deletePiece}
-         editContentPiece={editPiece}
-         key={contentPiece.id}
-      />
-   ));
+   let contentElements;
+   if (content) {
+      contentElements = content.map(contentPiece => (
+         <ContentPiece
+            id={contentPiece.id}
+            canEdit={canEdit}
+            rawContentString={contentPiece.content}
+            deleteContentPiece={deletePiece}
+            editContentPiece={editPiece}
+            key={contentPiece.id}
+         />
+      ));
+   }
 
    return (
       <StyledContent>

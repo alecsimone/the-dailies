@@ -6,6 +6,7 @@ import { setAlpha } from '../../styles/functions';
 const StyledNav = styled.nav`
    display: flex;
    align-items: center;
+   line-height: 0;
    img {
       width: ${props => props.theme.bigText};
       cursor: pointer;
@@ -25,8 +26,10 @@ const StyledNav = styled.nav`
 
 const NavButtons = () => (
    <StyledNav className="navButtons">
-      <Link href="/new">
-         <img src="/green-plus.png" className="newPost" alt="New Post" />
+      <Link href={{ pathname: 'thing', query: { id: 'new' } }}>
+         <a href="/thing?id=new">
+            <img src="/green-plus.png" className="newPost" alt="New Post" />
+         </a>
       </Link>
    </StyledNav>
 );

@@ -69,20 +69,11 @@ export { ThingContext };
 
 const SingleThing = props => {
    const { loading, error, data } = useQuery(SINGLE_THING_QUERY, {
-      variables: { id: props.query.id }
+      variables: { id: props.query.id },
+      skip: props.query.id === 'new'
    });
 
    const { me } = useContext(MemberContext);
-
-   let canEdit = false;
-   if (data && me) {
-      if (data.thing.author.id === me.id) {
-         canEdit = true;
-      }
-      if (['Admin', 'Editor', 'Moderator'].includes(me.role)) {
-         canEdit = true;
-      }
-   }
 
    /* eslint-disable react-hooks/exhaustive-deps */
    // We need to make our thing container scroll to the top when we route to a new thing, but wesbos's eslint rules don't let you use a dependency for an effect that isn't referenced in the effect. I can't find any reason why that is or any better way of doing it, so I'm just turning off that rule for a minute.
@@ -100,7 +91,8 @@ const SingleThing = props => {
       data: subscriptionData,
       loading: subscriptionLoading
    } = useSubscription(SINGLE_THING_SUBSCRIPTION, {
-      variables: { id: props.query.id }
+      variables: { id: props.query.id },
+      skip: props.query.id === 'new'
    });
 
    let content;
@@ -113,9 +105,22 @@ const SingleThing = props => {
    if (loading) {
       content = <LoadingRing />;
       pageTitle = 'Loading Thing';
+   } else if (props.query.id === 'new') {
+      content = <FullThing id="new" key="new" canEdit />;
+      pageTitle = 'New Thing';
    } else if (data) {
       if (data.thing != null) {
-         thing = (
+         let canEdit = false;
+         if (data && me) {
+            if (data.thing.author.id === me.id) {
+               canEdit = true;
+            }
+            if (['Admin', 'Editor', 'Moderator'].includes(me.role)) {
+               canEdit = true;
+            }
+         }
+
+         content = (
             <FullThing
                id={props.query.id}
                key={props.query.id}
@@ -123,14 +128,26 @@ const SingleThing = props => {
             />
          );
       } else {
-         thing = <p>Thing not found.</p>;
+         content = <p>Thing not found.</p>;
       }
-      content = thing;
       pageTitle = data.thing == null ? "Couldn't find thing" : data.thing.title;
    }
 
+   let dataForContext;
+   if (loading) {
+      dataForContext = loading;
+   } else if (error) {
+      dataForContext = error;
+   } else if (props.query.id === 'new') {
+      dataForContext = {
+         id: 'new'
+      };
+   } else {
+      dataForContext = data.thing;
+   }
+
    return (
-      <ThingContext.Provider value={loading || error || data.thing}>
+      <ThingContext.Provider value={dataForContext}>
          <SingleThingContainer>
             <Head>
                <title>{pageTitle} - OurDailies</title>

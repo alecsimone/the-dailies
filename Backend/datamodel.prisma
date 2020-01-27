@@ -1,6 +1,6 @@
 type Thing {
   id: ID! @id @unique
-  title: String!
+  title: String
   author: Member!
   featuredImage: String
   link: String

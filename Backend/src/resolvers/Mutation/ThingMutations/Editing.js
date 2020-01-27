@@ -2,7 +2,8 @@ const {
    properDeleteStuff,
    properUpdateStuff,
    isExplodingLink,
-   publishMeUpdate
+   publishMeUpdate,
+   disabledCodewords
 } = require('../../../utils/ThingHandling');
 const {
    loggedInGate,
@@ -235,7 +236,7 @@ async function setFeaturedImage(
    loggedInGate(ctx);
    fullMemberGate(ctx.req.member);
 
-   if (!isExplodingLink(featuredImage)) {
+   if (!isExplodingLink(featuredImage) && !disabledCodewords.includes(featuredImage)) {
       throw new Error("That's not a valid featured image");
    }
 

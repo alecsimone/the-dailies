@@ -89,7 +89,7 @@ const Comments = props => {
    const [currentComment, setCurrentComment] = useState('');
 
    let commentElements;
-   if (comments.length > 0) {
+   if (comments && comments.length > 0) {
       commentElements = comments.map(comment => (
          <Comment comment={comment} key={comment.id} type={type} id={id} />
       ));

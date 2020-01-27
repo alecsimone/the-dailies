@@ -4,7 +4,7 @@ import { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { setAlpha, setLightness, setSaturation } from '../../styles/functions';
 import { isVideo } from '../../lib/UrlHandling';
-import { convertISOtoAgo } from '../../lib/ThingHandling';
+import { convertISOtoAgo, disabledCodewords } from '../../lib/ThingHandling';
 import AuthorLink from '../ThingParts/AuthorLink';
 
 const StyledSmallThingCard = styled.article`
@@ -90,7 +90,9 @@ const SmallThingCard = props => {
             <img
                className="thumb"
                src={
-                  featuredImage == null || isVideo(featuredImage)
+                  featuredImage == null ||
+                  isVideo(featuredImage) ||
+                  disabledCodewords.includes(featuredImage)
                      ? '/defaultPic.jpg'
                      : featuredImage
                }

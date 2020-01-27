@@ -118,7 +118,10 @@ const TagBox = props => {
       debouncedAutocomplete(generateAutocomplete, inputValue);
    };
 
-   const alreadyUsedTags = tags.map(tagObj => tagObj.title);
+   let alreadyUsedTags = [];
+   if (tags) {
+      alreadyUsedTags = tags.map(tagObj => tagObj.title);
+   }
 
    const filterResults = results =>
       results.filter(tagResult => !alreadyUsedTags.includes(tagResult.title));

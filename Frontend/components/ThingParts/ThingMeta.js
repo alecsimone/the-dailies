@@ -107,15 +107,21 @@ const ThingMeta = props => {
    return (
       <StyledThingMeta className="thingMeta">
          <div className="info">
-            <span className="ago">{convertISOtoAgo(createdAt)} ago</span>{' '}
-            <span className="author">
-               by <AuthorLink author={author} />
-            </span>
+            {createdAt && (
+               <span className="ago">{convertISOtoAgo(createdAt)} ago</span>
+            )}
+            {author && (
+               <span className="author">
+                  by <AuthorLink author={author} />
+               </span>
+            )}
          </div>
          <div className="selections">
             {canEdit ? (
                <CategoryDropdown
-                  initialCategory={partOfCategory.title}
+                  initialCategory={
+                     partOfCategory ? partOfCategory.title : 'Misc'
+                  }
                   id={id}
                />
             ) : (

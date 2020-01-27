@@ -3065,7 +3065,7 @@ input TagWhereUniqueInput {
 
 type Thing {
   id: ID!
-  title: String!
+  title: String
   author: Member!
   featuredImage: String
   link: String
@@ -3092,7 +3092,7 @@ type ThingConnection {
 
 input ThingCreateInput {
   id: ID
-  title: String!
+  title: String
   author: MemberCreateOneWithoutCreatedThingsInput!
   featuredImage: String
   link: String
@@ -3146,7 +3146,7 @@ input ThingCreateOneWithoutVotesInput {
 
 input ThingCreateWithoutAuthorInput {
   id: ID
-  title: String!
+  title: String
   featuredImage: String
   link: String
   content: ContentPieceCreateManyWithoutOnThingInput
@@ -3164,7 +3164,7 @@ input ThingCreateWithoutAuthorInput {
 
 input ThingCreateWithoutCommentsInput {
   id: ID
-  title: String!
+  title: String
   author: MemberCreateOneWithoutCreatedThingsInput!
   featuredImage: String
   link: String
@@ -3182,7 +3182,7 @@ input ThingCreateWithoutCommentsInput {
 
 input ThingCreateWithoutContentInput {
   id: ID
-  title: String!
+  title: String
   author: MemberCreateOneWithoutCreatedThingsInput!
   featuredImage: String
   link: String
@@ -3200,7 +3200,7 @@ input ThingCreateWithoutContentInput {
 
 input ThingCreateWithoutPartOfCategoryInput {
   id: ID
-  title: String!
+  title: String
   author: MemberCreateOneWithoutCreatedThingsInput!
   featuredImage: String
   link: String
@@ -3218,7 +3218,7 @@ input ThingCreateWithoutPartOfCategoryInput {
 
 input ThingCreateWithoutPartOfTagsInput {
   id: ID
-  title: String!
+  title: String
   author: MemberCreateOneWithoutCreatedThingsInput!
   featuredImage: String
   link: String
@@ -3236,7 +3236,7 @@ input ThingCreateWithoutPartOfTagsInput {
 
 input ThingCreateWithoutPassesInput {
   id: ID
-  title: String!
+  title: String
   author: MemberCreateOneWithoutCreatedThingsInput!
   featuredImage: String
   link: String
@@ -3254,7 +3254,7 @@ input ThingCreateWithoutPassesInput {
 
 input ThingCreateWithoutVotesInput {
   id: ID
-  title: String!
+  title: String
   author: MemberCreateOneWithoutCreatedThingsInput!
   featuredImage: String
   link: String
@@ -3302,7 +3302,7 @@ enum ThingOrderByInput {
 
 type ThingPreviousValues {
   id: ID!
-  title: String!
+  title: String
   featuredImage: String
   link: String
   score: Int!

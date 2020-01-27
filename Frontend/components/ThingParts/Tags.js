@@ -27,26 +27,31 @@ const StyledTags = styled.div`
 const Tags = props => {
    const { tags } = props;
 
-   const tagElements = tags.map((tag, index) => {
-      if (index < tags.length - 1)
+   let tagElements;
+   if (tags) {
+      tagElements = tags.map((tag, index) => {
+         if (index < tags.length - 1)
+            return (
+               <React.Fragment key={tag.id}>
+                  <Link
+                     href={{ pathname: '/tag', query: { title: tag.title } }}
+                  >
+                     <a>{tag.title}</a>
+                  </Link>
+                  ,{' '}
+               </React.Fragment>
+            );
          return (
             <React.Fragment key={tag.id}>
                <Link href={{ pathname: '/tag', query: { title: tag.title } }}>
-                  <a>{tag.title}</a>
+                  <a key={tag.id} className="final">
+                     {tag.title}
+                  </a>
                </Link>
-               ,{' '}
             </React.Fragment>
          );
-      return (
-         <React.Fragment key={tag.id}>
-            <Link href={{ pathname: '/tag', query: { title: tag.title } }}>
-               <a key={tag.id} className="final">
-                  {tag.title}
-               </a>
-            </Link>
-         </React.Fragment>
-      );
-   });
+      });
+   }
 
    return (
       <StyledTags className="tags">

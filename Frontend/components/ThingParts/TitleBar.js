@@ -3,6 +3,7 @@ import { useMutation } from '@apollo/react-hooks';
 import styled from 'styled-components';
 import { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
+import Router from 'next/router';
 import { setAlpha } from '../../styles/functions';
 
 const SET_THING_TITLE_MUTATION = gql`
@@ -37,9 +38,20 @@ const StyledTitleBar = styled.div`
 const TitleBar = props => {
    const { context, limit, canEdit = true } = props;
    const { title, id: thingID } = useContext(context);
-   const [editable, setEditable] = useState(false);
-   const [editedTitle, setEditedTitle] = useState(title);
-   const [setThingTitle, { data }] = useMutation(SET_THING_TITLE_MUTATION);
+   const [editable, setEditable] = useState(thingID === 'new');
+   const [editedTitle, setEditedTitle] = useState(title || 'New Thing');
+
+   const checkForRedirect = data => {
+      if (thingID === 'new') {
+         Router.push({
+            pathname: '/thing',
+            query: { id: data.setThingTitle.id }
+         });
+      }
+   };
+   const [setThingTitle] = useMutation(SET_THING_TITLE_MUTATION, {
+      onCompleted: data => checkForRedirect(data)
+   });
 
    const killEditability = e => {
       if (
@@ -61,7 +73,7 @@ const TitleBar = props => {
       addEventListener('keydown', killEditability);
    };
 
-   const submitTitle = () => {
+   const submitTitle = async () => {
       setEditable(false);
       removeEventListener('keydown', killEditability);
       removeEventListener('click', killEditability);

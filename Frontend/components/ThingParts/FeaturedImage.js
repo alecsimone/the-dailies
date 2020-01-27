@@ -3,10 +3,12 @@ import styled from 'styled-components';
 import { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useMutation } from '@apollo/react-hooks';
+import Router from 'next/router';
 import TitleBar from './TitleBar';
 import ExplodingLink from '../ExplodingLink';
 import { setAlpha } from '../../styles/functions';
 import { isVideo, isExplodingLink } from '../../lib/UrlHandling';
+import { disabledCodewords } from '../../lib/ThingHandling';
 
 const SET_FEATURED_IMAGE_MUTATION = gql`
    mutation SET_FEATURED_IMAGE_MUTATION(
@@ -43,6 +45,10 @@ const StyledFeaturedImage = styled.div`
       width: 100%;
       object-fit: cover;
       z-index: 0;
+   }
+   .formWrapper {
+      position: relative;
+      min-height: 6rem;
    }
    form#featuredImageForm {
       position: absolute;
@@ -109,19 +115,35 @@ const FeaturedImage = props => {
    const { canEdit } = props;
    const { context, titleLimit } = props;
 
-   const { author, featuredImage, id, __typename: type } = useContext(context);
+   const { featuredImage, id, __typename: type } = useContext(context);
 
    const [featuredImageInput, setFeaturedImageInput] = useState(
       featuredImage == null ? '' : featuredImage
    );
-   const [showInput, setShowInput] = useState(featuredImage == null);
+   const [showInput, setShowInput] = useState(
+      featuredImage == null || !disabledCodewords.includes(featuredImage)
+   );
 
+   const checkForRedirect = data => {
+      if (id === 'new') {
+         Router.push({
+            pathname: '/thing',
+            query: { id: data.setFeaturedImage.id }
+         });
+      }
+   };
    const [setFeaturedImage, { data: fimgdata }] = useMutation(
-      SET_FEATURED_IMAGE_MUTATION
+      SET_FEATURED_IMAGE_MUTATION,
+      {
+         onCompleted: data => checkForRedirect(data)
+      }
    );
 
    const sendNewFeaturedImage = () => {
-      if (!isExplodingLink(featuredImageInput)) {
+      if (
+         !isExplodingLink(featuredImageInput) &&
+         !disabledCodewords.includes(featuredImageInput)
+      ) {
          window.alert("That's not a valid featured image, sorry");
          return;
       }
@@ -158,7 +180,7 @@ const FeaturedImage = props => {
                : 'featuredImage image'
          }
       >
-         {featuredImage && (
+         {featuredImage && !disabledCodewords.includes(featuredImage) && (
             <ExplodingLink
                url={featuredImage}
                alt="Featured"
@@ -166,23 +188,25 @@ const FeaturedImage = props => {
             />
          )}
          {canEdit && showInput && (
-            <form
-               id="featuredImageForm"
-               className={featuredImage == null ? 'empty' : 'full'}
-               onSubmit={e => {
-                  e.preventDefault();
-                  sendNewFeaturedImage();
-               }}
-            >
-               <input
-                  type="text"
-                  name="featuredImageInput"
-                  id="featuredImageInput"
-                  placeholder="add featured image"
-                  value={featuredImageInput}
-                  onChange={e => setFeaturedImageInput(e.target.value)}
-               />
-            </form>
+            <div className="formWrapper">
+               <form
+                  id="featuredImageForm"
+                  className={featuredImage == null ? 'empty' : 'full'}
+                  onSubmit={e => {
+                     e.preventDefault();
+                     sendNewFeaturedImage();
+                  }}
+               >
+                  <input
+                     type="text"
+                     name="featuredImageInput"
+                     id="featuredImageInput"
+                     placeholder="add featured image"
+                     value={featuredImageInput}
+                     onChange={e => setFeaturedImageInput(e.target.value)}
+                  />
+               </form>
+            </div>
          )}
          <TitleBar context={context} limit={titleLimit} canEdit={canEdit} />
          {canEdit && (
