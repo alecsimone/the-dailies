@@ -5,8 +5,8 @@ import StylishText from './StylishText';
 
 const replaceTwitterMentions = rawText =>
    rawText.replace(
-      /@([a-z0-9_]+(?!\w*\.(?:com|org|edu|net|tv|gg|us|uk|co\.uk|edu|gov|mil|biz|info|tech|xyz|ca|cn|fr|au|in|de|jp|ru|br|es|se|ch|nl)))/gim,
-      (wholeMatch, username) => `https://twitter.com/${username}`
+      /@(?:([a-z0-9_]+)(?!\w*\.(?:com|org|edu|net|tv|gg|us|uk|co\.uk|edu|gov|mil|biz|info|tech|xyz|ca|cn|fr|au|in|de|jp|ru|br|es|se|ch|nl)))/gim,
+      (wholeMatch, username) => `https://twitter.com/${username}\u200B`
    );
 
 const processLinksInText = (rawText, keyString = 0) => {

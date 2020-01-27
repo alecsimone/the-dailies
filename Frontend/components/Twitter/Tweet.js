@@ -14,14 +14,12 @@ const LIKE_TWEET = gql`
    }
 `;
 
-const tcoReplacer = (text, entities, quotedTweet) => {
+const tcoReplacer = (text, entities, quotedTweetLink) => {
    if (entities.urls.length > 0) {
       entities.urls.forEach(urlObject => {
          if (
-            quotedTweet == null ||
-            (quotedTweet.quoted_status_permalink &&
-               urlObject.expanded_url ===
-                  quotedTweet.quoted_status_permalink.expanded)
+            quotedTweetLink == null ||
+            quotedTweetLink.expanded !== urlObject.expanded_url
          ) {
             text = text.replace(urlObject.url, urlObject.expanded_url);
          }
@@ -56,7 +54,8 @@ const Tweet = props => {
          favorited,
          retweeted_status: retweetedTweet,
          retweet_count: retweets,
-         quoted_status: quotedTweet
+         quoted_status: quotedTweet,
+         quoted_status_permalink: quotedTweetLink
       },
       nested
    } = props;
@@ -82,7 +81,7 @@ const Tweet = props => {
    const tcoReplacedText = tcoReplacer(
       replyRemovedText,
       tweetEntities,
-      quotedTweet
+      quotedTweetLink
    );
 
    const entities = [];
