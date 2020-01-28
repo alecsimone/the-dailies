@@ -120,9 +120,7 @@ const FeaturedImage = props => {
    const [featuredImageInput, setFeaturedImageInput] = useState(
       featuredImage == null ? '' : featuredImage
    );
-   const [showInput, setShowInput] = useState(
-      featuredImage == null || !disabledCodewords.includes(featuredImage)
-   );
+   const [showInput, setShowInput] = useState(featuredImage == null);
 
    const checkForRedirect = data => {
       if (id === 'new') {
