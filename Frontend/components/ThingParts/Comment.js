@@ -165,6 +165,9 @@ const Comment = props => {
          });
          setEditing(false);
       }
+      if (e.key === 'Escape') {
+         setEditing(false);
+      }
    };
 
    return (
