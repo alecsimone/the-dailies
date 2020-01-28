@@ -26,7 +26,7 @@ const StyledTwitterPage = styled.div`
 
 const twitter = props => {
    const {
-      query: { oauth_token, oauth_verifier, list }
+      query: { oauth_token, oauth_verifier, listname }
    } = props;
    const { me, loading } = useContext(MemberContext);
 
@@ -47,7 +47,7 @@ const twitter = props => {
       );
       sidebar = <Sidebar />;
    } else if (me.twitterUserName) {
-      return <TwitterReader list={list} />;
+      return <TwitterReader list={listname} />;
    } else {
       content = <TwitterLoginStarter />;
    }
@@ -66,7 +66,7 @@ twitter.propTypes = {
    query: PropTypes.shape({
       oauth_token: PropTypes.string,
       oauth_verifier: PropTypes.string,
-      list: PropTypes.string
+      listname: PropTypes.string
    })
 };
 

@@ -1,15 +1,10 @@
 import Head from 'next/head';
 import gql from 'graphql-tag';
-import {
-   useQuery,
-   useMutation,
-   useLazyQuery,
-   readQuery,
-   writeQuery
-} from '@apollo/react-hooks';
+import { useQuery, useLazyQuery } from '@apollo/react-hooks';
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import Router from 'next/router';
 import Sidebar from '../Sidebar';
 import Tweets, { filterTweets } from './Tweets';
 import LoadingRing from '../LoadingRing';
@@ -168,6 +163,9 @@ const TwitterReader = props => {
          }
       });
 
+      const href = `/twitter?listname=${parsedOldData[listID].name}`;
+      const as = href;
+      Router.replace(href, as, { shallow: true });
       setActiveList(listID);
    };
    const [
