@@ -26,10 +26,17 @@ const ContentInput = props => {
             value={currentContent}
             onChange={e => updateContent(e.target.value)}
             onKeyDown={e => handleKeyDown(e)}
+            style={{
+               height: `${
+                  currentContent.length > 100 ? currentContent.length / 2 : 120
+               }px`
+            }}
          />
-         <button type="submit" className="post">
-            add
-         </button>
+         <div className="postButtonWrapper">
+            <button type="submit" className="post">
+               add
+            </button>
+         </div>
       </form>
    );
 };

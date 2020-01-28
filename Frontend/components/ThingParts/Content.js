@@ -166,6 +166,15 @@ const StyledContent = styled.section`
             opacity: 0.8;
          }
       }
+      form {
+         max-width: 1040px;
+         margin: calc(0.8rem - 2px) calc(-1rem - 1px);
+         textarea {
+            padding: 1rem;
+            height: 10rem;
+            ${props => props.theme.scroll};
+         }
+      }
       .contentPiece {
          margin: 0rem 0;
          flex-grow: 1;
@@ -184,9 +193,12 @@ const StyledContent = styled.section`
    }
    form {
       display: flex;
-      justify-content: flex-end;
       flex-wrap: wrap;
       margin-top: 4rem;
+      .postButtonWrapper {
+         width: 100%;
+         text-align: right;
+      }
    }
    textarea {
       width: 100%;

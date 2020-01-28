@@ -117,6 +117,7 @@ const GlobalStyle = createGlobalStyle`
       border-radius: 3px;
       border-bottom: 1px solid ${theme.lowContrastGrey};
       padding: 1rem 1rem calc(1rem - 1px) 1rem;
+      line-height: 1.6;
       font-family: "Proxima Nova", sans-serif;
       font-size: ${props => props.theme.smallText};
       &:focus {

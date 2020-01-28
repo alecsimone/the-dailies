@@ -110,6 +110,7 @@ const StyledComment = styled.div`
             }
             textarea.editCommentBox {
                width: 100%;
+               padding: 0;
             }
          }
       }
@@ -200,6 +201,13 @@ const Comment = props => {
                         onChange={e => setEditedComment(e.target.value)}
                         value={editedComment}
                         onKeyDown={handleKeyDown}
+                        style={{
+                           height: `${
+                              editedComment.length > 100
+                                 ? editedComment.length / 2
+                                 : 120
+                           }px`
+                        }}
                      />
                   )}
                </div>
