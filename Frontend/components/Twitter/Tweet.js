@@ -63,7 +63,8 @@ const Tweet = props => {
          retweeted_status: retweetedTweet,
          retweet_count: retweets,
          quoted_status: quotedTweet,
-         quoted_status_permalink: quotedTweetLink
+         quoted_status_permalink: quotedTweetLink,
+         quoted_status_id_str: quotedTweetID
       },
       nested
    } = props;
@@ -161,6 +162,8 @@ const Tweet = props => {
             <Tweet tweet={quotedTweet} />
          </div>
       );
+   } else if (quotedTweetID) {
+      entities.push(<TweetGetter id={quotedTweetID} />);
    }
    if (retweetedTweet != null) {
       return (
@@ -243,7 +246,8 @@ Tweet.propTypes = {
       id_str: PropTypes.string.isRequired,
       in_reply_to_status_id_str: PropTypes.string,
       created_at: PropTypes.string.isRequired
-   })
+   }),
+   nested: PropTypes.bool
 };
 
 export default Tweet;
