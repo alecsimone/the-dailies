@@ -108,7 +108,7 @@ export { getTweetIDFromLink };
 // const urlFinder = /(?:(?:http[s]?:\/\/|ftp:\/\/|mailto:[-a-z0-9:?.=/_@]+)\S*|(?:[a-z0-9-.]+\.(?:com|org|net|tv|gg|us|uk|co\.uk|edu|gov|mil|biz|info|moby|ly|tech|xyz|ca|cn|fr|au|in|de|jp|ru|br|es|se|ch|nl)(?:(?=\s)|\/\S*))|(?:localhost:)\S*)/gim;
 const urlAcceptableCharacters = '[-a-z0-9%&?=._~:<>{}\\[\\]!*\\(\\)/^+#]';
 const urlFinder = new RegExp(
-   `(?:(?:http[s]?:\\/\/|ftp:\\/\\/|mailto:[-a-z0-9:?.=/_@]+)${urlAcceptableCharacters}*|(?:[a-z0-9-.]+\\.(?:com|org|net|tv|gg|us|uk|co\\.uk|edu|gov|mil|biz|info|moby|ly|tech|xyz|ca|cn|fr|au|in|de|jp|ru|br|es|se|ch|nl)(?:(?=\\s)|\\/${urlAcceptableCharacters}*))|(?:localhost:)${urlAcceptableCharacters}*)`,
+   `(?:(?:http[s]?:\\/\/|ftp:\\/\\/|mailto:[-a-z0-9:?.=/_@]+)${urlAcceptableCharacters}*|(?:([a-z0-9-]+|[\\w]+\\.[\\w]+)\\.(?:com|org|net|tv|gg|us|uk|co\\.uk|edu|gov|mil|biz|info|moby|ly|tech|xyz|ca|cn|fr|au|in|de|jp|ru|br|es|se|ch|nl)(?:(?=\\s)|\\/${urlAcceptableCharacters}*))|(?:localhost:)${urlAcceptableCharacters}*)`,
    'gim'
 );
 export { urlFinder };
