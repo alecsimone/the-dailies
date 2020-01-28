@@ -9,6 +9,12 @@ const replaceTwitterMentions = rawText =>
       (wholeMatch, username) => `https://twitter.com/${username}\u200B`
    );
 
+const replaceEmails = rawText =>
+   rawText.replace(
+      /\w+@\w+\.(?:com|org|edu|net|tv|gg|us|uk|co\.uk|edu|gov|mil|biz|info|tech|xyz|ca|cn|fr|au|in|de|jp|ru|br|es|se|ch|nl)/,
+      email => `mailto:${email}`
+   );
+
 const processLinksInText = (rawText, keyString = 0) => {
    const urls = rawText.match(urlFinder);
    if (urls == null) {
@@ -121,7 +127,7 @@ const LinkyText = ({ text }) => {
    const paragraphsAndEmptyStrings = text.split('\n');
    const paragraphs = paragraphsAndEmptyStrings.filter(string => string != '');
    const paragraphElements = paragraphs.map((graph, index) =>
-      processLinksInText(replaceTwitterMentions(graph), index)
+      processLinksInText(replaceEmails(replaceTwitterMentions(graph)), index)
    );
 
    return paragraphElements;
