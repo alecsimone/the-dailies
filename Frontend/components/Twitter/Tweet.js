@@ -34,9 +34,10 @@ const tcoReplacer = (text, entities, quotedTweetLink) => {
 
 const hashtagReplacer = text => {
    const newText = text.replace(
-      /#(\S+)/gim,
+      /#(\w+)/gim,
       (wholeText, hashtag) => `https://twitter.com/hashtag/${hashtag}`
    );
+   console.log(newText);
    return newText;
 };
 

@@ -12,7 +12,7 @@ const replaceTwitterMentions = rawText =>
 const replaceEmails = rawText =>
    rawText.replace(
       /\w+@\w+\.(?:com|org|edu|net|tv|gg|us|uk|co\.uk|edu|gov|mil|biz|info|tech|xyz|ca|cn|fr|au|in|de|jp|ru|br|es|se|ch|nl)/,
-      email => `mailto:${email}`
+      email => `mailto:${email}\u200B`
    );
 
 const processLinksInText = (rawText, keyString = 0) => {
