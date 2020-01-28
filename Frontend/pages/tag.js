@@ -85,7 +85,6 @@ const tag = props => {
    });
 
    const { me } = useContext(MemberContext);
-   console.log(data);
 
    let canEdit = false;
    if (data && data.tagByTitle && data.tagByTitle.author && me) {

@@ -40,6 +40,10 @@ const smallThingCardFields = `
       __typename
       id
       title
+      author {
+         id
+      }
+      public
    }
    partOfCategory {
       __typename
@@ -73,6 +77,10 @@ const fullThingFields = `
       __typename
       id
       title
+      author {
+         id
+      }
+      public
    }
    partOfCategory {
       __typename

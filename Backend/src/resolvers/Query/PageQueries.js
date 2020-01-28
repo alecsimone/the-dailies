@@ -2,7 +2,8 @@ const {
    searchAvailableTags,
    canSeeThingGate,
    canSeeThing,
-   canSeeTagGate
+   canSeeTagGate,
+   canSeeTag
 } = require('../../utils/ThingHandling');
 
 async function categories(parent, args, ctx, info) {
@@ -86,6 +87,11 @@ async function thing(parent, { where }, ctx, info) {
       },
       info
    );
+   if (thing.partOfTags && thing.partOfTags.length > 0) {
+      thing.partOfTags = thing.partOfTags.filter(tagData =>
+         canSeeTag(ctx.req.memberId, tagData)
+      );
+   }
    return thing;
 }
 exports.thing = thing;

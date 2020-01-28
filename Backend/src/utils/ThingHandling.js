@@ -259,6 +259,16 @@ const canSeeThingGate = async (where, ctx) => {
 };
 exports.canSeeThingGate = canSeeThingGate;
 
+const canSeeTag = (memberID, tagData) => {
+   if (tagData.public) {
+      return true;
+   }
+   if (memberID !== tagData.author.id) {
+      return false;
+   }
+   return true;
+};
+exports.canSeeTag = canSeeTag;
 const canSeeTagGate = async (where, ctx) => {
    const tagData = await ctx.db.query.tag(
       {
@@ -267,12 +277,14 @@ const canSeeTagGate = async (where, ctx) => {
       `{public author {id friends {id friends {id}}}}`
    );
 
-   if (tagData.public) {
+   if (tagData == null) {
       return true;
    }
-   if (ctx.req.memberId !== tagData.author.id) {
-      throw new Error("You don't have permission to see that tag.");
+
+   if (canSeeThing(ctx.req.memberId, tagData)) {
+      return true;
    }
+   throw new Error("You don't have permission to see that tag.");
 };
 exports.canSeeTagGate = canSeeTagGate;
 
