@@ -72,7 +72,7 @@ const processLinksInText = (rawText, keyString = 0) => {
       let isExplodingText = false;
       urls.forEach((url, urlNumber) => {
          let fullUrl = url;
-         if (!url.includes('://')) {
+         if (!url.includes('://') && !url.includes('mailto')) {
             fullUrl = `https://${url}`;
          }
          const urlPosition = rawText.indexOf(url, stoppedAtIndex);

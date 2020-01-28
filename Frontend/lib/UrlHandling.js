@@ -109,7 +109,7 @@ export { getTweetIDFromLink };
 
 const urlAcceptableCharacters = '[-a-z0-9%&?=._~:<>{}\\[\\]!*\\(\\)/^+#]';
 const topLevelDomains =
-   'com|org|net|tv|gg|us|uk|co\\.uk|edu|gov|mil|biz|info|mobi|ly|tech|xyz|ca|cn|fr|au|in|de|jp|ru|br|es|se|ch|nl|int|jobs|name|tel|email|codes|pizza';
+   'com|org|net|tv|gg|us|uk|co\\.uk|edu|gov|mil|biz|info|mobi|ly|tech|xyz|ca|cn|fr|au|in|de|jp|ru|br|es|se|ch|nl|int|jobs|name|tel|email|codes|pizza|am|fm|cx|gs|ms';
 export { topLevelDomains };
 const urlFinder = new RegExp(
    `(?:(?:http[s]?:\\/\/|ftp:\\/\\/|mailto:[-a-z0-9:?.=/_@]+)${urlAcceptableCharacters}*|(?:([a-z0-9-]+|[\\w]+\\.[\\w]+)\\.(?:${topLevelDomains})(?:(?=\\s)|\\/${urlAcceptableCharacters}*))|(?:localhost:)${urlAcceptableCharacters}*)`,
