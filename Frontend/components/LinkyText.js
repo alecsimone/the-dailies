@@ -1,19 +1,27 @@
 import PropTypes from 'prop-types';
-import { urlFinder, isExplodingLink } from '../lib/UrlHandling';
+import {
+   urlFinder,
+   isExplodingLink,
+   topLevelDomains
+} from '../lib/UrlHandling';
 import ExplodingLink from './ExplodingLink';
 import StylishText from './StylishText';
 
-const replaceTwitterMentions = rawText =>
-   rawText.replace(
-      /@(?:([a-z0-9_]+)(?!\w*\.(?:com|org|edu|net|tv|gg|us|uk|co\.uk|edu|gov|mil|biz|info|tech|xyz|ca|cn|fr|au|in|de|jp|ru|br|es|se|ch|nl)))/gim,
+const replaceTwitterMentions = rawText => {
+   const mentionSearchString = new RegExp(
+      `@(?:([a-z0-9_]+)(?!\\w*\\.(?:${topLevelDomains})))`,
+      'gim'
+   );
+   return rawText.replace(
+      mentionSearchString,
       (wholeMatch, username) => `https://twitter.com/${username}\u200B`
    );
+};
 
-const replaceEmails = rawText =>
-   rawText.replace(
-      /\w+@\w+\.(?:com|org|edu|net|tv|gg|us|uk|co\.uk|edu|gov|mil|biz|info|tech|xyz|ca|cn|fr|au|in|de|jp|ru|br|es|se|ch|nl)/,
-      email => `mailto:${email}\u200B`
-   );
+const replaceEmails = rawText => {
+   const emailSearchString = new RegExp(`\\w+@\\w+\\.(?:${topLevelDomains})`);
+   return rawText.replace(emailSearchString, email => `mailto:${email}\u200B`);
+};
 
 const processLinksInText = (rawText, keyString = 0) => {
    const urls = rawText.match(urlFinder);
