@@ -94,6 +94,23 @@ const ExplodingLink = props => {
       );
    }
 
+   // Twitter Hashtag
+   if (lowerCaseURL.includes('twitter.com/hashtag/')) {
+      const hashtagStartPos = lowerCaseURL.indexOf('/hashtag/') + 9;
+      const hashtagEndPos = lowerCaseURL.indexOf('?');
+      let hashtag;
+      if (hashtagEndPos > -1) {
+         hashtag = url.substring(hashtagStartPos, hashtagEndPos);
+      } else {
+         hashtag = url.substring(hashtagStartPos);
+      }
+      return (
+         <a href={url} target="_blank">
+            #{hashtag}
+         </a>
+      );
+   }
+
    // Tweeter
    if (lowerCaseURL.includes('twitter.com/')) {
       const userStart = lowerCaseURL.indexOf('twitter.com/') + 12;

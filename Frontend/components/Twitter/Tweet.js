@@ -32,6 +32,14 @@ const tcoReplacer = (text, entities, quotedTweetLink) => {
    return newText;
 };
 
+const hashtagReplacer = text => {
+   const newText = text.replace(
+      /#(\S+)/gim,
+      (wholeText, hashtag) => `https://twitter.com/hashtag/${hashtag}`
+   );
+   return newText;
+};
+
 const replyRemover = text => {
    while (text[0] === '@') {
       text = text.replace(/@[-A-Z0-9+_]*/i, '');
@@ -78,8 +86,9 @@ const Tweet = props => {
    };
 
    const replyRemovedText = replyRemover(fullText);
+   const hashtagReplacedText = hashtagReplacer(replyRemovedText);
    const tcoReplacedText = tcoReplacer(
-      replyRemovedText,
+      hashtagReplacedText,
       tweetEntities,
       quotedTweetLink
    );
