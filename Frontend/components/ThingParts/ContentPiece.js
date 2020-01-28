@@ -36,6 +36,7 @@ const ContentPiece = props => {
             currentContent={editedContent}
             updateContent={setEditedContent}
             postContent={postContent}
+            setEditable={setEditable}
          />
       );
    }

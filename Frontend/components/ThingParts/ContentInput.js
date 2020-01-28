@@ -1,11 +1,14 @@
 import PropTypes from 'prop-types';
 
 const ContentInput = props => {
-   const { currentContent, updateContent, postContent } = props;
+   const { currentContent, updateContent, postContent, setEditable } = props;
 
    const handleKeyDown = e => {
       if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
          postContent();
+      }
+      if (e.key === 'Escape' && setEditable) {
+         setEditable(false);
       }
    };
 
@@ -33,7 +36,8 @@ const ContentInput = props => {
 ContentInput.propTypes = {
    currentContent: PropTypes.string.isRequired,
    updateContent: PropTypes.func.isRequired,
-   postContent: PropTypes.func.isRequired
+   postContent: PropTypes.func.isRequired,
+   setEditable: PropTypes.func
 };
 
 export default ContentInput;
