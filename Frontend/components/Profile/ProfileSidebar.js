@@ -3,6 +3,7 @@ import { useMutation } from '@apollo/react-hooks';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
+import DefaultSelects from './DefaultSelects';
 import { setAlpha } from '../../styles/functions';
 
 const EDIT_PROFILE_MUTATION = gql`
@@ -12,6 +13,8 @@ const EDIT_PROFILE_MUTATION = gql`
       $displayName: String
       $email: String
       $twitchName: String
+      $defaultCategory: String
+      $defaultPrivacy: String
    ) {
       editProfile(
          id: $id
@@ -19,6 +22,8 @@ const EDIT_PROFILE_MUTATION = gql`
          displayName: $displayName
          email: $email
          twitchName: $twitchName
+         defaultCategory: $defaultCategory
+         defaultPrivacy: $defaultPrivacy
       ) {
          __typename
          id
@@ -26,6 +31,12 @@ const EDIT_PROFILE_MUTATION = gql`
          displayName
          email
          twitchName
+         defaultCategory {
+            __typename
+            id
+            title
+         }
+         defaultPrivacy
       }
    }
 `;
@@ -106,6 +117,12 @@ const StyledProfileSidebar = styled.div`
          }
       }
    }
+   .friendRequests {
+      .pending {
+         text-align: center;
+         margin-top: 2rem;
+      }
+   }
 `;
 
 const PotentiallyEditableField = ({
@@ -150,6 +167,8 @@ const ProfileSidebar = props => {
       member: {
          id,
          avatar,
+         defaultCategory,
+         defaultPrivacy,
          displayName,
          rep,
          points,
@@ -187,6 +206,32 @@ const ProfileSidebar = props => {
       } else if (e.key === 'Escape') {
          unMakeEditable(e.target.name);
       }
+   };
+
+   const handleSelect = (e, categoryID) => {
+      const optimisticResponse = {
+         __typename: 'Mutation',
+         editProfile: {
+            __typename: 'Member',
+            id,
+            [e.target.name]: e.target.value
+         }
+      };
+      if (e.target.name === 'defaultCategory') {
+         optimisticResponse.editProfile.defaultCategory = {
+            __typename: 'Category',
+            id: categoryID,
+            title: e.target.value
+         };
+      }
+
+      editProfile({
+         variables: {
+            id,
+            [e.target.name]: e.target.value
+         },
+         optimisticResponse
+      });
    };
 
    const makeEditable = fieldName =>
@@ -252,6 +297,13 @@ const ProfileSidebar = props => {
                </div>
             )}
          </div>
+         {canEdit && (
+            <DefaultSelects
+               initialCategory={defaultCategory.title}
+               initialPrivacy={defaultPrivacy}
+               handleSelect={handleSelect}
+            />
+         )}
          <PotentiallyEditableField
             label="Display Name"
             name="displayName"
@@ -292,6 +344,10 @@ const ProfileSidebar = props => {
             Twitter Name: {twitterUserName || 'Not set'}
          </div>
          <div className="field">Role: {role}</div>
+         <div className="friendRequests">
+            Friend Requests:
+            <div className="pending">No pending friend requests</div>
+         </div>
       </StyledProfileSidebar>
    );
 };

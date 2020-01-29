@@ -22,8 +22,6 @@ const ME_PAGE_QUERY = gql`
 const me = () => {
    const { me, loading } = useContext(MemberContext);
 
-   console.log(me);
-
    let pageTitle;
    let content;
    let sidebar;

@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 
-const MetaOption = props => (
-   <option value={props.name} key={props.name}>
-      {props.name}
+const MetaOption = ({ name }) => (
+   <option value={name} key={name}>
+      {name}
    </option>
 );
 MetaOption.propTypes = {

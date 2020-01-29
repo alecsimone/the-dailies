@@ -15,6 +15,7 @@ const GET_CATEGORIES_QUERY = gql`
       }
    }
 `;
+export { GET_CATEGORIES_QUERY };
 
 const SET_THING_CATEGORY_MUTATION = gql`
    mutation SET_THING_CATEGORY_MUTATION($category: String!, $thingID: ID!) {
@@ -61,7 +62,7 @@ const CategoryDropdown = props => {
       categoryOptions = <MetaOption name={initialCategory} />;
    } else {
       categoryOptions = categoryOptionsData.categories.map(option => (
-         <MetaOption name={option.title} key={option.title} />
+         <MetaOption name={option.title} />
       ));
    }
 

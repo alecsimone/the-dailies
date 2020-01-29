@@ -66,7 +66,15 @@ exports.logout = logout;
 
 async function editProfile(
    parent,
-   { id, avatar, displayName, email, twitchName },
+   {
+      id,
+      avatar,
+      displayName,
+      email,
+      twitchName,
+      defaultCategory,
+      defaultPrivacy
+   },
    ctx,
    info
 ) {
@@ -92,6 +100,16 @@ async function editProfile(
    }
    if (twitchName != null) {
       dataObj.twitchName = twitchName;
+   }
+   if (defaultCategory != null) {
+      dataObj.defaultCategory = {
+         connect: {
+            title: defaultCategory
+         }
+      };
+   }
+   if (defaultPrivacy != null) {
+      dataObj.defaultPrivacy = defaultPrivacy;
    }
    const newMe = await properEditMe(dataObj, id, ctx);
    return newMe;

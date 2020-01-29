@@ -17,6 +17,7 @@ const GET_PRIVACY_OPTIONS_QUERY = gql`
       }
    }
 `;
+export { GET_PRIVACY_OPTIONS_QUERY };
 
 const SET_THING_PRIVACY_MUTATION = gql`
    mutation SET_THING_PRIVACY_MUTATION(
@@ -76,7 +77,7 @@ const PrivacyDropdown = props => {
       privacyOptions = <MetaOption name={initialPrivacy} />;
    } else {
       privacyOptions = privacyOptionsData.__type.enumValues.map(option => (
-         <MetaOption name={option.name} key={option.name} />
+         <MetaOption name={option.name} />
       ));
    }
 
