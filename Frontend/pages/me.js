@@ -47,11 +47,11 @@ const me = () => {
                key="meData"
             />
          );
-      } else {
-         pageTitle = "Couldn't find you";
-         content = <p>You were not found.</p>;
-         sidebar = <Sidebar key="missingYou" />;
       }
+   } else {
+      pageTitle = "Couldn't find you";
+      content = <p>You were not found.</p>;
+      sidebar = <Sidebar key="missingYou" />;
    }
 
    return (
