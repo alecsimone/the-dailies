@@ -1,14 +1,16 @@
 import { useContext } from 'react';
 import Things from './Things';
 import { MemberContext } from '../Account/MemberProvider';
+import LoadingRing from '../LoadingRing';
 
 const MyThings = () => {
    const { me } = useContext(MemberContext);
-   if (
-      me == null ||
-      me.createdThings == null ||
-      me.createdThings.length === 0
-   ) {
+
+   if (me == null) {
+      return <LoadingRing />;
+   }
+
+   if (me.createdThings == null || me.createdThings.length === 0) {
       return <p className="emptyThings">You haven't made any things yet.</p>;
    }
    const myThings = me.createdThings;

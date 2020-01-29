@@ -1,11 +1,17 @@
 import { useContext } from 'react';
 import { MemberContext } from '../Account/MemberProvider';
 import Things from './Things';
+import LoadingRing from '../LoadingRing';
 
 const MyFriendsThings = () => {
-   const {
-      me: { friends }
-   } = useContext(MemberContext);
+   const { me } = useContext(MemberContext);
+
+   if (me == null || me.friends == null) {
+      return <LoadingRing />;
+   }
+
+   const { friends } = me;
+
    const friendsThings = [];
    friends.forEach(friend => {
       if (friend.createdThings) {
