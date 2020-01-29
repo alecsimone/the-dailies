@@ -6,6 +6,9 @@ import { useMutation } from '@apollo/react-hooks';
 import { MemberContext } from '../Account/MemberProvider';
 import Comment from './Comment';
 import CommentInput from './CommentInput';
+import { SINGLE_THING_QUERY } from '../../pages/thing';
+import { SINGLE_TAG_QUERY } from '../../pages/tag';
+import { SINGLE_CATEGORY_QUERY } from '../../pages/category';
 
 const StyledComments = styled.section`
    header {
@@ -118,7 +121,7 @@ const Comments = props => {
          },
          comment: currentComment,
          createdAt: now.toISOString(),
-         id: 'optimistic',
+         id: 'temporaryID',
          updatedAt: now.toISOString()
       };
       comments.push(newComment);
@@ -135,6 +138,39 @@ const Comments = props => {
                __typename: type,
                id,
                comments
+            }
+         },
+         update: (client, { data }) => {
+            if (data.__typename == null) {
+               // Our optimistic response includes a typename for the mutation, but the server's data doesn't
+               let query;
+               switch (data.addComment.__typename) {
+                  case 'Thing':
+                     query = SINGLE_THING_QUERY;
+                     break;
+                  case 'Tag':
+                     query = SINGLE_TAG_QUERY;
+                     break;
+                  case 'Category':
+                     query = SINGLE_CATEGORY_QUERY;
+                     break;
+                  default:
+                     console.log('Unknown stuff type');
+                     return;
+               }
+               const oldData = client.readQuery({
+                  query,
+                  variables: { id }
+               });
+               oldData[data.addComment.__typename.toLowerCase()].comments =
+                  data.addComment.comments;
+               client.writeQuery({
+                  query,
+                  variables: { id },
+                  data: {
+                     oldData
+                  }
+               });
             }
          }
       });

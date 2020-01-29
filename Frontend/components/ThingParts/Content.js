@@ -7,6 +7,9 @@ import PropTypes from 'prop-types';
 import { setAlpha, setLightness } from '../../styles/functions';
 import ContentPiece from './ContentPiece';
 import ContentInput from './ContentInput';
+import { SINGLE_THING_QUERY } from '../../pages/thing';
+import { SINGLE_TAG_QUERY } from '../../pages/tag';
+import { SINGLE_CATEGORY_QUERY } from '../../pages/category';
 
 const ADD_CONTENTPIECE_MUTATION = gql`
    mutation ADD_CONTENTPIECE_MUTATION(
@@ -249,9 +252,7 @@ const Content = props => {
    const [
       editContentPiece,
       { data: editData, loading: editLoading, error: editError }
-   ] = useMutation(EDIT_CONTENTPIECE_MUTATION, {
-      onCompleted: data => console.log(data)
-   });
+   ] = useMutation(EDIT_CONTENTPIECE_MUTATION);
 
    const sendNewContentPiece = async () => {
       setNewContentPiece('');
@@ -272,6 +273,39 @@ const Content = props => {
                __typename: type,
                id,
                content
+            }
+         },
+         update: (client, { data }) => {
+            if (data.__typename == null) {
+               // Our optimistic response includes a typename for the mutation, but the server's data doesn't
+               let query;
+               switch (data.addContentPiece.__typename) {
+                  case 'Thing':
+                     query = SINGLE_THING_QUERY;
+                     break;
+                  case 'Tag':
+                     query = SINGLE_TAG_QUERY;
+                     break;
+                  case 'Category':
+                     query = SINGLE_CATEGORY_QUERY;
+                     break;
+                  default:
+                     console.log('Unknown stuff type');
+                     return;
+               }
+               const oldData = client.readQuery({
+                  query,
+                  variables: { id }
+               });
+               oldData[data.addContentPiece.__typename.toLowerCase()].content =
+                  data.addContentPiece.content;
+               client.writeQuery({
+                  query,
+                  variables: { id },
+                  data: {
+                     oldData
+                  }
+               });
             }
          }
       });
