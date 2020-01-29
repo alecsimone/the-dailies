@@ -1,7 +1,9 @@
 import gql from 'graphql-tag';
 import { useQuery, useSubscription } from '@apollo/react-hooks';
+import { useContext } from 'react';
 import Head from 'next/head';
 import PropTypes from 'prop-types';
+import { MemberContext } from '../components/Account/MemberProvider';
 import Sidebar from '../components/Sidebar';
 import Error from '../components/ErrorMessage';
 import LoadingRing from '../components/LoadingRing';
@@ -34,6 +36,7 @@ const member = props => {
    const { loading, error, data } = useQuery(MEMBER_PAGE_QUERY, {
       variables
    });
+   const { me } = useContext(MemberContext);
 
    let pageTitle;
    let content;
@@ -61,7 +64,10 @@ const member = props => {
          sidebar = (
             <Sidebar
                extraColumnContent={
-                  <ProfileSidebar member={data.member} canEdit={false} />
+                  <ProfileSidebar
+                     member={data.member}
+                     canEdit={me.id === data.member.id}
+                  />
                }
                extraColumnTitle="Member"
                key="memberData"

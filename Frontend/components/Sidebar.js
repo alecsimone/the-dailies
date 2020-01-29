@@ -56,27 +56,29 @@ const Sidebar = props => {
    if (extraColumnTitle != null) {
       headerColumns.push(extraColumnTitle);
    }
-   let sidebarHeader = headerColumns.map(column => (
-      <div
-         className={
-            selectedTab === column
-               ? `headerTab ${column} selected`
-               : `headerTab ${column}`
-         }
-         key={column}
-         onClick={() => setSelectedTab(column)}
-      >
-         <img
-            src={
-               column === 'Me' || column === 'Member'
-                  ? '/defaultAvatar.jpg'
-                  : `${column}.png`
+   let sidebarHeader = headerColumns.map(column => {
+      let imgSrc;
+      if (column === 'Me') {
+         imgSrc = me.avatar;
+      } else if (column === 'Member') {
+         imgSrc = '/defaultAvatar.jpg';
+      } else {
+         imgSrc = `${column}.png`;
+      }
+      return (
+         <div
+            className={
+               selectedTab === column
+                  ? `headerTab ${column} selected`
+                  : `headerTab ${column}`
             }
-            alt={column}
-            title={column}
-         />
-      </div>
-   ));
+            key={column}
+            onClick={() => setSelectedTab(column)}
+         >
+            <img src={imgSrc} alt={column} title={column} />
+         </div>
+      );
+   });
    const openButton = process.browser && window.outerWidth <= 800 ? 'v' : '>';
    const closeButton = process.browser && window.outerWidth <= 800 ? '^' : '<';
    const toggleButton = (

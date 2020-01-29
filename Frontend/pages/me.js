@@ -1,7 +1,8 @@
 import gql from 'graphql-tag';
-import { useQuery, useSubscription } from '@apollo/react-hooks';
+import { useContext } from 'react';
 import Head from 'next/head';
 import PropTypes from 'prop-types';
+import { MemberContext } from '../components/Account/MemberProvider';
 import Sidebar from '../components/Sidebar';
 import Error from '../components/ErrorMessage';
 import LoadingRing from '../components/LoadingRing';
@@ -19,16 +20,13 @@ const ME_PAGE_QUERY = gql`
 `;
 
 const me = () => {
-   const { loading, error, data } = useQuery(ME_PAGE_QUERY);
+   const { me, loading } = useContext(MemberContext);
+
+   console.log(me);
 
    let pageTitle;
    let content;
    let sidebar;
-   if (error) {
-      pageTitle = "You're Unavailable";
-      content = <Error error={error} />;
-      sidebar = <Sidebar key="error" />;
-   }
    if (loading) {
       pageTitle = 'Loading You';
       content = <LoadingRing />;
@@ -39,14 +37,14 @@ const me = () => {
             key="loading"
          />
       );
-   } else if (data) {
-      if (data.me != null) {
-         pageTitle = data.me.displayName;
+   } else if (me) {
+      if (me != null) {
+         pageTitle = me.displayName;
 
-         content = <ProfileContent member={data.me} />;
+         content = <ProfileContent member={me} />;
          sidebar = (
             <Sidebar
-               extraColumnContent={<ProfileSidebar member={data.me} canEdit />}
+               extraColumnContent={<ProfileSidebar member={me} canEdit />}
                extraColumnTitle="Me"
                key="meData"
             />

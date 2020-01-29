@@ -1,4 +1,9 @@
-const { signup, login, logout } = require('./Mutation/MemberMutations');
+const {
+   signup,
+   login,
+   logout,
+   editProfile
+} = require('./Mutation/MemberMutations');
 const {
    createThing,
    addContentPiece,
@@ -41,7 +46,8 @@ const Mutations = {
    editLink,
    initiateTwitterLogin,
    likeTweet,
-   markTweetsSeen
+   markTweetsSeen,
+   editProfile
 };
 
 module.exports = Mutations;

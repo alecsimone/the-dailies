@@ -29,8 +29,10 @@ const smallThingCardFields = `
       displayName
       avatar
       friends {
+         __typename
          id
          friends {
+            __typename
             id
          }
       }

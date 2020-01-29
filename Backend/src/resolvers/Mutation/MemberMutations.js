@@ -1,5 +1,8 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { loggedInGate, fullMemberGate } = require('../../utils/Authentication');
+const { fullMemberFields } = require('../../utils/CardInterfaces');
+const { publishMeUpdate } = require('../../utils/ThingHandling');
 
 async function signup(parent, args, ctx, info) {
    args.email = args.email.toLowerCase();
@@ -60,3 +63,58 @@ function logout(parent, args, ctx, info) {
    return { message: 'Successfully logged out' };
 }
 exports.logout = logout;
+
+async function editProfile(
+   parent,
+   { id, avatar, displayName, email, twitchName },
+   ctx,
+   info
+) {
+   loggedInGate(ctx);
+   fullMemberGate(ctx.req.member);
+
+   if (
+      ctx.req.memberId !== id &&
+      !['Admin', 'Editor', 'Moderator'].includes(ctx.req.member.role)
+   ) {
+      throw new Error("You don't have permission to edit that member");
+   }
+
+   const dataObj = {};
+   if (avatar != null) {
+      dataObj.avatar = avatar;
+   }
+   if (displayName != null) {
+      dataObj.displayName = displayName;
+   }
+   if (email != null) {
+      dataObj.email = email;
+   }
+   if (twitchName != null) {
+      dataObj.twitchName = twitchName;
+   }
+   const newMe = await properEditMe(dataObj, id, ctx);
+   return newMe;
+}
+exports.editProfile = editProfile;
+
+async function properEditMe(dataObj, id, ctx) {
+   if (
+      id !== ctx.req.memberId &&
+      !['Admin', 'Editor', 'Moderator'].includes(ctx.req.member.role)
+   ) {
+      throw new Error("You don't have permission to edit that member");
+   }
+
+   const updatedMember = await ctx.db.mutation.updateMember(
+      {
+         where: {
+            id
+         },
+         data: dataObj
+      },
+      `{${fullMemberFields}}`
+   );
+   publishMeUpdate(ctx);
+   return updatedMember;
+}

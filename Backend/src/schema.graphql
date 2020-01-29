@@ -52,6 +52,7 @@ type Mutation {
   initiateTwitterLogin: SuccessMessage
   likeTweet(tweetID: String!, alreadyLiked: String!): SuccessMessage,
   markTweetsSeen(listID: String!, tweetIDs: [String]!): Member
+  editProfile(id: ID!, avatar: String, displayName: String, email: String, twitchName: String): Member
 }
 
 union Stuff = Thing | Tag | Category
