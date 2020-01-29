@@ -108,7 +108,7 @@ const ThingMeta = props => {
       <StyledThingMeta className="thingMeta">
          <div className="info">
             {createdAt && (
-               <span className="ago">{convertISOtoAgo(createdAt)} ago</span>
+               <span className="ago">{convertISOtoAgo(createdAt)} ago </span>
             )}
             {author && (
                <span className="author">
