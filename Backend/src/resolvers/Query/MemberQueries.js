@@ -16,6 +16,7 @@ async function me(parent, args, ctx, info) {
          title: 'Misc'
       };
    }
+   console.log(member.friends);
    if (member && member.friends) {
       member.friends.forEach((friend, index) => {
          member.friends[index].createdThings = friend.createdThings.filter(

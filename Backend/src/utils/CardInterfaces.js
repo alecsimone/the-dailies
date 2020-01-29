@@ -8,6 +8,10 @@ const smallThingCardFields = `
       id
       displayName
       avatar
+      friends {
+         __typename
+         id
+      }
    }
    content {
       __typename
@@ -54,6 +58,10 @@ const fullThingFields = `
       __typename
       id
       displayName
+      friends {
+         __typename
+         id
+      }
    }
    featuredImage
    link

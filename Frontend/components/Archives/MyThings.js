@@ -14,7 +14,7 @@ const MyThings = () => {
       return <p className="emptyThings">You haven't made any things yet.</p>;
    }
    const myThings = me.createdThings;
-   myThings.sort((a, b) => a.id < b.id);
+   myThings.sort((a, b) => (a.id < b.id ? 1 : -1));
 
    return <Things things={myThings} displayType="list" cardSize="small" />;
 };

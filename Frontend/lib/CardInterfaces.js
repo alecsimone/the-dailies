@@ -7,6 +7,10 @@ const commentFields = `
       displayName
       avatar
       rep
+      friends {
+         __typename
+         id
+      }
    }
    comment
    createdAt
@@ -65,6 +69,10 @@ const fullThingFields = `
       __typename
       id
       displayName
+      friends {
+         __typename
+         id
+      }
    }
    featuredImage
    link

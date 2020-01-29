@@ -302,9 +302,7 @@ const Content = props => {
                client.writeQuery({
                   query,
                   variables: { id },
-                  data: {
-                     oldData
-                  }
+                  data: oldData
                });
             }
          }

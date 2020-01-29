@@ -7,6 +7,7 @@ const MyFriendsThings = () => {
    const { me } = useContext(MemberContext);
 
    if (me == null || me.friends == null) {
+      console.log(me);
       return <LoadingRing />;
    }
 
@@ -18,7 +19,7 @@ const MyFriendsThings = () => {
          friend.createdThings.forEach(thing => friendsThings.push(thing));
       }
    });
-   friendsThings.sort((a, b) => a.id < b.id);
+   friendsThings.sort((a, b) => (a.id < b.id ? 1 : -1));
 
    if (friendsThings.length === 0) {
       return (
