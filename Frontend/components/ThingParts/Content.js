@@ -233,6 +233,7 @@ const Content = props => {
          });
       }
    };
+
    const [
       addContentPiece,
       { data: addData, loading: addLoading, error: addError }
@@ -252,21 +253,45 @@ const Content = props => {
 
    const sendNewContentPiece = async () => {
       setNewContentPiece('');
+      content.push({
+         __typename: 'ContentPiece',
+         content: newContentPiece,
+         id: 'temporaryID'
+      });
       await addContentPiece({
          variables: {
             content: newContentPiece,
             id,
             type
+         },
+         optimisticResponse: {
+            __typename: 'Mutation',
+            addContentPiece: {
+               __typename: type,
+               id,
+               content
+            }
          }
       });
    };
 
    const deletePiece = async contentPieceID => {
+      const newContent = content.filter(
+         contentPiece => contentPiece.id !== contentPieceID
+      );
       await deleteContentPiece({
          variables: {
             contentPieceID,
             id,
             type
+         },
+         optimisticResponse: {
+            __typename: 'Mutation',
+            deleteContentPiece: {
+               __typename: type,
+               id,
+               content: newContent
+            }
          }
       });
    };

@@ -19,6 +19,7 @@ const SINGLE_CATEGORY_QUERY = gql`
       }
    }
 `;
+export { SINGLE_CATEGORY_QUERY };
 
 const SINGLE_CATEGORY_SUBSCRIPTION = gql`
    subscription SINGLE_CATEGORY_SUBSCRIPTION {

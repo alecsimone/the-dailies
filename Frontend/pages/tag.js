@@ -19,6 +19,7 @@ const SINGLE_TAG_QUERY = gql`
       }
    }
 `;
+export { SINGLE_TAG_QUERY };
 
 const SINGLE_TAG_SUBSCRIPTION = gql`
    subscription SINGLE_TAG_SUBSCRIPTION {
