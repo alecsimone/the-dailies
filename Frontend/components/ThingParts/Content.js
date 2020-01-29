@@ -249,7 +249,9 @@ const Content = props => {
    const [
       editContentPiece,
       { data: editData, loading: editLoading, error: editError }
-   ] = useMutation(EDIT_CONTENTPIECE_MUTATION);
+   ] = useMutation(EDIT_CONTENTPIECE_MUTATION, {
+      onCompleted: data => console.log(data)
+   });
 
    const sendNewContentPiece = async () => {
       setNewContentPiece('');
@@ -308,6 +310,14 @@ const Content = props => {
             content: newContent,
             id,
             type
+         },
+         optimisticResponse: {
+            __typename: 'Mutation',
+            editContentPiece: {
+               __typename: type,
+               id,
+               content: newContent
+            }
          }
       });
    };
