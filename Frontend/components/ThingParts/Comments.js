@@ -91,7 +91,13 @@ const Comments = props => {
    let commentElements;
    if (comments && comments.length > 0) {
       commentElements = comments.map(comment => (
-         <Comment comment={comment} key={comment.id} type={type} id={id} />
+         <Comment
+            comment={comment}
+            comments={comments}
+            key={comment.id}
+            type={type}
+            id={id}
+         />
       ));
    } else {
       commentElements = <div className="noComments">No Comments Yet</div>;

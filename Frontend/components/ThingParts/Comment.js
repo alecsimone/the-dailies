@@ -159,7 +159,7 @@ const StyledComment = styled.div`
 `;
 
 const Comment = props => {
-   const { comment, type, id } = props;
+   const { comment, comments, type, id } = props;
 
    const { me, loading: memberLoading } = useContext(MemberContext);
 
@@ -173,15 +173,28 @@ const Comment = props => {
 
    const handleKeyDown = async e => {
       if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+         const indexOfEditedComment = comments.findIndex(
+            currentComment => currentComment.id === comment.id
+         );
+         comments[indexOfEditedComment].comment = editedComment;
+
+         setEditing(false);
          await editComment({
             variables: {
                commentID: comment.id,
                stuffID: id,
                type,
                newComment: editedComment
+            },
+            optimisticResponse: {
+               __typename: 'Mutation',
+               editComment: {
+                  __typename: type,
+                  id,
+                  comments
+               }
             }
          });
-         setEditing(false);
       }
       if (e.key === 'Escape') {
          setEditing(false);
@@ -217,7 +230,10 @@ const Comment = props => {
                         placeholder="Edit comment"
                         onChange={e => setEditedComment(e.target.value)}
                         value={editedComment}
-                        onKeyDown={handleKeyDown}
+                        onKeyDown={e => {
+                           e.persist();
+                           handleKeyDown(e);
+                        }}
                         style={{
                            height: `${
                               editedComment.length > 240
@@ -236,11 +252,22 @@ const Comment = props => {
                      src="/red-x.png"
                      alt="delete comment button"
                      onClick={() => {
+                        const newComments = comments.filter(
+                           currentComment => currentComment.id !== comment.id
+                        );
                         deleteComment({
                            variables: {
                               commentID: comment.id,
                               stuffID: id,
                               type
+                           },
+                           optimisticResponse: {
+                              __typename: 'Mutation',
+                              deleteComment: {
+                                 __typename: type,
+                                 id,
+                                 comments: newComments
+                              }
                            }
                         });
                      }}
@@ -270,6 +297,7 @@ Comment.propTypes = {
          displayName: PropTypes.string.isRequired
       })
    }),
+   comments: PropTypes.array.isRequired,
    type: PropTypes.oneOf(['Tag', 'Thing']).isRequired,
    id: PropTypes.string.isRequired
 };
