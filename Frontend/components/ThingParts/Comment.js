@@ -203,7 +203,7 @@ const Comment = props => {
                         onKeyDown={handleKeyDown}
                         style={{
                            height: `${
-                              editedComment.length > 100
+                              editedComment.length > 240
                                  ? editedComment.length / 2
                                  : 120
                            }px`

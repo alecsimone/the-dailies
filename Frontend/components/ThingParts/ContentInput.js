@@ -28,7 +28,7 @@ const ContentInput = props => {
             onKeyDown={e => handleKeyDown(e)}
             style={{
                height: `${
-                  currentContent.length > 100 ? currentContent.length / 2 : 120
+                  currentContent.length > 240 ? currentContent.length / 2 : 120
                }px`
             }}
          />

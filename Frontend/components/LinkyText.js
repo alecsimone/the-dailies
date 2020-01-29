@@ -19,7 +19,9 @@ const replaceTwitterMentions = rawText => {
 };
 
 const replaceEmails = rawText => {
-   const emailSearchString = new RegExp(`\\w+@\\w+\\.(?:${topLevelDomains})`);
+   const emailSearchString = new RegExp(
+      `[\\w.!#$%&'*+-/=?^_\`{|}~]+@\\w+\\.(?:${topLevelDomains})`
+   );
    return rawText.replace(emailSearchString, email => `mailto:${email}\u200B`);
 };
 
