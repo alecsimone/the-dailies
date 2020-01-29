@@ -100,12 +100,36 @@ const Comments = props => {
    const [addComment] = useMutation(ADD_COMMENT_MUTATION);
 
    const sendNewComment = async () => {
+      const now = new Date();
+      const newComment = {
+         __typename: 'Comment',
+         author: {
+            __typename: 'Member',
+            avatar: me.avatar,
+            displayName: me.displayName,
+            id: me.id,
+            rep: me.rep
+         },
+         comment: currentComment,
+         createdAt: now.toISOString(),
+         id: 'optimistic',
+         updatedAt: now.toISOString()
+      };
+      comments.push(newComment);
       setCurrentComment('');
       await addComment({
          variables: {
             comment: currentComment,
             id,
             type
+         },
+         optimisticResponse: {
+            __typename: 'Mutation',
+            addComment: {
+               __typename: type,
+               id,
+               comments
+            }
          }
       });
    };

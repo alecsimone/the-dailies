@@ -19,14 +19,29 @@ const DELETE_COMMENT_MUTATION = gql`
          ... on Thing {
             __typename
             id
+            comments {
+               __typename
+               id
+               comment
+            }
          }
          ... on Tag {
             __typename
             id
+            comments {
+               __typename
+               id
+               comment
+            }
          }
          ... on Category {
             __typename
             id
+            comments {
+               __typename
+               id
+               comment
+            }
          }
       }
    }
@@ -148,7 +163,9 @@ const Comment = props => {
 
    const { me, loading: memberLoading } = useContext(MemberContext);
 
-   const [editComment] = useMutation(EDIT_COMMENT_MUTATION);
+   const [editComment] = useMutation(EDIT_COMMENT_MUTATION, {
+      onCompleted: data => console.log(data)
+   });
    const [deleteComment] = useMutation(DELETE_COMMENT_MUTATION);
 
    const [editing, setEditing] = useState(false);
