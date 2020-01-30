@@ -225,7 +225,7 @@ const StyledContent = styled.section`
 
 const Content = props => {
    const { context, canEdit } = props;
-   const { content, id, __typename: type, author } = useContext(context);
+   const { content = [], id, __typename: type, author } = useContext(context);
    const [newContentPiece, setNewContentPiece] = useState('');
 
    const checkForRedirect = data => {

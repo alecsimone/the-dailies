@@ -20,9 +20,20 @@ const replaceTwitterMentions = rawText => {
 
 const replaceEmails = rawText => {
    const emailSearchString = new RegExp(
-      `[\\w.!#$%&'*+-/=?^_\`{|}~]+@\\w+\\.(?:${topLevelDomains})`
+      `[\\w.!#$%&'*+-/=?^_\`{|}~]+@\\w+\\.(?:${topLevelDomains})`,
+      'gim'
    );
-   return rawText.replace(emailSearchString, email => `mailto:${email}\u200B`);
+   return rawText.replace(emailSearchString, (email, matchIndex, wholeText) => {
+      // JS doesn't support negative lookbehinds in regex, so we have to do it manually in our replace function
+      const precedingCharacters = wholeText.substring(
+         matchIndex - 7,
+         matchIndex
+      );
+      if (precedingCharacters.toLowerCase() === 'mailto:') {
+         return email;
+      }
+      return `mailto:${email}\u200B`;
+   });
 };
 
 const processLinksInText = (rawText, keyString = 0) => {
