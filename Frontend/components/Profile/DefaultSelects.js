@@ -23,12 +23,39 @@ const StyledSelectsWrapper = styled.div`
    }
 `;
 
-const DefaultSelects = ({ initialCategory, initialPrivacy, handleSelect }) => {
+const DefaultSelects = ({ initialCategory, initialPrivacy, editProfile }) => {
    const {
       loading: loadingCategories,
       data: categoriesData,
       error: categoriesError
    } = useQuery(GET_CATEGORIES_QUERY);
+
+   const handleSelect = (e, categoryID) => {
+      const optimisticResponse = {
+         __typename: 'Mutation',
+         editProfile: {
+            __typename: 'Member',
+            id,
+            [e.target.name]: e.target.value
+         }
+      };
+      if (e.target.name === 'defaultCategory') {
+         optimisticResponse.editProfile.defaultCategory = {
+            __typename: 'Category',
+            id: categoryID,
+            title: e.target.value
+         };
+      }
+
+      editProfile({
+         variables: {
+            id,
+            [e.target.name]: e.target.value
+         },
+         optimisticResponse
+      });
+   };
+
    let categoryOptions;
    if (loadingCategories) {
       categoryOptions = <MetaOption name={initialCategory} />;
