@@ -2,9 +2,13 @@ import gql from 'graphql-tag';
 import { useMutation } from '@apollo/react-hooks';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
+import { MemberContext } from '../Account/MemberProvider';
 import DefaultSelects from './DefaultSelects';
-import { setAlpha } from '../../styles/functions';
+import { setAlpha, setLightness } from '../../styles/functions';
+import member from '../../pages/member';
+import MemberCard from '../MemberCard';
+import { MEMBER_PAGE_QUERY } from '../../pages/member';
 
 const EDIT_PROFILE_MUTATION = gql`
    mutation EDIT_PROFILE_MUTATION(
@@ -37,6 +41,49 @@ const EDIT_PROFILE_MUTATION = gql`
             title
          }
          defaultPrivacy
+      }
+   }
+`;
+
+const SEND_FRIEND_REQUEST_MUTATION = gql`
+   mutation SEND_FRIEND_REQUEST_MUTATION($id: ID!) {
+      sendFriendRequest(id: $id) {
+         __typename
+         id
+         friendRequests {
+            __typename
+            id
+         }
+      }
+   }
+`;
+
+const CONFIRM_FRIEND_REQUEST_MUTATION = gql`
+   mutation CONFIRM_FRIEND_REQUEST_MUTATION($id: ID!) {
+      confirmFriendRequest(id: $id) {
+         __typename
+         id
+         friends {
+            __typename
+            id
+         }
+         friendRequests {
+            __typename
+            id
+         }
+      }
+   }
+`;
+
+const IGNORE_FRIEND_REQUEST_MUTATION = gql`
+   mutation IGNORE_FRIEND_REQUEST_MUTATION($id: ID!) {
+      ignoreFriendRequest(id: $id) {
+         __typename
+         id
+         ignoredFriendRequests {
+            __typename
+            id
+         }
       }
    }
 `;
@@ -99,6 +146,24 @@ const StyledProfileSidebar = styled.div`
          margin: auto;
       }
    }
+   .friendsDisplay {
+      font-size: ${props => props.theme.bigText};
+      text-align: center;
+   }
+   .friendButtonWrapper {
+      text-align: center;
+      margin: 2rem 0;
+      button {
+         padding: 1rem 2rem;
+         font-size: ${props => props.theme.smallText};
+         background: ${props => props.theme.majorColor};
+         &.active {
+            &:hover {
+               background: ${props => setLightness(props.theme.majorColor, 30)};
+            }
+         }
+      }
+   }
    .field {
       margin: 1rem 0;
       display: flex;
@@ -119,8 +184,29 @@ const StyledProfileSidebar = styled.div`
    }
    .friendRequests {
       .pending {
-         text-align: center;
          margin-top: 2rem;
+         display: flex;
+         justify-content: space-around;
+         width: 100%;
+         article {
+            flex-grow: 1;
+         }
+         .requestOptions {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            margin-left: 2rem;
+            padding: 0.25rem;
+            img.requestOption {
+               width: 2.5rem;
+               height: 2.5rem;
+               cursor: pointer;
+               opacity: 0.4;
+               &:hover {
+                  opacity: 0.8;
+               }
+            }
+         }
       }
    }
 `;
@@ -169,6 +255,9 @@ const ProfileSidebar = props => {
          avatar,
          defaultCategory,
          defaultPrivacy,
+         friends,
+         friendRequests,
+         ignoredFriendRequests,
          displayName,
          rep,
          points,
@@ -180,6 +269,42 @@ const ProfileSidebar = props => {
       },
       canEdit
    } = props;
+
+   const { me } = useContext(MemberContext);
+
+   const isMe = me.id === id;
+   let wereFriends = false;
+   let outgoingFriendRequest = false;
+   let incomingFriendRequest = false;
+   if (me && !isMe) {
+      me.friends.forEach(myFriend => {
+         if (myFriend.id === id) {
+            wereFriends = true;
+         }
+      });
+      me.friendRequests.forEach(requestedFriend => {
+         if (requestedFriend.id === id) {
+            incomingFriendRequest = true;
+         }
+      });
+      if (friendRequests) {
+         friendRequests.forEach(requestedFriend => {
+            if (requestedFriend.id === me.id) {
+               outgoingFriendRequest = true;
+            }
+         });
+      }
+   }
+
+   const [sendFriendRequest] = useMutation(SEND_FRIEND_REQUEST_MUTATION);
+
+   const [confirmFriendRequest] = useMutation(CONFIRM_FRIEND_REQUEST_MUTATION, {
+      onCompleted: data => console.log(data)
+   });
+
+   const [ignoreFriendRequest] = useMutation(IGNORE_FRIEND_REQUEST_MUTATION, {
+      onCompleted: data => console.log(data)
+   });
 
    const [editable, setEditable] = useState([]);
    const [editedValues, setEditedValues] = useState(props.member);
@@ -256,6 +381,110 @@ const ProfileSidebar = props => {
       });
    };
 
+   let friendRequestElements = [];
+   if (me && isMe) {
+      if (me.friendRequests && me.friendRequests.length > 0) {
+         me.friendRequests.forEach(requester => {
+            const shouldBeIgnored = me.ignoredFriendRequests.filter(
+               ignoredPerson => ignoredPerson.id === requester.id
+            );
+            if (shouldBeIgnored && shouldBeIgnored.length > 0) {
+               return null;
+            }
+            friendRequestElements.push(
+               <div className="pending">
+                  <MemberCard member={requester} />
+                  <div className="requestOptions">
+                     <img
+                        className="requestOption"
+                        src="/green-plus.png"
+                        onClick={() =>
+                           confirmFriendRequest({
+                              variables: {
+                                 id: requester.id
+                              }
+                           })
+                        }
+                     />
+                     <img
+                        className="requestOption"
+                        src="/red-x.png"
+                        onClick={() =>
+                           ignoreFriendRequest({
+                              variables: {
+                                 id: requester.id
+                              }
+                           })
+                        }
+                     />
+                  </div>
+               </div>
+            );
+         });
+      }
+   }
+   if (friendRequestElements.length === 0) {
+      friendRequestElements = (
+         <div className="pending">No pending friend requests</div>
+      );
+   }
+
+   let friendRequestButton;
+   if (outgoingFriendRequest) {
+      friendRequestButton = (
+         <button className="inactive">Friendship Requested</button>
+      );
+   } else if (incomingFriendRequest) {
+      friendRequestButton = (
+         <button
+            className="active"
+            onClick={() =>
+               confirmFriendRequest({
+                  variables: {
+                     id
+                  },
+                  refetchQueries: [
+                     {
+                        query: MEMBER_PAGE_QUERY,
+                        variables: {
+                           id
+                        }
+                     }
+                  ]
+               })
+            }
+         >
+            Confirm Friend
+         </button>
+      );
+   } else {
+      friendRequestButton = (
+         <button
+            className="active"
+            onClick={() => {
+               sendFriendRequest({
+                  variables: {
+                     id
+                  },
+                  optimisticResponse: {
+                     __typename: 'Mutation',
+                     sendFriendRequest: {
+                        __typename: 'Member',
+                        id,
+                        friendRequests: [
+                           ...friendRequests,
+                           { __typename: 'Member', id: me.id }
+                        ]
+                     }
+                  }
+               });
+            }}
+         >
+            Add Friend
+         </button>
+      );
+   }
+
    return (
       <StyledProfileSidebar>
          <div className="avatarWrapper field">
@@ -297,10 +526,20 @@ const ProfileSidebar = props => {
                </div>
             )}
          </div>
+         {!isMe && wereFriends && (
+            <div className="friendsDisplay">Your Friend</div>
+         )}
+         {!isMe && !wereFriends && (
+            <div className="friendButtonWrapper">{friendRequestButton}</div>
+         )}
          {canEdit && (
             <DefaultSelects
-               initialCategory={defaultCategory.title}
-               initialPrivacy={defaultPrivacy}
+               initialCategory={
+                  defaultCategory == null ? 'Misc' : defaultCategory.title
+               }
+               initialPrivacy={
+                  defaultPrivacy == null ? 'Private' : defaultPrivacy
+               }
                handleSelect={handleSelect}
             />
          )}
@@ -315,6 +554,7 @@ const ProfileSidebar = props => {
             handleEditing={handleEditing}
             handleKeyDown={handleKeyDown}
          />
+         <div className="field">Role: {role}</div>
          <div className="field">Rep: {rep}</div>
          <div className="field">Points: {points}</div>
          <div className="field">Giveable Rep: {giveableRep}</div>
@@ -343,11 +583,12 @@ const ProfileSidebar = props => {
          <div className="field">
             Twitter Name: {twitterUserName || 'Not set'}
          </div>
-         <div className="field">Role: {role}</div>
-         <div className="friendRequests">
-            Friend Requests:
-            <div className="pending">No pending friend requests</div>
-         </div>
+         {isMe && (
+            <div className="friendRequests">
+               Friend Requests:
+               {friendRequestElements}
+            </div>
+         )}
       </StyledProfileSidebar>
    );
 };

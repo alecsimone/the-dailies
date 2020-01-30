@@ -53,6 +53,9 @@ type Mutation {
   likeTweet(tweetID: String!, alreadyLiked: String!): SuccessMessage,
   markTweetsSeen(listID: String!, tweetIDs: [String]!): Member
   editProfile(id: ID!, avatar: String, displayName: String, email: String, twitchName: String, defaultCategory: String, defaultPrivacy: String): Member
+  sendFriendRequest(id: ID!): Member
+  confirmFriendRequest(id: ID!): Member
+  ignoreFriendRequest(id: ID!): Member
 }
 
 union Stuff = Thing | Tag | Category

@@ -2,8 +2,7 @@ import { useState, useEffect } from 'react';
 import Things from '../Archives/Things';
 import MemberCard from '../MemberCard';
 
-const ProfileContent = props => {
-   const { member } = props;
+const ProfileContent = ({ member, isMe }) => {
    const [selectedTab, setSelectedTab] = useState('Things');
 
    /* eslint-disable react-hooks/exhaustive-deps */
@@ -12,12 +11,6 @@ const ProfileContent = props => {
       setSelectedTab('Things');
    }, [member.id, member.displayName]);
    /* eslint-enable */
-
-   const sortedThings = member.createdThings.sort((a, b) => {
-      const aDate = new Date(a.createdAt);
-      const bDate = new Date(b.createdAt);
-      return bDate - aDate;
-   });
 
    const selectorTabsArray = ['Things', 'Likes', 'Friends'];
    const selector = (
@@ -35,6 +28,14 @@ const ProfileContent = props => {
 
    let selection;
    if (selectedTab === 'Things') {
+      let sortedThings = [];
+      if (member.createdThings) {
+         sortedThings = member.createdThings.sort((a, b) => {
+            const aDate = new Date(a.createdAt);
+            const bDate = new Date(b.createdAt);
+            return bDate - aDate;
+         });
+      }
       selection = (
          <Things things={sortedThings} displayType="grid" cardSize="regular" />
       );
@@ -42,7 +43,7 @@ const ProfileContent = props => {
       selection = <p>We ain't made that yet</p>;
    } else if (selectedTab === 'Friends') {
       if (member.friends.length === 0) {
-         selection = <p>You have no friends.</p>;
+         selection = <p>{isMe ? 'You' : 'They'} have no friends.</p>;
       } else {
          const friendCards = member.friends.map(friend => (
             <MemberCard member={friend} />

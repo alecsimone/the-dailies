@@ -36,7 +36,21 @@ const MemberCard = props => {
    const { member } = props;
    const { me } = useContext(MemberContext);
 
-   const yourFriend = member.friends.some(friend => friend.id === me.id);
+   if (member == null) return null;
+
+   const yourFriend =
+      member.friends && member.friends.some(friend => friend.id === me.id);
+   let mutualFriendCount = 0;
+   if (me && me.friends && member.friends && !yourFriend) {
+      me.friends.forEach(myFriend => {
+         const sharedFriends = member.friends.filter(
+            theirFriend => theirFriend.id === myFriend.id
+         );
+         if (sharedFriends && sharedFriends.length > 0) {
+            mutualFriendCount++;
+         }
+      });
+   }
 
    return (
       <StyledMemberCard>
@@ -56,7 +70,12 @@ const MemberCard = props => {
                </Link>
             </div>
             <div className="meta">
-               {member.role}. {yourFriend ? 'Your Friend. ' : ''}
+               {member.role}.{' '}
+               {yourFriend
+                  ? 'Your Friend.'
+                  : `${mutualFriendCount} mutual friend${
+                       mutualFriendCount > 1 ? 's' : ''
+                    }.`}
             </div>
          </div>
       </StyledMemberCard>

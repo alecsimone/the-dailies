@@ -206,6 +206,22 @@ const fullMemberFields = `
          rep
       }
    }
+   friendRequests {
+      __typename
+      id
+      avatar
+      rep
+      displayName
+      role
+      friends {
+         __typename
+         id
+      }
+   }
+   ignoredFriendRequests {
+      __typename
+      id
+   }
    twitchName
    email
    votes {

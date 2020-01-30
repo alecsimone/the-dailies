@@ -1046,6 +1046,8 @@ type Member {
   points: Int!
   giveableRep: Int!
   friends(where: MemberWhereInput, orderBy: MemberOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Member!]
+  friendRequests(where: MemberWhereInput, orderBy: MemberOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Member!]
+  ignoredFriendRequests(where: MemberWhereInput, orderBy: MemberOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Member!]
   twitchName: String
   email: String!
   votes(where: VoteWhereInput, orderBy: VoteOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Vote!]
@@ -1085,7 +1087,9 @@ input MemberCreateInput {
   rep: Int
   points: Int
   giveableRep: Int
-  friends: MemberCreateManyInput
+  friends: MemberCreateManyWithoutFriendsInput
+  friendRequests: MemberCreateManyWithoutFriendRequestsInput
+  ignoredFriendRequests: MemberCreateManyWithoutIgnoredFriendRequestsInput
   twitchName: String
   email: String!
   votes: VoteCreateManyWithoutVoterInput
@@ -1109,8 +1113,18 @@ input MemberCreateInput {
   twitterSeenIDs: MemberCreatetwitterSeenIDsInput
 }
 
-input MemberCreateManyInput {
-  create: [MemberCreateInput!]
+input MemberCreateManyWithoutFriendRequestsInput {
+  create: [MemberCreateWithoutFriendRequestsInput!]
+  connect: [MemberWhereUniqueInput!]
+}
+
+input MemberCreateManyWithoutFriendsInput {
+  create: [MemberCreateWithoutFriendsInput!]
+  connect: [MemberWhereUniqueInput!]
+}
+
+input MemberCreateManyWithoutIgnoredFriendRequestsInput {
+  create: [MemberCreateWithoutIgnoredFriendRequestsInput!]
   connect: [MemberWhereUniqueInput!]
 }
 
@@ -1155,7 +1169,9 @@ input MemberCreateWithoutCommentsInput {
   rep: Int
   points: Int
   giveableRep: Int
-  friends: MemberCreateManyInput
+  friends: MemberCreateManyWithoutFriendsInput
+  friendRequests: MemberCreateManyWithoutFriendRequestsInput
+  ignoredFriendRequests: MemberCreateManyWithoutIgnoredFriendRequestsInput
   twitchName: String
   email: String!
   votes: VoteCreateManyWithoutVoterInput
@@ -1186,11 +1202,112 @@ input MemberCreateWithoutCreatedThingsInput {
   rep: Int
   points: Int
   giveableRep: Int
-  friends: MemberCreateManyInput
+  friends: MemberCreateManyWithoutFriendsInput
+  friendRequests: MemberCreateManyWithoutFriendRequestsInput
+  ignoredFriendRequests: MemberCreateManyWithoutIgnoredFriendRequestsInput
   twitchName: String
   email: String!
   votes: VoteCreateManyWithoutVoterInput
   passes: PassCreateManyWithoutPasserInput
+  ownedTags: TagCreateManyWithoutAuthorInput
+  defaultCategory: CategoryCreateOneInput
+  defaultPrivacy: PrivacySetting
+  comments: CommentCreateManyWithoutAuthorInput
+  password: String!
+  roles: MemberCreaterolesInput
+  role: Role
+  resetToken: String
+  resetTokenExpiry: Float
+  twitterTokenSecret: String
+  twitterUserName: String
+  twitterUserID: String
+  twitterUserToken: String
+  twitterUserTokenSecret: String
+  twitterListsObject: String
+  twitterSeenIDs: MemberCreatetwitterSeenIDsInput
+}
+
+input MemberCreateWithoutFriendRequestsInput {
+  id: ID
+  displayName: String!
+  name: String
+  avatar: String
+  rep: Int
+  points: Int
+  giveableRep: Int
+  friends: MemberCreateManyWithoutFriendsInput
+  ignoredFriendRequests: MemberCreateManyWithoutIgnoredFriendRequestsInput
+  twitchName: String
+  email: String!
+  votes: VoteCreateManyWithoutVoterInput
+  passes: PassCreateManyWithoutPasserInput
+  createdThings: ThingCreateManyWithoutAuthorInput
+  ownedTags: TagCreateManyWithoutAuthorInput
+  defaultCategory: CategoryCreateOneInput
+  defaultPrivacy: PrivacySetting
+  comments: CommentCreateManyWithoutAuthorInput
+  password: String!
+  roles: MemberCreaterolesInput
+  role: Role
+  resetToken: String
+  resetTokenExpiry: Float
+  twitterTokenSecret: String
+  twitterUserName: String
+  twitterUserID: String
+  twitterUserToken: String
+  twitterUserTokenSecret: String
+  twitterListsObject: String
+  twitterSeenIDs: MemberCreatetwitterSeenIDsInput
+}
+
+input MemberCreateWithoutFriendsInput {
+  id: ID
+  displayName: String!
+  name: String
+  avatar: String
+  rep: Int
+  points: Int
+  giveableRep: Int
+  friendRequests: MemberCreateManyWithoutFriendRequestsInput
+  ignoredFriendRequests: MemberCreateManyWithoutIgnoredFriendRequestsInput
+  twitchName: String
+  email: String!
+  votes: VoteCreateManyWithoutVoterInput
+  passes: PassCreateManyWithoutPasserInput
+  createdThings: ThingCreateManyWithoutAuthorInput
+  ownedTags: TagCreateManyWithoutAuthorInput
+  defaultCategory: CategoryCreateOneInput
+  defaultPrivacy: PrivacySetting
+  comments: CommentCreateManyWithoutAuthorInput
+  password: String!
+  roles: MemberCreaterolesInput
+  role: Role
+  resetToken: String
+  resetTokenExpiry: Float
+  twitterTokenSecret: String
+  twitterUserName: String
+  twitterUserID: String
+  twitterUserToken: String
+  twitterUserTokenSecret: String
+  twitterListsObject: String
+  twitterSeenIDs: MemberCreatetwitterSeenIDsInput
+}
+
+input MemberCreateWithoutIgnoredFriendRequestsInput {
+  id: ID
+  displayName: String!
+  name: String
+  avatar: String
+  rep: Int
+  points: Int
+  giveableRep: Int
+  friends: MemberCreateManyWithoutFriendsInput
+  friendRequests: MemberCreateManyWithoutFriendRequestsInput
+  twitchName: String
+  email: String!
+  votes: VoteCreateManyWithoutVoterInput
+  passes: PassCreateManyWithoutPasserInput
+  createdThings: ThingCreateManyWithoutAuthorInput
   ownedTags: TagCreateManyWithoutAuthorInput
   defaultCategory: CategoryCreateOneInput
   defaultPrivacy: PrivacySetting
@@ -1217,7 +1334,9 @@ input MemberCreateWithoutOwnedTagsInput {
   rep: Int
   points: Int
   giveableRep: Int
-  friends: MemberCreateManyInput
+  friends: MemberCreateManyWithoutFriendsInput
+  friendRequests: MemberCreateManyWithoutFriendRequestsInput
+  ignoredFriendRequests: MemberCreateManyWithoutIgnoredFriendRequestsInput
   twitchName: String
   email: String!
   votes: VoteCreateManyWithoutVoterInput
@@ -1248,7 +1367,9 @@ input MemberCreateWithoutPassesInput {
   rep: Int
   points: Int
   giveableRep: Int
-  friends: MemberCreateManyInput
+  friends: MemberCreateManyWithoutFriendsInput
+  friendRequests: MemberCreateManyWithoutFriendRequestsInput
+  ignoredFriendRequests: MemberCreateManyWithoutIgnoredFriendRequestsInput
   twitchName: String
   email: String!
   votes: VoteCreateManyWithoutVoterInput
@@ -1279,7 +1400,9 @@ input MemberCreateWithoutVotesInput {
   rep: Int
   points: Int
   giveableRep: Int
-  friends: MemberCreateManyInput
+  friends: MemberCreateManyWithoutFriendsInput
+  friendRequests: MemberCreateManyWithoutFriendRequestsInput
+  ignoredFriendRequests: MemberCreateManyWithoutIgnoredFriendRequestsInput
   twitchName: String
   email: String!
   passes: PassCreateManyWithoutPasserInput
@@ -1657,37 +1780,6 @@ input MemberSubscriptionWhereInput {
   NOT: [MemberSubscriptionWhereInput!]
 }
 
-input MemberUpdateDataInput {
-  displayName: String
-  name: String
-  avatar: String
-  rep: Int
-  points: Int
-  giveableRep: Int
-  friends: MemberUpdateManyInput
-  twitchName: String
-  email: String
-  votes: VoteUpdateManyWithoutVoterInput
-  passes: PassUpdateManyWithoutPasserInput
-  createdThings: ThingUpdateManyWithoutAuthorInput
-  ownedTags: TagUpdateManyWithoutAuthorInput
-  defaultCategory: CategoryUpdateOneInput
-  defaultPrivacy: PrivacySetting
-  comments: CommentUpdateManyWithoutAuthorInput
-  password: String
-  roles: MemberUpdaterolesInput
-  role: Role
-  resetToken: String
-  resetTokenExpiry: Float
-  twitterTokenSecret: String
-  twitterUserName: String
-  twitterUserID: String
-  twitterUserToken: String
-  twitterUserTokenSecret: String
-  twitterListsObject: String
-  twitterSeenIDs: MemberUpdatetwitterSeenIDsInput
-}
-
 input MemberUpdateInput {
   displayName: String
   name: String
@@ -1695,7 +1787,9 @@ input MemberUpdateInput {
   rep: Int
   points: Int
   giveableRep: Int
-  friends: MemberUpdateManyInput
+  friends: MemberUpdateManyWithoutFriendsInput
+  friendRequests: MemberUpdateManyWithoutFriendRequestsInput
+  ignoredFriendRequests: MemberUpdateManyWithoutIgnoredFriendRequestsInput
   twitchName: String
   email: String
   votes: VoteUpdateManyWithoutVoterInput
@@ -1743,18 +1837,6 @@ input MemberUpdateManyDataInput {
   twitterSeenIDs: MemberUpdatetwitterSeenIDsInput
 }
 
-input MemberUpdateManyInput {
-  create: [MemberCreateInput!]
-  update: [MemberUpdateWithWhereUniqueNestedInput!]
-  upsert: [MemberUpsertWithWhereUniqueNestedInput!]
-  delete: [MemberWhereUniqueInput!]
-  connect: [MemberWhereUniqueInput!]
-  set: [MemberWhereUniqueInput!]
-  disconnect: [MemberWhereUniqueInput!]
-  deleteMany: [MemberScalarWhereInput!]
-  updateMany: [MemberUpdateManyWithWhereNestedInput!]
-}
-
 input MemberUpdateManyMutationInput {
   displayName: String
   name: String
@@ -1777,6 +1859,42 @@ input MemberUpdateManyMutationInput {
   twitterUserTokenSecret: String
   twitterListsObject: String
   twitterSeenIDs: MemberUpdatetwitterSeenIDsInput
+}
+
+input MemberUpdateManyWithoutFriendRequestsInput {
+  create: [MemberCreateWithoutFriendRequestsInput!]
+  delete: [MemberWhereUniqueInput!]
+  connect: [MemberWhereUniqueInput!]
+  set: [MemberWhereUniqueInput!]
+  disconnect: [MemberWhereUniqueInput!]
+  update: [MemberUpdateWithWhereUniqueWithoutFriendRequestsInput!]
+  upsert: [MemberUpsertWithWhereUniqueWithoutFriendRequestsInput!]
+  deleteMany: [MemberScalarWhereInput!]
+  updateMany: [MemberUpdateManyWithWhereNestedInput!]
+}
+
+input MemberUpdateManyWithoutFriendsInput {
+  create: [MemberCreateWithoutFriendsInput!]
+  delete: [MemberWhereUniqueInput!]
+  connect: [MemberWhereUniqueInput!]
+  set: [MemberWhereUniqueInput!]
+  disconnect: [MemberWhereUniqueInput!]
+  update: [MemberUpdateWithWhereUniqueWithoutFriendsInput!]
+  upsert: [MemberUpsertWithWhereUniqueWithoutFriendsInput!]
+  deleteMany: [MemberScalarWhereInput!]
+  updateMany: [MemberUpdateManyWithWhereNestedInput!]
+}
+
+input MemberUpdateManyWithoutIgnoredFriendRequestsInput {
+  create: [MemberCreateWithoutIgnoredFriendRequestsInput!]
+  delete: [MemberWhereUniqueInput!]
+  connect: [MemberWhereUniqueInput!]
+  set: [MemberWhereUniqueInput!]
+  disconnect: [MemberWhereUniqueInput!]
+  update: [MemberUpdateWithWhereUniqueWithoutIgnoredFriendRequestsInput!]
+  upsert: [MemberUpsertWithWhereUniqueWithoutIgnoredFriendRequestsInput!]
+  deleteMany: [MemberScalarWhereInput!]
+  updateMany: [MemberUpdateManyWithWhereNestedInput!]
 }
 
 input MemberUpdateManyWithWhereNestedInput {
@@ -1836,7 +1954,9 @@ input MemberUpdateWithoutCommentsDataInput {
   rep: Int
   points: Int
   giveableRep: Int
-  friends: MemberUpdateManyInput
+  friends: MemberUpdateManyWithoutFriendsInput
+  friendRequests: MemberUpdateManyWithoutFriendRequestsInput
+  ignoredFriendRequests: MemberUpdateManyWithoutIgnoredFriendRequestsInput
   twitchName: String
   email: String
   votes: VoteUpdateManyWithoutVoterInput
@@ -1866,11 +1986,109 @@ input MemberUpdateWithoutCreatedThingsDataInput {
   rep: Int
   points: Int
   giveableRep: Int
-  friends: MemberUpdateManyInput
+  friends: MemberUpdateManyWithoutFriendsInput
+  friendRequests: MemberUpdateManyWithoutFriendRequestsInput
+  ignoredFriendRequests: MemberUpdateManyWithoutIgnoredFriendRequestsInput
   twitchName: String
   email: String
   votes: VoteUpdateManyWithoutVoterInput
   passes: PassUpdateManyWithoutPasserInput
+  ownedTags: TagUpdateManyWithoutAuthorInput
+  defaultCategory: CategoryUpdateOneInput
+  defaultPrivacy: PrivacySetting
+  comments: CommentUpdateManyWithoutAuthorInput
+  password: String
+  roles: MemberUpdaterolesInput
+  role: Role
+  resetToken: String
+  resetTokenExpiry: Float
+  twitterTokenSecret: String
+  twitterUserName: String
+  twitterUserID: String
+  twitterUserToken: String
+  twitterUserTokenSecret: String
+  twitterListsObject: String
+  twitterSeenIDs: MemberUpdatetwitterSeenIDsInput
+}
+
+input MemberUpdateWithoutFriendRequestsDataInput {
+  displayName: String
+  name: String
+  avatar: String
+  rep: Int
+  points: Int
+  giveableRep: Int
+  friends: MemberUpdateManyWithoutFriendsInput
+  ignoredFriendRequests: MemberUpdateManyWithoutIgnoredFriendRequestsInput
+  twitchName: String
+  email: String
+  votes: VoteUpdateManyWithoutVoterInput
+  passes: PassUpdateManyWithoutPasserInput
+  createdThings: ThingUpdateManyWithoutAuthorInput
+  ownedTags: TagUpdateManyWithoutAuthorInput
+  defaultCategory: CategoryUpdateOneInput
+  defaultPrivacy: PrivacySetting
+  comments: CommentUpdateManyWithoutAuthorInput
+  password: String
+  roles: MemberUpdaterolesInput
+  role: Role
+  resetToken: String
+  resetTokenExpiry: Float
+  twitterTokenSecret: String
+  twitterUserName: String
+  twitterUserID: String
+  twitterUserToken: String
+  twitterUserTokenSecret: String
+  twitterListsObject: String
+  twitterSeenIDs: MemberUpdatetwitterSeenIDsInput
+}
+
+input MemberUpdateWithoutFriendsDataInput {
+  displayName: String
+  name: String
+  avatar: String
+  rep: Int
+  points: Int
+  giveableRep: Int
+  friendRequests: MemberUpdateManyWithoutFriendRequestsInput
+  ignoredFriendRequests: MemberUpdateManyWithoutIgnoredFriendRequestsInput
+  twitchName: String
+  email: String
+  votes: VoteUpdateManyWithoutVoterInput
+  passes: PassUpdateManyWithoutPasserInput
+  createdThings: ThingUpdateManyWithoutAuthorInput
+  ownedTags: TagUpdateManyWithoutAuthorInput
+  defaultCategory: CategoryUpdateOneInput
+  defaultPrivacy: PrivacySetting
+  comments: CommentUpdateManyWithoutAuthorInput
+  password: String
+  roles: MemberUpdaterolesInput
+  role: Role
+  resetToken: String
+  resetTokenExpiry: Float
+  twitterTokenSecret: String
+  twitterUserName: String
+  twitterUserID: String
+  twitterUserToken: String
+  twitterUserTokenSecret: String
+  twitterListsObject: String
+  twitterSeenIDs: MemberUpdatetwitterSeenIDsInput
+}
+
+input MemberUpdateWithoutIgnoredFriendRequestsDataInput {
+  displayName: String
+  name: String
+  avatar: String
+  rep: Int
+  points: Int
+  giveableRep: Int
+  friends: MemberUpdateManyWithoutFriendsInput
+  friendRequests: MemberUpdateManyWithoutFriendRequestsInput
+  twitchName: String
+  email: String
+  votes: VoteUpdateManyWithoutVoterInput
+  passes: PassUpdateManyWithoutPasserInput
+  createdThings: ThingUpdateManyWithoutAuthorInput
   ownedTags: TagUpdateManyWithoutAuthorInput
   defaultCategory: CategoryUpdateOneInput
   defaultPrivacy: PrivacySetting
@@ -1896,7 +2114,9 @@ input MemberUpdateWithoutOwnedTagsDataInput {
   rep: Int
   points: Int
   giveableRep: Int
-  friends: MemberUpdateManyInput
+  friends: MemberUpdateManyWithoutFriendsInput
+  friendRequests: MemberUpdateManyWithoutFriendRequestsInput
+  ignoredFriendRequests: MemberUpdateManyWithoutIgnoredFriendRequestsInput
   twitchName: String
   email: String
   votes: VoteUpdateManyWithoutVoterInput
@@ -1926,7 +2146,9 @@ input MemberUpdateWithoutPassesDataInput {
   rep: Int
   points: Int
   giveableRep: Int
-  friends: MemberUpdateManyInput
+  friends: MemberUpdateManyWithoutFriendsInput
+  friendRequests: MemberUpdateManyWithoutFriendRequestsInput
+  ignoredFriendRequests: MemberUpdateManyWithoutIgnoredFriendRequestsInput
   twitchName: String
   email: String
   votes: VoteUpdateManyWithoutVoterInput
@@ -1956,7 +2178,9 @@ input MemberUpdateWithoutVotesDataInput {
   rep: Int
   points: Int
   giveableRep: Int
-  friends: MemberUpdateManyInput
+  friends: MemberUpdateManyWithoutFriendsInput
+  friendRequests: MemberUpdateManyWithoutFriendRequestsInput
+  ignoredFriendRequests: MemberUpdateManyWithoutIgnoredFriendRequestsInput
   twitchName: String
   email: String
   passes: PassUpdateManyWithoutPasserInput
@@ -1979,9 +2203,19 @@ input MemberUpdateWithoutVotesDataInput {
   twitterSeenIDs: MemberUpdatetwitterSeenIDsInput
 }
 
-input MemberUpdateWithWhereUniqueNestedInput {
+input MemberUpdateWithWhereUniqueWithoutFriendRequestsInput {
   where: MemberWhereUniqueInput!
-  data: MemberUpdateDataInput!
+  data: MemberUpdateWithoutFriendRequestsDataInput!
+}
+
+input MemberUpdateWithWhereUniqueWithoutFriendsInput {
+  where: MemberWhereUniqueInput!
+  data: MemberUpdateWithoutFriendsDataInput!
+}
+
+input MemberUpdateWithWhereUniqueWithoutIgnoredFriendRequestsInput {
+  where: MemberWhereUniqueInput!
+  data: MemberUpdateWithoutIgnoredFriendRequestsDataInput!
 }
 
 input MemberUpsertWithoutCommentsInput {
@@ -2009,10 +2243,22 @@ input MemberUpsertWithoutVotesInput {
   create: MemberCreateWithoutVotesInput!
 }
 
-input MemberUpsertWithWhereUniqueNestedInput {
+input MemberUpsertWithWhereUniqueWithoutFriendRequestsInput {
   where: MemberWhereUniqueInput!
-  update: MemberUpdateDataInput!
-  create: MemberCreateInput!
+  update: MemberUpdateWithoutFriendRequestsDataInput!
+  create: MemberCreateWithoutFriendRequestsInput!
+}
+
+input MemberUpsertWithWhereUniqueWithoutFriendsInput {
+  where: MemberWhereUniqueInput!
+  update: MemberUpdateWithoutFriendsDataInput!
+  create: MemberCreateWithoutFriendsInput!
+}
+
+input MemberUpsertWithWhereUniqueWithoutIgnoredFriendRequestsInput {
+  where: MemberWhereUniqueInput!
+  update: MemberUpdateWithoutIgnoredFriendRequestsDataInput!
+  create: MemberCreateWithoutIgnoredFriendRequestsInput!
 }
 
 input MemberWhereInput {
@@ -2099,6 +2345,12 @@ input MemberWhereInput {
   friends_every: MemberWhereInput
   friends_some: MemberWhereInput
   friends_none: MemberWhereInput
+  friendRequests_every: MemberWhereInput
+  friendRequests_some: MemberWhereInput
+  friendRequests_none: MemberWhereInput
+  ignoredFriendRequests_every: MemberWhereInput
+  ignoredFriendRequests_some: MemberWhereInput
+  ignoredFriendRequests_none: MemberWhereInput
   twitchName: String
   twitchName_not: String
   twitchName_in: [String!]

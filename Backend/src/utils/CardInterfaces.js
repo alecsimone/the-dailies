@@ -189,6 +189,10 @@ const fullMemberFields = `
          }
       }
    }
+   friendRequests {
+      __typename
+      id
+   }
    twitchName
    email
    votes {

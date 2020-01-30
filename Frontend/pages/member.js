@@ -19,6 +19,7 @@ const MEMBER_PAGE_QUERY = gql`
       }
    }
 `;
+export { MEMBER_PAGE_QUERY };
 
 const member = props => {
    const { query } = props;
@@ -36,7 +37,7 @@ const member = props => {
    const { loading, error, data } = useQuery(MEMBER_PAGE_QUERY, {
       variables
    });
-   const { me } = useContext(MemberContext);
+   const { me, loading: meLoading } = useContext(MemberContext);
 
    let pageTitle;
    let content;
@@ -59,15 +60,20 @@ const member = props => {
    } else if (data) {
       if (data.member != null) {
          pageTitle = data.member.displayName;
+         let isMe = false;
+         if (me && data.member.id === me.id) {
+            isMe = true;
+         }
+         let canEdit = isMe;
+         if (me && ['Admin', 'Editor'].includes(me.role)) {
+            canEdit = true;
+         }
 
-         content = <ProfileContent member={data.member} />;
+         content = <ProfileContent member={data.member} isMe={isMe} />;
          sidebar = (
             <Sidebar
                extraColumnContent={
-                  <ProfileSidebar
-                     member={data.member}
-                     canEdit={me.id === data.member.id}
-                  />
+                  <ProfileSidebar member={data.member} canEdit={canEdit} />
                }
                extraColumnTitle="Member"
                key="memberData"

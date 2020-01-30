@@ -2,7 +2,10 @@ const {
    signup,
    login,
    logout,
-   editProfile
+   editProfile,
+   sendFriendRequest,
+   confirmFriendRequest,
+   ignoreFriendRequest
 } = require('./Mutation/MemberMutations');
 const {
    createThing,
@@ -47,7 +50,10 @@ const Mutations = {
    initiateTwitterLogin,
    likeTweet,
    markTweetsSeen,
-   editProfile
+   editProfile,
+   sendFriendRequest,
+   confirmFriendRequest,
+   ignoreFriendRequest
 };
 
 module.exports = Mutations;

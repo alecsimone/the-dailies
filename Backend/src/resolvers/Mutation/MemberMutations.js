@@ -136,3 +136,141 @@ async function properEditMe(dataObj, id, ctx) {
    publishMeUpdate(ctx);
    return updatedMember;
 }
+
+async function sendFriendRequest(parent, { id }, ctx, info) {
+   loggedInGate(ctx);
+   fullMemberGate(ctx.req.member);
+
+   const newThem = await ctx.db.mutation.updateMember(
+      {
+         where: {
+            id
+         },
+         data: {
+            friendRequests: {
+               connect: {
+                  id: ctx.req.memberId
+               }
+            }
+         }
+      },
+      info
+   );
+   return newThem;
+}
+exports.sendFriendRequest = sendFriendRequest;
+
+async function confirmFriendRequest(parent, { id }, ctx, info) {
+   const oldMe = await ctx.db.query.member(
+      {
+         where: {
+            id: ctx.req.memberId
+         }
+      },
+      `{friendRequests {id} ignoredFriendRequests {id}}`
+   );
+   const dataObj = {
+      friends: {
+         connect: {
+            id
+         }
+      }
+   };
+   if (oldMe.friendRequests && oldMe.friendRequests.length > 0) {
+      const existingFriendRequest = oldMe.friendRequests.filter(
+         requester => requester.id === id
+      );
+      if (existingFriendRequest && existingFriendRequest.length > 0) {
+         dataObj.friendRequests = {
+            disconnect: {
+               id
+            }
+         };
+      }
+   }
+   if (oldMe.ignoredFriendRequests && oldMe.ignoredFriendRequests.length > 0) {
+      const existingIgnoredFriendRequests = oldMe.ignoredFriendRequests.filter(
+         requester => requester.id === id
+      );
+      if (
+         existingIgnoredFriendRequests &&
+         existingIgnoredFriendRequests.length > 0
+      ) {
+         dataObj.ignoredFriendRequests = {
+            disconnect: {
+               id
+            }
+         };
+      }
+   }
+   const newMe = await properEditMe(dataObj, ctx.req.memberId, ctx);
+
+   const theirDataObj = {
+      friends: {
+         connect: {
+            id: ctx.req.memberId
+         }
+      }
+   };
+   const oldThem = await ctx.db.query.member(
+      {
+         where: {
+            id
+         }
+      },
+      `{friendRequests {id} ignoredFriendRequests {id}}`
+   );
+   if (oldThem.friendRequests && oldThem.friendRequests.length > 0) {
+      const existingFriendRequest = oldThem.friendRequests.filter(
+         requester => requester.id === ctx.req.memberId
+      );
+      if (existingFriendRequest && existingFriendRequest.length > 0) {
+         theirDataObj.friendRequests = {
+            disconnect: {
+               id
+            }
+         };
+      }
+   }
+   if (
+      oldThem.ignoredFriendRequest &&
+      oldThem.ignoredFriendRequest.length > 0
+   ) {
+      const existingIgnoredFriendRequest = oldThem.ignoredfriendRequests.filter(
+         requester => requester.id === ctx.req.memberId
+      );
+      if (
+         existingIgnoredFriendRequest &&
+         existingIgnoredFriendRequest.length > 0
+      ) {
+         theirDataObj.ignoredFriendRequests = {
+            disconnect: {
+               id
+            }
+         };
+      }
+   }
+
+   const newThem = ctx.db.mutation.updateMember({
+      where: {
+         id
+      },
+      data: theirDataObj
+   });
+
+   return newMe;
+}
+exports.confirmFriendRequest = confirmFriendRequest;
+
+async function ignoreFriendRequest(parent, { id }, ctx, info) {
+   const dataObj = {
+      ignoredFriendRequests: {
+         connect: {
+            id
+         }
+      }
+   };
+   const newMe = await properEditMe(dataObj, ctx.req.memberId, ctx);
+   return newMe;
+}
+exports.ignoreFriendRequest = ignoreFriendRequest;
