@@ -1,3 +1,5 @@
+import Router from 'next/router';
+
 const convertISOtoAgo = function(isoTime) {
    const seconds = Math.floor((new Date() - new Date(isoTime)) / 1000);
 
@@ -33,3 +35,13 @@ export { convertISOtoAgo };
 
 const disabledCodewords = ['disabled', 'disable', 'false', 'no', 'off', 'x'];
 export { disabledCodewords };
+
+const checkForNewThingRedirect = (thingID, mutationName, data) => {
+   if (thingID === 'new') {
+      Router.push({
+         pathname: '/thing',
+         query: { id: data[mutationName].id }
+      });
+   }
+};
+export { checkForNewThingRedirect };

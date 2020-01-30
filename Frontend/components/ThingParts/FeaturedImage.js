@@ -115,7 +115,9 @@ const FeaturedImage = props => {
    const { canEdit } = props;
    const { context, titleLimit } = props;
 
-   const { featuredImage, id, __typename: type } = useContext(context);
+   const { featuredImage, id, __typename: type = 'Thing' } = useContext(
+      context
+   );
 
    const [featuredImageInput, setFeaturedImageInput] = useState(
       featuredImage == null ? '' : featuredImage

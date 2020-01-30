@@ -133,7 +133,7 @@ const ThingMeta = props => {
                <span className="uneditable">{privacy}</span>
             )}
          </div>
-         {link && <ThingSourceLink />}
+         {(link || canEdit) && <ThingSourceLink />}
       </StyledThingMeta>
    );
 };

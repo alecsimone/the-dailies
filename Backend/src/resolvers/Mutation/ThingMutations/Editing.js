@@ -120,6 +120,11 @@ async function createThing(parent, args, ctx, info) {
          }
       };
    }
+   console.log(dataObj);
+   if (dataObj.title == null) {
+      dataObj.title = "Untitled Thing"
+   }
+   console.log(dataObj);
    const thing = await ctx.db.mutation.createThing(
       {
          data: dataObj

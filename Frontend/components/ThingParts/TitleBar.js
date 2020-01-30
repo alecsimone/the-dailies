@@ -3,8 +3,8 @@ import { useMutation } from '@apollo/react-hooks';
 import styled from 'styled-components';
 import { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
-import Router from 'next/router';
 import { setAlpha } from '../../styles/functions';
+import { checkForNewThingRedirect } from '../../lib/ThingHandling';
 
 const SET_THING_TITLE_MUTATION = gql`
    mutation SET_THING_TITLE_MUTATION($title: String!, $thingID: ID!) {
@@ -41,16 +41,9 @@ const TitleBar = props => {
    const [editable, setEditable] = useState(thingID === 'new');
    const [editedTitle, setEditedTitle] = useState(title || 'New Thing');
 
-   const checkForRedirect = data => {
-      if (thingID === 'new') {
-         Router.push({
-            pathname: '/thing',
-            query: { id: data.setThingTitle.id }
-         });
-      }
-   };
    const [setThingTitle] = useMutation(SET_THING_TITLE_MUTATION, {
-      onCompleted: data => checkForRedirect(data)
+      onCompleted: data =>
+         checkForNewThingRedirect(thingID, 'setThingTitle', data)
    });
 
    const killEditability = e => {

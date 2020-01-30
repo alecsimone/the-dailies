@@ -18,9 +18,10 @@ const EDIT_LINK_MUTATION = gql`
 
 const ThingSourceLink = () => {
    const { id, author, link } = useContext(ThingContext);
+   console.log(link);
    const { me } = useContext(MemberContext);
 
-   const [editable, setEditable] = useState(false);
+   const [editable, setEditable] = useState(link == null);
    const [currentLink, setCurrentLink] = useState(link);
 
    const [editLink, { loading: editLinkLoading }] = useMutation(
@@ -44,6 +45,10 @@ const ThingSourceLink = () => {
 
    let content;
    if (editable) {
+      let size = 50;
+      if (currentLink) {
+         size = currentLink.length > 100 ? 100 : currentLink.length;
+      }
       content = (
          <form
             onSubmit={e => {
@@ -53,7 +58,7 @@ const ThingSourceLink = () => {
          >
             <input
                type="url"
-               size={100}
+               size={size}
                value={currentLink}
                aria-disabled={editLinkLoading}
                onChange={e => setCurrentLink(e.target.value)}

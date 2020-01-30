@@ -2,11 +2,11 @@ import gql from 'graphql-tag';
 import styled from 'styled-components';
 import { useMutation } from '@apollo/react-hooks';
 import { useContext, useState } from 'react';
-import Router from 'next/router';
 import PropTypes from 'prop-types';
 import { setAlpha, setLightness } from '../../styles/functions';
 import ContentPiece from './ContentPiece';
 import ContentInput from './ContentInput';
+import { checkForNewThingRedirect } from '../../lib/ThingHandling';
 import { SINGLE_THING_QUERY } from '../../pages/thing';
 import { SINGLE_TAG_QUERY } from '../../pages/tag';
 import { SINGLE_CATEGORY_QUERY } from '../../pages/category';
@@ -225,23 +225,16 @@ const StyledContent = styled.section`
 
 const Content = props => {
    const { context, canEdit } = props;
-   const { content = [], id, __typename: type, author } = useContext(context);
+   const { content = [], id, __typename: type = 'Thing', author } = useContext(
+      context
+   );
    const [newContentPiece, setNewContentPiece] = useState('');
-
-   const checkForRedirect = data => {
-      if (id === 'new') {
-         Router.push({
-            pathname: '/thing',
-            query: { id: data.setThingTitle.id }
-         });
-      }
-   };
 
    const [
       addContentPiece,
       { data: addData, loading: addLoading, error: addError }
    ] = useMutation(ADD_CONTENTPIECE_MUTATION, {
-      onCompleted: data => checkForRedirect(data)
+      onCompleted: data => checkForNewThingRedirect(id, 'addContentPiece', data)
    });
 
    const [
