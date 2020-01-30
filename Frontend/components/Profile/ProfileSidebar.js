@@ -607,8 +607,9 @@ const ProfileSidebar = props => {
          </div>
          {isMe && (
             <div className="friendRequests">
-               Friend Requests ({friendRequestElements.length})
-               {friendRequestElements}
+               Friend Requests (
+               {friendRequestElements.length ? friendRequestElements.length : 0}
+               ){friendRequestElements}
             </div>
          )}
       </StyledProfileSidebar>
