@@ -44,6 +44,13 @@ async function member(parent, { id, displayName }, ctx, info) {
       },
       info
    );
+
+   if (member.createdThings && member.createdThings.length > 0) {
+      member.createdThings = member.createdThings.filter(thing =>
+         canSeeThing(ctx.req.memberId, thing)
+      );
+   }
+
    return member;
 }
 exports.member = member;

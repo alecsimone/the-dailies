@@ -9,6 +9,7 @@ import { setAlpha, setLightness } from '../../styles/functions';
 import member from '../../pages/member';
 import MemberCard from '../MemberCard';
 import { MEMBER_PAGE_QUERY } from '../../pages/member';
+import { CURRENT_MEMBER_QUERY } from '../Account/MemberProvider';
 
 const EDIT_PROFILE_MUTATION = gql`
    mutation EDIT_PROFILE_MUTATION(
@@ -183,11 +184,25 @@ const StyledProfileSidebar = styled.div`
       }
    }
    .friendRequests {
+      text-align: center;
+      margin: 3rem 0;
+      padding: 2rem;
+      font-weight: 700;
+      font-size: ${props => props.theme.bigText};
+      border-top: 1px solid ${props => props.theme.lowContrastGrey};
       .pending {
-         margin-top: 2rem;
+         padding: 3rem 0;
          display: flex;
          justify-content: space-around;
+         font-size: ${props => props.theme.smallText};
+         font-weight: 400;
          width: 100%;
+         text-align: left;
+         border-bottom: 1px solid
+            ${props => setAlpha(props.theme.lowContrastGrey, 0.4)};
+         &:last-child {
+            border-bottom: none;
+         }
          article {
             flex-grow: 1;
          }
@@ -272,7 +287,7 @@ const ProfileSidebar = props => {
 
    const { me } = useContext(MemberContext);
 
-   const isMe = me.id === id;
+   const isMe = me && me.id === id;
    let wereFriends = false;
    let outgoingFriendRequest = false;
    let incomingFriendRequest = false;
@@ -298,9 +313,7 @@ const ProfileSidebar = props => {
 
    const [sendFriendRequest] = useMutation(SEND_FRIEND_REQUEST_MUTATION);
 
-   const [confirmFriendRequest] = useMutation(CONFIRM_FRIEND_REQUEST_MUTATION, {
-      onCompleted: data => console.log(data)
-   });
+   const [confirmFriendRequest] = useMutation(CONFIRM_FRIEND_REQUEST_MUTATION);
 
    const [ignoreFriendRequest] = useMutation(IGNORE_FRIEND_REQUEST_MUTATION, {
       onCompleted: data => console.log(data)
@@ -398,13 +411,22 @@ const ProfileSidebar = props => {
                      <img
                         className="requestOption"
                         src="/green-plus.png"
-                        onClick={() =>
+                        onClick={e => {
+                           const newFriendRequests = me.friendRequests.filter(
+                              oldRequester => oldRequester.id !== requester.id
+                           );
                            confirmFriendRequest({
                               variables: {
                                  id: requester.id
+                              },
+                              optimisticResponse: {
+                                 confirmFriendRequest: {
+                                    ...me,
+                                    friendRequests: newFriendRequests
+                                 }
                               }
-                           })
-                        }
+                           });
+                        }}
                      />
                      <img
                         className="requestOption"
@@ -457,7 +479,7 @@ const ProfileSidebar = props => {
             Confirm Friend
          </button>
       );
-   } else {
+   } else if (me != null) {
       friendRequestButton = (
          <button
             className="active"
@@ -585,7 +607,7 @@ const ProfileSidebar = props => {
          </div>
          {isMe && (
             <div className="friendRequests">
-               Friend Requests:
+               Friend Requests ({friendRequestElements.length})
                {friendRequestElements}
             </div>
          )}
@@ -596,7 +618,7 @@ ProfileSidebar.propTypes = {
    member: PropTypes.shape({
       avatar: PropTypes.string.isRequired,
       displayName: PropTypes.string.isRequired,
-      rep: PropTypes.array.isRequired,
+      rep: PropTypes.number.isRequired,
       points: PropTypes.array.isRequired,
       giveableRep: PropTypes.array.isRequired,
       email: PropTypes.string.isRequired,

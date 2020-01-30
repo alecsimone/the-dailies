@@ -2,7 +2,23 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { loggedInGate, fullMemberGate } = require('../../utils/Authentication');
 const { fullMemberFields } = require('../../utils/CardInterfaces');
-const { publishMeUpdate } = require('../../utils/ThingHandling');
+
+async function publishMeUpdate(ctx) {
+   const newMe = await ctx.db.query.member(
+      {
+         where: {
+            id: ctx.req.memberId
+         }
+      },
+      `{${fullMemberFields}}`
+   );
+   ctx.pubsub.publish('me', {
+      me: {
+         node: newMe
+      }
+   });
+}
+exports.publishMeUpdate = publishMeUpdate;
 
 async function signup(parent, args, ctx, info) {
    args.email = args.email.toLowerCase();
@@ -15,7 +31,7 @@ async function signup(parent, args, ctx, info) {
          data: {
             ...args,
             password,
-            role: 'LiteMember',
+            role: 'Member',
             defaultPrivacy: 'Friends',
             defaultCategory: {
                connect: {

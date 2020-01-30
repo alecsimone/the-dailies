@@ -11,7 +11,7 @@ const StyledThings = styled.div`
       grid-template-columns: repeat(auto-fit, minmax(40rem, 1fr));
       grid-gap: 4rem;
       justify-items: center;
-      align-items: stretch;
+      align-items: start;
       h3 {
          font-size: 3.5rem;
       }

@@ -4,23 +4,7 @@ const {
    catFields,
    fullMemberFields
 } = require('./CardInterfaces');
-
-async function publishMeUpdate(ctx) {
-   const newMe = await ctx.db.query.member(
-      {
-         where: {
-            id: ctx.req.memberId
-         }
-      },
-      `{${fullMemberFields}}`
-   );
-   ctx.pubsub.publish('me', {
-      me: {
-         node: newMe
-      }
-   });
-}
-exports.publishMeUpdate = publishMeUpdate;
+const { publishMeUpdate } = require('../resolvers/Mutation/MemberMutations');
 
 function publishStuffUpdate(type, stuff, ctx) {
    const lowerCasedType = type.toLowerCase();

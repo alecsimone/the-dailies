@@ -36,9 +36,17 @@ const ProfileContent = ({ member, isMe }) => {
             return bDate - aDate;
          });
       }
-      selection = (
-         <Things things={sortedThings} displayType="grid" cardSize="regular" />
-      );
+      if (sortedThings.length > 0) {
+         selection = (
+            <Things
+               things={sortedThings}
+               displayType="grid"
+               cardSize="regular"
+            />
+         );
+      } else {
+         selection = <p>{`${isMe ? 'You' : 'They'} have no things.`}</p>;
+      }
    } else if (selectedTab === 'Likes') {
       selection = <p>We ain't made that yet</p>;
    } else if (selectedTab === 'Friends') {

@@ -10,12 +10,12 @@ const StyledMemberCard = styled.article`
    border: 1px solid ${props => setAlpha(props.theme.highContrastGrey, 0.3)};
    display: flex;
    align-items: center;
+   justify-content: space-evenly;
    padding: 1rem;
    border-radius: 0.5rem;
    max-width: 35rem;
    min-width: 30rem;
    .cardLeft {
-      margin-right: 1.5rem;
       line-height: 0;
       img.avatar {
          border-radius: 100%;
@@ -23,11 +23,16 @@ const StyledMemberCard = styled.article`
       }
    }
    .cardRight {
+      .name {
+         font-size: ${props => props.theme.bigText};
+         font-weight: 700;
+         margin-top: -0.5rem;
+      }
       .meta {
          font-size: ${props => props.theme.tinyText};
          color: ${props => setLightness(props.theme.lowContrastGrey, 35)};
          font-weight: 300;
-         margin-top: 0;
+         /* margin-top: 0; */
       }
    }
 `;
@@ -39,7 +44,9 @@ const MemberCard = props => {
    if (member == null) return null;
 
    const yourFriend =
-      member.friends && member.friends.some(friend => friend.id === me.id);
+      me &&
+      member.friends &&
+      member.friends.some(friend => friend.id === me.id);
    let mutualFriendCount = 0;
    if (me && me.friends && member.friends && !yourFriend) {
       me.friends.forEach(myFriend => {
@@ -70,12 +77,10 @@ const MemberCard = props => {
                </Link>
             </div>
             <div className="meta">
-               {member.role}.{' '}
-               {yourFriend
-                  ? 'Your Friend.'
-                  : `${mutualFriendCount} mutual friend${
-                       mutualFriendCount > 1 ? 's' : ''
-                    }.`}
+               {member.role}. {yourFriend ? 'Your Friend. ' : ''}
+               {`${mutualFriendCount} mutual friend${
+                  mutualFriendCount !== 1 ? 's' : ''
+               }.`}
             </div>
          </div>
       </StyledMemberCard>

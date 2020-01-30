@@ -192,6 +192,18 @@ const fullMemberFields = `
    friendRequests {
       __typename
       id
+      displayName
+      avatar
+      rep
+      role
+   }
+   ignoredFriendRequests {
+      __typename
+      id
+      displayName
+      avatar
+      rep
+      role
    }
    twitchName
    email

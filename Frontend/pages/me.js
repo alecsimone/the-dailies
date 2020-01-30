@@ -39,7 +39,7 @@ const me = () => {
       if (me != null) {
          pageTitle = me.displayName;
 
-         content = <ProfileContent member={me} />;
+         content = <ProfileContent member={me} isMe />;
          sidebar = (
             <Sidebar
                extraColumnContent={<ProfileSidebar member={me} canEdit />}
