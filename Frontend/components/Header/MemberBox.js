@@ -75,43 +75,44 @@ const MemberBox = () => {
          </StyledMemberBox>
       );
    }
-
-   if (me == null) {
+   if (me && me.rep && me.displayName) {
       return (
          <StyledMemberBox className="memberBox">
-            <p>
-               <Link href={{ pathname: '/signup' }}>
-                  <a>Sign up</a>
-               </Link>{' '}
-               or{' '}
-               <Link href={{ pathname: '/login' }}>
-                  <a>Log in</a>
-               </Link>
-            </p>
+            <Link href={{ pathname: '/me' }}>
+               <a
+                  className={
+                     memberMenuOpen ? 'profileLink open' : 'profileLink closed'
+                  }
+               >
+                  [{me.rep}] {me.displayName}
+               </a>
+            </Link>
+            <img
+               src={me.avatar != null ? me.avatar : '/defaultAvatar.jpg'}
+               alt="avatar"
+               id="avatar"
+               onClick={() => toggleMemberMenu()}
+            />
+            {memberMenuOpen && <MemberMenu />}
          </StyledMemberBox>
       );
    }
+
    return (
       <StyledMemberBox className="memberBox">
-         <Link href={{ pathname: '/me' }}>
-            <a
-               className={
-                  memberMenuOpen ? 'profileLink open' : 'profileLink closed'
-               }
-            >
-               [{me.rep}] {me.displayName}
-            </a>
-         </Link>
-         <img
-            src={me.avatar != null ? me.avatar : '/defaultAvatar.jpg'}
-            alt="avatar"
-            id="avatar"
-            onClick={() => toggleMemberMenu()}
-         />
-         {memberMenuOpen && <MemberMenu />}
+         <p>
+            <Link href={{ pathname: '/signup' }}>
+               <a>Sign up</a>
+            </Link>{' '}
+            or{' '}
+            <Link href={{ pathname: '/login' }}>
+               <a>Log in</a>
+            </Link>
+         </p>
       </StyledMemberBox>
    );
 };
+
 MemberBox.propTypes = {};
 
 export default MemberBox;
