@@ -40,15 +40,11 @@ const hashtagReplacer = text => {
    return newText;
 };
 
-const replyRemover = text => {
-   while (text[0] === '@') {
-      text = text.replace(/@[-A-Z0-9+_]*/i, '');
-      text = text.trim();
-   }
-   return text;
-};
+const replyRemover = (text, displayTextRange) =>
+   text.substring(displayTextRange[0], displayTextRange[1]);
 
 const Tweet = props => {
+   console.log(props.tweet);
    const {
       tweet: {
          user,
@@ -86,7 +82,10 @@ const Tweet = props => {
       setLiked(!liked);
    };
 
-   const replyRemovedText = replyRemover(fullText);
+   const replyRemovedText = replyRemover(
+      fullText,
+      props.tweet.display_text_range
+   );
    const hashtagReplacedText = hashtagReplacer(replyRemovedText);
    const tcoReplacedText = tcoReplacer(
       hashtagReplacedText,
