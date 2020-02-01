@@ -20,7 +20,7 @@ const StyledTweets = styled.section`
    top: 0;
    left: 0%;
    width: 100%;
-   @media screen and (min-width: 800px) {
+   ${props => props.theme.desktopBreakpoint} {
       left: 2%;
       width: 96%;
    }
@@ -31,7 +31,7 @@ const StyledTweets = styled.section`
             width: 100%;
             margin: 0;
             padding: 2rem;
-            @media screen and (min-width: 800px) {
+            ${props => props.theme.desktopBreakpoint} {
                margin: 1rem 2rem;
                padding: 0;
             }
@@ -46,7 +46,7 @@ const StyledTweets = styled.section`
          }
          .tweeterColumn {
             margin: 0;
-            @media screen and (min-width: 800px) {
+            ${props => props.theme.desktopBreakpoint} {
                margin: 0 2rem;
             }
             background: ${props => setLightness(props.theme.black, 1)};
@@ -64,7 +64,7 @@ const StyledTweets = styled.section`
                ${props => setAlpha(setLightness(props.theme.black, 1), 0.2)};
             &.column1,
             &.column2 {
-               @media screen and (max-width: 800px) {
+               ${props => props.theme.desktopBreakpoint} {
                   display: none;
                }
             }
@@ -110,7 +110,7 @@ const StyledTweets = styled.section`
                ${props => props.theme.scroll};
                max-height: calc(100vh - 8rem);
                padding: 0;
-               @media screen and (min-width: 800px) {
+               ${props => props.theme.desktopBreakpoint} {
                   max-height: calc(100vh - 22rem);
                   padding: 0 1rem;
                }

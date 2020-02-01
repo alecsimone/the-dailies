@@ -6,7 +6,7 @@ const StyledMemberPage = styled.div`
    .sidebar {
       flex-basis: 100%;
       flex-wrap: wrap;
-      @media screen and (min-width: 800px) {
+      ${props => props.theme.desktopBreakpoint} {
          flex-basis: 25%;
       }
    }

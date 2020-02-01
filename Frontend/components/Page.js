@@ -23,6 +23,17 @@ const theme = {
    lowContrastGrey: 'hsl(210, 10%, 30%)',
    highContrastGrey: 'hsl(30, 10%, 60%)',
 
+   mobileBPWidth: '800px',
+   mobileBPWidthRaw: 800,
+   mobileBreakpoint: '@media screen and (min-width: 800px)',
+
+   desktopBPWidth: '1280px',
+   desktopBPWidthRaw: 1280,
+   desktopBreakpoint: '@media screen and (min-width: 1280px)',
+
+   bigScreenWidth: '1800px',
+   bigScreenBreakpoint: '@media screen and (min-width: 1800px)',
+
    scroll: {
       overflowY: 'auto',
       scrollbarWidth: 'thin',
@@ -49,8 +60,8 @@ const GlobalStyle = createGlobalStyle`
       font-family: "Proxima Nova", sans-serif;
       box-sizing: border-box;
       font-size: 8px;
-      ${props => props.theme.scroll};
-      @media screen and (min-width: 800px) {
+      ${theme.scroll};
+      ${theme.mobileBreakpoint} {
          font-size: 10px;
       }
       @media screen and (min-width: 1921px) {
@@ -188,7 +199,7 @@ const GlobalStyle = createGlobalStyle`
    }
    .tweet {
       margin: 3rem 0;
-      @media screen and (min-width: 800px) {
+      ${props => props.theme.desktopBreakpoint} {
          margin: 5rem 1rem;
       }
       &:first-child {
@@ -309,7 +320,7 @@ const GlobalStyle = createGlobalStyle`
          color: ${props =>
             setAlpha(setLightness(props.theme.majorColor, 70), 0.9)};
          font-size: ${props => props.theme.smallText};
-         @media screen and (min-width: 800px) {
+         ${props => props.theme.desktopBreakpoint} {
             font-size: ${props => props.theme.tinyText};
          }
          display: flex;
@@ -329,7 +340,7 @@ const GlobalStyle = createGlobalStyle`
             img {
                opacity: 1;
                width: ${props => props.theme.smallText};
-               @media screen and (min-width: 800px) {
+               ${props => props.theme.desktopBreakpoint} {
                   width: ${props => props.theme.tinyText};
                }
                height: auto;
@@ -356,7 +367,7 @@ const StyledPage = styled.div`
    position: relative;
    display: grid;
    grid-template-rows: auto 1fr;
-   @media screen and (min-width: 800px) {
+   ${props => props.theme.desktopBreakpoint} {
       height: 100vh;
    }
 `;

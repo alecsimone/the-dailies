@@ -1,5 +1,6 @@
 import { useContext, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { ThemeContext } from 'styled-components';
 import { MemberContext } from './Account/MemberProvider';
 import StyledSidebar from '../styles/StyledSidebar';
 import MyThings from './Archives/MyThings';
@@ -29,10 +30,11 @@ const Sidebar = props => {
    //    }
    // }, [extraColumnTitle]);
 
+   const { desktopBPWidthRaw } = useContext(ThemeContext);
    const [isOpen, setIsOpen] = useState(
       !(
          process.browser &&
-         window.outerWidth <= 800 &&
+         window.outerWidth <= desktopBPWidthRaw &&
          extraColumnTitle != 'Tag' &&
          extraColumnTitle != 'Category'
       )
@@ -82,8 +84,11 @@ const Sidebar = props => {
          </div>
       );
    });
-   const openButton = process.browser && window.outerWidth <= 800 ? 'v' : '>';
-   const closeButton = process.browser && window.outerWidth <= 800 ? '^' : '<';
+   console.log(process.browswer && window.outerWidth);
+   const openButton =
+      process.browser && window.innerWidth <= desktopBPWidthRaw ? 'v' : '>';
+   const closeButton =
+      process.browser && window.innerWidth <= desktopBPWidthRaw ? '^' : '<';
    const toggleButton = (
       <div
          className="headerTab toggle"
@@ -96,7 +101,7 @@ const Sidebar = props => {
          {isOpen ? closeButton : openButton}
       </div>
    );
-   if (isOpen || (process.browser && window.outerWidth <= 800)) {
+   if (isOpen || (process.browser && window.outerWidth <= 900)) {
       sidebarHeader.push(toggleButton);
    } else {
       sidebarHeader = toggleButton;

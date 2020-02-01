@@ -13,11 +13,11 @@ const StyledFullThing = styled.article`
    margin: 1rem 0;
    border-radius: 1rem;
    padding: 2rem;
-   @media screen and (min-width: 800px) {
+   ${props => props.theme.desktopBreakpoint} {
       max-width: 1440px;
       position: absolute;
       top: 2rem;
-      left: 6rem;
+      left: 3%;
       width: 94%;
       padding: 3rem;
    }

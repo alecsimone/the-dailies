@@ -32,30 +32,30 @@ const SINGLE_THING_SUBSCRIPTION = gql`
 const SingleThingContainer = styled.div`
    display: flex;
    flex-wrap: wrap;
-   @media screen and (min-width: 800px) {
+   @media screen and (min-width: ${props => props.theme.desktopBreakpoint}) {
       flex-wrap: nowrap;
    }
    .sidebar {
       flex-basis: 100%;
-      @media screen and (min-width: 800px) {
+      ${props => props.theme.desktopBreakpoint} {
          flex-basis: 25%;
       }
-      @media screen and (min-width: 1800px) {
+      ${props => props.theme.bigScreenBreakpoint} {
          flex-basis: 20%;
       }
    }
    .fullThingContainer {
       flex-basis: 100%;
-      @media screen and (min-width: 800px) {
+      ${props => props.theme.desktopBreakpoint} {
          flex-basis: 75%;
       }
-      @media screen and (min-width: 1800px) {
+      ${props => props.theme.bigScreenBreakpoint} {
          flex-basis: 80%;
       }
       flex-grow: 1;
       position: relative;
       padding: 2rem 0;
-      @media screen and (min-width: 800px) {
+      ${props => props.theme.desktopBreakpoint} {
          max-height: 100%;
          overflow: hidden;
          ${props => props.theme.scroll};

@@ -6,24 +6,24 @@ import Sidebar from '../components/Sidebar';
 const StyledNew = styled.div`
    display: flex;
    flex-wrap: wrap;
-   @media screen and (min-width: 800px) {
+   ${props => props.theme.desktopBreakpoint} {
       flex-wrap: nowrap;
    }
    .sidebar {
       flex-basis: 100%;
-      @media screen and (min-width: 800px) {
+      ${props => props.theme.desktopBreakpoint} {
          flex-basis: 25%;
       }
-      @media screen and (min-width: 1800px) {
+      ${props => props.theme.bigScreenBreakpoint} {
          flex-basis: 20%;
       }
    }
    .container {
       flex-basis: 100%;
-      @media screen and (min-width: 800px) {
+      ${props => props.theme.desktopBreakpoint} {
          flex-basis: 75%;
       }
-      @media screen and (min-width: 1800px) {
+      ${props => props.theme.bigScreenBreakpoint} {
          flex-basis: 80%;
       }
       flex-grow: 1;

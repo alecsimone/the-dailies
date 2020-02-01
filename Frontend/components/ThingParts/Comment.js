@@ -131,7 +131,7 @@ const StyledComment = styled.div`
       }
       .buttons {
          display: none;
-         @media screen and (min-width: 800px) {
+         ${props => props.theme.desktopBreakpoint} {
             display: flex;
             flex-direction: column;
             align-items: center;

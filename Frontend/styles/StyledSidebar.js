@@ -8,7 +8,7 @@ const StyledSidebar = styled.section`
       .sidebarContainer {
          display: none;
       }
-      @media screen and (min-width: 800px) {
+      ${props => props.theme.desktopBreakpoint} {
          max-width: 3rem;
          .sidebarHeader {
             position: absolute;
@@ -23,9 +23,11 @@ const StyledSidebar = styled.section`
       ${props => setAlpha(props.theme.highContrastGrey, 0.1)};
    position: relative;
    max-height: 100%;
-   max-width: 600px;
    display: grid;
    grid-template-rows: auto 1fr;
+   ${props => props.theme.desktopBreakpoint} {
+      max-width: 600px;
+   }
    .sidebarHeader {
       display: flex;
       width: 100%;
@@ -73,7 +75,7 @@ const StyledSidebar = styled.section`
    .sidebarContainer {
       position: relative;
       .sidebarContent {
-         @media screen and (min-width: 800px) {
+         ${props => props.theme.desktopBreakpoint} {
             position: absolute;
             top: 0;
             left: 0;
