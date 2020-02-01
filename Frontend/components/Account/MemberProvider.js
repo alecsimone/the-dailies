@@ -25,16 +25,14 @@ const MemberContext = React.createContext();
 
 const MemberProvider = props => {
    const { children } = props;
-   const { loading, error, data } = useQuery(CURRENT_MEMBER_QUERY);
+   const { loading, error, data, client } = useQuery(CURRENT_MEMBER_QUERY);
 
    const {
       data: subscriptionData,
       loading: subscriptionLoading
    } = useSubscription(ME_SUBSCRIPTION);
 
-   const memberData = {
-      loading
-   };
+   let memberData = {};
    if (error) {
       console.log(error);
       memberData.me = 'error';
@@ -46,6 +44,10 @@ const MemberProvider = props => {
       } else {
          memberData.me = data.me;
       }
+   } else {
+      memberData = {
+         loading
+      };
    }
 
    return (

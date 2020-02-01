@@ -73,7 +73,10 @@ const Sidebar = props => {
                   : `headerTab ${column}`
             }
             key={column}
-            onClick={() => setSelectedTab(column)}
+            onClick={() => {
+               setSelectedTab(column);
+               setIsOpen(true);
+            }}
          >
             <img src={imgSrc} alt={column} title={column} />
          </div>

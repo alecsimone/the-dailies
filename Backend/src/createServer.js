@@ -16,7 +16,15 @@ function createServer() {
       resolvers: {
          Mutation,
          Query,
-         Subscription
+         Subscription,
+         Stuff: {
+            __resolveType(obj, context, info) {
+               return obj.__typename;
+            }
+         }
+      },
+      resolverValidationOptions: {
+         requireResolversForResolveType: false
       },
       introspection: true,
       subscriptions: {

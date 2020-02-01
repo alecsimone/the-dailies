@@ -62,22 +62,10 @@ const MemberBox = () => {
       }
    };
 
-   if (memberLoading) {
-      return (
-         <StyledMemberBox className="memberBox">
-            <a>...</a>
-            <img
-               src="/defaultAvatar.jpg"
-               alt="avatar"
-               id="avatar"
-               onClick={() => toggleMemberMenu()}
-            />
-         </StyledMemberBox>
-      );
-   }
-   if (me != null && me.rep != null && me.displayName != null) {
-      return (
-         <StyledMemberBox className="memberBox">
+   let content;
+   if (me != null) {
+      content = (
+         <>
             <Link href={{ pathname: '/me' }}>
                <a
                   className={
@@ -94,23 +82,37 @@ const MemberBox = () => {
                onClick={() => toggleMemberMenu()}
             />
             {memberMenuOpen && <MemberMenu />}
-         </StyledMemberBox>
+         </>
+      );
+   } else if (memberLoading) {
+      content = (
+         <>
+            <a>Logging in...</a>
+            <img
+               src="/defaultAvatar.jpg"
+               alt="avatar"
+               id="avatar"
+               onClick={() => toggleMemberMenu()}
+            />
+         </>
+      );
+   } else {
+      content = (
+         <>
+            <p>
+               <Link href={{ pathname: '/signup' }}>
+                  <a>Sign up</a>
+               </Link>{' '}
+               or{' '}
+               <Link href={{ pathname: '/login' }}>
+                  <a>Log in</a>
+               </Link>
+            </p>
+         </>
       );
    }
 
-   return (
-      <StyledMemberBox className="memberBox">
-         <p>
-            <Link href={{ pathname: '/signup' }}>
-               <a>Sign up</a>
-            </Link>{' '}
-            or{' '}
-            <Link href={{ pathname: '/login' }}>
-               <a>Log in</a>
-            </Link>
-         </p>
-      </StyledMemberBox>
-   );
+   return <StyledMemberBox className="memberBox">{content}</StyledMemberBox>;
 };
 
 MemberBox.propTypes = {};

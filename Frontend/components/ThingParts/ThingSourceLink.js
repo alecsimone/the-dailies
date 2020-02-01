@@ -16,9 +16,8 @@ const EDIT_LINK_MUTATION = gql`
    }
 `;
 
-const ThingSourceLink = () => {
+const ThingSourceLink = ({ canEdit }) => {
    const { id, author, link } = useContext(ThingContext);
-   console.log(link);
    const { me } = useContext(MemberContext);
 
    const [editable, setEditable] = useState(link == null);
@@ -27,11 +26,6 @@ const ThingSourceLink = () => {
    const [editLink, { loading: editLinkLoading }] = useMutation(
       EDIT_LINK_MUTATION
    );
-
-   let canEdit = false;
-   if (me && author.id === me.id) {
-      canEdit = true;
-   }
 
    const sendNewLink = async () => {
       await editLink({
