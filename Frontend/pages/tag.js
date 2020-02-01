@@ -1,9 +1,9 @@
 import gql from 'graphql-tag';
 import { useQuery, useSubscription } from '@apollo/react-hooks';
-import styled from 'styled-components';
 import Head from 'next/head';
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
+import StyledPageWithSidebar from '../styles/StyledPageWithSidebar';
 import Sidebar from '../components/Sidebar';
 import Error from '../components/ErrorMessage';
 import LoadingRing from '../components/LoadingRing';
@@ -27,47 +27,6 @@ const SINGLE_TAG_SUBSCRIPTION = gql`
          node {
             ${tagFields}
          }
-      }
-   }
-`;
-
-const StyledTagPage = styled.div`
-   display: flex;
-   flex-wrap: wrap;
-   ${props => props.theme.desktopBreakpoint} {
-      flex-wrap: nowrap;
-   }
-   .sidebar {
-      flex-basis: 100%;
-      ${props => props.theme.desktopBreakpoint} {
-         flex-basis: 25%;
-      }
-      ${props => props.theme.bigScreenBreakpoint} {
-         flex-basis: 20%;
-      }
-   }
-   .tagContainer {
-      flex-basis: 100%;
-      ${props => props.theme.desktopBreakpoint} {
-         flex-basis: 75%;
-      }
-      ${props => props.theme.bigScreenBreakpoint} {
-         flex-basis: 80%;
-      }
-      flex-grow: 1;
-      position: relative;
-      ${props => props.theme.desktopBreakpoint} {
-         max-height: 100%;
-         overflow: hidden;
-         ${props => props.theme.scroll};
-      }
-      padding: 2rem;
-      .things {
-         position: absolute;
-         top: 3rem;
-         left: 3%;
-         width: 94%;
-         max-height: 100%;
       }
    }
 `;
@@ -155,13 +114,13 @@ const tag = props => {
 
    return (
       <TagContext.Provider value={loading || error || data.tagByTitle}>
-         <StyledTagPage>
+         <StyledPageWithSidebar>
             <Head>
                <title>{pageTitle} - OurDailies</title>
             </Head>
             {sidebar}
-            <div className="tagContainer">{content}</div>
-         </StyledTagPage>
+            <div className="mainSection">{content}</div>
+         </StyledPageWithSidebar>
       </TagContext.Provider>
    );
 };

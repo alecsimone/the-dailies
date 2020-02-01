@@ -1,9 +1,9 @@
 import gql from 'graphql-tag';
 import { useQuery, useSubscription } from '@apollo/react-hooks';
-import styled from 'styled-components';
 import Head from 'next/head';
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
+import StyledPageWithSidebar from '../styles/StyledPageWithSidebar';
 import { MemberContext } from '../components/Account/MemberProvider';
 import Sidebar from '../components/Sidebar';
 import Error from '../components/ErrorMessage';
@@ -27,32 +27,6 @@ const SINGLE_CATEGORY_SUBSCRIPTION = gql`
          node {
             ${catFields}
          }
-      }
-   }
-`;
-
-const StyledCategoryPage = styled.div`
-   display: flex;
-   .sidebar {
-      flex-basis: 100%;
-      flex-wrap: wrap;
-      ${props => props.theme.desktopBreakpoint} {
-         flex-basis: 25%;
-      }
-   }
-   .categoryContainer {
-      flex-basis: 75%;
-      flex-grow: 1;
-      position: relative;
-      max-height: 100%;
-      ${props => props.theme.scroll};
-      padding: 2rem;
-      .things {
-         position: absolute;
-         top: 3rem;
-         left: 3%;
-         width: 94%;
-         max-height: 100%;
       }
    }
 `;
@@ -139,13 +113,13 @@ const category = props => {
       <CategoryContext.Provider
          value={loading || error || data.categoryByTitle}
       >
-         <StyledCategoryPage>
+         <StyledPageWithSidebar>
             <Head>
                <title>{pageTitle} - OurDailies</title>
             </Head>
             {sidebar}
-            <div className="categoryContainer">{content}</div>
-         </StyledCategoryPage>
+            <div className="mainSection">{content}</div>
+         </StyledPageWithSidebar>
       </CategoryContext.Provider>
    );
 };

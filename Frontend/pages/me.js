@@ -2,6 +2,7 @@ import gql from 'graphql-tag';
 import { useContext } from 'react';
 import Head from 'next/head';
 import PropTypes from 'prop-types';
+import StyledPageWithSidebar from '../styles/StyledPageWithSidebar';
 import { MemberContext } from '../components/Account/MemberProvider';
 import Sidebar from '../components/Sidebar';
 import Error from '../components/ErrorMessage';
@@ -9,7 +10,6 @@ import LoadingRing from '../components/LoadingRing';
 import ProfileSidebar from '../components/Profile/ProfileSidebar';
 import ProfileContent from '../components/Profile/ProfileContent';
 import { fullMemberFields } from '../lib/CardInterfaces';
-import StyledMemberPage from '../styles/StyledMemberPage';
 
 const ME_PAGE_QUERY = gql`
    query ME_PAGE_QUERY {
@@ -55,13 +55,13 @@ const me = () => {
    }
 
    return (
-      <StyledMemberPage>
+      <StyledPageWithSidebar>
          <Head>
             <title>{pageTitle} - OurDailies</title>
          </Head>
          {sidebar}
-         <div className="myStuffContainer">{content}</div>
-      </StyledMemberPage>
+         <div className="mainSection">{content}</div>
+      </StyledPageWithSidebar>
    );
 };
 me.propTypes = {};

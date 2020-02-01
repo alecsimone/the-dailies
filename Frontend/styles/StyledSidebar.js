@@ -61,7 +61,10 @@ const StyledSidebar = styled.section`
             background: ${props => setAlpha(props.theme.lowContrastGrey, 0.15)};
          }
          &.toggle {
-            max-width: 3rem;
+            max-width: 6rem;
+            ${props => props.theme.desktopBreakpoint} {
+               max-width: 3rem;
+            }
             line-height: 1;
             font-weight: 700;
             color: ${props => props.theme.lowContrastGrey};

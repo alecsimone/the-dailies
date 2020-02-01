@@ -1,6 +1,49 @@
+import styled from 'styled-components';
 import { useState, useEffect } from 'react';
 import Things from '../Archives/Things';
 import MemberCard from '../MemberCard';
+import { setAlpha } from '../../styles/functions';
+
+const StyledProfileContent = styled.div`
+   position: absolute;
+   top: 3rem;
+   left: 3%;
+   width: 94%;
+   max-height: 100%;
+   .stuffSelector {
+      display: flex;
+      justify-content: space-between;
+      border: 3px solid ${props => props.theme.lowContrastGrey};
+      margin-bottom: 3rem;
+      .tab {
+         border-right: 3px solid ${props => props.theme.lowContrastGrey};
+         display: block;
+         flex-grow: 1;
+         text-align: center;
+         padding: 0.25rem 0;
+         cursor: pointer;
+         &:last-child {
+            border-right: none;
+         }
+         &.selected {
+            background: ${props => setAlpha(props.theme.lowContrastGrey, 0.4)};
+            &:hover {
+               background: ${props =>
+                  setAlpha(props.theme.lowContrastGrey, 0.4)};
+            }
+         }
+         &:hover {
+            background: ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
+         }
+      }
+   }
+   .friends {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(30rem, 35rem));
+      grid-gap: 4rem;
+      align-items: stretch;
+   }
+`;
 
 const ProfileContent = ({ member, isMe }) => {
    const [selectedTab, setSelectedTab] = useState('Things');
@@ -61,10 +104,10 @@ const ProfileContent = ({ member, isMe }) => {
    }
 
    return (
-      <div className="stuffWrapper">
+      <StyledProfileContent className="stuffWrapper">
          {selector}
          {selection}
-      </div>
+      </StyledProfileContent>
    );
 };
 

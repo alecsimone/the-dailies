@@ -64,8 +64,9 @@ const StyledTweets = styled.section`
                ${props => setAlpha(setLightness(props.theme.black, 1), 0.2)};
             &.column1,
             &.column2 {
+               display: none;
                ${props => props.theme.desktopBreakpoint} {
-                  display: none;
+                  display: block;
                }
             }
             h3.tweeterHeader {

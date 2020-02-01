@@ -3,6 +3,7 @@ import { useQuery, useSubscription } from '@apollo/react-hooks';
 import styled from 'styled-components';
 import React, { useEffect, useContext } from 'react';
 import Head from 'next/head';
+import StyledPageWithSidebar from '../styles/StyledPageWithSidebar';
 import { MemberContext } from '../components/Account/MemberProvider';
 import Error from '../components/ErrorMessage';
 import LoadingRing from '../components/LoadingRing';
@@ -25,41 +26,6 @@ const SINGLE_THING_SUBSCRIPTION = gql`
          node {
             ${fullThingFields}
          }
-      }
-   }
-`;
-
-const SingleThingContainer = styled.div`
-   display: flex;
-   flex-wrap: wrap;
-   @media screen and (min-width: ${props => props.theme.desktopBreakpoint}) {
-      flex-wrap: nowrap;
-   }
-   .sidebar {
-      flex-basis: 100%;
-      ${props => props.theme.desktopBreakpoint} {
-         flex-basis: 25%;
-      }
-      ${props => props.theme.bigScreenBreakpoint} {
-         flex-basis: 20%;
-      }
-   }
-   .fullThingContainer {
-      flex-basis: 100%;
-      ${props => props.theme.desktopBreakpoint} {
-         flex-basis: 75%;
-      }
-      ${props => props.theme.bigScreenBreakpoint} {
-         flex-basis: 80%;
-      }
-      flex-grow: 1;
-      position: relative;
-      padding: 2rem 0;
-      ${props => props.theme.desktopBreakpoint} {
-         max-height: 100%;
-         overflow: hidden;
-         ${props => props.theme.scroll};
-         padding: 2rem;
       }
    }
 `;
@@ -148,13 +114,13 @@ const SingleThing = props => {
 
    return (
       <ThingContext.Provider value={dataForContext}>
-         <SingleThingContainer>
+         <StyledPageWithSidebar>
             <Head>
                <title>{pageTitle} - OurDailies</title>
             </Head>
             <Sidebar />
-            <div className="fullThingContainer">{content}</div>
-         </SingleThingContainer>
+            <div className="mainSection">{content}</div>
+         </StyledPageWithSidebar>
       </ThingContext.Provider>
    );
 };
