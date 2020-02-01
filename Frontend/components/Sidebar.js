@@ -86,7 +86,6 @@ const Sidebar = props => {
          </div>
       );
    });
-   console.log(process.browswer && window.outerWidth);
    const openButton =
       process.browser && window.innerWidth <= desktopBPWidthRaw ? 'v' : '>';
    const closeButton =
@@ -117,7 +116,7 @@ const Sidebar = props => {
    } else if (selectedTab === 'Friends') {
       sidebarContent = <MyFriendsThings />;
    } else if (selectedTab === 'Public') {
-      sidebarContent = <PublicThings />;
+      sidebarContent = <PublicThings displayType="list" />;
    } else if (selectedTab === extraColumnTitle) {
       sidebarContent = extraColumnContent;
    }

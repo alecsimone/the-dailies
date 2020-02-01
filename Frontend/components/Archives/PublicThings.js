@@ -13,7 +13,7 @@ const PUBLIC_THINGS_QUERY = gql`
    }
 `;
 
-const PublicThings = () => {
+const PublicThings = ({ displayType = 'list' }) => {
    const { data, error, loading } = useQuery(PUBLIC_THINGS_QUERY, {
       pollInterval: 5000
    });
@@ -24,8 +24,8 @@ const PublicThings = () => {
       return (
          <Things
             things={data.publicThings}
-            displayType="list"
-            cardSize="small"
+            displayType={displayType}
+            cardSize={displayType === 'grid' ? 'regular' : 'small'}
          />
       );
    }
