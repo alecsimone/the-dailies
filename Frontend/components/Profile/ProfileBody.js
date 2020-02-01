@@ -115,6 +115,7 @@ const ProfileBody = ({ member, me, isMe, canEdit, confirmFriendRequest }) => {
                      : member.defaultPrivacy
                }
                editProfile={editProfile}
+               id={member.id}
             />
          )}
          <ProfileData

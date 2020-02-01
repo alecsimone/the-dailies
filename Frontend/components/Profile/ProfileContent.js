@@ -47,13 +47,10 @@ const StyledProfileContent = styled.div`
 
 const ProfileContent = ({ member, isMe, defaultTab }) => {
    const [selectedTab, setSelectedTab] = useState(defaultTab || 'Things');
-   console.log(selectedTab);
-   console.log(member.id);
 
    /* eslint-disable react-hooks/exhaustive-deps */
    // We need to make our container switch to the Things tab when we route to a new member, but wesbos's eslint rules don't let you use a dependency for an effect that isn't referenced in the effect. I can't find any reason why that is or any better way of doing it, so I'm just turning off that rule for a minute.
    useEffect(() => {
-      console.log('hey');
       setSelectedTab(defaultTab || 'Things');
    }, [member.id, member.displayName]);
    /* eslint-enable */

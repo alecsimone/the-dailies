@@ -23,7 +23,12 @@ const StyledSelectsWrapper = styled.div`
    }
 `;
 
-const DefaultSelects = ({ initialCategory, initialPrivacy, editProfile }) => {
+const DefaultSelects = ({
+   initialCategory,
+   initialPrivacy,
+   editProfile,
+   id
+}) => {
    const {
       loading: loadingCategories,
       data: categoriesData,
@@ -112,6 +117,6 @@ const DefaultSelects = ({ initialCategory, initialPrivacy, editProfile }) => {
 DefaultSelects.propTypes = {
    initialCategory: PropTypes.string.isRequired,
    initialPrivacy: PropTypes.string.isRequired,
-   handleSelect: PropTypes.func.isRequired
+   id: PropTypes.string.isRequired
 };
 export default DefaultSelects;
