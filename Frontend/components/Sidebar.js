@@ -36,7 +36,9 @@ const Sidebar = props => {
          process.browser &&
          window.outerWidth <= desktopBPWidthRaw &&
          extraColumnTitle != 'Tag' &&
-         extraColumnTitle != 'Category'
+         extraColumnTitle != 'Category' &&
+         extraColumnTitle != 'Me' &&
+         extraColumnTitle != 'Member'
       )
    );
 
