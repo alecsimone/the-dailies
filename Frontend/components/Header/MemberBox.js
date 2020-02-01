@@ -75,7 +75,7 @@ const MemberBox = () => {
          </StyledMemberBox>
       );
    }
-   if (me && me.rep && me.displayName) {
+   if (me != null && me.rep != null && me.displayName != null) {
       return (
          <StyledMemberBox className="memberBox">
             <Link href={{ pathname: '/me' }}>
