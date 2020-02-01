@@ -19,7 +19,7 @@ const ME_PAGE_QUERY = gql`
    }
 `;
 
-const me = () => {
+const me = ({ query }) => {
    const { me, loading } = useContext(MemberContext);
 
    let pageTitle;
@@ -39,7 +39,7 @@ const me = () => {
       if (me != null) {
          pageTitle = me.displayName;
 
-         content = <ProfileContent member={me} isMe />;
+         content = <ProfileContent member={me} isMe defaultTab={query.stuff} />;
          sidebar = (
             <Sidebar
                extraColumnContent={<ProfileSidebar member={me} canEdit />}

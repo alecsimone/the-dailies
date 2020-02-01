@@ -21,9 +21,7 @@ const MEMBER_PAGE_QUERY = gql`
 `;
 export { MEMBER_PAGE_QUERY };
 
-const member = props => {
-   const { query } = props;
-
+const member = ({ query }) => {
    let variables;
    if (query.name) {
       variables = {

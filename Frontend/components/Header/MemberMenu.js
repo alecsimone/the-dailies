@@ -55,29 +55,24 @@ const MemberMenu = () => {
                <a>Profile</a>
             </div>
          </Link>
-         <Link href={{ pathname: '/me', query: { stuff: 'votes' } }}>
+         <Link
+            href={{
+               pathname: '/me',
+               query: { stuff: 'Things' }
+            }}
+         >
             <div className="userMenuLinkRow">
-               <a>My Votes</a>
+               <a>My Things</a>
             </div>
          </Link>
          <Link
             href={{
                pathname: '/me',
-               query: { stuff: 'submissions' }
+               query: { stuff: 'Friends' }
             }}
          >
             <div className="userMenuLinkRow">
-               <a>My Submissions</a>
-            </div>
-         </Link>
-         <Link
-            href={{
-               pathname: '/me',
-               query: { stuff: 'comments' }
-            }}
-         >
-            <div className="userMenuLinkRow">
-               <a>My Comments</a>
+               <a>My Friends</a>
             </div>
          </Link>
          <div className="userMenuLinkRow">
