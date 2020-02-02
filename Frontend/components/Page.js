@@ -24,13 +24,13 @@ const theme = {
    lowContrastGrey: 'hsl(210, 10%, 30%)',
    highContrastGrey: 'hsl(30, 10%, 60%)',
 
-   mobileBPWidth: '900px',
-   mobileBPWidthRaw: 900,
-   mobileBreakpoint: '@media screen and (min-width: 900px)',
+   mobileBPWidth: '600px',
+   mobileBPWidthRaw: 600,
+   mobileBreakpoint: '@media screen and (min-width: 600px)',
 
-   desktopBPWidth: '1280px',
-   desktopBPWidthRaw: 1280,
-   desktopBreakpoint: '@media screen and (min-width: 1280px)',
+   desktopBPWidth: '1000px',
+   desktopBPWidthRaw: 1000,
+   desktopBreakpoint: '@media screen and (min-width: 1000px)',
 
    bigScreenBPWidth: '1800px',
    bigScreenBPWidthRaw: 1800,
