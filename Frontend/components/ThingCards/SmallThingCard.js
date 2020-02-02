@@ -13,7 +13,6 @@ const StyledSmallThingCard = styled.article`
    max-width: ${props => props.theme.desktopBPWidth};
    display: inline-block;
    padding: 2rem 1rem;
-   border-radius: 0 2px 2px 0;
    border: 1px solid ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
    box-shadow: 0 2px 2px hsla(0, 0%, 0%, 0.1);
    border-left: 0.5rem solid ${props => setAlpha(props.theme.majorColor, 0.6)};
@@ -22,6 +21,9 @@ const StyledSmallThingCard = styled.article`
    align-items: center;
    cursor: pointer;
    opacity: 0.9;
+   ${props => props.theme.mobileBreakpoint} {
+      border-radius: 0 2px 2px 0;
+   }
    &:hover {
       opacity: 1;
       background: hsla(0, 0%, 100%, 0.02);

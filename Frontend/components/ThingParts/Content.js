@@ -140,11 +140,11 @@ const StyledContent = styled.section`
    padding: 0 1rem;
    background: ${props => props.theme.black};
    border-top: 1px solid ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
-   border-radius: 0.5rem;
    ${props => props.theme.mobileBreakpoint} {
       margin: 5rem 0;
       padding: 1rem 3rem;
       border: 1px solid ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
+      border-radius: 0.5rem;
    }
    p,
    .graph {

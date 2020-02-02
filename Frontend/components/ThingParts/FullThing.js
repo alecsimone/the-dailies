@@ -11,7 +11,6 @@ import { setAlpha, setLightness, setSaturation } from '../../styles/functions';
 
 const StyledFullThing = styled.article`
    margin: 1rem 0;
-   border-radius: 1rem;
    padding: 2rem 0;
    ${props => props.theme.mobileBreakpoint} {
       padding: 2rem;
@@ -21,6 +20,7 @@ const StyledFullThing = styled.article`
       left: 3%;
       width: 94%;
       padding: 3rem;
+      border-radius: 1rem;
    }
    border: 2px solid ${props => setAlpha(props.theme.lowContrastGrey, 0.15)};
    background: ${props => setLightness(props.theme.black, 1)};

@@ -17,8 +17,10 @@ const StyledThingCard = styled.div`
    border: 2px solid ${props => setAlpha(props.theme.lowContrastGrey, 0.15)};
    box-shadow: 0 4px 4px
       ${props => setAlpha(setLightness(props.theme.black, 1), 0.2)};
-   border-radius: 3px;
    border-top: 0.5rem solid ${props => props.theme.majorColor};
+   ${props => props.theme.mobileBreakpoint} {
+      border-radius: 3px;
+   }
    .featuredImage {
       h3 {
          /* color: ${props => setAlpha(props.theme.mainText, 0.9)}; */
