@@ -14,11 +14,11 @@ const StyledBottomBar = styled.section`
    .inputWrapper {
       width: 100%;
       position: absolute;
-      height: 6rem;
-      max-height: 6rem;
-      top: calc(-6rem - 2px);
+      height: 8rem;
+      max-height: 8rem;
+      top: calc(-8rem - 2px);
       left: 0;
-      padding: 0 1rem;
+      padding: 0 1.5rem;
       background: ${props => props.theme.black};
       transition: all 0.1s;
       z-index: 2;
@@ -29,12 +29,12 @@ const StyledBottomBar = styled.section`
       }
       input {
          width: 100%;
-         margin-top: 1.25rem;
+         margin-top: 1.75rem;
          padding: 0 2rem;
-         height: 3.5rem;
+         height: 4.5rem;
          background: ${props => setAlpha(props.theme.lowContrastGrey, 0.2)};
          border-radius: 0;
-         font-size: ${props => props.theme.bigText};
+         font-size: 3rem;
          z-index: 2;
       }
    }
