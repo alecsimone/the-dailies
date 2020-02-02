@@ -48,6 +48,23 @@ const StyledSmallThingCard = styled.article`
          color: ${props => setLightness(props.theme.lowContrastGrey, 35)};
          font-weight: 300;
          margin-top: 0.6rem;
+         display: flex;
+         align-items: center;
+         .authorBlock {
+            display: inline-flex;
+            align-items: center;
+            margin-right: 0.5rem;
+            cursor: pointer;
+            .authorLink {
+               margin-bottom: 2px;
+            }
+            .authorImg {
+               width: 2rem;
+               height: 2rem;
+               border-radius: 100%;
+               margin-right: 0.5rem;
+            }
+         }
          a,
          a:visited {
             color: ${props =>
@@ -106,7 +123,7 @@ const SmallThingCard = props => {
                      : title}
                </a>
                <div className="tinyMeta">
-                  {timeAgo} ago by <AuthorLink author={author} /> in{' '}
+                  <AuthorLink author={author} /> {timeAgo} ago in{' '}
                   {category.title}. It's{' '}
                   {privacy === 'Public' || privacy === 'Private'
                      ? privacy

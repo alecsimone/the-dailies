@@ -40,10 +40,29 @@ const StyledThingCard = styled.div`
    .meta {
       display: flex;
       justify-content: space-between;
-      font-size: ${props => props.theme.tinyText};
+      font-size: ${props => props.theme.smallText};
       color: ${props => props.theme.lowContrastGrey};
       margin-top: 0.75rem;
       border-bottom: 1px solid ${props => props.theme.lowContrastGrey};
+      .meta-left {
+         display: inline-flex;
+         align-items: center;
+         .authorBlock {
+            display: inline-flex;
+            align-items: center;
+            margin-right: 1rem;
+            cursor: pointer;
+            .authorLink {
+               margin-bottom: 2px;
+            }
+            .authorImg {
+               width: 2rem;
+               height: 2rem;
+               border-radius: 100%;
+               margin-right: .5rem;
+            }
+         }
+      }
       a,
       a:visited {
          color: ${props =>
@@ -109,8 +128,8 @@ const ThingCard = props => {
             </Link>
             <div className="meta">
                <div className="meta-left">
-                  {convertISOtoAgo(createdAt)} ago by{' '}
-                  <AuthorLink author={author} /> in {category.title}
+                  <AuthorLink author={author} /> {convertISOtoAgo(createdAt)}{' '}
+                  ago in {category.title}
                </div>
                <div className="meta-right">{privacy}</div>
             </div>

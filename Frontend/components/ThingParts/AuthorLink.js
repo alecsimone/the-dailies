@@ -8,7 +8,10 @@ const AuthorLink = props => {
    }
    return (
       <Link href={{ pathname: '/member', query: { id: author.id } }}>
-         <a className="authorLink">{author.displayName}</a>
+         <div className="authorBlock">
+            <img className="authorImg" src={author.avatar} />
+            <a className="authorLink">{author.displayName}</a>
+         </div>
       </Link>
    );
 };
