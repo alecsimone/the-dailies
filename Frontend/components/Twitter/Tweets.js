@@ -62,10 +62,15 @@ const StyledTweets = styled.section`
                ${props => setAlpha(props.theme.lowContrastGrey, 0.15)};
             box-shadow: 0 4px 4px
                ${props => setAlpha(setLightness(props.theme.black, 1), 0.2)};
-            &.column1,
-            &.column2 {
+            &.column1 {
                display: none;
                ${props => props.theme.desktopBreakpoint} {
+                  display: block;
+               }
+            }
+            &.column2 {
+               display: none;
+               ${props => props.theme.bigScreenBreakpoint} {
                   display: block;
                }
             }

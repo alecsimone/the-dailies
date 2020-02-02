@@ -13,10 +13,13 @@ const StyledPageWithSidebar = styled.section`
    .sidebar {
       flex-basis: 100%;
       ${props => props.theme.mobileBreakpoint} {
-         flex-basis: 25%;
+         flex-basis: 40%;
          max-height: 100%;
          overflow: hidden;
          ${props => props.theme.scroll};
+      }
+      ${props => props.theme.desktopBreakpoint} {
+         flex-basis: 30%;
       }
       ${props => props.theme.bigScreenBreakpoint} {
          flex-basis: 20%;
@@ -25,7 +28,10 @@ const StyledPageWithSidebar = styled.section`
    .mainSection {
       flex-basis: 100%;
       ${props => props.theme.mobileBreakpoint} {
-         flex-basis: 75%;
+         flex-basis: 60%;
+      }
+      ${props => props.theme.desktopBreakpoint} {
+         flex-basis: 70%;
       }
       ${props => props.theme.bigScreenBreakpoint} {
          flex-basis: 80%;

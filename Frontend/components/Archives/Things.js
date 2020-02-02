@@ -1,6 +1,8 @@
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import Masonry from 'react-masonry-css';
+import { useContext } from 'react';
+import { ThemeContext } from 'styled-components';
 import SmallThingCard from '../ThingCards/SmallThingCard';
 import ThingCard from '../ThingCards/ThingCard';
 import { setAlpha } from '../../styles/functions';
@@ -39,6 +41,7 @@ const StyledThings = styled.div`
 `;
 
 const Things = ({ things, displayType, cardSize, noPic }) => {
+   const { desktopBPWidthRaw, bigScreenBPWidthRaw } = useContext(ThemeContext);
    const thingCards = things.map(thing => {
       if (cardSize === 'regular') {
          return <ThingCard data={thing} key={thing.id} />;
@@ -49,7 +52,11 @@ const Things = ({ things, displayType, cardSize, noPic }) => {
       return (
          <StyledThings className={`things ${displayType}`}>
             <Masonry
-               breakpointCols={{ default: 3, 1800: 2, 1280: 1 }}
+               breakpointCols={{
+                  default: 3,
+                  [bigScreenBPWidthRaw]: 2,
+                  [desktopBPWidthRaw]: 1
+               }}
                className="masonryContainer"
                columnClassName="column"
             >

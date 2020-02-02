@@ -32,7 +32,8 @@ const theme = {
    desktopBPWidthRaw: 1280,
    desktopBreakpoint: '@media screen and (min-width: 1280px)',
 
-   bigScreenWidth: '1800px',
+   bigScreenBPWidth: '1800px',
+   bigScreenBPWidthRaw: 1800,
    bigScreenBreakpoint: '@media screen and (min-width: 1800px)',
 
    scroll: {
@@ -65,7 +66,7 @@ const GlobalStyle = createGlobalStyle`
       ${theme.mobileBreakpoint} {
          font-size: 10px;
       }
-      @media screen and (min-width: 1921px) {
+      ${props => props.theme.bigScreenBreakpoint} {
          font-size: 12px;
       }
    }
