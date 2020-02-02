@@ -4,12 +4,12 @@ import { setAlpha, setLightness, setSaturation } from './functions';
 const StyledPageWithSidebar = styled.section`
    display: flex;
    flex-wrap: wrap;
-   @media screen and (min-width: ${props => props.theme.desktopBreakpoint}) {
+   ${props => props.theme.mobileBreakpoint} {
       flex-wrap: nowrap;
    }
    .sidebar {
       flex-basis: 100%;
-      ${props => props.theme.desktopBreakpoint} {
+      ${props => props.theme.mobileBreakpoint} {
          flex-basis: 25%;
       }
       ${props => props.theme.bigScreenBreakpoint} {
@@ -18,7 +18,7 @@ const StyledPageWithSidebar = styled.section`
    }
    .mainSection {
       flex-basis: 100%;
-      ${props => props.theme.desktopBreakpoint} {
+      ${props => props.theme.mobileBreakpoint} {
          flex-basis: 75%;
       }
       ${props => props.theme.bigScreenBreakpoint} {
@@ -27,7 +27,7 @@ const StyledPageWithSidebar = styled.section`
       flex-grow: 1;
       position: relative;
       padding: 2rem 0;
-      ${props => props.theme.desktopBreakpoint} {
+      ${props => props.theme.mobileBreakpoint} {
          max-height: 100%;
          overflow: hidden;
          ${props => props.theme.scroll};

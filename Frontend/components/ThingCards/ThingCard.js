@@ -12,7 +12,7 @@ import AuthorLink from '../ThingParts/AuthorLink';
 const StyledThingCard = styled.div`
    width: 100%;
    padding: 2rem;
-   max-width: 60rem;
+   max-width: ${props => props.theme.mobileBPWidth};;
    background: ${props => setLightness(props.theme.black, 1)};
    border: 2px solid ${props => setAlpha(props.theme.lowContrastGrey, 0.15)};
    box-shadow: 0 4px 4px
@@ -92,7 +92,7 @@ const ThingCard = props => {
    return (
       <ThingCardContext.Provider value={data}>
          <StyledThingCard
-            className="thingCard"
+            className="regularThingCard thingCard"
             style={{ borderTop: `0.5rem solid ${highlightColor}` }}
          >
             <Link href={{ pathname: '/thing', query: { id } }}>

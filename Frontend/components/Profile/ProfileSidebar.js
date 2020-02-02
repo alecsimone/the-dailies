@@ -27,95 +27,100 @@ const CONFIRM_FRIEND_REQUEST_MUTATION = gql`
 
 const StyledProfileSidebar = styled.div`
    padding: 0 2rem;
-   .avatarWrapper {
-      position: relative;
-      .avatarCover {
-         position: absolute;
-         left: calc(50% - 15rem);
-         width: 30rem;
-         top: 0;
-         height: 100%;
-         background: ${props => setAlpha(props.theme.black, 0.75)};
-         display: flex;
-         align-items: center;
-         justify-content: stretch;
-         clip-path: circle(calc(15rem + 2px) at center);
-         opacity: 0;
-         img {
-            cursor: pointer;
-         }
-         &.editable {
-            opacity: 0.9;
-         }
-         img.edit {
-            width: 4rem;
-            margin: auto;
-         }
-         .avatarInputWrapper {
+   .profileBody {
+      max-width: 60rem;
+      margin: auto;
+      .avatarWrapper {
+         position: relative;
+         .avatarCover {
+            position: absolute;
+            left: calc(50% - 15rem);
+            width: 30rem;
+            top: 0;
+            height: 100%;
+            background: ${props => setAlpha(props.theme.black, 0.75)};
             display: flex;
             align-items: center;
-            width: 28rem;
-            margin: auto;
-            input {
-               background: ${props => props.theme.black};
-               height: 3.5rem;
-               font-size: 1.5rem;
-               flex-grow: 1;
+            justify-content: stretch;
+            clip-path: circle(calc(15rem + 2px) at center);
+            opacity: 0;
+            img {
+               cursor: pointer;
             }
-            img.cancel {
-               width: ${props => props.theme.smallText};
-               margin-left: 1rem;
-               opacity: 1;
-               filter: saturate(50%);
+            &.editable {
+               opacity: 0.9;
             }
-         }
-         &:hover {
-            opacity: 0.9;
-         }
-      }
-      img.avatar {
-         display: block;
-         width: 30rem;
-         height: 30rem;
-         object-fit: cover;
-         max-width: 100%;
-         border-radius: 100%;
-         margin: auto;
-      }
-   }
-   .friendsDisplay {
-      font-size: ${props => props.theme.bigText};
-      text-align: center;
-   }
-   .friendButtonWrapper {
-      text-align: center;
-      margin: 2rem 0;
-      button {
-         padding: 1rem 2rem;
-         font-size: ${props => props.theme.smallText};
-         background: ${props => props.theme.majorColor};
-         &.active {
+            img.edit {
+               width: 4rem;
+               margin: auto;
+            }
+            .avatarInputWrapper {
+               display: flex;
+               align-items: center;
+               width: 28rem;
+               margin: auto;
+               input {
+                  background: ${props => props.theme.black};
+                  height: 3.5rem;
+                  font-size: 1.5rem;
+                  flex-grow: 1;
+               }
+               img.cancel {
+                  width: ${props => props.theme.smallText};
+                  margin-left: 1rem;
+                  opacity: 1;
+                  filter: saturate(50%);
+               }
+            }
             &:hover {
-               background: ${props => setLightness(props.theme.majorColor, 30)};
+               opacity: 0.9;
+            }
+         }
+         img.avatar {
+            display: block;
+            width: 30rem;
+            height: 30rem;
+            object-fit: cover;
+            max-width: 100%;
+            border-radius: 100%;
+            margin: auto;
+         }
+      }
+      .friendsDisplay {
+         font-size: ${props => props.theme.bigText};
+         text-align: center;
+      }
+      .friendButtonWrapper {
+         text-align: center;
+         margin: 2rem 0;
+         button {
+            padding: 1rem 2rem;
+            font-size: ${props => props.theme.smallText};
+            background: ${props => props.theme.majorColor};
+            &.active {
+               &:hover {
+                  background: ${props =>
+                     setLightness(props.theme.majorColor, 30)};
+               }
             }
          }
       }
-   }
-   .field {
-      margin: 1rem 0;
-      display: flex;
-      align-items: center;
-      input {
-         font-size: ${props => props.theme.smallText};
-      }
-      img.edit,
-      img.cancel {
-         width: ${props => props.theme.smallText};
-         margin-left: 1rem;
-         opacity: 0.4;
-         cursor: pointer;
-         &:hover {
-            opacity: 0.8;
+      .field {
+         margin: 1rem 0;
+         display: flex;
+         align-items: center;
+         input {
+            font-size: ${props => props.theme.smallText};
+         }
+         img.edit,
+         img.cancel {
+            width: ${props => props.theme.smallText};
+            margin-left: 1rem;
+            opacity: 0.4;
+            cursor: pointer;
+            &:hover {
+               opacity: 0.8;
+            }
          }
       }
    }

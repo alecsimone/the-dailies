@@ -14,6 +14,7 @@ const StyledMemberCard = styled.article`
    padding: 1rem;
    border-radius: 0.5rem;
    max-width: 35rem;
+   width: 100%;
    min-width: 30rem;
    .cardLeft {
       line-height: 0;

@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import Masonry from 'react-masonry-css';
 import SmallThingCard from '../ThingCards/SmallThingCard';
 import ThingCard from '../ThingCards/ThingCard';
 import { setAlpha } from '../../styles/functions';
@@ -7,11 +8,18 @@ import { setAlpha } from '../../styles/functions';
 const StyledThings = styled.div`
    margin: auto;
    &.grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(40rem, 1fr));
-      grid-gap: 4rem;
-      justify-items: center;
-      align-items: start;
+      .masonryContainer {
+         display: flex;
+         margin-left: -2.5rem; /* gutter offset, negative */
+         width: auto;
+      }
+      .column {
+         padding-left: 2.5rem; /* gutter offset, positive */
+         background-clip: padding-box;
+         .thingCard {
+            margin-bottom: 3rem;
+         }
+      }
       h3 {
          font-size: 3.5rem;
       }
@@ -30,14 +38,26 @@ const StyledThings = styled.div`
    }
 `;
 
-const Things = props => {
-   const { things, displayType, cardSize } = props;
+const Things = ({ things, displayType, cardSize }) => {
    const thingCards = things.map(thing => {
       if (cardSize === 'regular') {
          return <ThingCard data={thing} key={thing.id} />;
       }
       return <SmallThingCard data={thing} key={thing.id} />;
    });
+   if (displayType === 'grid') {
+      return (
+         <StyledThings className={`things ${displayType}`}>
+            <Masonry
+               breakpointCols={{ default: 3, 1800: 2, 1280: 1 }}
+               className="masonryContainer"
+               columnClassName="column"
+            >
+               {thingCards}
+            </Masonry>
+         </StyledThings>
+      );
+   }
    return (
       <StyledThings className={`things ${displayType}`}>
          {thingCards}

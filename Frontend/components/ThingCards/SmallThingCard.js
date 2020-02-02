@@ -84,7 +84,7 @@ const SmallThingCard = props => {
    return (
       <Link href={{ pathname: '/thing', query: { id } }}>
          <StyledSmallThingCard
-            className="smallThingCard"
+            className="smallThingCard thingCard"
             style={{ borderLeft: `0.5rem solid ${highlightColor}` }}
          >
             <img

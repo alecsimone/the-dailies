@@ -23,9 +23,9 @@ const theme = {
    lowContrastGrey: 'hsl(210, 10%, 30%)',
    highContrastGrey: 'hsl(30, 10%, 60%)',
 
-   mobileBPWidth: '800px',
-   mobileBPWidthRaw: 800,
-   mobileBreakpoint: '@media screen and (min-width: 800px)',
+   mobileBPWidth: '900px',
+   mobileBPWidthRaw: 900,
+   mobileBreakpoint: '@media screen and (min-width: 900px)',
 
    desktopBPWidth: '1280px',
    desktopBPWidthRaw: 1280,
