@@ -85,7 +85,7 @@ const BottomBar = () => {
             className="bottomBarButton"
             onClick={() => {
                setInputPlaceholder(
-                  inputPlaceholder === 'Add Post' ? false : 'Add Post'
+                  inputPlaceholder === 'Post Title' ? false : 'Post Title'
                );
             }}
          >
