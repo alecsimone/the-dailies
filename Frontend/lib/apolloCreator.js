@@ -10,18 +10,9 @@ import { getMainDefinition } from 'apollo-utilities';
 import { endpoint, endpointNoHTTP } from '../config';
 
 function createClient({ headers }) {
-   let cache;
-   if (process.browswer) {
-      cache = new InMemoryCache().restore(window.__APOLLO_STATE__);
-   } else {
-      cache = new InMemoryCache();
-   }
+   const cache = new InMemoryCache();
    cache.writeData({
-      data: {
-         modalOpen: false,
-         modalContent: "You shouldn't be seeing this",
-         sidebarOpen: true
-      }
+      data: {}
    });
 
    const request = async operation => {

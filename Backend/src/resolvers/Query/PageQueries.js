@@ -159,3 +159,47 @@ async function publicThings(parent, { orderBy = 'id_DESC' }, ctx, info) {
    return things;
 }
 exports.publicThings = publicThings;
+
+async function search(parent, { string }, ctx, info) {
+   const foundThings = await ctx.db.query.things(
+      {
+         orderBy: 'id_DESC',
+         where: {
+            OR: [
+               {
+                  title_contains: string
+               },
+               {
+                  link_contains: string
+               },
+               {
+                  content_some: {
+                     content_contains: string
+                  }
+               },
+               {
+                  partOfTags_some: {
+                     title_contains: string
+                  }
+               },
+               {
+                  comments_some: {
+                     comment_contains: string
+                  }
+               },
+               {
+                  author: {
+                     displayName_contains: string
+                  }
+               }
+            ]
+         }
+      },
+      info
+   );
+   const safeThings = foundThings.filter(thing =>
+      canSeeThing(ctx.req.memberId, thing)
+   );
+   return safeThings;
+}
+exports.search = search;

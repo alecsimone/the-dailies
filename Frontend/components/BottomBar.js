@@ -1,7 +1,10 @@
 import styled from 'styled-components';
 import { useState } from 'react';
+import { useMutation } from '@apollo/react-hooks';
 import Link from 'next/link';
+import Router from 'next/router';
 import { setAlpha, setLightness } from '../styles/functions';
+import { SET_THING_TITLE_MUTATION } from './ThingParts/TitleBar';
 
 const StyledBottomBar = styled.section`
    width: 100%;
@@ -61,7 +64,27 @@ const StyledBottomBar = styled.section`
 `;
 
 const BottomBar = () => {
-   const [inputPlaceholder, setInputPlaceholder] = useState('');
+   const plusPlaceholder = 'Post Title';
+   const searchPlaceholder = 'Search';
+   const [inputPlaceholder, setInputPlaceholder] = useState(false);
+   const [inputContent, setInputContent] = useState('');
+
+   const [setThingTitle] = useMutation(SET_THING_TITLE_MUTATION, {
+      variables: {
+         title: inputContent,
+         thingID: 'new'
+      },
+      onCompleted: data => {
+         Router.push({
+            pathname: '/thing',
+            query: {
+               id: data.setThingTitle.id
+            }
+         });
+         setInputPlaceholder(false);
+      }
+   });
+
    return (
       <StyledBottomBar>
          <div
@@ -69,13 +92,46 @@ const BottomBar = () => {
                inputPlaceholder == false ? ' hidden' : ''
             }`}
          >
-            <input type="text" placeholder={inputPlaceholder} />
+            <form
+               onSubmit={e => {
+                  e.preventDefault();
+                  if (inputPlaceholder === searchPlaceholder) {
+                     Router.push({
+                        pathname: '/search',
+                        query: {
+                           s: inputContent
+                        }
+                     });
+                     setInputPlaceholder(false);
+                     setInputContent('');
+                  } else if (inputPlaceholder === plusPlaceholder) {
+                     setThingTitle();
+                     setInputPlaceholder('Creating Thing...');
+                     setInputContent('');
+                  }
+               }}
+            >
+               <input
+                  type="text"
+                  placeholder={inputPlaceholder}
+                  value={inputContent}
+                  onChange={e => setInputContent(e.target.value)}
+               />
+            </form>
          </div>
          <div
             className="bottomBarButton"
             onClick={() => {
+               if (
+                  inputPlaceholder !== searchPlaceholder &&
+                  inputPlaceholder !== false
+               ) {
+                  setInputContent('');
+               }
                setInputPlaceholder(
-                  inputPlaceholder === 'Search' ? false : 'Search'
+                  inputPlaceholder === searchPlaceholder
+                     ? false
+                     : searchPlaceholder
                );
             }}
          >
@@ -87,8 +143,14 @@ const BottomBar = () => {
          <div
             className="bottomBarButton"
             onClick={() => {
+               if (
+                  inputPlaceholder !== plusPlaceholder &&
+                  inputPlaceholder !== false
+               ) {
+                  setInputContent('');
+               }
                setInputPlaceholder(
-                  inputPlaceholder === 'Post Title' ? false : 'Post Title'
+                  inputPlaceholder === plusPlaceholder ? false : plusPlaceholder
                );
             }}
          >

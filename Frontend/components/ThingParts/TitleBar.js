@@ -15,6 +15,7 @@ const SET_THING_TITLE_MUTATION = gql`
       }
    }
 `;
+export { SET_THING_TITLE_MUTATION };
 
 const StyledTitleBar = styled.div`
    padding: 0 0.5rem;
