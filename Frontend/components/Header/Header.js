@@ -26,16 +26,18 @@ const StyledHeader = styled.div`
    .headerContents {
       display: grid;
       grid-template-columns: auto 1fr;
+      align-items: center;
       .navButtons {
          display: none;
       }
       ${props => props.theme.mobileBreakpoint} {
+         padding: 0 4rem;
          grid-template-columns: 1fr auto 1fr;
          .navButtons {
             display: block;
          }
       }
-      padding: 0 4rem;
+      padding: 0 2rem;
       margin: auto;
       .memberColumn {
          text-align: right;
