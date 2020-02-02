@@ -9,6 +9,7 @@ const StyledPageWithSidebar = styled.section`
       flex-wrap: nowrap;
       overflow: hidden;
    }
+   align-content: flex-start;
    max-height: 100%;
    .sidebar {
       flex-basis: 100%;

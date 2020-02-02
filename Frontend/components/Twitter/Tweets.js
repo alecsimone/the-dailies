@@ -114,7 +114,7 @@ const StyledTweets = styled.section`
             }
             .tweetsContainer {
                ${props => props.theme.scroll};
-               max-height: calc(100vh - 8rem);
+               max-height: calc(100vh - 20rem);
                padding: 0;
                ${props => props.theme.mobileBreakpoint} {
                   max-height: calc(100vh - 22rem);

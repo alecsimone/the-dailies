@@ -3,7 +3,6 @@ import gql from 'graphql-tag';
 import { useQuery, useLazyQuery } from '@apollo/react-hooks';
 import { useState } from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
 import Router from 'next/router';
 import StyledPageWithSidebar from '../../styles/StyledPageWithSidebar';
 import Sidebar from '../Sidebar';
@@ -11,7 +10,6 @@ import TwitterSidebar from './TwitterSidebar';
 import Tweets, { filterTweets } from './Tweets';
 import LoadingRing from '../LoadingRing';
 import ErrorMessage from '../ErrorMessage';
-import { setAlpha } from '../../styles/functions';
 import { convertISOtoAgo } from '../../lib/ThingHandling';
 
 const GET_TWITTER_LISTS = gql`

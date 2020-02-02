@@ -8,7 +8,7 @@ const StyledSidebar = styled.section`
       .sidebarContainer {
          display: none;
       }
-      ${props => props.theme.desktopBreakpoint} {
+      ${props => props.theme.mobileBreakpoint} {
          max-width: 3rem;
          .sidebarHeader {
             position: absolute;
@@ -61,7 +61,7 @@ const StyledSidebar = styled.section`
          }
          &.toggle {
             max-width: 6rem;
-            ${props => props.theme.desktopBreakpoint} {
+            ${props => props.theme.mobileBreakpoint} {
                max-width: 3rem;
             }
             line-height: 1;
@@ -77,7 +77,7 @@ const StyledSidebar = styled.section`
    .sidebarContainer {
       position: relative;
       .sidebarContent {
-         ${props => props.theme.desktopBreakpoint} {
+         ${props => props.theme.mobileBreakpoint} {
             position: absolute;
             top: 0;
             left: 0;
