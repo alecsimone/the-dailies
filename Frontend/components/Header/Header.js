@@ -25,7 +25,16 @@ const StyledHeader = styled.div`
    padding: 0.5rem 0;
    .headerContents {
       display: grid;
-      grid-template-columns: 1fr auto 1fr;
+      grid-template-columns: auto 1fr;
+      .navButtons {
+         display: none;
+      }
+      ${props => props.theme.mobileBreakpoint} {
+         grid-template-columns: 1fr auto 1fr;
+         .navButtons {
+            display: block;
+         }
+      }
       padding: 0 4rem;
       margin: auto;
       .memberColumn {
