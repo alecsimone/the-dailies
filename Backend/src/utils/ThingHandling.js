@@ -101,6 +101,7 @@ async function editPermissionGate(dataObj, id, type, ctx) {
    }
    return true;
 }
+exports.editPermissionGate = editPermissionGate;
 
 async function properUpdateStuff(dataObj, id, type, ctx) {
    if (id === 'new') {

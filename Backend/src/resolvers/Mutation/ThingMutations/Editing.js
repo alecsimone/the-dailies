@@ -2,9 +2,10 @@ const {
    properDeleteStuff,
    properUpdateStuff,
    isExplodingLink,
-   publishMeUpdate,
-   disabledCodewords
+   disabledCodewords,
+   editPermissionGate
 } = require('../../../utils/ThingHandling');
+const { publishMeUpdate} = require('../MemberMutations')
 const {
    loggedInGate,
    fullMemberGate,
@@ -352,3 +353,20 @@ async function editLink(parent, {link, id}, ctx, info) {
 
 }
 exports.editLink = editLink;
+
+async function deleteThing(parent, {id}, ctx, info) {
+   loggedInGate(ctx);
+   fullMemberGate(ctx.req.member);
+   editPermissionGate({}, ctx.req.memberId, 'Thing', ctx);
+
+   const deletedThing = await ctx.db.mutation.deleteThing({
+      where: {
+         id
+      }
+   },
+   info);
+
+   publishMeUpdate(ctx);
+   return deletedThing;
+}
+exports.deleteThing = deleteThing;

@@ -1,6 +1,9 @@
 import { useContext } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import gql from 'graphql-tag';
+import { useMutation } from '@apollo/react-hooks';
+import Router from 'next/router';
 import { ThingContext } from '../../pages/thing';
 import { convertISOtoAgo } from '../../lib/ThingHandling';
 import { setLightness, setAlpha } from '../../styles/functions';
@@ -10,9 +13,19 @@ import CategoryDropdown from './CategoryDropdown';
 import PrivacyDropdown from './PrivacyDropdown';
 import ThingSourceLink from './ThingSourceLink';
 
+const DELETE_THING_MUTATION = gql`
+   mutation DELETE_THING_MUTATION($id: ID!) {
+      deleteThing(id: $id) {
+         __typename
+         id
+      }
+   }
+`;
+
 const StyledThingMeta = styled.section`
    display: flex;
    justify-content: space-between;
+   align-items: center;
    flex-wrap: wrap;
    padding: 0 1rem;
    margin-top: 3rem;
@@ -84,6 +97,20 @@ const StyledThingMeta = styled.section`
          }
       }
    }
+   .trash {
+      width: 3rem;
+      height: 3rem;
+      cursor: pointer;
+      ${props => props.theme.mobileBreakpoint} {
+         opacity: 0.75;
+         &:hover {
+            opacity: 1;
+         }
+      }
+      &.deleting {
+         ${props => props.theme.twist};
+      }
+   }
    .link {
       font-size: ${props => props.theme.smallText};
       width: 100%;
@@ -139,6 +166,18 @@ const ThingMeta = props => {
       updatedAt
    } = useContext(ThingContext);
 
+   const [deleteThing, { loading: deleting }] = useMutation(
+      DELETE_THING_MUTATION,
+      {
+         onCompleted: data => {
+            console.log(data);
+            Router.push({
+               pathname: '/'
+            });
+         }
+      }
+   );
+
    if (id == null) {
       return (
          <StyledThingMeta>
@@ -155,6 +194,19 @@ const ThingMeta = props => {
                <span className="ago">{convertISOtoAgo(createdAt)} ago </span>
             )}
          </div>
+         <img
+            className={deleting ? 'trash deleting' : 'trash'}
+            src="/trash.png"
+            onClick={() => {
+               if (confirm('Are you sure you want to delete this thing?')) {
+                  deleteThing({
+                     variables: {
+                        id
+                     }
+                  });
+               }
+            }}
+         />
          <div className="selections metaPiece">
             {canEdit ? (
                <CategoryDropdown

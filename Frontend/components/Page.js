@@ -52,6 +52,12 @@ const theme = {
       animationDuration: '1000ms',
       animationIterationCount: 'infinite',
       animationTimingFunction: 'linear'
+   },
+   twist: {
+      animationName: 'twist',
+      animationDuration: '1000ms',
+      animationIterationCount: 'infinite',
+      animationTimingFunction: 'linear'
    }
 };
 
@@ -197,6 +203,14 @@ const GlobalStyle = createGlobalStyle`
       }
       to {
          transform: rotate(0deg);
+      }
+   }
+   @keyframes twist {
+      from {
+         transform: rotateY(360deg);
+      }
+      to {
+         transform: rotateY(0deg);
       }
    }
    .tweet {
