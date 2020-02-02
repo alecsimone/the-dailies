@@ -129,5 +129,6 @@ category.propTypes = {
       title: PropTypes.string.isRequired
    }).isRequired
 };
+category.getInitialProps = async ctx => ({ query: ctx.query });
 
 export default category;

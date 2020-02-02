@@ -15,6 +15,7 @@ const StyledThingMeta = styled.section`
    justify-content: space-between;
    flex-wrap: wrap;
    padding: 0 1rem;
+   margin-top: 3rem;
    color: ${props => setLightness(props.theme.lowContrastGrey, 40)};
    ${props => props.theme.mobileBreakpoint} {
       padding-left: 1.25rem;
@@ -55,6 +56,25 @@ const StyledThingMeta = styled.section`
    }
    .info {
       font-size: ${props => props.theme.smallText};
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      .authorBlock {
+         display: inline-flex;
+         align-items: center;
+         margin-right: 1rem;
+         flex-grow: 0;
+         cursor: pointer;
+         .authorLink {
+            margin-bottom: 2px;
+         }
+         .authorImg {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 100%;
+            margin-right: 1rem;
+         }
+      }
       a.authorLink,
       a.authorLink:visited {
          color: ${props =>
@@ -130,13 +150,9 @@ const ThingMeta = props => {
    return (
       <StyledThingMeta className="thingMeta">
          <div className="info">
+            {author && <AuthorLink author={author} />}{' '}
             {createdAt && (
                <span className="ago">{convertISOtoAgo(createdAt)} ago </span>
-            )}
-            {author && (
-               <span className="author">
-                  by <AuthorLink author={author} />
-               </span>
             )}
          </div>
          <div className="selections">

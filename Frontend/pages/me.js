@@ -65,5 +65,6 @@ const me = ({ query }) => {
    );
 };
 me.propTypes = {};
+me.getInitialProps = async ctx => ({ query: ctx.query });
 
 export default me;

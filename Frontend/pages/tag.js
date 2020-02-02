@@ -130,5 +130,6 @@ tag.propTypes = {
       title: PropTypes.string.isRequired
    }).isRequired
 };
+tag.getInitialProps = async ctx => ({ query: ctx.query });
 
 export default tag;

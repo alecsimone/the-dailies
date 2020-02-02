@@ -56,8 +56,8 @@ const StyledThingCard = styled.div`
                margin-bottom: 2px;
             }
             .authorImg {
-               width: 2.5rem;
-               height: 2.5rem;
+               width: 3rem;
+               height: 3rem;
                border-radius: 100%;
                margin-right: 1rem;
             }

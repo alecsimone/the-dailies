@@ -125,4 +125,6 @@ const SingleThing = props => {
    );
 };
 
+SingleThing.getInitialProps = async ctx => ({ query: ctx.query });
+
 export default SingleThing;

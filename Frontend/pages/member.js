@@ -100,5 +100,6 @@ member.propTypes = {
       title: PropTypes.string
    }).isRequired
 };
+member.getInitialProps = async ctx => ({ query: ctx.query });
 
 export default member;
