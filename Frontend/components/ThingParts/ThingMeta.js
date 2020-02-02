@@ -20,7 +20,7 @@ const StyledThingMeta = styled.section`
    ${props => props.theme.mobileBreakpoint} {
       padding-left: 1.25rem;
    }
-   div {
+   .metaPiece {
       margin: 2rem 0;
       flex-grow: 1;
       &:first-child {
@@ -149,13 +149,13 @@ const ThingMeta = props => {
 
    return (
       <StyledThingMeta className="thingMeta">
-         <div className="info">
+         <div className="info metaPiece">
             {author && <AuthorLink author={author} />}{' '}
             {createdAt && (
                <span className="ago">{convertISOtoAgo(createdAt)} ago </span>
             )}
          </div>
-         <div className="selections">
+         <div className="selections metaPiece">
             {canEdit ? (
                <CategoryDropdown
                   initialCategory={
@@ -164,7 +164,9 @@ const ThingMeta = props => {
                   id={id}
                />
             ) : (
-               <span className="uneditable">{partOfCategory.title}</span>
+               <span className="uneditable metaPiece">
+                  {partOfCategory.title}
+               </span>
             )}
             {canEdit ? (
                <PrivacyDropdown initialPrivacy={privacy} id={id} />
