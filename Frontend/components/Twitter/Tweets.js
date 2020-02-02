@@ -116,7 +116,7 @@ const StyledTweets = styled.section`
                ${props => props.theme.scroll};
                max-height: calc(100vh - 8rem);
                padding: 0;
-               ${props => props.theme.desktopBreakpoint} {
+               ${props => props.theme.mobileBreakpoint} {
                   max-height: calc(100vh - 22rem);
                   padding: 0 1rem;
                }
