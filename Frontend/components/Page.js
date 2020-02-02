@@ -200,7 +200,7 @@ const GlobalStyle = createGlobalStyle`
    }
    .tweet {
       margin: 3rem 0;
-      ${props => props.theme.desktopBreakpoint} {
+      ${props => props.theme.mobileBreakpoint} {
          margin: 5rem 1rem;
       }
       &:first-child {

@@ -10,7 +10,7 @@ import AuthorLink from '../ThingParts/AuthorLink';
 const StyledSmallThingCard = styled.article`
    margin: 0;
    width: 100%;
-   max-width: ${props => props.theme.desktopBPWidth};
+   max-width: ${props => props.theme.mobileBPWidth};
    display: inline-block;
    padding: 2rem 1rem;
    border: 1px solid ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};

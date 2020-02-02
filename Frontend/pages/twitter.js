@@ -54,5 +54,6 @@ twitter.propTypes = {
       listname: PropTypes.string
    })
 };
+twitter.getInitialProps = async ctx => ({ query: ctx.query });
 
 export default twitter;

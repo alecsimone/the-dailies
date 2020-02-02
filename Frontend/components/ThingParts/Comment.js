@@ -130,13 +130,10 @@ const StyledComment = styled.div`
          }
       }
       .buttons {
-         display: none;
-         ${props => props.theme.desktopBreakpoint} {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-items: space-between;
-         }
+         display: flex;
+         flex-direction: column;
+         align-items: center;
+         justify-items: space-between;
          img {
             width: 2rem;
             height: 2rem;

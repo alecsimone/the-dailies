@@ -5,7 +5,9 @@ import { useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Router from 'next/router';
+import StyledPageWithSidebar from '../../styles/StyledPageWithSidebar';
 import Sidebar from '../Sidebar';
+import TwitterSidebar from './TwitterSidebar';
 import Tweets, { filterTweets } from './Tweets';
 import LoadingRing from '../LoadingRing';
 import ErrorMessage from '../ErrorMessage';
@@ -46,86 +48,6 @@ const GET_FRESH_LISTS = gql`
       refreshLists {
          message
       }
-   }
-`;
-
-const StyledTwitterReader = styled.div`
-   display: flex;
-   flex-wrap: wrap;
-   ${props => props.theme.desktopBreakpoint} {
-      flex-wrap: nowrap;
-   }
-   .sidebar {
-      flex-basis: 100%;
-      ${props => props.theme.desktopBreakpoint} {
-         flex-basis: 25%;
-      }
-      ${props => props.theme.bigScreenBreakpoint} {
-         flex-basis: 20%;
-      }
-      .twitterSidebar {
-         padding: 0 2rem;
-      }
-      h5 {
-         font-size: ${props => props.theme.bigText};
-         position: relative;
-         margin: 1rem 0;
-         a.twitterName {
-            color: ${props => props.theme.secondaryAccent};
-         }
-      }
-      .listLink {
-         padding: 0.6rem 1rem;
-         border-radius: 3px;
-         line-height: 1;
-         &.selected {
-            background: ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
-         }
-         &.loading {
-            background: ${props => setAlpha(props.theme.majorColor, 0.1)};
-         }
-         cursor: pointer;
-         span {
-            color: ${props => props.theme.lowContrastGrey};
-            margin-left: 0.5rem;
-            font-weight: 300;
-         }
-      }
-      .updateLists {
-         font-size: ${props => props.theme.tinyText};
-         color: ${props => props.theme.lowContrastGrey};
-         margin-top: 2rem;
-         display: flex;
-         align-items: center;
-         img {
-            margin-left: 1rem;
-            width: ${props => props.theme.smallText};
-            opacity: 0.25;
-            cursor: pointer;
-            &:hover {
-               opacity: 0.6;
-            }
-            &.loading {
-               ${props => props.theme.spinBackward};
-            }
-         }
-      }
-   }
-   .tweetArea {
-      flex-basis: 100%;
-      ${props => props.theme.desktopBreakpoint} {
-         flex-basis: 75%;
-      }
-      ${props => props.theme.bigScreenBreakpoint} {
-         flex-basis: 80%;
-      }
-      flex-grow: 1;
-      position: relative;
-      ${props => props.theme.desktopBreakpoint} {
-         max-height: 100%;
-         overflow: hidden;
-      }
-      padding: 2rem;
    }
 `;
 
@@ -309,18 +231,16 @@ const TwitterReader = props => {
    }
 
    return (
-      <StyledTwitterReader>
+      <StyledPageWithSidebar>
          <Head>
             <title>Twitter Reader - OurDailies</title>
          </Head>
          <Sidebar
             extraColumnTitle="Tweets"
-            extraColumnContent={
-               <div className="twitterSidebar">{listElements}</div>
-            }
+            extraColumnContent={<TwitterSidebar listElements={listElements} />}
          />
-         <div className="tweetArea">{content}</div>
-      </StyledTwitterReader>
+         <div className="mainSection">{content}</div>
+      </StyledPageWithSidebar>
    );
 };
 TwitterReader.propTypes = {

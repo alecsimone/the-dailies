@@ -30,11 +30,11 @@ const Sidebar = props => {
    //    }
    // }, [extraColumnTitle]);
 
-   const { desktopBPWidthRaw } = useContext(ThemeContext);
+   const { mobileBPWidthRaw } = useContext(ThemeContext);
    const [isOpen, setIsOpen] = useState(
       !(
          process.browser &&
-         window.outerWidth <= desktopBPWidthRaw &&
+         window.outerWidth <= mobileBPWidthRaw &&
          extraColumnTitle != 'Tag' &&
          extraColumnTitle != 'Category' &&
          extraColumnTitle != 'Me' &&
@@ -87,9 +87,9 @@ const Sidebar = props => {
       );
    });
    const openButton =
-      process.browser && window.innerWidth <= desktopBPWidthRaw ? 'v' : '>';
+      process.browser && window.innerWidth <= mobileBPWidthRaw ? 'v' : '>';
    const closeButton =
-      process.browser && window.innerWidth <= desktopBPWidthRaw ? '^' : '<';
+      process.browser && window.innerWidth <= mobileBPWidthRaw ? '^' : '<';
    const toggleButton = (
       <div
          className="headerTab toggle"

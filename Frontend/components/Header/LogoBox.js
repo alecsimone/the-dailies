@@ -13,7 +13,7 @@ const StyledLogoBox = styled.div`
    a,
    a:visited {
       display: none;
-      ${props => props.theme.desktopBreakpoint} {
+      ${props => props.theme.mobileBreakpoint} {
          display: block;
       }
       font-size: ${props => props.theme.bigText};

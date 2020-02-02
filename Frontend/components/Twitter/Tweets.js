@@ -20,7 +20,7 @@ const StyledTweets = styled.section`
    top: 0;
    left: 0%;
    width: 100%;
-   ${props => props.theme.desktopBreakpoint} {
+   ${props => props.theme.mobileBreakpoint} {
       left: 2%;
       width: 96%;
    }
