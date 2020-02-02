@@ -20,13 +20,19 @@ const StyledSmallThingCard = styled.article`
    display: flex;
    align-items: center;
    cursor: pointer;
-   opacity: 0.9;
    ${props => props.theme.mobileBreakpoint} {
+      opacity: 0.9;
       border-radius: 0 2px 2px 0;
    }
    &:hover {
       opacity: 1;
       background: hsla(0, 0%, 100%, 0.02);
+      .meta {
+         a,
+         a:visited {
+            color: ${props => setLightness(props.theme.mainText, 90)};
+         }
+      }
    }
    img {
       width: 5rem;
@@ -39,13 +45,10 @@ const StyledSmallThingCard = styled.article`
       a,
       a:visited {
          color: ${props => setLightness(props.theme.mainText, 75)};
-         &:hover {
-            color: ${props => setLightness(props.theme.mainText, 90)};
-         }
       }
       .tinyMeta {
          font-size: ${props => props.theme.tinyText};
-         color: ${props => setLightness(props.theme.lowContrastGrey, 35)};
+         color: ${props => setLightness(props.theme.lowContrastGrey, 60)};
          font-weight: 300;
          margin-top: 0.6rem;
          display: flex;
@@ -123,8 +126,7 @@ const SmallThingCard = props => {
                      : title}
                </a>
                <div className="tinyMeta">
-                  <AuthorLink author={author} /> {timeAgo} ago in{' '}
-                  {category.title}. It's{' '}
+                  <AuthorLink author={author} /> {timeAgo} ago. It's{' '}
                   {privacy === 'Public' || privacy === 'Private'
                      ? privacy
                      : `for ${privacy} only`}
