@@ -2,8 +2,10 @@ import PropTypes from 'prop-types';
 import psl from 'psl';
 import { extractHostname } from '../../lib/UrlHandling';
 
-const ShortLink = props => {
-   const { link, limit } = props;
+const ShortLink = ({ link, limit }) => {
+   if (link == null) {
+      return null;
+   }
 
    const hostName = extractHostname(link);
    const { domain } = psl.parse(hostName);

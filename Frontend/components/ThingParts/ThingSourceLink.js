@@ -20,7 +20,7 @@ const ThingSourceLink = ({ canEdit }) => {
    const { id, author, link } = useContext(ThingContext);
    const { me } = useContext(MemberContext);
 
-   const [editable, setEditable] = useState(link == null);
+   const [editable, setEditable] = useState(false);
    const [currentLink, setCurrentLink] = useState(link);
 
    const [editLink, { loading: editLinkLoading }] = useMutation(
@@ -59,6 +59,8 @@ const ThingSourceLink = ({ canEdit }) => {
             />
          </form>
       );
+   } else if (link == null) {
+      content = '';
    } else {
       content = <ShortLink link={link} limit={100} />;
    }
