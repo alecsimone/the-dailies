@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { useState } from 'react';
+import Link from 'next/link';
 import { setAlpha, setLightness } from '../styles/functions';
 
 const StyledBottomBar = styled.section`
@@ -80,7 +81,9 @@ const BottomBar = () => {
          >
             S
          </div>
-         <div className="bottomBarButton">H</div>
+         <Link href="/">
+            <div className="bottomBarButton">H</div>
+         </Link>
          <div
             className="bottomBarButton"
             onClick={() => {
