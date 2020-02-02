@@ -4,13 +4,19 @@ import { setAlpha, setLightness, setSaturation } from './functions';
 const StyledPageWithSidebar = styled.section`
    display: flex;
    flex-wrap: wrap;
+   ${props => props.theme.scroll};
    ${props => props.theme.mobileBreakpoint} {
       flex-wrap: nowrap;
+      overflow: hidden;
    }
+   max-height: 100%;
    .sidebar {
       flex-basis: 100%;
       ${props => props.theme.mobileBreakpoint} {
          flex-basis: 25%;
+         max-height: 100%;
+         overflow: hidden;
+         ${props => props.theme.scroll};
       }
       ${props => props.theme.bigScreenBreakpoint} {
          flex-basis: 20%;

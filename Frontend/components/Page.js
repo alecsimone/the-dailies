@@ -2,6 +2,7 @@ import styled, { ThemeProvider, createGlobalStyle } from 'styled-components';
 import PropTypes from 'prop-types';
 import Meta from './Header/Meta';
 import Header from './Header/Header';
+import BottomBar from './BottomBar';
 import MemberProvider from './Account/MemberProvider';
 import { setAlpha, setLightness, setSaturation } from '../styles/functions';
 
@@ -369,10 +370,8 @@ const GlobalStyle = createGlobalStyle`
 const StyledPage = styled.div`
    position: relative;
    display: grid;
-   grid-template-rows: auto 1fr;
-   ${props => props.theme.desktopBreakpoint} {
-      height: 100vh;
-   }
+   grid-template-rows: auto 1fr auto;
+   height: 100vh;
 `;
 
 const Page = ({ children }) => (
@@ -385,6 +384,7 @@ const Page = ({ children }) => (
                <GlobalStyle />
                {children}
             </>
+            <BottomBar />
          </StyledPage>
       </ThemeProvider>
    </MemberProvider>

@@ -38,12 +38,12 @@ const StyledThings = styled.div`
    }
 `;
 
-const Things = ({ things, displayType, cardSize }) => {
+const Things = ({ things, displayType, cardSize, noPic }) => {
    const thingCards = things.map(thing => {
       if (cardSize === 'regular') {
          return <ThingCard data={thing} key={thing.id} />;
       }
-      return <SmallThingCard data={thing} key={thing.id} />;
+      return <SmallThingCard data={thing} key={thing.id} noPic={noPic} />;
    });
    if (displayType === 'grid') {
       return (
@@ -67,7 +67,8 @@ const Things = ({ things, displayType, cardSize }) => {
 Things.propTypes = {
    things: PropTypes.array.isRequired,
    displayType: PropTypes.oneOf(['list', 'grid']),
-   cardSize: PropTypes.oneOf(['regular', 'small'])
+   cardSize: PropTypes.oneOf(['regular', 'small']),
+   noPic: PropTypes.bool
 };
 
 export default Things;

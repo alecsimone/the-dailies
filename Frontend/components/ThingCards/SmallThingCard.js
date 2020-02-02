@@ -91,7 +91,8 @@ const SmallThingCard = props => {
          createdAt,
          author,
          privacy
-      }
+      },
+      noPic
    } = props;
 
    const { majorColor } = useContext(ThemeContext);
@@ -126,7 +127,8 @@ const SmallThingCard = props => {
                      : title}
                </a>
                <div className="tinyMeta">
-                  <AuthorLink author={author} /> {timeAgo} ago. It's{' '}
+                  <AuthorLink author={author} noPic={noPic} /> {timeAgo} ago.
+                  It's{' '}
                   {privacy === 'Public' || privacy === 'Private'
                      ? privacy
                      : `for ${privacy} only`}

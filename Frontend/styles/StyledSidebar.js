@@ -22,7 +22,6 @@ const StyledSidebar = styled.section`
    border-right: 2px solid
       ${props => setAlpha(props.theme.highContrastGrey, 0.1)};
    position: relative;
-   max-height: 100%;
    display: grid;
    grid-template-rows: auto 1fr;
    ${props => props.theme.desktopBreakpoint} {

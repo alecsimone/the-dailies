@@ -1,15 +1,14 @@
 import Link from 'next/link';
 import PropTypes from 'prop-types';
 
-const AuthorLink = props => {
-   const { author } = props;
-   if (!author) {
+const AuthorLink = ({ author, noPic }) => {
+   if (author == null) {
       return null;
    }
    return (
       <Link href={{ pathname: '/member', query: { id: author.id } }}>
          <div className="authorBlock">
-            <img className="authorImg" src={author.avatar} />
+            {!noPic && <img className="authorImg" src={author.avatar} />}
             <a className="authorLink">{author.displayName}</a>
          </div>
       </Link>

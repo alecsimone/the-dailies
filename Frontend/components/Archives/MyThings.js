@@ -16,7 +16,9 @@ const MyThings = () => {
    const myThings = me.createdThings;
    myThings.sort((a, b) => (a.id < b.id ? 1 : -1));
 
-   return <Things things={myThings} displayType="list" cardSize="small" />;
+   return (
+      <Things things={myThings} displayType="list" cardSize="small" noPic />
+   );
 };
 MyThings.propTypes = {};
 
