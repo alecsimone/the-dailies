@@ -61,7 +61,7 @@ const hashtagReplacer = text => {
 };
 
 const replyRemover = (text, displayTextRange) =>
-   text.substring(displayTextRange[0], displayTextRange[1]);
+   console.log(text, displayTextRange) || text.substring(displayTextRange[0]);
 
 const Tweet = props => {
    const {
