@@ -30,7 +30,7 @@ const StyledBottomBar = styled.section`
       input {
          width: 100%;
          margin-top: 1.75rem;
-         padding: 0 2rem;
+         padding: 0 1.5rem;
          height: 4.5rem;
          background: ${props => setAlpha(props.theme.lowContrastGrey, 0.2)};
          border-radius: 0;

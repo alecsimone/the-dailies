@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Link from 'next/link';
 import styled from 'styled-components';
+import { argsToArgsConfig } from 'graphql/type/definition';
 
 const StyledTags = styled.div`
    display: inline-block;
@@ -27,10 +28,12 @@ const StyledTags = styled.div`
 const Tags = props => {
    const { tags } = props;
 
+   const cleanTags = tags.filter(tag => tag.title != '');
+
    let tagElements;
    if (tags) {
-      tagElements = tags.map((tag, index) => {
-         if (index < tags.length - 1)
+      tagElements = cleanTags.map((tag, index) => {
+         if (index < cleanTags.length - 1)
             return (
                <React.Fragment key={tag.id}>
                   <Link
