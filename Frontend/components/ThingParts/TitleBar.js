@@ -17,7 +17,10 @@ const SET_THING_TITLE_MUTATION = gql`
 `;
 
 const StyledTitleBar = styled.div`
-   padding: 0;
+   padding: 0 0.5rem;
+   ${props => props.theme.mobileBreakpoint} {
+      padding: 0;
+   }
    margin-top: 1rem;
    h3,
    input {

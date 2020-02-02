@@ -14,9 +14,32 @@ const StyledThingMeta = styled.section`
    display: flex;
    justify-content: space-between;
    flex-wrap: wrap;
-   padding-left: 1.25rem;
-   padding-top: 0.25rem;
+   padding: 0 1rem;
    color: ${props => setLightness(props.theme.lowContrastGrey, 40)};
+   ${props => props.theme.mobileBreakpoint} {
+      padding-left: 1.25rem;
+   }
+   div {
+      margin: 2rem 0;
+      flex-grow: 1;
+      &:first-child {
+         margin-top: 0.5rem;
+      }
+      &.selections {
+         display: flex;
+         justify-content: space-between;
+      }
+      ${props => props.theme.mobileBreakpoint} {
+         margin: 0;
+         &:first-child {
+            margin-top: 0;
+         }
+         &.selections {
+            display: inline-block;
+            flex-grow: 0;
+         }
+      }
+   }
    select,
    span.uneditable {
       color: ${props => setLightness(props.theme.lowContrastGrey, 40)};
@@ -31,7 +54,7 @@ const StyledThingMeta = styled.section`
       padding-right: 30px;
    }
    .info {
-      font-size: ${props => props.theme.tinyText};
+      font-size: ${props => props.theme.smallText};
       a.authorLink,
       a.authorLink:visited {
          color: ${props =>

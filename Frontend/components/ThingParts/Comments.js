@@ -11,6 +11,10 @@ import { SINGLE_TAG_QUERY } from '../../pages/tag';
 import { SINGLE_CATEGORY_QUERY } from '../../pages/category';
 
 const StyledComments = styled.section`
+   padding: 0 1rem;
+   ${props => props.theme.mobileBreakpoint} {
+      padding: 0;
+   }
    header {
       text-align: center;
       margin: 3rem 0;

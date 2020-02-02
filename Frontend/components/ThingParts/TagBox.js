@@ -38,6 +38,10 @@ export { SEARCH_TAGS_QUERY };
 const StyledTagBox = styled.section`
    max-width: 100%;
    margin: 5rem 0;
+   padding: 0 1rem;
+   ${props => props.theme.mobileBreakpoint} {
+      padding: 0;
+   }
    .tagboxContainer {
       display: inline-block;
       position: relative;

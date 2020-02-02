@@ -12,8 +12,9 @@ import { setAlpha, setLightness, setSaturation } from '../../styles/functions';
 const StyledFullThing = styled.article`
    margin: 1rem 0;
    border-radius: 1rem;
-   padding: 2rem;
-   ${props => props.theme.desktopBreakpoint} {
+   padding: 2rem 0;
+   ${props => props.theme.mobileBreakpoint} {
+      padding: 2rem;
       max-width: 1440px;
       position: absolute;
       top: 2rem;
@@ -21,8 +22,8 @@ const StyledFullThing = styled.article`
       width: 94%;
       padding: 3rem;
    }
-   background: ${props => setLightness(props.theme.black, 1)};
    border: 2px solid ${props => setAlpha(props.theme.lowContrastGrey, 0.15)};
+   background: ${props => setLightness(props.theme.black, 1)};
    box-shadow: 0 4px 4px
       ${props => setAlpha(setLightness(props.theme.black, 1), 0.2)};
    &:after {

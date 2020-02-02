@@ -136,11 +136,16 @@ const EDIT_CONTENTPIECE_MUTATION = gql`
 `;
 
 const StyledContent = styled.section`
-   margin: 5rem 0;
+   margin: 3rem 0;
+   padding: 0 1rem;
    background: ${props => props.theme.black};
-   padding: 1rem 3rem;
-   border: 1px solid ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
+   border-top: 1px solid ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
    border-radius: 0.5rem;
+   ${props => props.theme.mobileBreakpoint} {
+      margin: 5rem 0;
+      padding: 1rem 3rem;
+      border: 1px solid ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
+   }
    p,
    .graph {
       margin: 1.8rem 0;
@@ -154,12 +159,16 @@ const StyledContent = styled.section`
    }
    .contentBlock {
       display: flex;
-      flex-wrap: nowrap;
+      flex-wrap: wrap;
       align-items: baseline;
       margin: 0.6rem 0;
       border-bottom: 1px solid
          ${props => setAlpha(props.theme.lowContrastGrey, 0.2)};
-      padding: 1rem 0;
+      padding: 0;
+      ${props => props.theme.mobileBreakpoint} {
+         flex-wrap: nowrap;
+         padding: 1rem 0;
+      }
       img.buttons {
          width: ${props => props.theme.smallText};
          opacity: 0.2;
