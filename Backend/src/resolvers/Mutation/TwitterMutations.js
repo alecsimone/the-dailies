@@ -6,6 +6,7 @@ const {
    getTwitterInfo
 } = require('../../utils/Twitter');
 const { loggedInGate, fullMemberGate } = require('../../utils/Authentication');
+const { properUpdateStuff } = require('../../utils/ThingHandling');
 
 async function initiateTwitterLogin(parent, args, ctx, info) {
    let message = false;
@@ -100,3 +101,36 @@ async function markTweetsSeen(parent, { listID, tweetIDs }, ctx, info) {
    return updatedMember;
 }
 exports.markTweetsSeen = markTweetsSeen;
+
+async function saveTweet(
+   parent,
+   { tweetURL, tweeter, tweetText, featuredImage },
+   ctx,
+   info
+) {
+   loggedInGate(ctx);
+   fullMemberGate(ctx.req.member);
+
+   const dataObj = {
+      link: tweetURL,
+      content: {
+         create: {
+            content: tweetURL
+         }
+      }
+   };
+   const titleBody =
+      tweetText && tweetText.length > 100
+         ? `${tweetText.substring(0, 100).trim()}...`
+         : tweetText;
+   dataObj.title = `@${tweeter}: ${
+      titleBody !== '' ? titleBody : 'Saved Tweet'
+   }`;
+   if (featuredImage != null) {
+      dataObj.featuredImage = featuredImage;
+   }
+
+   const newThing = await properUpdateStuff(dataObj, 'new', 'Thing', ctx);
+   return newThing;
+}
+exports.saveTweet = saveTweet;

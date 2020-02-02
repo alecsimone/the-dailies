@@ -327,6 +327,9 @@ const GlobalStyle = createGlobalStyle`
          align-items: center;
          justify-content: space-between;
          opacity: 0.8;
+         a {
+            cursor: pointer;
+         }
          a.linkToOriginalTweet {
             color: ${props =>
                setAlpha(setLightness(props.theme.majorColor, 70), 0.9)};

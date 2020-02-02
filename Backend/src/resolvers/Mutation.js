@@ -26,7 +26,8 @@ const {
 const {
    initiateTwitterLogin,
    likeTweet,
-   markTweetsSeen
+   markTweetsSeen,
+   saveTweet
 } = require('./Mutation/TwitterMutations');
 
 const Mutations = {
@@ -53,7 +54,8 @@ const Mutations = {
    editProfile,
    sendFriendRequest,
    confirmFriendRequest,
-   ignoreFriendRequest
+   ignoreFriendRequest,
+   saveTweet
 };
 
 module.exports = Mutations;

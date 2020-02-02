@@ -5,11 +5,31 @@ import PropTypes from 'prop-types';
 import TweetGetter from './TweetGetter';
 import LinkyText from '../LinkyText';
 import { convertISOtoAgo } from '../../lib/ThingHandling';
+import { home } from '../../config';
 
 const LIKE_TWEET = gql`
    mutation LIKE_TWEET($tweetID: String!, $alreadyLiked: String!) {
       likeTweet(tweetID: $tweetID, alreadyLiked: $alreadyLiked) {
          message
+      }
+   }
+`;
+
+const SAVE_TWEET = gql`
+   mutation SAVE_TWEET(
+      $tweetURL: String!
+      $tweeter: String!
+      $tweetText: String
+      $featuredImage: String
+   ) {
+      saveTweet(
+         tweetURL: $tweetURL
+         tweeter: $tweeter
+         tweetText: $tweetText
+         featuredImage: $featuredImage
+      ) {
+         __typename
+         id
       }
    }
 `;
@@ -44,7 +64,6 @@ const replyRemover = (text, displayTextRange) =>
    text.substring(displayTextRange[0], displayTextRange[1]);
 
 const Tweet = props => {
-   console.log(props.tweet);
    const {
       tweet: {
          user,
@@ -69,6 +88,7 @@ const Tweet = props => {
       favorited || (retweetedTweet != null && retweetedTweet.favorited)
    );
    const [likeTweet] = useMutation(LIKE_TWEET);
+   const [saveTweet] = useMutation(SAVE_TWEET);
 
    const likeTweetHandler = () => {
       const tweetID = retweetedTweet ? retweetedTweet.id_str : id;
@@ -189,6 +209,8 @@ const Tweet = props => {
       );
    }
 
+   const linkout = `https://twitter.com/${user.screen_name}/status/${id}`;
+
    return (
       <div className="tweet">
          {replyToID && (
@@ -209,13 +231,43 @@ const Tweet = props => {
          <LinkyText text={tcoReplacedText} />
          {entities.length > 0 && entities}
          <div className="tweetMeta">
-            <a
-               href={`https://twitter.com/${user.screen_name}/status/${id}`}
-               target="_blank"
-               className="linkToOriginalTweet"
-            >
-               {convertISOtoAgo(time)} ago
-            </a>
+            <div>
+               <a
+                  href={linkout}
+                  target="_blank"
+                  className="linkToOriginalTweet"
+               >
+                  {convertISOtoAgo(time)} ago
+               </a>{' '}
+               •{' '}
+               <a
+                  onClick={async () => {
+                     const variables = {
+                        tweetURL: linkout,
+                        tweeter: user.screen_name,
+                        tweetText: replyRemovedText
+                     };
+                     if (
+                        tweetEntities &&
+                        tweetEntities.media &&
+                        tweetEntities.media.length > 0
+                     ) {
+                        variables.featuredImage =
+                           tweetEntities.media[0].media_url_https;
+                     }
+                     const newThingData = await saveTweet({
+                        variables
+                     });
+                     if (process.browser) {
+                        window.open(
+                           `${home}/thing?id=${newThingData.data.saveTweet.id}`
+                        );
+                     }
+                  }}
+               >
+                  Save
+               </a>
+            </div>
             <div className="score">
                {likes}
                <img
