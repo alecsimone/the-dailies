@@ -39,6 +39,7 @@ const StyledThingCard = styled.div`
    }
    .meta {
       display: flex;
+      flex-wrap: wrap;
       justify-content: space-between;
       font-size: ${props => props.theme.smallText};
       color: ${props => props.theme.lowContrastGrey};

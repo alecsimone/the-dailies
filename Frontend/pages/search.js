@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import gql from 'graphql-tag';
+import styled from 'styled-components';
 import { useQuery } from '@apollo/react-hooks';
 import { smallThingCardFields } from '../lib/CardInterfaces';
 import ErrorMessage from '../components/ErrorMessage';
@@ -16,6 +17,12 @@ const SEARCH_QUERY = gql`
    }
 `;
 
+const StyledSearchResults = styled.div`
+   h3 {
+      margin-top: 0;
+   }
+`;
+
 const search = ({ query }) => {
    const { s: string } = query;
    const { loading, error, data } = useQuery(SEARCH_QUERY, {
@@ -29,8 +36,42 @@ const search = ({ query }) => {
       content = <ErrorMessage error={error} />;
    }
    if (data && data.search != null) {
+      const thingsList = data.search;
+      thingsList.sort((a, b) => {
+         let aScore = 1;
+         let bScore = 1;
+
+         const aString = JSON.stringify(a);
+         const bString = JSON.stringify(b);
+
+         if (string.includes(' ')) {
+            const words = string.split(' ');
+            words.forEach(word => {
+               const wordSearchString = new RegExp(word, 'gim');
+               const aMatches = aString.match(wordSearchString);
+               aScore += aMatches.length;
+               const bMatches = bString.match(wordSearchString);
+               bScore += bMatches.length;
+            });
+         }
+
+         const searchString = new RegExp(string, 'gim');
+         const aOccurances = aString.match(searchString);
+         const bOccurances = bString.match(searchString);
+         aScore *= aOccurances.length;
+         bScore *= bOccurances.length;
+
+         if (a.title.includes(string)) {
+            aScore *= 5;
+         }
+         if (b.title.includes(string)) {
+            bScore *= 5;
+         }
+
+         return bScore - aScore;
+      });
       content = (
-         <Things things={data.search} cardSize="regular" displayType="grid" />
+         <Things things={thingsList} cardSize="regular" displayType="grid" />
       );
    }
    if (loading) {
@@ -39,10 +80,10 @@ const search = ({ query }) => {
    return (
       <StyledPageWithSidebar>
          <Sidebar />
-         <div className="mainSection">
+         <StyledSearchResults className="mainSection">
             <h3 className="searchHeader">Results for "{string}"</h3>
             {content}
-         </div>
+         </StyledSearchResults>
       </StyledPageWithSidebar>
    );
 };
