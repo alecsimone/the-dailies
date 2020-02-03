@@ -70,7 +70,7 @@ const GlobalStyle = createGlobalStyle`
       font-size: 8px;
       ${theme.scroll};
       ${theme.mobileBreakpoint} {
-         font-size: 10px;
+         font-size: 9px;
       }
       ${props => props.theme.bigScreenBreakpoint} {
          font-size: 12px;
