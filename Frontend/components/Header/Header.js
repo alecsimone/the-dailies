@@ -1,6 +1,7 @@
 import Router from 'next/router';
 import NProgress from 'nprogress';
 import styled from 'styled-components';
+import { useState } from 'react';
 import PropTypes from 'prop-types';
 import LogoBox from './LogoBox';
 import MemberBox from './MemberBox';
@@ -33,29 +34,49 @@ const StyledHeader = styled.div`
       ${props => props.theme.mobileBreakpoint} {
          padding: 0 4rem;
          grid-template-columns: 1fr auto 1fr;
+         &.showSearch {
+            grid-template-columns: 1fr;
+            .memberColumn,
+            .logoBox {
+               display: none;
+            }
+            ${props => props.theme.desktopBreakpoint} {
+               grid-template-columns: 1fr auto 1fr;
+               .memberColumn {
+                  display: block;
+               }
+               .logoBox {
+                  display: flex;
+               }
+            }
+         }
          .navButtons {
-            display: block;
+            display: flex;
          }
       }
       padding: 0 2rem;
       margin: auto;
       .memberColumn {
          text-align: right;
+         z-index: 1;
       }
    }
 `;
 
-const Header = () => (
-   <StyledHeader id="header">
-      <div className="headerContents">
-         <NavButtons />
-         <LogoBox />
-         <div className="memberColumn">
-            <MemberBox />
+const Header = () => {
+   const [showSearch, setShowSearch] = useState(false);
+   return (
+      <StyledHeader id="header">
+         <div className={`headerContents${showSearch ? ' showSearch' : ''}`}>
+            <NavButtons showSearch={showSearch} setShowSearch={setShowSearch} />
+            <LogoBox />
+            <div className="memberColumn">
+               <MemberBox />
+            </div>
          </div>
-      </div>
-   </StyledHeader>
-);
+      </StyledHeader>
+   );
+};
 Header.propTypes = {};
 
 export default Header;

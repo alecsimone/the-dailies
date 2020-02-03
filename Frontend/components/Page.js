@@ -28,9 +28,9 @@ const theme = {
    mobileBPWidthRaw: 600,
    mobileBreakpoint: '@media screen and (min-width: 600px)',
 
-   desktopBPWidth: '1000px',
-   desktopBPWidthRaw: 1000,
-   desktopBreakpoint: '@media screen and (min-width: 1000px)',
+   desktopBPWidth: '1100px',
+   desktopBPWidthRaw: 1100,
+   desktopBreakpoint: '@media screen and (min-width: 1100px)',
 
    bigScreenBPWidth: '1800px',
    bigScreenBPWidthRaw: 1800,
