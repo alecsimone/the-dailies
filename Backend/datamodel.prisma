@@ -92,6 +92,7 @@ type Member {
   friends: [Member] @relation(name:"Friends")
   friendRequests: [Member] @relation(name:"FriendRequests")
   ignoredFriendRequests: [Member] @relation(name:"IgnoredFriendRequests")
+  notifications: [Notification] @relation(name:"Notification")
   twitchName: String
   email: String! @unique
   votes: [Vote]
@@ -115,6 +116,15 @@ type Member {
   twitterSeenIDs: [String] @scalarList(strategy: RELATION)
   createdAt: DateTime! @createdAt
   updatedAt: DateTime @updatedAt
+}
+
+type Notification {
+   id: ID! @id @unique
+   kind: String!
+   recipient: Member! @relation(name: "Notification")
+   initiator: Member! @relation(name: "NotificationInitiator")
+   unread: Boolean! @default(value: true)
+   linkQuery: String
 }
 
 enum Role {

@@ -25,7 +25,9 @@ const MemberContext = React.createContext();
 
 const MemberProvider = props => {
    const { children } = props;
-   const { loading, error, data, client } = useQuery(CURRENT_MEMBER_QUERY);
+   const { loading, error, data, client } = useQuery(CURRENT_MEMBER_QUERY, {
+      ssr: false
+   });
 
    const {
       data: subscriptionData,
@@ -38,7 +40,7 @@ const MemberProvider = props => {
       memberData.me = 'error';
    }
 
-   if (data) {
+   if (data && data.me != null) {
       if (data.me == null) {
          memberData.me = null;
       } else {

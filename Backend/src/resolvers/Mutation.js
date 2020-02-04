@@ -5,7 +5,8 @@ const {
    editProfile,
    sendFriendRequest,
    confirmFriendRequest,
-   ignoreFriendRequest
+   ignoreFriendRequest,
+   readNotifications
 } = require('./Mutation/MemberMutations');
 const {
    createThing,
@@ -57,7 +58,8 @@ const Mutations = {
    confirmFriendRequest,
    ignoreFriendRequest,
    saveTweet,
-   deleteThing
+   deleteThing,
+   readNotifications
 };
 
 module.exports = Mutations;

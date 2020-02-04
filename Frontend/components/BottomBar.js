@@ -113,7 +113,7 @@ const BottomBar = () => {
             >
                <input
                   type="text"
-                  placeholder={inputPlaceholder}
+                  placeholder={inputPlaceholder || ''}
                   value={inputContent}
                   onChange={e => setInputContent(e.target.value)}
                />

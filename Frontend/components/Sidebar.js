@@ -12,23 +12,9 @@ const Sidebar = props => {
    const { extraColumnTitle, extraColumnContent } = props;
    const { me, loading: memberLoading } = useContext(MemberContext);
 
-   let defaultColumn;
-   if (memberLoading) {
-      defaultColumn = 'Loading';
-   } else if (me == null) {
-      defaultColumn = 'Public';
-   } else {
-      defaultColumn = 'You';
-   }
    const [selectedTab, setSelectedTab] = useState(
-      extraColumnTitle == null ? defaultColumn : extraColumnTitle
+      extraColumnTitle == null ? 'default' : extraColumnTitle
    );
-
-   // useEffect(() => {
-   //    if (extraColumnTitle != null) {
-   //       setSelectedTab(extraColumnTitle);
-   //    }
-   // }, [extraColumnTitle]);
 
    const { mobileBPWidthRaw } = useContext(ThemeContext);
    const [isOpen, setIsOpen] = useState(
@@ -42,20 +28,6 @@ const Sidebar = props => {
       )
    );
 
-   if (memberLoading) {
-      return (
-         <StyledSidebar>
-            <LoadingRing />
-         </StyledSidebar>
-      );
-   }
-
-   if (selectedTab === 'Loading') {
-      setSelectedTab(
-         extraColumnTitle == null ? defaultColumn : extraColumnTitle
-      );
-   }
-
    const headerColumns = me ? ['You', 'Friends', 'Public'] : ['Public'];
    if (extraColumnTitle != null) {
       headerColumns.push(extraColumnTitle);
@@ -63,7 +35,7 @@ const Sidebar = props => {
    let sidebarHeader = headerColumns.map(column => {
       let imgSrc;
       if (column === 'Me') {
-         imgSrc = me.avatar;
+         imgSrc = me ? me.avatar : '/defaultAvatar.jpg';
       } else if (column === 'Member') {
          imgSrc = '/defaultAvatar.jpg';
       } else {
@@ -72,7 +44,12 @@ const Sidebar = props => {
       return (
          <div
             className={
-               selectedTab === column
+               selectedTab === column ||
+               (selectedTab === 'default' && me && column === 'You') ||
+               (selectedTab === 'default' &&
+                  me == null &&
+                  column === 'Public' &&
+                  headerColumns.length > 1)
                   ? `headerTab ${column} selected`
                   : `headerTab ${column}`
             }
@@ -109,7 +86,7 @@ const Sidebar = props => {
    }
 
    let sidebarContent;
-   if (selectedTab === 'Loading') {
+   if (memberLoading) {
       sidebarContent = <LoadingRing />;
    } else if (selectedTab === 'You') {
       sidebarContent = <MyThings />;
@@ -119,6 +96,12 @@ const Sidebar = props => {
       sidebarContent = <PublicThings displayType="list" />;
    } else if (selectedTab === extraColumnTitle) {
       sidebarContent = extraColumnContent;
+   } else if (selectedTab === 'default') {
+      if (me) {
+         sidebarContent = <MyThings />;
+      } else {
+         sidebarContent = <PublicThings displayType="list" />;
+      }
    }
 
    return (

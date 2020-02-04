@@ -24,6 +24,7 @@ const CONFIRM_FRIEND_REQUEST_MUTATION = gql`
       }
    }
 `;
+export { CONFIRM_FRIEND_REQUEST_MUTATION };
 
 const StyledProfileSidebar = styled.div`
    padding: 0 2rem;
@@ -131,39 +132,6 @@ const StyledProfileSidebar = styled.div`
       font-weight: 700;
       font-size: ${props => props.theme.bigText};
       border-top: 1px solid ${props => props.theme.lowContrastGrey};
-      .pending {
-         padding: 3rem 0;
-         display: flex;
-         justify-content: space-around;
-         font-size: ${props => props.theme.smallText};
-         font-weight: 400;
-         width: 100%;
-         text-align: left;
-         border-bottom: 1px solid
-            ${props => setAlpha(props.theme.lowContrastGrey, 0.4)};
-         &:last-child {
-            border-bottom: none;
-         }
-         article {
-            flex-grow: 1;
-         }
-         .requestOptions {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            margin-left: 2rem;
-            padding: 0.25rem;
-            img.requestOption {
-               width: 2.5rem;
-               height: 2.5rem;
-               cursor: pointer;
-               opacity: 0.4;
-               &:hover {
-                  opacity: 0.8;
-               }
-            }
-         }
-      }
    }
 `;
 
@@ -184,13 +152,7 @@ const ProfileSidebar = props => {
             canEdit={canEdit}
             confirmFriendRequest={confirmFriendRequest}
          />
-         {isMe && (
-            <FriendRequests
-               me={me}
-               isMe={isMe}
-               confirmFriendRequest={confirmFriendRequest}
-            />
-         )}
+         {isMe && <FriendRequests me={me} isMe={isMe} />}
       </StyledProfileSidebar>
    );
 };

@@ -1,5 +1,4 @@
 endpoint: ${env:PRISMA_ENDPOINT}
-# endpoint: https://ourdailies-676b9a4267.herokuapp.com/Dailies-Database/Prod
 datamodel: datamodel.prisma
 secret: ${env:PRISMA_SECRET}
 

@@ -88,7 +88,14 @@ const MemberCard = props => {
    );
 };
 MemberCard.propTypes = {
-   member: PropTypes.object.isRequired
+   member: PropTypes.shape({
+      friends: PropTypes.array.isRequired,
+      avatar: PropTypes.string,
+      id: PropTypes.string.isRequired,
+      rep: PropTypes.number.isRequired,
+      displayName: PropTypes.string.isRequired,
+      role: PropTypes.string.isRequired
+   }).isRequired
 };
 
 export default MemberCard;

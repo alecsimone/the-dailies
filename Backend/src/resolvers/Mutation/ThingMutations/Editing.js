@@ -5,7 +5,7 @@ const {
    disabledCodewords,
    editPermissionGate
 } = require('../../../utils/ThingHandling');
-const { publishMeUpdate} = require('../MemberMutations')
+const { publishMeUpdate, sendNotification} = require('../MemberMutations')
 const {
    loggedInGate,
    fullMemberGate,
@@ -295,6 +295,11 @@ async function addComment(parent, {comment, id, type}, ctx, info) {
          }
       }
    }
+
+   sendNotification({
+      kind: "comment",
+      linkQuery: id
+   }, ctx);
 
    const updatedStuff = await properUpdateStuff(dataObj, id, type, ctx);
    return updatedStuff;

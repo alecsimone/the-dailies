@@ -84,30 +84,16 @@ const StyledFeaturedImage = styled.div`
       right: 0.5rem;
       width: ${props => props.theme.smallText};
       cursor: pointer;
-      z-index: 3;
       opacity: 0.4;
       &:hover {
          opacity: 0.8;
       }
    }
-   &.image {
-      /* .titleBarContainer {
-         z-index: 1;
-         position: relative;
-         bottom: 0;
-         left: 0;
-         width: 100%;
-         padding: 12rem 0 0.25rem;
-         margin: 0;
-         text-shadow: 0px 0px 2px black;
-         background: black;
-         background: linear-gradient(
-            to bottom,
-            rgba(0, 0, 0, 0) 0%,
-            rgba(0, 0, 0, 0.9) 60%
-         );
-         filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00000000', endColorstr='#000000',GradientType=0 );
-      } */
+   .tweet {
+      line-height: 1.6;
+      a {
+         line-height: 0;
+      }
    }
 `;
 

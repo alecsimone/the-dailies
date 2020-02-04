@@ -104,6 +104,14 @@ const SmallThingCard = props => {
 
    const timeAgo = convertISOtoAgo(createdAt);
 
+   let isTweet = false;
+   if (featuredImage) {
+      const tweetMatches = featuredImage.match(/twitter\.com\/\w+\/status/i);
+      if (tweetMatches) {
+         isTweet = true;
+      }
+   }
+
    return (
       <Link href={{ pathname: '/thing', query: { id } }}>
          <StyledSmallThingCard
@@ -115,7 +123,8 @@ const SmallThingCard = props => {
                src={
                   featuredImage == null ||
                   isVideo(featuredImage) ||
-                  disabledCodewords.includes(featuredImage)
+                  disabledCodewords.includes(featuredImage) ||
+                  isTweet
                      ? '/defaultPic.jpg'
                      : featuredImage
                }

@@ -45,6 +45,9 @@ const StyledNav = styled.nav`
       }
       .searchForm {
          width: 100%;
+         ${props => props.theme.mobileBreakpoint} {
+            width: 33%;
+         }
          input {
             width: 100%;
             height: 4rem;

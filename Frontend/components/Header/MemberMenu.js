@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import Link from 'next/link';
 import PropTypes from 'prop-types';
 import { CURRENT_MEMBER_QUERY } from '../Account/MemberProvider';
-import { setAlpha } from '../../styles/functions';
+import { setAlpha, setLightness } from '../../styles/functions';
 
 const LOGOUT_MUTATION = gql`
    mutation LOG_OUT_MUTATION {
@@ -19,9 +19,9 @@ const StyledMemberMenu = styled.div`
    display: block;
    border-radius: 0 0 4px 4px;
    right: -2rem;
-   top: calc(100% + 0.5rem);
+   top: calc(100% + 1rem);
    width: 20rem;
-   background: hsla(210, 40%, 4%, 1);
+   background: ${props => setLightness(props.theme.black, 1)};
    z-index: 2;
    color: ${props => props.theme.mainText};
    font-size: ${props => props.theme.smallText};

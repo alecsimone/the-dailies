@@ -17,6 +17,7 @@ async function publishMeUpdate(ctx) {
          node: newMe
       }
    });
+   return newMe;
 }
 exports.publishMeUpdate = publishMeUpdate;
 
@@ -157,6 +158,14 @@ async function sendFriendRequest(parent, { id }, ctx, info) {
    loggedInGate(ctx);
    fullMemberGate(ctx.req.member);
 
+   sendNotification(
+      {
+         kind: 'friendRequest',
+         recipient: id
+      },
+      ctx
+   );
+
    const newThem = await ctx.db.mutation.updateMember(
       {
          where: {
@@ -290,3 +299,63 @@ async function ignoreFriendRequest(parent, { id }, ctx, info) {
    return newMe;
 }
 exports.ignoreFriendRequest = ignoreFriendRequest;
+
+async function readNotifications(parent, { ids }, ctx, info) {
+   console.log(ids);
+   loggedInGate(ctx);
+   fullMemberGate(ctx.req.member);
+
+   await ctx.db.mutation.updateManyNotifications({
+      where: {
+         id_in: ids
+      },
+      data: {
+         unread: false
+      }
+   });
+
+   const newMe = publishMeUpdate(ctx);
+   return newMe;
+}
+exports.readNotifications = readNotifications;
+
+async function sendNotification(notification, ctx) {
+   if (notification.recipient == null) {
+      const theThing = await ctx.db.query.thing(
+         {
+            where: {
+               id: notification.linkQuery
+            }
+         },
+         `{author {id}}`
+      );
+      notification.recipient = theThing.author.id;
+   }
+
+   if (notification.recipient === ctx.req.memberId) {
+      return;
+   }
+
+   const data = {
+      kind: notification.kind,
+      initiator: {
+         connect: {
+            id: ctx.req.memberId
+         }
+      },
+      recipient: {
+         connect: {
+            id: notification.recipient
+         }
+      }
+   };
+
+   if (notification.linkQuery) {
+      data.linkQuery = notification.linkQuery;
+   }
+
+   ctx.db.mutation.createNotification({
+      data
+   });
+}
+exports.sendNotification = sendNotification;

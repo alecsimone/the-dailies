@@ -14,6 +14,10 @@ type AggregateMember {
   count: Int!
 }
 
+type AggregateNotification {
+  count: Int!
+}
+
 type AggregatePass {
   count: Int!
 }
@@ -1048,6 +1052,7 @@ type Member {
   friends(where: MemberWhereInput, orderBy: MemberOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Member!]
   friendRequests(where: MemberWhereInput, orderBy: MemberOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Member!]
   ignoredFriendRequests(where: MemberWhereInput, orderBy: MemberOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Member!]
+  notifications(where: NotificationWhereInput, orderBy: NotificationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Notification!]
   twitchName: String
   email: String!
   votes(where: VoteWhereInput, orderBy: VoteOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Vote!]
@@ -1090,6 +1095,7 @@ input MemberCreateInput {
   friends: MemberCreateManyWithoutFriendsInput
   friendRequests: MemberCreateManyWithoutFriendRequestsInput
   ignoredFriendRequests: MemberCreateManyWithoutIgnoredFriendRequestsInput
+  notifications: NotificationCreateManyWithoutRecipientInput
   twitchName: String
   email: String!
   votes: VoteCreateManyWithoutVoterInput
@@ -1128,6 +1134,11 @@ input MemberCreateManyWithoutIgnoredFriendRequestsInput {
   connect: [MemberWhereUniqueInput!]
 }
 
+input MemberCreateOneInput {
+  create: MemberCreateInput
+  connect: MemberWhereUniqueInput
+}
+
 input MemberCreateOneWithoutCommentsInput {
   create: MemberCreateWithoutCommentsInput
   connect: MemberWhereUniqueInput
@@ -1135,6 +1146,11 @@ input MemberCreateOneWithoutCommentsInput {
 
 input MemberCreateOneWithoutCreatedThingsInput {
   create: MemberCreateWithoutCreatedThingsInput
+  connect: MemberWhereUniqueInput
+}
+
+input MemberCreateOneWithoutNotificationsInput {
+  create: MemberCreateWithoutNotificationsInput
   connect: MemberWhereUniqueInput
 }
 
@@ -1172,6 +1188,7 @@ input MemberCreateWithoutCommentsInput {
   friends: MemberCreateManyWithoutFriendsInput
   friendRequests: MemberCreateManyWithoutFriendRequestsInput
   ignoredFriendRequests: MemberCreateManyWithoutIgnoredFriendRequestsInput
+  notifications: NotificationCreateManyWithoutRecipientInput
   twitchName: String
   email: String!
   votes: VoteCreateManyWithoutVoterInput
@@ -1205,6 +1222,7 @@ input MemberCreateWithoutCreatedThingsInput {
   friends: MemberCreateManyWithoutFriendsInput
   friendRequests: MemberCreateManyWithoutFriendRequestsInput
   ignoredFriendRequests: MemberCreateManyWithoutIgnoredFriendRequestsInput
+  notifications: NotificationCreateManyWithoutRecipientInput
   twitchName: String
   email: String!
   votes: VoteCreateManyWithoutVoterInput
@@ -1237,6 +1255,7 @@ input MemberCreateWithoutFriendRequestsInput {
   giveableRep: Int
   friends: MemberCreateManyWithoutFriendsInput
   ignoredFriendRequests: MemberCreateManyWithoutIgnoredFriendRequestsInput
+  notifications: NotificationCreateManyWithoutRecipientInput
   twitchName: String
   email: String!
   votes: VoteCreateManyWithoutVoterInput
@@ -1270,6 +1289,7 @@ input MemberCreateWithoutFriendsInput {
   giveableRep: Int
   friendRequests: MemberCreateManyWithoutFriendRequestsInput
   ignoredFriendRequests: MemberCreateManyWithoutIgnoredFriendRequestsInput
+  notifications: NotificationCreateManyWithoutRecipientInput
   twitchName: String
   email: String!
   votes: VoteCreateManyWithoutVoterInput
@@ -1303,6 +1323,41 @@ input MemberCreateWithoutIgnoredFriendRequestsInput {
   giveableRep: Int
   friends: MemberCreateManyWithoutFriendsInput
   friendRequests: MemberCreateManyWithoutFriendRequestsInput
+  notifications: NotificationCreateManyWithoutRecipientInput
+  twitchName: String
+  email: String!
+  votes: VoteCreateManyWithoutVoterInput
+  passes: PassCreateManyWithoutPasserInput
+  createdThings: ThingCreateManyWithoutAuthorInput
+  ownedTags: TagCreateManyWithoutAuthorInput
+  defaultCategory: CategoryCreateOneInput
+  defaultPrivacy: PrivacySetting
+  comments: CommentCreateManyWithoutAuthorInput
+  password: String!
+  roles: MemberCreaterolesInput
+  role: Role
+  resetToken: String
+  resetTokenExpiry: Float
+  twitterTokenSecret: String
+  twitterUserName: String
+  twitterUserID: String
+  twitterUserToken: String
+  twitterUserTokenSecret: String
+  twitterListsObject: String
+  twitterSeenIDs: MemberCreatetwitterSeenIDsInput
+}
+
+input MemberCreateWithoutNotificationsInput {
+  id: ID
+  displayName: String!
+  name: String
+  avatar: String
+  rep: Int
+  points: Int
+  giveableRep: Int
+  friends: MemberCreateManyWithoutFriendsInput
+  friendRequests: MemberCreateManyWithoutFriendRequestsInput
+  ignoredFriendRequests: MemberCreateManyWithoutIgnoredFriendRequestsInput
   twitchName: String
   email: String!
   votes: VoteCreateManyWithoutVoterInput
@@ -1337,6 +1392,7 @@ input MemberCreateWithoutOwnedTagsInput {
   friends: MemberCreateManyWithoutFriendsInput
   friendRequests: MemberCreateManyWithoutFriendRequestsInput
   ignoredFriendRequests: MemberCreateManyWithoutIgnoredFriendRequestsInput
+  notifications: NotificationCreateManyWithoutRecipientInput
   twitchName: String
   email: String!
   votes: VoteCreateManyWithoutVoterInput
@@ -1370,6 +1426,7 @@ input MemberCreateWithoutPassesInput {
   friends: MemberCreateManyWithoutFriendsInput
   friendRequests: MemberCreateManyWithoutFriendRequestsInput
   ignoredFriendRequests: MemberCreateManyWithoutIgnoredFriendRequestsInput
+  notifications: NotificationCreateManyWithoutRecipientInput
   twitchName: String
   email: String!
   votes: VoteCreateManyWithoutVoterInput
@@ -1403,6 +1460,7 @@ input MemberCreateWithoutVotesInput {
   friends: MemberCreateManyWithoutFriendsInput
   friendRequests: MemberCreateManyWithoutFriendRequestsInput
   ignoredFriendRequests: MemberCreateManyWithoutIgnoredFriendRequestsInput
+  notifications: NotificationCreateManyWithoutRecipientInput
   twitchName: String
   email: String!
   passes: PassCreateManyWithoutPasserInput
@@ -1780,6 +1838,40 @@ input MemberSubscriptionWhereInput {
   NOT: [MemberSubscriptionWhereInput!]
 }
 
+input MemberUpdateDataInput {
+  displayName: String
+  name: String
+  avatar: String
+  rep: Int
+  points: Int
+  giveableRep: Int
+  friends: MemberUpdateManyWithoutFriendsInput
+  friendRequests: MemberUpdateManyWithoutFriendRequestsInput
+  ignoredFriendRequests: MemberUpdateManyWithoutIgnoredFriendRequestsInput
+  notifications: NotificationUpdateManyWithoutRecipientInput
+  twitchName: String
+  email: String
+  votes: VoteUpdateManyWithoutVoterInput
+  passes: PassUpdateManyWithoutPasserInput
+  createdThings: ThingUpdateManyWithoutAuthorInput
+  ownedTags: TagUpdateManyWithoutAuthorInput
+  defaultCategory: CategoryUpdateOneInput
+  defaultPrivacy: PrivacySetting
+  comments: CommentUpdateManyWithoutAuthorInput
+  password: String
+  roles: MemberUpdaterolesInput
+  role: Role
+  resetToken: String
+  resetTokenExpiry: Float
+  twitterTokenSecret: String
+  twitterUserName: String
+  twitterUserID: String
+  twitterUserToken: String
+  twitterUserTokenSecret: String
+  twitterListsObject: String
+  twitterSeenIDs: MemberUpdatetwitterSeenIDsInput
+}
+
 input MemberUpdateInput {
   displayName: String
   name: String
@@ -1790,6 +1882,7 @@ input MemberUpdateInput {
   friends: MemberUpdateManyWithoutFriendsInput
   friendRequests: MemberUpdateManyWithoutFriendRequestsInput
   ignoredFriendRequests: MemberUpdateManyWithoutIgnoredFriendRequestsInput
+  notifications: NotificationUpdateManyWithoutRecipientInput
   twitchName: String
   email: String
   votes: VoteUpdateManyWithoutVoterInput
@@ -1902,6 +1995,13 @@ input MemberUpdateManyWithWhereNestedInput {
   data: MemberUpdateManyDataInput!
 }
 
+input MemberUpdateOneRequiredInput {
+  create: MemberCreateInput
+  update: MemberUpdateDataInput
+  upsert: MemberUpsertNestedInput
+  connect: MemberWhereUniqueInput
+}
+
 input MemberUpdateOneRequiredWithoutCommentsInput {
   create: MemberCreateWithoutCommentsInput
   update: MemberUpdateWithoutCommentsDataInput
@@ -1913,6 +2013,13 @@ input MemberUpdateOneRequiredWithoutCreatedThingsInput {
   create: MemberCreateWithoutCreatedThingsInput
   update: MemberUpdateWithoutCreatedThingsDataInput
   upsert: MemberUpsertWithoutCreatedThingsInput
+  connect: MemberWhereUniqueInput
+}
+
+input MemberUpdateOneRequiredWithoutNotificationsInput {
+  create: MemberCreateWithoutNotificationsInput
+  update: MemberUpdateWithoutNotificationsDataInput
+  upsert: MemberUpsertWithoutNotificationsInput
   connect: MemberWhereUniqueInput
 }
 
@@ -1957,6 +2064,7 @@ input MemberUpdateWithoutCommentsDataInput {
   friends: MemberUpdateManyWithoutFriendsInput
   friendRequests: MemberUpdateManyWithoutFriendRequestsInput
   ignoredFriendRequests: MemberUpdateManyWithoutIgnoredFriendRequestsInput
+  notifications: NotificationUpdateManyWithoutRecipientInput
   twitchName: String
   email: String
   votes: VoteUpdateManyWithoutVoterInput
@@ -1989,6 +2097,7 @@ input MemberUpdateWithoutCreatedThingsDataInput {
   friends: MemberUpdateManyWithoutFriendsInput
   friendRequests: MemberUpdateManyWithoutFriendRequestsInput
   ignoredFriendRequests: MemberUpdateManyWithoutIgnoredFriendRequestsInput
+  notifications: NotificationUpdateManyWithoutRecipientInput
   twitchName: String
   email: String
   votes: VoteUpdateManyWithoutVoterInput
@@ -2020,6 +2129,7 @@ input MemberUpdateWithoutFriendRequestsDataInput {
   giveableRep: Int
   friends: MemberUpdateManyWithoutFriendsInput
   ignoredFriendRequests: MemberUpdateManyWithoutIgnoredFriendRequestsInput
+  notifications: NotificationUpdateManyWithoutRecipientInput
   twitchName: String
   email: String
   votes: VoteUpdateManyWithoutVoterInput
@@ -2052,6 +2162,7 @@ input MemberUpdateWithoutFriendsDataInput {
   giveableRep: Int
   friendRequests: MemberUpdateManyWithoutFriendRequestsInput
   ignoredFriendRequests: MemberUpdateManyWithoutIgnoredFriendRequestsInput
+  notifications: NotificationUpdateManyWithoutRecipientInput
   twitchName: String
   email: String
   votes: VoteUpdateManyWithoutVoterInput
@@ -2084,6 +2195,40 @@ input MemberUpdateWithoutIgnoredFriendRequestsDataInput {
   giveableRep: Int
   friends: MemberUpdateManyWithoutFriendsInput
   friendRequests: MemberUpdateManyWithoutFriendRequestsInput
+  notifications: NotificationUpdateManyWithoutRecipientInput
+  twitchName: String
+  email: String
+  votes: VoteUpdateManyWithoutVoterInput
+  passes: PassUpdateManyWithoutPasserInput
+  createdThings: ThingUpdateManyWithoutAuthorInput
+  ownedTags: TagUpdateManyWithoutAuthorInput
+  defaultCategory: CategoryUpdateOneInput
+  defaultPrivacy: PrivacySetting
+  comments: CommentUpdateManyWithoutAuthorInput
+  password: String
+  roles: MemberUpdaterolesInput
+  role: Role
+  resetToken: String
+  resetTokenExpiry: Float
+  twitterTokenSecret: String
+  twitterUserName: String
+  twitterUserID: String
+  twitterUserToken: String
+  twitterUserTokenSecret: String
+  twitterListsObject: String
+  twitterSeenIDs: MemberUpdatetwitterSeenIDsInput
+}
+
+input MemberUpdateWithoutNotificationsDataInput {
+  displayName: String
+  name: String
+  avatar: String
+  rep: Int
+  points: Int
+  giveableRep: Int
+  friends: MemberUpdateManyWithoutFriendsInput
+  friendRequests: MemberUpdateManyWithoutFriendRequestsInput
+  ignoredFriendRequests: MemberUpdateManyWithoutIgnoredFriendRequestsInput
   twitchName: String
   email: String
   votes: VoteUpdateManyWithoutVoterInput
@@ -2117,6 +2262,7 @@ input MemberUpdateWithoutOwnedTagsDataInput {
   friends: MemberUpdateManyWithoutFriendsInput
   friendRequests: MemberUpdateManyWithoutFriendRequestsInput
   ignoredFriendRequests: MemberUpdateManyWithoutIgnoredFriendRequestsInput
+  notifications: NotificationUpdateManyWithoutRecipientInput
   twitchName: String
   email: String
   votes: VoteUpdateManyWithoutVoterInput
@@ -2149,6 +2295,7 @@ input MemberUpdateWithoutPassesDataInput {
   friends: MemberUpdateManyWithoutFriendsInput
   friendRequests: MemberUpdateManyWithoutFriendRequestsInput
   ignoredFriendRequests: MemberUpdateManyWithoutIgnoredFriendRequestsInput
+  notifications: NotificationUpdateManyWithoutRecipientInput
   twitchName: String
   email: String
   votes: VoteUpdateManyWithoutVoterInput
@@ -2181,6 +2328,7 @@ input MemberUpdateWithoutVotesDataInput {
   friends: MemberUpdateManyWithoutFriendsInput
   friendRequests: MemberUpdateManyWithoutFriendRequestsInput
   ignoredFriendRequests: MemberUpdateManyWithoutIgnoredFriendRequestsInput
+  notifications: NotificationUpdateManyWithoutRecipientInput
   twitchName: String
   email: String
   passes: PassUpdateManyWithoutPasserInput
@@ -2218,6 +2366,11 @@ input MemberUpdateWithWhereUniqueWithoutIgnoredFriendRequestsInput {
   data: MemberUpdateWithoutIgnoredFriendRequestsDataInput!
 }
 
+input MemberUpsertNestedInput {
+  update: MemberUpdateDataInput!
+  create: MemberCreateInput!
+}
+
 input MemberUpsertWithoutCommentsInput {
   update: MemberUpdateWithoutCommentsDataInput!
   create: MemberCreateWithoutCommentsInput!
@@ -2226,6 +2379,11 @@ input MemberUpsertWithoutCommentsInput {
 input MemberUpsertWithoutCreatedThingsInput {
   update: MemberUpdateWithoutCreatedThingsDataInput!
   create: MemberCreateWithoutCreatedThingsInput!
+}
+
+input MemberUpsertWithoutNotificationsInput {
+  update: MemberUpdateWithoutNotificationsDataInput!
+  create: MemberCreateWithoutNotificationsInput!
 }
 
 input MemberUpsertWithoutOwnedTagsInput {
@@ -2351,6 +2509,9 @@ input MemberWhereInput {
   ignoredFriendRequests_every: MemberWhereInput
   ignoredFriendRequests_some: MemberWhereInput
   ignoredFriendRequests_none: MemberWhereInput
+  notifications_every: NotificationWhereInput
+  notifications_some: NotificationWhereInput
+  notifications_none: NotificationWhereInput
   twitchName: String
   twitchName_not: String
   twitchName_in: [String!]
@@ -2574,6 +2735,12 @@ type Mutation {
   upsertMember(where: MemberWhereUniqueInput!, create: MemberCreateInput!, update: MemberUpdateInput!): Member!
   deleteMember(where: MemberWhereUniqueInput!): Member
   deleteManyMembers(where: MemberWhereInput): BatchPayload!
+  createNotification(data: NotificationCreateInput!): Notification!
+  updateNotification(data: NotificationUpdateInput!, where: NotificationWhereUniqueInput!): Notification
+  updateManyNotifications(data: NotificationUpdateManyMutationInput!, where: NotificationWhereInput): BatchPayload!
+  upsertNotification(where: NotificationWhereUniqueInput!, create: NotificationCreateInput!, update: NotificationUpdateInput!): Notification!
+  deleteNotification(where: NotificationWhereUniqueInput!): Notification
+  deleteManyNotifications(where: NotificationWhereInput): BatchPayload!
   createPass(data: PassCreateInput!): Pass!
   updatePass(data: PassUpdateInput!, where: PassWhereUniqueInput!): Pass
   upsertPass(where: PassWhereUniqueInput!, create: PassCreateInput!, update: PassUpdateInput!): Pass!
@@ -2607,6 +2774,245 @@ enum MutationType {
 
 interface Node {
   id: ID!
+}
+
+type Notification {
+  id: ID!
+  kind: String!
+  recipient: Member!
+  initiator: Member!
+  unread: Boolean!
+  linkQuery: String
+}
+
+type NotificationConnection {
+  pageInfo: PageInfo!
+  edges: [NotificationEdge]!
+  aggregate: AggregateNotification!
+}
+
+input NotificationCreateInput {
+  id: ID
+  kind: String!
+  recipient: MemberCreateOneWithoutNotificationsInput!
+  initiator: MemberCreateOneInput!
+  unread: Boolean
+  linkQuery: String
+}
+
+input NotificationCreateManyWithoutRecipientInput {
+  create: [NotificationCreateWithoutRecipientInput!]
+  connect: [NotificationWhereUniqueInput!]
+}
+
+input NotificationCreateWithoutRecipientInput {
+  id: ID
+  kind: String!
+  initiator: MemberCreateOneInput!
+  unread: Boolean
+  linkQuery: String
+}
+
+type NotificationEdge {
+  node: Notification!
+  cursor: String!
+}
+
+enum NotificationOrderByInput {
+  id_ASC
+  id_DESC
+  kind_ASC
+  kind_DESC
+  unread_ASC
+  unread_DESC
+  linkQuery_ASC
+  linkQuery_DESC
+}
+
+type NotificationPreviousValues {
+  id: ID!
+  kind: String!
+  unread: Boolean!
+  linkQuery: String
+}
+
+input NotificationScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  kind: String
+  kind_not: String
+  kind_in: [String!]
+  kind_not_in: [String!]
+  kind_lt: String
+  kind_lte: String
+  kind_gt: String
+  kind_gte: String
+  kind_contains: String
+  kind_not_contains: String
+  kind_starts_with: String
+  kind_not_starts_with: String
+  kind_ends_with: String
+  kind_not_ends_with: String
+  unread: Boolean
+  unread_not: Boolean
+  linkQuery: String
+  linkQuery_not: String
+  linkQuery_in: [String!]
+  linkQuery_not_in: [String!]
+  linkQuery_lt: String
+  linkQuery_lte: String
+  linkQuery_gt: String
+  linkQuery_gte: String
+  linkQuery_contains: String
+  linkQuery_not_contains: String
+  linkQuery_starts_with: String
+  linkQuery_not_starts_with: String
+  linkQuery_ends_with: String
+  linkQuery_not_ends_with: String
+  AND: [NotificationScalarWhereInput!]
+  OR: [NotificationScalarWhereInput!]
+  NOT: [NotificationScalarWhereInput!]
+}
+
+type NotificationSubscriptionPayload {
+  mutation: MutationType!
+  node: Notification
+  updatedFields: [String!]
+  previousValues: NotificationPreviousValues
+}
+
+input NotificationSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: NotificationWhereInput
+  AND: [NotificationSubscriptionWhereInput!]
+  OR: [NotificationSubscriptionWhereInput!]
+  NOT: [NotificationSubscriptionWhereInput!]
+}
+
+input NotificationUpdateInput {
+  kind: String
+  recipient: MemberUpdateOneRequiredWithoutNotificationsInput
+  initiator: MemberUpdateOneRequiredInput
+  unread: Boolean
+  linkQuery: String
+}
+
+input NotificationUpdateManyDataInput {
+  kind: String
+  unread: Boolean
+  linkQuery: String
+}
+
+input NotificationUpdateManyMutationInput {
+  kind: String
+  unread: Boolean
+  linkQuery: String
+}
+
+input NotificationUpdateManyWithoutRecipientInput {
+  create: [NotificationCreateWithoutRecipientInput!]
+  delete: [NotificationWhereUniqueInput!]
+  connect: [NotificationWhereUniqueInput!]
+  set: [NotificationWhereUniqueInput!]
+  disconnect: [NotificationWhereUniqueInput!]
+  update: [NotificationUpdateWithWhereUniqueWithoutRecipientInput!]
+  upsert: [NotificationUpsertWithWhereUniqueWithoutRecipientInput!]
+  deleteMany: [NotificationScalarWhereInput!]
+  updateMany: [NotificationUpdateManyWithWhereNestedInput!]
+}
+
+input NotificationUpdateManyWithWhereNestedInput {
+  where: NotificationScalarWhereInput!
+  data: NotificationUpdateManyDataInput!
+}
+
+input NotificationUpdateWithoutRecipientDataInput {
+  kind: String
+  initiator: MemberUpdateOneRequiredInput
+  unread: Boolean
+  linkQuery: String
+}
+
+input NotificationUpdateWithWhereUniqueWithoutRecipientInput {
+  where: NotificationWhereUniqueInput!
+  data: NotificationUpdateWithoutRecipientDataInput!
+}
+
+input NotificationUpsertWithWhereUniqueWithoutRecipientInput {
+  where: NotificationWhereUniqueInput!
+  update: NotificationUpdateWithoutRecipientDataInput!
+  create: NotificationCreateWithoutRecipientInput!
+}
+
+input NotificationWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  kind: String
+  kind_not: String
+  kind_in: [String!]
+  kind_not_in: [String!]
+  kind_lt: String
+  kind_lte: String
+  kind_gt: String
+  kind_gte: String
+  kind_contains: String
+  kind_not_contains: String
+  kind_starts_with: String
+  kind_not_starts_with: String
+  kind_ends_with: String
+  kind_not_ends_with: String
+  recipient: MemberWhereInput
+  initiator: MemberWhereInput
+  unread: Boolean
+  unread_not: Boolean
+  linkQuery: String
+  linkQuery_not: String
+  linkQuery_in: [String!]
+  linkQuery_not_in: [String!]
+  linkQuery_lt: String
+  linkQuery_lte: String
+  linkQuery_gt: String
+  linkQuery_gte: String
+  linkQuery_contains: String
+  linkQuery_not_contains: String
+  linkQuery_starts_with: String
+  linkQuery_not_starts_with: String
+  linkQuery_ends_with: String
+  linkQuery_not_ends_with: String
+  AND: [NotificationWhereInput!]
+  OR: [NotificationWhereInput!]
+  NOT: [NotificationWhereInput!]
+}
+
+input NotificationWhereUniqueInput {
+  id: ID
 }
 
 type PageInfo {
@@ -2829,6 +3235,9 @@ type Query {
   member(where: MemberWhereUniqueInput!): Member
   members(where: MemberWhereInput, orderBy: MemberOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Member]!
   membersConnection(where: MemberWhereInput, orderBy: MemberOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): MemberConnection!
+  notification(where: NotificationWhereUniqueInput!): Notification
+  notifications(where: NotificationWhereInput, orderBy: NotificationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Notification]!
+  notificationsConnection(where: NotificationWhereInput, orderBy: NotificationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): NotificationConnection!
   pass(where: PassWhereUniqueInput!): Pass
   passes(where: PassWhereInput, orderBy: PassOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Pass]!
   passesConnection(where: PassWhereInput, orderBy: PassOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): PassConnection!
@@ -2857,6 +3266,7 @@ type Subscription {
   comment(where: CommentSubscriptionWhereInput): CommentSubscriptionPayload
   contentPiece(where: ContentPieceSubscriptionWhereInput): ContentPieceSubscriptionPayload
   member(where: MemberSubscriptionWhereInput): MemberSubscriptionPayload
+  notification(where: NotificationSubscriptionWhereInput): NotificationSubscriptionPayload
   pass(where: PassSubscriptionWhereInput): PassSubscriptionPayload
   tag(where: TagSubscriptionWhereInput): TagSubscriptionPayload
   thing(where: ThingSubscriptionWhereInput): ThingSubscriptionPayload

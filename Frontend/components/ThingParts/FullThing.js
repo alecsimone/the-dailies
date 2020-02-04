@@ -68,27 +68,6 @@ const FullThing = props => {
          )}
       </StyledFullThing>
    );
-
-   return (
-      <StyledFullThing
-         className="fullThing"
-         style={{ borderTop: `0.6rem solid ${highlightColor}` }}
-      >
-         <FeaturedImage
-            context={ThingContext}
-            key={`${id}-FeaturedImage`}
-            canEdit={canEdit}
-         />
-         <ThingMeta key={`${id}-ThingMeta`} canEdit={canEdit} />
-         <Content
-            context={ThingContext}
-            key={`${id}-Content`}
-            canEdit={canEdit}
-         />
-         <TagBox key={`${id}-TagBox`} canEdit={canEdit} />
-         <Comments context={ThingContext} key={`${id}-Comments`} />
-      </StyledFullThing>
-   );
 };
 FullThing.propTypes = {
    canEdit: PropTypes.bool

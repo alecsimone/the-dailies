@@ -1,12 +1,15 @@
 import Router from 'next/router';
 import NProgress from 'nprogress';
 import styled from 'styled-components';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import LogoBox from './LogoBox';
 import MemberBox from './MemberBox';
 import NavButtons from './NavButtons';
+import NotificationsIcon from './NotificationsIcon';
 import { setAlpha, setLightness } from '../../styles/functions';
+import { MemberContext } from '../Account/MemberProvider';
+import NotificationsContainer from './NotificationsContainer';
 
 Router.onRouteChangeStart = () => {
    NProgress.start();
@@ -57,7 +60,9 @@ const StyledHeader = styled.div`
       padding: 0 2rem;
       margin: auto;
       .memberColumn {
-         text-align: right;
+         display: flex;
+         align-items: center;
+         justify-content: flex-end;
          z-index: 1;
       }
    }
@@ -65,12 +70,15 @@ const StyledHeader = styled.div`
 
 const Header = () => {
    const [showSearch, setShowSearch] = useState(false);
+   const { me } = useContext(MemberContext);
+
    return (
       <StyledHeader id="header">
          <div className={`headerContents${showSearch ? ' showSearch' : ''}`}>
             <NavButtons showSearch={showSearch} setShowSearch={setShowSearch} />
             <LogoBox />
             <div className="memberColumn">
+               {me && <NotificationsIcon />}
                <MemberBox />
             </div>
          </div>

@@ -62,9 +62,9 @@ const MemberBox = () => {
       }
    };
 
-   let content;
-   if (me != null) {
-      content = (
+   let memberBoxContent;
+   if (me) {
+      memberBoxContent = (
          <>
             <Link href={{ pathname: '/me' }}>
                <a
@@ -85,7 +85,7 @@ const MemberBox = () => {
          </>
       );
    } else if (memberLoading) {
-      content = (
+      memberBoxContent = (
          <>
             <a>Logging in...</a>
             <img
@@ -97,7 +97,7 @@ const MemberBox = () => {
          </>
       );
    } else {
-      content = (
+      memberBoxContent = (
          <>
             <p>
                <Link href={{ pathname: '/signup' }}>
@@ -112,7 +112,11 @@ const MemberBox = () => {
       );
    }
 
-   return <StyledMemberBox className="memberBox">{content}</StyledMemberBox>;
+   return (
+      <StyledMemberBox className="memberBox">
+         {memberBoxContent}
+      </StyledMemberBox>
+   );
 };
 
 MemberBox.propTypes = {};

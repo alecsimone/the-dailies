@@ -43,7 +43,7 @@ const TitleBar = props => {
    const { context, limit, canEdit = true } = props;
    const { title, id: thingID } = useContext(context);
    const [editable, setEditable] = useState(thingID === 'new');
-   const [editedTitle, setEditedTitle] = useState(title || 'New Thing');
+   const [editedTitle, setEditedTitle] = useState(title);
 
    const [setThingTitle] = useMutation(SET_THING_TITLE_MUTATION, {
       onCompleted: data =>
@@ -97,6 +97,7 @@ const TitleBar = props => {
             <input
                id="titleInput"
                value={editedTitle}
+               placeholder={title || 'New Thing'}
                onChange={e => setEditedTitle(e.target.value)}
             />
          </form>
