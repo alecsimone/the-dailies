@@ -94,11 +94,6 @@ const StyledFeaturedImage = styled.div`
       a {
          line-height: 0;
       }
-      max-height: 50rem;
-      ${props => props.theme.scroll};
-      .tweet {
-         max-height: none;
-      }
    }
 `;
 

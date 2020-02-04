@@ -36,6 +36,13 @@ const StyledThingCard = styled.div`
       video {
          object-fit: contain;
       }
+      .tweet {
+         max-height: 50rem;
+         ${props => props.theme.scroll};
+         .tweet {
+            max-height: none;
+         }
+      }
    }
    .meta {
       display: flex;
