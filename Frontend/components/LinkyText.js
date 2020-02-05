@@ -24,7 +24,7 @@ const replaceTwitterMentions = rawText => {
             return wholeMatch;
          }
          if (rawText[matchIndex - 1] !== ' ') {
-            return ` ${newText}`;
+            return `\u200B${newText}`;
          }
          return newText;
       }
