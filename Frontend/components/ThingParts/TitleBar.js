@@ -1,7 +1,7 @@
 import gql from 'graphql-tag';
 import { useMutation } from '@apollo/react-hooks';
 import styled from 'styled-components';
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { setAlpha } from '../../styles/functions';
 import { checkForNewThingRedirect } from '../../lib/ThingHandling';
@@ -24,7 +24,7 @@ const StyledTitleBar = styled.div`
    }
    margin-top: 1rem;
    h3,
-   input {
+   textarea {
       font-size: ${props => props.theme.smallHead};
       font-weight: 600;
       color: ${props => setAlpha(props.theme.mainText, 1)};
@@ -34,8 +34,12 @@ const StyledTitleBar = styled.div`
       width: 100%;
       border: none;
    }
-   input {
-      background: ${props => setAlpha(props.theme.lowContrastGrey, 0.4)};
+   textarea {
+      height: 0;
+      &:focus {
+         border: none;
+         background: ${props => setAlpha(props.theme.lowContrastGrey, 0.4)};
+      }
    }
 `;
 
@@ -50,30 +54,25 @@ const TitleBar = props => {
          checkForNewThingRedirect(thingID, 'setThingTitle', data)
    });
 
-   const killEditability = e => {
-      if (
-         e.key === 'Escape' ||
-         (e.target.id !== 'titleBar' && e.target.id !== 'titleInput')
-      ) {
-         setEditable(false);
-         removeEventListener('keydown', killEditability);
-         removeEventListener('click', killEditability);
+   useEffect(() => {
+      const titleBar = document.querySelector('#titleInput');
+      if (titleBar) {
+         titleBar.style.height = `${titleBar.scrollHeight}px`;
       }
-   };
+   }, []);
 
-   const editabilityHandler = () => {
-      if (!canEdit) {
-         return;
+   const handleKeydown = e => {
+      console.log('hello');
+      if (e.key === 'Escape') {
+         setEditedTitle(title);
+         e.target.blur();
+      } else if (e.key === 'Enter') {
+         submitTitle();
+         e.target.blur();
       }
-      setEditable(true);
-      addEventListener('click', killEditability);
-      addEventListener('keydown', killEditability);
    };
 
    const submitTitle = async () => {
-      setEditable(false);
-      removeEventListener('keydown', killEditability);
-      removeEventListener('click', killEditability);
       setThingTitle({
          variables: {
             title: editedTitle,
@@ -91,20 +90,25 @@ const TitleBar = props => {
    };
 
    let titleElement;
-   if (editable) {
+   if (canEdit) {
       titleElement = (
          <form onSubmit={submitTitle}>
-            <input
+            <textarea
                id="titleInput"
                value={editedTitle}
-               placeholder={title || 'New Thing'}
-               onChange={e => setEditedTitle(e.target.value)}
+               placeholder={title ? 'Title' : 'New Thing'}
+               onKeyDown={handleKeydown}
+               onChange={e => {
+                  setEditedTitle(e.target.value);
+                  e.target.style.height = '0';
+                  e.target.style.height = `${e.target.scrollHeight}px`;
+               }}
             />
          </form>
       );
    } else {
       titleElement = (
-         <h3 className="titleBar" id="titleBar" onClick={editabilityHandler}>
+         <h3 className="titleBar" id="titleBar">
             {limit == null || limit >= title.length
                ? title
                : `${title.substring(0, limit).trim()}...`}

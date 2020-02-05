@@ -223,7 +223,7 @@ const GlobalStyle = createGlobalStyle`
       }
       padding: 0 1.5rem 2rem 1.5rem;
       border: 1px solid ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
-      border-radius: 0.5rem;
+      border-radius: 3px;
       background: ${props => props.theme.black};
       .repliedToTweet {
          margin-top: 0;
