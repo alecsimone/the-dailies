@@ -14,7 +14,13 @@ const replaceTwitterMentions = rawText => {
    );
    return rawText.replace(
       mentionSearchString,
-      (wholeMatch, username) => `https://twitter.com/${username}\u200B`
+      (wholeMatch, username, matchIndex) => {
+         const newText = `https://twitter.com/${username}\u200B`;
+         if (rawText[matchIndex - 1] !== ' ') {
+            return ` ${newText}`;
+         }
+         return newText;
+      }
    );
 };
 
