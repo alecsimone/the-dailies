@@ -279,13 +279,6 @@ const GlobalStyle = createGlobalStyle`
             color: ${props => props.theme.majorColor};
          }
       }
-      img.embeddedPhoto,
-      .embeddedVideo video {
-         width: 500px;
-         max-width: 100%;
-         height: auto;
-         margin: 1rem 0;
-      }
       .quoteTweetContainer {
          border: 1px solid ${props =>
             setAlpha(props.theme.lowContrastGrey, 0.5)};
@@ -331,6 +324,12 @@ const GlobalStyle = createGlobalStyle`
             }
          }
       }
+      img.embeddedPhoto,
+         .embeddedVideo video {
+            width: 100%;
+            height: auto;
+            margin: 1rem 0;
+         }
       .tweetMeta {
          margin-top: 1rem;
          color: ${props =>

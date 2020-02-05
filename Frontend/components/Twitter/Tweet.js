@@ -162,8 +162,9 @@ const Tweet = props => {
          });
       }
    }
+   const quotedTweetContainer = [];
    if (quotedTweet != null) {
-      entities.push(
+      quotedTweetContainer.push(
          <div className="quoteTweetContainer" key={quotedTweet.id_str}>
             <h5>
                <img
@@ -182,7 +183,7 @@ const Tweet = props => {
          </div>
       );
    } else if (quotedTweetID) {
-      entities.push(<TweetGetter id={quotedTweetID} />);
+      quotedTweetContainer.push(<TweetGetter id={quotedTweetID} />);
    }
    if (retweetedTweet != null) {
       return (
@@ -229,7 +230,9 @@ const Tweet = props => {
             </div>
          )}
          <LinkyText text={tcoReplacedText} />
-         {entities.length > 0 && entities}
+         {quotedTweetContainer.length > 0 && quotedTweetContainer}
+         {entities.length > 1 && <div className="entities">{entities}</div>}
+         {entities.length === 1 && entities}
          <div className="tweetMeta">
             <div>
                <a

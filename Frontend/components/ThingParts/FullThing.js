@@ -33,6 +33,15 @@ const StyledFullThing = styled.article`
       height: 8rem;
       width: 1px;
    }
+   .tweet {
+      .entities {
+         display: grid;
+         grid-template-columns: 1fr 1fr;
+         grid-column-gap: 2rem;
+         justify-items: center;
+         margin: auto;
+      }
+   }
 `;
 
 const FullThing = props => {

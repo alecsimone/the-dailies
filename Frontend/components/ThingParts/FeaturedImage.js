@@ -91,6 +91,10 @@ const StyledFeaturedImage = styled.div`
    }
    .tweet {
       line-height: 1.6;
+      margin: 0;
+      &:first-child {
+         margin-top: 0;
+      }
       a {
          line-height: 0;
       }
