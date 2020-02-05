@@ -102,12 +102,7 @@ async function markTweetsSeen(parent, { listID, tweetIDs }, ctx, info) {
 }
 exports.markTweetsSeen = markTweetsSeen;
 
-async function saveTweet(
-   parent,
-   { tweetURL, tweeter, tweetText, featuredImage },
-   ctx,
-   info
-) {
+async function saveTweet(parent, { tweetURL, tweeter, tweetText }, ctx, info) {
    loggedInGate(ctx);
    fullMemberGate(ctx.req.member);
 
@@ -121,9 +116,6 @@ async function saveTweet(
    dataObj.title = `@${tweeter}: ${
       titleBody !== '' ? titleBody : 'Saved Tweet'
    }`;
-   if (featuredImage != null) {
-      dataObj.featuredImage = featuredImage;
-   }
 
    const newThing = await properUpdateStuff(dataObj, 'new', 'Thing', ctx);
    return newThing;

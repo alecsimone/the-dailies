@@ -57,7 +57,7 @@ type Mutation {
   sendFriendRequest(id: ID!): Member
   confirmFriendRequest(id: ID!): Member
   ignoreFriendRequest(id: ID!): Member
-  saveTweet(tweetURL: String!, tweeter: String!, tweetText: String, featuredImage: String): Thing
+  saveTweet(tweetURL: String!, tweeter: String!, tweetText: String): Thing
   deleteThing(id: ID!): Thing
   readNotifications(ids: [ID]!): Member
 }

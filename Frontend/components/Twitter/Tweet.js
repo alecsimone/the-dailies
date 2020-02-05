@@ -20,14 +20,8 @@ const SAVE_TWEET = gql`
       $tweetURL: String!
       $tweeter: String!
       $tweetText: String
-      $featuredImage: String
    ) {
-      saveTweet(
-         tweetURL: $tweetURL
-         tweeter: $tweeter
-         tweetText: $tweetText
-         featuredImage: $featuredImage
-      ) {
+      saveTweet(tweetURL: $tweetURL, tweeter: $tweeter, tweetText: $tweetText) {
          __typename
          id
       }
@@ -250,14 +244,6 @@ const Tweet = props => {
                         tweeter: user.screen_name,
                         tweetText: replyRemovedText
                      };
-                     if (
-                        tweetEntities &&
-                        tweetEntities.media &&
-                        tweetEntities.media.length > 0
-                     ) {
-                        variables.featuredImage =
-                           tweetEntities.media[0].media_url_https;
-                     }
                      const newThingData = await saveTweet({
                         variables
                      });
