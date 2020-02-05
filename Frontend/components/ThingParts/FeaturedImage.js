@@ -98,6 +98,9 @@ const StyledFeaturedImage = styled.div`
       a {
          line-height: 0;
       }
+      .quoteTweetContainer {
+         margin: 0;
+      }
    }
 `;
 

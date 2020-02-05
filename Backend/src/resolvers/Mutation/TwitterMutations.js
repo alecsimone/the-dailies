@@ -112,12 +112,7 @@ async function saveTweet(
    fullMemberGate(ctx.req.member);
 
    const dataObj = {
-      link: tweetURL,
-      content: {
-         create: {
-            content: tweetURL
-         }
-      }
+      link: tweetURL
    };
    const titleBody =
       tweetText && tweetText.length > 100
