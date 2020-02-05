@@ -16,6 +16,13 @@ const replaceTwitterMentions = rawText => {
       mentionSearchString,
       (wholeMatch, username, matchIndex) => {
          const newText = `https://twitter.com/${username}\u200B`;
+         if (
+            rawText[matchIndex - 1] === '/' &&
+            rawText[matchIndex + wholeMatch.length] === '/'
+         ) {
+            // edge case for medium.com links, which have the @ handles of their creators in them.
+            return wholeMatch;
+         }
          if (rawText[matchIndex - 1] !== ' ') {
             return ` ${newText}`;
          }
