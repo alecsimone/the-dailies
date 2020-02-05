@@ -5,6 +5,8 @@ import PropTypes from 'prop-types';
 import { ThingContext } from '../../pages/thing';
 import { MemberContext } from '../Account/MemberProvider';
 import ShortLink from './ShortLink';
+import { setFullThingToLoading } from './FullThing';
+import { checkForNewThingRedirect } from '../../lib/ThingHandling';
 
 const EDIT_LINK_MUTATION = gql`
    mutation EDIT_LINK_MUTATION($link: String!, $id: ID!) {
@@ -24,10 +26,14 @@ const ThingSourceLink = ({ canEdit }) => {
    const [currentLink, setCurrentLink] = useState(link);
 
    const [editLink, { loading: editLinkLoading }] = useMutation(
-      EDIT_LINK_MUTATION
+      EDIT_LINK_MUTATION,
+      {
+         onCompleted: data => checkForNewThingRedirect(id, 'editLink', data)
+      }
    );
 
    const sendNewLink = async () => {
+      setFullThingToLoading(id);
       await editLink({
          variables: {
             link: currentLink,
@@ -38,7 +44,7 @@ const ThingSourceLink = ({ canEdit }) => {
    };
 
    let content;
-   if (editable) {
+   if (editable || id === 'new') {
       let size = 50;
       if (currentLink) {
          size = currentLink.length > 100 ? 100 : currentLink.length;

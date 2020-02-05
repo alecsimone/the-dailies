@@ -8,7 +8,11 @@ import TitleBar from './TitleBar';
 import ExplodingLink from '../ExplodingLink';
 import { setAlpha } from '../../styles/functions';
 import { isVideo, isExplodingLink } from '../../lib/UrlHandling';
-import { disabledCodewords } from '../../lib/ThingHandling';
+import {
+   disabledCodewords,
+   checkForNewThingRedirect
+} from '../../lib/ThingHandling';
+import { setFullThingToLoading } from './FullThing';
 
 const SET_FEATURED_IMAGE_MUTATION = gql`
    mutation SET_FEATURED_IMAGE_MUTATION(
@@ -117,18 +121,11 @@ const FeaturedImage = props => {
    );
    const [showInput, setShowInput] = useState(featuredImage == null);
 
-   const checkForRedirect = data => {
-      if (id === 'new') {
-         Router.push({
-            pathname: '/thing',
-            query: { id: data.setFeaturedImage.id }
-         });
-      }
-   };
    const [setFeaturedImage, { data: fimgdata }] = useMutation(
       SET_FEATURED_IMAGE_MUTATION,
       {
-         onCompleted: data => checkForRedirect(data)
+         onCompleted: data =>
+            checkForNewThingRedirect(id, 'setFeaturedImage', data)
       }
    );
 
@@ -140,6 +137,7 @@ const FeaturedImage = props => {
          window.alert("That's not a valid featured image, sorry");
          return;
       }
+      setFullThingToLoading(id);
       setFeaturedImage({
          variables: {
             featuredImage: featuredImageInput,

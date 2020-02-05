@@ -137,7 +137,11 @@ async function properUpdateStuff(dataObj, id, type, ctx) {
       if (dataObj.title == null) {
          dataObj.title = 'Untitled Thing';
       }
-      if (dataObj.link && isExplodingLink(dataObj.link)) {
+      if (
+         dataObj.featuredImage == null &&
+         dataObj.link &&
+         isExplodingLink(dataObj.link)
+      ) {
          dataObj.featuredImage = dataObj.link;
       }
       const newThing = await ctx.db.mutation.createThing(

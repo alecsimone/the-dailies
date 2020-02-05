@@ -10,6 +10,7 @@ import { checkForNewThingRedirect } from '../../lib/ThingHandling';
 import { SINGLE_THING_QUERY } from '../../pages/thing';
 import { SINGLE_TAG_QUERY } from '../../pages/tag';
 import { SINGLE_CATEGORY_QUERY } from '../../pages/category';
+import { setFullThingToLoading } from './FullThing';
 
 const ADD_CONTENTPIECE_MUTATION = gql`
    mutation ADD_CONTENTPIECE_MUTATION(
@@ -263,6 +264,7 @@ const Content = props => {
          content: newContentPiece,
          id: 'temporaryID'
       });
+      setFullThingToLoading(id);
       await addContentPiece({
          variables: {
             content: newContentPiece,

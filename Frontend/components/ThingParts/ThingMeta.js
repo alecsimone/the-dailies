@@ -170,7 +170,6 @@ const ThingMeta = props => {
       DELETE_THING_MUTATION,
       {
          onCompleted: data => {
-            console.log(data);
             Router.push({
                pathname: '/'
             });

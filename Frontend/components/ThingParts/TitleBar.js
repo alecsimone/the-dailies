@@ -5,6 +5,7 @@ import { useContext, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { setAlpha } from '../../styles/functions';
 import { checkForNewThingRedirect } from '../../lib/ThingHandling';
+import { setFullThingToLoading } from './FullThing';
 
 const SET_THING_TITLE_MUTATION = gql`
    mutation SET_THING_TITLE_MUTATION($title: String!, $thingID: ID!) {
@@ -62,7 +63,6 @@ const TitleBar = props => {
    }, []);
 
    const handleKeydown = e => {
-      console.log('hello');
       if (e.key === 'Escape') {
          setEditedTitle(title);
          e.target.blur();
@@ -73,6 +73,7 @@ const TitleBar = props => {
    };
 
    const submitTitle = async () => {
+      setFullThingToLoading(thingID);
       setThingTitle({
          variables: {
             title: editedTitle,

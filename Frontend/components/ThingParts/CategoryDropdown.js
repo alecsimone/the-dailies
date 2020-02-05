@@ -5,6 +5,8 @@ import PropTypes from 'prop-types';
 import Router from 'next/router';
 import { MemberContext } from '../Account/MemberProvider';
 import MetaOption from './MetaOption';
+import { checkForNewThingRedirect } from '../../lib/ThingHandling';
+import { setFullThingToLoading } from './FullThing';
 
 const GET_CATEGORIES_QUERY = gql`
    query GET_CATEGORIES_QUERY {
@@ -35,19 +37,11 @@ const CategoryDropdown = props => {
    const { initialCategory, id } = props;
    const { me } = useContext(MemberContext);
 
-   const checkForRedirect = data => {
-      if (id === 'new') {
-         Router.push({
-            pathname: '/thing',
-            query: { id: data.setThingCategory.id }
-         });
-      }
-   };
-
    const [setThingCategory, { data: setCategoryData }] = useMutation(
       SET_THING_CATEGORY_MUTATION,
       {
-         onCompleted: data => checkForRedirect(data)
+         onCompleted: data =>
+            checkForNewThingRedirect(id, 'setThingCategory', data)
       }
    );
 
@@ -73,6 +67,7 @@ const CategoryDropdown = props => {
       const chosenCategory = categoryOptionsData.categories.find(
          category => category.title === value
       );
+      setFullThingToLoading(id);
       setThingCategory({
          variables: { category: value, thingID: id },
          optimisticResponse: {

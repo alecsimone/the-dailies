@@ -5,6 +5,8 @@ import PropTypes from 'prop-types';
 import Router from 'next/router';
 import { MemberContext } from '../Account/MemberProvider';
 import MetaOption from './MetaOption';
+import { checkForNewThingRedirect } from '../../lib/ThingHandling';
+import { setFullThingToLoading } from './FullThing';
 
 const GET_PRIVACY_OPTIONS_QUERY = gql`
    query enumValuesOfPrivacySetting {
@@ -36,23 +38,15 @@ const PrivacyDropdown = props => {
    const { initialPrivacy, id } = props;
    const { me } = useContext(MemberContext);
 
-   const checkForRedirect = data => {
-      if (id === 'new') {
-         Router.push({
-            pathname: '/thing',
-            query: { id: data.setThingPrivacy.id }
-         });
-      }
-   };
-
    const [setThingPrivacy] = useMutation(SET_THING_PRIVACY_MUTATION, {
-      onCompleted: data => checkForRedirect(data)
+      onCompleted: data => checkForNewThingRedirect(id, 'setThingPrivacy', data)
    });
 
    const selectPrivacy = e => {
       const {
          target: { value }
       } = e;
+      setFullThingToLoading(id);
       setThingPrivacy({
          variables: { privacySetting: value, thingID: id },
          optimisticResponse: {

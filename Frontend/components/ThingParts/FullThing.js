@@ -7,6 +7,7 @@ import TagBox from './TagBox';
 import ThingMeta from './ThingMeta';
 import FeaturedImage from './FeaturedImage';
 import Comments from './Comments';
+import LoadingRing from '../LoadingRing';
 import { setAlpha, setLightness, setSaturation } from '../../styles/functions';
 
 const StyledFullThing = styled.article`
@@ -33,6 +34,12 @@ const StyledFullThing = styled.article`
       height: 8rem;
       width: 1px;
    }
+   .loadingRing {
+      display: none;
+   }
+   &.loading .loadingRing {
+      display: block;
+   }
    .tweet {
       .entities {
          display: grid;
@@ -43,6 +50,14 @@ const StyledFullThing = styled.article`
       }
    }
 `;
+
+const setFullThingToLoading = id => {
+   if (id === 'new') {
+      const fullThing = document.querySelector('.fullThing');
+      fullThing.classList.add('loading');
+   }
+};
+export { setFullThingToLoading };
 
 const FullThing = props => {
    const { canEdit } = props;
@@ -60,6 +75,9 @@ const FullThing = props => {
          className="fullThing"
          style={{ borderTop: `0.6rem solid ${highlightColor}` }}
       >
+         <div className="loadingRing">
+            <LoadingRing />
+         </div>
          <FeaturedImage
             context={ThingContext}
             key={`${id}-FeaturedImage`}
