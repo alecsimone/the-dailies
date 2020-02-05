@@ -24,6 +24,13 @@ const ShortLink = ({ link, limit }) => {
             : `${headlessLink.substring(0, limit).trim()}...`;
    }
 
+   if (shortlink.startsWith('reddit.com/r/')) {
+      shortlink = shortlink.replace(
+         /reddit\.com(\/r\/[-a-z0-9_]+(?:\/top)*)$/gim,
+         (wholeMatch, relevantPart, matchIndex, wholeText) => relevantPart
+      );
+   }
+
    // let shortlink = extractHostname(link);
    // console.log(shortlink);
    // if (limit === 0) {

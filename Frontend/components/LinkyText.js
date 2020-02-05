@@ -36,6 +36,21 @@ const replaceEmails = rawText => {
    });
 };
 
+const replaceReddit = rawText =>
+   rawText.replace(
+      /\/r\/(\w+)[/-a-z?=]*/gim,
+      (wholeMatch, subreddit, matchIndex, wholeText) => {
+         const precedingCharacters = wholeText.substring(
+            matchIndex - 10,
+            matchIndex
+         );
+         if (precedingCharacters.toLowerCase() === 'reddit.com') {
+            return wholeMatch;
+         }
+         return `https://reddit.com${wholeMatch}`;
+      }
+   );
+
 const processLinksInText = (rawText, keyString = 0) => {
    const urls = rawText.match(urlFinder);
    if (urls == null) {
@@ -148,7 +163,10 @@ const LinkyText = ({ text }) => {
    const paragraphsAndEmptyStrings = text.split('\n');
    const paragraphs = paragraphsAndEmptyStrings.filter(string => string != '');
    const paragraphElements = paragraphs.map((graph, index) =>
-      processLinksInText(replaceEmails(replaceTwitterMentions(graph)), index)
+      processLinksInText(
+         replaceReddit(replaceEmails(replaceTwitterMentions(graph))),
+         index
+      )
    );
 
    return paragraphElements;
