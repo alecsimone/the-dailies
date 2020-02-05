@@ -21,9 +21,15 @@ const StyledThingCard = styled.div`
    ${props => props.theme.mobileBreakpoint} {
       border-radius: 3px;
    }
+   a:hover {
+      text-decoration: none;
+   }
    .featuredImage {
       h3 {
          /* color: ${props => setAlpha(props.theme.mainText, 0.9)}; */
+         &:hover {
+            text-decoration: underline;
+         }
       }
       img.featured,
       video {
