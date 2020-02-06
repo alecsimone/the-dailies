@@ -37,6 +37,7 @@ const StyledTitleBar = styled.div`
    }
    textarea {
       height: 0;
+      resize: none;
       &:focus {
          border: none;
          background: ${props => setAlpha(props.theme.lowContrastGrey, 0.4)};

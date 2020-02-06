@@ -55,8 +55,12 @@ const Sidebar = props => {
             }
             key={column}
             onClick={() => {
-               setSelectedTab(column);
-               setIsOpen(true);
+               if (selectedTab === column) {
+                  setIsOpen(!isOpen);
+               } else {
+                  setSelectedTab(column);
+                  setIsOpen(true);
+               }
             }}
          >
             <img src={imgSrc} alt={column} title={column} />
