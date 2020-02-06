@@ -79,18 +79,10 @@ const ExplodingLink = props => {
       lowerCaseURL.includes('/status/')
    ) {
       const tweetID = getTweetIDFromLink(url);
-      if (me && me.twitterUserName != null) {
-         return (
-            <div className="tweet" style={{ padding: 0, border: 'none' }}>
-               <TweetGetter id={tweetID} />
-            </div>
-         );
-      }
       return (
-         <>
-            <ShortLink link={url} limit={80} />
-            <TwitterTweetEmbed tweetId={tweetID} options={{ theme: 'dark' }} />
-         </>
+         <div className="tweet" style={{ padding: 0, border: 'none' }}>
+            <TweetGetter id={tweetID} />
+         </div>
       );
    }
 

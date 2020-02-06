@@ -12,11 +12,11 @@ const StyledThings = styled.div`
    &.grid {
       .masonryContainer {
          display: flex;
-         margin-left: -2.5rem; /* gutter offset, negative */
+         margin-left: -3rem; /* gutter offset, negative */
          width: auto;
       }
       .column {
-         padding-left: 2.5rem; /* gutter offset, positive */
+         padding-left: 3rem; /* gutter offset, positive */
          background-clip: padding-box;
          .thingCard {
             margin-bottom: 3rem;

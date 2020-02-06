@@ -27,7 +27,6 @@ const Sidebar = props => {
          extraColumnTitle != 'Member'
       )
    );
-   console.log(selectedTab);
 
    const headerColumns = me ? ['You', 'Friends', 'Public'] : ['Public'];
    if (extraColumnTitle != null) {

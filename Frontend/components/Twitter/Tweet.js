@@ -73,7 +73,8 @@ const Tweet = props => {
          retweet_count: retweets,
          quoted_status: quotedTweet,
          quoted_status_permalink: quotedTweetLink,
-         quoted_status_id_str: quotedTweetID
+         quoted_status_id_str: quotedTweetID,
+         display_text_range
       },
       nested
    } = props;
@@ -96,10 +97,7 @@ const Tweet = props => {
       setLiked(!liked);
    };
 
-   const replyRemovedText = replyRemover(
-      fullText,
-      props.tweet.display_text_range
-   );
+   const replyRemovedText = replyRemover(fullText, display_text_range);
    const hashtagReplacedText = hashtagReplacer(replyRemovedText);
    const tcoReplacedText = tcoReplacer(
       hashtagReplacedText,
@@ -277,15 +275,40 @@ const Tweet = props => {
 Tweet.propTypes = {
    tweet: PropTypes.shape({
       user: PropTypes.shape({
-         name: PropTypes.string.isRequired
+         name: PropTypes.string.isRequired,
+         screen_name: PropTypes.string.isRequired
       }).isRequired,
       full_text: PropTypes.string.isRequired,
       entities: PropTypes.shape({
          urls: PropTypes.array
       }),
+      extended_entities: PropTypes.shape({
+         media: PropTypes.array
+      }),
       id_str: PropTypes.string.isRequired,
       in_reply_to_status_id_str: PropTypes.string,
-      created_at: PropTypes.string.isRequired
+      created_at: PropTypes.string.isRequired,
+      favorite_count: PropTypes.number.isRequired,
+      favorited: PropTypes.bool,
+      retweeted_status: PropTypes.shape({
+         favorited: PropTypes.bool.isRequired,
+         id_str: PropTypes.string.isRequired,
+         user: PropTypes.shape({
+            screen_name: PropTypes.string.isRequired,
+            profile_image_url_https: PropTypes.string.isRequired
+         }).isRequired
+      }),
+      retweet_count: PropTypes.number.isRequired,
+      quoted_status: PropTypes.shape({
+         id_str: PropTypes.string.isRequired,
+         user: PropTypes.shape({
+            screen_name: PropTypes.string.isRequired,
+            profile_image_url_https: PropTypes.string.isRequired
+         }).isRequired
+      }),
+      quoted_status_permalink: PropTypes.object,
+      quoted_status_id_str: PropTypes.string,
+      display_text_range: PropTypes.array.isRequired
    }),
    nested: PropTypes.bool
 };

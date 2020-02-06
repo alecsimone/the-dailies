@@ -44,7 +44,7 @@ const StyledPageWithSidebar = styled.section`
          max-height: 100%;
          overflow: hidden;
          ${props => props.theme.scroll};
-         padding: 2rem;
+         padding: 2rem 3rem;
       }
    }
 `;

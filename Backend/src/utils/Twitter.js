@@ -313,9 +313,20 @@ const fetchHomeTweets = async (userID, token, tokenSecret, sinceID) => {
 exports.fetchHomeTweets = fetchHomeTweets;
 
 const fetchTweet = async (tweetID, ctx) => {
-   const { twitterUserToken, twitterUserTokenSecret } = await getTwitterInfo(
-      ctx
-   );
+   let twitterUserToken;
+   let twitterUserTokenSecret;
+   if (ctx.req.memberId != null) {
+      ({ twitterUserToken, twitterUserTokenSecret } = await getTwitterInfo(
+         ctx
+      ));
+   }
+
+   if (twitterUserToken == null || twitterUserTokenSecret == null) {
+      twitterUserToken = process.env.DEFAULT_TWITTER_USER_TOKEN;
+      twitterUserTokenSecret = decipherString(
+         process.env.DEFAULT_TWITTER_USER_TOKEN_SECRET
+      );
+   }
 
    const baseURL = 'https://api.twitter.com/1.1/statuses/show.json';
 

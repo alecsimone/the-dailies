@@ -131,9 +131,6 @@ async function getTwitterLists(parent, args, ctx, info) {
 exports.getTwitterLists = getTwitterLists;
 
 async function getTweet(parent, { tweetID }, ctx, info) {
-   loggedInGate(ctx);
-   fullMemberGate(ctx.req.member);
-
    const tweet = await fetchTweet(tweetID, ctx);
 
    return { message: JSON.stringify(tweet) };
