@@ -75,7 +75,12 @@ const search = ({ query }) => {
             <Things things={thingsList} cardSize="regular" displayType="grid" />
          );
       } else {
-         content = <div>No things found.</div>;
+         content = (
+            <div>
+               No things found. Just a warning, searches are case sensitive and
+               tbh, pretty weak at the moment.
+            </div>
+         );
       }
    }
    if (loading) {
