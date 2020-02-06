@@ -46,7 +46,7 @@ const StyledHeader = styled.div`
             ${props => props.theme.desktopBreakpoint} {
                grid-template-columns: 1fr auto 1fr;
                .memberColumn {
-                  display: block;
+                  display: flex;
                }
                .logoBox {
                   display: flex;
