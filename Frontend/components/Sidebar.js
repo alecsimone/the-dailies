@@ -27,6 +27,7 @@ const Sidebar = props => {
          extraColumnTitle != 'Member'
       )
    );
+   console.log(selectedTab);
 
    const headerColumns = me ? ['You', 'Friends', 'Public'] : ['Public'];
    if (extraColumnTitle != null) {
@@ -41,21 +42,22 @@ const Sidebar = props => {
       } else {
          imgSrc = `${column}.png`;
       }
+
+      const isSelected =
+         selectedTab === column ||
+         (selectedTab === 'default' && me && column === 'You') ||
+         (selectedTab === 'default' && me == null && column === 'Public');
+
       return (
          <div
             className={
-               selectedTab === column ||
-               (selectedTab === 'default' && me && column === 'You') ||
-               (selectedTab === 'default' &&
-                  me == null &&
-                  column === 'Public' &&
-                  headerColumns.length > 1)
+               isSelected && headerColumns.length > 1
                   ? `headerTab ${column} selected`
                   : `headerTab ${column}`
             }
             key={column}
             onClick={() => {
-               if (selectedTab === column) {
+               if (isSelected) {
                   setIsOpen(!isOpen);
                } else {
                   setSelectedTab(column);
