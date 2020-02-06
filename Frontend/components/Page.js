@@ -14,7 +14,7 @@ const theme = {
    bigHead: '5rem',
 
    black: 'hsla(30, 1%, 5%, 1)',
-   mainText: 'hsl(210, 3%, 75%)',
+   mainText: 'hsl(210, 3%, 80%)',
    background: 'hsl(210, 60%, 3%)',
 
    majorColor: 'hsl(210, 100%, 40%)',
