@@ -37,42 +37,46 @@ const search = ({ query }) => {
    }
    if (data && data.search != null) {
       const thingsList = data.search;
-      thingsList.sort((a, b) => {
-         let aScore = 1;
-         let bScore = 1;
+      if (thingsList.length > 0) {
+         thingsList.sort((a, b) => {
+            let aScore = 1;
+            let bScore = 1;
 
-         const aString = JSON.stringify(a);
-         const bString = JSON.stringify(b);
+            const aString = JSON.stringify(a);
+            const bString = JSON.stringify(b);
 
-         if (string.includes(' ')) {
-            const words = string.split(' ');
-            words.forEach(word => {
-               const wordSearchString = new RegExp(word, 'gim');
-               const aMatches = aString.match(wordSearchString);
-               aScore += aMatches.length;
-               const bMatches = bString.match(wordSearchString);
-               bScore += bMatches.length;
-            });
-         }
+            if (string.includes(' ')) {
+               const words = string.split(' ');
+               words.forEach(word => {
+                  const wordSearchString = new RegExp(word, 'gim');
+                  const aMatches = aString.match(wordSearchString);
+                  aScore += aMatches.length;
+                  const bMatches = bString.match(wordSearchString);
+                  bScore += bMatches.length;
+               });
+            }
 
-         const searchString = new RegExp(string, 'gim');
-         const aOccurances = aString.match(searchString);
-         const bOccurances = bString.match(searchString);
-         aScore *= aOccurances.length;
-         bScore *= bOccurances.length;
+            const searchString = new RegExp(string, 'gim');
+            const aOccurances = aString.match(searchString);
+            const bOccurances = bString.match(searchString);
+            aScore *= aOccurances.length;
+            bScore *= bOccurances.length;
 
-         if (a.title.includes(string)) {
-            aScore *= 5;
-         }
-         if (b.title.includes(string)) {
-            bScore *= 5;
-         }
+            if (a.title.includes(string)) {
+               aScore *= 5;
+            }
+            if (b.title.includes(string)) {
+               bScore *= 5;
+            }
 
-         return bScore - aScore;
-      });
-      content = (
-         <Things things={thingsList} cardSize="regular" displayType="grid" />
-      );
+            return bScore - aScore;
+         });
+         content = (
+            <Things things={thingsList} cardSize="regular" displayType="grid" />
+         );
+      } else {
+         content = <div>No things found.</div>;
+      }
    }
    if (loading) {
       content = <LoadingRing />;
