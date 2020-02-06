@@ -18,7 +18,7 @@ const StyledSidebar = styled.section`
    }
    transition: all 0.25s;
    background: ${props =>
-      setLightness(setSaturation(props.theme.background, 60), 4)};
+      setLightness(setSaturation(props.theme.majorColor, 50), 5)};
    border-right: 2px solid
       ${props => setAlpha(props.theme.highContrastGrey, 0.1)};
    position: relative;

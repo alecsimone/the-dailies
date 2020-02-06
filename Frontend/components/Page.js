@@ -63,7 +63,7 @@ const theme = {
 
 const GlobalStyle = createGlobalStyle`
    html {
-      background: ${setLightness(setSaturation(theme.primaryAccent, 75), 3)};
+      background: ${setLightness(setSaturation(theme.primaryAccent, 30), 6)};
       color: ${theme.mainText};
       font-family: "Proxima Nova", sans-serif;
       box-sizing: border-box;
