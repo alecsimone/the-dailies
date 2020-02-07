@@ -28,6 +28,7 @@ const StyledPageWithSidebar = styled.section`
    }
    .mainSection {
       flex-basis: 100%;
+      max-width: 100%;
       ${props => props.theme.mobileBreakpoint} {
          flex-basis: 60%;
       }

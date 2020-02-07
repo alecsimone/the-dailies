@@ -14,14 +14,16 @@ const ShortLink = ({ link, limit }) => {
 
    let shortlink;
    if (!domain) {
-      shortlink = hostName;
+      const start = link.indexOf(hostName);
+      shortlink = link.substring(start);
    } else if (limit === 0) {
       shortlink = domain;
    } else {
-      shortlink =
-         headlessLink.length <= limit
-            ? headlessLink
-            : `${headlessLink.substring(0, limit).trim()}...`;
+      shortlink = headlessLink;
+   }
+
+   if (limit && limit < shortlink.length) {
+      shortlink = `${shortlink.substring(0, limit).trim()}...`;
    }
 
    if (shortlink.startsWith('reddit.com/r/')) {
@@ -30,16 +32,6 @@ const ShortLink = ({ link, limit }) => {
          (wholeMatch, relevantPart, matchIndex, wholeText) => relevantPart
       );
    }
-
-   // let shortlink = extractHostname(link);
-   // console.log(shortlink);
-   // if (limit === 0) {
-   //    shortlink = psl.parse(shortlink).domain;
-   // } else {
-   //    const startOfName = link
-   //    shortlink =
-   //       link.length <= limit ? link : `${link.substring(0, limit).trim()}...`;
-   // }
 
    return (
       <a className="shortlink" href={link} target="_blank" key={link}>

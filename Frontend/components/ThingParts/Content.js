@@ -191,6 +191,7 @@ const StyledContent = styled.section`
       .contentPiece {
          margin: 0rem 0;
          flex-grow: 1;
+         width: 100%;
          img,
          video,
          iframe {

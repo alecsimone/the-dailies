@@ -13,6 +13,7 @@ import { setAlpha, setLightness, setSaturation } from '../../styles/functions';
 const StyledFullThing = styled.article`
    margin: 1rem 0;
    padding: 2rem 0;
+   max-width: 100%;
    ${props => props.theme.mobileBreakpoint} {
       padding: 2rem;
       max-width: 1440px;

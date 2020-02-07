@@ -238,6 +238,10 @@ const GlobalStyle = createGlobalStyle`
             }
          }
       }
+      p {
+         overflow-wrap: break-word;
+         word-wrap: break-word;
+      }
       &.retweet {
          .retweeter {
             display: flex;
