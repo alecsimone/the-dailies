@@ -60,6 +60,7 @@ type Mutation {
   saveTweet(tweetURL: String!, tweeter: String!, tweetText: String): Thing
   deleteThing(id: ID!): Thing
   readNotifications(ids: [ID]!): Member
+  newBlankThing: Thing
 }
 
 union Stuff = Thing | Tag | Category

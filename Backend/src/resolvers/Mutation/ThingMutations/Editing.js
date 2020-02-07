@@ -142,6 +142,15 @@ async function createThing(parent, args, ctx, info) {
 }
 exports.createThing = createThing;
 
+async function newBlankThing(parent, args, ctx, info) {
+   loggedInGate(ctx);
+   fullMemberGate(ctx.req.member);
+
+   const newThing = properUpdateStuff({}, 'new', 'Thing', ctx);
+   return newThing;
+}
+exports.newBlankThing = newBlankThing;
+
 async function addContentPiece(parent, { content, id, type }, ctx, info) {
    loggedInGate(ctx);
    fullMemberGate(ctx.req.member);

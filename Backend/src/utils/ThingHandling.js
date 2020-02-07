@@ -157,6 +157,8 @@ async function properUpdateStuff(dataObj, id, type, ctx) {
    editPermissionGate(dataObj, id, type, ctx);
 
    const updatedStuff = await updateStuffAndNotifySubs(dataObj, id, type, ctx);
+
+   publishMeUpdate(ctx);
    return updatedStuff;
 }
 exports.properUpdateStuff = properUpdateStuff;

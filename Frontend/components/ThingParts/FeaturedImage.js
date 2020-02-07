@@ -44,6 +44,7 @@ const StyledFeaturedImage = styled.div`
    position: relative;
    line-height: 0;
    width: 100%;
+   z-index: 1;
    img,
    video {
       width: 100%;
@@ -88,9 +89,10 @@ const StyledFeaturedImage = styled.div`
       right: 0.5rem;
       width: ${props => props.theme.smallText};
       cursor: pointer;
-      opacity: 0.4;
+      z-index: 3;
+      /* opacity: 0.4; */
       &:hover {
-         opacity: 0.8;
+         /* opacity: 0.8; */
       }
    }
    .tweet {
@@ -202,7 +204,7 @@ const FeaturedImage = props => {
          <TitleBar context={context} limit={titleLimit} canEdit={canEdit} />
          {canEdit && (
             <img
-               src={showInput ? '/red-x.png' : '/edit-this.png'}
+               src="/edit-this.png"
                className="editThis"
                alt="edit featured"
                onClick={showInputHandler}

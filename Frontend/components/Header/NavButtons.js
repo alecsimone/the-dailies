@@ -1,8 +1,10 @@
 import styled from 'styled-components';
 import Link from 'next/link';
+import { useMutation } from '@apollo/react-hooks';
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 import Router from 'next/router';
+import { NEW_BLANK_THING } from '../../pages/new';
 import { setAlpha, setLightness } from '../../styles/functions';
 
 const StyledNav = styled.nav`
@@ -11,6 +13,10 @@ const StyledNav = styled.nav`
    flex-grow: 1;
    a {
       line-height: 0;
+      .loading {
+         background: blue;
+         ${props => props.theme.spin};
+      }
       img {
          width: ${props => props.theme.bigText};
          cursor: pointer;
@@ -83,13 +89,31 @@ const StyledNav = styled.nav`
 
 const NavButtons = ({ showSearch, setShowSearch }) => {
    const [searchTerm, setSearchTerm] = useState('');
+   const [newBlankThing] = useMutation(NEW_BLANK_THING, {
+      onCompleted: data => {
+         Router.push({
+            pathname: '/thing',
+            query: { id: data.newBlankThing.id }
+         });
+         const newPostButton = document.querySelector('.newPost');
+         newPostButton.classList.remove('loading');
+      }
+   });
    return (
       <StyledNav className="navButtons">
-         <Link href={{ pathname: 'thing', query: { id: 'new' } }}>
-            <a href="/thing?id=new">
-               <img src="/green-plus.png" className="newPost" alt="New Post" />
-            </a>
-         </Link>
+         <a
+            href="/new"
+            id="newPostButton"
+            onClick={e => {
+               e.preventDefault();
+               if (!e.target.classList.contains('loading')) {
+                  e.target.classList.add('loading');
+                  newBlankThing();
+               }
+            }}
+         >
+            <img src="/green-plus.png" className="newPost" alt="New Post" />
+         </a>
          <div className="searchBar">
             <img
                className="searchIcon"

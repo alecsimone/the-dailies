@@ -1,9 +1,11 @@
+const { loggedInGate, fullMemberGate } = require('../../utils/Authentication');
 const {
    searchAvailableTags,
    canSeeThingGate,
    canSeeThing,
    canSeeTagGate,
-   canSeeTag
+   canSeeTag,
+   properUpdateStuff
 } = require('../../utils/ThingHandling');
 
 async function categories(parent, args, ctx, info) {
