@@ -162,6 +162,41 @@ async function publicThings(parent, { orderBy = 'id_DESC' }, ctx, info) {
 }
 exports.publicThings = publicThings;
 
+async function allThings(parent, args, ctx, info) {
+   let where;
+   if (ctx.req.memberId == null) {
+      where = {
+         privacy: 'Public'
+      };
+   } else {
+      where = {
+         OR: [
+            {
+               privacy: 'Public'
+            },
+            {
+               author: {
+                  friends_some: {
+                     id: ctx.req.memberId
+                  }
+               },
+               privacy_in: ['Public', 'Friends']
+            }
+         ]
+      };
+   }
+
+   const things = await ctx.db.query.things(
+      {
+         where,
+         orderBy: 'id_DESC'
+      },
+      info
+   );
+   return things;
+}
+exports.allThings = allThings;
+
 async function search(parent, { string }, ctx, info) {
    const foundThings = await ctx.db.query.things(
       {

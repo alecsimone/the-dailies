@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import Link from 'next/link';
 import PropTypes from 'prop-types';
 import { CURRENT_MEMBER_QUERY } from '../Account/MemberProvider';
+import { ALL_THINGS_QUERY } from '../../pages/index';
 import { setAlpha, setLightness } from '../../styles/functions';
 
 const LOGOUT_MUTATION = gql`
@@ -79,7 +80,10 @@ const MemberMenu = () => {
             <a
                onClick={() =>
                   logout({
-                     refetchQueries: [{ query: CURRENT_MEMBER_QUERY }]
+                     refetchQueries: [
+                        { query: CURRENT_MEMBER_QUERY },
+                        { query: ALL_THINGS_QUERY }
+                     ]
                   })
                }
             >

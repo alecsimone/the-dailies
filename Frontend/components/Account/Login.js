@@ -6,6 +6,7 @@ import Router from 'next/router';
 import Error from '../ErrorMessage.js';
 import StyledForm from '../../styles/StyledForm';
 import { CURRENT_MEMBER_QUERY } from './MemberProvider';
+import { ALL_THINGS_QUERY } from '../../pages/index';
 
 const LOGIN_MUTATION = gql`
    mutation LOGIN_MUTATION($email: String!, $password: String!) {
@@ -41,7 +42,10 @@ const Login = props => {
             e.preventDefault();
             await login({
                variables: { email, password },
-               refetchQueries: [{ query: CURRENT_MEMBER_QUERY }]
+               refetchQueries: [
+                  { query: CURRENT_MEMBER_QUERY },
+                  { query: ALL_THINGS_QUERY }
+               ]
             });
             if (redirect !== false) {
                Router.push({

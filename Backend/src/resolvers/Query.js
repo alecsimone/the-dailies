@@ -8,7 +8,8 @@ const {
    myThings,
    myFriendsThings,
    publicThings,
-   search
+   search,
+   allThings
 } = require('./Query/PageQueries');
 const { me, member } = require('./Query/MemberQueries');
 const {
@@ -35,7 +36,8 @@ const Query = {
    getTweet,
    refreshLists,
    getTweetsForList,
-   search
+   search,
+   allThings
 };
 
 module.exports = Query;
