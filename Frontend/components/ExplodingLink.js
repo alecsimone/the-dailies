@@ -104,7 +104,8 @@ const ExplodingLink = props => {
    }
 
    // Tweeter
-   if (lowerCaseURL.includes('twitter.com/')) {
+   const tweeterURL = lowerCaseURL.match(/twitter\.com\/[-a-z0-9?=]+$/gim);
+   if (tweeterURL && tweeterURL.length > 0) {
       const userStart = lowerCaseURL.indexOf('twitter.com/') + 12;
       const userEnd = lowerCaseURL.indexOf('?');
       let user;
