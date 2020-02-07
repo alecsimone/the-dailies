@@ -84,12 +84,12 @@ const FullThing = props => {
             canEdit={canEdit}
          />
          <ThingMeta key={`${id}-ThingMeta`} canEdit={canEdit} />
+         {id !== 'new' && <TagBox key={`${id}-TagBox`} canEdit={canEdit} />}
          <Content
             context={ThingContext}
             key={`${id}-Content`}
             canEdit={canEdit}
          />
-         {id !== 'new' && <TagBox key={`${id}-TagBox`} canEdit={canEdit} />}
          {id !== 'new' && (
             <Comments context={ThingContext} key={`${id}-Comments`} />
          )}
