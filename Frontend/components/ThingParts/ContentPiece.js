@@ -53,11 +53,13 @@ const ContentPiece = props => {
                   className="edit buttons"
                   onClick={() => setEditable(!editable)}
                />
-               <img
-                  src="/red-x.png"
-                  className="delete buttons"
-                  onClick={() => deleteContentPiece(id)}
-               />
+               {editable && (
+                  <img
+                     src="/trash.png"
+                     className="delete buttons"
+                     onClick={() => deleteContentPiece(id)}
+                  />
+               )}
             </div>
          )}
       </div>

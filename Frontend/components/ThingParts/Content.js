@@ -315,6 +315,9 @@ const Content = props => {
    };
 
    const deletePiece = async contentPieceID => {
+      if (!confirm('Are you sure you want to delete that?')) {
+         return;
+      }
       const newContent = content.filter(
          contentPiece => contentPiece.id !== contentPieceID
       );
