@@ -90,9 +90,9 @@ const StyledFeaturedImage = styled.div`
       width: ${props => props.theme.smallText};
       cursor: pointer;
       z-index: 3;
-      /* opacity: 0.4; */
+      opacity: 0.4;
       &:hover {
-         /* opacity: 0.8; */
+         opacity: 0.8;
       }
    }
    .tweet {

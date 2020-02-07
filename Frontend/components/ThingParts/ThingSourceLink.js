@@ -44,7 +44,7 @@ const ThingSourceLink = ({ canEdit }) => {
    };
 
    let content;
-   if (editable || id === 'new') {
+   if (editable || id === 'new' || currentLink === '' || currentLink == null) {
       let size = 50;
       if (currentLink) {
          size = currentLink.length > 100 ? 100 : currentLink.length;
