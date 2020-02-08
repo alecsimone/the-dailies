@@ -9,8 +9,6 @@ const ShortLink = ({ link, limit }) => {
 
    const hostName = extractHostname(link);
    const { domain } = psl.parse(hostName);
-   const startOfDomain = link.indexOf(domain);
-   const headlessLink = link.substring(startOfDomain);
 
    let shortlink;
    if (!domain) {
@@ -19,6 +17,8 @@ const ShortLink = ({ link, limit }) => {
    } else if (limit === 0) {
       shortlink = domain;
    } else {
+      const startOfDomain = link.toLowerCase().indexOf(domain);
+      const headlessLink = link.substring(startOfDomain);
       shortlink = headlessLink;
    }
 

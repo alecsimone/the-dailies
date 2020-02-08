@@ -36,7 +36,7 @@ const StyledTitleBar = styled.div`
       border: none;
    }
    textarea {
-      height: 0;
+      height: 3rem;
       resize: none;
       &:focus {
          border: none;
