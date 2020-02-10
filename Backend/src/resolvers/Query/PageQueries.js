@@ -180,7 +180,23 @@ async function allThings(parent, args, ctx, info) {
                      id: ctx.req.memberId
                   }
                },
-               privacy_in: ['Public', 'Friends']
+               privacy_in: ['Public', 'Friends', 'FriendsOfFriends']
+            },
+            {
+               author: {
+                  friends_some: {
+                     friends_some: {
+                        id: ctx.req.memberId
+                     }
+                  }
+               },
+               privacy: 'FriendsOfFriends'
+            },
+            {
+               author: {
+                  id: ctx.req.memberId
+               },
+               privacy_not: 'Private'
             }
          ]
       };
