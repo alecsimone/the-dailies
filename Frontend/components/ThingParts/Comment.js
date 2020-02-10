@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import { MemberContext } from '../Account/MemberProvider';
 import LinkyText from '../LinkyText';
 import { setAlpha } from '../../styles/functions';
-import { convertISOtoAgo } from '../../lib/ThingHandling';
+import { convertISOtoAgo, pxToInt } from '../../lib/ThingHandling';
 
 const DELETE_COMMENT_MUTATION = gql`
    mutation DELETE_COMMENT_MUTATION(
@@ -223,7 +223,17 @@ const Comment = props => {
                      <textarea
                         className="editCommentBox"
                         placeholder="Edit comment"
-                        onChange={e => setEditedComment(e.target.value)}
+                        onChange={e => {
+                           setEditedComment(e.target.value);
+                           if (
+                              pxToInt(e.target.style.height) <
+                              e.target.scrollHeight
+                           ) {
+                              e.target.style.height = '0';
+                              e.target.style.height = `${e.target.scrollHeight +
+                                 2}px`;
+                           }
+                        }}
                         value={editedComment}
                         onKeyDown={e => {
                            e.persist();

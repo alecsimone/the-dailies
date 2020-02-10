@@ -187,6 +187,7 @@ const Comments = props => {
                currentComment={currentComment}
                updateComment={setCurrentComment}
                postComment={sendNewComment}
+               id={id}
             />
          )}
       </StyledComments>

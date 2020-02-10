@@ -170,8 +170,11 @@ const StyledContent = styled.section`
          flex-wrap: nowrap;
          padding: 1rem 0;
       }
-      img.buttons {
+      div.buttons {
          width: ${props => props.theme.smallText};
+      }
+      img.buttons {
+         width: 100%;
          opacity: 0.2;
          margin-left: 1rem;
          &:hover {
@@ -385,6 +388,7 @@ const Content = props => {
                currentContent={newContentPiece}
                updateContent={setNewContentPiece}
                postContent={sendNewContentPiece}
+               id={id}
             />
          )}
       </StyledContent>

@@ -37,6 +37,7 @@ const ContentPiece = props => {
             updateContent={setEditedContent}
             postContent={postContent}
             setEditable={setEditable}
+            id={id}
          />
       );
    }

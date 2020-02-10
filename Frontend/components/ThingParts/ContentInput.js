@@ -1,8 +1,23 @@
 import PropTypes from 'prop-types';
+import { useEffect } from 'react';
 import { pxToInt } from '../../lib/ThingHandling';
 
-const ContentInput = props => {
-   const { currentContent, updateContent, postContent, setEditable } = props;
+const ContentInput = ({
+   currentContent,
+   updateContent,
+   postContent,
+   setEditable,
+   id
+}) => {
+   useEffect(() => {
+      console.log(id);
+      const inputs = document.querySelectorAll(`#${id}`);
+      if (inputs.length > 0) {
+         inputs.forEach(input => {
+            input.style.height = `${input.scrollHeight + 2}px`;
+         });
+      }
+   }, [id]);
 
    const handleKeyDown = e => {
       if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
@@ -22,7 +37,7 @@ const ContentInput = props => {
       >
          <textarea
             type="textarea"
-            id="content"
+            id={id}
             name="content"
             value={currentContent}
             onChange={e => {
@@ -33,6 +48,7 @@ const ContentInput = props => {
                }
             }}
             onKeyDown={e => handleKeyDown(e)}
+            placeholder="Add content"
          />
          <div className="postButtonWrapper">
             <button type="submit" className="post">
@@ -46,7 +62,8 @@ ContentInput.propTypes = {
    currentContent: PropTypes.string.isRequired,
    updateContent: PropTypes.func.isRequired,
    postContent: PropTypes.func.isRequired,
-   setEditable: PropTypes.func
+   setEditable: PropTypes.func,
+   id: PropTypes.string.isRequired
 };
 
 export default ContentInput;

@@ -43,6 +43,7 @@ const CommentInput = props => {
             type="textarea"
             id="commentInput"
             name="commentInput"
+            placeholder="Add comment"
             value={currentComment}
             onChange={e => {
                updateComment(e.target.value);
