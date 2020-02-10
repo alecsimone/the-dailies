@@ -45,8 +45,7 @@ const StyledTitleBar = styled.div`
    }
 `;
 
-const TitleBar = props => {
-   const { context, limit, canEdit = true } = props;
+const TitleBar = ({ context, limit, canEdit = true }) => {
    const { title, id: thingID } = useContext(context);
    const [editable, setEditable] = useState(thingID === 'new');
    const [editedTitle, setEditedTitle] = useState(title);
@@ -104,6 +103,11 @@ const TitleBar = props => {
                   setEditedTitle(e.target.value);
                   e.target.style.height = '0';
                   e.target.style.height = `${e.target.scrollHeight}px`;
+               }}
+               onBlur={() => {
+                  if (editedTitle !== title) {
+                     submitTitle();
+                  }
                }}
             />
          </form>
