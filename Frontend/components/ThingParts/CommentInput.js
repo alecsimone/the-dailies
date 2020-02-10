@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { setAlpha } from '../../styles/functions';
+import { pxToInt } from '../../lib/ThingHandling';
 
 const StyledCommentInput = styled.form`
    display: flex;
@@ -8,6 +9,7 @@ const StyledCommentInput = styled.form`
    justify-content: flex-end;
    textarea {
       width: 100%;
+      height: calc(5rem + 3px);
    }
    button {
       margin: 1rem 0;
@@ -42,7 +44,13 @@ const CommentInput = props => {
             id="commentInput"
             name="commentInput"
             value={currentComment}
-            onChange={e => updateComment(e.target.value)}
+            onChange={e => {
+               updateComment(e.target.value);
+               if (pxToInt(e.target.style.height) < e.target.scrollHeight) {
+                  e.target.style.height = '0';
+                  e.target.style.height = `${e.target.scrollHeight + 2}px`;
+               }
+            }}
             onKeyDown={e => handleKeyDown(e)}
          />
          <button type="submit" className="post">

@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import { pxToInt } from '../../lib/ThingHandling';
 
 const ContentInput = props => {
    const { currentContent, updateContent, postContent, setEditable } = props;
@@ -24,13 +25,14 @@ const ContentInput = props => {
             id="content"
             name="content"
             value={currentContent}
-            onChange={e => updateContent(e.target.value)}
-            onKeyDown={e => handleKeyDown(e)}
-            style={{
-               height: `${
-                  currentContent.length > 240 ? currentContent.length / 2 : 120
-               }px`
+            onChange={e => {
+               updateContent(e.target.value);
+               if (pxToInt(e.target.style.height) < e.target.scrollHeight) {
+                  e.target.style.height = '0';
+                  e.target.style.height = `${e.target.scrollHeight + 2}px`;
+               }
             }}
+            onKeyDown={e => handleKeyDown(e)}
          />
          <div className="postButtonWrapper">
             <button type="submit" className="post">
