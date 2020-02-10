@@ -262,7 +262,14 @@ const Tweet = props => {
                </a>
             </div>
             <div className="score">
-               {likes}
+               <span
+                  className="favoriteCount"
+                  onClick={() => {
+                     likeTweetHandler();
+                  }}
+               >
+                  {likes}
+               </span>
                <img
                   src={liked ? '/heart-full.png' : '/heart-outline.png'}
                   className={liked ? 'on' : 'off'}

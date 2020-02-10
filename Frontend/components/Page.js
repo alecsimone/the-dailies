@@ -359,6 +359,9 @@ const GlobalStyle = createGlobalStyle`
          .score {
             display: inline-flex;
             align-items: center;
+            span {
+               cursor: pointer;
+            }
             img {
                opacity: 1;
                width: ${props => props.theme.smallText};
