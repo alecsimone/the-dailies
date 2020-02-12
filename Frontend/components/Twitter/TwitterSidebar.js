@@ -19,7 +19,7 @@ const StyledTwitterSidebar = styled.div`
          background: ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
       }
       &.loading {
-         background: ${props => setAlpha(props.theme.majorColor, 0.1)};
+         background: ${props => setAlpha(props.theme.lowContrastGrey, 0.5)};
       }
       cursor: pointer;
       span {

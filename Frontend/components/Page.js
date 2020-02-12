@@ -36,6 +36,8 @@ const theme = {
    bigScreenBPWidthRaw: 1800,
    bigScreenBreakpoint: '@media screen and (min-width: 1800px)',
 
+   tweetHead: 'hsl(210, 100%, 7%)',
+
    scroll: {
       overflowY: 'auto',
       scrollbarWidth: 'thin',
@@ -63,7 +65,7 @@ const theme = {
 
 const GlobalStyle = createGlobalStyle`
    html {
-      background: ${setLightness(setSaturation(theme.primaryAccent, 30), 6)};
+      background: ${setLightness(theme.primaryAccent, 3)};
       color: ${theme.mainText};
       font-family: "Proxima Nova", sans-serif;
       box-sizing: border-box;
@@ -248,8 +250,7 @@ const GlobalStyle = createGlobalStyle`
             align-items: center;
             margin: 0 -1.5rem 1rem -1.5rem;
             padding: 2rem 1rem;
-            background: ${props =>
-               setAlpha(setLightness(props.theme.majorColor, 30), 0.15)};
+            background: ${props => props.theme.tweetHead};
             a.retweetLink {
                color: ${props => props.theme.mainText};
                font-weight: 600;
@@ -301,8 +302,7 @@ const GlobalStyle = createGlobalStyle`
             }
             display: flex;
             align-items: center;
-            background: ${props =>
-               setAlpha(setLightness(props.theme.majorColor, 30), 0.15)};
+            background: ${props => props.theme.tweetHead};
             margin: 0;
             padding: 1rem 0;
             border-bottom: none;

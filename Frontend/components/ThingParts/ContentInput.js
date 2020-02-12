@@ -28,6 +28,8 @@ const ContentInput = ({
       }
    };
 
+   const resizeForm = el => {};
+
    return (
       <form
          onSubmit={async e => {

@@ -84,8 +84,7 @@ const StyledTweets = styled.section`
                justify-content: space-around;
                margin: 0;
                padding: 1rem 0;
-               background: ${props =>
-                  setAlpha(setLightness(props.theme.majorColor, 60), 0.15)};
+               background: ${props => props.theme.tweetHead};
                text-align: center;
                border-radius: 3px 3px 0 0;
                .bottom {
