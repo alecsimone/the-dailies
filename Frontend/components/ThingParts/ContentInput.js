@@ -28,7 +28,12 @@ const ContentInput = ({
       }
    };
 
-   const resizeForm = el => {};
+   const resizeForm = el => {
+      if (pxToInt(el.style.height) < el.scrollHeight) {
+         el.style.height = '0';
+         el.style.height = `${el.scrollHeight + 2}px`;
+      }
+   };
 
    return (
       <form
@@ -44,10 +49,7 @@ const ContentInput = ({
             value={currentContent}
             onChange={e => {
                updateContent(e.target.value);
-               if (pxToInt(e.target.style.height) < e.target.scrollHeight) {
-                  e.target.style.height = '0';
-                  e.target.style.height = `${e.target.scrollHeight + 2}px`;
-               }
+               resizeForm(e.target);
             }}
             onKeyDown={e => handleKeyDown(e)}
             placeholder="Add content"

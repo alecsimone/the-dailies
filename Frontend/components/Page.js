@@ -36,7 +36,7 @@ const theme = {
    bigScreenBPWidthRaw: 1800,
    bigScreenBreakpoint: '@media screen and (min-width: 1800px)',
 
-   tweetHead: 'hsl(210, 100%, 7%)',
+   tweetHead: 'hsl(210, 100%, 6%)',
 
    scroll: {
       overflowY: 'auto',
