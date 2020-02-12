@@ -59,14 +59,16 @@ const TitleBar = ({ context, limit, canEdit = true }) => {
       const inputs = document.querySelectorAll(`.titleInput`);
       if (inputs.length > 0) {
          inputs.forEach(input => {
+            console.log(input);
             dynamicallyResizeElement(input);
          });
       }
       if (false) {
          // forcing eslint to include currentContent in the dependencies
          console.log(editedTitle);
+         console.log(title);
       }
-   }, [editedTitle]);
+   }, [editedTitle, title]);
 
    const handleKeydown = e => {
       if (e.key === 'Escape') {
