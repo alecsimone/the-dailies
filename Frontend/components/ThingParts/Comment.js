@@ -6,6 +6,7 @@ import { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { MemberContext } from '../Account/MemberProvider';
 import LinkyText from '../LinkyText';
+import CommentInput from './CommentInput';
 import { setAlpha } from '../../styles/functions';
 import { convertISOtoAgo, pxToInt } from '../../lib/ThingHandling';
 
@@ -155,9 +156,7 @@ const StyledComment = styled.div`
    }
 `;
 
-const Comment = props => {
-   const { comment, comments, type, id } = props;
-
+const Comment = ({ comment, comments, type, id }) => {
    const { me, loading: memberLoading } = useContext(MemberContext);
 
    const [editComment] = useMutation(EDIT_COMMENT_MUTATION);
@@ -166,34 +165,29 @@ const Comment = props => {
    const [editing, setEditing] = useState(false);
    const [editedComment, setEditedComment] = useState(comment.comment);
 
-   const handleKeyDown = async e => {
-      if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
-         const indexOfEditedComment = comments.findIndex(
-            currentComment => currentComment.id === comment.id
-         );
-         comments[indexOfEditedComment].comment = editedComment;
+   const sendNewComment = async () => {
+      const indexOfEditedComment = comments.findIndex(
+         currentComment => currentComment.id === comment.id
+      );
+      comments[indexOfEditedComment].comment = editedComment;
 
-         setEditing(false);
-         await editComment({
-            variables: {
-               commentID: comment.id,
-               stuffID: id,
-               type,
-               newComment: editedComment
-            },
-            optimisticResponse: {
-               __typename: 'Mutation',
-               editComment: {
-                  __typename: type,
-                  id,
-                  comments
-               }
+      setEditing(false);
+      await editComment({
+         variables: {
+            commentID: comment.id,
+            stuffID: id,
+            type,
+            newComment: editedComment
+         },
+         optimisticResponse: {
+            __typename: 'Mutation',
+            editComment: {
+               __typename: type,
+               id,
+               comments
             }
-         });
-      }
-      if (e.key === 'Escape') {
-         setEditing(false);
-      }
+         }
+      });
    };
 
    return (
@@ -220,32 +214,10 @@ const Comment = props => {
                   {!editing ? (
                      <LinkyText text={comment.comment} />
                   ) : (
-                     <textarea
-                        className="editCommentBox"
-                        placeholder="Edit comment"
-                        onChange={e => {
-                           setEditedComment(e.target.value);
-                           if (
-                              pxToInt(e.target.style.height) <
-                              e.target.scrollHeight
-                           ) {
-                              e.target.style.height = '0';
-                              e.target.style.height = `${e.target.scrollHeight +
-                                 2}px`;
-                           }
-                        }}
-                        value={editedComment}
-                        onKeyDown={e => {
-                           e.persist();
-                           handleKeyDown(e);
-                        }}
-                        style={{
-                           height: `${
-                              editedComment.length > 240
-                                 ? editedComment.length / 2
-                                 : 120
-                           }px`
-                        }}
+                     <CommentInput
+                        currentComment={editedComment}
+                        updateComment={setEditedComment}
+                        postComment={sendNewComment}
                      />
                   )}
                </div>

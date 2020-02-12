@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { useEffect } from 'react';
-import { pxToInt } from '../../lib/ThingHandling';
+import { dynamicallyResizeElement } from '../../styles/functions';
 
 const ContentInput = ({
    currentContent,
@@ -10,28 +10,24 @@ const ContentInput = ({
    id
 }) => {
    useEffect(() => {
-      console.log(id);
-      const inputs = document.querySelectorAll(`#${id}`);
+      const inputs = document.querySelectorAll(`.contentInput`);
       if (inputs.length > 0) {
          inputs.forEach(input => {
-            input.style.height = `${input.scrollHeight + 2}px`;
+            dynamicallyResizeElement(input);
          });
       }
-   }, [id]);
+      if (false) {
+         // forcing eslint to include currentContent in the dependencies
+         console.log(currentContent);
+      }
+   }, [currentContent]);
 
-   const handleKeyDown = e => {
+   const handleKeyDown = async e => {
       if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
          postContent();
       }
       if (e.key === 'Escape' && setEditable) {
          setEditable(false);
-      }
-   };
-
-   const resizeForm = el => {
-      if (pxToInt(el.style.height) < el.scrollHeight) {
-         el.style.height = '0';
-         el.style.height = `${el.scrollHeight + 2}px`;
       }
    };
 
@@ -45,11 +41,11 @@ const ContentInput = ({
          <textarea
             type="textarea"
             id={id}
+            className="contentInput"
             name="content"
             value={currentContent}
             onChange={e => {
                updateContent(e.target.value);
-               resizeForm(e.target);
             }}
             onKeyDown={e => handleKeyDown(e)}
             placeholder="Add content"

@@ -1,7 +1,8 @@
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import { useEffect } from 'react';
 import { setAlpha } from '../../styles/functions';
-import { pxToInt } from '../../lib/ThingHandling';
+import { dynamicallyResizeElement } from '../../styles/functions';
 
 const StyledCommentInput = styled.form`
    display: flex;
@@ -31,6 +32,19 @@ const StyledCommentInput = styled.form`
 const CommentInput = props => {
    const { currentComment, updateComment, postComment } = props;
 
+   useEffect(() => {
+      const inputs = document.querySelectorAll(`.commentInput`);
+      if (inputs.length > 0) {
+         inputs.forEach(input => {
+            dynamicallyResizeElement(input);
+         });
+      }
+      if (false) {
+         // forcing eslint to include currentContent in the dependencies
+         console.log(currentComment);
+      }
+   }, [currentComment]);
+
    const handleKeyDown = e => {
       if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
          postComment();
@@ -42,15 +56,13 @@ const CommentInput = props => {
          <textarea
             type="textarea"
             id="commentInput"
+            className="commentInput"
             name="commentInput"
             placeholder="Add comment"
             value={currentComment}
             onChange={e => {
                updateComment(e.target.value);
-               if (pxToInt(e.target.style.height) < e.target.scrollHeight) {
-                  e.target.style.height = '0';
-                  e.target.style.height = `${e.target.scrollHeight + 2}px`;
-               }
+               dynamicallyResizeElement(e.target);
             }}
             onKeyDown={e => handleKeyDown(e)}
          />

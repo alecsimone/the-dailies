@@ -1,3 +1,5 @@
+import { pxToInt } from '../lib/ThingHandling';
+
 function setSaturation(baseColor, saturation) {
    if (isHSL(baseColor)) {
       return replaceNthValue(baseColor, saturation, 2);
@@ -62,3 +64,14 @@ function replaceNthValue(string, replacementValue, n) {
 
    return `${startingString} ${replacementValue}%${endingString}`;
 }
+
+const dynamicallyResizeElement = el => {
+   if (el == null) {
+      return;
+   }
+   if (pxToInt(el.style.height) < el.scrollHeight || el.value === '') {
+      el.style.height = '0';
+      el.style.height = `${el.scrollHeight + 2}px`;
+   }
+};
+export { dynamicallyResizeElement };

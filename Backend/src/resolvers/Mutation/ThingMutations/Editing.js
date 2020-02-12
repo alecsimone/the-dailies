@@ -323,7 +323,7 @@ async function editComment(parent, { commentID, stuffID, type, newComment}, ctx,
       comments: {
          update: {
             where: {
-               id: commentID,
+               id: commentID
             },
             data: {
                comment: newComment
