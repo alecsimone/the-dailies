@@ -3,7 +3,7 @@ import { useMutation } from '@apollo/react-hooks';
 import styled from 'styled-components';
 import { useContext, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { setAlpha } from '../../styles/functions';
+import { setAlpha, dynamicallyResizeElement } from '../../styles/functions';
 import { checkForNewThingRedirect } from '../../lib/ThingHandling';
 import { setFullThingToLoading } from './FullThing';
 
@@ -56,11 +56,17 @@ const TitleBar = ({ context, limit, canEdit = true }) => {
    });
 
    useEffect(() => {
-      const titleBar = document.querySelector('#titleInput');
-      if (titleBar) {
-         titleBar.style.height = `${titleBar.scrollHeight}px`;
+      const inputs = document.querySelectorAll(`.titleInput`);
+      if (inputs.length > 0) {
+         inputs.forEach(input => {
+            dynamicallyResizeElement(input);
+         });
       }
-   }, []);
+      if (false) {
+         // forcing eslint to include currentContent in the dependencies
+         console.log(editedTitle);
+      }
+   }, [editedTitle]);
 
    const handleKeydown = e => {
       if (e.key === 'Escape') {
@@ -96,13 +102,13 @@ const TitleBar = ({ context, limit, canEdit = true }) => {
          <form onSubmit={submitTitle}>
             <textarea
                id="titleInput"
+               className="titleInput"
                value={editedTitle}
                placeholder={title ? 'Title' : 'New Thing'}
                onKeyDown={handleKeydown}
                onChange={e => {
                   setEditedTitle(e.target.value);
-                  e.target.style.height = '0';
-                  e.target.style.height = `${e.target.scrollHeight}px`;
+                  dynamicallyResizeElement(e.target);
                }}
                onBlur={() => {
                   if (editedTitle !== title) {

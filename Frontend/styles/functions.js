@@ -69,9 +69,7 @@ const dynamicallyResizeElement = el => {
    if (el == null) {
       return;
    }
-   if (pxToInt(el.style.height) < el.scrollHeight || el.value === '') {
-      el.style.height = '0';
-      el.style.height = `${el.scrollHeight + 2}px`;
-   }
+   el.style.height = '0';
+   el.style.height = `${el.scrollHeight + 2}px`;
 };
 export { dynamicallyResizeElement };
