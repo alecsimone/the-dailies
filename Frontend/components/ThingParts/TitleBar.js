@@ -59,7 +59,6 @@ const TitleBar = ({ context, limit, canEdit = true }) => {
       const inputs = document.querySelectorAll(`.titleInput`);
       if (inputs.length > 0) {
          inputs.forEach(input => {
-            console.log(input);
             dynamicallyResizeElement(input);
          });
       }

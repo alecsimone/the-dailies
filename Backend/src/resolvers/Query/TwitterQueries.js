@@ -63,6 +63,7 @@ exports.finishTwitterLogin = finishTwitterLogin;
 async function getTwitterLists(parent, args, ctx, info) {
    const {
       twitterUserID,
+      twitterUserName,
       twitterUserToken,
       twitterUserTokenSecret,
       twitterListsObject
@@ -78,7 +79,15 @@ async function getTwitterLists(parent, args, ctx, info) {
       twitterListsObject === null ||
       listsObject.lastUpdateTime < Date.now() - 24 * 60 * 60 * 1000
    ) {
-      listData = {};
+      listData = {
+         home: {
+            id: 'home',
+            name: 'Home',
+            user: twitterUserName,
+            sinceID: 1,
+            tweets: []
+         }
+      };
 
       const lists = await getFreshLists(
          twitterUserID,

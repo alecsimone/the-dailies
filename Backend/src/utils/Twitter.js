@@ -219,7 +219,6 @@ const getFreshLists = async (userID, token, tokenSecret) => {
 exports.getFreshLists = getFreshLists;
 
 const fetchListTweets = async (listID, ctx) => {
-   console.log('Fetching tweets');
    const {
       twitterListsObject: rawListsObject,
       twitterUserID,
