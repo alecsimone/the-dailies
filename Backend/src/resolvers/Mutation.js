@@ -24,7 +24,8 @@ const {
    deleteComment,
    editLink,
    deleteThing,
-   newBlankThing
+   newBlankThing,
+   deleteTag
 } = require('./Mutation/ThingMutations/Editing');
 const {
    initiateTwitterLogin,
@@ -61,7 +62,8 @@ const Mutations = {
    saveTweet,
    deleteThing,
    readNotifications,
-   newBlankThing
+   newBlankThing,
+   deleteTag
 };
 
 module.exports = Mutations;

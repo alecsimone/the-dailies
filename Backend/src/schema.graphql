@@ -62,6 +62,7 @@ type Mutation {
   deleteThing(id: ID!): Thing
   readNotifications(ids: [ID]!): Member
   newBlankThing: Thing
+  deleteTag(id: ID!): Tag
 }
 
 union Stuff = Thing | Tag | Category

@@ -108,7 +108,7 @@ const tag = props => {
       } else {
          pageTitle = "Couldn't find tag";
          content = <p>Tag not found.</p>;
-         siidebar = <Sidebar key="missingTag" />;
+         sidebar = <Sidebar key="missingTag" />;
       }
    }
 

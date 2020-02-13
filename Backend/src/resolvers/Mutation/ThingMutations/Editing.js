@@ -384,3 +384,19 @@ async function deleteThing(parent, {id}, ctx, info) {
    return deletedThing;
 }
 exports.deleteThing = deleteThing;
+
+async function deleteTag(parent, {id}, ctx, info) {
+   loggedInGate(ctx);
+   fullMemberGate(ctx.req.member);
+   editPermissionGate({}, ctx.req.memberId, 'Tag', ctx);
+
+   const deletedTag = await ctx.db.mutation.deleteTag({
+      where: {
+         id
+      }
+   },
+   info);
+
+   return deletedTag;
+}
+exports.deleteTag = deleteTag;

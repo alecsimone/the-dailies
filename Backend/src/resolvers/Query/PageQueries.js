@@ -45,6 +45,9 @@ async function tagByTitle(parent, { title }, ctx, info) {
       },
       info
    );
+   if (tags == null || tags.length === 0) {
+      return null;
+   }
    await canSeeTagGate({ id: tags[0].id }, ctx);
 
    if (tags[0].connectedThings && tags[0].connectedThings.length > 0) {

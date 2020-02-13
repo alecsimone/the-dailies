@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useMutation } from '@apollo/react-hooks';
+import Router from 'next/router';
 
 const SET_PUBLICITY_MUTATION = gql`
    mutation SET_PUBLICITY_MUTATION(
@@ -16,6 +17,15 @@ const SET_PUBLICITY_MUTATION = gql`
             id
             public
          }
+      }
+   }
+`;
+
+const DELETE_TAG_MUTATION = gql`
+   mutation DELETE_TAG_MUTATION($id: ID!) {
+      deleteTag(id: $id) {
+         __typename
+         id
       }
    }
 `;
@@ -81,6 +91,15 @@ const StyledTaxMeta = styled.div`
          }
       }
    }
+   img.trash {
+      height: ${props => props.theme.bigText};
+      width: auto;
+      margin-left: 1rem;
+      cursor: pointer;
+      &.loading {
+         ${props => props.theme.twist};
+      }
+   }
 `;
 
 const TaxMeta = props => {
@@ -90,6 +109,12 @@ const TaxMeta = props => {
    );
 
    const [setPublicity] = useMutation(SET_PUBLICITY_MUTATION);
+   const [deleteTag] = useMutation(DELETE_TAG_MUTATION, {
+      variables: {
+         id
+      },
+      onCompleted: () => Router.push({ pathname: '/' })
+   });
 
    const togglePublicity = e => {
       const { checked } = e.target;
@@ -129,7 +154,23 @@ const TaxMeta = props => {
    return (
       <StyledTaxMeta>
          {author && `Created by ${author.displayName}`}
-         {checkbox}
+         <div className="right">
+            {checkbox}
+            <img
+               src="/trash.png"
+               className="trash"
+               onClick={e => {
+                  if (
+                     confirm(
+                        'Are you sure you want to delete that tag? Only the tag will be deleted, not the things attached to it.'
+                     )
+                  ) {
+                     e.target.classList.add('loading');
+                     deleteTag();
+                  }
+               }}
+            />
+         </div>
       </StyledTaxMeta>
    );
 };
