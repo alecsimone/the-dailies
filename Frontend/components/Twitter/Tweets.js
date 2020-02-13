@@ -1,8 +1,9 @@
 import gql from 'graphql-tag';
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation, useLazyQuery } from '@apollo/react-hooks';
 import styled from 'styled-components';
 import Tweet from './Tweet';
 import { setAlpha, setLightness, setSaturation } from '../../styles/functions';
+import { GET_TWEETS_FOR_LIST, GET_TWITTER_LISTS } from './TwitterReader';
 
 const MARK_TWEETS_SEEN = gql`
    mutation MARK_TWEETS_SEEN($listID: String!, $tweetIDs: [String]!) {
@@ -170,6 +171,42 @@ const Tweets = props => {
    const tweets = JSON.parse(list.tweets);
 
    const [markTweetsSeen] = useMutation(MARK_TWEETS_SEEN);
+   const [refreshList, { client }] = useLazyQuery(GET_TWEETS_FOR_LIST, {
+      ssr: false,
+      fetchPolicy: 'network-only',
+      variables: {
+         listID: list.id
+      },
+      onError: error => {
+         console.log(error);
+      },
+      onCompleted: data => {
+         const button = document.querySelector('#refreshButton');
+         if (button) {
+            button.classList.remove('loading');
+         }
+         const parsedData = JSON.parse(data.getTweetsForList.message);
+         const { listID, listTweets } = parsedData;
+
+         const oldData = client.readQuery({
+            query: GET_TWITTER_LISTS
+         });
+         const parsedOldData = JSON.parse(oldData.getTwitterLists.message);
+         parsedOldData[listID].tweets = listTweets;
+         const reStringedData = JSON.stringify(parsedOldData);
+
+         const cachedData = client.writeQuery({
+            query: GET_TWITTER_LISTS,
+            data: {
+               __typename: 'query',
+               getTwitterLists: {
+                  __typename: 'SuccessMessage',
+                  message: reStringedData
+               }
+            }
+         });
+      }
+   });
 
    let tweetersRemaining;
    let tweetsRemaining;
@@ -183,7 +220,15 @@ const Tweets = props => {
       tweetsDisplay = (
          <div className="tweeters empty">
             <h3>No new tweets.</h3>
-            <button id="refreshButton">Refresh</button>
+            <button
+               id="refreshButton"
+               onClick={e => {
+                  e.target.classList.add('loading');
+                  refreshList();
+               }}
+            >
+               Refresh
+            </button>
          </div>
       );
    } else {

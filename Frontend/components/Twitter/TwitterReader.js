@@ -19,6 +19,7 @@ const GET_TWITTER_LISTS = gql`
       }
    }
 `;
+export { GET_TWITTER_LISTS };
 
 const GET_MY_TWITTER_INFO = gql`
    query GET_MY_TWITTER_INFO {
@@ -40,6 +41,7 @@ const GET_TWEETS_FOR_LIST = gql`
       }
    }
 `;
+export { GET_TWEETS_FOR_LIST };
 
 const GET_FRESH_LISTS = gql`
    query GET_FRESH_LISTS {
