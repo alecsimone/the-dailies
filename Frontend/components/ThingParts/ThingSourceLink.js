@@ -6,7 +6,11 @@ import { ThingContext } from '../../pages/thing';
 import { MemberContext } from '../Account/MemberProvider';
 import ShortLink from './ShortLink';
 import { setFullThingToLoading } from './FullThing';
-import { checkForNewThingRedirect } from '../../lib/ThingHandling';
+import {
+   checkForNewThingRedirect,
+   disabledCodewords
+} from '../../lib/ThingHandling';
+import { urlFinder } from '../../lib/UrlHandling';
 
 const EDIT_LINK_MUTATION = gql`
    mutation EDIT_LINK_MUTATION($link: String!, $id: ID!) {
@@ -33,6 +37,11 @@ const ThingSourceLink = ({ canEdit }) => {
    );
 
    const sendNewLink = async () => {
+      const url = currentLink.match(urlFinder);
+      if (url == null && !disabledCodewords.includes(currentLink)) {
+         window.alert("That's not a valid link, sorry");
+         return;
+      }
       setFullThingToLoading(id);
       await editLink({
          variables: {
@@ -57,7 +66,7 @@ const ThingSourceLink = ({ canEdit }) => {
             }}
          >
             <input
-               type="url"
+               type="text"
                size={size}
                value={currentLink}
                aria-disabled={editLinkLoading}
@@ -65,7 +74,7 @@ const ThingSourceLink = ({ canEdit }) => {
             />
          </form>
       );
-   } else if (link == null) {
+   } else if (link == null || disabledCodewords.includes(link)) {
       content = '';
    } else {
       content = <ShortLink link={link} limit={100} />;
