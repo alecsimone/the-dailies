@@ -7,7 +7,7 @@ const ShortLink = ({ link, limit }) => {
       return null;
    }
 
-   const hostName = extractHostname(link);
+   const hostName = extractHostname(link.toLowerCase());
    const { domain } = psl.parse(hostName);
 
    let shortlink;
@@ -18,10 +18,7 @@ const ShortLink = ({ link, limit }) => {
       shortlink = domain;
    } else {
       let startOfDomain;
-      const subdomain = hostName.substring(
-         0,
-         hostName.toLowerCase().indexOf(domain)
-      );
+      const subdomain = hostName.substring(0, hostName.indexOf(domain));
       if (subdomain === 'www.') {
          startOfDomain = link.toLowerCase().indexOf(domain);
       } else {
