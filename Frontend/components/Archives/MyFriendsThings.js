@@ -7,7 +7,6 @@ const MyFriendsThings = () => {
    const { me } = useContext(MemberContext);
 
    if (me == null || me.friends == null) {
-      console.log(me);
       return <LoadingRing />;
    }
 

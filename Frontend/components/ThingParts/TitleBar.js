@@ -63,7 +63,7 @@ const TitleBar = ({ context, limit, canEdit = true }) => {
          });
       }
       if (false) {
-         // forcing eslint to include currentContent in the dependencies
+         // forcing eslint to include title and editedTitle in the dependencies
          console.log(editedTitle);
          console.log(title);
       }

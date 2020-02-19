@@ -14,8 +14,6 @@ const StylishText = ({ text }) => {
    //    '<style="(?<named>.+)">(.+)<\\/style>',
    //    'gi'
    // );
-   // const x = text.matchAll(styleTagRegexp);
-   // console.log(x);
    const simpleTagSearch = text.match(styleTagSearchString);
    if (simpleTagSearch == null) {
       return <>{text}</>;

@@ -17,9 +17,17 @@ const ShortLink = ({ link, limit }) => {
    } else if (limit === 0) {
       shortlink = domain;
    } else {
-      const startOfDomain = link.toLowerCase().indexOf(domain);
-      const headlessLink = link.substring(startOfDomain);
-      shortlink = headlessLink;
+      let startOfDomain;
+      const subdomain = hostName.substring(
+         0,
+         hostName.toLowerCase().indexOf(domain)
+      );
+      if (subdomain === 'www.') {
+         startOfDomain = link.toLowerCase().indexOf(domain);
+      } else {
+         startOfDomain = link.toLowerCase().indexOf(hostName);
+      }
+      shortlink = link.substring(startOfDomain);
    }
 
    if (limit && limit < shortlink.length) {

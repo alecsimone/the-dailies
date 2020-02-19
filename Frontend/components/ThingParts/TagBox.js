@@ -200,7 +200,6 @@ const TagBox = props => {
             if (tagInput.includes(',')) {
                const finalCommaLocation = tagInput.lastIndexOf(',');
                const preCommaInput = tagInput.substring(0, finalCommaLocation);
-               console.log(preCommaInput);
                await sendNewTag({ title: preCommaInput });
             }
             await sendNewTag(filteredResults[highlightedIndex]);

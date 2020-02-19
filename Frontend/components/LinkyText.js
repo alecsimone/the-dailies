@@ -16,14 +16,23 @@ const replaceTwitterMentions = rawText => {
       mentionSearchString,
       (wholeMatch, username, matchIndex) => {
          const newText = `https://twitter.com/${username}\u200B`;
-         if (
-            rawText[matchIndex - 1] === '/' &&
-            rawText[matchIndex + wholeMatch.length] === '/'
-         ) {
-            // edge case for medium.com links, which have the @ handles of their creators in them.
-            return wholeMatch;
-         }
+         // if (
+         //    rawText[matchIndex - 1] === '/' &&
+         //    rawText[matchIndex + wholeMatch.length] === '/'
+         // ) {
+         //    // edge case for medium.com links, which have the @ handles of their creators in them.
+         //    return wholeMatch;
+         // }
          if (rawText[matchIndex - 1] !== ' ') {
+            const finalSpaceBeforeMatch = rawText.lastIndexOf(' ', matchIndex);
+            const wordBeforeMatch = rawText.substring(
+               finalSpaceBeforeMatch === -1 ? 0 : finalSpaceBeforeMatch,
+               matchIndex
+            );
+            const urls = wordBeforeMatch.match(urlFinder);
+            if (urls != null) {
+               return wholeMatch;
+            }
             return `\u200B${newText}`;
          }
          return newText;
