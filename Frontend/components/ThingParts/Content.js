@@ -456,7 +456,7 @@ const Content = props => {
       ));
    }
 
-   if (process.browser) {
+   if (process.browser && canEdit) {
       contentElements = (
          <Reorder
             reorderId={id}
