@@ -217,6 +217,7 @@ const StyledContent = styled.section`
    }
    .reordering {
       background: ${props => setAlpha(props.theme.lowContrastGrey, 0.1)};
+      cursor: pointer;
    }
    .contentBlock {
       display: flex;
