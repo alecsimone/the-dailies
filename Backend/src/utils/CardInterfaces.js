@@ -18,6 +18,7 @@ const smallThingCardFields = `
       id
       content
    }
+   contentOrder
    partOfTags {
       __typename
       id
@@ -70,6 +71,7 @@ const fullThingFields = `
       id
       content
    }
+   contentOrder
    partOfTags {
       __typename
       id
@@ -131,6 +133,7 @@ const tagFields = `
       id
       content
    }
+   contentOrder
    connectedThings {
       ${smallThingCardFields}
    }
@@ -152,6 +155,7 @@ const catFields = `
       id
       content
    }
+   contentOrder
    connectedThings {
       ${smallThingCardFields}
    }

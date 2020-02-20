@@ -68,7 +68,7 @@ const ThingSourceLink = ({ canEdit }) => {
             <input
                type="text"
                size={size}
-               value={currentLink}
+               value={currentLink == null ? '' : currentLink}
                aria-disabled={editLinkLoading}
                onChange={e => setCurrentLink(e.target.value)}
             />

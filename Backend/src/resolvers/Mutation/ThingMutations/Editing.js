@@ -214,6 +214,50 @@ async function editContentPiece(
 }
 exports.editContentPiece = editContentPiece;
 
+async function reorderContent(parent, {id, type, oldPosition, newPosition}, ctx, info) {
+   loggedInGate(ctx);
+   fullMemberGate(ctx.req.member);
+   const oldContent = await ctx.db.query[type.toLowerCase()](
+      {
+         where: {
+            id
+         }
+      },
+      `{content {id} contentOrder}`
+   );
+
+   let order;
+   if (oldContent.contentOrder != null) {
+      order = [];
+      oldContent.contentOrder.forEach(id => {
+         const [piece] = oldContent.content.filter(contentPiece => contentPiece.id === id);
+         if (piece != null) {
+            order.push(id);
+         }
+      })
+      oldContent.content.forEach(contentPiece => {
+         if (oldContent.contentOrder.includes(contentPiece.id)) {
+            return;
+         }
+         order.push(contentPiece.id);
+      });
+   } else {
+      order = oldContent.content.map(content => content.id);
+   }
+
+   order.splice(newPosition, 0, order.splice(oldPosition, 1)[0]);
+
+   const dataObj = {
+      contentOrder: {
+         set: order
+      }
+   }
+
+   const updatedThing = await properUpdateStuff(dataObj, id, type, ctx);
+   return updatedThing;
+}
+exports.reorderContent = reorderContent;
+
 async function setThingPrivacy(parent, { privacySetting, thingID }, ctx, info) {
    loggedInGate(ctx);
    fullMemberGate(ctx.req.member);

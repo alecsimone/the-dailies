@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { useMutation } from '@apollo/react-hooks';
 import { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
+import Reorder from 'react-reorder';
 import { setAlpha, setLightness } from '../../styles/functions';
 import ContentPiece from './ContentPiece';
 import ContentInput from './ContentInput';
@@ -136,6 +137,53 @@ const EDIT_CONTENTPIECE_MUTATION = gql`
    }
 `;
 
+const REORDER_CONTENT_MUTATION = gql`
+   mutation REORDER_CONTENT_MUTATION(
+      $id: ID!
+      $type: String!
+      $oldPosition: Int!
+      $newPosition: Int!
+   ) {
+      reorderContent(
+         id: $id
+         type: $type
+         oldPosition: $oldPosition
+         newPosition: $newPosition
+      ) {
+         ... on Tag {
+            __typename
+            id
+            content {
+               __typename
+               id
+               content
+            }
+            contentOrder
+         }
+         ... on Thing {
+            __typename
+            id
+            content {
+               __typename
+               id
+               content
+            }
+            contentOrder
+         }
+         ... on Category {
+            __typename
+            id
+            content {
+               __typename
+               id
+               content
+            }
+            contentOrder
+         }
+      }
+   }
+`;
+
 const StyledContent = styled.section`
    margin: 3rem 0;
    padding: 0 1rem;
@@ -240,9 +288,13 @@ const StyledContent = styled.section`
 
 const Content = props => {
    const { context, canEdit } = props;
-   const { content = [], id, __typename: type = 'Thing', author } = useContext(
-      context
-   );
+   const {
+      content = [],
+      contentOrder,
+      id,
+      __typename: type = 'Thing',
+      author
+   } = useContext(context);
    const [newContentPiece, setNewContentPiece] = useState('');
 
    const [
@@ -261,6 +313,8 @@ const Content = props => {
       editContentPiece,
       { data: editData, loading: editLoading, error: editError }
    ] = useMutation(EDIT_CONTENTPIECE_MUTATION);
+
+   const [reorderContent] = useMutation(REORDER_CONTENT_MUTATION);
 
    const sendNewContentPiece = async () => {
       setNewContentPiece('');
@@ -368,16 +422,88 @@ const Content = props => {
 
    let contentElements;
    if (content) {
-      contentElements = content.map(contentPiece => (
-         <ContentPiece
-            id={contentPiece.id}
-            canEdit={canEdit}
-            rawContentString={contentPiece.content}
-            deleteContentPiece={deletePiece}
-            editContentPiece={editPiece}
-            key={contentPiece.id}
-         />
+      let orderedContent;
+      if (contentOrder) {
+         orderedContent = [];
+         contentOrder.forEach(id => {
+            const [piece] = content.filter(
+               contentPiece => contentPiece.id === id
+            );
+            if (piece != null) {
+               orderedContent.push(piece);
+            }
+         });
+         content.forEach(contentPiece => {
+            if (contentOrder.includes(contentPiece.id)) {
+               return;
+            }
+            orderedContent.push(contentPiece);
+         });
+      } else {
+         orderedContent = content;
+      }
+      contentElements = orderedContent.map(contentPiece => (
+         <div key={contentPiece.id}>
+            <ContentPiece
+               id={contentPiece.id}
+               canEdit={canEdit}
+               rawContentString={contentPiece.content}
+               deleteContentPiece={deletePiece}
+               editContentPiece={editPiece}
+               key={contentPiece.id}
+            />
+         </div>
       ));
+   }
+
+   if (process.browser) {
+      contentElements = (
+         <Reorder
+            reorderId={id}
+            touchHoldTime={250}
+            onReorder={(e, oldPosition, newPosition, reorderId, f) => {
+               let order;
+               if (contentOrder != null) {
+                  order = [];
+                  contentOrder.forEach(id => {
+                     const [piece] = content.filter(
+                        contentPiece => contentPiece.id === id
+                     );
+                     if (piece != null) {
+                        order.push(id);
+                     }
+                  });
+                  content.forEach(contentPiece => {
+                     if (contentOrder.includes(contentPiece.id)) {
+                        return;
+                     }
+                     order.push(contentPiece.id);
+                  });
+               } else {
+                  order = content.map(content => content.id);
+               }
+               order.splice(newPosition, 0, order.splice(oldPosition, 1)[0]);
+               reorderContent({
+                  variables: {
+                     id,
+                     type,
+                     oldPosition,
+                     newPosition
+                  },
+                  optimisticResponse: {
+                     reorderContent: {
+                        __typename: type,
+                        id,
+                        content,
+                        contentOrder: order
+                     }
+                  }
+               });
+            }}
+         >
+            {contentElements}
+         </Reorder>
+      );
    }
 
    return (

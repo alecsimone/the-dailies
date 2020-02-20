@@ -52,12 +52,16 @@ const ContentPiece = props => {
                <img
                   src="/edit-this.png"
                   className="edit buttons"
-                  onClick={() => setEditable(!editable)}
+                  onMouseDown={e => e.stopPropagation()}
+                  onClick={() => {
+                     setEditable(!editable);
+                  }}
                />
                {editable && (
                   <img
                      src="/trash.png"
                      className="delete buttons"
+                     onMouseDown={e => e.stopPropagation()}
                      onClick={() => deleteContentPiece(id)}
                   />
                )}
