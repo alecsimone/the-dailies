@@ -58,6 +58,7 @@ const fullThingFields = `
    author {
       __typename
       id
+      avatar
       displayName
       friends {
          __typename

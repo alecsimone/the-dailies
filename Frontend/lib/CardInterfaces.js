@@ -92,6 +92,7 @@ const fullThingFields = `
       title
       author {
          id
+         avatar
       }
       public
    }
@@ -144,6 +145,7 @@ const tagFields = `
       __typename
       id
       displayName
+      avatar
    }
    public
    content {

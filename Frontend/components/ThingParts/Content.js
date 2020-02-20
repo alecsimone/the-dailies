@@ -191,7 +191,7 @@ const StyledContent = styled.section`
    border-top: 1px solid ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
    ${props => props.theme.mobileBreakpoint} {
       margin: 5rem 0;
-      padding: 1rem 3rem;
+      padding: 1rem 2rem;
       border: 1px solid ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
       border-radius: 0.5rem;
    }
@@ -218,6 +218,15 @@ const StyledContent = styled.section`
    .reordering {
       background: ${props => setAlpha(props.theme.lowContrastGrey, 0.1)};
       cursor: pointer;
+      border-radius: 3px;
+   }
+   .placeholder {
+      background: ${props => props.theme.majorColor};
+   }
+   .dragged {
+      background: ${props => props.theme.lowContrastGrey};
+      border: 2px solid ${props => setAlpha(props.theme.highContrastGrey, 0.6)};
+      user-select: none;
    }
    .contentBlock {
       display: flex;
@@ -229,7 +238,7 @@ const StyledContent = styled.section`
       padding: 0;
       ${props => props.theme.mobileBreakpoint} {
          flex-wrap: nowrap;
-         padding: 1rem 0;
+         padding: 1rem;
       }
       div.buttons {
          width: ${props => props.theme.smallText};
@@ -237,7 +246,6 @@ const StyledContent = styled.section`
       img.buttons {
          width: 100%;
          opacity: 0.2;
-         margin-left: 1rem;
          &:hover {
             cursor: pointer;
             opacity: 0.8;
@@ -328,7 +336,7 @@ const Content = props => {
    ] = useMutation(EDIT_CONTENTPIECE_MUTATION);
 
    const [reorderContent] = useMutation(REORDER_CONTENT_MUTATION);
-   const [reordering, setReordering] = useState(false);
+   const [reordering, setReordering] = useState(true);
 
    const sendNewContentPiece = async () => {
       setNewContentPiece('');
@@ -478,7 +486,9 @@ const Content = props => {
          <Reorder
             reorderId={id}
             touchHoldTime={250}
-            onReorder={(e, oldPosition, newPosition, reorderId, f) => {
+            placeholderClassName="placeholder"
+            draggedClassName="dragged"
+            onReorder={async (e, oldPosition, newPosition, reorderId, f) => {
                let order;
                if (contentOrder != null) {
                   order = [];
@@ -500,7 +510,7 @@ const Content = props => {
                   order = content.map(content => content.id);
                }
                order.splice(newPosition, 0, order.splice(oldPosition, 1)[0]);
-               reorderContent({
+               await reorderContent({
                   variables: {
                      id,
                      type,
