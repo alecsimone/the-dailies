@@ -336,7 +336,7 @@ const Content = props => {
    ] = useMutation(EDIT_CONTENTPIECE_MUTATION);
 
    const [reorderContent] = useMutation(REORDER_CONTENT_MUTATION);
-   const [reordering, setReordering] = useState(true);
+   const [reordering, setReordering] = useState(false);
 
    const sendNewContentPiece = async () => {
       setNewContentPiece('');
