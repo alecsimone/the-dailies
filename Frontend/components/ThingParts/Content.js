@@ -206,6 +206,18 @@ const StyledContent = styled.section`
    a:visited {
       color: ${props => setLightness(props.theme.majorColor, 75)};
    }
+   button.reorder {
+      display: block;
+      margin: 0 auto 1rem;
+      opacity: 0.4;
+      font-weight: 300;
+      &:hover {
+         opacity: 1;
+      }
+   }
+   .reordering {
+      background: ${props => setAlpha(props.theme.lowContrastGrey, 0.1)};
+   }
    .contentBlock {
       display: flex;
       flex-wrap: wrap;
@@ -315,6 +327,7 @@ const Content = props => {
    ] = useMutation(EDIT_CONTENTPIECE_MUTATION);
 
    const [reorderContent] = useMutation(REORDER_CONTENT_MUTATION);
+   const [reordering, setReordering] = useState(false);
 
    const sendNewContentPiece = async () => {
       setNewContentPiece('');
@@ -443,7 +456,10 @@ const Content = props => {
          orderedContent = content;
       }
       contentElements = orderedContent.map(contentPiece => (
-         <div key={contentPiece.id}>
+         <div
+            key={contentPiece.id}
+            className={reordering ? 'reordering' : 'locked'}
+         >
             <ContentPiece
                id={contentPiece.id}
                canEdit={canEdit}
@@ -456,7 +472,7 @@ const Content = props => {
       ));
    }
 
-   if (process.browser && canEdit) {
+   if (process.browser && canEdit && reordering) {
       contentElements = (
          <Reorder
             reorderId={id}
@@ -516,6 +532,15 @@ const Content = props => {
                postContent={sendNewContentPiece}
                id={id}
             />
+         )}
+         {canEdit && (
+            <button
+               type="button"
+               className="reorder"
+               onClick={() => setReordering(!reordering)}
+            >
+               {reordering ? 'Lock Content' : 'Reorder Content'}
+            </button>
          )}
       </StyledContent>
    );
