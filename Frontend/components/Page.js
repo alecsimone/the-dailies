@@ -217,8 +217,28 @@ const GlobalStyle = createGlobalStyle`
    }
    .tweet {
       margin: 3rem 0;
+      &.threaded {
+         margin: 0;
+         border-radius: 0;
+         &.threadStarter {
+            margin-top: 3rem;
+            border-radius: 3px 3px 0 0;
+         }
+         &.threadEnder {
+            border-radius: 0 0 3px 3px;
+         }
+      }
       ${props => props.theme.mobileBreakpoint} {
          margin: 5rem 1rem;
+         &.threaded {
+            margin: 0 1rem;
+            &.threadStarter {
+               margin-top: 5rem;
+               &:first-child {
+                  margin-top: 3rem;
+               }
+            }
+         }
       }
       &:first-child {
          margin-top: 3rem;
@@ -227,6 +247,12 @@ const GlobalStyle = createGlobalStyle`
       border: 1px solid ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
       border-radius: 3px;
       background: ${props => props.theme.black};
+      span.continued {
+         display: block;
+         opacity: .6;
+         font-weight: 300;
+         margin-top: 1rem;
+      }
       .repliedToTweet {
          margin-top: 0;
          .quoteTweetContainer {

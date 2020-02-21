@@ -261,9 +261,25 @@ const Tweets = props => {
       const tweetElements = [];
 
       for (let i = 0; i < 3 && i < seenTweeters.length; i++) {
-         const thisTweetersTweets = tweetersArray[i].tweets.map(tweet => (
-            <Tweet tweet={tweet} key={tweet.id_str} />
-         ));
+         const thisTweetersTweets = tweetersArray[i].tweets.map(
+            (tweet, index) => (
+               <Tweet
+                  tweet={tweet}
+                  key={tweet.id_str}
+                  previousTweet={
+                     index > 0
+                        ? tweetersArray[i].tweets[index - 1].id_str
+                        : null
+                  }
+                  nextTweetReplyTarget={
+                     index < tweetersArray[i].tweets.length - 1
+                        ? tweetersArray[i].tweets[index + 1]
+                             .in_reply_to_status_id_str
+                        : null
+                  }
+               />
+            )
+         );
 
          const thisTweeter = (
             <div

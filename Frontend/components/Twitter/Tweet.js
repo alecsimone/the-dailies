@@ -33,7 +33,8 @@ const tcoReplacer = (text, entities, quotedTweetLink) => {
       entities.urls.forEach(urlObject => {
          if (
             quotedTweetLink == null ||
-            quotedTweetLink.expanded !== urlObject.expanded_url
+            (quotedTweetLink.expanded !== urlObject.expanded_url &&
+               !urlObject.expanded_url.includes(quotedTweetLink.expanded))
          ) {
             text = text.replace(urlObject.url, urlObject.expanded_url);
          }
@@ -82,7 +83,9 @@ const Tweet = props => {
          quoted_status_id_str: quotedTweetID,
          display_text_range
       },
-      nested
+      nested,
+      previousTweet,
+      nextTweetReplyTarget
    } = props;
 
    const [liked, setLiked] = useState(
@@ -210,15 +213,35 @@ const Tweet = props => {
 
    const linkout = `https://twitter.com/${user.screen_name}/status/${id}`;
 
+   const directReply =
+      previousTweet != null ? previousTweet === replyToID : false;
+   const directlyRepliedTo =
+      nextTweetReplyTarget != null ? nextTweetReplyTarget === id : false;
+   let threadStarter = false;
+   if (!directReply && directlyRepliedTo) {
+      threadStarter = true;
+   }
+   let threadEnder = false;
+   if (directReply && !directlyRepliedTo) {
+      threadEnder = true;
+   }
+
    return (
-      <div className="tweet">
-         {replyToID && (
+      <div
+         className={`tweet${
+            directReply || directlyRepliedTo ? ' threaded' : ''
+         }${threadStarter ? ' threadStarter' : ''}${
+            threadEnder ? ' threadEnder' : ''
+         }`}
+      >
+         {replyToID && !directReply && (
             <div className="repliedToTweet">
                {nested ? (
                   <a
                      href={`https://twitter.com/blank/status/${replyToID}`}
                      target="_blank"
                      rel="noopener noreferrer"
+                     className="threadLink"
                   >
                      See thread
                   </a>
@@ -323,7 +346,9 @@ Tweet.propTypes = {
       quoted_status_id_str: PropTypes.string,
       display_text_range: PropTypes.array.isRequired
    }),
-   nested: PropTypes.bool
+   nested: PropTypes.bool,
+   previousTweet: PropTypes.string,
+   nextTweetReplyTarget: PropTypes.string
 };
 
 export default Tweet;
