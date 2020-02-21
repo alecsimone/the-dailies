@@ -1,7 +1,7 @@
 import gql from 'graphql-tag';
 import { useMutation } from '@apollo/react-hooks';
 import styled from 'styled-components';
-import { useContext, useState, useEffect } from 'react';
+import { useContext, useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { setAlpha, dynamicallyResizeElement } from '../../styles/functions';
 import { checkForNewThingRedirect } from '../../lib/ThingHandling';
@@ -47,8 +47,13 @@ const StyledTitleBar = styled.div`
 
 const TitleBar = ({ context, limit, canEdit = true }) => {
    const { title, id: thingID } = useContext(context);
-   const [editable, setEditable] = useState(thingID === 'new');
-   const [editedTitle, setEditedTitle] = useState(title);
+   const [editedTitle, setEditedTitleState] = useState(title);
+   const editedTitleRef = useRef(editedTitle);
+
+   const setEditedTitle = data => {
+      setEditedTitleState(data);
+      editedTitleRef.current = data;
+   };
 
    const [setThingTitle] = useMutation(SET_THING_TITLE_MUTATION, {
       onCompleted: data =>
@@ -83,7 +88,7 @@ const TitleBar = ({ context, limit, canEdit = true }) => {
       setFullThingToLoading(thingID);
       setThingTitle({
          variables: {
-            title: editedTitle,
+            title: editedTitleRef.current,
             thingID
          },
          optimisticResponse: {
@@ -91,10 +96,19 @@ const TitleBar = ({ context, limit, canEdit = true }) => {
             setThingTitle: {
                __typename: 'Thing',
                id: thingID,
-               title: editedTitle
+               title: editedTitleRef.current
             }
          }
       });
+   };
+
+   const clickOutsideDetector = e => {
+      if (e.target.id !== 'titleInput') {
+         if (title !== editedTitleRef.current) {
+            submitTitle();
+         }
+         window.removeEventListener('click', clickOutsideDetector);
+      }
    };
 
    let titleElement;
@@ -111,11 +125,9 @@ const TitleBar = ({ context, limit, canEdit = true }) => {
                   setEditedTitle(e.target.value);
                   dynamicallyResizeElement(e.target);
                }}
-               onBlur={() => {
-                  if (editedTitle !== title) {
-                     submitTitle();
-                  }
-               }}
+               onFocus={() =>
+                  window.addEventListener('click', clickOutsideDetector)
+               }
             />
          </form>
       );
