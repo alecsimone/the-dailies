@@ -8,7 +8,16 @@ const AuthorLink = ({ author, noPic }) => {
    return (
       <Link href={{ pathname: '/member', query: { id: author.id } }}>
          <div className="authorBlock">
-            {!noPic && <img className="authorImg" src={author.avatar} />}
+            {!noPic && (
+               <img
+                  className="authorImg"
+                  src={
+                     author.avatar == null
+                        ? '/defaultAvatar.jpg'
+                        : author.avatar
+                  }
+               />
+            )}
             <a className="authorLink">{author.displayName}</a>
          </div>
       </Link>

@@ -81,7 +81,7 @@ const ExplodingLink = props => {
       const tweetID = getTweetIDFromLink(url);
       return (
          <div className="tweet" style={{ padding: 0, border: 'none' }}>
-            <TweetGetter id={tweetID} />
+            <TweetGetter id={tweetID} nested={false} />
          </div>
       );
    }

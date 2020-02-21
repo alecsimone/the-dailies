@@ -126,7 +126,7 @@ const StyledThingMeta = styled.section`
             text-decoration: none;
          }
       }
-      img {
+      svg {
          width: ${props => props.theme.smallText};
          height: auto;
          margin-left: 1rem;

@@ -45,13 +45,11 @@ const StyledProfileSidebar = styled.div`
             justify-content: stretch;
             clip-path: circle(calc(15rem + 2px) at center);
             opacity: 0;
-            img {
-               cursor: pointer;
-            }
             &.editable {
                opacity: 0.9;
             }
-            img.edit {
+            svg.editThis {
+               cursor: pointer;
                width: 4rem;
                margin: auto;
             }
@@ -113,8 +111,8 @@ const StyledProfileSidebar = styled.div`
          input {
             font-size: ${props => props.theme.smallText};
          }
-         img.edit,
-         img.cancel {
+         svg.editThis,
+         svg.cancel {
             width: ${props => props.theme.smallText};
             margin-left: 1rem;
             opacity: 0.4;

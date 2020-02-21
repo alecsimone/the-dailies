@@ -165,24 +165,39 @@ const Tweet = props => {
    }
    const quotedTweetContainer = [];
    if (quotedTweet != null) {
-      quotedTweetContainer.push(
-         <div className="quoteTweetContainer" key={quotedTweet.id_str}>
-            <h5>
-               <img
-                  src={quotedTweet.user.profile_image_url_https}
-                  className="quotedTweeterAvatar"
-               />
-               <a
-                  href={`https://twitter.com/${quotedTweet.user.screen_name}`}
-                  target="_blank"
-               >
-                  @{quotedTweet.user.screen_name}
-               </a>
-               :
-            </h5>
-            <Tweet tweet={quotedTweet} />
-         </div>
-      );
+      if (!nested) {
+         quotedTweetContainer.push(
+            <div className="quoteTweetContainer" key={quotedTweet.id_str}>
+               <h5>
+                  <img
+                     src={quotedTweet.user.profile_image_url_https}
+                     className="quotedTweeterAvatar"
+                  />
+                  <a
+                     href={`https://twitter.com/${
+                        quotedTweet.user.screen_name
+                     }`}
+                     target="_blank"
+                  >
+                     @{quotedTweet.user.screen_name}
+                  </a>
+                  :
+               </h5>
+               <Tweet tweet={quotedTweet} nested />
+            </div>
+         );
+      } else {
+         quotedTweetContainer.push(
+            <a
+               href={`https://twitter.com/${
+                  quotedTweet.user.screen_name
+               }/status/${quotedTweet.id_str}`}
+               target="_blank"
+            >
+               See Quoted Tweet
+            </a>
+         );
+      }
    } else if (quotedTweetID) {
       quotedTweetContainer.push(<TweetGetter id={quotedTweetID} />);
    }

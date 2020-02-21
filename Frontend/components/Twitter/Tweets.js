@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import Tweet from './Tweet';
 import { setAlpha, setLightness, setSaturation } from '../../styles/functions';
 import { GET_TWEETS_FOR_LIST, GET_TWITTER_LISTS } from './TwitterReader';
+import X from '../Icons/X';
 
 const MARK_TWEETS_SEEN = gql`
    mutation MARK_TWEETS_SEEN($listID: String!, $tweetIDs: [String]!) {
@@ -96,12 +97,13 @@ const StyledTweets = styled.section`
                a.tweeterNameLink {
                   margin-right: 1rem;
                }
-               img {
+               img,
+               svg {
                   border-radius: 50%;
                   width: ${props => props.theme.smallHead};
                   height: ${props => props.theme.smallHead};
                }
-               img.markSeen {
+               svg.markSeen {
                   cursor: pointer;
                   opacity: 0.4;
                   &:hover {
@@ -310,10 +312,8 @@ const Tweets = props => {
                         {tweetersArray[i].tweeter.displayName}
                      </div>
                   </div>
-                  <img
-                     src="/red-x.png"
+                  <X
                      className="markSeen"
-                     alt="Mark tweeter seen"
                      onClick={e => {
                         e.target.classList.add('loading');
                         const tweetIDs = [];

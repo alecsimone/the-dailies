@@ -1,11 +1,12 @@
 import { useContext } from 'react';
 import gql from 'graphql-tag';
-import styled from 'styled-components';
+import styled, { ThemeContext } from 'styled-components';
 import { useMutation } from '@apollo/react-hooks';
 import { MemberContext } from '../Account/MemberProvider';
 import MemberCard from '../MemberCard';
 import { CONFIRM_FRIEND_REQUEST_MUTATION } from './ProfileSidebar';
 import { setAlpha } from '../../styles/functions';
+import X from '../Icons/X';
 
 const IGNORE_FRIEND_REQUEST_MUTATION = gql`
    mutation IGNORE_FRIEND_REQUEST_MUTATION($id: ID!) {
@@ -42,11 +43,14 @@ const StyledFriendRequest = styled.div`
       justify-content: space-between;
       margin-left: 2rem;
       padding: 0.25rem;
-      img.requestOption {
+      svg.requestOption {
          width: 2.5rem;
          height: 2.5rem;
          cursor: pointer;
          opacity: 0.4;
+         &.confirm {
+            transform: rotate(45deg);
+         }
          &:hover {
             opacity: 0.8;
          }
@@ -68,10 +72,9 @@ const FriendRequest = ({ requester }) => {
       <StyledFriendRequest className="friendRequest">
          <MemberCard member={requester} />
          <div className="requestOptions">
-            <img
-               alt="confirm friend request"
-               className="requestOption"
-               src="/green-plus.png"
+            <X
+               className="requestOption confirm"
+               color="primaryAccent"
                onClick={e => {
                   const newFriendRequests = me.friendRequests.filter(
                      oldRequester => oldRequester.id !== requester.id
@@ -89,10 +92,8 @@ const FriendRequest = ({ requester }) => {
                   });
                }}
             />
-            <img
-               alt="reject friend request"
+            <X
                className="requestOption"
-               src="/red-x.png"
                onClick={() =>
                   ignoreFriendRequest({
                      variables: {

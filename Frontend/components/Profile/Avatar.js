@@ -1,3 +1,6 @@
+import EditThis from '../Icons/EditThis';
+import X from '../Icons/X';
+
 const Avatar = ({
    canEdit,
    avatar,
@@ -30,19 +33,13 @@ const Avatar = ({
                      onChange={handleEditing}
                      onKeyDown={handleKeyDown}
                   />
-                  <img
-                     src="/red-x.png"
+                  <X
                      className="cancel"
                      onClick={() => unMakeEditable('avatar')}
                   />
                </div>
             ) : (
-               <img
-                  className="edit"
-                  src="/edit-this.png"
-                  alt="edit avatar"
-                  onClick={() => makeEditable('avatar')}
-               />
+               <EditThis onClick={() => makeEditable('avatar')} />
             )}
          </div>
       )}

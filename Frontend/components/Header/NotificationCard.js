@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import Link from 'next/link';
 import { useState } from 'react';
 import FriendRequest from '../Profile/FriendRequest';
+import X from '../Icons/X';
 import { setAlpha, setLightness } from '../../styles/functions';
 
 const StyledNotificationCard = styled.div`
@@ -40,7 +41,7 @@ const StyledNotificationCard = styled.div`
    .cardRight {
       flex-grow: 0;
       padding-right: 1rem;
-      img {
+      svg {
          width: 2rem;
          height: 2rem;
          opacity: 0.5;
@@ -109,11 +110,7 @@ const NotificationCard = ({ notification }) => {
             </div>
             <div className="cardMiddle">{message}</div>
             <div className="cardRight">
-               <img
-                  src="/red-x.png"
-                  className="markSeenButton"
-                  alt="mark seen"
-               />
+               <X className="markSeenButton" />
             </div>
          </StyledNotificationCard>
       </Link>

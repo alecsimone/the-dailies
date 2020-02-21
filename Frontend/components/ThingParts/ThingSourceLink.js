@@ -11,6 +11,7 @@ import {
    disabledCodewords
 } from '../../lib/ThingHandling';
 import { urlFinder } from '../../lib/UrlHandling';
+import EditThis from '../Icons/EditThis';
 
 const EDIT_LINK_MUTATION = gql`
    mutation EDIT_LINK_MUTATION($link: String!, $id: ID!) {
@@ -83,13 +84,7 @@ const ThingSourceLink = ({ canEdit }) => {
    return (
       <div className="link">
          re: {content}
-         {canEdit && (
-            <img
-               src="/edit-this.png"
-               alt="Edit link"
-               onClick={() => setEditable(!editable)}
-            />
-         )}
+         {canEdit && <EditThis onClick={() => setEditable(!editable)} />}
       </div>
    );
 };

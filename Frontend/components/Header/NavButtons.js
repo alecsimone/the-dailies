@@ -1,11 +1,12 @@
-import styled from 'styled-components';
+import styled, { ThemeContext } from 'styled-components';
 import Link from 'next/link';
 import { useMutation } from '@apollo/react-hooks';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import Router from 'next/router';
 import { NEW_BLANK_THING } from '../../pages/new';
-import { setAlpha, setLightness } from '../../styles/functions';
+import { setAlpha, setLightness, setSaturation } from '../../styles/functions';
+import X from '../Icons/X';
 
 const StyledNav = styled.nav`
    display: flex;
@@ -17,7 +18,7 @@ const StyledNav = styled.nav`
          background: blue;
          ${props => props.theme.spin};
       }
-      img {
+      img, svg {
          width: ${props => props.theme.bigText};
          cursor: pointer;
          /* border: 1px solid ${props => props.theme.highContrastGrey}; */
@@ -29,7 +30,7 @@ const StyledNav = styled.nav`
             background: ${props => setAlpha(props.theme.lowContrastGrey, 0.1)};
          }
          &.newPost {
-            filter: saturate(0);
+            transform: rotate(45deg);
          }
       }
    }
@@ -99,6 +100,7 @@ const NavButtons = ({ showSearch, setShowSearch }) => {
          newPostButton.classList.remove('loading');
       }
    });
+   const { lowContrastGrey } = useContext(ThemeContext);
    return (
       <StyledNav className="navButtons">
          <a
@@ -112,7 +114,10 @@ const NavButtons = ({ showSearch, setShowSearch }) => {
                }
             }}
          >
-            <img src="/green-plus.png" className="newPost" alt="New Post" />
+            <X
+               className="newPost"
+               color={setLightness(setSaturation(lowContrastGrey, 15), 45)}
+            />
          </a>
          <div className="searchBar">
             <img

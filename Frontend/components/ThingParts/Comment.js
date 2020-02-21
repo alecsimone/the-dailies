@@ -9,6 +9,8 @@ import LinkyText from '../LinkyText';
 import CommentInput from './CommentInput';
 import { setAlpha } from '../../styles/functions';
 import { convertISOtoAgo, pxToInt } from '../../lib/ThingHandling';
+import EditThis from '../Icons/EditThis';
+import X from '../Icons/X';
 
 const DELETE_COMMENT_MUTATION = gql`
    mutation DELETE_COMMENT_MUTATION(
@@ -135,7 +137,7 @@ const StyledComment = styled.div`
          flex-direction: column;
          align-items: center;
          justify-items: space-between;
-         img {
+         svg {
             width: 2rem;
             height: 2rem;
             opacity: 0.25;
@@ -143,7 +145,7 @@ const StyledComment = styled.div`
             &:hover {
                opacity: 1;
             }
-            &.editCommentButton {
+            &.editThis {
                margin-top: 1rem;
             }
          }
@@ -224,10 +226,8 @@ const Comment = ({ comment, comments, type, id }) => {
             </div>
             {me && me.id === comment.author.id && (
                <div className="buttons">
-                  <img
+                  <X
                      className="deleteCommentButton"
-                     src="/red-x.png"
-                     alt="delete comment button"
                      onClick={() => {
                         const newComments = comments.filter(
                            currentComment => currentComment.id !== comment.id
@@ -249,12 +249,7 @@ const Comment = ({ comment, comments, type, id }) => {
                         });
                      }}
                   />
-                  <img
-                     className="editCommentButton"
-                     src="/edit-this.png"
-                     alt="edit comment button"
-                     onClick={() => setEditing(!editing)}
-                  />
+                  <EditThis onClick={() => setEditing(!editing)} />
                </div>
             )}
          </div>

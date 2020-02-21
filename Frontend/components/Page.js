@@ -20,6 +20,7 @@ const theme = {
    majorColor: 'hsl(210, 100%, 40%)',
    primaryAccent: 'hsl(120, 100%, 25%)',
    secondaryAccent: 'hsl(42, 79%, 64%)',
+   warning: 'hsl(0, 80%, 40%)',
 
    lowContrastGrey: 'hsl(210, 10%, 30%)',
    highContrastGrey: 'hsl(30, 10%, 60%)',
@@ -247,12 +248,6 @@ const GlobalStyle = createGlobalStyle`
       border: 1px solid ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
       border-radius: 3px;
       background: ${props => props.theme.black};
-      span.continued {
-         display: block;
-         opacity: .6;
-         font-weight: 300;
-         margin-top: 1rem;
-      }
       .repliedToTweet {
          margin-top: 0;
          .quoteTweetContainer {

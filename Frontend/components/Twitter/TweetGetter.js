@@ -14,7 +14,7 @@ const GET_TWEET = gql`
 `;
 
 const TweetGetter = props => {
-   const { id, nested } = props;
+   const { id, nested = true } = props;
    const { loading, error, data } = useQuery(GET_TWEET, {
       variables: {
          tweetID: id
@@ -47,7 +47,7 @@ const TweetGetter = props => {
             </a>
             :
          </h5>
-         <Tweet tweet={tweet} key={tweet.id_str} nested />
+         <Tweet tweet={tweet} key={tweet.id_str} nested={nested} />
       </div>
    );
 };

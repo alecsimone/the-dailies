@@ -243,7 +243,8 @@ const StyledContent = styled.section`
       div.buttons {
          width: ${props => props.theme.smallText};
       }
-      img.buttons {
+      img.buttons,
+      svg.buttons {
          width: 100%;
          opacity: 0.2;
          &:hover {

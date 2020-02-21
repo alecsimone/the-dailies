@@ -13,6 +13,7 @@ import {
    checkForNewThingRedirect
 } from '../../lib/ThingHandling';
 import { setFullThingToLoading } from './FullThing';
+import EditThis from '../Icons/EditThis';
 
 const SET_FEATURED_IMAGE_MUTATION = gql`
    mutation SET_FEATURED_IMAGE_MUTATION(
@@ -83,7 +84,7 @@ const StyledFeaturedImage = styled.div`
          background: ${props => setAlpha(props.theme.lowContrastGrey, 0.4)};
       }
    }
-   img.editThis {
+   svg.editThis {
       position: absolute;
       top: 0.5rem;
       right: 0.5rem;
@@ -202,14 +203,7 @@ const FeaturedImage = props => {
             </div>
          )}
          <TitleBar context={context} limit={titleLimit} canEdit={canEdit} />
-         {canEdit && (
-            <img
-               src="/edit-this.png"
-               className="editThis"
-               alt="edit featured"
-               onClick={showInputHandler}
-            />
-         )}
+         {canEdit && <EditThis onClick={showInputHandler} />}
       </StyledFeaturedImage>
    );
 };

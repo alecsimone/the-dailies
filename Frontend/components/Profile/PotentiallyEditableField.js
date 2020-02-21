@@ -1,3 +1,6 @@
+import EditThis from '../Icons/EditThis';
+import X from '../Icons/X';
+
 const PotentiallyEditableField = ({
    label,
    name,
@@ -24,13 +27,10 @@ const PotentiallyEditableField = ({
       ) : (
          propValue || 'Not Set'
       )}{' '}
-      {canEdit && (
-         <img
-            className={editable.includes(name) ? 'cancel' : 'edit'}
-            src={editable.includes(name) ? '/red-x.png' : '/edit-this.png'}
-            alt={`edit ${label}`}
-            onClick={() => toggleEditability(name)}
-         />
+      {canEdit && editable.includes(name) ? (
+         <X className="cancel" onClick={() => toggleEditability(name)} />
+      ) : (
+         <EditThis onClick={() => toggleEditability(name)} />
       )}
    </div>
 );

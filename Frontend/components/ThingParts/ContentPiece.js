@@ -2,6 +2,7 @@ import { useState } from 'react';
 import PropTypes from 'prop-types';
 import ContentInput from './ContentInput';
 import LinkyText from '../LinkyText';
+import EditThis from '../Icons/EditThis';
 
 const ContentPiece = props => {
    const [editable, setEditable] = useState(false);
@@ -49,8 +50,7 @@ const ContentPiece = props => {
          </div>
          {canEdit && (
             <div className="buttons">
-               <img
-                  src="/edit-this.png"
+               <EditThis
                   className="edit buttons"
                   onMouseDown={e => e.stopPropagation()}
                   onClick={() => {
