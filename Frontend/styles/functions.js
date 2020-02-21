@@ -69,9 +69,6 @@ const dynamicallyResizeElement = el => {
    if (el == null) {
       return;
    }
-   if (pxToInt(el.style.height) === el.scrollHeight + 2 && el.value !== '') {
-      return;
-   }
    const mainSection = document.querySelector('.mainSection');
    const oldScrollTop = mainSection.scrollTop;
    el.style.height = '0';
