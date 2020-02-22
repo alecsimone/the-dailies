@@ -7,6 +7,7 @@ import Router from 'next/router';
 import { NEW_BLANK_THING } from '../../pages/new';
 import { setAlpha, setLightness, setSaturation } from '../../styles/functions';
 import X from '../Icons/X';
+import SearchIcon from '../Icons/Search';
 
 const StyledNav = styled.nav`
    display: flex;
@@ -42,7 +43,7 @@ const StyledNav = styled.nav`
       align-items: center;
       flex-grow: 1;
       padding-right: 3rem;
-      img.searchIcon {
+      svg.searchIcon {
          cursor: pointer;
          width: ${props => props.theme.bigText};
          height: ${props => props.theme.bigText};
@@ -114,18 +115,10 @@ const NavButtons = ({ showSearch, setShowSearch }) => {
                }
             }}
          >
-            <X
-               className="newPost"
-               color={setLightness(setSaturation(lowContrastGrey, 15), 45)}
-            />
+            <X className="newPost" color={lowContrastGrey} />
          </a>
          <div className="searchBar">
-            <img
-               className="searchIcon"
-               src="/search.png"
-               alt="search icon"
-               onClick={() => setShowSearch(!showSearch)}
-            />
+            <SearchIcon onClick={() => setShowSearch(!showSearch)} />
             <form
                className={showSearch ? 'searchForm show' : 'searchForm hidden'}
                onSubmit={e => {

@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import Router from 'next/router';
 import { useState, useContext } from 'react';
 import NotificationsContainer from './NotificationsContainer';
+import Bell from '../Icons/Bell';
 import { setAlpha, setLightness } from '../../styles/functions';
 import { MemberContext } from '../Account/MemberProvider';
 
@@ -9,13 +10,20 @@ const StyledNotifications = styled.div`
    margin-right: 2rem;
    position: relative;
    line-height: 0;
-   img.notificationsIcon.desktop {
+   svg.notificationsIcon.desktop {
       display: none;
+      ${props => props.theme.mobileBreakpoint} {
+         display: block;
+      }
    }
-   img.notificationsIcon {
+   svg.notificationsIcon {
       height: ${props => props.theme.bigText};
       width: auto;
       cursor: pointer;
+      ${props => props.theme.mobileBreakpoint} {
+         display: none;
+      }
+   }
    }
    .notificationsCount {
       position: absolute;
@@ -52,14 +60,6 @@ const StyledNotifications = styled.div`
          }
       }
    }
-   ${props => props.theme.mobileBreakpoint} {
-      img.notificationsIcon.mobile {
-         display: none;
-      }
-      img.notificationsIcon.desktop {
-         display: block;
-      }
-   }
 `;
 
 const NotificationsIcon = () => {
@@ -82,7 +82,7 @@ const NotificationsIcon = () => {
    const clickOutsideDetector = e => {
       if (
          !e.target.classList.contains('notificationsContainer') &&
-         e.target.id !== 'notificationIcon'
+         e.target.id !== 'bell'
       ) {
          setShowNotifications(false);
          window.removeEventListener('click', clickOutsideDetector);
@@ -99,15 +99,13 @@ const NotificationsIcon = () => {
 
    return (
       <StyledNotifications className="notificationsWrapper">
-         <img
-            src="/bell.png"
+         <Bell
             className="notificationsIcon mobile"
             id="notificationIcon"
             alt="notifications icon"
             onClick={() => Router.push({ pathname: '/notifications' })}
          />
-         <img
-            src="/bell.png"
+         <Bell
             className="notificationsIcon desktop"
             id="notificationIcon"
             alt="notifications icon"

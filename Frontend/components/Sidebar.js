@@ -17,16 +17,20 @@ const Sidebar = props => {
    );
 
    const { mobileBPWidthRaw } = useContext(ThemeContext);
-   const [isOpen, setIsOpen] = useState(
-      !(
+   const [isOpen, setIsOpen] = useState(true);
+
+   useEffect(() => {
+      if (
          process.browser &&
          window.outerWidth <= mobileBPWidthRaw &&
          extraColumnTitle != 'Tag' &&
          extraColumnTitle != 'Category' &&
          extraColumnTitle != 'Me' &&
          extraColumnTitle != 'Member'
-      )
-   );
+      ) {
+         setIsOpen(false);
+      }
+   }, [extraColumnTitle, mobileBPWidthRaw]);
 
    const headerColumns = me ? ['You', 'Friends', 'Public'] : ['Public'];
    if (extraColumnTitle != null) {
@@ -108,6 +112,8 @@ const Sidebar = props => {
          sidebarContent = <PublicThings displayType="list" />;
       }
    }
+
+   console.log(!isOpen);
 
    return (
       <StyledSidebar className={`sidebar${!isOpen ? ' hidden' : ''}`}>

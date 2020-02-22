@@ -199,7 +199,18 @@ const Tweet = props => {
          );
       }
    } else if (quotedTweetID) {
-      quotedTweetContainer.push(<TweetGetter id={quotedTweetID} />);
+      if (!nested) {
+         quotedTweetContainer.push(<TweetGetter id={quotedTweetID} />);
+      } else {
+         quotedTweetContainer.push(
+            <a
+               href={`https://twitter.com/blank/status/${quotedTweetID}`}
+               target="_blank"
+            >
+               See Quoted Tweet
+            </a>
+         );
+      }
    }
    if (retweetedTweet != null) {
       return (
