@@ -242,11 +242,6 @@ const GlobalStyle = createGlobalStyle`
                   margin-top: 3rem;
                }
             }
-            &.threadEnder {
-               &:last-child {
-                  margin-bottom: 5rem;
-               }
-            }
          }
       }
       &:first-child {
