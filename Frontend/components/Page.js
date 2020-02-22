@@ -227,6 +227,9 @@ const GlobalStyle = createGlobalStyle`
          }
          &.threadEnder {
             border-radius: 0 0 3px 3px;
+            &:last-child {
+                  margin-bottom: 3rem;
+               }
          }
       }
       ${props => props.theme.mobileBreakpoint} {
@@ -237,6 +240,11 @@ const GlobalStyle = createGlobalStyle`
                margin-top: 5rem;
                &:first-child {
                   margin-top: 3rem;
+               }
+            }
+            &.threadEnder {
+               &:last-child {
+                  margin-bottom: 5rem;
                }
             }
          }
