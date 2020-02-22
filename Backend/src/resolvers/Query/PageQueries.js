@@ -70,6 +70,10 @@ async function categoryByTitle(parent, { title }, ctx, info) {
       info
    );
 
+   if (categories[0] == null) {
+      return null;
+   }
+
    if (
       categories[0].connectedThings &&
       categories[0].connectedThings.length > 0

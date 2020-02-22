@@ -77,6 +77,7 @@ const category = props => {
          />
       );
    } else if (data) {
+      console.log(data);
       if (data.categoryByTitle != null) {
          pageTitle = data.categoryByTitle.title;
          const sortedThings = data.categoryByTitle.connectedThings.sort(
@@ -105,7 +106,7 @@ const category = props => {
       } else {
          pageTitle = "Couldn't find category";
          content = <p>Category not found.</p>;
-         siidebar = <Sidebar key="missingCategory" />;
+         sidebar = <Sidebar key="missingCategory" />;
       }
    }
 

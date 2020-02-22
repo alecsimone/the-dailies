@@ -7,6 +7,8 @@ import MyThings from './Archives/MyThings';
 import MyFriendsThings from './Archives/MyFriendsThings';
 import PublicThings from './Archives/PublicThings';
 import LoadingRing from './LoadingRing';
+import ArrowIcon from './Icons/Arrow';
+import SidebarHeaderIcon from './Icons/SidebarHeaderIcon';
 
 const Sidebar = props => {
    const { extraColumnTitle, extraColumnContent } = props;
@@ -20,6 +22,7 @@ const Sidebar = props => {
    const [isOpen, setIsOpen] = useState(true);
 
    useEffect(() => {
+      // we do this as an effect so the ssr doesn't make it start open
       if (
          process.browser &&
          window.outerWidth <= mobileBPWidthRaw &&
@@ -37,13 +40,20 @@ const Sidebar = props => {
       headerColumns.push(extraColumnTitle);
    }
    let sidebarHeader = headerColumns.map(column => {
-      let imgSrc;
+      let icon;
       if (column === 'Me') {
-         imgSrc = me ? me.avatar : '/defaultAvatar.jpg';
+         icon =
+            me && me.avatar != null ? (
+               <img src={me.avatar} alt={column} title={column} />
+            ) : (
+               <img src="/defaultAvatar.jpg" alt={column} title={column} />
+            );
       } else if (column === 'Member') {
-         imgSrc = '/defaultAvatar.jpg';
+         icon = <img src="/defaultAvatar.jpg" alt={column} title={column} />;
+      } else if (column === 'Tweets') {
+         icon = <img src="/Tweets.png" alt={column} title={column} />;
       } else {
-         imgSrc = `${column}.png`;
+         icon = <SidebarHeaderIcon icon={column} />;
       }
 
       const isSelected =
@@ -68,14 +78,22 @@ const Sidebar = props => {
                }
             }}
          >
-            <img src={imgSrc} alt={column} title={column} />
+            {icon}
          </div>
       );
    });
    const openButton =
-      process.browser && window.innerWidth <= mobileBPWidthRaw ? 'v' : '>';
+      process.browser && window.innerWidth <= mobileBPWidthRaw ? (
+         <ArrowIcon pointing="down" />
+      ) : (
+         <ArrowIcon pointing="right" />
+      );
    const closeButton =
-      process.browser && window.innerWidth <= mobileBPWidthRaw ? '^' : '<';
+      process.browser && window.innerWidth <= mobileBPWidthRaw ? (
+         <ArrowIcon pointing="up" />
+      ) : (
+         <ArrowIcon pointing="left" />
+      );
    const toggleButton = (
       <div
          className="headerTab toggle"
@@ -112,8 +130,6 @@ const Sidebar = props => {
          sidebarContent = <PublicThings displayType="list" />;
       }
    }
-
-   console.log(!isOpen);
 
    return (
       <StyledSidebar className={`sidebar${!isOpen ? ' hidden' : ''}`}>

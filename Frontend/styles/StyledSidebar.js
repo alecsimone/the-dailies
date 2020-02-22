@@ -9,7 +9,7 @@ const StyledSidebar = styled.section`
          display: none;
       }
       ${props => props.theme.mobileBreakpoint} {
-         max-width: 3rem;
+         max-width: 4rem;
          .sidebarHeader {
             position: absolute;
             right: 0;
@@ -41,16 +41,14 @@ const StyledSidebar = styled.section`
          border: 3px solid ${props => setAlpha(props.theme.mainText, 0.1)};
          border-top: none;
          border-left: none;
-         padding: 0.5rem;
+         padding: 0.5rem 0;
          font-size: 3rem;
          cursor: pointer;
+         svg,
          img {
             height: 3rem;
             width: auto;
             opacity: 0.75;
-            &[alt] {
-               line-height: 1;
-            }
          }
          &.selected {
             background: ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
@@ -61,11 +59,14 @@ const StyledSidebar = styled.section`
          &.toggle {
             max-width: 6rem;
             ${props => props.theme.mobileBreakpoint} {
-               max-width: 3rem;
+               max-width: 4rem;
             }
-            line-height: 1;
             font-weight: 700;
             color: ${props => props.theme.lowContrastGrey};
+            padding: 0;
+            svg {
+               height: 4rem;
+            }
          }
          &.Me img,
          &.Member img {
