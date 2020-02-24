@@ -39,7 +39,10 @@ const ThingSourceLink = ({ canEdit }) => {
 
    const sendNewLink = async () => {
       const url = currentLink.match(urlFinder);
-      if (url == null && !disabledCodewords.includes(currentLink)) {
+      if (
+         url == null &&
+         !disabledCodewords.includes(currentLink.toLowerCase())
+      ) {
          window.alert("That's not a valid link, sorry");
          return;
       }
@@ -75,7 +78,7 @@ const ThingSourceLink = ({ canEdit }) => {
             />
          </form>
       );
-   } else if (link == null || disabledCodewords.includes(link)) {
+   } else if (link == null || disabledCodewords.includes(link.toLowerCase())) {
       content = '';
    } else {
       content = <ShortLink link={link} limit={100} />;

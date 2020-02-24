@@ -135,7 +135,7 @@ const FeaturedImage = props => {
    const sendNewFeaturedImage = () => {
       if (
          !isExplodingLink(featuredImageInput) &&
-         !disabledCodewords.includes(featuredImageInput)
+         !disabledCodewords.includes(featuredImageInput.toLowerCase())
       ) {
          window.alert("That's not a valid featured image, sorry");
          return;
@@ -174,13 +174,14 @@ const FeaturedImage = props => {
                : 'featuredImage image'
          }
       >
-         {featuredImage && !disabledCodewords.includes(featuredImage) && (
-            <ExplodingLink
-               url={featuredImage}
-               alt="Featured"
-               className="featured"
-            />
-         )}
+         {featuredImage &&
+            !disabledCodewords.includes(featuredImage.toLowerCase()) && (
+               <ExplodingLink
+                  url={featuredImage}
+                  alt="Featured"
+                  className="featured"
+               />
+            )}
          {canEdit && showInput && (
             <div className="formWrapper">
                <form

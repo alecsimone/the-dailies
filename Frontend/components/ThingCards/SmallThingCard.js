@@ -123,7 +123,7 @@ const SmallThingCard = props => {
                src={
                   featuredImage == null ||
                   isVideo(featuredImage) ||
-                  disabledCodewords.includes(featuredImage) ||
+                  disabledCodewords.includes(featuredImage.toLowerCase()) ||
                   isTweet
                      ? '/defaultPic.jpg'
                      : featuredImage
