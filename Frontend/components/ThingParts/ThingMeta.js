@@ -12,6 +12,7 @@ import ShortLink from './ShortLink';
 import CategoryDropdown from './CategoryDropdown';
 import PrivacyDropdown from './PrivacyDropdown';
 import ThingSourceLink from './ThingSourceLink';
+import TrashIcon from '../Icons/Trash';
 
 const DELETE_THING_MUTATION = gql`
    mutation DELETE_THING_MUTATION($id: ID!) {
@@ -207,9 +208,8 @@ const ThingMeta = props => {
                <span className="ago">{convertISOtoAgo(createdAt)} ago </span>
             )}
          </div>
-         <img
+         <TrashIcon
             className={deleting ? 'trash deleting' : 'trash'}
-            src="/trash.png"
             onClick={() => {
                if (confirm('Are you sure you want to delete this thing?')) {
                   deleteThing({

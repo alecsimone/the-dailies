@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import ContentInput from './ContentInput';
 import LinkyText from '../LinkyText';
 import EditThis from '../Icons/EditThis';
+import TrashIcon from '../Icons/Trash';
 
 const ContentPiece = props => {
    const [editable, setEditable] = useState(false);
@@ -58,8 +59,7 @@ const ContentPiece = props => {
                   }}
                />
                {editable && (
-                  <img
-                     src="/trash.png"
+                  <TrashIcon
                      className="delete buttons"
                      onMouseDown={e => e.stopPropagation()}
                      onClick={() => deleteContentPiece(id)}

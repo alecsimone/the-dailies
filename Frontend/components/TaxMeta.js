@@ -4,6 +4,7 @@ import { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useMutation } from '@apollo/react-hooks';
 import Router from 'next/router';
+import TrashIcon from './Icons/Trash';
 
 const SET_PUBLICITY_MUTATION = gql`
    mutation SET_PUBLICITY_MUTATION(
@@ -91,7 +92,7 @@ const StyledTaxMeta = styled.div`
          }
       }
    }
-   img.trash {
+   svg.trash {
       height: ${props => props.theme.bigText};
       width: auto;
       margin-left: 1rem;
@@ -156,8 +157,7 @@ const TaxMeta = props => {
          {author && `Created by ${author.displayName}`}
          <div className="right">
             {checkbox}
-            <img
-               src="/trash.png"
+            <TrashIcon
                className="trash"
                onClick={e => {
                   if (
