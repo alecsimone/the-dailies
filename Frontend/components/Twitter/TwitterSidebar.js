@@ -34,7 +34,7 @@ const StyledTwitterSidebar = styled.div`
       margin-top: 2rem;
       display: flex;
       align-items: center;
-      img {
+      svg {
          margin-left: 1rem;
          width: ${props => props.theme.smallText};
          opacity: 0.25;

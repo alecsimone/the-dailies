@@ -1,6 +1,5 @@
 import { useContext } from 'react';
 import { ThemeContext } from 'styled-components';
-import { setLightness, setSaturation } from '../../styles/functions';
 
 const TrashIcon = ({ onClick, className, onMouseDown }) => {
    const { lowContrastGrey } = useContext(ThemeContext);

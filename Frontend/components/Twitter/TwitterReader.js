@@ -11,6 +11,7 @@ import Tweets, { filterTweets } from './Tweets';
 import LoadingRing from '../LoadingRing';
 import ErrorMessage from '../ErrorMessage';
 import { convertISOtoAgo } from '../../lib/ThingHandling';
+import ResetIcon from '../Icons/Reset';
 
 const GET_TWITTER_LISTS = gql`
    query GET_TWITTER_LISTS {
@@ -100,7 +101,7 @@ const TwitterReader = props => {
    });
 
    const updateLists = () => {
-      const el = document.querySelector('img.refreshLists');
+      const el = document.querySelector('svg.refreshLists');
       el.classList.remove('loading');
       const cachedData = client.writeQuery({
          query: GET_TWITTER_LISTS,
@@ -212,12 +213,10 @@ const TwitterReader = props => {
       listElements.push(
          <div className="updateLists" key="updateLists">
             Last updated {convertISOtoAgo(listData.lastUpdateTime)} ago
-            <img
-               src="/reset-icon.png"
+            <ResetIcon
                className="refreshLists"
-               alt="refresh lists"
                onClick={() => {
-                  const el = document.querySelector('img.refreshLists');
+                  const el = document.querySelector('svg.refreshLists');
                   el.classList.add('loading');
                   fetchFreshLists();
                }}
