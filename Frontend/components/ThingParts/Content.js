@@ -222,6 +222,7 @@ const StyledContent = styled.section`
    }
    .placeholder {
       background: ${props => props.theme.majorColor};
+      color: ${props => props.theme.majorColor};
    }
    .dragged {
       background: ${props => props.theme.lowContrastGrey};
