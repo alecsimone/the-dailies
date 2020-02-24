@@ -52,7 +52,12 @@ const CommentInput = props => {
    };
 
    return (
-      <StyledCommentInput>
+      <StyledCommentInput
+         onSubmit={e => {
+            e.preventDefault();
+            postComment();
+         }}
+      >
          <textarea
             type="textarea"
             id="commentInput"
