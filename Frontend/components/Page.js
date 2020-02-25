@@ -20,7 +20,8 @@ const theme = {
    majorColor: 'hsl(210, 100%, 40%)',
    primaryAccent: 'hsl(120, 100%, 25%)',
    secondaryAccent: 'hsl(42, 79%, 64%)',
-   warning: 'hsl(0, 80%, 40%)',
+   // warning: 'hsl(0, 80%, 40%)',
+   warning: 'hsl(0, 75%, 50%)',
 
    lowContrastGrey: 'hsl(210, 10%, 30%)',
    highContrastGrey: 'hsl(30, 10%, 60%)',
@@ -275,6 +276,7 @@ const GlobalStyle = createGlobalStyle`
             margin: 0 -1.5rem 1rem -1.5rem;
             padding: 2rem 1rem;
             background: ${props => props.theme.tweetHead};
+            border-bottom: 1px solid ${props => props.theme.black};
             a.retweetLink {
                color: ${props => props.theme.mainText};
                font-weight: 600;
@@ -290,7 +292,7 @@ const GlobalStyle = createGlobalStyle`
             margin-top: -1rem;
             .tweet {
                border: 1px solid
-                  ${props => setAlpha(props.theme.lowContrastGrey, 0.5)};
+                  /* ${props => setAlpha(props.theme.lowContrastGrey, 0.5)}; */
                border-top: none;
             }
          }
@@ -385,8 +387,10 @@ const GlobalStyle = createGlobalStyle`
             align-items: center;
             span {
                cursor: pointer;
+               display: flex;
+               align-items: center;
             }
-            img {
+            svg, img {
                opacity: 1;
                width: ${props => props.theme.smallText};
                ${props => props.theme.desktopBreakpoint} {
@@ -394,16 +398,22 @@ const GlobalStyle = createGlobalStyle`
                }
                height: auto;
                margin: 0 1rem 0 0.6rem;
-               filter: saturate(0%);
                cursor: pointer;
-               transition: filter 0.1s;
-               &:hover {
-                  filter: saturate(100%);
-               }
-               &.on {
-                  filter: saturate(100%);
+               &.heartIcon {
+                  fill: none;
+                  stroke: ${props => props.theme.lowContrastGrey};
+                  stroke-width: 3px;
                   &:hover {
-                     filter: saturate(0%);
+                     /* fill: ${props => props.theme.warning}; */
+                     stroke: ${props => props.theme.warning};
+                  }
+                  &.on {
+                     fill: ${props => props.theme.warning};
+                     stroke: ${props => props.theme.warning};
+                     &:hover {
+                        fill: ${props => props.theme.lowContrastGrey};;
+                        stroke: ${props => props.theme.lowContrastGrey};
+                     }
                   }
                }
             }

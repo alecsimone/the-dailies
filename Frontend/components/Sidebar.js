@@ -50,8 +50,6 @@ const Sidebar = props => {
             );
       } else if (column === 'Member') {
          icon = <img src="/defaultAvatar.jpg" alt={column} title={column} />;
-      } else if (column === 'Tweets') {
-         icon = <img src="/Tweets.png" alt={column} title={column} />;
       } else {
          icon = <SidebarHeaderIcon icon={column} />;
       }

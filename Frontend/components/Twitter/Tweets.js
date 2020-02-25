@@ -87,6 +87,7 @@ const StyledTweets = styled.section`
                margin: 0;
                padding: 1rem 0;
                background: ${props => props.theme.tweetHead};
+               border-bottom: 1px solid ${props => props.theme.black};
                text-align: center;
                border-radius: 3px 3px 0 0;
                .bottom {

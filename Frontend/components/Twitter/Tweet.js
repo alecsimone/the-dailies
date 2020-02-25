@@ -6,6 +6,8 @@ import TweetGetter from './TweetGetter';
 import LinkyText from '../LinkyText';
 import { convertISOtoAgo } from '../../lib/ThingHandling';
 import { home } from '../../config';
+import HeartIcon from '../Icons/Heart';
+import RetweetIcon from '../Icons/Retweet';
 
 const LIKE_TWEET = gql`
    mutation LIKE_TWEET($tweetID: String!, $alreadyLiked: String!) {
@@ -292,17 +294,15 @@ const Tweet = props => {
                   }}
                >
                   {likes}
+                  <HeartIcon
+                     className={liked ? 'on' : 'off'}
+                     onClick={() => {
+                        likeTweetHandler();
+                     }}
+                  />
                </span>
-               <img
-                  src={liked ? '/heart-full.png' : '/heart-outline.png'}
-                  className={liked ? 'on' : 'off'}
-                  onClick={() => {
-                     likeTweetHandler();
-                  }}
-                  alt="favorites"
-               />
                {retweets}
-               <img src="/rt-icon.png" alt="retweets" />
+               <RetweetIcon />
             </div>
          </div>
       </div>

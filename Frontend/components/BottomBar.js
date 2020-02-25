@@ -5,6 +5,9 @@ import Link from 'next/link';
 import Router from 'next/router';
 import { setAlpha, setLightness } from '../styles/functions';
 import { SET_THING_TITLE_MUTATION } from './ThingParts/TitleBar';
+import HomeIcon from './Icons/Home';
+import SearchIcon from './Icons/Search';
+import X from './Icons/X';
 
 const StyledBottomBar = styled.section`
    width: 100%;
@@ -59,6 +62,12 @@ const StyledBottomBar = styled.section`
       }
       &:hover {
          background: ${props => setLightness(props.theme.black, 4)};
+      }
+      svg {
+         height: ${props => props.theme.bigText};
+         &.x {
+            transform: rotate(45deg);
+         }
       }
    }
 `;
@@ -135,10 +144,12 @@ const BottomBar = () => {
                );
             }}
          >
-            S
+            <SearchIcon color="mainText" />
          </div>
          <Link href="/">
-            <div className="bottomBarButton">H</div>
+            <div className="bottomBarButton">
+               <HomeIcon />
+            </div>
          </Link>
          <div
             className="bottomBarButton"
@@ -154,7 +165,7 @@ const BottomBar = () => {
                );
             }}
          >
-            +
+            <X color="mainText" rotation={45} />
          </div>
       </StyledBottomBar>
    );
