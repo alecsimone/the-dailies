@@ -13,6 +13,8 @@ import CategoryDropdown from './CategoryDropdown';
 import PrivacyDropdown from './PrivacyDropdown';
 import ThingSourceLink from './ThingSourceLink';
 import TrashIcon from '../Icons/Trash';
+import { ALL_THINGS_QUERY } from '../../pages';
+import { PUBLIC_THINGS_QUERY } from '../Archives/PublicThings';
 
 const DELETE_THING_MUTATION = gql`
    mutation DELETE_THING_MUTATION($id: ID!) {
@@ -64,21 +66,6 @@ const StyledThingMeta = styled.section`
       border-top: none;
       border-right: none;
       border-left: none;
-      /* The background value is a uri encoded version of Dropdown.svg, with the theme value interpolated and encoded as well  */
-      background: url(${props =>
-            `data:image/svg+xml;charset=UTF-8,%3Csvg%20id%3D%22ac8a07ef-417f-4921-8ef8-8b93f553bed2%22%20data-name%3D%22Layer%201%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20200%20200%22%3E%3Crect%20x%3D%2270.35%22%20y%3D%2267.57%22%20width%3D%2218%22%20height%3D%2276.37%22%20transform%3D%22translate%28-51.54%2087.08%29%20rotate%28-45%29%22%20fill%3D%22${encodeURIComponent(
-               props.theme.lowContrastGrey
-            )
-               .replace('(', '%28')
-               .replace(
-                  ')',
-                  '%29'
-               )}%22%2F%3E%3Crect%20x%3D%22111.63%22%20y%3D%2267.57%22%20width%3D%2218%22%20height%3D%2276.37%22%20transform%3D%22translate%28131.15%20265.82%29%20rotate%28-135%29%22%20fill%3D%22${encodeURIComponent(
-               props.theme.lowContrastGrey
-            )
-               .replace('(', '%28')
-               .replace(')', '%29')}%22%2F%3E%3C%2Fsvg%3E`})
-         no-repeat right;
       appearance: none;
       padding-right: 30px;
    }
@@ -188,7 +175,11 @@ const ThingMeta = props => {
             Router.push({
                pathname: '/'
             });
-         }
+         },
+         refetchQueries: [
+            { query: ALL_THINGS_QUERY },
+            { query: PUBLIC_THINGS_QUERY }
+         ]
       }
    );
 

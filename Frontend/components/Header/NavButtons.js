@@ -8,6 +8,8 @@ import { NEW_BLANK_THING } from '../../pages/new';
 import { setAlpha, setLightness, setSaturation } from '../../styles/functions';
 import X from '../Icons/X';
 import SearchIcon from '../Icons/Search';
+import { ALL_THINGS_QUERY } from '../../pages';
+import { PUBLIC_THINGS_QUERY } from '../Archives/PublicThings';
 
 const StyledNav = styled.nav`
    display: flex;
@@ -98,7 +100,11 @@ const NavButtons = ({ showSearch, setShowSearch }) => {
          });
          const newPostButton = document.querySelector('.newPost');
          newPostButton.classList.remove('loading');
-      }
+      },
+      refetchQueries: [
+         { query: ALL_THINGS_QUERY },
+         { query: PUBLIC_THINGS_QUERY }
+      ]
    });
    const { lowContrastGrey } = useContext(ThemeContext);
    return (

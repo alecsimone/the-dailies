@@ -12,6 +12,7 @@ const PUBLIC_THINGS_QUERY = gql`
       }
    }
 `;
+export { PUBLIC_THINGS_QUERY };
 
 const PublicThings = ({ displayType = 'list' }) => {
    const { data, error, loading } = useQuery(PUBLIC_THINGS_QUERY, {
