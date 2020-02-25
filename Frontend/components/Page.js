@@ -155,6 +155,7 @@ const GlobalStyle = createGlobalStyle`
       color: ${theme.mainText};
       padding: .25rem;
       font-size: ${theme.smallText};
+      appearance: none;
       /* The background value is a uri encoded version of Dropdown.svg, with the theme value interpolated and encoded as well  */
       background: url(${props =>
          `data:image/svg+xml;charset=UTF-8,%3Csvg%20id%3D%22ac8a07ef-417f-4921-8ef8-8b93f553bed2%22%20data-name%3D%22Layer%201%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20200%20200%22%3E%3Crect%20x%3D%2270.35%22%20y%3D%2267.57%22%20width%3D%2218%22%20height%3D%2276.37%22%20transform%3D%22translate%28-51.54%2087.08%29%20rotate%28-45%29%22%20fill%3D%22${encodeURIComponent(
