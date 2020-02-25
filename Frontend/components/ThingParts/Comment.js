@@ -109,7 +109,8 @@ const StyledComment = styled.div`
          display: flex;
          align-items: flex-start;
          flex-grow: 1;
-         img.avatar {
+         img.avatar,
+         svg.avatar {
             width: 4rem;
             min-width: 4rem;
             height: 4rem;
