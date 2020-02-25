@@ -30,6 +30,10 @@ type AggregateThing {
   count: Int!
 }
 
+type AggregateTweet {
+  count: Int!
+}
+
 type AggregateVote {
   count: Int!
 }
@@ -1058,6 +1062,8 @@ input ContentPieceWhereUniqueInput {
 }
 
 scalar DateTime
+
+scalar Json
 
 scalar Long
 
@@ -2778,6 +2784,12 @@ type Mutation {
   upsertThing(where: ThingWhereUniqueInput!, create: ThingCreateInput!, update: ThingUpdateInput!): Thing!
   deleteThing(where: ThingWhereUniqueInput!): Thing
   deleteManyThings(where: ThingWhereInput): BatchPayload!
+  createTweet(data: TweetCreateInput!): Tweet!
+  updateTweet(data: TweetUpdateInput!, where: TweetWhereUniqueInput!): Tweet
+  updateManyTweets(data: TweetUpdateManyMutationInput!, where: TweetWhereInput): BatchPayload!
+  upsertTweet(where: TweetWhereUniqueInput!, create: TweetCreateInput!, update: TweetUpdateInput!): Tweet!
+  deleteTweet(where: TweetWhereUniqueInput!): Tweet
+  deleteManyTweets(where: TweetWhereInput): BatchPayload!
   createVote(data: VoteCreateInput!): Vote!
   updateVote(data: VoteUpdateInput!, where: VoteWhereUniqueInput!): Vote
   updateManyVotes(data: VoteUpdateManyMutationInput!, where: VoteWhereInput): BatchPayload!
@@ -3267,6 +3279,9 @@ type Query {
   thing(where: ThingWhereUniqueInput!): Thing
   things(where: ThingWhereInput, orderBy: ThingOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Thing]!
   thingsConnection(where: ThingWhereInput, orderBy: ThingOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ThingConnection!
+  tweet(where: TweetWhereUniqueInput!): Tweet
+  tweets(where: TweetWhereInput, orderBy: TweetOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Tweet]!
+  tweetsConnection(where: TweetWhereInput, orderBy: TweetOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): TweetConnection!
   vote(where: VoteWhereUniqueInput!): Vote
   votes(where: VoteWhereInput, orderBy: VoteOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Vote]!
   votesConnection(where: VoteWhereInput, orderBy: VoteOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): VoteConnection!
@@ -3290,6 +3305,7 @@ type Subscription {
   pass(where: PassSubscriptionWhereInput): PassSubscriptionPayload
   tag(where: TagSubscriptionWhereInput): TagSubscriptionPayload
   thing(where: ThingSubscriptionWhereInput): ThingSubscriptionPayload
+  tweet(where: TweetSubscriptionWhereInput): TweetSubscriptionPayload
   vote(where: VoteSubscriptionWhereInput): VoteSubscriptionPayload
 }
 
@@ -4588,6 +4604,111 @@ input ThingWhereInput {
 
 input ThingWhereUniqueInput {
   id: ID
+}
+
+type Tweet {
+  localID: ID!
+  id_str: String!
+  tweetJson: Json!
+}
+
+type TweetConnection {
+  pageInfo: PageInfo!
+  edges: [TweetEdge]!
+  aggregate: AggregateTweet!
+}
+
+input TweetCreateInput {
+  localID: ID
+  id_str: String!
+  tweetJson: Json!
+}
+
+type TweetEdge {
+  node: Tweet!
+  cursor: String!
+}
+
+enum TweetOrderByInput {
+  localID_ASC
+  localID_DESC
+  id_str_ASC
+  id_str_DESC
+  tweetJson_ASC
+  tweetJson_DESC
+}
+
+type TweetPreviousValues {
+  localID: ID!
+  id_str: String!
+  tweetJson: Json!
+}
+
+type TweetSubscriptionPayload {
+  mutation: MutationType!
+  node: Tweet
+  updatedFields: [String!]
+  previousValues: TweetPreviousValues
+}
+
+input TweetSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: TweetWhereInput
+  AND: [TweetSubscriptionWhereInput!]
+  OR: [TweetSubscriptionWhereInput!]
+  NOT: [TweetSubscriptionWhereInput!]
+}
+
+input TweetUpdateInput {
+  id_str: String
+  tweetJson: Json
+}
+
+input TweetUpdateManyMutationInput {
+  id_str: String
+  tweetJson: Json
+}
+
+input TweetWhereInput {
+  localID: ID
+  localID_not: ID
+  localID_in: [ID!]
+  localID_not_in: [ID!]
+  localID_lt: ID
+  localID_lte: ID
+  localID_gt: ID
+  localID_gte: ID
+  localID_contains: ID
+  localID_not_contains: ID
+  localID_starts_with: ID
+  localID_not_starts_with: ID
+  localID_ends_with: ID
+  localID_not_ends_with: ID
+  id_str: String
+  id_str_not: String
+  id_str_in: [String!]
+  id_str_not_in: [String!]
+  id_str_lt: String
+  id_str_lte: String
+  id_str_gt: String
+  id_str_gte: String
+  id_str_contains: String
+  id_str_not_contains: String
+  id_str_starts_with: String
+  id_str_not_starts_with: String
+  id_str_ends_with: String
+  id_str_not_ends_with: String
+  AND: [TweetWhereInput!]
+  OR: [TweetWhereInput!]
+  NOT: [TweetWhereInput!]
+}
+
+input TweetWhereUniqueInput {
+  localID: ID
+  id_str: String
 }
 
 type Vote {

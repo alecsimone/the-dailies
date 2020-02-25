@@ -30,6 +30,7 @@ const TweetGetter = props => {
    if (tweet.errors) {
       return <ErrorMessage error={{ message: tweet.errors[0].message }} />;
    }
+
    return (
       <div className="quoteTweetContainer" key={tweet.id_str}>
          <h5>

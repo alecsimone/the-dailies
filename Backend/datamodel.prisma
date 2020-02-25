@@ -130,6 +130,12 @@ type Notification {
    linkQuery: String
 }
 
+type Tweet {
+   localID: ID! @id @unique
+   id_str: String! @unique
+   tweetJson: Json!
+}
+
 enum Role {
   Admin
   Editor

@@ -312,6 +312,17 @@ const fetchHomeTweets = async (userID, token, tokenSecret, sinceID) => {
 exports.fetchHomeTweets = fetchHomeTweets;
 
 const fetchTweet = async (tweetID, ctx) => {
+   const cachedTweet = await ctx.db.query.tweet(
+      {
+         where: {
+            id_str: tweetID
+         }
+      },
+      `{tweetJson}`
+   );
+   if (cachedTweet) {
+      return cachedTweet.tweetJson;
+   }
    let twitterUserToken;
    let twitterUserTokenSecret;
    if (ctx.req.memberId != null) {
@@ -353,6 +364,12 @@ const fetchTweet = async (tweetID, ctx) => {
       }
    });
    const tweetJson = await tweet.json();
+   ctx.db.mutation.createTweet({
+      data: {
+         id_str: tweetJson.id_str,
+         tweetJson
+      }
+   });
    return tweetJson;
 };
 exports.fetchTweet = fetchTweet;
