@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useContext } from 'react';
 import { setLightness, setAlpha } from '../styles/functions';
 import { MemberContext } from './Account/MemberProvider';
+import DefaultAvatar from './Icons/DefaultAvatar';
 
 const StyledMemberCard = styled.article`
    background: ${props => props.theme.black};
@@ -18,7 +19,8 @@ const StyledMemberCard = styled.article`
    min-width: 30rem;
    .cardLeft {
       line-height: 0;
-      img.avatar {
+      img.avatar,
+      svg.avatar {
          border-radius: 100%;
          width: 6rem;
       }
@@ -63,11 +65,11 @@ const MemberCard = props => {
    return (
       <StyledMemberCard>
          <div className="cardLeft">
-            <img
-               src={member.avatar ? member.avatar : '/defaultAvatar.jpg'}
-               className="avatar"
-               alt="avatar"
-            />
+            {member.avatar ? (
+               <img src={member.avatar} className="avatar" alt="avatar" />
+            ) : (
+               <DefaultAvatar className="avatar" />
+            )}
          </div>
          <div className="cardRight">
             <div className="name">

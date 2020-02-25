@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import PropTypes from 'prop-types';
+import DefaultAvatar from '../Icons/DefaultAvatar';
 
 const AuthorLink = ({ author, noPic }) => {
    if (author == null) {
@@ -8,16 +9,12 @@ const AuthorLink = ({ author, noPic }) => {
    return (
       <Link href={{ pathname: '/member', query: { id: author.id } }}>
          <div className="authorBlock">
-            {!noPic && (
-               <img
-                  className="authorImg"
-                  src={
-                     author.avatar == null
-                        ? '/defaultAvatar.jpg'
-                        : author.avatar
-                  }
-               />
-            )}
+            {!noPic &&
+               (author.avatar == null ? (
+                  <DefaultAvatar className="authorImg" />
+               ) : (
+                  <img className="authorImg" src={author.avatar} />
+               ))}
             <a className="authorLink">{author.displayName}</a>
          </div>
       </Link>

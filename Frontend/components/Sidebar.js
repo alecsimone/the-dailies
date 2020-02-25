@@ -9,6 +9,7 @@ import PublicThings from './Archives/PublicThings';
 import LoadingRing from './LoadingRing';
 import ArrowIcon from './Icons/Arrow';
 import SidebarHeaderIcon from './Icons/SidebarHeaderIcon';
+import DefaultAvatar from './Icons/DefaultAvatar';
 
 const Sidebar = props => {
    const { extraColumnTitle, extraColumnContent } = props;
@@ -46,10 +47,10 @@ const Sidebar = props => {
             me && me.avatar != null ? (
                <img src={me.avatar} alt={column} title={column} />
             ) : (
-               <img src="/defaultAvatar.jpg" alt={column} title={column} />
+               <DefaultAvatar />
             );
       } else if (column === 'Member') {
-         icon = <img src="/defaultAvatar.jpg" alt={column} title={column} />;
+         icon = <DefaultAvatar />;
       } else {
          icon = <SidebarHeaderIcon icon={column} />;
       }

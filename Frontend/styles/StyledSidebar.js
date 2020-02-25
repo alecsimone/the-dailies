@@ -69,7 +69,9 @@ const StyledSidebar = styled.section`
             }
          }
          &.Me img,
-         &.Member img {
+         &.Me svg,
+         &.Member img,
+         &.Member svg {
             border-radius: 100%;
          }
       }

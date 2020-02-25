@@ -11,6 +11,7 @@ import { setAlpha } from '../../styles/functions';
 import { convertISOtoAgo, pxToInt } from '../../lib/ThingHandling';
 import EditThis from '../Icons/EditThis';
 import X from '../Icons/X';
+import DefaultAvatar from '../Icons/DefaultAvatar';
 
 const DELETE_COMMENT_MUTATION = gql`
    mutation DELETE_COMMENT_MUTATION(
@@ -196,15 +197,15 @@ const Comment = ({ comment, comments, type, id }) => {
       <StyledComment>
          <div className="commentContent">
             <div className="commentLeft">
-               <img
-                  className="avatar"
-                  src={
-                     comment.author.avatar
-                        ? comment.author.avatar
-                        : '/defaultAvatar.jpg'
-                  }
-                  alt="avatar"
-               />
+               {comment.author.avatar != null ? (
+                  <img
+                     className="avatar"
+                     src={comment.author.avatar}
+                     alt="avatar"
+                  />
+               ) : (
+                  <DefaultAvatar className="avatar" />
+               )}
                <div className="commentAndAuthorContainer">
                   {!editing && (
                      <Link

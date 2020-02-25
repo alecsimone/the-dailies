@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { MemberContext } from '../Account/MemberProvider';
 import MemberMenu from './MemberMenu';
 import { setAlpha } from '../../styles/functions';
+import DefaultAvatar from '../Icons/DefaultAvatar';
 
 const StyledMemberBox = styled.div`
    color: ${props => props.theme.secondaryAccent};
@@ -24,7 +25,8 @@ const StyledMemberBox = styled.div`
       cursor: pointer;
       z-index: 3;
    }
-   img {
+   img,
+   svg {
       z-index: 3;
       width: ${props => props.theme.smallHead};
       height: ${props => props.theme.smallHead};
@@ -75,12 +77,16 @@ const MemberBox = () => {
                   [{me.rep}] {me.displayName}
                </a>
             </Link>
-            <img
-               src={me.avatar != null ? me.avatar : '/defaultAvatar.jpg'}
-               alt="avatar"
-               id="avatar"
-               onClick={() => toggleMemberMenu()}
-            />
+            {me.avatar != null ? (
+               <img
+                  src={me.avatar}
+                  alt="avatar"
+                  id="avatar"
+                  onClick={() => toggleMemberMenu()}
+               />
+            ) : (
+               <DefaultAvatar id="avatar" onClick={() => toggleMemberMenu()} />
+            )}
             {memberMenuOpen && <MemberMenu />}
          </>
       );
@@ -88,12 +94,7 @@ const MemberBox = () => {
       memberBoxContent = (
          <>
             <a>Logging in...</a>
-            <img
-               src="/defaultAvatar.jpg"
-               alt="avatar"
-               id="avatar"
-               onClick={() => toggleMemberMenu()}
-            />
+            <DefaultAvatar id="avatar" onClick={() => toggleMemberMenu()} />
          </>
       );
    } else {

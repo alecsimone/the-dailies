@@ -4,6 +4,7 @@ import { useState } from 'react';
 import FriendRequest from '../Profile/FriendRequest';
 import X from '../Icons/X';
 import { setAlpha, setLightness } from '../../styles/functions';
+import DefaultAvatar from '../Icons/DefaultAvatar';
 
 const StyledNotificationCard = styled.div`
    background: ${props => setLightness(props.theme.black, 1)};
@@ -28,7 +29,8 @@ const StyledNotificationCard = styled.div`
    }
    .cardLeft {
       flex-grow: 0;
-      img {
+      img,
+      svg {
          width: 6rem;
          height: 6rem;
          border-radius: 100%;
@@ -100,13 +102,11 @@ const NotificationCard = ({ notification }) => {
             className={`notificationCard ${startedUnread ? 'unread' : 'read'}`}
          >
             <div className="cardLeft">
-               <img
-                  src={
-                     initiator.avatar != null
-                        ? initiator.avatar
-                        : '/defaultAvatar.jpg'
-                  }
-               />
+               {initiator.avatar != null ? (
+                  <img src={initiator.avatar} />
+               ) : (
+                  <DefaultAvatar />
+               )}
             </div>
             <div className="cardMiddle">{message}</div>
             <div className="cardRight">
