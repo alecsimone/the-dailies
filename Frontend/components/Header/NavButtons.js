@@ -15,10 +15,6 @@ const StyledNav = styled.nav`
    flex-grow: 1;
    a {
       line-height: 0;
-      .loading {
-         background: blue;
-         ${props => props.theme.spin};
-      }
       img, svg {
          width: ${props => props.theme.bigText};
          cursor: pointer;
@@ -32,6 +28,9 @@ const StyledNav = styled.nav`
          }
          &.newPost {
             transform: rotate(45deg);
+            &.loading {
+               ${props => props.theme.spin};
+            }
          }
       }
    }
@@ -109,8 +108,9 @@ const NavButtons = ({ showSearch, setShowSearch }) => {
             id="newPostButton"
             onClick={e => {
                e.preventDefault();
-               if (!e.target.classList.contains('loading')) {
-                  e.target.classList.add('loading');
+               const plusIcon = e.target.parentNode;
+               if (!plusIcon.classList.contains('loading')) {
+                  plusIcon.classList.add('loading');
                   newBlankThing();
                }
             }}
