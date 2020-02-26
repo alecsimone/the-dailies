@@ -75,7 +75,8 @@ const StyledProfileSidebar = styled.div`
                opacity: 0.9;
             }
          }
-         img.avatar {
+         img.avatar,
+         svg.avatar {
             display: block;
             width: 30rem;
             height: 30rem;
