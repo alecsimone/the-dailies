@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { useState, useEffect } from 'react';
+import Router from 'next/router';
 import Things from '../Archives/Things';
 import MemberCard from '../MemberCard';
 import { setAlpha } from '../../styles/functions';
@@ -46,13 +47,14 @@ const StyledProfileContent = styled.div`
 `;
 
 const ProfileContent = ({ member, isMe, defaultTab }) => {
+   console.log(defaultTab);
    const [selectedTab, setSelectedTab] = useState(defaultTab || 'Things');
 
    /* eslint-disable react-hooks/exhaustive-deps */
    // We need to make our container switch to the Things tab when we route to a new member, but eslint doesn't let you use a dependency for an effect that isn't referenced in the effect. I can't find any reason why that is or any better way of doing it, so I'm just turning off that rule for a minute.
    useEffect(() => {
       setSelectedTab(defaultTab || 'Things');
-   }, [member.id, member.displayName]);
+   }, [member.id, member.displayName, defaultTab]);
    /* eslint-enable */
 
    const selectorTabsArray = ['Things', 'Likes', 'Friends'];
@@ -61,7 +63,22 @@ const ProfileContent = ({ member, isMe, defaultTab }) => {
          {selectorTabsArray.map(tab => (
             <div
                className={selectedTab === tab ? 'tab selected' : 'tab'}
-               onClick={() => setSelectedTab(tab)}
+               onClick={() => {
+                  // const href = `/me?stuff=${tab}`;
+                  // const as = href;
+                  // Router.replace(href, as, { shallow: true });
+                  // setSelectedTab(tab);
+                  const query = {
+                     stuff: tab
+                  };
+                  if (!isMe) {
+                     query.id = member.id;
+                  }
+                  Router.push({
+                     pathname: isMe ? '/me' : '/member',
+                     query
+                  });
+               }}
             >
                {tab}
             </div>

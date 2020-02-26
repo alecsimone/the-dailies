@@ -67,7 +67,13 @@ const member = ({ query }) => {
             canEdit = true;
          }
 
-         content = <ProfileContent member={data.member} isMe={isMe} />;
+         content = (
+            <ProfileContent
+               member={data.member}
+               isMe={isMe}
+               defaultTab={query.stuff}
+            />
+         );
          sidebar = (
             <Sidebar
                extraColumnContent={
