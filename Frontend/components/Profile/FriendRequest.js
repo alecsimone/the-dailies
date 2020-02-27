@@ -65,56 +65,59 @@ const FriendRequest = ({ requester }) => {
 
    const [confirmFriendRequest] = useMutation(CONFIRM_FRIEND_REQUEST_MUTATION);
 
+   let alreadyFriends = false;
    if (me.friends.some(friend => friend.id === requester.id)) {
-      return null;
+      alreadyFriends = true;
    }
    return (
       <StyledFriendRequest className="friendRequest">
          <MemberCard member={requester} />
-         <div className="requestOptions">
-            <X
-               className="requestOption confirm"
-               color="primaryAccent"
-               onClick={e => {
-                  const newFriendRequests = me.friendRequests.filter(
-                     oldRequester => oldRequester.id !== requester.id
-                  );
-                  confirmFriendRequest({
-                     variables: {
-                        id: requester.id
-                     },
-                     optimisticResponse: {
-                        confirmFriendRequest: {
-                           ...me,
-                           friendRequests: newFriendRequests
+         {!alreadyFriends && (
+            <div className="requestOptions">
+               <X
+                  className="requestOption confirm"
+                  color="primaryAccent"
+                  onClick={e => {
+                     const newFriendRequests = me.friendRequests.filter(
+                        oldRequester => oldRequester.id !== requester.id
+                     );
+                     confirmFriendRequest({
+                        variables: {
+                           id: requester.id
+                        },
+                        optimisticResponse: {
+                           confirmFriendRequest: {
+                              ...me,
+                              friendRequests: newFriendRequests
+                           }
                         }
-                     }
-                  });
-               }}
-            />
-            <X
-               className="requestOption"
-               onClick={() =>
-                  ignoreFriendRequest({
-                     variables: {
-                        id: requester.id
-                     },
-                     optimisticResponse: {
-                        ignoreFriendRequest: {
-                           ...me,
-                           ignoredFriendRequests: [
-                              ...me.ignoredFriendRequests,
-                              {
-                                 __typename: 'Member',
-                                 ...requester
-                              }
-                           ]
+                     });
+                  }}
+               />
+               <X
+                  className="requestOption"
+                  onClick={() =>
+                     ignoreFriendRequest({
+                        variables: {
+                           id: requester.id
+                        },
+                        optimisticResponse: {
+                           ignoreFriendRequest: {
+                              ...me,
+                              ignoredFriendRequests: [
+                                 ...me.ignoredFriendRequests,
+                                 {
+                                    __typename: 'Member',
+                                    ...requester
+                                 }
+                              ]
+                           }
                         }
-                     }
-                  })
-               }
-            />
-         </div>
+                     })
+                  }
+               />
+            </div>
+         )}
       </StyledFriendRequest>
    );
 };

@@ -301,7 +301,6 @@ async function ignoreFriendRequest(parent, { id }, ctx, info) {
 exports.ignoreFriendRequest = ignoreFriendRequest;
 
 async function readNotifications(parent, { ids }, ctx, info) {
-   console.log(ids);
    loggedInGate(ctx);
    fullMemberGate(ctx.req.member);
 

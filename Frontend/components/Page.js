@@ -20,7 +20,6 @@ const theme = {
    majorColor: 'hsl(210, 100%, 40%)',
    primaryAccent: 'hsl(120, 100%, 25%)',
    secondaryAccent: 'hsl(42, 79%, 64%)',
-   // warning: 'hsl(0, 80%, 40%)',
    warning: 'hsl(0, 75%, 50%)',
 
    lowContrastGrey: 'hsl(210, 10%, 30%)',

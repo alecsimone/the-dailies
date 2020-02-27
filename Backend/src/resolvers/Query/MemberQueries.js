@@ -44,7 +44,6 @@ async function member(parent, { id, displayName }, ctx, info) {
       },
       info
    );
-   console.log(member);
 
    if (member && member.createdThings && member.createdThings.length > 0) {
       member.createdThings = member.createdThings.filter(thing =>

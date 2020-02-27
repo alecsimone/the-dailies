@@ -39,8 +39,6 @@ async function finishTwitterLogin(parent, { token, verifier }, ctx, info) {
             return;
          }
 
-         console.log(user);
-
          const encryptedTokenSecret = cipherString(user.userTokenSecret);
 
          await ctx.db.mutation.updateMember({

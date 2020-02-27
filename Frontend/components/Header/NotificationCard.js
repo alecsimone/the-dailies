@@ -42,7 +42,7 @@ const StyledNotificationCard = styled.div`
    }
    .cardRight {
       flex-grow: 0;
-      padding-right: 1rem;
+      padding: 0 1rem;
       svg {
          width: 2rem;
          height: 2rem;
@@ -109,9 +109,6 @@ const NotificationCard = ({ notification }) => {
                )}
             </div>
             <div className="cardMiddle">{message}</div>
-            <div className="cardRight">
-               <X className="markSeenButton" />
-            </div>
          </StyledNotificationCard>
       </Link>
    );
