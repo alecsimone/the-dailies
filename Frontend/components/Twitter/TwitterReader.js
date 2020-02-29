@@ -203,7 +203,7 @@ const TwitterReader = props => {
             Welcome, @
             <a
                className="twitterName"
-               href={`https://twitter.com/${props.userName}`}
+               href={`https://twitter.com/${myTwitterInfo.me.twitterUserName}`}
                target="_blank"
             >
                {myTwitterInfo.me.twitterUserName}
