@@ -15,7 +15,8 @@ const StyledTwitterSidebar = styled.div`
       padding: 0.6rem 1rem;
       border-radius: 3px;
       line-height: 1;
-      &.selected {
+      &.selected,
+      &:hover {
          background: ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
       }
       &.loading {

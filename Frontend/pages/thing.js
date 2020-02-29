@@ -119,7 +119,7 @@ const SingleThing = props => {
                <title>{pageTitle} - OurDailies</title>
             </Head>
             <Sidebar />
-            <div className="mainSection">{content}</div>
+            <div className="mainSection thing">{content}</div>
          </StyledPageWithSidebar>
       </ThingContext.Provider>
    );

@@ -43,6 +43,16 @@ const StyledFullThing = styled.article`
    &.loading .loadingRing {
       display: block;
    }
+   .featuredImage {
+      padding: 3rem 3rem 2rem;
+      ${props => props.theme.mobileBreakpoint} {
+         width: calc(100% + 6rem);
+         margin: 0 -3rem;
+      }
+      background: ${props => props.theme.midBlack};
+      border-bottom: 1px solid
+         ${props => setAlpha(props.theme.lowContrastGrey, 0.4)};
+   }
    .tweet {
       .entities {
          display: grid;
