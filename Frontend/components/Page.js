@@ -37,7 +37,7 @@ const theme = {
    bigScreenBPWidthRaw: 1800,
    bigScreenBreakpoint: '@media screen and (min-width: 1800px)',
 
-   tweetHead: 'hsl(210, 70%, 8%)',
+   tweetHead: 'hsl(30, 1%, 1%)',
 
    scroll: {
       overflowY: 'auto',
@@ -66,7 +66,8 @@ const theme = {
 
 const GlobalStyle = createGlobalStyle`
    html {
-      background: ${setLightness(theme.primaryAccent, 3)};
+      background: ${setLightness(setSaturation(theme.majorColor, 100), 10)};
+      /* background: ${setLightness(theme.primaryAccent, 3)}; */
       color: ${theme.mainText};
       font-family: "Proxima Nova", sans-serif;
       box-sizing: border-box;

@@ -29,7 +29,7 @@ const TwitterLoginFinisher = props => {
       return <ErrorMessage error={error} />;
    }
 
-   if (process.browswer) {
+   if (process.browser) {
       window.location.replace(`${home}/twitter`);
    }
 
