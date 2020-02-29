@@ -64,7 +64,7 @@ const StyledNav = styled.nav`
             padding: 0 1rem;
             transition: all .25s;
             margin-left: 1rem;
-            background: ${props => setLightness(props.theme.black, 1)};
+            background: ${props => props.theme.deepBlack};
             font-size: ${props => props.theme.bigText};
             z-index: 2;
             ${props => props.theme.desktopBreakpoint} {

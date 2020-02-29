@@ -32,7 +32,9 @@ const StyledPageWithSidebar = styled.section`
    .mainSection {
       flex-basis: 100%;
       max-width: 100%;
+      padding: 0;
       ${props => props.theme.mobileBreakpoint} {
+         padding: 2rem 0;
          flex-basis: 60%;
       }
       ${props => props.theme.desktopBreakpoint} {
@@ -43,7 +45,6 @@ const StyledPageWithSidebar = styled.section`
       }
       flex-grow: 1;
       position: relative;
-      padding: 2rem 0;
       ${props => props.theme.mobileBreakpoint} {
          max-height: 100%;
          overflow: hidden;

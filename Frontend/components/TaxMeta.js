@@ -65,7 +65,7 @@ const StyledTaxMeta = styled.div`
             height: 0;
             width: 0;
             border-radius: 3px;
-            border: solid ${props => props.theme.black};
+            border: solid ${props => props.theme.midBlack};
             border-width: 0 3px 3px 0;
             transform: rotate(0deg) scale(0);
             opacity: 1;
@@ -85,7 +85,7 @@ const StyledTaxMeta = styled.div`
             top: 0.25rem;
             width: 6px;
             height: 12px;
-            border: solid ${props => props.theme.black};
+            border: solid ${props => props.theme.midBlack};
             border-width: 0 2px 2px 0;
             background-color: transparent;
             border-radius: 0;

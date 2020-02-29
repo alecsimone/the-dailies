@@ -169,7 +169,7 @@ const Tweet = props => {
    if (quotedTweet != null) {
       quotedTweetContainer.push(
          <div className="quoteTweetContainer" key={quotedTweet.id_str}>
-            <h5>
+            <h5 className="tweetHead">
                <img
                   src={quotedTweet.user.profile_image_url_https}
                   className="quotedTweeterAvatar"
@@ -191,7 +191,7 @@ const Tweet = props => {
    if (retweetedTweet != null) {
       return (
          <div className="tweet retweet">
-            <div className="retweeter">
+            <div className="retweeter tweetHead">
                <img
                   src={retweetedTweet.user.profile_image_url_https}
                   className="retweetedAvatar"

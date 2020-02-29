@@ -56,9 +56,10 @@ const Sidebar = props => {
       }
 
       const isSelected =
-         selectedTab === column ||
-         (selectedTab === 'default' && me && column === 'You') ||
-         (selectedTab === 'default' && me == null && column === 'Public');
+         (selectedTab === column ||
+            (selectedTab === 'default' && me && column === 'You') ||
+            (selectedTab === 'default' && me == null && column === 'Public')) &&
+         isOpen;
 
       return (
          <div

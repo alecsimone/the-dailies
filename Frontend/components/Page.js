@@ -13,17 +13,18 @@ const theme = {
    smallHead: '4rem',
    bigHead: '5rem',
 
-   black: 'hsla(30, 1%, 5%, 1)',
+   deepBlack: 'hsl(30, 1%, 1%)',
+   midBlack: 'hsl(30, 1%, 4%)',
+   lightBlack: 'hsl(210, 20%, 8%)',
+
    mainText: 'hsl(210, 3%, 80%)',
-   background: 'hsl(210, 60%, 3%)',
+   lowContrastGrey: 'hsl(210, 10%, 30%)',
+   highContrastGrey: 'hsl(30, 10%, 60%)',
 
    majorColor: 'hsl(210, 100%, 40%)',
    primaryAccent: 'hsl(120, 100%, 25%)',
    secondaryAccent: 'hsl(42, 79%, 64%)',
    warning: 'hsl(0, 75%, 50%)',
-
-   lowContrastGrey: 'hsl(210, 10%, 30%)',
-   highContrastGrey: 'hsl(30, 10%, 60%)',
 
    mobileBPWidth: '600px',
    mobileBPWidthRaw: 600,
@@ -50,7 +51,7 @@ const theme = {
    scroll: {
       overflowY: 'auto',
       scrollbarWidth: 'thin',
-      scrollbarColor: 'hsl(210, 10%, 30%) hsla(345, 25%, 2%, 1)'
+      scrollbarColor: 'hsl(210, 10%, 30%) hsl(30, 1%, 4%)'
    },
    spin: {
       animationName: 'spin',
@@ -101,16 +102,16 @@ const GlobalStyle = createGlobalStyle`
       line-height: 1.6;
       font-weight: 400;
    }
-   body::-webkit-scrollbar {
+   *::-webkit-scrollbar {
       width: .5rem;
-      background: ${theme.background};
+      background: ${theme.midBlack};
    }
-   body::-webkit-scrollbar-track {
-      box-shadow: inset 0 0 1px rgba(0,0,0,0.3);
+   *::-webkit-scrollbar-track {
+      box-shadow: inset 0 0 1px ${theme.deepBlack};
    }
-   body::-webkit-scrollbar-thumb {
+   *::-webkit-scrollbar-thumb {
       border-radius: 3px;
-      box-shadow: inset 0 0 1px rgba(0,0,0,0.5);
+      box-shadow: inset 0 0 1px ${theme.deepBlack};
       background: ${theme.lowContrastGrey};
    }
    p, .explodingLinkGraph, .embed-container {
@@ -183,7 +184,7 @@ const GlobalStyle = createGlobalStyle`
             .replace(')', '%29')}%22%2F%3E%3C%2Fsvg%3E`})
          no-repeat right;
       option {
-         background: ${theme.background};
+         background: ${theme.deepBlack};
          &:focus {
             background: red;
          }
@@ -244,6 +245,14 @@ const GlobalStyle = createGlobalStyle`
          transform: rotateY(0deg);
       }
    }
+   .tweetHead {
+         display: flex;
+         align-items: center;
+         background: ${props => props.theme.deepBlack};
+         padding: 1rem 0rem;
+         border-bottom: 1px solid
+               ${props => setLightness(props.theme.lowContrastGrey, 15)};
+      }
    .tweet {
       margin: 3rem 0;
       &.threaded {
@@ -278,7 +287,7 @@ const GlobalStyle = createGlobalStyle`
       padding: 0 1.5rem 2rem 1.5rem;
       border: 1px solid ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
       border-radius: 3px;
-      background: ${props => props.theme.black};
+      background: ${props => props.theme.midBlack};
       .repliedToTweet {
          margin-top: 0;
          .quoteTweetContainer {
@@ -298,13 +307,7 @@ const GlobalStyle = createGlobalStyle`
       }
       &.retweet {
          .retweeter {
-            display: flex;
-            align-items: center;
             margin: 0 -1.5rem 1rem -1.5rem;
-            padding: 2rem 1rem;
-            background: ${props => props.theme.tweetHead};
-            border-bottom: 1px solid
-                  ${props => setLightness(props.theme.lowContrastGrey, 15)};
             a.retweetLink {
                color: ${props => props.theme.mainText};
                font-weight: 600;
@@ -313,7 +316,7 @@ const GlobalStyle = createGlobalStyle`
                border-radius: 50%;
                width: ${props => props.theme.smallHead};
                height: auto;
-               margin-right: 1rem;
+               margin: 0 1rem;
             }
          }
          .repliedToTweet {
@@ -354,13 +357,7 @@ const GlobalStyle = createGlobalStyle`
             a:visited {
                color: ${props => props.theme.mainText};
             }
-            display: flex;
-            align-items: center;
-            background: ${props => props.theme.tweetHead};
             margin: 0;
-            padding: 1rem 0;
-            border-bottom: 1px solid
-                  ${props => setLightness(props.theme.lowContrastGrey, 15)};
             border-radius: 3px 3px 0 0;
          }
          img.quotedTweeterAvatar {
@@ -389,6 +386,9 @@ const GlobalStyle = createGlobalStyle`
             height: auto;
             margin: 1rem 0;
          }
+      img {
+         max-width: 100%;
+      }
       .tweetMeta {
          margin-top: 1rem;
          color: ${props =>

@@ -7,7 +7,7 @@ import { setAlpha, setLightness } from '../../styles/functions';
 import DefaultAvatar from '../Icons/DefaultAvatar';
 
 const StyledNotificationCard = styled.div`
-   background: ${props => setLightness(props.theme.black, 1)};
+   background: ${props => props.theme.deepBlack};
    display: flex;
    &.friendRequestNotification {
       flex-wrap: wrap;
@@ -25,7 +25,7 @@ const StyledNotificationCard = styled.div`
    }
    cursor: pointer;
    &.unread {
-      background: ${props => props.theme.black};
+      background: ${props => props.theme.midBlack};
    }
    .cardLeft {
       flex-grow: 0;

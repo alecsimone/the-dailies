@@ -25,7 +25,7 @@ const StyledHeader = styled.div`
    grid-column: -1 / 1;
    border-bottom: 3px solid
       ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
-   background: ${props => setLightness(props.theme.black, 1)};
+   background: ${props => props.theme.deepBlack};
    padding: 0.5rem 0;
    .headerContents {
       display: grid;

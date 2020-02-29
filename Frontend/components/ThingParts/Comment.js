@@ -97,7 +97,7 @@ const EDIT_COMMENT_MUTATION = gql`
 
 const StyledComment = styled.div`
    margin: 2rem 0;
-   background: ${props => props.theme.black};
+   background: ${props => props.theme.midBlack};
    border: 1px solid ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
    padding: 2rem;
    border-radius: 3px;

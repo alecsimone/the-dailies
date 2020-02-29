@@ -9,15 +9,20 @@ import CommentInput from './CommentInput';
 import { SINGLE_THING_QUERY } from '../../pages/thing';
 import { SINGLE_TAG_QUERY } from '../../pages/tag';
 import { SINGLE_CATEGORY_QUERY } from '../../pages/category';
+import { setAlpha } from '../../styles/functions';
 
 const StyledComments = styled.section`
-   padding: 0 1rem;
+   padding: 1rem;
+   background: ${props => props.theme.midBlack};
    ${props => props.theme.mobileBreakpoint} {
-      padding: 0;
+      padding: 1rem 2rem;
+      border: 1px solid ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
+      border-radius: 0.5rem;
    }
    header {
       text-align: center;
       margin: 3rem 0;
+      margin-top: 1rem;
       font-weight: 600;
       font-size: ${props => props.theme.bigText};
    }

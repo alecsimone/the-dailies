@@ -12,10 +12,10 @@ import AuthorLink from '../ThingParts/AuthorLink';
 const StyledThingCard = styled.div`
    width: 100%;
    padding: 2rem;
-   background: ${props => setLightness(props.theme.black, 1)};
+   background: ${props => props.theme.deepBlack};
    border: 2px solid ${props => setAlpha(props.theme.lowContrastGrey, 0.15)};
    box-shadow: 0 4px 4px
-      ${props => setAlpha(setLightness(props.theme.black, 1), 0.2)};
+      ${props => setAlpha(props.theme.deepBlack, 0.2)};
    border-top: 0.5rem solid ${props => props.theme.majorColor};
    ${props => props.theme.mobileBreakpoint} {
       border-radius: 3px;
@@ -91,7 +91,7 @@ const StyledThingCard = styled.div`
       padding: 2rem 0.5rem;
       border-radius: 3px;
       opacity: .9;
-      background: ${props => props.theme.black};
+      background: ${props => props.theme.midBlack};
    }
    .tags {
       margin-top: 2rem;

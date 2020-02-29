@@ -26,7 +26,7 @@ const StyledBottomBar = styled.section`
       top: calc(-8rem - 2px);
       left: 0;
       padding: 0 1.5rem;
-      background: ${props => props.theme.black};
+      background: ${props => props.theme.midBlack};
       transition: all 0.1s;
       z-index: 2;
       &.hidden {
@@ -51,7 +51,7 @@ const StyledBottomBar = styled.section`
       text-align: center;
       font-weight: 700;
       font-size: ${props => props.theme.bigText};
-      background: ${props => setLightness(props.theme.black, 1)};
+      background: ${props => props.theme.deepBlack};
       line-height: 1;
       cursor: pointer;
       border-right: 2px solid
@@ -59,9 +59,6 @@ const StyledBottomBar = styled.section`
       z-index: 3;
       &:last-child {
          border-right: none;
-      }
-      &:hover {
-         background: ${props => setLightness(props.theme.black, 4)};
       }
       svg {
          height: ${props => props.theme.bigText};

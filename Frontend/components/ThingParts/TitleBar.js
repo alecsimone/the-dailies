@@ -31,7 +31,7 @@ const StyledTitleBar = styled.div`
       color: ${props => setAlpha(props.theme.mainText, 1)};
       padding: 0;
       margin: 0;
-      line-height: 1.1;
+      line-height: 1.4;
       width: 100%;
       border: none;
    }

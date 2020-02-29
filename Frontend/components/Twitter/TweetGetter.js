@@ -33,7 +33,7 @@ const TweetGetter = props => {
 
    return (
       <div className="quoteTweetContainer" key={tweet.id_str}>
-         <h5>
+         <h5 className="tweetHead">
             <img
                src={tweet.user.profile_image_url_https}
                className="quotedTweeterAvatar"

@@ -39,7 +39,7 @@ const StyledProfileSidebar = styled.div`
             width: 30rem;
             top: 0;
             height: 100%;
-            background: ${props => setAlpha(props.theme.black, 0.75)};
+            background: ${props => setAlpha(props.theme.midBlack, 0.75)};
             display: flex;
             align-items: center;
             justify-content: stretch;
@@ -59,7 +59,7 @@ const StyledProfileSidebar = styled.div`
                width: 28rem;
                margin: auto;
                input {
-                  background: ${props => props.theme.black};
+                  background: ${props => props.theme.midBlack};
                   height: 3.5rem;
                   font-size: 1.5rem;
                   flex-grow: 1;

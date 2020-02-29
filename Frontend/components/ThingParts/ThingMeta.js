@@ -31,7 +31,7 @@ const StyledThingMeta = styled.section`
    align-items: center;
    flex-wrap: wrap;
    padding: 0 1rem;
-   margin-top: 3rem;
+   margin-top: 2rem;
    color: ${props => setLightness(props.theme.lowContrastGrey, 40)};
    ${props => props.theme.mobileBreakpoint} {
       padding-left: 1.25rem;

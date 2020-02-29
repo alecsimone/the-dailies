@@ -7,7 +7,7 @@ import { MemberContext } from './Account/MemberProvider';
 import DefaultAvatar from './Icons/DefaultAvatar';
 
 const StyledMemberCard = styled.article`
-   background: ${props => props.theme.black};
+   background: ${props => props.theme.midBlack};
    border: 1px solid ${props => setAlpha(props.theme.highContrastGrey, 0.3)};
    display: flex;
    align-items: center;

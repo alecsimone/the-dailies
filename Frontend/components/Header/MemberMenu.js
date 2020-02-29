@@ -22,7 +22,7 @@ const StyledMemberMenu = styled.div`
    right: -2rem;
    top: calc(100% + 1rem);
    width: 20rem;
-   background: ${props => setLightness(props.theme.black, 1)};
+   background: ${props => props.theme.deepBlack};
    z-index: 2;
    color: ${props => props.theme.mainText};
    font-size: ${props => props.theme.smallText};

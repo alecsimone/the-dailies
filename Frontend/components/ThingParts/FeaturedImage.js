@@ -46,6 +46,14 @@ const StyledFeaturedImage = styled.div`
    line-height: 0;
    width: 100%;
    z-index: 1;
+   padding: 3rem 3rem 2rem;
+   ${props => props.theme.mobileBreakpoint} {
+      width: calc(100% + 6rem);
+      margin: 0 -3rem;
+   }
+   background: ${props => props.theme.midBlack};
+   border-bottom: 1px solid
+      ${props => setAlpha(props.theme.lowContrastGrey, 0.4)};
    img,
    video {
       width: 100%;
@@ -71,9 +79,6 @@ const StyledFeaturedImage = styled.div`
          display: flex;
          align-items: center;
          justify-content: center;
-      }
-      &.full {
-         background: ${props => setAlpha(props.theme.background, 0.8)};
       }
       input#featuredImageInput {
          font-size: ${props => props.theme.smallText};

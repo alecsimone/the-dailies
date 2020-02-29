@@ -45,7 +45,7 @@ const StyledNotifications = styled.div`
       top: calc(100% + 2rem + 2px);
       width: 40rem;
       right: -2rem;
-      background: ${props => setLightness(props.theme.black, 1)};
+      background: ${props => props.theme.deepBlack};
       border: 3px solid ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
       border-top: 3px solid
          ${props => setAlpha(props.theme.lowContrastGrey, 0.15)};
