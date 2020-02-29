@@ -140,7 +140,7 @@ const SmallThingCard = props => {
                   It's{' '}
                   {privacy === 'Public' || privacy === 'Private'
                      ? privacy
-                     : `for ${privacy} only`}
+                     : `for ${privacy}${privacy === 'Friends' ? ' only' : ''}`}
                   .
                </div>
             </div>
