@@ -66,7 +66,7 @@ const theme = {
 
 const GlobalStyle = createGlobalStyle`
    html {
-      background: ${setLightness(setSaturation(theme.majorColor, 100), 10)};
+      background: ${setLightness(setSaturation(theme.majorColor, 90), 9)};
       /* background: ${setLightness(theme.primaryAccent, 3)}; */
       color: ${theme.mainText};
       font-family: "Proxima Nova", sans-serif;
