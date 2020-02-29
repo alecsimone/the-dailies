@@ -33,9 +33,17 @@ const theme = {
    desktopBPWidthRaw: 1100,
    desktopBreakpoint: '@media screen and (min-width: 1100px)',
 
+   midScreenBPWidth: '1440px',
+   midScreenBPWidthRaw: 1440,
+   midScreenBreakpoint: '@media screen and (min-width: 1440px)',
+
    bigScreenBPWidth: '1800px',
    bigScreenBPWidthRaw: 1800,
    bigScreenBreakpoint: '@media screen and (min-width: 1800px)',
+
+   massiveScreenBPWidth: '1921px',
+   massiveScreenBPWidthRaw: 1921,
+   massiveScreenBreakpoint: '@media screen and (min-width: 1921px)',
 
    tweetHead: 'hsl(30, 15%, 2.5%)',
 
@@ -77,6 +85,9 @@ const GlobalStyle = createGlobalStyle`
          font-size: 9px;
       }
       ${props => props.theme.bigScreenBreakpoint} {
+         font-size: 10px;
+      }
+      ${props => props.theme.massiveScreenBreakpoint} {
          font-size: 12px;
       }
    }

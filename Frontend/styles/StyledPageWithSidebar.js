@@ -22,6 +22,9 @@ const StyledPageWithSidebar = styled.section`
       ${props => props.theme.desktopBreakpoint} {
          flex-basis: 30%;
       }
+      ${props => props.theme.midScreenBreakpoint} {
+         flex-basis: 25%;
+      }
       ${props => props.theme.bigScreenBreakpoint} {
          flex-basis: 20%;
       }
