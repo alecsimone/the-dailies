@@ -308,6 +308,7 @@ const GlobalStyle = createGlobalStyle`
       &.retweet {
          .retweeter {
             margin: 0 -1.5rem 1rem -1.5rem;
+            border-radius: 3px 3px 0 0;
             a.retweetLink {
                color: ${props => props.theme.mainText};
                font-weight: 600;
