@@ -60,10 +60,10 @@ const StyledTweets = styled.section`
             max-width: 100rem;
             height: 100%;
             overflow: hidden;
-            border: 2px solid
-               ${props => setAlpha(props.theme.lowContrastGrey, 0.15)};
-            box-shadow: 0 4px 4px
-               ${props => setAlpha(setLightness(props.theme.black, 1), 0.2)};
+            border: 2px solid ${props => setLightness(props.theme.black, 4)};
+            border-radius: 4px;
+            box-shadow: 0 6px 6px
+               ${props => setAlpha(setLightness(props.theme.black, 1), 0.4)};
             &.column1 {
                display: none;
                ${props => props.theme.desktopBreakpoint} {
@@ -87,7 +87,8 @@ const StyledTweets = styled.section`
                margin: 0;
                padding: 1rem 0;
                background: ${props => props.theme.tweetHead};
-               border-bottom: 1px solid ${props => props.theme.black};
+               border-bottom: 2px solid
+                  ${props => setLightness(props.theme.lowContrastGrey, 15)};
                text-align: center;
                border-radius: 3px 3px 0 0;
                .bottom {

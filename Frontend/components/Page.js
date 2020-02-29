@@ -37,7 +37,7 @@ const theme = {
    bigScreenBPWidthRaw: 1800,
    bigScreenBreakpoint: '@media screen and (min-width: 1800px)',
 
-   tweetHead: 'hsl(30, 1%, 1%)',
+   tweetHead: 'hsl(210, 80%, 5%)',
 
    scroll: {
       overflowY: 'auto',
@@ -286,7 +286,8 @@ const GlobalStyle = createGlobalStyle`
             margin: 0 -1.5rem 1rem -1.5rem;
             padding: 2rem 1rem;
             background: ${props => props.theme.tweetHead};
-            border-bottom: 1px solid ${props => props.theme.black};
+            border-bottom: 1px solid
+                  ${props => setLightness(props.theme.lowContrastGrey, 15)};
             a.retweetLink {
                color: ${props => props.theme.mainText};
                font-weight: 600;
@@ -341,7 +342,8 @@ const GlobalStyle = createGlobalStyle`
             background: ${props => props.theme.tweetHead};
             margin: 0;
             padding: 1rem 0;
-            border-bottom: none;
+            border-bottom: 1px solid
+                  ${props => setLightness(props.theme.lowContrastGrey, 15)};
             border-radius: 3px 3px 0 0;
          }
          img.quotedTweeterAvatar {
