@@ -37,7 +37,7 @@ const StyledTweets = styled.section`
                margin: 1rem 2rem;
                padding: 0;
             }
-            opacity: 0.8;
+            opacity: 0.9;
             font-weight: 200;
          }
          .tweeterColumnsContainer {
@@ -86,11 +86,15 @@ const StyledTweets = styled.section`
                justify-content: space-around;
                margin: 0;
                padding: 1rem 0;
+               opacity: 0.9;
                background: ${props => props.theme.tweetHead};
                border-bottom: 2px solid
                   ${props => setLightness(props.theme.lowContrastGrey, 15)};
                text-align: center;
                border-radius: 3px 3px 0 0;
+               &:hover {
+                  opacity: 1;
+               }
                .bottom {
                   font-size: ${props => props.theme.tinyText};
                   font-weight: 400;
