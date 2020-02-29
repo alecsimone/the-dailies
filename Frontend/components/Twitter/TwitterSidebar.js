@@ -39,6 +39,7 @@ const StyledTwitterSidebar = styled.div`
          width: ${props => props.theme.smallText};
          opacity: 0.25;
          cursor: pointer;
+         transition: opacity 0.25s ease-in-out, transform 0.25s ease-in-out;
          &:hover {
             opacity: 0.6;
          }

@@ -5,6 +5,7 @@ import Tweet from './Tweet';
 import { setAlpha, setLightness, setSaturation } from '../../styles/functions';
 import { GET_TWEETS_FOR_LIST, GET_TWITTER_LISTS } from './TwitterReader';
 import X from '../Icons/X';
+import ResetIcon from '../Icons/Reset';
 
 const MARK_TWEETS_SEEN = gql`
    mutation MARK_TWEETS_SEEN($listID: String!, $tweetIDs: [String]!) {
@@ -136,14 +137,27 @@ const StyledTweets = styled.section`
             h3 {
                font-size: ${props => props.theme.bigHead};
                font-weight: 700;
-               color: ${props => props.theme.majorColor};
                width: 100%;
                text-align: center;
             }
             button {
                padding: 1rem;
-               &.loading {
-                  background: ${props => props.theme.lowContrastGrey};
+               border: none;
+               &:hover {
+                  background: none;
+               }
+               svg {
+                  width: 6rem;
+                  height: 6rem;
+                  path {
+                     stroke: ${props => props.theme.mainText};
+                  }
+                  polygon {
+                     fill: ${props => props.theme.mainText};
+                  }
+                  &.loading {
+                     ${props => props.theme.spinBackward};
+                  }
                }
             }
          }
@@ -189,7 +203,7 @@ const Tweets = props => {
          console.log(error);
       },
       onCompleted: data => {
-         const button = document.querySelector('#refreshButton');
+         const button = document.querySelector('#refreshButton svg');
          if (button) {
             button.classList.remove('loading');
          }
@@ -235,7 +249,7 @@ const Tweets = props => {
                   refreshList();
                }}
             >
-               Refresh
+               <ResetIcon />
             </button>
          </div>
       );

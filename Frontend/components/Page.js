@@ -189,6 +189,12 @@ const GlobalStyle = createGlobalStyle`
          background: ${setAlpha(theme.lowContrastGrey, 0.1)};
       }
    }
+   svg.resetIcon {
+      transition: transform 0.25s ease-in-out;
+      &:hover {
+         transform: rotate(-30deg);
+      }
+   }
    .embed-container {
       position: relative;
       padding-bottom: 56.25%;
@@ -213,10 +219,10 @@ const GlobalStyle = createGlobalStyle`
    }
    @keyframes spinBackward {
       from {
-         transform: rotate(360deg);
+         transform: rotate(330deg);
       }
       to {
-         transform: rotate(0deg);
+         transform: rotate(-30deg);
       }
    }
    @keyframes twist {
