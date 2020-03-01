@@ -31,10 +31,11 @@ const StyledThingMeta = styled.section`
    align-items: center;
    flex-wrap: wrap;
    padding: 0 1rem;
-   margin-top: 2rem;
+   margin-top: 0rem;
    color: ${props => setLightness(props.theme.lowContrastGrey, 40)};
    ${props => props.theme.mobileBreakpoint} {
       padding-left: 1.25rem;
+      margin-top: 2rem;
    }
    .metaPiece {
       margin: 2rem 0;

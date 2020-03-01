@@ -81,7 +81,7 @@ const ColorSelector = ({ initialColor, type, id }) => {
    const [showingSuggestions, setShowingSuggestions] = useState(false);
    const [currentColor, setCurrentColor] = useState(initialColor);
 
-   const { majorColor } = useContext(ThemeContext);
+   const { majorColor, lowContrastGrey } = useContext(ThemeContext);
 
    const [setColor] = useMutation(SET_COLOR_MUTATION);
 
@@ -157,7 +157,7 @@ const ColorSelector = ({ initialColor, type, id }) => {
       }
    };
 
-   const defaultColor = 'hsl(210, 10%, 30%)';
+   const defaultColor = lowContrastGrey;
    const colorsArray = [
       [majorColor, 'Blue'],
       ['hsla(270, 70%, 30%, .9)', 'Purple'],

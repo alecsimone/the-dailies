@@ -96,9 +96,9 @@ const SmallThingCard = props => {
       noPic
    } = props;
 
-   const { majorColor } = useContext(ThemeContext);
+   const { lowContrastGrey } = useContext(ThemeContext);
 
-   let highlightColor = setAlpha(majorColor, 0.6);
+   let highlightColor = lowContrastGrey;
    if (color != null) {
       highlightColor = color;
    }

@@ -44,10 +44,16 @@ const StyledFullThing = styled.article`
       display: block;
    }
    .featuredImage {
-      padding: 3rem 3rem 2rem;
+      padding: 0;
+      .titleBarContainer {
+         padding: 0 1.5rem;
+      }
       ${props => props.theme.mobileBreakpoint} {
          width: calc(100% + 6rem);
          margin: 0 -3rem;
+         .titleBarContainer {
+            padding: 0 3rem;
+         }
       }
       background: ${props => props.theme.midBlack};
       border-bottom: 1px solid
@@ -77,9 +83,9 @@ const FullThing = props => {
    const { id, partOfCategory: category, color } =
       useContext(ThingContext) || {};
 
-   const { majorColor } = useContext(ThemeContext);
+   const { lowContrastGrey } = useContext(ThemeContext);
 
-   let highlightColor = setAlpha(majorColor, 0.6);
+   let highlightColor = lowContrastGrey;
    if (color != null) {
       highlightColor = color;
    }

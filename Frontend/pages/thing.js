@@ -50,9 +50,8 @@ const SingleThing = props => {
    /* eslint-disable react-hooks/exhaustive-deps */
    // We need to make our thing container scroll to the top when we route to a new thing, but wesbos's eslint rules don't let you use a dependency for an effect that isn't referenced in the effect. I can't find any reason why that is or any better way of doing it, so I'm just turning off that rule for a minute.
    useEffect(() => {
-      const containerArray = document.getElementsByClassName(
-         'fullThingContainer'
-      );
+      const containerArray = document.getElementsByClassName('mainSection');
+      console.log(containerArray);
       if (containerArray.length >= 1) {
          containerArray[0].scrollTo(0, 0);
       }

@@ -83,7 +83,7 @@ const StyledFeaturedImage = styled.div`
    }
    svg.editThis {
       position: absolute;
-      top: 0.5rem;
+      bottom: 0.5rem;
       right: 0.5rem;
       width: ${props => props.theme.smallText};
       cursor: pointer;
@@ -171,6 +171,7 @@ const FeaturedImage = props => {
                : 'featuredImage image'
          }
       >
+         <TitleBar context={context} limit={titleLimit} canEdit={canEdit} />
          {featuredImage &&
             !disabledCodewords.includes(featuredImage.toLowerCase()) && (
                <ExplodingLink
@@ -200,7 +201,6 @@ const FeaturedImage = props => {
                </form>
             </div>
          )}
-         <TitleBar context={context} limit={titleLimit} canEdit={canEdit} />
          {canEdit && <EditThis onClick={showInputHandler} />}
       </StyledFeaturedImage>
    );

@@ -23,14 +23,13 @@ const StyledTitleBar = styled.div`
    ${props => props.theme.mobileBreakpoint} {
       padding: 0;
    }
-   margin-top: 1rem;
    h3,
    textarea {
       font-size: ${props => props.theme.smallHead};
       font-weight: 600;
       color: ${props => setAlpha(props.theme.mainText, 1)};
       padding: 0;
-      margin: 0;
+      margin: 2rem 0;
       line-height: 1.4;
       width: 100%;
       border: none;

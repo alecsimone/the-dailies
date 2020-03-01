@@ -12,6 +12,7 @@ import AuthorLink from '../ThingParts/AuthorLink';
 const StyledThingCard = styled.div`
    width: 100%;
    padding: 2rem;
+   padding-top: 0;
    background: ${props => props.theme.deepBlack};
    border: 2px solid ${props => setAlpha(props.theme.lowContrastGrey, 0.15)};
    box-shadow: 0 4px 4px
@@ -109,6 +110,7 @@ const ThingCard = props => {
       id,
       featuredImage,
       partOfCategory: category,
+      color,
       author,
       privacy,
       content,
@@ -116,11 +118,11 @@ const ThingCard = props => {
       createdAt
    } = data;
 
-   const { majorColor } = useContext(ThemeContext);
+   const { lowContrastGrey } = useContext(ThemeContext);
 
-   let highlightColor = setAlpha(majorColor, 0.6);
-   if (category && category.color != null) {
-      highlightColor = category.color;
+   let highlightColor = lowContrastGrey;
+   if (color != null) {
+      highlightColor = color;
    }
 
    return (
