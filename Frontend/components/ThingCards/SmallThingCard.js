@@ -119,17 +119,12 @@ const SmallThingCard = props => {
             className="smallThingCard thingCard"
             style={{ borderLeft: `0.5rem solid ${highlightColor}` }}
          >
-            <img
-               className="thumb"
-               src={
-                  featuredImage == null ||
-                  isVideo(featuredImage) ||
-                  disabledCodewords.includes(featuredImage.toLowerCase()) ||
-                  isTweet
-                     ? '/defaultPic.jpg'
-                     : featuredImage
-               }
-            />
+            {!(
+               featuredImage == null ||
+               isVideo(featuredImage) ||
+               disabledCodewords.includes(featuredImage.toLowerCase()) ||
+               isTweet
+            ) && <img className="thumb" src={featuredImage} />}
             <div className="meta">
                <a href={`/thing?id=${id}`}>
                   {title.length > 60

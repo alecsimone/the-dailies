@@ -67,12 +67,7 @@ const TitleBar = ({ context, limit, canEdit = true }) => {
             dynamicallyResizeElement(input);
          });
       }
-      if (false) {
-         // forcing eslint to include title and editedTitle in the dependencies
-         console.log(editedTitle);
-         console.log(title);
-      }
-   }, [editedTitle, title]);
+   });
 
    const handleKeydown = e => {
       if (e.key === 'Escape') {
@@ -118,6 +113,7 @@ const TitleBar = ({ context, limit, canEdit = true }) => {
             <textarea
                id="titleInput"
                className="titleInput"
+               maxLength={280}
                value={editedTitle}
                placeholder={title ? 'Title' : 'New Thing'}
                onKeyDown={handleKeydown}
