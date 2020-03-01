@@ -33,6 +33,12 @@ const SINGLE_THING_SUBSCRIPTION = gql`
 const ThingContext = React.createContext();
 export { ThingContext };
 
+const StyledSingleThing = styled(StyledPageWithSidebar)`
+   .mainSection {
+      padding: 0;
+   }
+`;
+
 const SingleThing = props => {
    const { loading, error, data } = useQuery(SINGLE_THING_QUERY, {
       variables: { id: props.query.id },
@@ -114,13 +120,13 @@ const SingleThing = props => {
 
    return (
       <ThingContext.Provider value={dataForContext}>
-         <StyledPageWithSidebar>
+         <StyledSingleThing>
             <Head>
                <title>{pageTitle} - OurDailies</title>
             </Head>
             <Sidebar />
             <div className="mainSection thing">{content}</div>
-         </StyledPageWithSidebar>
+         </StyledSingleThing>
       </ThingContext.Provider>
    );
 };

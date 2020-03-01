@@ -8,6 +8,7 @@ type Thing {
   contentOrder: [String!] @scalarList(strategy:RELATION)
   partOfTags: [Tag]
   partOfCategory: Category!
+  color: String
   votes: [Vote]
   passes: [Pass]
   score: Int! @default(value: 0)
@@ -37,6 +38,7 @@ type Tag {
   content: [ContentPiece!] @scalarList(strategy:RELATION)
   contentOrder: [String!] @scalarList(strategy:RELATION)
   connectedThings: [Thing]
+  color: String
   comments: [Comment]
   score: Int! @default(value: 0)
   createdAt: DateTime! @createdAt
@@ -46,6 +48,20 @@ type Tag {
 type Category {
   id: ID! @id @unique
   title: String! @unique
+  featuredImage: String
+  color: String
+  content: [ContentPiece!] @scalarList(strategy:RELATION)
+  contentOrder: [String!] @scalarList(strategy:RELATION)
+  connectedThings: [Thing]
+  comments: [Comment]
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime @updatedAt
+}
+
+type Stack {
+  id: ID! @id @unique
+  title: String!
+  author: Member!
   featuredImage: String
   color: String
   content: [ContentPiece!] @scalarList(strategy:RELATION)

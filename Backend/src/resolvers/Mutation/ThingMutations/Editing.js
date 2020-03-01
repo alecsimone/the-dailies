@@ -430,7 +430,7 @@ exports.deleteThing = deleteThing;
 async function deleteTag(parent, {id}, ctx, info) {
    loggedInGate(ctx);
    fullMemberGate(ctx.req.member);
-   editPermissionGate({}, ctx.req.memberId, 'Tag', ctx);
+   editPermissionGate({}, id, 'Tag', ctx);
 
    const deletedTag = await ctx.db.mutation.deleteTag({
       where: {
@@ -442,3 +442,17 @@ async function deleteTag(parent, {id}, ctx, info) {
    return deletedTag;
 }
 exports.deleteTag = deleteTag;
+
+async function setColor(parent, { color, id, type}, ctx, info) {
+   loggedInGate(ctx);
+   fullMemberGate(ctx.req.member);
+   editPermissionGate({}, id, type, ctx);
+
+   const dataObj = {
+      color
+   };
+
+   const updatedStuff = await properUpdateStuff(dataObj, id, type, ctx);
+   return updatedStuff;
+}
+exports.setColor = setColor;

@@ -74,13 +74,14 @@ export { setFullThingToLoading };
 
 const FullThing = props => {
    const { canEdit } = props;
-   const { id, partOfCategory: category } = useContext(ThingContext) || {};
+   const { id, partOfCategory: category, color } =
+      useContext(ThingContext) || {};
 
    const { majorColor } = useContext(ThemeContext);
 
    let highlightColor = setAlpha(majorColor, 0.6);
-   if (category && category.color != null) {
-      highlightColor = category.color;
+   if (color != null) {
+      highlightColor = color;
    }
 
    return (

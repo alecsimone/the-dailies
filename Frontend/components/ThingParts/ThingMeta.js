@@ -9,7 +9,7 @@ import { convertISOtoAgo } from '../../lib/ThingHandling';
 import { setLightness, setAlpha } from '../../styles/functions';
 import AuthorLink from './AuthorLink';
 import ShortLink from './ShortLink';
-import CategoryDropdown from './CategoryDropdown';
+import ColorSelector from './ColorSelector';
 import PrivacyDropdown from './PrivacyDropdown';
 import ThingSourceLink from './ThingSourceLink';
 import TrashIcon from '../Icons/Trash';
@@ -45,6 +45,8 @@ const StyledThingMeta = styled.section`
       &.selections {
          display: flex;
          justify-content: space-between;
+         flex-grow: 0;
+         margin-left: 2rem;
       }
       ${props => props.theme.mobileBreakpoint} {
          margin: 0;
@@ -52,8 +54,7 @@ const StyledThingMeta = styled.section`
             margin-top: 0;
          }
          &.selections {
-            display: inline-block;
-            flex-grow: 0;
+            justify-content: space-around;
          }
       }
    }
@@ -63,11 +64,13 @@ const StyledThingMeta = styled.section`
       margin-left: 2rem;
    }
    select {
+      border-radius: 0;
       border-top: none;
       border-right: none;
       border-left: none;
       appearance: none;
       padding-right: 30px;
+      cursor: pointer;
    }
    .info {
       font-size: ${props => props.theme.smallText};
@@ -163,9 +166,9 @@ const ThingMeta = props => {
       author,
       link,
       partOfCategory,
+      color,
       privacy,
-      createdAt,
-      updatedAt
+      createdAt
    } = useContext(ThingContext);
 
    const [deleteThing, { loading: deleting }] = useMutation(
@@ -213,12 +216,7 @@ const ThingMeta = props => {
          />
          <div className="selections metaPiece">
             {canEdit ? (
-               <CategoryDropdown
-                  initialCategory={
-                     partOfCategory ? partOfCategory.title : 'Misc'
-                  }
-                  id={id}
-               />
+               <ColorSelector initialColor={color} type="Thing" id={id} />
             ) : (
                <span className="uneditable metaPiece">
                   {partOfCategory.title}

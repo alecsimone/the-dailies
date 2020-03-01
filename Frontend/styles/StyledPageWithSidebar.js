@@ -33,9 +33,6 @@ const StyledPageWithSidebar = styled.section`
       flex-basis: 100%;
       max-width: 100%;
       padding: 2rem 0;
-      &.thing {
-         padding: 0;
-      }
       ${props => props.theme.mobileBreakpoint} {
          padding: 2rem 0;
          flex-basis: 60%;

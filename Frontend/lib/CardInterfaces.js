@@ -58,6 +58,7 @@ const smallThingCardFields = `
       title
       color
    }
+   color
    createdAt
    updatedAt
    privacy
@@ -102,6 +103,7 @@ const fullThingFields = `
       title
       color
    }
+   color
    comments {
       ${commentFields}
    }

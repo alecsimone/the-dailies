@@ -82,9 +82,6 @@ const GlobalStyle = createGlobalStyle`
       box-sizing: border-box;
       font-size: 8px;
       ${theme.scroll};
-      ${theme.mobileBreakpoint} {
-         font-size: 9px;
-      }
       ${props => props.theme.bigScreenBreakpoint} {
          font-size: 10px;
       }

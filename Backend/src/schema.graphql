@@ -64,6 +64,7 @@ type Mutation {
   readNotifications(ids: [ID]!): Member
   newBlankThing: Thing
   deleteTag(id: ID!): Tag
+  setColor(color: String!, id: ID!, type: String!): Stuff
 }
 
 union Stuff = Thing | Tag | Category

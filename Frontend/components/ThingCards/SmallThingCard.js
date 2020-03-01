@@ -88,6 +88,7 @@ const SmallThingCard = props => {
          title,
          featuredImage,
          partOfCategory: category,
+         color,
          createdAt,
          author,
          privacy
@@ -98,8 +99,8 @@ const SmallThingCard = props => {
    const { majorColor } = useContext(ThemeContext);
 
    let highlightColor = setAlpha(majorColor, 0.6);
-   if (category && category.color != null) {
-      highlightColor = category.color;
+   if (color != null) {
+      highlightColor = color;
    }
 
    const timeAgo = convertISOtoAgo(createdAt);
