@@ -76,7 +76,7 @@ const StyledFeaturedImage = styled.div`
          font-size: ${props => props.theme.smallText};
          width: 100%;
          max-width: 50rem;
-         margin-bottom: 3rem;
+         margin-top: 3rem;
          text-align: center;
          background: ${props => setAlpha(props.theme.lowContrastGrey, 0.4)};
       }

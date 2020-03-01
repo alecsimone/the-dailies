@@ -44,20 +44,22 @@ const StyledFullThing = styled.article`
       display: block;
    }
    .featuredImage {
-      padding: 0;
-      .titleBarContainer {
-         padding: 0 1.5rem;
+      padding: 3rem;
+      .titleBar,
+      .titleInput {
+         margin: 0;
       }
       ${props => props.theme.mobileBreakpoint} {
          width: calc(100% + 6rem);
          margin: 0 -3rem;
-         .titleBarContainer {
-            padding: 0 3rem;
-         }
       }
       background: ${props => props.theme.midBlack};
       border-bottom: 1px solid
          ${props => setAlpha(props.theme.lowContrastGrey, 0.4)};
+      img.featured,
+      .tweet {
+         margin-top: 3rem;
+      }
    }
    .tweet {
       .entities {
