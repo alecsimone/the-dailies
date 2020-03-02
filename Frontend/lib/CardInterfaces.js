@@ -149,6 +149,7 @@ const tagFields = `
       displayName
       avatar
    }
+   color
    public
    content {
       __typename

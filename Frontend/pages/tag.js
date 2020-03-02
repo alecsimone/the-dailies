@@ -47,6 +47,7 @@ const tag = props => {
    const { me } = useContext(MemberContext);
 
    let canEdit = false;
+   console.log(data);
    if (data && data.tagByTitle && data.tagByTitle.author && me) {
       if (data.tagByTitle.author.id === me.id) {
          canEdit = true;

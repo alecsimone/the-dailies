@@ -24,6 +24,8 @@ const SET_COLOR_MUTATION = gql`
 
 const StyledColorSelector = styled.div`
    position: relative;
+   font-size: ${props => props.theme.smallText};
+   z-index: 3;
    .colorDisplay {
       position: absolute;
       left: 0.5rem;
@@ -62,6 +64,7 @@ const StyledColorSelector = styled.div`
       .colorSuggestion {
          position: relative;
          padding-left: calc(3rem - 1px);
+         background: black;
          &.selected {
             background: ${props => props.theme.majorColor};
             color: ${props => props.theme.mainText};

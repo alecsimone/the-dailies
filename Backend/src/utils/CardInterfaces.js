@@ -23,6 +23,13 @@ const smallThingCardFields = `
       __typename
       id
       title
+      author {
+         __typename
+         id
+         displayName
+         avatar
+         rep
+      }
    }
    partOfCategory {
       __typename
@@ -131,6 +138,7 @@ const tagFields = `
       displayName
    }
    public
+   color
    content {
       __typename
       id

@@ -210,6 +210,8 @@ const StyledContent = styled.section`
    }
    button.reorder {
       display: block;
+      position: relative;
+      z-index: 0;
       margin: 0 auto 1rem;
       opacity: 0.4;
       font-weight: 300;
