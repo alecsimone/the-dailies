@@ -32,13 +32,19 @@ const StyledTwitterSidebar = styled.div`
    .updateLists {
       font-size: ${props => props.theme.tinyText};
       color: ${props => props.theme.lowContrastGrey};
-      margin-top: 2rem;
+      margin: 2rem 0 1rem;
+      ${props => props.theme.mobileBreakpoint} {
+         margin: 2rem 0 0 0;
+      }
       display: flex;
       align-items: center;
       svg {
          margin-left: 1rem;
          width: ${props => props.theme.smallText};
-         opacity: 0.25;
+         opacity: 0.75;
+         ${props => props.theme.mobileBreakpoint} {
+            opacity: 0.25;
+         }
          cursor: pointer;
          transition: opacity 0.25s ease-in-out, transform 0.25s ease-in-out;
          &:hover {
