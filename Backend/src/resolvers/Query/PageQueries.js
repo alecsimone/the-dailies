@@ -3,8 +3,6 @@ const {
    searchAvailableTags,
    canSeeThingGate,
    canSeeThing,
-   canSeeTagGate,
-   canSeeTag,
    properUpdateStuff
 } = require('../../utils/ThingHandling');
 
@@ -48,7 +46,6 @@ async function tagByTitle(parent, { title }, ctx, info) {
    if (tags == null || tags.length === 0) {
       return null;
    }
-   await canSeeTagGate({ id: tags[0].id }, ctx);
 
    if (tags[0].connectedThings && tags[0].connectedThings.length > 0) {
       tags[0].connectedThings = tags[0].connectedThings.filter(thing =>
@@ -96,11 +93,6 @@ async function thing(parent, { where }, ctx, info) {
       },
       info
    );
-   if (thing.partOfTags && thing.partOfTags.length > 0) {
-      thing.partOfTags = thing.partOfTags.filter(tagData =>
-         canSeeTag(ctx.req.memberId, tagData)
-      );
-   }
    return thing;
 }
 exports.thing = thing;
