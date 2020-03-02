@@ -108,6 +108,7 @@ type Member {
   rep: Int! @default(value: 0)
   points: Int! @default(value: 0)
   giveableRep: Int! @default(value: 0)
+  color: String
   friends: [Member] @relation(name:"Friends")
   friendRequests: [Member] @relation(name:"FriendRequests")
   ignoredFriendRequests: [Member] @relation(name:"IgnoredFriendRequests")

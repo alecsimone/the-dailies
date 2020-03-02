@@ -1142,6 +1142,7 @@ type Member {
   rep: Int!
   points: Int!
   giveableRep: Int!
+  color: String
   friends(where: MemberWhereInput, orderBy: MemberOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Member!]
   friendRequests(where: MemberWhereInput, orderBy: MemberOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Member!]
   ignoredFriendRequests(where: MemberWhereInput, orderBy: MemberOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Member!]
@@ -1185,6 +1186,7 @@ input MemberCreateInput {
   rep: Int
   points: Int
   giveableRep: Int
+  color: String
   friends: MemberCreateManyWithoutFriendsInput
   friendRequests: MemberCreateManyWithoutFriendRequestsInput
   ignoredFriendRequests: MemberCreateManyWithoutIgnoredFriendRequestsInput
@@ -1278,6 +1280,7 @@ input MemberCreateWithoutCommentsInput {
   rep: Int
   points: Int
   giveableRep: Int
+  color: String
   friends: MemberCreateManyWithoutFriendsInput
   friendRequests: MemberCreateManyWithoutFriendRequestsInput
   ignoredFriendRequests: MemberCreateManyWithoutIgnoredFriendRequestsInput
@@ -1312,6 +1315,7 @@ input MemberCreateWithoutCreatedThingsInput {
   rep: Int
   points: Int
   giveableRep: Int
+  color: String
   friends: MemberCreateManyWithoutFriendsInput
   friendRequests: MemberCreateManyWithoutFriendRequestsInput
   ignoredFriendRequests: MemberCreateManyWithoutIgnoredFriendRequestsInput
@@ -1346,6 +1350,7 @@ input MemberCreateWithoutFriendRequestsInput {
   rep: Int
   points: Int
   giveableRep: Int
+  color: String
   friends: MemberCreateManyWithoutFriendsInput
   ignoredFriendRequests: MemberCreateManyWithoutIgnoredFriendRequestsInput
   notifications: NotificationCreateManyWithoutRecipientInput
@@ -1380,6 +1385,7 @@ input MemberCreateWithoutFriendsInput {
   rep: Int
   points: Int
   giveableRep: Int
+  color: String
   friendRequests: MemberCreateManyWithoutFriendRequestsInput
   ignoredFriendRequests: MemberCreateManyWithoutIgnoredFriendRequestsInput
   notifications: NotificationCreateManyWithoutRecipientInput
@@ -1414,6 +1420,7 @@ input MemberCreateWithoutIgnoredFriendRequestsInput {
   rep: Int
   points: Int
   giveableRep: Int
+  color: String
   friends: MemberCreateManyWithoutFriendsInput
   friendRequests: MemberCreateManyWithoutFriendRequestsInput
   notifications: NotificationCreateManyWithoutRecipientInput
@@ -1448,6 +1455,7 @@ input MemberCreateWithoutNotificationsInput {
   rep: Int
   points: Int
   giveableRep: Int
+  color: String
   friends: MemberCreateManyWithoutFriendsInput
   friendRequests: MemberCreateManyWithoutFriendRequestsInput
   ignoredFriendRequests: MemberCreateManyWithoutIgnoredFriendRequestsInput
@@ -1482,6 +1490,7 @@ input MemberCreateWithoutOwnedTagsInput {
   rep: Int
   points: Int
   giveableRep: Int
+  color: String
   friends: MemberCreateManyWithoutFriendsInput
   friendRequests: MemberCreateManyWithoutFriendRequestsInput
   ignoredFriendRequests: MemberCreateManyWithoutIgnoredFriendRequestsInput
@@ -1516,6 +1525,7 @@ input MemberCreateWithoutPassesInput {
   rep: Int
   points: Int
   giveableRep: Int
+  color: String
   friends: MemberCreateManyWithoutFriendsInput
   friendRequests: MemberCreateManyWithoutFriendRequestsInput
   ignoredFriendRequests: MemberCreateManyWithoutIgnoredFriendRequestsInput
@@ -1550,6 +1560,7 @@ input MemberCreateWithoutVotesInput {
   rep: Int
   points: Int
   giveableRep: Int
+  color: String
   friends: MemberCreateManyWithoutFriendsInput
   friendRequests: MemberCreateManyWithoutFriendRequestsInput
   ignoredFriendRequests: MemberCreateManyWithoutIgnoredFriendRequestsInput
@@ -1596,6 +1607,8 @@ enum MemberOrderByInput {
   points_DESC
   giveableRep_ASC
   giveableRep_DESC
+  color_ASC
+  color_DESC
   twitchName_ASC
   twitchName_DESC
   email_ASC
@@ -1636,6 +1649,7 @@ type MemberPreviousValues {
   rep: Int!
   points: Int!
   giveableRep: Int!
+  color: String
   twitchName: String
   email: String!
   defaultPrivacy: PrivacySetting
@@ -1736,6 +1750,20 @@ input MemberScalarWhereInput {
   giveableRep_lte: Int
   giveableRep_gt: Int
   giveableRep_gte: Int
+  color: String
+  color_not: String
+  color_in: [String!]
+  color_not_in: [String!]
+  color_lt: String
+  color_lte: String
+  color_gt: String
+  color_gte: String
+  color_contains: String
+  color_not_contains: String
+  color_starts_with: String
+  color_not_starts_with: String
+  color_ends_with: String
+  color_not_ends_with: String
   twitchName: String
   twitchName_not: String
   twitchName_in: [String!]
@@ -1938,6 +1966,7 @@ input MemberUpdateDataInput {
   rep: Int
   points: Int
   giveableRep: Int
+  color: String
   friends: MemberUpdateManyWithoutFriendsInput
   friendRequests: MemberUpdateManyWithoutFriendRequestsInput
   ignoredFriendRequests: MemberUpdateManyWithoutIgnoredFriendRequestsInput
@@ -1972,6 +2001,7 @@ input MemberUpdateInput {
   rep: Int
   points: Int
   giveableRep: Int
+  color: String
   friends: MemberUpdateManyWithoutFriendsInput
   friendRequests: MemberUpdateManyWithoutFriendRequestsInput
   ignoredFriendRequests: MemberUpdateManyWithoutIgnoredFriendRequestsInput
@@ -2006,6 +2036,7 @@ input MemberUpdateManyDataInput {
   rep: Int
   points: Int
   giveableRep: Int
+  color: String
   twitchName: String
   email: String
   defaultPrivacy: PrivacySetting
@@ -2030,6 +2061,7 @@ input MemberUpdateManyMutationInput {
   rep: Int
   points: Int
   giveableRep: Int
+  color: String
   twitchName: String
   email: String
   defaultPrivacy: PrivacySetting
@@ -2154,6 +2186,7 @@ input MemberUpdateWithoutCommentsDataInput {
   rep: Int
   points: Int
   giveableRep: Int
+  color: String
   friends: MemberUpdateManyWithoutFriendsInput
   friendRequests: MemberUpdateManyWithoutFriendRequestsInput
   ignoredFriendRequests: MemberUpdateManyWithoutIgnoredFriendRequestsInput
@@ -2187,6 +2220,7 @@ input MemberUpdateWithoutCreatedThingsDataInput {
   rep: Int
   points: Int
   giveableRep: Int
+  color: String
   friends: MemberUpdateManyWithoutFriendsInput
   friendRequests: MemberUpdateManyWithoutFriendRequestsInput
   ignoredFriendRequests: MemberUpdateManyWithoutIgnoredFriendRequestsInput
@@ -2220,6 +2254,7 @@ input MemberUpdateWithoutFriendRequestsDataInput {
   rep: Int
   points: Int
   giveableRep: Int
+  color: String
   friends: MemberUpdateManyWithoutFriendsInput
   ignoredFriendRequests: MemberUpdateManyWithoutIgnoredFriendRequestsInput
   notifications: NotificationUpdateManyWithoutRecipientInput
@@ -2253,6 +2288,7 @@ input MemberUpdateWithoutFriendsDataInput {
   rep: Int
   points: Int
   giveableRep: Int
+  color: String
   friendRequests: MemberUpdateManyWithoutFriendRequestsInput
   ignoredFriendRequests: MemberUpdateManyWithoutIgnoredFriendRequestsInput
   notifications: NotificationUpdateManyWithoutRecipientInput
@@ -2286,6 +2322,7 @@ input MemberUpdateWithoutIgnoredFriendRequestsDataInput {
   rep: Int
   points: Int
   giveableRep: Int
+  color: String
   friends: MemberUpdateManyWithoutFriendsInput
   friendRequests: MemberUpdateManyWithoutFriendRequestsInput
   notifications: NotificationUpdateManyWithoutRecipientInput
@@ -2319,6 +2356,7 @@ input MemberUpdateWithoutNotificationsDataInput {
   rep: Int
   points: Int
   giveableRep: Int
+  color: String
   friends: MemberUpdateManyWithoutFriendsInput
   friendRequests: MemberUpdateManyWithoutFriendRequestsInput
   ignoredFriendRequests: MemberUpdateManyWithoutIgnoredFriendRequestsInput
@@ -2352,6 +2390,7 @@ input MemberUpdateWithoutOwnedTagsDataInput {
   rep: Int
   points: Int
   giveableRep: Int
+  color: String
   friends: MemberUpdateManyWithoutFriendsInput
   friendRequests: MemberUpdateManyWithoutFriendRequestsInput
   ignoredFriendRequests: MemberUpdateManyWithoutIgnoredFriendRequestsInput
@@ -2385,6 +2424,7 @@ input MemberUpdateWithoutPassesDataInput {
   rep: Int
   points: Int
   giveableRep: Int
+  color: String
   friends: MemberUpdateManyWithoutFriendsInput
   friendRequests: MemberUpdateManyWithoutFriendRequestsInput
   ignoredFriendRequests: MemberUpdateManyWithoutIgnoredFriendRequestsInput
@@ -2418,6 +2458,7 @@ input MemberUpdateWithoutVotesDataInput {
   rep: Int
   points: Int
   giveableRep: Int
+  color: String
   friends: MemberUpdateManyWithoutFriendsInput
   friendRequests: MemberUpdateManyWithoutFriendRequestsInput
   ignoredFriendRequests: MemberUpdateManyWithoutIgnoredFriendRequestsInput
@@ -2593,6 +2634,20 @@ input MemberWhereInput {
   giveableRep_lte: Int
   giveableRep_gt: Int
   giveableRep_gte: Int
+  color: String
+  color_not: String
+  color_in: [String!]
+  color_not_in: [String!]
+  color_lt: String
+  color_lte: String
+  color_gt: String
+  color_gte: String
+  color_contains: String
+  color_not_contains: String
+  color_starts_with: String
+  color_not_starts_with: String
+  color_ends_with: String
+  color_not_ends_with: String
   friends_every: MemberWhereInput
   friends_some: MemberWhereInput
   friends_none: MemberWhereInput
