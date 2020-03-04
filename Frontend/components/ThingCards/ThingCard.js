@@ -13,9 +13,9 @@ const StyledThingCard = styled.div`
    width: 100%;
    padding: 0 2.5rem 1.25rem;
    background: ${props => props.theme.lightBlack};
-   border: 2px solid ${props => setAlpha(props.theme.deepBlack, 0.2)};
-   box-shadow: 0 4px 4px
-      ${props => setAlpha(props.theme.deepBlack, 0.05)};
+   /* border: 2px solid ${props => setAlpha(props.theme.deepBlack, 0.2)}; */
+   box-shadow: 0 2px 4px
+      ${props => setAlpha(props.theme.deepBlack, 0.4)};
    border-top: 0.5rem solid ${props => props.theme.majorColor};
    ${props => props.theme.mobileBreakpoint} {
       border-radius: 3px;
@@ -96,7 +96,7 @@ const StyledThingCard = styled.div`
       }
    }
    .truncCont {
-      margin: 3rem 0 0;
+      margin: 3rem 0 1.5rem;
       padding: .8rem 1.25rem;
       border-radius: 3px;
       /* opacity: .9; */
