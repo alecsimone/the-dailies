@@ -11,7 +11,7 @@ import AuthorLink from '../ThingParts/AuthorLink';
 
 const StyledThingCard = styled.div`
    width: 100%;
-   padding: 2rem;
+   padding: 2.5rem;
    padding-top: 0;
    background: ${props => props.theme.deepBlack};
    border: .4rem solid ${props => setAlpha(props.theme.lowContrastGrey, 0.1)};
@@ -27,7 +27,7 @@ const StyledThingCard = styled.div`
    .featuredImage {
       h3 {
          /* color: ${props => setAlpha(props.theme.mainText, 0.9)}; */
-         font-weight: 400;
+         font-weight: 500;
          font-size: ${props => props.theme.bigText};
          line-height: 1.2;
          &:hover {
