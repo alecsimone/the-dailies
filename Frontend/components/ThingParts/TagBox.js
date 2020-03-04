@@ -89,7 +89,7 @@ const debouncedAutocomplete = debounce(
 
 const TagBox = props => {
    const { canEdit } = props;
-   const { id, partOfTags: tags, author } = useContext(ThingContext);
+   const { id, partOfTags: tags } = useContext(ThingContext);
 
    const [
       searchTags,

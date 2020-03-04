@@ -58,7 +58,8 @@ const Tags = props => {
 
    return (
       <StyledTags className="tags">
-         <h5>Tags:</h5> {tagElements}
+         <h5 title="Tags are public, anyone can add to them">Tags:</h5>{' '}
+         {tagElements}
       </StyledTags>
    );
 };

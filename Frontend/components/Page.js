@@ -8,6 +8,7 @@ import { setAlpha, setLightness, setSaturation } from '../styles/functions';
 
 const theme = {
    tinyText: '1.25rem',
+   miniText: '1.7rem',
    smallText: '2rem',
    bigText: '2.5rem',
    smallHead: '4rem',

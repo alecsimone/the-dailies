@@ -22,9 +22,6 @@ const StyledThings = styled.div`
             margin-bottom: 3rem;
          }
       }
-      h3 {
-         font-size: 3.5rem;
-      }
    }
    &.list {
       article {

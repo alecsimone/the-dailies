@@ -14,9 +14,9 @@ const StyledThingCard = styled.div`
    padding: 2rem;
    padding-top: 0;
    background: ${props => props.theme.deepBlack};
-   border: 2px solid ${props => setAlpha(props.theme.lowContrastGrey, 0.15)};
+   border: .4rem solid ${props => setAlpha(props.theme.lowContrastGrey, 0.1)};
    box-shadow: 0 4px 4px
-      ${props => setAlpha(props.theme.deepBlack, 0.2)};
+      ${props => setAlpha(props.theme.deepBlack, 0.05)};
    border-top: 0.5rem solid ${props => props.theme.majorColor};
    ${props => props.theme.mobileBreakpoint} {
       border-radius: 3px;
@@ -27,6 +27,9 @@ const StyledThingCard = styled.div`
    .featuredImage {
       h3 {
          /* color: ${props => setAlpha(props.theme.mainText, 0.9)}; */
+         font-weight: 400;
+         font-size: ${props => props.theme.bigText};
+         line-height: 1.2;
          &:hover {
             text-decoration: underline;
          }
@@ -54,10 +57,9 @@ const StyledThingCard = styled.div`
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
-      font-size: ${props => props.theme.smallText};
+      font-size: ${props => props.theme.miniText};
       color: ${props => props.theme.lowContrastGrey};
       margin-top: 0.75rem;
-      border-bottom: 1px solid ${props => props.theme.lowContrastGrey};
       .meta-left {
          display: inline-flex;
          align-items: center;
@@ -70,8 +72,8 @@ const StyledThingCard = styled.div`
                margin-bottom: 2px;
             }
             .authorImg {
-               width: 3rem;
-               height: 3rem;
+               width: ${props => props.theme.smallText};;
+               height: ${props => props.theme.smallText};;
                border-radius: 100%;
                margin-right: 1rem;
             }
@@ -103,9 +105,6 @@ const ThingCardContext = React.createContext();
 
 const ThingCard = props => {
    const { data } = props;
-   if (data.featuredImage == null) {
-      data.featuredImage = '/defaultPic.jpg';
-   }
    const {
       id,
       featuredImage,
@@ -149,7 +148,7 @@ const ThingCard = props => {
                <div className="meta-right">{privacy}</div>
             </div>
             <TruncCont cont={content[0]} limit={280} />
-            <Tags tags={tags} />
+            {tags.length > 0 && <Tags tags={tags} />}
          </StyledThingCard>
       </ThingCardContext.Provider>
    );
