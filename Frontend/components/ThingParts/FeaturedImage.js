@@ -46,6 +46,15 @@ const StyledFeaturedImage = styled.div`
    line-height: 0;
    width: 100%;
    z-index: 1;
+   padding: 3rem;
+   .titleBar,
+   .titleInput {
+      margin: 0;
+   }
+
+   background: ${props => props.theme.midBlack};
+   border-bottom: 1px solid
+      ${props => setAlpha(props.theme.lowContrastGrey, 0.4)};
    img,
    video {
       width: 100%;

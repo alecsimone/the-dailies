@@ -11,10 +11,9 @@ import AuthorLink from '../ThingParts/AuthorLink';
 
 const StyledThingCard = styled.div`
    width: 100%;
-   padding: 2.5rem;
-   padding-top: 0;
-   background: ${props => props.theme.deepBlack};
-   border: .4rem solid ${props => setAlpha(props.theme.lowContrastGrey, 0.1)};
+   padding: 0 2.5rem 1.25rem;
+   background: ${props => props.theme.lightBlack};
+   border: 2px solid ${props => setAlpha(props.theme.deepBlack, 0.2)};
    box-shadow: 0 4px 4px
       ${props => setAlpha(props.theme.deepBlack, 0.05)};
    border-top: 0.5rem solid ${props => props.theme.majorColor};
@@ -25,6 +24,11 @@ const StyledThingCard = styled.div`
       text-decoration: none;
    }
    .featuredImage {
+      padding: 2rem 2.5rem;
+      ${props => props.theme.mobileBreakpoint} {
+         width: calc(100% + 5rem);
+         margin: 0 -2.5rem;
+      }
       h3 {
          /* color: ${props => setAlpha(props.theme.mainText, 0.9)}; */
          font-weight: 500;
@@ -38,6 +42,7 @@ const StyledThingCard = styled.div`
       video {
          width: 100%;
          max-height: 30rem;
+         margin-top: 2.5rem;
       }
       img.featuredImage {
          object-fit: cover;
@@ -47,6 +52,7 @@ const StyledThingCard = styled.div`
       }
       .tweet {
          max-height: 50rem;
+         margin-top: 2.5rem;
          ${props => props.theme.scroll};
          .tweet {
             max-height: none;
@@ -59,7 +65,7 @@ const StyledThingCard = styled.div`
       justify-content: space-between;
       font-size: ${props => props.theme.miniText};
       color: ${props => props.theme.lowContrastGrey};
-      margin-top: 0.75rem;
+      margin-top: 1.5rem;
       .meta-left {
          display: inline-flex;
          align-items: center;
@@ -91,10 +97,11 @@ const StyledThingCard = styled.div`
    }
    .truncCont {
       margin: 3rem 0 0;
-      padding: 2rem 0.5rem;
+      padding: .8rem 1.25rem;
       border-radius: 3px;
-      opacity: .9;
+      /* opacity: .9; */
       background: ${props => props.theme.midBlack};
+      border: 1px solid ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
    }
    .tags {
       margin-top: 2rem;

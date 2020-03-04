@@ -44,18 +44,10 @@ const StyledFullThing = styled.article`
       display: block;
    }
    .featuredImage {
-      padding: 3rem;
-      .titleBar,
-      .titleInput {
-         margin: 0;
-      }
       ${props => props.theme.mobileBreakpoint} {
          width: calc(100% + 6rem);
          margin: 0 -3rem;
       }
-      background: ${props => props.theme.midBlack};
-      border-bottom: 1px solid
-         ${props => setAlpha(props.theme.lowContrastGrey, 0.4)};
       img.featured,
       .tweet {
          margin-top: 3rem;
