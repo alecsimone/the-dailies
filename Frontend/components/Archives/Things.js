@@ -41,7 +41,11 @@ const StyledThings = styled.div`
 `;
 
 const Things = ({ things, displayType, cardSize, noPic }) => {
-   const { desktopBPWidthRaw, bigScreenBPWidthRaw } = useContext(ThemeContext);
+   const {
+      desktopBPWidthRaw,
+      bigScreenBPWidthRaw,
+      massiveScreenBPWidthRaw
+   } = useContext(ThemeContext);
    const thingCards = things.map(thing => {
       if (cardSize === 'regular') {
          return <ThingCard data={thing} key={thing.id} />;
@@ -53,7 +57,8 @@ const Things = ({ things, displayType, cardSize, noPic }) => {
          <StyledThings className={`things ${displayType}`}>
             <Masonry
                breakpointCols={{
-                  default: 3,
+                  default: 1,
+                  9999: 3,
                   [bigScreenBPWidthRaw]: 2,
                   [desktopBPWidthRaw]: 1
                }}

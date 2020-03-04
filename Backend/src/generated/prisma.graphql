@@ -4155,6 +4155,7 @@ input TagWhereInput {
 
 input TagWhereUniqueInput {
   id: ID
+  title: String
 }
 
 type Thing {
