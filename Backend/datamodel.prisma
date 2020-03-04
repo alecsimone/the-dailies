@@ -31,7 +31,7 @@ type ContentPiece {
 
 type Tag {
   id: ID! @id @unique
-  title: String!
+  title: String! @unique
   author: Member
   featuredImage: String
   public: Boolean @default(value: false)

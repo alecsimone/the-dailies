@@ -17,23 +17,7 @@ async function addTagToThing(tagTitle, thingID, ctx) {
    const existingTags = await ctx.db.query.tags(
       {
          where: {
-            AND: [
-               {
-                  title: tagTitle
-               },
-               {
-                  OR: [
-                     {
-                        author: {
-                           id: ctx.req.memberId
-                        }
-                     },
-                     {
-                        public: true
-                     }
-                  ]
-               }
-            ]
+            title: tagTitle
          }
       },
       `{id author {id} public}`

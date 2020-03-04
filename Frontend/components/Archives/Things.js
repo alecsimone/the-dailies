@@ -19,7 +19,10 @@ const StyledThings = styled.div`
          padding-left: 4rem; /* gutter offset, positive */
          background-clip: padding-box;
          .thingCard {
-            margin-bottom: 4rem;
+            margin-bottom: 2rem;
+            ${props => props.theme.mobileBreakpoint} {
+               margin-bottom: 4rem;
+            }
          }
       }
    }

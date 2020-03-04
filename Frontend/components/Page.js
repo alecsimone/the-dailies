@@ -362,7 +362,8 @@ const GlobalStyle = createGlobalStyle`
          img.quotedTweeterAvatar {
             border-radius: 50%;
             max-width: ${props => props.theme.smallHead};
-            height: auto;
+            height: ${props => props.theme.smallHead};
+            overflow: hidden;
             margin: 0 1rem;
          }
          article {

@@ -167,23 +167,7 @@ async function searchAvailableTags(searchTerm, ctx, exact) {
    return ctx.db.query.tags(
       {
          where: {
-            AND: [
-               {
-                  [exact ? 'title' : 'title_contains']: searchTerm
-               },
-               {
-                  OR: [
-                     {
-                        author: {
-                           id: ctx.req.memberId
-                        }
-                     },
-                     {
-                        public: true
-                     }
-                  ]
-               }
-            ]
+            [exact ? 'title' : 'title_contains']: searchTerm
          }
       },
       `{id title author {id} public}`

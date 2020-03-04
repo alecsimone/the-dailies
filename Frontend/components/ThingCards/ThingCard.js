@@ -11,23 +11,26 @@ import AuthorLink from '../ThingParts/AuthorLink';
 
 const StyledThingCard = styled.div`
    width: 100%;
-   padding: 0 2.5rem 1.25rem;
+   padding: 0 1.5rem 1.5rem;
    background: ${props => props.theme.lightBlack};
-   /* border: 2px solid ${props => setAlpha(props.theme.deepBlack, 0.2)}; */
    box-shadow: 0 2px 4px
       ${props => setAlpha(props.theme.deepBlack, 0.4)};
    border-top: 0.5rem solid ${props => props.theme.majorColor};
    ${props => props.theme.mobileBreakpoint} {
       border-radius: 3px;
+      padding: 0 2.5rem 1.25rem;
    }
    a:hover {
       text-decoration: none;
    }
    .featuredImage {
-      padding: 2rem 2.5rem;
+      width: calc(100% + 3rem);
+      margin: 0 -1.5rem;
+      padding: 1rem 1.5rem;
       ${props => props.theme.mobileBreakpoint} {
          width: calc(100% + 5rem);
          margin: 0 -2.5rem;
+         padding: 2rem 2.5rem;
       }
       h3 {
          /* color: ${props => setAlpha(props.theme.mainText, 0.9)}; */

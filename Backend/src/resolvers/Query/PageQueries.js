@@ -22,23 +22,7 @@ async function tagByTitle(parent, { title }, ctx, info) {
    const tags = await ctx.db.query.tags(
       {
          where: {
-            AND: [
-               {
-                  title
-               },
-               {
-                  OR: [
-                     {
-                        author: {
-                           id: ctx.req.memberId
-                        }
-                     },
-                     {
-                        public: true
-                     }
-                  ]
-               }
-            ]
+            title
          }
       },
       info
