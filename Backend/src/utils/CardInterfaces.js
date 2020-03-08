@@ -56,6 +56,7 @@ const smallThingCardFields = `
          avatar
       }
    }
+   score
    createdAt
    updatedAt
    privacy

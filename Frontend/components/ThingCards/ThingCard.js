@@ -128,9 +128,10 @@ const ThingCard = ({ data }) => {
       content,
       partOfTags: tags,
       votes,
+      score,
       createdAt
    } = data;
-   console.log(votes);
+   console.log(score);
 
    const { lowContrastGrey } = useContext(ThemeContext);
 

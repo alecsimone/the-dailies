@@ -23,7 +23,7 @@ async function vote(parent, { thingID }, ctx, info) {
             id: thingID
          }
       },
-      `{id votes {id voter {id}}}`
+      `{id score votes {id voter {id}}}`
    );
    if (oldThing == null) {
       throw new Error('Thing not found');
@@ -45,12 +45,14 @@ async function vote(parent, { thingID }, ctx, info) {
             }
          }
       };
+      dataObj.score = oldThing.score + myVoterInfo.rep;
    } else {
       dataObj.votes = {
          delete: {
             id: myVote.id
          }
       };
+      dataObj.score = oldThing.score - myVoterInfo.rep;
    }
 
    const updatedThing = await properUpdateStuff(dataObj, thingID, 'Thing', ctx);

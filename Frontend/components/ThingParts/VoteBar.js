@@ -97,7 +97,7 @@ const VoteBar = ({ votes, thingID }) => {
 
    let meVoted = false;
    const voters = [];
-   let score = 0;
+   let computedScore = 0;
    if (votes) {
       votes.forEach(
          ({ voter: { id: voterID, displayName, avatar }, value }) => {
@@ -117,7 +117,7 @@ const VoteBar = ({ votes, thingID }) => {
                   </Link>
                </div>
             );
-            score += value;
+            computedScore += value;
          }
       );
    }
@@ -136,8 +136,10 @@ const VoteBar = ({ votes, thingID }) => {
                      return;
                   }
                   let newVotes;
+                  let newScore;
                   if (meVoted) {
                      newVotes = votes.filter(vote => vote.voter.id !== me.id);
+                     newScore = computedScore - me.rep;
                   } else {
                      newVotes = [
                         ...votes,
@@ -148,6 +150,7 @@ const VoteBar = ({ votes, thingID }) => {
                            voter: me
                         }
                      ];
+                     newScore = computedScore + me.rep;
                   }
                   vote({
                      variables: {
@@ -158,7 +161,8 @@ const VoteBar = ({ votes, thingID }) => {
                         vote: {
                            __typename: 'Thing',
                            id: thingID,
-                           votes: newVotes
+                           votes: newVotes,
+                           score: newScore
                         }
                      }
                   });
@@ -166,7 +170,7 @@ const VoteBar = ({ votes, thingID }) => {
             />
          </div>
          <div className="middle">{voters}</div>
-         <div className="right">+{score}</div>
+         <div className="right">+{computedScore}</div>
       </StyledVoteBar>
    );
 };
