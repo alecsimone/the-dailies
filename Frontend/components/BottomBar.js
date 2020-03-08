@@ -75,16 +75,17 @@ const BottomBar = () => {
    const [inputPlaceholder, setInputPlaceholder] = useState(false);
    const [inputContent, setInputContent] = useState('');
 
-   const [setThingTitle] = useMutation(SET_TITLE_MUTATION, {
+   const [setStuffTitle] = useMutation(SET_TITLE_MUTATION, {
       variables: {
          title: inputContent,
-         thingID: 'new'
+         id: 'new',
+         type: 'Thing'
       },
       onCompleted: data => {
          Router.push({
             pathname: '/thing',
             query: {
-               id: data.setThingTitle.id
+               id: data.setStuffTitle.id
             }
          });
          setInputPlaceholder(false);
@@ -111,7 +112,7 @@ const BottomBar = () => {
                      setInputPlaceholder(false);
                      setInputContent('');
                   } else if (inputPlaceholder === plusPlaceholder) {
-                     setThingTitle();
+                     setStuffTitle();
                      setInputPlaceholder('Creating Thing...');
                      setInputContent('');
                   }
