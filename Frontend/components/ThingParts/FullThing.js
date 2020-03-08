@@ -9,6 +9,7 @@ import FeaturedImage from './FeaturedImage';
 import Comments from './Comments';
 import LoadingRing from '../LoadingRing';
 import { setAlpha, setLightness, setSaturation } from '../../styles/functions';
+import VoteBar from './VoteBar';
 
 const StyledFullThing = styled.article`
    margin: 0;
@@ -74,7 +75,7 @@ export { setFullThingToLoading };
 
 const FullThing = props => {
    const { canEdit } = props;
-   const { id, color } = useContext(ThingContext) || {};
+   const { id, color, votes } = useContext(ThingContext) || {};
 
    const { lowContrastGrey } = useContext(ThemeContext);
 
@@ -99,6 +100,7 @@ const FullThing = props => {
          <ThingMeta key={`${id}-ThingMeta`} canEdit={canEdit} />
          <TaxBox key={`${id}-TagBox`} canEdit={canEdit} personal={false} />
          <TaxBox key={`${id}-StackBox`} canEdit={canEdit} personal />
+         <VoteBar votes={votes} thingID={id} />
          <Content
             context={ThingContext}
             key={`${id}-Content`}

@@ -34,6 +34,7 @@ const {
    markTweetsSeen,
    saveTweet
 } = require('./Mutation/TwitterMutations');
+const { vote } = require('./Mutation/ThingMutations/Voting');
 
 const Mutations = {
    signup,
@@ -65,7 +66,8 @@ const Mutations = {
    readNotifications,
    newBlankThing,
    deleteTag,
-   setColor
+   setColor,
+   vote
 };
 
 module.exports = Mutations;

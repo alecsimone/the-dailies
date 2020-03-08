@@ -171,7 +171,11 @@ async function allThings(parent, args, ctx, info) {
       },
       info
    );
-   return things;
+
+   const thingsWithAVote = things.filter(thing => thing.votes.length > 0);
+   console.log(thingsWithAVote);
+
+   return thingsWithAVote;
 }
 exports.allThings = allThings;
 

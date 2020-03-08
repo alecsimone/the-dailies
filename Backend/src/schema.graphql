@@ -61,6 +61,7 @@ type Mutation {
   newBlankThing: Thing
   deleteTag(id: ID!): Tag
   setColor(color: String!, id: ID!, type: String!): Stuff
+  vote(thingID: ID!): Thing
 }
 
 union Stuff = Thing | Tag | Stack

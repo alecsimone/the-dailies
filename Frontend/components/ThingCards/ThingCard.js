@@ -8,6 +8,7 @@ import Taxes from '../ThingParts/Taxes';
 import { convertISOtoAgo } from '../../lib/ThingHandling';
 import { setAlpha, setLightness } from '../../styles/functions';
 import AuthorLink from '../ThingParts/AuthorLink';
+import VoteBar from '../ThingParts/VoteBar';
 
 const StyledThingCard = styled.div`
    width: 100%;
@@ -109,12 +110,15 @@ const StyledThingCard = styled.div`
    .tags {
       margin-top: 2rem;
    }
+   .votebar {
+      width: calc(100% + 3rem);
+      margin: 1rem -1.5rem 0;
+   }
 `;
 
 const ThingCardContext = React.createContext();
 
-const ThingCard = props => {
-   const { data } = props;
+const ThingCard = ({ data }) => {
    const {
       id,
       featuredImage,
@@ -123,8 +127,10 @@ const ThingCard = props => {
       privacy,
       content,
       partOfTags: tags,
+      votes,
       createdAt
    } = data;
+   console.log(votes);
 
    const { lowContrastGrey } = useContext(ThemeContext);
 
@@ -158,6 +164,7 @@ const ThingCard = props => {
             </div>
             <TruncCont cont={content[0]} limit={280} />
             {tags.length > 0 && <Taxes taxes={tags} personal={false} />}
+            <VoteBar votes={votes} thingID={id} />
          </StyledThingCard>
       </ThingCardContext.Provider>
    );

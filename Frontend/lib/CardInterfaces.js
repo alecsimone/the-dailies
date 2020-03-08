@@ -62,6 +62,18 @@ const smallThingCardFields = `
       }
    }
    color
+   votes {
+      __typename
+      id
+      value
+      voter {
+         __typename
+         id
+         displayName
+         rep
+         avatar
+      }
+   }
    createdAt
    updatedAt
    privacy
@@ -114,14 +126,15 @@ const fullThingFields = `
    }
    votes {
       __typename
+      id
+      value
       voter {
          __typename
          id
          displayName
+         rep
          avatar
-         role
       }
-      value
    }
    passes {
       __typename
