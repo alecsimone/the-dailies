@@ -49,14 +49,17 @@ const smallThingCardFields = `
       title
       author {
          id
+         avatar
       }
-      public
    }
-   partOfCategory {
+   partOfStacks {
       __typename
       id
       title
-      color
+      author {
+         id
+         avatar
+      }
    }
    color
    createdAt
@@ -95,13 +98,15 @@ const fullThingFields = `
          id
          avatar
       }
-      public
    }
-   partOfCategory {
+   partOfStacks {
       __typename
       id
       title
-      color
+      author {
+         id
+         avatar
+      }
    }
    color
    comments {
@@ -138,7 +143,7 @@ const fullThingFields = `
 `;
 export { fullThingFields };
 
-const tagFields = `
+const taxFields = `
    __typename
    id
    title
@@ -150,7 +155,6 @@ const tagFields = `
       avatar
    }
    color
-   public
    content {
       __typename
       id
@@ -165,29 +169,7 @@ const tagFields = `
    }
    createdAt
 `;
-export { tagFields };
-
-const catFields = `
-   __typename,
-   id
-   title
-   featuredImage
-   color
-   content {
-      __typename
-      id
-      content
-   }
-   contentOrder
-   connectedThings {
-      ${smallThingCardFields}
-   }
-   comments {
-      ${commentFields}
-   }
-   createdAt
-`;
-export { catFields };
+export { taxFields };
 
 const fullMemberFields = `
    __typename
@@ -265,11 +247,6 @@ const fullMemberFields = `
    createdThings {
       ${smallThingCardFields}
    }
-   defaultCategory {
-      __typename
-      id
-      title
-   }
    defaultPrivacy
    comments {
       __typename
@@ -294,11 +271,6 @@ const fullMemberFields = `
          id
       }
       onTag {
-         __typename
-         id
-         title
-      }
-      onCategory {
          __typename
          id
          title

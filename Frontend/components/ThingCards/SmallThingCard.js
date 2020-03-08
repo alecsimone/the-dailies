@@ -83,16 +83,7 @@ const StyledSmallThingCard = styled.article`
 
 const SmallThingCard = props => {
    const {
-      data: {
-         id,
-         title,
-         featuredImage,
-         partOfCategory: category,
-         color,
-         createdAt,
-         author,
-         privacy
-      },
+      data: { id, title, featuredImage, color, createdAt, author, privacy },
       noPic
    } = props;
 
@@ -149,10 +140,6 @@ SmallThingCard.propTypes = {
       id: PropTypes.string.isRequired,
       title: PropTypes.string.isRequired,
       featuredImage: PropTypes.string,
-      partOfCategory: PropTypes.shape({
-         color: PropTypes.string,
-         title: PropTypes.string.isRequired
-      }),
       createdAt: PropTypes.string,
       author: PropTypes.object.isRequired
    })

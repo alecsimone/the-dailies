@@ -38,7 +38,7 @@ const DELETE_COMMENT_MUTATION = gql`
                comment
             }
          }
-         ... on Category {
+         ... on Stack {
             __typename
             id
             comments {
@@ -82,7 +82,7 @@ const EDIT_COMMENT_MUTATION = gql`
                comment
             }
          }
-         ... on Category {
+         ... on Stack {
             __typename
             id
             comments {

@@ -13,7 +13,6 @@ const EDIT_PROFILE_MUTATION = gql`
       $displayName: String
       $email: String
       $twitchName: String
-      $defaultCategory: String
       $defaultPrivacy: String
    ) {
       editProfile(
@@ -22,7 +21,6 @@ const EDIT_PROFILE_MUTATION = gql`
          displayName: $displayName
          email: $email
          twitchName: $twitchName
-         defaultCategory: $defaultCategory
          defaultPrivacy: $defaultPrivacy
       ) {
          __typename
@@ -31,11 +29,6 @@ const EDIT_PROFILE_MUTATION = gql`
          displayName
          email
          twitchName
-         defaultCategory {
-            __typename
-            id
-            title
-         }
          defaultPrivacy
       }
    }
@@ -104,11 +97,6 @@ const ProfileBody = ({ member, me, isMe, canEdit, confirmFriendRequest }) => {
          />
          {canEdit && (
             <DefaultSelects
-               initialCategory={
-                  member.defaultCategory == null
-                     ? 'Misc'
-                     : member.defaultCategory.title
-               }
                initialPrivacy={
                   member.defaultPrivacy == null
                      ? 'Private'

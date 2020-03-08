@@ -31,11 +31,17 @@ const smallThingCardFields = `
          rep
       }
    }
-   partOfCategory {
+   partOfStacks {
       __typename
       id
       title
-      color
+      author {
+         __typename
+         id
+         displayName
+         avatar
+         rep
+      }
    }
    color
    createdAt
@@ -85,12 +91,25 @@ const fullThingFields = `
       __typename
       id
       title
+      author {
+         __typename
+         id
+         displayName
+         avatar
+         rep
+      }
    }
-   partOfCategory {
+   partOfStacks {
       __typename
       id
       title
-      color
+      author {
+         __typename
+         id
+         displayName
+         avatar
+         rep
+      }
    }
    color
    comments {
@@ -137,7 +156,6 @@ const tagFields = `
       id
       displayName
    }
-   public
    color
    content {
       __typename
@@ -154,28 +172,6 @@ const tagFields = `
    createdAt
 `;
 exports.tagFields = tagFields;
-
-const catFields = `
-   __typename,
-   id
-   title
-   featuredImage
-   color
-   content {
-      __typename
-      id
-      content
-   }
-   contentOrder
-   connectedThings {
-      ${smallThingCardFields}
-   }
-   comments {
-      ${commentFields}
-   }
-   createdAt
-`;
-exports.catFields = catFields;
 
 const fullMemberFields = `
    __typename
@@ -253,11 +249,6 @@ const fullMemberFields = `
    createdThings {
       ${smallThingCardFields}
    }
-   defaultCategory {
-      __typename
-      id
-      title
-   }
    defaultPrivacy
    comments {
       __typename
@@ -282,11 +273,6 @@ const fullMemberFields = `
          id
       }
       onTag {
-         __typename
-         id
-         title
-      }
-      onCategory {
          __typename
          id
          title

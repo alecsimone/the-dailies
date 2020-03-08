@@ -1,7 +1,3 @@
-type AggregateCategory {
-  count: Int!
-}
-
 type AggregateComment {
   count: Int!
 }
@@ -46,342 +42,6 @@ type BatchPayload {
   count: Long!
 }
 
-type Category {
-  id: ID!
-  title: String!
-  featuredImage: String
-  color: String
-  content(where: ContentPieceWhereInput, orderBy: ContentPieceOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ContentPiece!]
-  contentOrder: [String!]!
-  connectedThings(where: ThingWhereInput, orderBy: ThingOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Thing!]
-  comments(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Comment!]
-  createdAt: DateTime!
-  updatedAt: DateTime
-}
-
-type CategoryConnection {
-  pageInfo: PageInfo!
-  edges: [CategoryEdge]!
-  aggregate: AggregateCategory!
-}
-
-input CategoryCreatecontentOrderInput {
-  set: [String!]
-}
-
-input CategoryCreateInput {
-  id: ID
-  title: String!
-  featuredImage: String
-  color: String
-  content: ContentPieceCreateManyWithoutOnCategoryInput
-  contentOrder: CategoryCreatecontentOrderInput
-  connectedThings: ThingCreateManyWithoutPartOfCategoryInput
-  comments: CommentCreateManyWithoutOnCategoryInput
-}
-
-input CategoryCreateOneInput {
-  create: CategoryCreateInput
-  connect: CategoryWhereUniqueInput
-}
-
-input CategoryCreateOneWithoutCommentsInput {
-  create: CategoryCreateWithoutCommentsInput
-  connect: CategoryWhereUniqueInput
-}
-
-input CategoryCreateOneWithoutConnectedThingsInput {
-  create: CategoryCreateWithoutConnectedThingsInput
-  connect: CategoryWhereUniqueInput
-}
-
-input CategoryCreateOneWithoutContentInput {
-  create: CategoryCreateWithoutContentInput
-  connect: CategoryWhereUniqueInput
-}
-
-input CategoryCreateWithoutCommentsInput {
-  id: ID
-  title: String!
-  featuredImage: String
-  color: String
-  content: ContentPieceCreateManyWithoutOnCategoryInput
-  contentOrder: CategoryCreatecontentOrderInput
-  connectedThings: ThingCreateManyWithoutPartOfCategoryInput
-}
-
-input CategoryCreateWithoutConnectedThingsInput {
-  id: ID
-  title: String!
-  featuredImage: String
-  color: String
-  content: ContentPieceCreateManyWithoutOnCategoryInput
-  contentOrder: CategoryCreatecontentOrderInput
-  comments: CommentCreateManyWithoutOnCategoryInput
-}
-
-input CategoryCreateWithoutContentInput {
-  id: ID
-  title: String!
-  featuredImage: String
-  color: String
-  contentOrder: CategoryCreatecontentOrderInput
-  connectedThings: ThingCreateManyWithoutPartOfCategoryInput
-  comments: CommentCreateManyWithoutOnCategoryInput
-}
-
-type CategoryEdge {
-  node: Category!
-  cursor: String!
-}
-
-enum CategoryOrderByInput {
-  id_ASC
-  id_DESC
-  title_ASC
-  title_DESC
-  featuredImage_ASC
-  featuredImage_DESC
-  color_ASC
-  color_DESC
-  createdAt_ASC
-  createdAt_DESC
-  updatedAt_ASC
-  updatedAt_DESC
-}
-
-type CategoryPreviousValues {
-  id: ID!
-  title: String!
-  featuredImage: String
-  color: String
-  contentOrder: [String!]!
-  createdAt: DateTime!
-  updatedAt: DateTime
-}
-
-type CategorySubscriptionPayload {
-  mutation: MutationType!
-  node: Category
-  updatedFields: [String!]
-  previousValues: CategoryPreviousValues
-}
-
-input CategorySubscriptionWhereInput {
-  mutation_in: [MutationType!]
-  updatedFields_contains: String
-  updatedFields_contains_every: [String!]
-  updatedFields_contains_some: [String!]
-  node: CategoryWhereInput
-  AND: [CategorySubscriptionWhereInput!]
-  OR: [CategorySubscriptionWhereInput!]
-  NOT: [CategorySubscriptionWhereInput!]
-}
-
-input CategoryUpdatecontentOrderInput {
-  set: [String!]
-}
-
-input CategoryUpdateDataInput {
-  title: String
-  featuredImage: String
-  color: String
-  content: ContentPieceUpdateManyWithoutOnCategoryInput
-  contentOrder: CategoryUpdatecontentOrderInput
-  connectedThings: ThingUpdateManyWithoutPartOfCategoryInput
-  comments: CommentUpdateManyWithoutOnCategoryInput
-}
-
-input CategoryUpdateInput {
-  title: String
-  featuredImage: String
-  color: String
-  content: ContentPieceUpdateManyWithoutOnCategoryInput
-  contentOrder: CategoryUpdatecontentOrderInput
-  connectedThings: ThingUpdateManyWithoutPartOfCategoryInput
-  comments: CommentUpdateManyWithoutOnCategoryInput
-}
-
-input CategoryUpdateManyMutationInput {
-  title: String
-  featuredImage: String
-  color: String
-  contentOrder: CategoryUpdatecontentOrderInput
-}
-
-input CategoryUpdateOneInput {
-  create: CategoryCreateInput
-  update: CategoryUpdateDataInput
-  upsert: CategoryUpsertNestedInput
-  delete: Boolean
-  disconnect: Boolean
-  connect: CategoryWhereUniqueInput
-}
-
-input CategoryUpdateOneRequiredWithoutConnectedThingsInput {
-  create: CategoryCreateWithoutConnectedThingsInput
-  update: CategoryUpdateWithoutConnectedThingsDataInput
-  upsert: CategoryUpsertWithoutConnectedThingsInput
-  connect: CategoryWhereUniqueInput
-}
-
-input CategoryUpdateOneWithoutCommentsInput {
-  create: CategoryCreateWithoutCommentsInput
-  update: CategoryUpdateWithoutCommentsDataInput
-  upsert: CategoryUpsertWithoutCommentsInput
-  delete: Boolean
-  disconnect: Boolean
-  connect: CategoryWhereUniqueInput
-}
-
-input CategoryUpdateOneWithoutContentInput {
-  create: CategoryCreateWithoutContentInput
-  update: CategoryUpdateWithoutContentDataInput
-  upsert: CategoryUpsertWithoutContentInput
-  delete: Boolean
-  disconnect: Boolean
-  connect: CategoryWhereUniqueInput
-}
-
-input CategoryUpdateWithoutCommentsDataInput {
-  title: String
-  featuredImage: String
-  color: String
-  content: ContentPieceUpdateManyWithoutOnCategoryInput
-  contentOrder: CategoryUpdatecontentOrderInput
-  connectedThings: ThingUpdateManyWithoutPartOfCategoryInput
-}
-
-input CategoryUpdateWithoutConnectedThingsDataInput {
-  title: String
-  featuredImage: String
-  color: String
-  content: ContentPieceUpdateManyWithoutOnCategoryInput
-  contentOrder: CategoryUpdatecontentOrderInput
-  comments: CommentUpdateManyWithoutOnCategoryInput
-}
-
-input CategoryUpdateWithoutContentDataInput {
-  title: String
-  featuredImage: String
-  color: String
-  contentOrder: CategoryUpdatecontentOrderInput
-  connectedThings: ThingUpdateManyWithoutPartOfCategoryInput
-  comments: CommentUpdateManyWithoutOnCategoryInput
-}
-
-input CategoryUpsertNestedInput {
-  update: CategoryUpdateDataInput!
-  create: CategoryCreateInput!
-}
-
-input CategoryUpsertWithoutCommentsInput {
-  update: CategoryUpdateWithoutCommentsDataInput!
-  create: CategoryCreateWithoutCommentsInput!
-}
-
-input CategoryUpsertWithoutConnectedThingsInput {
-  update: CategoryUpdateWithoutConnectedThingsDataInput!
-  create: CategoryCreateWithoutConnectedThingsInput!
-}
-
-input CategoryUpsertWithoutContentInput {
-  update: CategoryUpdateWithoutContentDataInput!
-  create: CategoryCreateWithoutContentInput!
-}
-
-input CategoryWhereInput {
-  id: ID
-  id_not: ID
-  id_in: [ID!]
-  id_not_in: [ID!]
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_contains: ID
-  id_not_contains: ID
-  id_starts_with: ID
-  id_not_starts_with: ID
-  id_ends_with: ID
-  id_not_ends_with: ID
-  title: String
-  title_not: String
-  title_in: [String!]
-  title_not_in: [String!]
-  title_lt: String
-  title_lte: String
-  title_gt: String
-  title_gte: String
-  title_contains: String
-  title_not_contains: String
-  title_starts_with: String
-  title_not_starts_with: String
-  title_ends_with: String
-  title_not_ends_with: String
-  featuredImage: String
-  featuredImage_not: String
-  featuredImage_in: [String!]
-  featuredImage_not_in: [String!]
-  featuredImage_lt: String
-  featuredImage_lte: String
-  featuredImage_gt: String
-  featuredImage_gte: String
-  featuredImage_contains: String
-  featuredImage_not_contains: String
-  featuredImage_starts_with: String
-  featuredImage_not_starts_with: String
-  featuredImage_ends_with: String
-  featuredImage_not_ends_with: String
-  color: String
-  color_not: String
-  color_in: [String!]
-  color_not_in: [String!]
-  color_lt: String
-  color_lte: String
-  color_gt: String
-  color_gte: String
-  color_contains: String
-  color_not_contains: String
-  color_starts_with: String
-  color_not_starts_with: String
-  color_ends_with: String
-  color_not_ends_with: String
-  content_every: ContentPieceWhereInput
-  content_some: ContentPieceWhereInput
-  content_none: ContentPieceWhereInput
-  connectedThings_every: ThingWhereInput
-  connectedThings_some: ThingWhereInput
-  connectedThings_none: ThingWhereInput
-  comments_every: CommentWhereInput
-  comments_some: CommentWhereInput
-  comments_none: CommentWhereInput
-  createdAt: DateTime
-  createdAt_not: DateTime
-  createdAt_in: [DateTime!]
-  createdAt_not_in: [DateTime!]
-  createdAt_lt: DateTime
-  createdAt_lte: DateTime
-  createdAt_gt: DateTime
-  createdAt_gte: DateTime
-  updatedAt: DateTime
-  updatedAt_not: DateTime
-  updatedAt_in: [DateTime!]
-  updatedAt_not_in: [DateTime!]
-  updatedAt_lt: DateTime
-  updatedAt_lte: DateTime
-  updatedAt_gt: DateTime
-  updatedAt_gte: DateTime
-  AND: [CategoryWhereInput!]
-  OR: [CategoryWhereInput!]
-  NOT: [CategoryWhereInput!]
-}
-
-input CategoryWhereUniqueInput {
-  id: ID
-  title: String
-}
-
 type Comment {
   id: ID!
   author: Member!
@@ -391,7 +51,6 @@ type Comment {
   onThing: Thing
   onComment: Comment
   onTag: Tag
-  onCategory: Category
 }
 
 type CommentConnection {
@@ -407,7 +66,6 @@ input CommentCreateInput {
   onThing: ThingCreateOneWithoutCommentsInput
   onComment: CommentCreateOneInput
   onTag: TagCreateOneWithoutCommentsInput
-  onCategory: CategoryCreateOneWithoutCommentsInput
 }
 
 input CommentCreateManyInput {
@@ -417,11 +75,6 @@ input CommentCreateManyInput {
 
 input CommentCreateManyWithoutAuthorInput {
   create: [CommentCreateWithoutAuthorInput!]
-  connect: [CommentWhereUniqueInput!]
-}
-
-input CommentCreateManyWithoutOnCategoryInput {
-  create: [CommentCreateWithoutOnCategoryInput!]
   connect: [CommentWhereUniqueInput!]
 }
 
@@ -446,16 +99,6 @@ input CommentCreateWithoutAuthorInput {
   onThing: ThingCreateOneWithoutCommentsInput
   onComment: CommentCreateOneInput
   onTag: TagCreateOneWithoutCommentsInput
-  onCategory: CategoryCreateOneWithoutCommentsInput
-}
-
-input CommentCreateWithoutOnCategoryInput {
-  id: ID
-  author: MemberCreateOneWithoutCommentsInput!
-  comment: String!
-  onThing: ThingCreateOneWithoutCommentsInput
-  onComment: CommentCreateOneInput
-  onTag: TagCreateOneWithoutCommentsInput
 }
 
 input CommentCreateWithoutOnTagInput {
@@ -464,7 +107,6 @@ input CommentCreateWithoutOnTagInput {
   comment: String!
   onThing: ThingCreateOneWithoutCommentsInput
   onComment: CommentCreateOneInput
-  onCategory: CategoryCreateOneWithoutCommentsInput
 }
 
 input CommentCreateWithoutOnThingInput {
@@ -473,7 +115,6 @@ input CommentCreateWithoutOnThingInput {
   comment: String!
   onComment: CommentCreateOneInput
   onTag: TagCreateOneWithoutCommentsInput
-  onCategory: CategoryCreateOneWithoutCommentsInput
 }
 
 type CommentEdge {
@@ -573,7 +214,6 @@ input CommentUpdateDataInput {
   onThing: ThingUpdateOneWithoutCommentsInput
   onComment: CommentUpdateOneInput
   onTag: TagUpdateOneWithoutCommentsInput
-  onCategory: CategoryUpdateOneWithoutCommentsInput
 }
 
 input CommentUpdateInput {
@@ -582,7 +222,6 @@ input CommentUpdateInput {
   onThing: ThingUpdateOneWithoutCommentsInput
   onComment: CommentUpdateOneInput
   onTag: TagUpdateOneWithoutCommentsInput
-  onCategory: CategoryUpdateOneWithoutCommentsInput
 }
 
 input CommentUpdateManyDataInput {
@@ -613,18 +252,6 @@ input CommentUpdateManyWithoutAuthorInput {
   disconnect: [CommentWhereUniqueInput!]
   update: [CommentUpdateWithWhereUniqueWithoutAuthorInput!]
   upsert: [CommentUpsertWithWhereUniqueWithoutAuthorInput!]
-  deleteMany: [CommentScalarWhereInput!]
-  updateMany: [CommentUpdateManyWithWhereNestedInput!]
-}
-
-input CommentUpdateManyWithoutOnCategoryInput {
-  create: [CommentCreateWithoutOnCategoryInput!]
-  delete: [CommentWhereUniqueInput!]
-  connect: [CommentWhereUniqueInput!]
-  set: [CommentWhereUniqueInput!]
-  disconnect: [CommentWhereUniqueInput!]
-  update: [CommentUpdateWithWhereUniqueWithoutOnCategoryInput!]
-  upsert: [CommentUpsertWithWhereUniqueWithoutOnCategoryInput!]
   deleteMany: [CommentScalarWhereInput!]
   updateMany: [CommentUpdateManyWithWhereNestedInput!]
 }
@@ -672,15 +299,6 @@ input CommentUpdateWithoutAuthorDataInput {
   onThing: ThingUpdateOneWithoutCommentsInput
   onComment: CommentUpdateOneInput
   onTag: TagUpdateOneWithoutCommentsInput
-  onCategory: CategoryUpdateOneWithoutCommentsInput
-}
-
-input CommentUpdateWithoutOnCategoryDataInput {
-  author: MemberUpdateOneRequiredWithoutCommentsInput
-  comment: String
-  onThing: ThingUpdateOneWithoutCommentsInput
-  onComment: CommentUpdateOneInput
-  onTag: TagUpdateOneWithoutCommentsInput
 }
 
 input CommentUpdateWithoutOnTagDataInput {
@@ -688,7 +306,6 @@ input CommentUpdateWithoutOnTagDataInput {
   comment: String
   onThing: ThingUpdateOneWithoutCommentsInput
   onComment: CommentUpdateOneInput
-  onCategory: CategoryUpdateOneWithoutCommentsInput
 }
 
 input CommentUpdateWithoutOnThingDataInput {
@@ -696,7 +313,6 @@ input CommentUpdateWithoutOnThingDataInput {
   comment: String
   onComment: CommentUpdateOneInput
   onTag: TagUpdateOneWithoutCommentsInput
-  onCategory: CategoryUpdateOneWithoutCommentsInput
 }
 
 input CommentUpdateWithWhereUniqueNestedInput {
@@ -707,11 +323,6 @@ input CommentUpdateWithWhereUniqueNestedInput {
 input CommentUpdateWithWhereUniqueWithoutAuthorInput {
   where: CommentWhereUniqueInput!
   data: CommentUpdateWithoutAuthorDataInput!
-}
-
-input CommentUpdateWithWhereUniqueWithoutOnCategoryInput {
-  where: CommentWhereUniqueInput!
-  data: CommentUpdateWithoutOnCategoryDataInput!
 }
 
 input CommentUpdateWithWhereUniqueWithoutOnTagInput {
@@ -739,12 +350,6 @@ input CommentUpsertWithWhereUniqueWithoutAuthorInput {
   where: CommentWhereUniqueInput!
   update: CommentUpdateWithoutAuthorDataInput!
   create: CommentCreateWithoutAuthorInput!
-}
-
-input CommentUpsertWithWhereUniqueWithoutOnCategoryInput {
-  where: CommentWhereUniqueInput!
-  update: CommentUpdateWithoutOnCategoryDataInput!
-  create: CommentCreateWithoutOnCategoryInput!
 }
 
 input CommentUpsertWithWhereUniqueWithoutOnTagInput {
@@ -808,7 +413,6 @@ input CommentWhereInput {
   onThing: ThingWhereInput
   onComment: CommentWhereInput
   onTag: TagWhereInput
-  onCategory: CategoryWhereInput
   AND: [CommentWhereInput!]
   OR: [CommentWhereInput!]
   NOT: [CommentWhereInput!]
@@ -823,7 +427,6 @@ type ContentPiece {
   content: String!
   onThing: Thing
   onTag: Tag
-  onCategory: Category
 }
 
 type ContentPieceConnection {
@@ -837,16 +440,10 @@ input ContentPieceCreateInput {
   content: String!
   onThing: ThingCreateOneWithoutContentInput
   onTag: TagCreateOneWithoutContentInput
-  onCategory: CategoryCreateOneWithoutContentInput
 }
 
 input ContentPieceCreateManyInput {
   create: [ContentPieceCreateInput!]
-  connect: [ContentPieceWhereUniqueInput!]
-}
-
-input ContentPieceCreateManyWithoutOnCategoryInput {
-  create: [ContentPieceCreateWithoutOnCategoryInput!]
   connect: [ContentPieceWhereUniqueInput!]
 }
 
@@ -860,25 +457,16 @@ input ContentPieceCreateManyWithoutOnThingInput {
   connect: [ContentPieceWhereUniqueInput!]
 }
 
-input ContentPieceCreateWithoutOnCategoryInput {
-  id: ID
-  content: String!
-  onThing: ThingCreateOneWithoutContentInput
-  onTag: TagCreateOneWithoutContentInput
-}
-
 input ContentPieceCreateWithoutOnTagInput {
   id: ID
   content: String!
   onThing: ThingCreateOneWithoutContentInput
-  onCategory: CategoryCreateOneWithoutContentInput
 }
 
 input ContentPieceCreateWithoutOnThingInput {
   id: ID
   content: String!
   onTag: TagCreateOneWithoutContentInput
-  onCategory: CategoryCreateOneWithoutContentInput
 }
 
 type ContentPieceEdge {
@@ -954,14 +542,12 @@ input ContentPieceUpdateDataInput {
   content: String
   onThing: ThingUpdateOneWithoutContentInput
   onTag: TagUpdateOneWithoutContentInput
-  onCategory: CategoryUpdateOneWithoutContentInput
 }
 
 input ContentPieceUpdateInput {
   content: String
   onThing: ThingUpdateOneWithoutContentInput
   onTag: TagUpdateOneWithoutContentInput
-  onCategory: CategoryUpdateOneWithoutContentInput
 }
 
 input ContentPieceUpdateManyDataInput {
@@ -982,18 +568,6 @@ input ContentPieceUpdateManyInput {
 
 input ContentPieceUpdateManyMutationInput {
   content: String
-}
-
-input ContentPieceUpdateManyWithoutOnCategoryInput {
-  create: [ContentPieceCreateWithoutOnCategoryInput!]
-  delete: [ContentPieceWhereUniqueInput!]
-  connect: [ContentPieceWhereUniqueInput!]
-  set: [ContentPieceWhereUniqueInput!]
-  disconnect: [ContentPieceWhereUniqueInput!]
-  update: [ContentPieceUpdateWithWhereUniqueWithoutOnCategoryInput!]
-  upsert: [ContentPieceUpsertWithWhereUniqueWithoutOnCategoryInput!]
-  deleteMany: [ContentPieceScalarWhereInput!]
-  updateMany: [ContentPieceUpdateManyWithWhereNestedInput!]
 }
 
 input ContentPieceUpdateManyWithoutOnTagInput {
@@ -1025,32 +599,19 @@ input ContentPieceUpdateManyWithWhereNestedInput {
   data: ContentPieceUpdateManyDataInput!
 }
 
-input ContentPieceUpdateWithoutOnCategoryDataInput {
-  content: String
-  onThing: ThingUpdateOneWithoutContentInput
-  onTag: TagUpdateOneWithoutContentInput
-}
-
 input ContentPieceUpdateWithoutOnTagDataInput {
   content: String
   onThing: ThingUpdateOneWithoutContentInput
-  onCategory: CategoryUpdateOneWithoutContentInput
 }
 
 input ContentPieceUpdateWithoutOnThingDataInput {
   content: String
   onTag: TagUpdateOneWithoutContentInput
-  onCategory: CategoryUpdateOneWithoutContentInput
 }
 
 input ContentPieceUpdateWithWhereUniqueNestedInput {
   where: ContentPieceWhereUniqueInput!
   data: ContentPieceUpdateDataInput!
-}
-
-input ContentPieceUpdateWithWhereUniqueWithoutOnCategoryInput {
-  where: ContentPieceWhereUniqueInput!
-  data: ContentPieceUpdateWithoutOnCategoryDataInput!
 }
 
 input ContentPieceUpdateWithWhereUniqueWithoutOnTagInput {
@@ -1067,12 +628,6 @@ input ContentPieceUpsertWithWhereUniqueNestedInput {
   where: ContentPieceWhereUniqueInput!
   update: ContentPieceUpdateDataInput!
   create: ContentPieceCreateInput!
-}
-
-input ContentPieceUpsertWithWhereUniqueWithoutOnCategoryInput {
-  where: ContentPieceWhereUniqueInput!
-  update: ContentPieceUpdateWithoutOnCategoryDataInput!
-  create: ContentPieceCreateWithoutOnCategoryInput!
 }
 
 input ContentPieceUpsertWithWhereUniqueWithoutOnTagInput {
@@ -1118,7 +673,6 @@ input ContentPieceWhereInput {
   content_not_ends_with: String
   onThing: ThingWhereInput
   onTag: TagWhereInput
-  onCategory: CategoryWhereInput
   AND: [ContentPieceWhereInput!]
   OR: [ContentPieceWhereInput!]
   NOT: [ContentPieceWhereInput!]
@@ -1153,7 +707,6 @@ type Member {
   passes(where: PassWhereInput, orderBy: PassOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Pass!]
   createdThings(where: ThingWhereInput, orderBy: ThingOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Thing!]
   ownedTags(where: TagWhereInput, orderBy: TagOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Tag!]
-  defaultCategory: Category
   defaultPrivacy: PrivacySetting
   comments(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Comment!]
   password: String!
@@ -1197,7 +750,6 @@ input MemberCreateInput {
   passes: PassCreateManyWithoutPasserInput
   createdThings: ThingCreateManyWithoutAuthorInput
   ownedTags: TagCreateManyWithoutAuthorInput
-  defaultCategory: CategoryCreateOneInput
   defaultPrivacy: PrivacySetting
   comments: CommentCreateManyWithoutAuthorInput
   password: String!
@@ -1291,7 +843,6 @@ input MemberCreateWithoutCommentsInput {
   passes: PassCreateManyWithoutPasserInput
   createdThings: ThingCreateManyWithoutAuthorInput
   ownedTags: TagCreateManyWithoutAuthorInput
-  defaultCategory: CategoryCreateOneInput
   defaultPrivacy: PrivacySetting
   password: String!
   roles: MemberCreaterolesInput
@@ -1325,7 +876,6 @@ input MemberCreateWithoutCreatedThingsInput {
   votes: VoteCreateManyWithoutVoterInput
   passes: PassCreateManyWithoutPasserInput
   ownedTags: TagCreateManyWithoutAuthorInput
-  defaultCategory: CategoryCreateOneInput
   defaultPrivacy: PrivacySetting
   comments: CommentCreateManyWithoutAuthorInput
   password: String!
@@ -1360,7 +910,6 @@ input MemberCreateWithoutFriendRequestsInput {
   passes: PassCreateManyWithoutPasserInput
   createdThings: ThingCreateManyWithoutAuthorInput
   ownedTags: TagCreateManyWithoutAuthorInput
-  defaultCategory: CategoryCreateOneInput
   defaultPrivacy: PrivacySetting
   comments: CommentCreateManyWithoutAuthorInput
   password: String!
@@ -1395,7 +944,6 @@ input MemberCreateWithoutFriendsInput {
   passes: PassCreateManyWithoutPasserInput
   createdThings: ThingCreateManyWithoutAuthorInput
   ownedTags: TagCreateManyWithoutAuthorInput
-  defaultCategory: CategoryCreateOneInput
   defaultPrivacy: PrivacySetting
   comments: CommentCreateManyWithoutAuthorInput
   password: String!
@@ -1430,7 +978,6 @@ input MemberCreateWithoutIgnoredFriendRequestsInput {
   passes: PassCreateManyWithoutPasserInput
   createdThings: ThingCreateManyWithoutAuthorInput
   ownedTags: TagCreateManyWithoutAuthorInput
-  defaultCategory: CategoryCreateOneInput
   defaultPrivacy: PrivacySetting
   comments: CommentCreateManyWithoutAuthorInput
   password: String!
@@ -1465,7 +1012,6 @@ input MemberCreateWithoutNotificationsInput {
   passes: PassCreateManyWithoutPasserInput
   createdThings: ThingCreateManyWithoutAuthorInput
   ownedTags: TagCreateManyWithoutAuthorInput
-  defaultCategory: CategoryCreateOneInput
   defaultPrivacy: PrivacySetting
   comments: CommentCreateManyWithoutAuthorInput
   password: String!
@@ -1500,7 +1046,6 @@ input MemberCreateWithoutOwnedTagsInput {
   votes: VoteCreateManyWithoutVoterInput
   passes: PassCreateManyWithoutPasserInput
   createdThings: ThingCreateManyWithoutAuthorInput
-  defaultCategory: CategoryCreateOneInput
   defaultPrivacy: PrivacySetting
   comments: CommentCreateManyWithoutAuthorInput
   password: String!
@@ -1535,7 +1080,6 @@ input MemberCreateWithoutPassesInput {
   votes: VoteCreateManyWithoutVoterInput
   createdThings: ThingCreateManyWithoutAuthorInput
   ownedTags: TagCreateManyWithoutAuthorInput
-  defaultCategory: CategoryCreateOneInput
   defaultPrivacy: PrivacySetting
   comments: CommentCreateManyWithoutAuthorInput
   password: String!
@@ -1570,7 +1114,6 @@ input MemberCreateWithoutVotesInput {
   passes: PassCreateManyWithoutPasserInput
   createdThings: ThingCreateManyWithoutAuthorInput
   ownedTags: TagCreateManyWithoutAuthorInput
-  defaultCategory: CategoryCreateOneInput
   defaultPrivacy: PrivacySetting
   comments: CommentCreateManyWithoutAuthorInput
   password: String!
@@ -1977,7 +1520,6 @@ input MemberUpdateDataInput {
   passes: PassUpdateManyWithoutPasserInput
   createdThings: ThingUpdateManyWithoutAuthorInput
   ownedTags: TagUpdateManyWithoutAuthorInput
-  defaultCategory: CategoryUpdateOneInput
   defaultPrivacy: PrivacySetting
   comments: CommentUpdateManyWithoutAuthorInput
   password: String
@@ -2012,7 +1554,6 @@ input MemberUpdateInput {
   passes: PassUpdateManyWithoutPasserInput
   createdThings: ThingUpdateManyWithoutAuthorInput
   ownedTags: TagUpdateManyWithoutAuthorInput
-  defaultCategory: CategoryUpdateOneInput
   defaultPrivacy: PrivacySetting
   comments: CommentUpdateManyWithoutAuthorInput
   password: String
@@ -2148,6 +1689,13 @@ input MemberUpdateOneRequiredWithoutNotificationsInput {
   connect: MemberWhereUniqueInput
 }
 
+input MemberUpdateOneRequiredWithoutOwnedTagsInput {
+  create: MemberCreateWithoutOwnedTagsInput
+  update: MemberUpdateWithoutOwnedTagsDataInput
+  upsert: MemberUpsertWithoutOwnedTagsInput
+  connect: MemberWhereUniqueInput
+}
+
 input MemberUpdateOneRequiredWithoutPassesInput {
   create: MemberCreateWithoutPassesInput
   update: MemberUpdateWithoutPassesDataInput
@@ -2159,15 +1707,6 @@ input MemberUpdateOneRequiredWithoutVotesInput {
   create: MemberCreateWithoutVotesInput
   update: MemberUpdateWithoutVotesDataInput
   upsert: MemberUpsertWithoutVotesInput
-  connect: MemberWhereUniqueInput
-}
-
-input MemberUpdateOneWithoutOwnedTagsInput {
-  create: MemberCreateWithoutOwnedTagsInput
-  update: MemberUpdateWithoutOwnedTagsDataInput
-  upsert: MemberUpsertWithoutOwnedTagsInput
-  delete: Boolean
-  disconnect: Boolean
   connect: MemberWhereUniqueInput
 }
 
@@ -2197,7 +1736,6 @@ input MemberUpdateWithoutCommentsDataInput {
   passes: PassUpdateManyWithoutPasserInput
   createdThings: ThingUpdateManyWithoutAuthorInput
   ownedTags: TagUpdateManyWithoutAuthorInput
-  defaultCategory: CategoryUpdateOneInput
   defaultPrivacy: PrivacySetting
   password: String
   roles: MemberUpdaterolesInput
@@ -2230,7 +1768,6 @@ input MemberUpdateWithoutCreatedThingsDataInput {
   votes: VoteUpdateManyWithoutVoterInput
   passes: PassUpdateManyWithoutPasserInput
   ownedTags: TagUpdateManyWithoutAuthorInput
-  defaultCategory: CategoryUpdateOneInput
   defaultPrivacy: PrivacySetting
   comments: CommentUpdateManyWithoutAuthorInput
   password: String
@@ -2264,7 +1801,6 @@ input MemberUpdateWithoutFriendRequestsDataInput {
   passes: PassUpdateManyWithoutPasserInput
   createdThings: ThingUpdateManyWithoutAuthorInput
   ownedTags: TagUpdateManyWithoutAuthorInput
-  defaultCategory: CategoryUpdateOneInput
   defaultPrivacy: PrivacySetting
   comments: CommentUpdateManyWithoutAuthorInput
   password: String
@@ -2298,7 +1834,6 @@ input MemberUpdateWithoutFriendsDataInput {
   passes: PassUpdateManyWithoutPasserInput
   createdThings: ThingUpdateManyWithoutAuthorInput
   ownedTags: TagUpdateManyWithoutAuthorInput
-  defaultCategory: CategoryUpdateOneInput
   defaultPrivacy: PrivacySetting
   comments: CommentUpdateManyWithoutAuthorInput
   password: String
@@ -2332,7 +1867,6 @@ input MemberUpdateWithoutIgnoredFriendRequestsDataInput {
   passes: PassUpdateManyWithoutPasserInput
   createdThings: ThingUpdateManyWithoutAuthorInput
   ownedTags: TagUpdateManyWithoutAuthorInput
-  defaultCategory: CategoryUpdateOneInput
   defaultPrivacy: PrivacySetting
   comments: CommentUpdateManyWithoutAuthorInput
   password: String
@@ -2366,7 +1900,6 @@ input MemberUpdateWithoutNotificationsDataInput {
   passes: PassUpdateManyWithoutPasserInput
   createdThings: ThingUpdateManyWithoutAuthorInput
   ownedTags: TagUpdateManyWithoutAuthorInput
-  defaultCategory: CategoryUpdateOneInput
   defaultPrivacy: PrivacySetting
   comments: CommentUpdateManyWithoutAuthorInput
   password: String
@@ -2400,7 +1933,6 @@ input MemberUpdateWithoutOwnedTagsDataInput {
   votes: VoteUpdateManyWithoutVoterInput
   passes: PassUpdateManyWithoutPasserInput
   createdThings: ThingUpdateManyWithoutAuthorInput
-  defaultCategory: CategoryUpdateOneInput
   defaultPrivacy: PrivacySetting
   comments: CommentUpdateManyWithoutAuthorInput
   password: String
@@ -2434,7 +1966,6 @@ input MemberUpdateWithoutPassesDataInput {
   votes: VoteUpdateManyWithoutVoterInput
   createdThings: ThingUpdateManyWithoutAuthorInput
   ownedTags: TagUpdateManyWithoutAuthorInput
-  defaultCategory: CategoryUpdateOneInput
   defaultPrivacy: PrivacySetting
   comments: CommentUpdateManyWithoutAuthorInput
   password: String
@@ -2468,7 +1999,6 @@ input MemberUpdateWithoutVotesDataInput {
   passes: PassUpdateManyWithoutPasserInput
   createdThings: ThingUpdateManyWithoutAuthorInput
   ownedTags: TagUpdateManyWithoutAuthorInput
-  defaultCategory: CategoryUpdateOneInput
   defaultPrivacy: PrivacySetting
   comments: CommentUpdateManyWithoutAuthorInput
   password: String
@@ -2700,7 +2230,6 @@ input MemberWhereInput {
   ownedTags_every: TagWhereInput
   ownedTags_some: TagWhereInput
   ownedTags_none: TagWhereInput
-  defaultCategory: CategoryWhereInput
   defaultPrivacy: PrivacySetting
   defaultPrivacy_not: PrivacySetting
   defaultPrivacy_in: [PrivacySetting!]
@@ -2859,12 +2388,6 @@ input MemberWhereUniqueInput {
 }
 
 type Mutation {
-  createCategory(data: CategoryCreateInput!): Category!
-  updateCategory(data: CategoryUpdateInput!, where: CategoryWhereUniqueInput!): Category
-  updateManyCategories(data: CategoryUpdateManyMutationInput!, where: CategoryWhereInput): BatchPayload!
-  upsertCategory(where: CategoryWhereUniqueInput!, create: CategoryCreateInput!, update: CategoryUpdateInput!): Category!
-  deleteCategory(where: CategoryWhereUniqueInput!): Category
-  deleteManyCategories(where: CategoryWhereInput): BatchPayload!
   createComment(data: CommentCreateInput!): Comment!
   updateComment(data: CommentUpdateInput!, where: CommentWhereUniqueInput!): Comment
   updateManyComments(data: CommentUpdateManyMutationInput!, where: CommentWhereInput): BatchPayload!
@@ -3383,9 +2906,6 @@ enum PrivacySetting {
 }
 
 type Query {
-  category(where: CategoryWhereUniqueInput!): Category
-  categories(where: CategoryWhereInput, orderBy: CategoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Category]!
-  categoriesConnection(where: CategoryWhereInput, orderBy: CategoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): CategoryConnection!
   comment(where: CommentWhereUniqueInput!): Comment
   comments(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Comment]!
   commentsConnection(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): CommentConnection!
@@ -3432,10 +2952,10 @@ type Stack {
   title: String!
   author: Member!
   featuredImage: String
-  color: String
   content(where: ContentPieceWhereInput, orderBy: ContentPieceOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ContentPiece!]
   contentOrder: [String!]!
   connectedThings(where: ThingWhereInput, orderBy: ThingOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Thing!]
+  color: String
   comments(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Comment!]
   createdAt: DateTime!
   updatedAt: DateTime
@@ -3456,10 +2976,26 @@ input StackCreateInput {
   title: String!
   author: MemberCreateOneInput!
   featuredImage: String
-  color: String
   content: ContentPieceCreateManyInput
   contentOrder: StackCreatecontentOrderInput
-  connectedThings: ThingCreateManyInput
+  connectedThings: ThingCreateManyWithoutPartOfStacksInput
+  color: String
+  comments: CommentCreateManyInput
+}
+
+input StackCreateManyWithoutConnectedThingsInput {
+  create: [StackCreateWithoutConnectedThingsInput!]
+  connect: [StackWhereUniqueInput!]
+}
+
+input StackCreateWithoutConnectedThingsInput {
+  id: ID
+  title: String!
+  author: MemberCreateOneInput!
+  featuredImage: String
+  content: ContentPieceCreateManyInput
+  contentOrder: StackCreatecontentOrderInput
+  color: String
   comments: CommentCreateManyInput
 }
 
@@ -3487,10 +3023,88 @@ type StackPreviousValues {
   id: ID!
   title: String!
   featuredImage: String
-  color: String
   contentOrder: [String!]!
+  color: String
   createdAt: DateTime!
   updatedAt: DateTime
+}
+
+input StackScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  title: String
+  title_not: String
+  title_in: [String!]
+  title_not_in: [String!]
+  title_lt: String
+  title_lte: String
+  title_gt: String
+  title_gte: String
+  title_contains: String
+  title_not_contains: String
+  title_starts_with: String
+  title_not_starts_with: String
+  title_ends_with: String
+  title_not_ends_with: String
+  featuredImage: String
+  featuredImage_not: String
+  featuredImage_in: [String!]
+  featuredImage_not_in: [String!]
+  featuredImage_lt: String
+  featuredImage_lte: String
+  featuredImage_gt: String
+  featuredImage_gte: String
+  featuredImage_contains: String
+  featuredImage_not_contains: String
+  featuredImage_starts_with: String
+  featuredImage_not_starts_with: String
+  featuredImage_ends_with: String
+  featuredImage_not_ends_with: String
+  color: String
+  color_not: String
+  color_in: [String!]
+  color_not_in: [String!]
+  color_lt: String
+  color_lte: String
+  color_gt: String
+  color_gte: String
+  color_contains: String
+  color_not_contains: String
+  color_starts_with: String
+  color_not_starts_with: String
+  color_ends_with: String
+  color_not_ends_with: String
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  AND: [StackScalarWhereInput!]
+  OR: [StackScalarWhereInput!]
+  NOT: [StackScalarWhereInput!]
 }
 
 type StackSubscriptionPayload {
@@ -3519,18 +3133,63 @@ input StackUpdateInput {
   title: String
   author: MemberUpdateOneRequiredInput
   featuredImage: String
-  color: String
   content: ContentPieceUpdateManyInput
   contentOrder: StackUpdatecontentOrderInput
-  connectedThings: ThingUpdateManyInput
+  connectedThings: ThingUpdateManyWithoutPartOfStacksInput
+  color: String
   comments: CommentUpdateManyInput
+}
+
+input StackUpdateManyDataInput {
+  title: String
+  featuredImage: String
+  contentOrder: StackUpdatecontentOrderInput
+  color: String
 }
 
 input StackUpdateManyMutationInput {
   title: String
   featuredImage: String
-  color: String
   contentOrder: StackUpdatecontentOrderInput
+  color: String
+}
+
+input StackUpdateManyWithoutConnectedThingsInput {
+  create: [StackCreateWithoutConnectedThingsInput!]
+  delete: [StackWhereUniqueInput!]
+  connect: [StackWhereUniqueInput!]
+  set: [StackWhereUniqueInput!]
+  disconnect: [StackWhereUniqueInput!]
+  update: [StackUpdateWithWhereUniqueWithoutConnectedThingsInput!]
+  upsert: [StackUpsertWithWhereUniqueWithoutConnectedThingsInput!]
+  deleteMany: [StackScalarWhereInput!]
+  updateMany: [StackUpdateManyWithWhereNestedInput!]
+}
+
+input StackUpdateManyWithWhereNestedInput {
+  where: StackScalarWhereInput!
+  data: StackUpdateManyDataInput!
+}
+
+input StackUpdateWithoutConnectedThingsDataInput {
+  title: String
+  author: MemberUpdateOneRequiredInput
+  featuredImage: String
+  content: ContentPieceUpdateManyInput
+  contentOrder: StackUpdatecontentOrderInput
+  color: String
+  comments: CommentUpdateManyInput
+}
+
+input StackUpdateWithWhereUniqueWithoutConnectedThingsInput {
+  where: StackWhereUniqueInput!
+  data: StackUpdateWithoutConnectedThingsDataInput!
+}
+
+input StackUpsertWithWhereUniqueWithoutConnectedThingsInput {
+  where: StackWhereUniqueInput!
+  update: StackUpdateWithoutConnectedThingsDataInput!
+  create: StackCreateWithoutConnectedThingsInput!
 }
 
 input StackWhereInput {
@@ -3577,6 +3236,12 @@ input StackWhereInput {
   featuredImage_not_starts_with: String
   featuredImage_ends_with: String
   featuredImage_not_ends_with: String
+  content_every: ContentPieceWhereInput
+  content_some: ContentPieceWhereInput
+  content_none: ContentPieceWhereInput
+  connectedThings_every: ThingWhereInput
+  connectedThings_some: ThingWhereInput
+  connectedThings_none: ThingWhereInput
   color: String
   color_not: String
   color_in: [String!]
@@ -3591,12 +3256,6 @@ input StackWhereInput {
   color_not_starts_with: String
   color_ends_with: String
   color_not_ends_with: String
-  content_every: ContentPieceWhereInput
-  content_some: ContentPieceWhereInput
-  content_none: ContentPieceWhereInput
-  connectedThings_every: ThingWhereInput
-  connectedThings_some: ThingWhereInput
-  connectedThings_none: ThingWhereInput
   comments_every: CommentWhereInput
   comments_some: CommentWhereInput
   comments_none: CommentWhereInput
@@ -3626,7 +3285,6 @@ input StackWhereUniqueInput {
 }
 
 type Subscription {
-  category(where: CategorySubscriptionWhereInput): CategorySubscriptionPayload
   comment(where: CommentSubscriptionWhereInput): CommentSubscriptionPayload
   contentPiece(where: ContentPieceSubscriptionWhereInput): ContentPieceSubscriptionPayload
   member(where: MemberSubscriptionWhereInput): MemberSubscriptionPayload
@@ -3642,15 +3300,13 @@ type Subscription {
 type Tag {
   id: ID!
   title: String!
-  author: Member
+  author: Member!
   featuredImage: String
-  public: Boolean
   content(where: ContentPieceWhereInput, orderBy: ContentPieceOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ContentPiece!]
   contentOrder: [String!]!
   connectedThings(where: ThingWhereInput, orderBy: ThingOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Thing!]
   color: String
   comments(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Comment!]
-  score: Int!
   createdAt: DateTime!
   updatedAt: DateTime
 }
@@ -3668,15 +3324,13 @@ input TagCreatecontentOrderInput {
 input TagCreateInput {
   id: ID
   title: String!
-  author: MemberCreateOneWithoutOwnedTagsInput
+  author: MemberCreateOneWithoutOwnedTagsInput!
   featuredImage: String
-  public: Boolean
   content: ContentPieceCreateManyWithoutOnTagInput
   contentOrder: TagCreatecontentOrderInput
   connectedThings: ThingCreateManyWithoutPartOfTagsInput
   color: String
   comments: CommentCreateManyWithoutOnTagInput
-  score: Int
 }
 
 input TagCreateManyWithoutAuthorInput {
@@ -3703,52 +3357,44 @@ input TagCreateWithoutAuthorInput {
   id: ID
   title: String!
   featuredImage: String
-  public: Boolean
   content: ContentPieceCreateManyWithoutOnTagInput
   contentOrder: TagCreatecontentOrderInput
   connectedThings: ThingCreateManyWithoutPartOfTagsInput
   color: String
   comments: CommentCreateManyWithoutOnTagInput
-  score: Int
 }
 
 input TagCreateWithoutCommentsInput {
   id: ID
   title: String!
-  author: MemberCreateOneWithoutOwnedTagsInput
+  author: MemberCreateOneWithoutOwnedTagsInput!
   featuredImage: String
-  public: Boolean
   content: ContentPieceCreateManyWithoutOnTagInput
   contentOrder: TagCreatecontentOrderInput
   connectedThings: ThingCreateManyWithoutPartOfTagsInput
   color: String
-  score: Int
 }
 
 input TagCreateWithoutConnectedThingsInput {
   id: ID
   title: String!
-  author: MemberCreateOneWithoutOwnedTagsInput
+  author: MemberCreateOneWithoutOwnedTagsInput!
   featuredImage: String
-  public: Boolean
   content: ContentPieceCreateManyWithoutOnTagInput
   contentOrder: TagCreatecontentOrderInput
   color: String
   comments: CommentCreateManyWithoutOnTagInput
-  score: Int
 }
 
 input TagCreateWithoutContentInput {
   id: ID
   title: String!
-  author: MemberCreateOneWithoutOwnedTagsInput
+  author: MemberCreateOneWithoutOwnedTagsInput!
   featuredImage: String
-  public: Boolean
   contentOrder: TagCreatecontentOrderInput
   connectedThings: ThingCreateManyWithoutPartOfTagsInput
   color: String
   comments: CommentCreateManyWithoutOnTagInput
-  score: Int
 }
 
 type TagEdge {
@@ -3763,12 +3409,8 @@ enum TagOrderByInput {
   title_DESC
   featuredImage_ASC
   featuredImage_DESC
-  public_ASC
-  public_DESC
   color_ASC
   color_DESC
-  score_ASC
-  score_DESC
   createdAt_ASC
   createdAt_DESC
   updatedAt_ASC
@@ -3779,10 +3421,8 @@ type TagPreviousValues {
   id: ID!
   title: String!
   featuredImage: String
-  public: Boolean
   contentOrder: [String!]!
   color: String
-  score: Int!
   createdAt: DateTime!
   updatedAt: DateTime
 }
@@ -3830,8 +3470,6 @@ input TagScalarWhereInput {
   featuredImage_not_starts_with: String
   featuredImage_ends_with: String
   featuredImage_not_ends_with: String
-  public: Boolean
-  public_not: Boolean
   color: String
   color_not: String
   color_in: [String!]
@@ -3846,14 +3484,6 @@ input TagScalarWhereInput {
   color_not_starts_with: String
   color_ends_with: String
   color_not_ends_with: String
-  score: Int
-  score_not: Int
-  score_in: [Int!]
-  score_not_in: [Int!]
-  score_lt: Int
-  score_lte: Int
-  score_gt: Int
-  score_gte: Int
   createdAt: DateTime
   createdAt_not: DateTime
   createdAt_in: [DateTime!]
@@ -3899,33 +3529,27 @@ input TagUpdatecontentOrderInput {
 
 input TagUpdateInput {
   title: String
-  author: MemberUpdateOneWithoutOwnedTagsInput
+  author: MemberUpdateOneRequiredWithoutOwnedTagsInput
   featuredImage: String
-  public: Boolean
   content: ContentPieceUpdateManyWithoutOnTagInput
   contentOrder: TagUpdatecontentOrderInput
   connectedThings: ThingUpdateManyWithoutPartOfTagsInput
   color: String
   comments: CommentUpdateManyWithoutOnTagInput
-  score: Int
 }
 
 input TagUpdateManyDataInput {
   title: String
   featuredImage: String
-  public: Boolean
   contentOrder: TagUpdatecontentOrderInput
   color: String
-  score: Int
 }
 
 input TagUpdateManyMutationInput {
   title: String
   featuredImage: String
-  public: Boolean
   contentOrder: TagUpdatecontentOrderInput
   color: String
-  score: Int
 }
 
 input TagUpdateManyWithoutAuthorInput {
@@ -3978,49 +3602,41 @@ input TagUpdateOneWithoutContentInput {
 input TagUpdateWithoutAuthorDataInput {
   title: String
   featuredImage: String
-  public: Boolean
   content: ContentPieceUpdateManyWithoutOnTagInput
   contentOrder: TagUpdatecontentOrderInput
   connectedThings: ThingUpdateManyWithoutPartOfTagsInput
   color: String
   comments: CommentUpdateManyWithoutOnTagInput
-  score: Int
 }
 
 input TagUpdateWithoutCommentsDataInput {
   title: String
-  author: MemberUpdateOneWithoutOwnedTagsInput
+  author: MemberUpdateOneRequiredWithoutOwnedTagsInput
   featuredImage: String
-  public: Boolean
   content: ContentPieceUpdateManyWithoutOnTagInput
   contentOrder: TagUpdatecontentOrderInput
   connectedThings: ThingUpdateManyWithoutPartOfTagsInput
   color: String
-  score: Int
 }
 
 input TagUpdateWithoutConnectedThingsDataInput {
   title: String
-  author: MemberUpdateOneWithoutOwnedTagsInput
+  author: MemberUpdateOneRequiredWithoutOwnedTagsInput
   featuredImage: String
-  public: Boolean
   content: ContentPieceUpdateManyWithoutOnTagInput
   contentOrder: TagUpdatecontentOrderInput
   color: String
   comments: CommentUpdateManyWithoutOnTagInput
-  score: Int
 }
 
 input TagUpdateWithoutContentDataInput {
   title: String
-  author: MemberUpdateOneWithoutOwnedTagsInput
+  author: MemberUpdateOneRequiredWithoutOwnedTagsInput
   featuredImage: String
-  public: Boolean
   contentOrder: TagUpdatecontentOrderInput
   connectedThings: ThingUpdateManyWithoutPartOfTagsInput
   color: String
   comments: CommentUpdateManyWithoutOnTagInput
-  score: Int
 }
 
 input TagUpdateWithWhereUniqueWithoutAuthorInput {
@@ -4099,8 +3715,6 @@ input TagWhereInput {
   featuredImage_not_starts_with: String
   featuredImage_ends_with: String
   featuredImage_not_ends_with: String
-  public: Boolean
-  public_not: Boolean
   content_every: ContentPieceWhereInput
   content_some: ContentPieceWhereInput
   content_none: ContentPieceWhereInput
@@ -4124,14 +3738,6 @@ input TagWhereInput {
   comments_every: CommentWhereInput
   comments_some: CommentWhereInput
   comments_none: CommentWhereInput
-  score: Int
-  score_not: Int
-  score_in: [Int!]
-  score_not_in: [Int!]
-  score_lt: Int
-  score_lte: Int
-  score_gt: Int
-  score_gte: Int
   createdAt: DateTime
   createdAt_not: DateTime
   createdAt_in: [DateTime!]
@@ -4160,14 +3766,14 @@ input TagWhereUniqueInput {
 
 type Thing {
   id: ID!
-  title: String
+  title: String!
   author: Member!
   featuredImage: String
   link: String
   content(where: ContentPieceWhereInput, orderBy: ContentPieceOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ContentPiece!]
   contentOrder: [String!]!
   partOfTags(where: TagWhereInput, orderBy: TagOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Tag!]
-  partOfCategory: Category!
+  partOfStacks(where: StackWhereInput, orderBy: StackOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Stack!]
   color: String
   votes(where: VoteWhereInput, orderBy: VoteOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Vote!]
   passes(where: PassWhereInput, orderBy: PassOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Pass!]
@@ -4200,7 +3806,7 @@ input ThingCreateInput {
   content: ContentPieceCreateManyWithoutOnThingInput
   contentOrder: ThingCreatecontentOrderInput
   partOfTags: TagCreateManyWithoutConnectedThingsInput
-  partOfCategory: CategoryCreateOneWithoutConnectedThingsInput!
+  partOfStacks: StackCreateManyWithoutConnectedThingsInput
   color: String
   votes: VoteCreateManyWithoutOnThingInput
   passes: PassCreateManyWithoutOnThingInput
@@ -4212,18 +3818,13 @@ input ThingCreateInput {
   privacy: PrivacySetting
 }
 
-input ThingCreateManyInput {
-  create: [ThingCreateInput!]
-  connect: [ThingWhereUniqueInput!]
-}
-
 input ThingCreateManyWithoutAuthorInput {
   create: [ThingCreateWithoutAuthorInput!]
   connect: [ThingWhereUniqueInput!]
 }
 
-input ThingCreateManyWithoutPartOfCategoryInput {
-  create: [ThingCreateWithoutPartOfCategoryInput!]
+input ThingCreateManyWithoutPartOfStacksInput {
+  create: [ThingCreateWithoutPartOfStacksInput!]
   connect: [ThingWhereUniqueInput!]
 }
 
@@ -4260,7 +3861,7 @@ input ThingCreateWithoutAuthorInput {
   content: ContentPieceCreateManyWithoutOnThingInput
   contentOrder: ThingCreatecontentOrderInput
   partOfTags: TagCreateManyWithoutConnectedThingsInput
-  partOfCategory: CategoryCreateOneWithoutConnectedThingsInput!
+  partOfStacks: StackCreateManyWithoutConnectedThingsInput
   color: String
   votes: VoteCreateManyWithoutOnThingInput
   passes: PassCreateManyWithoutOnThingInput
@@ -4281,7 +3882,7 @@ input ThingCreateWithoutCommentsInput {
   content: ContentPieceCreateManyWithoutOnThingInput
   contentOrder: ThingCreatecontentOrderInput
   partOfTags: TagCreateManyWithoutConnectedThingsInput
-  partOfCategory: CategoryCreateOneWithoutConnectedThingsInput!
+  partOfStacks: StackCreateManyWithoutConnectedThingsInput
   color: String
   votes: VoteCreateManyWithoutOnThingInput
   passes: PassCreateManyWithoutOnThingInput
@@ -4300,7 +3901,7 @@ input ThingCreateWithoutContentInput {
   link: String
   contentOrder: ThingCreatecontentOrderInput
   partOfTags: TagCreateManyWithoutConnectedThingsInput
-  partOfCategory: CategoryCreateOneWithoutConnectedThingsInput!
+  partOfStacks: StackCreateManyWithoutConnectedThingsInput
   color: String
   votes: VoteCreateManyWithoutOnThingInput
   passes: PassCreateManyWithoutOnThingInput
@@ -4312,7 +3913,7 @@ input ThingCreateWithoutContentInput {
   privacy: PrivacySetting
 }
 
-input ThingCreateWithoutPartOfCategoryInput {
+input ThingCreateWithoutPartOfStacksInput {
   id: ID
   title: String
   author: MemberCreateOneWithoutCreatedThingsInput!
@@ -4340,7 +3941,7 @@ input ThingCreateWithoutPartOfTagsInput {
   link: String
   content: ContentPieceCreateManyWithoutOnThingInput
   contentOrder: ThingCreatecontentOrderInput
-  partOfCategory: CategoryCreateOneWithoutConnectedThingsInput!
+  partOfStacks: StackCreateManyWithoutConnectedThingsInput
   color: String
   votes: VoteCreateManyWithoutOnThingInput
   passes: PassCreateManyWithoutOnThingInput
@@ -4361,7 +3962,7 @@ input ThingCreateWithoutPassesInput {
   content: ContentPieceCreateManyWithoutOnThingInput
   contentOrder: ThingCreatecontentOrderInput
   partOfTags: TagCreateManyWithoutConnectedThingsInput
-  partOfCategory: CategoryCreateOneWithoutConnectedThingsInput!
+  partOfStacks: StackCreateManyWithoutConnectedThingsInput
   color: String
   votes: VoteCreateManyWithoutOnThingInput
   score: Int
@@ -4381,7 +3982,7 @@ input ThingCreateWithoutVotesInput {
   content: ContentPieceCreateManyWithoutOnThingInput
   contentOrder: ThingCreatecontentOrderInput
   partOfTags: TagCreateManyWithoutConnectedThingsInput
-  partOfCategory: CategoryCreateOneWithoutConnectedThingsInput!
+  partOfStacks: StackCreateManyWithoutConnectedThingsInput
   color: String
   passes: PassCreateManyWithoutOnThingInput
   score: Int
@@ -4426,7 +4027,7 @@ enum ThingOrderByInput {
 
 type ThingPreviousValues {
   id: ID!
-  title: String
+  title: String!
   featuredImage: String
   link: String
   contentOrder: [String!]!
@@ -4584,26 +4185,6 @@ input ThingUpdatecontentOrderInput {
   set: [String!]
 }
 
-input ThingUpdateDataInput {
-  title: String
-  author: MemberUpdateOneRequiredWithoutCreatedThingsInput
-  featuredImage: String
-  link: String
-  content: ContentPieceUpdateManyWithoutOnThingInput
-  contentOrder: ThingUpdatecontentOrderInput
-  partOfTags: TagUpdateManyWithoutConnectedThingsInput
-  partOfCategory: CategoryUpdateOneRequiredWithoutConnectedThingsInput
-  color: String
-  votes: VoteUpdateManyWithoutOnThingInput
-  passes: PassUpdateManyWithoutOnThingInput
-  score: Int
-  winner: DateTime
-  comments: CommentUpdateManyWithoutOnThingInput
-  eliminated: Boolean
-  finalistDate: DateTime
-  privacy: PrivacySetting
-}
-
 input ThingUpdateInput {
   title: String
   author: MemberUpdateOneRequiredWithoutCreatedThingsInput
@@ -4612,7 +4193,7 @@ input ThingUpdateInput {
   content: ContentPieceUpdateManyWithoutOnThingInput
   contentOrder: ThingUpdatecontentOrderInput
   partOfTags: TagUpdateManyWithoutConnectedThingsInput
-  partOfCategory: CategoryUpdateOneRequiredWithoutConnectedThingsInput
+  partOfStacks: StackUpdateManyWithoutConnectedThingsInput
   color: String
   votes: VoteUpdateManyWithoutOnThingInput
   passes: PassUpdateManyWithoutOnThingInput
@@ -4635,18 +4216,6 @@ input ThingUpdateManyDataInput {
   eliminated: Boolean
   finalistDate: DateTime
   privacy: PrivacySetting
-}
-
-input ThingUpdateManyInput {
-  create: [ThingCreateInput!]
-  update: [ThingUpdateWithWhereUniqueNestedInput!]
-  upsert: [ThingUpsertWithWhereUniqueNestedInput!]
-  delete: [ThingWhereUniqueInput!]
-  connect: [ThingWhereUniqueInput!]
-  set: [ThingWhereUniqueInput!]
-  disconnect: [ThingWhereUniqueInput!]
-  deleteMany: [ThingScalarWhereInput!]
-  updateMany: [ThingUpdateManyWithWhereNestedInput!]
 }
 
 input ThingUpdateManyMutationInput {
@@ -4674,14 +4243,14 @@ input ThingUpdateManyWithoutAuthorInput {
   updateMany: [ThingUpdateManyWithWhereNestedInput!]
 }
 
-input ThingUpdateManyWithoutPartOfCategoryInput {
-  create: [ThingCreateWithoutPartOfCategoryInput!]
+input ThingUpdateManyWithoutPartOfStacksInput {
+  create: [ThingCreateWithoutPartOfStacksInput!]
   delete: [ThingWhereUniqueInput!]
   connect: [ThingWhereUniqueInput!]
   set: [ThingWhereUniqueInput!]
   disconnect: [ThingWhereUniqueInput!]
-  update: [ThingUpdateWithWhereUniqueWithoutPartOfCategoryInput!]
-  upsert: [ThingUpsertWithWhereUniqueWithoutPartOfCategoryInput!]
+  update: [ThingUpdateWithWhereUniqueWithoutPartOfStacksInput!]
+  upsert: [ThingUpsertWithWhereUniqueWithoutPartOfStacksInput!]
   deleteMany: [ThingScalarWhereInput!]
   updateMany: [ThingUpdateManyWithWhereNestedInput!]
 }
@@ -4746,7 +4315,7 @@ input ThingUpdateWithoutAuthorDataInput {
   content: ContentPieceUpdateManyWithoutOnThingInput
   contentOrder: ThingUpdatecontentOrderInput
   partOfTags: TagUpdateManyWithoutConnectedThingsInput
-  partOfCategory: CategoryUpdateOneRequiredWithoutConnectedThingsInput
+  partOfStacks: StackUpdateManyWithoutConnectedThingsInput
   color: String
   votes: VoteUpdateManyWithoutOnThingInput
   passes: PassUpdateManyWithoutOnThingInput
@@ -4766,7 +4335,7 @@ input ThingUpdateWithoutCommentsDataInput {
   content: ContentPieceUpdateManyWithoutOnThingInput
   contentOrder: ThingUpdatecontentOrderInput
   partOfTags: TagUpdateManyWithoutConnectedThingsInput
-  partOfCategory: CategoryUpdateOneRequiredWithoutConnectedThingsInput
+  partOfStacks: StackUpdateManyWithoutConnectedThingsInput
   color: String
   votes: VoteUpdateManyWithoutOnThingInput
   passes: PassUpdateManyWithoutOnThingInput
@@ -4784,7 +4353,7 @@ input ThingUpdateWithoutContentDataInput {
   link: String
   contentOrder: ThingUpdatecontentOrderInput
   partOfTags: TagUpdateManyWithoutConnectedThingsInput
-  partOfCategory: CategoryUpdateOneRequiredWithoutConnectedThingsInput
+  partOfStacks: StackUpdateManyWithoutConnectedThingsInput
   color: String
   votes: VoteUpdateManyWithoutOnThingInput
   passes: PassUpdateManyWithoutOnThingInput
@@ -4796,7 +4365,7 @@ input ThingUpdateWithoutContentDataInput {
   privacy: PrivacySetting
 }
 
-input ThingUpdateWithoutPartOfCategoryDataInput {
+input ThingUpdateWithoutPartOfStacksDataInput {
   title: String
   author: MemberUpdateOneRequiredWithoutCreatedThingsInput
   featuredImage: String
@@ -4822,7 +4391,7 @@ input ThingUpdateWithoutPartOfTagsDataInput {
   link: String
   content: ContentPieceUpdateManyWithoutOnThingInput
   contentOrder: ThingUpdatecontentOrderInput
-  partOfCategory: CategoryUpdateOneRequiredWithoutConnectedThingsInput
+  partOfStacks: StackUpdateManyWithoutConnectedThingsInput
   color: String
   votes: VoteUpdateManyWithoutOnThingInput
   passes: PassUpdateManyWithoutOnThingInput
@@ -4842,7 +4411,7 @@ input ThingUpdateWithoutPassesDataInput {
   content: ContentPieceUpdateManyWithoutOnThingInput
   contentOrder: ThingUpdatecontentOrderInput
   partOfTags: TagUpdateManyWithoutConnectedThingsInput
-  partOfCategory: CategoryUpdateOneRequiredWithoutConnectedThingsInput
+  partOfStacks: StackUpdateManyWithoutConnectedThingsInput
   color: String
   votes: VoteUpdateManyWithoutOnThingInput
   score: Int
@@ -4861,7 +4430,7 @@ input ThingUpdateWithoutVotesDataInput {
   content: ContentPieceUpdateManyWithoutOnThingInput
   contentOrder: ThingUpdatecontentOrderInput
   partOfTags: TagUpdateManyWithoutConnectedThingsInput
-  partOfCategory: CategoryUpdateOneRequiredWithoutConnectedThingsInput
+  partOfStacks: StackUpdateManyWithoutConnectedThingsInput
   color: String
   passes: PassUpdateManyWithoutOnThingInput
   score: Int
@@ -4872,19 +4441,14 @@ input ThingUpdateWithoutVotesDataInput {
   privacy: PrivacySetting
 }
 
-input ThingUpdateWithWhereUniqueNestedInput {
-  where: ThingWhereUniqueInput!
-  data: ThingUpdateDataInput!
-}
-
 input ThingUpdateWithWhereUniqueWithoutAuthorInput {
   where: ThingWhereUniqueInput!
   data: ThingUpdateWithoutAuthorDataInput!
 }
 
-input ThingUpdateWithWhereUniqueWithoutPartOfCategoryInput {
+input ThingUpdateWithWhereUniqueWithoutPartOfStacksInput {
   where: ThingWhereUniqueInput!
-  data: ThingUpdateWithoutPartOfCategoryDataInput!
+  data: ThingUpdateWithoutPartOfStacksDataInput!
 }
 
 input ThingUpdateWithWhereUniqueWithoutPartOfTagsInput {
@@ -4912,22 +4476,16 @@ input ThingUpsertWithoutVotesInput {
   create: ThingCreateWithoutVotesInput!
 }
 
-input ThingUpsertWithWhereUniqueNestedInput {
-  where: ThingWhereUniqueInput!
-  update: ThingUpdateDataInput!
-  create: ThingCreateInput!
-}
-
 input ThingUpsertWithWhereUniqueWithoutAuthorInput {
   where: ThingWhereUniqueInput!
   update: ThingUpdateWithoutAuthorDataInput!
   create: ThingCreateWithoutAuthorInput!
 }
 
-input ThingUpsertWithWhereUniqueWithoutPartOfCategoryInput {
+input ThingUpsertWithWhereUniqueWithoutPartOfStacksInput {
   where: ThingWhereUniqueInput!
-  update: ThingUpdateWithoutPartOfCategoryDataInput!
-  create: ThingCreateWithoutPartOfCategoryInput!
+  update: ThingUpdateWithoutPartOfStacksDataInput!
+  create: ThingCreateWithoutPartOfStacksInput!
 }
 
 input ThingUpsertWithWhereUniqueWithoutPartOfTagsInput {
@@ -5000,7 +4558,9 @@ input ThingWhereInput {
   partOfTags_every: TagWhereInput
   partOfTags_some: TagWhereInput
   partOfTags_none: TagWhereInput
-  partOfCategory: CategoryWhereInput
+  partOfStacks_every: StackWhereInput
+  partOfStacks_some: StackWhereInput
+  partOfStacks_none: StackWhereInput
   color: String
   color_not: String
   color_in: [String!]

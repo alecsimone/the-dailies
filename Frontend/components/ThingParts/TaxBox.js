@@ -5,16 +5,25 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import debounce from 'lodash.debounce';
 import { useCombobox } from 'downshift';
-import Tags from './Tags';
+import Taxes from './Taxes';
 import { ThingContext } from '../../pages/thing';
 import { setAlpha } from '../../styles/functions';
 
-const ADD_TAG_MUTATION = gql`
-   mutation ADD_TAG_MUTATION($tag: String!, $thingID: ID!) {
-      addTagToThing(tag: $tag, thingID: $thingID) {
+const ADD_TAX_MUTATION = gql`
+   mutation ADD_TAX_MUTATION(
+      $tax: String!
+      $thingID: ID!
+      $personal: Boolean!
+   ) {
+      addTaxToThing(tax: $tax, thingID: $thingID, personal: $personal) {
          __typename
          id
          partOfTags {
+            __typename
+            id
+            title
+         }
+         partOfStacks {
             __typename
             id
             title
@@ -23,26 +32,39 @@ const ADD_TAG_MUTATION = gql`
    }
 `;
 
-const SEARCH_TAGS_QUERY = gql`
-   query SEARCH_TAGS_QUERY($searchTerm: String!) {
-      searchTags(searchTerm: $searchTerm) {
-         __typename
-         id
-         title
-         featuredImage
+const SEARCH_TAX_QUERY = gql`
+   query SEARCH_TAX_QUERY($searchTerm: String!, $personal: Boolean!) {
+      searchTaxes(searchTerm: $searchTerm, personal: $personal) {
+         ... on Tag {
+            __typename
+            id
+            title
+            featuredImage
+         }
+         ... on Stack {
+            __typename
+            id
+            title
+            featuredImage
+         }
+         ... on Stack {
+            __typename
+            id
+            title
+            featuredImage
+         }
       }
    }
 `;
-export { SEARCH_TAGS_QUERY };
 
-const StyledTagBox = styled.section`
+const StyledTaxBox = styled.section`
    max-width: 100%;
    margin: 5rem 0;
    padding: 0 1rem;
    ${props => props.theme.mobileBreakpoint} {
       padding: 0;
    }
-   .tagboxContainer {
+   .taxboxContainer {
       display: inline-block;
       position: relative;
       margin-top: 0.8rem;
@@ -87,14 +109,16 @@ const debouncedAutocomplete = debounce(
    true
 );
 
-const TagBox = props => {
-   const { canEdit } = props;
-   const { id, partOfTags: tags } = useContext(ThingContext);
+const TaxBox = ({ canEdit, personal }) => {
+   const { id, partOfTags: tags, partOfStacks: stacks } = useContext(
+      ThingContext
+   );
+   const [taxInput, setTaxInput] = useState('');
 
    const [
-      searchTags,
+      searchTaxes,
       { loading: searchLoading, data: searchData }
-   ] = useLazyQuery(SEARCH_TAGS_QUERY);
+   ] = useLazyQuery(SEARCH_TAX_QUERY);
 
    const generateAutocomplete = async inputValue => {
       let searchTerm;
@@ -110,25 +134,29 @@ const TagBox = props => {
       if (searchTerm === '') {
          return;
       }
-      await searchTags({
+      await searchTaxes({
          variables: {
-            searchTerm
+            searchTerm,
+            personal
          }
       });
    };
 
-   const handleTagInput = async inputValue => {
-      setTagInput(inputValue);
+   const handleTaxInput = async inputValue => {
+      setTaxInput(inputValue);
       debouncedAutocomplete(generateAutocomplete, inputValue);
    };
 
-   let alreadyUsedTags = [];
-   if (tags) {
-      alreadyUsedTags = tags.map(tagObj => tagObj.title);
+   let alreadyUsedTaxes = [];
+   if (tags && !personal) {
+      alreadyUsedTaxes = tags.map(tagObj => tagObj.title);
+   }
+   if (stacks && personal) {
+      alreadyUsedTaxes = stacks.map(stackObj => stackObj.title);
    }
 
    const filterResults = results =>
-      results.filter(tagResult => !alreadyUsedTags.includes(tagResult.title));
+      results.filter(taxResult => !alreadyUsedTaxes.includes(taxResult.title));
 
    const {
       isOpen,
@@ -138,10 +166,10 @@ const TagBox = props => {
       highlightedIndex,
       getItemProps
    } = useCombobox({
-      items: searchData ? filterResults(searchData.searchTags) : [],
+      items: searchData ? filterResults(searchData.searchTaxes) : [],
       itemToString: i => (i == null ? '' : i.title),
       onInputValueChange: changes => {
-         handleTagInput(changes.inputValue);
+         handleTaxInput(changes.inputValue);
       }
    });
    /*
@@ -168,10 +196,10 @@ const TagBox = props => {
       searchResults = <div className="searchResult loading">Loading...</div>;
    }
    if (searchData) {
-      const filteredResults = filterResults(searchData.searchTags);
+      const filteredResults = filterResults(searchData.searchTaxes);
       if (filteredResults.length === 0) {
          searchResults = (
-            <div className="searchResult empty">No Results For {tagInput}</div>
+            <div className="searchResult empty">No Results For {taxInput}</div>
          );
       } else {
          searchResults = filteredResults.map((result, index) => (
@@ -188,58 +216,58 @@ const TagBox = props => {
       }
    }
 
-   const [tagInput, setTagInput] = useState('');
-   const [addTagToThing, { loading: addTagLoading }] = useMutation(
-      ADD_TAG_MUTATION
+   const [addTaxToThing, { loading: addTaxLoading }] = useMutation(
+      ADD_TAX_MUTATION
    );
 
    const handleKeyDown = async e => {
       if (e.key === 'Enter') {
          if (highlightedIndex > -1) {
-            const filteredResults = filterResults(searchData.searchTags);
-            if (tagInput.includes(',')) {
-               const finalCommaLocation = tagInput.lastIndexOf(',');
-               const preCommaInput = tagInput.substring(0, finalCommaLocation);
-               await sendNewTag({ title: preCommaInput });
+            const filteredResults = filterResults(searchData.searchTaxes);
+            if (taxInput.includes(',')) {
+               const finalCommaLocation = taxInput.lastIndexOf(',');
+               const preCommaInput = taxInput.substring(0, finalCommaLocation);
+               await sendNewTax({ title: preCommaInput });
             }
-            await sendNewTag(filteredResults[highlightedIndex]);
+            await sendNewTax(filteredResults[highlightedIndex]);
          } else {
-            await sendNewTag({ title: tagInput });
+            await sendNewTax({ title: taxInput });
          }
       }
    };
 
-   const sendNewTag = async newTagObj => {
-      if (newTagObj == null) {
-         setTagInput('');
+   const sendNewTax = async newTaxObj => {
+      if (newTaxObj == null) {
+         setTaxInput('');
          return;
       }
-      const { title } = newTagObj;
-      await addTagToThing({
+      const { title } = newTaxObj;
+      await addTaxToThing({
          variables: {
-            tag: title,
-            thingID: id
+            tax: title,
+            thingID: id,
+            personal
          }
       });
-      setTagInput('');
+      setTaxInput('');
    };
 
    return (
-      <StyledTagBox>
-         <Tags tags={tags} />
+      <StyledTaxBox>
+         <Taxes taxes={personal ? stacks : tags} personal={personal} />
          {canEdit && (
-            <div className="tagboxContainer">
+            <div className="taxboxContainer">
                <form {...getComboboxProps()}>
                   <input
                      {...getInputProps({
                         type: 'text',
-                        id: 'addTag',
-                        name: 'addTag',
-                        placeholder: '+ Add Tag',
-                        value: tagInput,
-                        disabled: addTagLoading,
-                        className: `addTag ${
-                           addTagLoading ? 'loading' : 'ready'
+                        id: personal ? 'addStack' : 'addTag',
+                        name: personal ? 'addStack' : 'addTag',
+                        placeholder: personal ? '+ Add Stack' : '+ Add Tag',
+                        value: taxInput,
+                        disabled: addTaxLoading,
+                        className: `addTax ${
+                           addTaxLoading ? 'loading' : 'ready'
                         }`,
                         onKeyDown: e => {
                            e.persist();
@@ -248,16 +276,16 @@ const TagBox = props => {
                      })}
                   />
                </form>
-               {(searchData || searchLoading) && tagInput !== '' && isOpen && (
+               {(searchData || searchLoading) && taxInput !== '' && isOpen && (
                   <div className="resultsContainer">{searchResults}</div>
                )}
             </div>
          )}
-      </StyledTagBox>
+      </StyledTaxBox>
    );
 };
-TagBox.propTypes = {
+TaxBox.propTypes = {
    canEdit: PropTypes.bool
 };
 
-export default TagBox;
+export default TaxBox;

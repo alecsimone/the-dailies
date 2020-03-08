@@ -9,8 +9,7 @@ import ContentPiece from './ContentPiece';
 import ContentInput from './ContentInput';
 import { checkForNewThingRedirect } from '../../lib/ThingHandling';
 import { SINGLE_THING_QUERY } from '../../pages/thing';
-import { SINGLE_TAG_QUERY } from '../../pages/tag';
-import { SINGLE_CATEGORY_QUERY } from '../../pages/category';
+import { SINGLE_TAX_QUERY } from '../../pages/tag';
 import { setFullThingToLoading } from './FullThing';
 
 const ADD_CONTENTPIECE_MUTATION = gql`
@@ -29,7 +28,7 @@ const ADD_CONTENTPIECE_MUTATION = gql`
                content
             }
          }
-         ... on Thing {
+         ... on Stack {
             __typename
             id
             content {
@@ -38,7 +37,7 @@ const ADD_CONTENTPIECE_MUTATION = gql`
                content
             }
          }
-         ... on Category {
+         ... on Thing {
             __typename
             id
             content {
@@ -71,7 +70,7 @@ const DELETE_CONTENTPIECE_MUTATION = gql`
                content
             }
          }
-         ... on Thing {
+         ... on Stack {
             __typename
             id
             content {
@@ -80,7 +79,7 @@ const DELETE_CONTENTPIECE_MUTATION = gql`
                content
             }
          }
-         ... on Category {
+         ... on Thing {
             __typename
             id
             content {
@@ -115,7 +114,7 @@ const EDIT_CONTENTPIECE_MUTATION = gql`
                content
             }
          }
-         ... on Thing {
+         ... on Stack {
             __typename
             id
             content {
@@ -124,7 +123,7 @@ const EDIT_CONTENTPIECE_MUTATION = gql`
                content
             }
          }
-         ... on Category {
+         ... on Thing {
             __typename
             id
             content {
@@ -160,7 +159,7 @@ const REORDER_CONTENT_MUTATION = gql`
             }
             contentOrder
          }
-         ... on Thing {
+         ... on Stack {
             __typename
             id
             content {
@@ -170,7 +169,7 @@ const REORDER_CONTENT_MUTATION = gql`
             }
             contentOrder
          }
-         ... on Category {
+         ... on Thing {
             __typename
             id
             content {
@@ -375,10 +374,10 @@ const Content = props => {
                      query = SINGLE_THING_QUERY;
                      break;
                   case 'Tag':
-                     query = SINGLE_TAG_QUERY;
+                     query = SINGLE_TAX_QUERY;
                      break;
-                  case 'Category':
-                     query = SINGLE_CATEGORY_QUERY;
+                  case 'Stack':
+                     query = SINGLE_TAX_QUERY;
                      break;
                   default:
                      console.log('Unknown stuff type');

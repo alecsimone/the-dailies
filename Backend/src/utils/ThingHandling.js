@@ -1,7 +1,6 @@
 const {
    fullThingFields,
    tagFields,
-   catFields,
    fullMemberFields
 } = require('./CardInterfaces');
 const { publishMeUpdate } = require('../resolvers/Mutation/MemberMutations');
@@ -21,12 +20,10 @@ function publishStuffUpdate(type, stuff, ctx) {
 async function updateStuffAndNotifySubs(data, id, type, ctx) {
    const mutationType = `update${type}`;
    let fields;
-   if (type === 'Tag') {
+   if (type === 'Tag' || type === 'Stack') {
       fields = tagFields;
    } else if (type === 'Thing') {
       fields = fullThingFields;
-   } else if (type === 'Category') {
-      fields = catFields;
    }
 
    const updatedStuff = await ctx.db.mutation[mutationType](
@@ -73,11 +70,6 @@ async function editPermissionGate(dataObj, id, type, ctx) {
       return true;
    }
 
-   if (type === 'Category') {
-      // Only mods can do anything to categories besides comment
-      return false;
-   }
-
    const lowerCasedType = type.toLowerCase();
    let fields;
    if (type === 'Tag') {
@@ -111,17 +103,8 @@ async function properUpdateStuff(dataObj, id, type, ctx) {
                id: ctx.req.memberId
             }
          },
-         `{id defaultCategory {title} defaultPrivacy}`
+         `{id defaultPrivacy}`
       );
-      if (!dataObj.partOfCategory) {
-         dataObj.partOfCategory = {
-            connect: {
-               title: currentMember.defaultCategory.title
-            }
-         };
-      } else {
-         dataObj.title = `New ${dataObj.partOfCategory.connect.title} Thing`;
-      }
       if (!dataObj.privacy) {
          dataObj.privacy = currentMember.defaultPrivacy;
       } else {
@@ -163,17 +146,24 @@ async function properUpdateStuff(dataObj, id, type, ctx) {
 }
 exports.properUpdateStuff = properUpdateStuff;
 
-async function searchAvailableTags(searchTerm, ctx, exact) {
-   return ctx.db.query.tags(
+async function searchAvailableTaxes(searchTerm, ctx, exact, personal) {
+   const typeToSearch = personal ? 'stacks' : 'tags';
+   const whereObj = {
+      [exact ? 'title' : 'title_contains']: searchTerm
+   };
+   if (personal) {
+      whereObj.author = {
+         id: ctx.req.memberId
+      };
+   }
+   return ctx.db.query[typeToSearch](
       {
-         where: {
-            [exact ? 'title' : 'title_contains']: searchTerm
-         }
+         where: whereObj
       },
-      `{id title author {id} public}`
+      `{__typename id title author {id}}`
    );
 }
-exports.searchAvailableTags = searchAvailableTags;
+exports.searchAvailableTaxes = searchAvailableTaxes;
 
 const isExplodingLink = url => {
    const lowerCaseURL = url.toLowerCase();

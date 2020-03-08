@@ -3,20 +3,33 @@ import { useMutation } from '@apollo/react-hooks';
 import styled from 'styled-components';
 import { useContext, useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
+import Router from 'next/router';
 import { setAlpha, dynamicallyResizeElement } from '../../styles/functions';
 import { checkForNewThingRedirect } from '../../lib/ThingHandling';
 import { setFullThingToLoading } from './FullThing';
 
-const SET_THING_TITLE_MUTATION = gql`
-   mutation SET_THING_TITLE_MUTATION($title: String!, $thingID: ID!) {
-      setThingTitle(title: $title, thingID: $thingID) {
-         __typename
-         id
-         title
+const SET_TITLE_MUTATION = gql`
+   mutation SET_TITLE_MUTATION($title: String!, $id: ID!, $type: String!) {
+      setStuffTitle(title: $title, id: $id, type: $type) {
+         ... on Thing {
+            __typename
+            id
+            title
+         }
+         ... on Tag {
+            __typename
+            id
+            title
+         }
+         ... on Stack {
+            __typename
+            id
+            title
+         }
       }
    }
 `;
-export { SET_THING_TITLE_MUTATION };
+export { SET_TITLE_MUTATION };
 
 const StyledTitleBar = styled.div`
    padding: 0 0.5rem;
@@ -45,7 +58,7 @@ const StyledTitleBar = styled.div`
 `;
 
 const TitleBar = ({ context, limit, canEdit = true }) => {
-   const { title, id: thingID } = useContext(context);
+   const { __typename: type, title, id } = useContext(context);
    const [editedTitle, setEditedTitleState] = useState(title);
    const editedTitleRef = useRef(editedTitle);
 
@@ -54,9 +67,17 @@ const TitleBar = ({ context, limit, canEdit = true }) => {
       editedTitleRef.current = data;
    };
 
-   const [setThingTitle] = useMutation(SET_THING_TITLE_MUTATION, {
-      onCompleted: data =>
-         checkForNewThingRedirect(thingID, 'setThingTitle', data)
+   const [setStuffTitle] = useMutation(SET_TITLE_MUTATION, {
+      onCompleted: data => {
+         checkForNewThingRedirect(id, 'setStuffTitle', data);
+         if (type === 'Tag' || type === 'Stack') {
+            const href = `/${type.toLowerCase()}?title=${
+               data.setStuffTitle.title
+            }`;
+            const as = href;
+            Router.replace(href, as, { shallow: true });
+         }
+      }
    });
 
    useEffect(() => {
@@ -79,17 +100,18 @@ const TitleBar = ({ context, limit, canEdit = true }) => {
    };
 
    const submitTitle = async () => {
-      setFullThingToLoading(thingID);
-      setThingTitle({
+      setFullThingToLoading(id);
+      setStuffTitle({
          variables: {
             title: editedTitleRef.current,
-            thingID
+            id,
+            type
          },
          optimisticResponse: {
             __typename: 'Mutation',
-            setThingTitle: {
-               __typename: 'Thing',
-               id: thingID,
+            setStuffTitle: {
+               __typename: type,
+               id,
                title: editedTitleRef.current
             }
          }

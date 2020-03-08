@@ -11,24 +11,11 @@ import TaxSidebar from '../components/TaxSidebar';
 import Things from '../components/Archives/Things';
 import { taxFields } from '../lib/CardInterfaces';
 import { MemberContext } from '../components/Account/MemberProvider';
+import { SINGLE_TAX_QUERY } from './tag';
 
-const SINGLE_TAX_QUERY = gql`
-   query SINGLE_TAX_QUERY($title: String! $personal: Boolean!) {
-      taxByTitle(title: $title personal: $personal) {
-         ... on Tag {
-            ${taxFields}
-         }
-         ... on Stack {
-            ${taxFields}
-         }
-      }
-   }
-`;
-export { SINGLE_TAX_QUERY };
-
-const SINGLE_TAG_SUBSCRIPTION = gql`
-   subscription SINGLE_TAG_SUBSCRIPTION {
-      tag {
+const SINGLE_STACK_SUBSCRIPTION = gql`
+   subscription SINGLE_STACK_SUBSCRIPTION {
+      stack {
          node {
             ${taxFields}
          }
@@ -36,14 +23,14 @@ const SINGLE_TAG_SUBSCRIPTION = gql`
    }
 `;
 
-const TagContext = React.createContext();
-export { TagContext };
+const StackContext = React.createContext();
+export { StackContext };
 
-const tag = ({ query: { id, title } }) => {
+const stack = ({ query: { id, title } }) => {
    const { loading, error, data } = useQuery(SINGLE_TAX_QUERY, {
       variables: {
          title,
-         personal: false
+         personal: true
       }
    });
 
@@ -62,7 +49,7 @@ const tag = ({ query: { id, title } }) => {
    const {
       data: subscriptionData,
       loading: subscriptionLoading
-   } = useSubscription(SINGLE_TAG_SUBSCRIPTION, {
+   } = useSubscription(SINGLE_STACK_SUBSCRIPTION, {
       variables: { id }
    });
 
@@ -70,17 +57,17 @@ const tag = ({ query: { id, title } }) => {
    let content;
    let sidebar;
    if (error) {
-      pageTitle = 'Unavailable Tag';
+      pageTitle = 'Unavailable Stack';
       content = <Error error={error} />;
       sidebar = <Sidebar key="error" />;
    }
    if (loading) {
-      pageTitle = 'Loading Tag';
+      pageTitle = 'Loading Stack';
       content = <LoadingRing />;
       sidebar = (
          <Sidebar
-            extraColumnContent={<p>Loading Tag...</p>}
-            extraColumnTitle="Tag"
+            extraColumnContent={<p>Loading Stack...</p>}
+            extraColumnTitle="Stack"
             key="loading"
          />
       );
@@ -102,21 +89,21 @@ const tag = ({ query: { id, title } }) => {
          sidebar = (
             <Sidebar
                extraColumnContent={
-                  <TaxSidebar context={TagContext} canEdit={canEdit} />
+                  <TaxSidebar context={StackContext} canEdit={canEdit} />
                }
-               extraColumnTitle="Tag"
-               key="tagData"
+               extraColumnTitle="Stack"
+               key="stackData"
             />
          );
       } else {
-         pageTitle = "Couldn't find tag";
-         content = <p>Tag not found.</p>;
-         sidebar = <Sidebar key="missingTag" />;
+         pageTitle = "Couldn't find stack";
+         content = <p>Stack not found.</p>;
+         sidebar = <Sidebar key="missingStack" />;
       }
    }
 
    return (
-      <TagContext.Provider value={loading || error || data.taxByTitle}>
+      <StackContext.Provider value={loading || error || data.taxByTitle}>
          <StyledPageWithSidebar>
             <Head>
                <title>{pageTitle} - OurDailies</title>
@@ -124,15 +111,15 @@ const tag = ({ query: { id, title } }) => {
             {sidebar}
             <div className="mainSection">{content}</div>
          </StyledPageWithSidebar>
-      </TagContext.Provider>
+      </StackContext.Provider>
    );
 };
-tag.propTypes = {
+stack.propTypes = {
    query: PropTypes.shape({
       id: PropTypes.string.isRequired,
       title: PropTypes.string.isRequired
    }).isRequired
 };
-tag.getInitialProps = async ctx => ({ query: ctx.query });
+stack.getInitialProps = async ctx => ({ query: ctx.query });
 
-export default tag;
+export default stack;

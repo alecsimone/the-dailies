@@ -1,13 +1,13 @@
 type Thing {
   id: ID! @id @unique
-  title: String
+  title: String! @default(value: "Untitled Thing")
   author: Member!
   featuredImage: String
   link: String
   content: [ContentPiece!] @scalarList(strategy:RELATION)
   contentOrder: [String!] @scalarList(strategy:RELATION)
   partOfTags: [Tag]
-  partOfCategory: Category!
+  partOfStacks: [Stack]
   color: String
   votes: [Vote]
   passes: [Pass]
@@ -26,33 +26,17 @@ type ContentPiece {
    content: String!
    onThing: Thing
    onTag: Tag
-   onCategory: Category
 }
 
 type Tag {
   id: ID! @id @unique
   title: String! @unique
-  author: Member
+  author: Member!
   featuredImage: String
-  public: Boolean @default(value: false)
   content: [ContentPiece!] @scalarList(strategy:RELATION)
   contentOrder: [String!] @scalarList(strategy:RELATION)
   connectedThings: [Thing]
   color: String
-  comments: [Comment]
-  score: Int! @default(value: 0)
-  createdAt: DateTime! @createdAt
-  updatedAt: DateTime @updatedAt
-}
-
-type Category {
-  id: ID! @id @unique
-  title: String! @unique
-  featuredImage: String
-  color: String
-  content: [ContentPiece!] @scalarList(strategy:RELATION)
-  contentOrder: [String!] @scalarList(strategy:RELATION)
-  connectedThings: [Thing]
   comments: [Comment]
   createdAt: DateTime! @createdAt
   updatedAt: DateTime @updatedAt
@@ -63,10 +47,10 @@ type Stack {
   title: String!
   author: Member!
   featuredImage: String
-  color: String
   content: [ContentPiece!] @scalarList(strategy:RELATION)
   contentOrder: [String!] @scalarList(strategy:RELATION)
   connectedThings: [Thing]
+  color: String
   comments: [Comment]
   createdAt: DateTime! @createdAt
   updatedAt: DateTime @updatedAt
@@ -81,7 +65,6 @@ type Comment {
   onThing: Thing
   onComment: Comment
   onTag: Tag
-  onCategory: Category
 }
 
 type Vote {
@@ -119,7 +102,6 @@ type Member {
   passes: [Pass]
   createdThings: [Thing]
   ownedTags: [Tag]
-  defaultCategory: Category @relation(name: "DefaultCategory")
   defaultPrivacy: PrivacySetting
   comments: [Comment]
   password: String!

@@ -33,12 +33,7 @@ async function signup(parent, args, ctx, info) {
             ...args,
             password,
             role: 'Member',
-            defaultPrivacy: 'Friends',
-            defaultCategory: {
-               connect: {
-                  title: 'Misc'
-               }
-            }
+            defaultPrivacy: 'Friends'
          }
       },
       info
@@ -83,15 +78,7 @@ exports.logout = logout;
 
 async function editProfile(
    parent,
-   {
-      id,
-      avatar,
-      displayName,
-      email,
-      twitchName,
-      defaultCategory,
-      defaultPrivacy
-   },
+   { id, avatar, displayName, email, twitchName, defaultPrivacy },
    ctx,
    info
 ) {
@@ -117,13 +104,6 @@ async function editProfile(
    }
    if (twitchName != null) {
       dataObj.twitchName = twitchName;
-   }
-   if (defaultCategory != null) {
-      dataObj.defaultCategory = {
-         connect: {
-            title: defaultCategory
-         }
-      };
    }
    if (defaultPrivacy != null) {
       dataObj.defaultPrivacy = defaultPrivacy;

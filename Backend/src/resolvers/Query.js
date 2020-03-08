@@ -1,9 +1,7 @@
 const { forwardTo } = require('prisma-binding');
 const {
-   categories,
-   searchTags,
-   tagByTitle,
-   categoryByTitle,
+   searchTaxes,
+   taxByTitle,
    thing,
    myThings,
    myFriendsThings,
@@ -23,10 +21,8 @@ const {
 const Query = {
    me,
    member,
-   categories,
-   searchTags,
-   tagByTitle,
-   categoryByTitle,
+   searchTaxes,
+   taxByTitle,
    thing,
    myThings,
    myFriendsThings,

@@ -13,29 +13,37 @@ const {
 } = require('../../../utils/Authentication');
 const {fullMemberFields} = require('../../../utils/CardInterfaces');
 
-async function addTagToThing(tagTitle, thingID, ctx) {
-   const existingTags = await ctx.db.query.tags(
+async function addTaxToThing(taxTitle, thingID, ctx, personal) {
+   const typeToQuery = personal ? 'stacks' : 'tags';
+   const partOf = personal ? 'partOfStacks' : 'partOfTags';
+   const where = {
+      title: taxTitle
+   }
+   if (personal) {
+      where.author = {
+         id: ctx.req.memberId
+      }
+   }
+   const existingTax = await ctx.db.query[typeToQuery](
       {
-         where: {
-            title: tagTitle
-         }
+         where
       },
-      `{id author {id} public}`
+      `{id author {id}}`
    );
    let dataObj;
-   if (existingTags[0] != null) {
+   if (existingTax[0] != null) {
       dataObj = {
-         partOfTags: {
+         [partOf]: {
             connect: {
-               id: existingTags[0].id
+               id: existingTax[0].id
             }
          }
       };
    } else {
       dataObj = {
-         partOfTags: {
+         [partOf]: {
             create: {
-               title: tagTitle,
+               title: taxTitle,
                author: {
                   connect: {
                      id: ctx.req.memberId
@@ -48,27 +56,27 @@ async function addTagToThing(tagTitle, thingID, ctx) {
    const updatedThing = await properUpdateStuff(dataObj, thingID, 'Thing', ctx);
    return updatedThing;
 }
-async function addTagToThingHandler(parent, { tag, thingID }, ctx, info) {
-   if (tag === '') {
-      throw new Error('Tag cannot be empty');
+async function addTaxToThingHandler(parent, { tax, thingID, personal }, ctx, info) {
+   if (tax === '') {
+      throw new Error('Tax cannot be empty');
    }
    loggedInGate(ctx);
    fullMemberGate(ctx.req.member);
 
-   if (tag.includes(',')) {
-      const tagsArray = tag.split(',');
-      addTagsToThing(tagsArray, thingID, ctx);
+   if (tax.includes(',')) {
+      const taxArray = tax.split(',');
+      addTaxesToThing(taxArray, thingID, ctx, personal);
       return;
    }
-   const updatedThing = await addTagToThing(tag, thingID, ctx);
+   const updatedThing = await addTaxToThing(tax, thingID, ctx, personal);
    return updatedThing;
 }
-exports.addTagToThingHandler = addTagToThingHandler;
+exports.addTaxToThingHandler = addTaxToThingHandler;
 
-async function addTagsToThing(tagTitleArray, thingID, ctx) {
-   tagTitleArray.forEach(tagTitle => {
+async function addTaxesToThing(taxTitleArray, thingID, ctx, personal) {
+   taxTitleArray.forEach(tagTitle => {
       if (tagTitle !== '') {
-         addTagToThing(tagTitle.trim(), thingID, ctx);
+         addTaxToThing(tagTitle.trim(), thingID, ctx, personal);
       }
    });
 }
@@ -77,15 +85,10 @@ async function createThing(parent, args, ctx, info) {
    loggedInGate(ctx);
    fullMemberGate(ctx.req.member);
 
-   const { title, link, category, content, tags, privacy } = args;
+   const { title, link, content, tags, privacy } = args;
    const dataObj = {
       title,
       link,
-      partOfCategory: {
-         connect: {
-            title: category
-         }
-      },
       privacy,
       author: {
          connect: {
@@ -252,22 +255,6 @@ async function setThingPrivacy(parent, { privacySetting, thingID }, ctx, info) {
 }
 exports.setThingPrivacy = setThingPrivacy;
 
-async function setThingCategory(parent, { category, thingID }, ctx, info) {
-   loggedInGate(ctx);
-   fullMemberGate(ctx.req.member);
-
-   const dataObj = {
-      partOfCategory: {
-         connect: {
-            title: category
-         }
-      }
-   };
-   const updatedThing = await properUpdateStuff(dataObj, thingID, 'Thing', ctx);
-   return updatedThing;
-}
-exports.setThingCategory = setThingCategory;
-
 async function setFeaturedImage(
    parent,
    { featuredImage, id, type },
@@ -290,17 +277,17 @@ async function setFeaturedImage(
 }
 exports.setFeaturedImage = setFeaturedImage;
 
-async function setThingTitle(parent, { title, thingID }, ctx, info) {
+async function setStuffTitle(parent, { title, id, type }, ctx, info) {
    loggedInGate(ctx);
    fullMemberGate(ctx.req.member);
 
    const dataObj = {
       title
    };
-   const updatedThing = await properUpdateStuff(dataObj, thingID, 'Thing', ctx);
+   const updatedThing = await properUpdateStuff(dataObj, id, type, ctx);
    return updatedThing;
 }
-exports.setThingTitle = setThingTitle;
+exports.setStuffTitle = setStuffTitle;
 
 async function setPublicity(parent, {public, id, type}, ctx, info) {
    loggedInGate(ctx);

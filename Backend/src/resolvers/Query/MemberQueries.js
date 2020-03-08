@@ -10,12 +10,6 @@ async function me(parent, args, ctx, info) {
       },
       info
    );
-   if (member && member.defaultCategory == null) {
-      member.defaultCategory = {
-         id: 'ck4rnitpbkot00b00slf26klu',
-         title: 'Misc'
-      };
-   }
    if (member && member.friends) {
       member.friends.forEach((friend, index) => {
          member.friends[index].createdThings = friend.createdThings.filter(

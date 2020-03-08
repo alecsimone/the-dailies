@@ -162,15 +162,9 @@ const StyledThingMeta = styled.section`
 
 const ThingMeta = props => {
    const { canEdit } = props;
-   const {
-      id,
-      author,
-      link,
-      partOfCategory,
-      color,
-      privacy,
-      createdAt
-   } = useContext(ThingContext);
+   const { id, author, link, color, privacy, createdAt } = useContext(
+      ThingContext
+   );
 
    const [deleteThing, { loading: deleting }] = useMutation(
       DELETE_THING_MUTATION,
@@ -216,12 +210,8 @@ const ThingMeta = props => {
             }}
          />
          <div className="selections metaPiece">
-            {canEdit ? (
+            {canEdit && (
                <ColorSelector initialColor={color} type="Thing" id={id} />
-            ) : (
-               <span className="uneditable metaPiece">
-                  {partOfCategory.title}
-               </span>
             )}
             {canEdit ? (
                <PrivacyDropdown initialPrivacy={privacy} id={id} />

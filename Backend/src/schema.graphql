@@ -3,15 +3,13 @@
 type Query {
    me: Member
    member(id: ID, displayName: String): Member
-   categories: [Category]
    thing(where: ThingWhereUniqueInput!): Thing
    myThings(orderBy: ThingOrderByInput): [Thing]!
    myFriendsThings(orderBy: ThingOrderByInput): [Thing]!
    publicThings(orderBy: ThingOrderByInput): [Thing]!
    allThings: [Thing]!
-   searchTags(searchTerm: String): [Tag]!
-   tagByTitle(title: String!): Tag
-   categoryByTitle(title: String!): Category
+   searchTaxes(searchTerm: String, personal: Boolean!): [Tax]!
+   taxByTitle(title: String!, personal: Boolean!): Tax
    finishTwitterLogin(token: String!, verifier: String!): SuccessMessage
    getTwitterLists: SuccessMessage
    refreshLists: SuccessMessage
@@ -33,7 +31,6 @@ type Mutation {
   createThing(
       title: String!
       link: String
-      category: String
       content: String
       tags: String
       privacy: String
@@ -43,10 +40,9 @@ type Mutation {
   editContentPiece(contentPieceID: ID!, content: String!, id: ID!, type: String!): Stuff
   reorderContent(id: ID!, type: String!, oldPosition: Int!, newPosition: Int!): Stuff
   setThingPrivacy(privacySetting: PrivacySetting!, thingID: ID!): Thing
-  setThingCategory(category: String!, thingID: ID!): Thing
-  addTagToThing(tag: String!, thingID: ID!): Thing
+  addTaxToThing(tax: String!, thingID: ID!, personal: Boolean): Thing
   setFeaturedImage(featuredImage: String!, id: ID!, type: String!): Stuff
-  setThingTitle(title: String!, thingID: ID!): Thing,
+  setStuffTitle(title: String!, id: ID!, type: String!): Stuff,
   setPublicity(public: Boolean!, id: ID!, type: String!): Stuff
   addComment(comment: String!, id: ID!, type: String!): Stuff
   editComment(commentID: ID!, stuffID: ID!, type: String!, newComment: String!): Stuff
@@ -55,7 +51,7 @@ type Mutation {
   initiateTwitterLogin: SuccessMessage
   likeTweet(tweetID: String!, alreadyLiked: String!): SuccessMessage,
   markTweetsSeen(listID: String!, tweetIDs: [String]!): Member
-  editProfile(id: ID!, avatar: String, displayName: String, email: String, twitchName: String, defaultCategory: String, defaultPrivacy: String): Member
+  editProfile(id: ID!, avatar: String, displayName: String, email: String, twitchName: String, defaultPrivacy: String): Member
   sendFriendRequest(id: ID!): Member
   confirmFriendRequest(id: ID!): Member
   ignoreFriendRequest(id: ID!): Member
@@ -67,12 +63,13 @@ type Mutation {
   setColor(color: String!, id: ID!, type: String!): Stuff
 }
 
-union Stuff = Thing | Tag | Category
+union Stuff = Thing | Tag | Stack
+union Tax = Tag | Stack
 
 type Subscription {
    thing(id: ID!): ThingSubscriptionPayload
    tag: TagSubscriptionPayload
-   category: CategorySubscriptionPayload
+   stack: StackSubscriptionPayload
    me: MemberSubscriptionPayload
 }
 

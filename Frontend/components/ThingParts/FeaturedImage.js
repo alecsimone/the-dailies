@@ -27,12 +27,12 @@ const SET_FEATURED_IMAGE_MUTATION = gql`
             id
             featuredImage
          }
-         ... on Thing {
+         ... on Stack {
             __typename
             id
             featuredImage
          }
-         ... on Category {
+         ... on Thing {
             __typename
             id
             featuredImage

@@ -2,7 +2,6 @@ import { useQuery } from '@apollo/react-hooks';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { GET_PRIVACY_OPTIONS_QUERY } from '../ThingParts/PrivacyDropdown';
-import { GET_CATEGORIES_QUERY } from '../ThingParts/CategoryDropdown';
 import MetaOption from '../ThingParts/MetaOption';
 
 const StyledSelectsWrapper = styled.div`
@@ -23,19 +22,8 @@ const StyledSelectsWrapper = styled.div`
    }
 `;
 
-const DefaultSelects = ({
-   initialCategory,
-   initialPrivacy,
-   editProfile,
-   id
-}) => {
-   const {
-      loading: loadingCategories,
-      data: categoriesData,
-      error: categoriesError
-   } = useQuery(GET_CATEGORIES_QUERY);
-
-   const handleSelect = (e, categoryID) => {
+const DefaultSelects = ({ initialPrivacy, editProfile, id }) => {
+   const handleSelect = e => {
       const optimisticResponse = {
          __typename: 'Mutation',
          editProfile: {
@@ -44,13 +32,6 @@ const DefaultSelects = ({
             [e.target.name]: e.target.value
          }
       };
-      if (e.target.name === 'defaultCategory') {
-         optimisticResponse.editProfile.defaultCategory = {
-            __typename: 'Category',
-            id: categoryID,
-            title: e.target.value
-         };
-      }
 
       editProfile({
          variables: {
@@ -60,15 +41,6 @@ const DefaultSelects = ({
          optimisticResponse
       });
    };
-
-   let categoryOptions;
-   if (loadingCategories) {
-      categoryOptions = <MetaOption name={initialCategory} />;
-   } else {
-      categoryOptions = categoriesData.categories.map(option => (
-         <MetaOption name={option.title} />
-      ));
-   }
 
    const {
       loading: loadingPrivacies,
@@ -86,21 +58,6 @@ const DefaultSelects = ({
 
    return (
       <StyledSelectsWrapper className="selectsWrapper">
-         <div className="categorySelectWrapper selectWrapper">
-            Default Category:
-            <select
-               name="defaultCategory"
-               value={initialCategory}
-               onChange={e => {
-                  const [newCategory] = categoriesData.categories.filter(
-                     category => category.title === e.target.value
-                  );
-                  handleSelect(e, newCategory.id);
-               }}
-            >
-               {categoryOptions}
-            </select>
-         </div>
          <div className="privacySelectWrapper selectWrapper">
             Default Privacy:
             <select
@@ -115,7 +72,6 @@ const DefaultSelects = ({
    );
 };
 DefaultSelects.propTypes = {
-   initialCategory: PropTypes.string.isRequired,
    initialPrivacy: PropTypes.string.isRequired,
    id: PropTypes.string.isRequired
 };

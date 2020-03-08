@@ -10,9 +10,8 @@ const Subscription = {
    tag: {
       subscribe: (parent, args, ctx, info) => ctx.pubsub.asyncIterator('tag')
    },
-   category: {
-      subscribe: (parent, args, ctx, info) =>
-         ctx.pubsub.asyncIterator('category')
+   stack: {
+      subscribe: (parent, args, ctx, info) => ctx.pubsub.asyncIterator('stack')
    },
    me: {
       subscribe: withFilter(

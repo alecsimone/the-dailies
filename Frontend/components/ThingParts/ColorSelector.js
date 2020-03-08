@@ -13,6 +13,11 @@ const SET_COLOR_MUTATION = gql`
             id
             color
          }
+         ... on Stack {
+            __typename
+            id
+            color
+         }
          ... on Thing {
             __typename
             id

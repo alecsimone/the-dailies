@@ -1,72 +1,51 @@
 const { loggedInGate, fullMemberGate } = require('../../utils/Authentication');
 const {
-   searchAvailableTags,
+   searchAvailableTaxes,
    canSeeThingGate,
    canSeeThing,
    properUpdateStuff
 } = require('../../utils/ThingHandling');
 
-async function categories(parent, args, ctx, info) {
-   const categories = await ctx.db.query.categories({}, `{id title}`);
-   return categories;
-}
-exports.categories = categories;
-
-async function searchTags(parent, { searchTerm }, ctx, info) {
-   const availableTags = await searchAvailableTags(searchTerm, ctx, false);
+async function searchTaxes(parent, { searchTerm, personal }, ctx, info) {
+   const availableTags = await searchAvailableTaxes(
+      searchTerm,
+      ctx,
+      false,
+      personal
+   );
    return availableTags;
 }
-exports.searchTags = searchTags;
+exports.searchTaxes = searchTaxes;
 
-async function tagByTitle(parent, { title }, ctx, info) {
-   const tags = await ctx.db.query.tags(
+async function taxByTitle(parent, { title, personal }, ctx, info) {
+   const typeToQuery = personal ? 'stacks' : 'tags';
+   const where = {
+      title
+   };
+   if (personal) {
+      where.author = {
+         id: ctx.req.memberId
+      };
+   }
+   const taxes = await ctx.db.query[typeToQuery](
       {
-         where: {
-            title
-         }
+         where
       },
       info
    );
-   if (tags == null || tags.length === 0) {
+   if (taxes == null || taxes.length === 0) {
       return null;
    }
 
-   if (tags[0].connectedThings && tags[0].connectedThings.length > 0) {
-      tags[0].connectedThings = tags[0].connectedThings.filter(thing =>
+   if (taxes[0].connectedThings && taxes[0].connectedThings.length > 0) {
+      taxes[0].connectedThings = taxes[0].connectedThings.filter(thing =>
          canSeeThing(ctx.req.memberId, thing)
       );
    }
 
-   return tags[0];
+   return taxes[0];
 }
-exports.tagByTitle = tagByTitle;
-
-async function categoryByTitle(parent, { title }, ctx, info) {
-   const categories = await ctx.db.query.categories(
-      {
-         where: {
-            title
-         }
-      },
-      info
-   );
-
-   if (categories[0] == null) {
-      return null;
-   }
-
-   if (
-      categories[0].connectedThings &&
-      categories[0].connectedThings.length > 0
-   ) {
-      categories[0].connectedThings = categories[0].connectedThings.filter(
-         thing => canSeeThing(ctx.req.memberId, thing)
-      );
-   }
-
-   return categories[0];
-}
-exports.categoryByTitle = categoryByTitle;
+exports.taxByTitle = taxByTitle;
 
 async function thing(parent, { where }, ctx, info) {
    await canSeeThingGate(where, ctx);

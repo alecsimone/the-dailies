@@ -4,7 +4,7 @@ import styled, { ThemeContext } from 'styled-components';
 import Link from 'next/link';
 import FeaturedImage from '../ThingParts/FeaturedImage';
 import TruncCont from '../ThingParts/TruncCont';
-import Tags from '../ThingParts/Tags';
+import Taxes from '../ThingParts/Taxes';
 import { convertISOtoAgo } from '../../lib/ThingHandling';
 import { setAlpha, setLightness } from '../../styles/functions';
 import AuthorLink from '../ThingParts/AuthorLink';
@@ -118,7 +118,6 @@ const ThingCard = props => {
    const {
       id,
       featuredImage,
-      partOfCategory: category,
       color,
       author,
       privacy,
@@ -153,12 +152,12 @@ const ThingCard = props => {
             <div className="meta">
                <div className="meta-left">
                   <AuthorLink author={author} /> {convertISOtoAgo(createdAt)}{' '}
-                  ago in {category.title}
+                  ago
                </div>
                <div className="meta-right">{privacy}</div>
             </div>
             <TruncCont cont={content[0]} limit={280} />
-            {tags.length > 0 && <Tags tags={tags} />}
+            {tags.length > 0 && <Taxes taxes={tags} personal={false} />}
          </StyledThingCard>
       </ThingCardContext.Provider>
    );
@@ -167,7 +166,6 @@ ThingCard.propTypes = {
    data: PropTypes.shape({
       id: PropTypes.string.isRequired,
       featuredImage: PropTypes.string,
-      partOfCategory: PropTypes.object,
       author: PropTypes.object,
       privacy: PropTypes.string,
       content: PropTypes.arrayOf(PropTypes.object),

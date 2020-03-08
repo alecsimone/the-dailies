@@ -7,8 +7,7 @@ import { MemberContext } from '../Account/MemberProvider';
 import Comment from './Comment';
 import CommentInput from './CommentInput';
 import { SINGLE_THING_QUERY } from '../../pages/thing';
-import { SINGLE_TAG_QUERY } from '../../pages/tag';
-import { SINGLE_CATEGORY_QUERY } from '../../pages/category';
+import { SINGLE_TAX_QUERY } from '../../pages/tag';
 import { setAlpha } from '../../styles/functions';
 
 const StyledComments = styled.section`
@@ -52,7 +51,7 @@ const ADD_COMMENT_MUTATION = gql`
                updatedAt
             }
          }
-         ... on Thing {
+         ... on Stack {
             __typename
             id
             comments {
@@ -70,7 +69,7 @@ const ADD_COMMENT_MUTATION = gql`
                updatedAt
             }
          }
-         ... on Category {
+         ... on Thing {
             __typename
             id
             comments {
@@ -158,10 +157,10 @@ const Comments = props => {
                      query = SINGLE_THING_QUERY;
                      break;
                   case 'Tag':
-                     query = SINGLE_TAG_QUERY;
+                     query = SINGLE_TAX_QUERY;
                      break;
-                  case 'Category':
-                     query = SINGLE_CATEGORY_QUERY;
+                  case 'Stack':
+                     query = SINGLE_TAX_QUERY;
                      break;
                   default:
                      console.log('Unknown stuff type');

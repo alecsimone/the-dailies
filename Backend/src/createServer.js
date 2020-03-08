@@ -21,6 +21,11 @@ function createServer() {
             __resolveType(obj, context, info) {
                return obj.__typename;
             }
+         },
+         Tax: {
+            __resolveType(obj, context, info) {
+               return obj.__typename;
+            }
          }
       },
       resolverValidationOptions: {

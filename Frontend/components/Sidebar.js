@@ -28,7 +28,6 @@ const Sidebar = props => {
          process.browser &&
          window.outerWidth <= mobileBPWidthRaw &&
          extraColumnTitle != 'Tag' &&
-         extraColumnTitle != 'Category' &&
          extraColumnTitle != 'Me' &&
          extraColumnTitle != 'Member'
       ) {

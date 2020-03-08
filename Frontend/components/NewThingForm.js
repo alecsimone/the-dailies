@@ -12,7 +12,6 @@ const CREATE_THING_MUTATION = gql`
    mutation CREATE_THING_MUTATION(
       $title: String!
       $link: String
-      $category: String
       $content: String
       $tags: String
       $privacy: String
@@ -20,7 +19,6 @@ const CREATE_THING_MUTATION = gql`
       createThing(
          title: $title
          link: $link
-         category: $category
          content: $content
          tags: $tags
          privacy: $privacy
@@ -29,17 +27,6 @@ const CREATE_THING_MUTATION = gql`
       }
    }
 `;
-
-const GET_CATEGORIES_QUERY = gql`
-   query GET_CATEGORIES_QUERY {
-      categories {
-         __typename
-         id
-         title
-      }
-   }
-`;
-export { GET_CATEGORIES_QUERY };
 
 const GET_PRIVACY_OPTIONS_QUERY = gql`
    query enumValuesOfPrivacySetting {
@@ -104,7 +91,6 @@ const NewThingForm = () => {
    const [formData, setFormData] = useState({
       title: '',
       link: '',
-      category: '',
       content: '',
       tags: '',
       privacy: ''
@@ -119,32 +105,11 @@ const NewThingForm = () => {
       setFormData({
          title: '',
          link: '',
-         category: me.defaultCategory.title,
          content: '',
          tags: '',
          privacy: me.defaultPrivacy
       });
    };
-
-   const {
-      loading: categoryLoading,
-      error: categoryError,
-      data: categoryData
-   } = useQuery(GET_CATEGORIES_QUERY);
-   let categoryOptions;
-   if (categoryLoading || memberLoading) {
-      categoryOptions = (
-         <option value="" key="loadingCategories">
-            Loading Categories...
-         </option>
-      );
-   } else {
-      categoryOptions = categoryData.categories.map(category => (
-         <option value={category.title} key={category.title}>
-            {category.title}
-         </option>
-      ));
-   }
 
    const {
       loading: privacyOptionsLoading,
@@ -169,9 +134,6 @@ const NewThingForm = () => {
    }
 
    useEffect(() => {
-      if (formData.category === '' && !memberLoading) {
-         setFormData({ ...formData, category: me.defaultCategory.title });
-      }
       if (formData.privacy === '' && !memberLoading) {
          setFormData({ ...formData, privacy: me.defaultPrivacy });
       }
@@ -185,7 +147,6 @@ const NewThingForm = () => {
                variables: {
                   title: formData.title,
                   link: formData.link,
-                  category: formData.category,
                   content: formData.content,
                   tags: formData.tags,
                   privacy: formData.privacy
@@ -220,14 +181,6 @@ const NewThingForm = () => {
                value={formData.link}
                onChange={handleChange}
             />
-            <select
-               name="category"
-               id="category-select"
-               onChange={handleChange}
-               value={formData.category}
-            >
-               {categoryOptions}
-            </select>
             <textarea
                type="textarea"
                id="content"

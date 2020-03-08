@@ -36,9 +36,7 @@ const StyledTaxMeta = styled.div`
 `;
 
 const TaxMeta = ({ context, canEdit }) => {
-   const { __typename: type, public: isPublic, author, id, color } = useContext(
-      context
-   );
+   const { __typename: type, author, id, color } = useContext(context);
 
    const [deleteTag] = useMutation(DELETE_TAG_MUTATION, {
       variables: {

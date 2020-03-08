@@ -4,7 +4,7 @@ import { useMutation } from '@apollo/react-hooks';
 import Link from 'next/link';
 import Router from 'next/router';
 import { setAlpha, setLightness } from '../styles/functions';
-import { SET_THING_TITLE_MUTATION } from './ThingParts/TitleBar';
+import { SET_TITLE_MUTATION } from './ThingParts/TitleBar';
 import HomeIcon from './Icons/Home';
 import SearchIcon from './Icons/Search';
 import X from './Icons/X';
@@ -75,7 +75,7 @@ const BottomBar = () => {
    const [inputPlaceholder, setInputPlaceholder] = useState(false);
    const [inputContent, setInputContent] = useState('');
 
-   const [setThingTitle] = useMutation(SET_THING_TITLE_MUTATION, {
+   const [setThingTitle] = useMutation(SET_TITLE_MUTATION, {
       variables: {
          title: inputContent,
          thingID: 'new'

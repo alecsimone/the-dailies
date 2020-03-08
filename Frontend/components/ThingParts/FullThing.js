@@ -3,7 +3,7 @@ import { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { ThingContext } from '../../pages/thing';
 import Content from './Content';
-import TagBox from './TagBox';
+import TaxBox from './TaxBox';
 import ThingMeta from './ThingMeta';
 import FeaturedImage from './FeaturedImage';
 import Comments from './Comments';
@@ -74,8 +74,7 @@ export { setFullThingToLoading };
 
 const FullThing = props => {
    const { canEdit } = props;
-   const { id, partOfCategory: category, color } =
-      useContext(ThingContext) || {};
+   const { id, color } = useContext(ThingContext) || {};
 
    const { lowContrastGrey } = useContext(ThemeContext);
 
@@ -98,7 +97,8 @@ const FullThing = props => {
             canEdit={canEdit}
          />
          <ThingMeta key={`${id}-ThingMeta`} canEdit={canEdit} />
-         {id !== 'new' && <TagBox key={`${id}-TagBox`} canEdit={canEdit} />}
+         <TaxBox key={`${id}-TagBox`} canEdit={canEdit} personal={false} />
+         <TaxBox key={`${id}-StackBox`} canEdit={canEdit} personal />
          <Content
             context={ThingContext}
             key={`${id}-Content`}
