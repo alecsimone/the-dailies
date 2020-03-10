@@ -59,12 +59,12 @@ const SEARCH_TAX_QUERY = gql`
 
 const StyledTaxBox = styled.section`
    max-width: 100%;
-   &.tags {
+   /* &.tags {
       margin: 5rem 0 1rem;
    }
    &.stacks {
       margin: 1rem 0 5rem;
-   }
+   } */
    padding: 0 1rem;
    ${props => props.theme.mobileBreakpoint} {
       padding: 0;
