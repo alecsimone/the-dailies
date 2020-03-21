@@ -210,7 +210,10 @@ const Comment = ({ comment, comments, type, id }) => {
                <div className="commentAndAuthorContainer">
                   {!editing && (
                      <Link
-                        href={{ pathname: '/member', query: comment.author.id }}
+                        href={{
+                           pathname: '/member',
+                           query: { id: comment.author.id }
+                        }}
                      >
                         <a className="author">{comment.author.displayName}</a>
                      </Link>
