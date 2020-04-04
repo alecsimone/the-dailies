@@ -192,6 +192,8 @@ const Tweets = props => {
    } = props;
    const tweets = JSON.parse(list.tweets);
 
+   const markTweetsSeenHandler = newlySeenTweets => {};
+
    const [markTweetsSeen] = useMutation(MARK_TWEETS_SEEN);
    const [refreshList, { client }] = useLazyQuery(GET_TWEETS_FOR_LIST, {
       ssr: false,
@@ -334,9 +336,8 @@ const Tweets = props => {
                   </div>
                   <X
                      className="markSeen"
-                     onClick={e => {
+                     onClick={async e => {
                         const theWholeTarget = e.target.closest('svg');
-                        console.log(theWholeTarget);
                         theWholeTarget.classList.add('loading');
                         const tweetIDs = [];
                         tweetersArray[i].tweets.forEach(tweet => {
@@ -345,21 +346,23 @@ const Tweets = props => {
                               tweetIDs.push(tweet.retweeted_status.id_str);
                            }
                         });
-                        markTweetsSeen({
-                           variables: {
-                              listID: list.id,
-                              tweetIDs
-                           },
-                           optimisticResponse: {
-                              __typename: 'Mutation',
-                              markTweetsSeen: {
-                                 __typename: 'Member',
-                                 id: dailiesID,
-                                 twitterListsObject: listsObject,
-                                 twitterSeenIDs: seenIDs.concat(tweetIDs)
+                        await setTimeout(() => {
+                           markTweetsSeen({
+                              variables: {
+                                 listID: list.id,
+                                 tweetIDs
+                              },
+                              optimisticResponse: {
+                                 __typename: 'Mutation',
+                                 markTweetsSeen: {
+                                    __typename: 'Member',
+                                    id: dailiesID,
+                                    twitterListsObject: listsObject,
+                                    twitterSeenIDs: seenIDs.concat(tweetIDs)
+                                 }
                               }
-                           }
-                        });
+                           });
+                        }, 1);
                      }}
                   />
                </h3>
