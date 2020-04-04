@@ -57,7 +57,8 @@ const MemberBox = () => {
    const clickOutsideDetector = e => {
       if (
          !e.target.classList.contains('MemberMenu') &&
-         e.target.id !== 'avatar'
+         e.target.id !== 'avatar' &&
+         e.target.closest('#broadcastToggle') == null
       ) {
          setMemberMenuOpen(false);
          window.removeEventListener('click', clickOutsideDetector);

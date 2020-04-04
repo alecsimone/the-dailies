@@ -539,7 +539,7 @@ const Content = props => {
    }
 
    return (
-      <StyledContent>
+      <StyledContent className="content">
          {contentElements}
          {canEdit && (
             <ContentInput

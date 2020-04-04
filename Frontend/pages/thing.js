@@ -10,6 +10,7 @@ import LoadingRing from '../components/LoadingRing';
 import { fullThingFields } from '../lib/CardInterfaces';
 import FullThing from '../components/ThingParts/FullThing';
 import Sidebar from '../components/Sidebar';
+import BroadcastThing from '../components/ThingCards/BroadcastThing';
 
 const SINGLE_THING_QUERY = gql`
    query SINGLE_THING_QUERY($id: ID!) {
@@ -90,13 +91,19 @@ const SingleThing = props => {
             }
          }
 
-         content = (
-            <FullThing
-               id={props.query.id}
-               key={props.query.id}
-               canEdit={canEdit}
-            />
-         );
+         if (me?.broadcastView) {
+            content = (
+               <BroadcastThing id={props.query.id} key={props.query.id} />
+            );
+         } else {
+            content = (
+               <FullThing
+                  id={props.query.id}
+                  key={props.query.id}
+                  canEdit={canEdit}
+               />
+            );
+         }
       } else {
          content = <p>Thing not found.</p>;
       }

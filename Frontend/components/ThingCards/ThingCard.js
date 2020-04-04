@@ -131,7 +131,6 @@ const ThingCard = ({ data }) => {
       score,
       createdAt
    } = data;
-   console.log(score);
 
    const { lowContrastGrey } = useContext(ThemeContext);
 

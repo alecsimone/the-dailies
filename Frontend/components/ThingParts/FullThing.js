@@ -10,6 +10,7 @@ import Comments from './Comments';
 import LoadingRing from '../LoadingRing';
 import { setAlpha, setLightness, setSaturation } from '../../styles/functions';
 import VoteBar from './VoteBar';
+import { MemberContext } from '../Account/MemberProvider';
 
 const StyledFullThing = styled.article`
    margin: 0;

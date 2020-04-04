@@ -6,7 +6,8 @@ const {
    sendFriendRequest,
    confirmFriendRequest,
    ignoreFriendRequest,
-   readNotifications
+   readNotifications,
+   toggleBroadcastView
 } = require('./Mutation/MemberMutations');
 const {
    createThing,
@@ -67,7 +68,8 @@ const Mutations = {
    newBlankThing,
    deleteTag,
    setColor,
-   vote
+   vote,
+   toggleBroadcastView
 };
 
 module.exports = Mutations;

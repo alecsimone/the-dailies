@@ -173,7 +173,6 @@ async function allThings(parent, args, ctx, info) {
    );
 
    const thingsWithAVote = things.filter(thing => thing.votes.length > 0);
-   console.log(thingsWithAVote);
 
    return thingsWithAVote;
 }

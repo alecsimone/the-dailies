@@ -338,3 +338,21 @@ async function sendNotification(notification, ctx) {
    });
 }
 exports.sendNotification = sendNotification;
+
+async function toggleBroadcastView(parent, { newState }, ctx, info) {
+   loggedInGate(ctx);
+   fullMemberGate(ctx.req.member);
+
+   await ctx.db.mutation.updateMember({
+      where: {
+         id: ctx.req.memberId
+      },
+      data: {
+         broadcastView: newState
+      }
+   });
+
+   const newMe = publishMeUpdate(ctx);
+   return newMe;
+}
+exports.toggleBroadcastView = toggleBroadcastView;

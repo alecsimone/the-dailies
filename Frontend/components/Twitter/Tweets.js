@@ -335,7 +335,9 @@ const Tweets = props => {
                   <X
                      className="markSeen"
                      onClick={e => {
-                        e.target.classList.add('loading');
+                        const theWholeTarget = e.target.closest('svg');
+                        console.log(theWholeTarget);
+                        theWholeTarget.classList.add('loading');
                         const tweetIDs = [];
                         tweetersArray[i].tweets.forEach(tweet => {
                            tweetIDs.push(tweet.id_str);

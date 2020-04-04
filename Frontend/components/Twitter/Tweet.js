@@ -180,7 +180,6 @@ const Tweet = props => {
                >
                   @{quotedTweet.user.screen_name}
                </a>
-               :
             </h5>
             <Tweet tweet={quotedTweet} nested />
          </div>

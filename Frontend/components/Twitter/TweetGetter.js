@@ -46,7 +46,6 @@ const TweetGetter = props => {
             >
                @{tweet.user.screen_name}
             </a>
-            :
          </h5>
          <Tweet tweet={tweet} key={tweet.id_str} nested={nested} />
       </div>

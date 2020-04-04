@@ -264,6 +264,7 @@ const fullMemberFields = `
       ${smallThingCardFields}
    }
    defaultPrivacy
+   broadcastView
    comments {
       __typename
       id
