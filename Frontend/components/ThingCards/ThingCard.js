@@ -16,6 +16,11 @@ const StyledThingCard = styled.div`
    background: ${props => props.theme.lightBlack};
    box-shadow: 0 2px 4px
       ${props => setAlpha(props.theme.deepBlack, 0.4)};
+   &:hover {
+      background: ${props => setLightness(props.theme.lightBlack, 8.5)};
+      box-shadow: 0 2px 4px
+      ${props => setAlpha(props.theme.midBlack, 0.4)};
+   }
    border-top: 0.5rem solid ${props => props.theme.majorColor};
    ${props => props.theme.mobileBreakpoint} {
       border-radius: 3px;
