@@ -124,6 +124,8 @@ const TitleBar = ({ context, limit, canEdit = true }) => {
             submitTitle();
          }
          window.removeEventListener('click', clickOutsideDetector);
+         const titleInput = document.querySelector('#titleInput');
+         titleInput.spellcheck = false;
       }
    };
 
@@ -133,6 +135,7 @@ const TitleBar = ({ context, limit, canEdit = true }) => {
          <form onSubmit={submitTitle}>
             <textarea
                id="titleInput"
+               spellCheck={false}
                className="titleInput"
                maxLength={280}
                value={editedTitle}
@@ -142,9 +145,10 @@ const TitleBar = ({ context, limit, canEdit = true }) => {
                   setEditedTitle(e.target.value);
                   dynamicallyResizeElement(e.target);
                }}
-               onFocus={() =>
-                  window.addEventListener('click', clickOutsideDetector)
-               }
+               onFocus={e => {
+                  e.target.spellcheck = true;
+                  window.addEventListener('click', clickOutsideDetector);
+               }}
             />
          </form>
       );
