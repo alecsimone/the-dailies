@@ -182,8 +182,9 @@ const LinkyText = ({ text }) => {
    if (process.browser) {
       text = decodeHTML(text);
    }
-   const paragraphsAndEmptyStrings = text.split('\n');
-   const paragraphs = paragraphsAndEmptyStrings.filter(string => string != '');
+   // const paragraphsAndEmptyStrings = text.split('\n');
+   // const paragraphs = paragraphsAndEmptyStrings.filter(string => string != '');
+   const paragraphs = text.split('\n');
    const paragraphElements = paragraphs.map((graph, index) =>
       processLinksInText(
          replaceReddit(replaceEmails(replaceTwitterMentions(graph))),

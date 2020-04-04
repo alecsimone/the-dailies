@@ -198,10 +198,11 @@ const StyledContent = styled.section`
    }
    p,
    .graph {
-      margin: 1.8rem 0;
+      margin: 0;
    }
    p {
       max-width: 1000px;
+      min-height: 1em;
    }
    a,
    a:visited {
