@@ -40,6 +40,7 @@ const StyledBroadcastThing = styled.article`
          position: relative;
          padding: 0 2rem 6rem;
          flex-basis: 35%;
+         flex-grow: 1;
          background: ${props => setAlpha(props.theme.lightBlack, 0.6)};
          display: flex;
          align-items: center;
@@ -63,12 +64,12 @@ const StyledBroadcastThing = styled.article`
       }
       .right {
          position: relative;
-         flex-grow: 1;
+         flex-grow: 2;
          flex-basis: 65%;
          max-height: 100%;
          padding: 2rem;
          padding-bottom: 6rem;
-         .explodingLinkGraph {
+         .contentWrapper {
             max-width: 1440px;
             background: none;
             border: none;
@@ -127,11 +128,13 @@ const BroadcastThing = ({ id }) => {
    const explodingLinks = [];
    if (content.length > 0) {
       const urls = content[currentContentPiece].content.match(urlFinder);
-      urls.forEach(url => {
-         if (isImage(url) || isVideo(url)) {
-            explodingLinks.push(url);
-         }
-      });
+      if (urls != null) {
+         urls.forEach(url => {
+            if (isImage(url) || isVideo(url)) {
+               explodingLinks.push(url);
+            }
+         });
+      }
 
       let counter = 0;
       const linklessText = content[currentContentPiece].content.replace(
@@ -204,7 +207,7 @@ const BroadcastThing = ({ id }) => {
                </div>
             )}
             <div className="right">
-               {displayContent}
+               <div className="contentWrapper">{displayContent}</div>
                <div className="contentNav">
                   {currentContentPiece > 0 && (
                      <ArrowIcon

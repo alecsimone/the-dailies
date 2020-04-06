@@ -25,16 +25,15 @@ const Sidebar = props => {
    useEffect(() => {
       // we do this as an effect so the ssr doesn't make it start open
       if (
-         me?.broadcastView ||
-         (process.browser &&
-            window.outerWidth <= mobileBPWidthRaw &&
-            extraColumnTitle != 'Tag' &&
-            extraColumnTitle != 'Me' &&
-            extraColumnTitle != 'Member')
+         process.browser &&
+         window.outerWidth <= mobileBPWidthRaw &&
+         extraColumnTitle != 'Tag' &&
+         extraColumnTitle != 'Me' &&
+         extraColumnTitle != 'Member'
       ) {
          setIsOpen(false);
       }
-   }, [extraColumnTitle, me, mobileBPWidthRaw]);
+   }, [extraColumnTitle, mobileBPWidthRaw]);
 
    const headerColumns = me ? ['You', 'Friends', 'Public'] : ['Public'];
    if (extraColumnTitle != null) {
