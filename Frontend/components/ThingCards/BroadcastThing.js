@@ -164,6 +164,7 @@ const BroadcastThing = ({ id }) => {
 
    let showingTweet = false;
    if (
+      explodingLinks[currentExplodingLink] != null &&
       explodingLinks[currentExplodingLink]
          .toLowerCase()
          .includes('twitter.com/') &&
