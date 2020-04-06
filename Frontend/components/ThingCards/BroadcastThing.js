@@ -39,14 +39,13 @@ const StyledBroadcastThing = styled.article`
       .left {
          max-height: 100%;
          position: relative;
-         padding: 0 2rem 6rem;
+         padding: 0 2rem 8rem;
          flex-basis: 35%;
          flex-grow: 1;
          background: ${props => setAlpha(props.theme.lightBlack, 0.6)};
          display: flex;
          align-items: center;
          border-right: 3px solid ${props => props.theme.deepBlack};
-         ${props => props.theme.scroll};
          .explodingLinksWrapper {
             padding-top: 2rem;
             height: 100%;
@@ -85,7 +84,7 @@ const StyledBroadcastThing = styled.article`
          flex-basis: 65%;
          max-height: 100%;
          padding: 2rem;
-         padding-bottom: 6rem;
+         padding-bottom: 8rem;
          .contentWrapper {
             max-width: 1440px;
             background: none;
@@ -118,24 +117,37 @@ const StyledBroadcastThing = styled.article`
          left: 0;
          width: 100%;
          bottom: 0;
-         height: 5rem;
+         height: 6rem;
+         border-top: 3px solid ${props => props.theme.deepBlack};
          svg {
+            rect {
+               fill: ${props => props.theme.mainText};
+            }
             cursor: pointer;
-            opacity: 0.6;
+            opacity: 0.8;
             &:hover {
                opacity: 1;
+               width: 8rem;
+               height: 8rem;
+               margin-bottom: -1rem;
             }
-            width: 5rem;
-            height: 5rem;
+            width: 6rem;
+            height: 6rem;
             &.leftArrow {
                position: absolute;
                left: 0;
                bottom: 0;
+               &:hover {
+                  margin-left: -1rem;
+               }
             }
             &.rightArrow {
                position: absolute;
                right: 0;
                bottom: 0;
+               &:hover {
+                  margin-right: -1rem;
+               }
             }
          }
       }
@@ -210,51 +222,59 @@ const BroadcastThing = ({ id }) => {
                         />
                      </div>
                   }
-                  <div className="contentNav">
-                     {currentExplodingLink > 0 && (
-                        <ArrowIcon
-                           pointing="left"
-                           className="leftArrow"
-                           onClick={() =>
-                              setCurrentExplodingLink(currentExplodingLink - 1)
-                           }
-                        />
-                     )}
-                     {currentExplodingLink < explodingLinks.length - 1 && (
-                        <ArrowIcon
-                           pointing="right"
-                           className="rightArrow"
-                           onClick={() =>
-                              setCurrentExplodingLink(currentExplodingLink + 1)
-                           }
-                        />
-                     )}
-                  </div>
+                  {explodingLinks.length > 1 && (
+                     <div className="contentNav">
+                        {currentExplodingLink > 0 && (
+                           <ArrowIcon
+                              pointing="left"
+                              className="leftArrow"
+                              onClick={() =>
+                                 setCurrentExplodingLink(
+                                    currentExplodingLink - 1
+                                 )
+                              }
+                           />
+                        )}
+                        {currentExplodingLink < explodingLinks.length - 1 && (
+                           <ArrowIcon
+                              pointing="right"
+                              className="rightArrow"
+                              onClick={() =>
+                                 setCurrentExplodingLink(
+                                    currentExplodingLink + 1
+                                 )
+                              }
+                           />
+                        )}
+                     </div>
+                  )}
                </div>
             )}
             {(explodingLinks.length == 0 || content.length > 0) && (
                <div className="right">
                   <div className="contentWrapper">{displayContent}</div>
-                  <div className="contentNav">
-                     {currentContentPiece > 0 && (
-                        <ArrowIcon
-                           pointing="left"
-                           className="leftArrow"
-                           onClick={() =>
-                              setCurrentContentPiece(currentContentPiece - 1)
-                           }
-                        />
-                     )}
-                     {currentContentPiece < content.length - 1 && (
-                        <ArrowIcon
-                           pointing="right"
-                           className="rightArrow"
-                           onClick={() =>
-                              setCurrentContentPiece(currentContentPiece + 1)
-                           }
-                        />
-                     )}
-                  </div>
+                  {content.length > 1 && (
+                     <div className="contentNav">
+                        {currentContentPiece > 0 && (
+                           <ArrowIcon
+                              pointing="left"
+                              className="leftArrow"
+                              onClick={() =>
+                                 setCurrentContentPiece(currentContentPiece - 1)
+                              }
+                           />
+                        )}
+                        {currentContentPiece < content.length - 1 && (
+                           <ArrowIcon
+                              pointing="right"
+                              className="rightArrow"
+                              onClick={() =>
+                                 setCurrentContentPiece(currentContentPiece + 1)
+                              }
+                           />
+                        )}
+                     </div>
+                  )}
                </div>
             )}
          </div>
