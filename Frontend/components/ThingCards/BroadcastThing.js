@@ -80,6 +80,12 @@ const StyledBroadcastThing = styled.article`
                   setAlpha(setLightness(props.theme.majorColor, 70), 0.9)};
             }
          }
+         p.noContent {
+            opacity: 0.6;
+            font-weight: 300;
+            font-style: italic;
+            font-size: ${props => props.theme.bigText};
+         }
       }
       .contentNav {
          display: flex;
@@ -117,13 +123,34 @@ const BroadcastThing = ({ id }) => {
    const [currentContentPiece, setCurrentContentPiece] = useState(0);
    const [currentExplodingLink, setCurrentExplodingLink] = useState(0);
 
-   const urls = content[currentContentPiece].content.match(urlFinder);
+   let displayContent;
    const explodingLinks = [];
-   urls.forEach(url => {
-      if (isImage(url) || isVideo(url)) {
-         explodingLinks.push(url);
-      }
-   });
+   if (content.length > 0) {
+      const urls = content[currentContentPiece].content.match(urlFinder);
+      urls.forEach(url => {
+         if (isImage(url) || isVideo(url)) {
+            explodingLinks.push(url);
+         }
+      });
+
+      let counter = 0;
+      const linklessText = content[currentContentPiece].content.replace(
+         urlFinder,
+         (url, captures, offset, fullText) => {
+            if (isImage(url) || isVideo(url)) {
+               counter++;
+               return `[fig ${counter}]`;
+            }
+            return url;
+         }
+      );
+
+      displayContent = (
+         <LinkyText text={linklessText} key={content[currentContentPiece].id} />
+      );
+   } else {
+      displayContent = <p className="noContent">No content yet</p>;
+   }
 
    if (
       featuredImage != null &&
@@ -141,18 +168,6 @@ const BroadcastThing = ({ id }) => {
    ) {
       showingTweet = true;
    }
-
-   let counter = 0;
-   const linklessText = content[currentContentPiece].content.replace(
-      urlFinder,
-      (url, captures, offset, fullText) => {
-         if (isImage(url) || isVideo(url)) {
-            counter++;
-            return `[fig ${counter}]`;
-         }
-         return url;
-      }
-   );
 
    return (
       <StyledBroadcastThing>
@@ -189,10 +204,7 @@ const BroadcastThing = ({ id }) => {
                </div>
             )}
             <div className="right">
-               <LinkyText
-                  text={linklessText}
-                  key={content[currentContentPiece].id}
-               />
+               {displayContent}
                <div className="contentNav">
                   {currentContentPiece > 0 && (
                      <ArrowIcon
