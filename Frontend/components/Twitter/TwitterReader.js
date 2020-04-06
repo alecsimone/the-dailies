@@ -52,9 +52,7 @@ const GET_FRESH_LISTS = gql`
    }
 `;
 
-const TwitterReader = props => {
-   const { list } = props;
-
+const TwitterReader = ({ list }) => {
    const [activeList, setActiveList] = useState(false);
 
    const { loading, error, data } = useQuery(GET_TWITTER_LISTS, { ssr: false });

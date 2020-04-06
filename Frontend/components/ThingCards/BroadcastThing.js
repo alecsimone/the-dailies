@@ -1,10 +1,12 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import styled from 'styled-components';
 import { ThingContext } from '../../pages/thing';
 import { disabledCodewords } from '../../lib/ThingHandling';
-import Content from '../ThingParts/Content';
+import LinkyText from '../LinkyText';
 import { setAlpha, setLightness } from '../../styles/functions';
 import ExplodingLink from '../ExplodingLink';
+import ArrowIcon from '../Icons/Arrow';
+import { urlFinder, isImage, isVideo } from '../../lib/UrlHandling';
 
 const StyledBroadcastThing = styled.article`
    background: ${props => props.theme.midBlack};
@@ -35,12 +37,13 @@ const StyledBroadcastThing = styled.article`
       overflow: hidden;
       font-size: 3.5rem;
       .left {
-         padding: 0 2rem;
+         position: relative;
+         padding: 0 2rem 6rem;
          flex-basis: 35%;
          background: ${props => setAlpha(props.theme.lightBlack, 0.6)};
          display: flex;
          align-items: center;
-         border-right: 4px solid ${props => props.theme.deepBlack};
+         border-right: 3px solid ${props => props.theme.deepBlack};
          a {
             width: 100%;
          }
@@ -48,7 +51,7 @@ const StyledBroadcastThing = styled.article`
             width: 100%;
             object-fit: contain;
          }
-         &.featuredTweet {
+         &.showingTweet {
             max-height: 100%;
             display: block;
             ${props => props.theme.scroll};
@@ -59,17 +62,51 @@ const StyledBroadcastThing = styled.article`
          }
       }
       .right {
+         position: relative;
          flex-grow: 1;
          flex-basis: 65%;
          max-height: 100%;
          padding: 2rem;
-         ${props => props.theme.scroll};
-         .content {
-            /* max-height: 100%; */
+         padding-bottom: 6rem;
+         .explodingLinkGraph {
             max-width: 1440px;
             background: none;
             border: none;
             margin: 0 auto;
+            max-height: 100%;
+            ${props => props.theme.scroll};
+            a.shortlink {
+               color: ${props =>
+                  setAlpha(setLightness(props.theme.majorColor, 70), 0.9)};
+            }
+         }
+      }
+      .contentNav {
+         display: flex;
+         justify-content: space-between;
+         position: absolute;
+         left: 0;
+         width: 100%;
+         bottom: 0;
+         height: 5rem;
+         svg {
+            cursor: pointer;
+            opacity: 0.6;
+            &:hover {
+               opacity: 1;
+            }
+            width: 5rem;
+            height: 5rem;
+            &.leftArrow {
+               position: absolute;
+               left: 0;
+               bottom: 0;
+            }
+            &.rightArrow {
+               position: absolute;
+               right: 0;
+               bottom: 0;
+            }
          }
       }
    }
@@ -77,44 +114,105 @@ const StyledBroadcastThing = styled.article`
 
 const BroadcastThing = ({ id }) => {
    const { title, featuredImage, content } = useContext(ThingContext);
-   console.log(title);
+   const [currentContentPiece, setCurrentContentPiece] = useState(0);
+   const [currentExplodingLink, setCurrentExplodingLink] = useState(0);
 
-   let featuredImageElement;
-   let featuredTweet = false;
+   const urls = content[currentContentPiece].content.match(urlFinder);
+   const explodingLinks = [];
+   urls.forEach(url => {
+      if (isImage(url) || isVideo(url)) {
+         explodingLinks.push(url);
+      }
+   });
+
    if (
       featuredImage != null &&
       !disabledCodewords.includes(featuredImage.toLowerCase())
    ) {
-      featuredImageElement = (
-         <ExplodingLink
-            url={featuredImage}
-            alt="Featured"
-            className="featured"
-         />
-      );
-
-      if (
-         featuredImage.toLowerCase().includes('twitter.com/') &&
-         featuredImage.toLowerCase().includes('/status/')
-      ) {
-         featuredTweet = true;
-      }
+      explodingLinks.push(featuredImage);
    }
+
+   let showingTweet = false;
+   if (
+      explodingLinks[currentExplodingLink]
+         .toLowerCase()
+         .includes('twitter.com/') &&
+      explodingLinks[currentExplodingLink].toLowerCase().includes('/status/')
+   ) {
+      showingTweet = true;
+   }
+
+   let counter = 0;
+   const linklessText = content[currentContentPiece].content.replace(
+      urlFinder,
+      (url, captures, offset, fullText) => {
+         if (isImage(url) || isVideo(url)) {
+            counter++;
+            return `[fig ${counter}]`;
+         }
+         return url;
+      }
+   );
+
    return (
       <StyledBroadcastThing>
          <h2 className="thingTitle">{title}</h2>
          <div className="broadcastBody">
-            {featuredImageElement && (
-               <div className={featuredTweet ? 'left featuredTweet' : 'left'}>
-                  {featuredImageElement}
+            {explodingLinks.length > 0 && (
+               <div className={showingTweet ? 'left showingTweet' : 'left'}>
+                  {
+                     <ExplodingLink
+                        url={explodingLinks[currentExplodingLink]}
+                        key={explodingLinks[currentExplodingLink]}
+                     />
+                  }
+                  <div className="contentNav">
+                     {currentExplodingLink > 0 && (
+                        <ArrowIcon
+                           pointing="left"
+                           className="leftArrow"
+                           onClick={() =>
+                              setCurrentExplodingLink(currentExplodingLink - 1)
+                           }
+                        />
+                     )}
+                     {currentExplodingLink < explodingLinks.length - 1 && (
+                        <ArrowIcon
+                           pointing="right"
+                           className="rightArrow"
+                           onClick={() =>
+                              setCurrentExplodingLink(currentExplodingLink + 1)
+                           }
+                        />
+                     )}
+                  </div>
                </div>
             )}
             <div className="right">
-               <Content
-                  context={ThingContext}
-                  key={`${id}-Content`}
-                  canEdit={false}
+               <LinkyText
+                  text={linklessText}
+                  key={content[currentContentPiece].id}
                />
+               <div className="contentNav">
+                  {currentContentPiece > 0 && (
+                     <ArrowIcon
+                        pointing="left"
+                        className="leftArrow"
+                        onClick={() =>
+                           setCurrentContentPiece(currentContentPiece - 1)
+                        }
+                     />
+                  )}
+                  {currentContentPiece < content.length - 1 && (
+                     <ArrowIcon
+                        pointing="right"
+                        className="rightArrow"
+                        onClick={() =>
+                           setCurrentContentPiece(currentContentPiece + 1)
+                        }
+                     />
+                  )}
+               </div>
             </div>
          </div>
       </StyledBroadcastThing>

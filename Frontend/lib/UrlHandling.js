@@ -16,6 +16,22 @@ const isVideo = url => {
 };
 export { isVideo };
 
+const isImage = url => {
+   if (url == null) return false;
+   const lowerCasedURL = url.toLowerCase();
+   if (
+      lowerCasedURL.includes('.jpg') ||
+      lowerCasedURL.includes('.jpeg') ||
+      lowerCasedURL.includes('.gif') ||
+      lowerCasedURL.includes('.png') ||
+      lowerCasedURL.includes('.webp')
+   ) {
+      return true;
+   }
+   return false;
+};
+export { isImage };
+
 const isExplodingLink = url => {
    if (url == null) return false;
    const lowerCaseURL = url.toLowerCase();

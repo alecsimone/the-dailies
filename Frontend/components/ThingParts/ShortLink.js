@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import psl from 'psl';
 import { extractHostname } from '../../lib/UrlHandling';
+import { homeNoHTTP } from '../../config';
 
 const ShortLink = ({ link, limit }) => {
    if (link == null) {
@@ -38,8 +39,13 @@ const ShortLink = ({ link, limit }) => {
       );
    }
 
+   let target = '_blank';
+   if (shortlink.includes(homeNoHTTP)) {
+      target = '_self';
+   }
+
    return (
-      <a className="shortlink" href={link} target="_blank" key={link}>
+      <a className="shortlink" href={link} target={target} key={link}>
          {shortlink}
       </a>
    );
