@@ -35,8 +35,9 @@ const StyledBroadcastThing = styled.article`
       position: relative;
       max-height: 100%;
       overflow: hidden;
-      font-size: 3.5rem;
+      font-size: ${props => props.theme.smallHead};
       .left {
+         max-height: 100%;
          position: relative;
          padding: 0 2rem 6rem;
          flex-basis: 35%;
@@ -45,17 +46,33 @@ const StyledBroadcastThing = styled.article`
          display: flex;
          align-items: center;
          border-right: 3px solid ${props => props.theme.deepBlack};
-         a {
-            width: 100%;
+         ${props => props.theme.scroll};
+         .explodingLinksWrapper {
+            padding-top: 2rem;
+            height: 100%;
+            text-align: center;
+            margin: auto;
          }
-         img {
-            width: 100%;
+         img,
+         video {
+            max-width: 100%;
+            max-height: 100%;
             object-fit: contain;
          }
          &.showingTweet {
             max-height: 100%;
             display: block;
             ${props => props.theme.scroll};
+            .tweet {
+               margin: auto;
+               max-width: 1200px;
+               font-size: ${props => props.theme.bigText};
+               img.embeddedPhoto {
+                  max-width: 590px;
+                  margin: 5px;
+                  vertical-align: top;
+               }
+            }
          }
          .embed-container {
             width: 100%;
@@ -76,6 +93,11 @@ const StyledBroadcastThing = styled.article`
             margin: 0 auto;
             max-height: 100%;
             ${props => props.theme.scroll};
+            p {
+               max-width: 1200px;
+               min-height: 0.6em;
+               margin: 1.8rem auto;
+            }
             a.shortlink {
                color: ${props =>
                   setAlpha(setLightness(props.theme.majorColor, 70), 0.9)};
@@ -86,6 +108,7 @@ const StyledBroadcastThing = styled.article`
             font-weight: 300;
             font-style: italic;
             font-size: ${props => props.theme.bigText};
+            text-align: center;
          }
       }
       .contentNav {
@@ -180,10 +203,12 @@ const BroadcastThing = ({ id }) => {
             {explodingLinks.length > 0 && (
                <div className={showingTweet ? 'left showingTweet' : 'left'}>
                   {
-                     <ExplodingLink
-                        url={explodingLinks[currentExplodingLink]}
-                        key={explodingLinks[currentExplodingLink]}
-                     />
+                     <div className="explodingLinksWrapper">
+                        <ExplodingLink
+                           url={explodingLinks[currentExplodingLink]}
+                           key={explodingLinks[currentExplodingLink]}
+                        />
+                     </div>
                   }
                   <div className="contentNav">
                      {currentExplodingLink > 0 && (
@@ -207,29 +232,31 @@ const BroadcastThing = ({ id }) => {
                   </div>
                </div>
             )}
-            <div className="right">
-               <div className="contentWrapper">{displayContent}</div>
-               <div className="contentNav">
-                  {currentContentPiece > 0 && (
-                     <ArrowIcon
-                        pointing="left"
-                        className="leftArrow"
-                        onClick={() =>
-                           setCurrentContentPiece(currentContentPiece - 1)
-                        }
-                     />
-                  )}
-                  {currentContentPiece < content.length - 1 && (
-                     <ArrowIcon
-                        pointing="right"
-                        className="rightArrow"
-                        onClick={() =>
-                           setCurrentContentPiece(currentContentPiece + 1)
-                        }
-                     />
-                  )}
+            {(explodingLinks.length == 0 || content.length > 0) && (
+               <div className="right">
+                  <div className="contentWrapper">{displayContent}</div>
+                  <div className="contentNav">
+                     {currentContentPiece > 0 && (
+                        <ArrowIcon
+                           pointing="left"
+                           className="leftArrow"
+                           onClick={() =>
+                              setCurrentContentPiece(currentContentPiece - 1)
+                           }
+                        />
+                     )}
+                     {currentContentPiece < content.length - 1 && (
+                        <ArrowIcon
+                           pointing="right"
+                           className="rightArrow"
+                           onClick={() =>
+                              setCurrentContentPiece(currentContentPiece + 1)
+                           }
+                        />
+                     )}
+                  </div>
                </div>
-            </div>
+            )}
          </div>
       </StyledBroadcastThing>
    );
