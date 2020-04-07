@@ -12,6 +12,7 @@ const {
 const { me, member } = require('./Query/MemberQueries');
 const {
    finishTwitterLogin,
+   getInitialTweets,
    getTwitterLists,
    getTweet,
    refreshLists,
@@ -28,6 +29,7 @@ const Query = {
    myFriendsThings,
    publicThings,
    finishTwitterLogin,
+   getInitialTweets,
    getTwitterLists,
    getTweet,
    refreshLists,

@@ -58,15 +58,7 @@ async function finishTwitterLogin(parent, { token, verifier }, ctx, info) {
 }
 exports.finishTwitterLogin = finishTwitterLogin;
 
-async function getTwitterLists(parent, args, ctx, info) {
-   const {
-      twitterUserID,
-      twitterUserName,
-      twitterUserToken,
-      twitterUserTokenSecret,
-      twitterListsObject
-   } = await getTwitterInfo(ctx);
-
+async function makeListsObject(twitterListsObject, ctx) {
    let listsObject = JSON.parse(twitterListsObject);
    if (listsObject == null) {
       listsObject = {};
@@ -77,49 +69,70 @@ async function getTwitterLists(parent, args, ctx, info) {
       twitterListsObject === null ||
       listsObject.lastUpdateTime < Date.now() - 24 * 60 * 60 * 1000
    ) {
-      listData = {
-         home: {
-            id: 'home',
-            name: 'Home',
-            user: twitterUserName,
-            sinceID: 1,
-            tweets: []
-         }
+      listData = await getFreshLists(ctx);
+      listData.home = {
+         id: 'home',
+         name: 'Home',
+         user: twitterUserName,
+         sinceID: 1,
+         tweets: []
       };
-
-      const lists = await getFreshLists(
-         twitterUserID,
-         twitterUserToken,
-         twitterUserTokenSecret
-      );
-
-      lists.forEach(listObject => {
-         listData[listObject.id_str] = {
-            id: listObject.id_str,
-            name: listObject.name,
-            user: listObject.user.screen_name,
-            sinceID: listsObject[listObject.id_str]
-               ? listsObject[listObject.id_str].sinceID
-               : 1,
-            tweets: []
-         };
-      });
-
-      listData.lastUpdateTime = Date.now();
-
-      const listDataString = JSON.stringify(listData);
-
-      ctx.db.mutation.updateMember({
-         where: {
-            id: ctx.req.memberId
-         },
-         data: {
-            twitterListsObject: listDataString
-         }
-      });
    } else {
       listData = listsObject;
    }
+   return listData;
+}
+
+async function getInitialTweets(parent, { listName }, ctx, info) {
+   console.log("hello folks!");
+   const {
+      twitterListsObject
+   } = await getTwitterInfo(ctx);
+
+   const listsObject = await makeListsObject(twitterListsObject, ctx);
+   const dirtyListIDs = Object.keys(listsObject);
+   const listIDs = dirtyListIDs.filter(listID => listID !== 'lastUpdateTime');
+
+   let startingList = 'home';
+   if (listName != null) {
+      const [defaultList] = listIDs.filter(
+         listID =>
+            listsObject[listID].name.toLowerCase() === listName.toLowerCase()
+      );
+      if (defaultList) {
+         startingList = defaultList;
+      }
+   } else {
+      const [seeAllList] = listIDs.filter(
+         listID => listsObject[listID].name.toLowerCase() === 'see all'
+      );
+      if (seeAllList) {
+         startingList = seeAllList;
+      }
+   }
+
+   const tweets = await fetchListTweets(startingList, ctx);
+
+   const startingListData = JSON.stringify({
+      tweets,
+      startingListID: startingList
+   });
+
+   return {
+      message: startingListData
+   };
+
+
+}
+exports.getInitialTweets = getInitialTweets;
+
+async function getTwitterLists(parent, args, ctx, info) {
+   const {
+      twitterUserName,
+      twitterListsObject
+   } = await getTwitterInfo(ctx);
+
+   const listData = await makeListsObject(twitterListsObject, ctx);
 
    const listIDs = Object.keys(listData);
    await Promise.all(
@@ -149,43 +162,11 @@ async function refreshLists(parent, arts, ctx, info) {
    fullMemberGate(ctx.req.member);
 
    const listData = {};
-   const {
-      twitterUserID,
-      twitterUserToken,
-      twitterUserTokenSecret,
-      twitterListsObject
-   } = await getTwitterInfo(ctx);
 
-   const lists = await getFreshLists(
-      twitterUserID,
-      twitterUserToken,
-      twitterUserTokenSecret
+
+   const listData = await getFreshLists(
+      ctx
    );
-
-   lists.forEach(listObject => {
-      listData[listObject.id_str] = {
-         id: listObject.id_str,
-         name: listObject.name,
-         user: listObject.user.screen_name,
-         sinceID: twitterListsObject[listObject.id_str]
-            ? twitterListsObject[listObject.id_str].sinceID
-            : 1,
-         tweets: []
-      };
-   });
-
-   listData.lastUpdateTime = Date.now();
-
-   const listDataString = JSON.stringify(listData);
-
-   ctx.db.mutation.updateMember({
-      where: {
-         id: ctx.req.memberId
-      },
-      data: {
-         twitterListsObject: listDataString
-      }
-   });
 
    const listIDs = Object.keys(listData);
    await Promise.all(
@@ -201,15 +182,50 @@ async function refreshLists(parent, arts, ctx, info) {
 }
 exports.refreshLists = refreshLists;
 
-async function getTweetsForList(parent, { listID }, ctx, info) {
+async function getTweetsForList(parent, { listID: requestedList }, ctx, info) {
    loggedInGate(ctx);
    fullMemberGate(ctx.req.member);
 
-   const listTweets = await fetchListTweets(listID, ctx);
+   const {
+      twitterListsObject
+   } = await getTwitterInfo(ctx);
+   const listsObject = await makeListsObject(twitterListsObject, ctx);
+   const dirtyListIDs = Object.keys(listsObject);
+   const listIDs = dirtyListIDs.filter(listID => listID !== 'lastUpdateTime');
+
+   let listName;
+   if (isNaN(parseInt(requestedList))) {
+      if (requestedList == null) {
+         requestedList = 'home';
+         listName = 'Home';
+         const [seeAllList] = listIDs.filter(
+            listID => listsObject[listID].name.toLowerCase() === 'see all'
+         );
+         if (seeAllList) {
+            listName = "See All";
+            requestedList = seeAllList;
+         }
+      } else {
+         listName = requestedList;
+         const [selectedList] = listIDs.filter(
+            listID =>
+               listsObject[listID].name.toLowerCase() === requestedList.toLowerCase()
+         );
+         if (selectedList) {
+            requestedList = selectedList;
+         }
+      }
+   } else {
+      listName = listsObject[requestedList].name;
+   }
+
+   const listTweets = await fetchListTweets(requestedList, ctx);
    const message = JSON.stringify({
       listTweets,
-      listID
+      listID: requestedList,
+      listName
    });
+   // const message = JSON.stringify(listTweets);
 
    return { message };
 }
