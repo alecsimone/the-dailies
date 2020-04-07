@@ -76,10 +76,10 @@ const StyledTwitterSidebar = styled.div`
 `;
 
 const ListElement = React.memo(
-   ({ listID, active, data, memberInfo, getTweetsForList }) => {
+   ({ listID, active, data, loading, memberInfo, getTweetsForList }) => {
       const thisList = JSON.parse(memberInfo.twitterListsObject)[listID];
 
-      let tweetCount = '...';
+      let tweetCount;
       if (data) {
          const thisListsTweets = JSON.parse(data.tweets);
          console.log('filtering tweets for sidebar');
@@ -87,7 +87,9 @@ const ListElement = React.memo(
             thisListsTweets,
             memberInfo.twitterSeenIDs
          );
-         tweetCount = filteredTweets.length;
+         tweetCount = `(${filteredTweets.length})`;
+      } else if (loading) {
+         tweetCount = '(...)';
       }
 
       return (
@@ -105,7 +107,7 @@ const ListElement = React.memo(
                {thisList.user === memberInfo.twitterUserName
                   ? ''
                   : `(@${thisList.user}) `}
-               ({tweetCount})
+               {tweetCount}
             </span>
          </div>
       );
@@ -182,6 +184,7 @@ const TwitterSidebar = ({
                listID={listID}
                active={activeList === listID}
                data={data ? listData[listID] : false}
+               loading={loading}
                memberInfo={myTwitterInfo.me}
                getTweetsForList={getTweetsForList}
             />
