@@ -83,49 +83,6 @@ async function makeListsObject(twitterListsObject, ctx) {
    return listData;
 }
 
-async function getInitialTweets(parent, { listName }, ctx, info) {
-   console.log("hello folks!");
-   const {
-      twitterListsObject
-   } = await getTwitterInfo(ctx);
-
-   const listsObject = await makeListsObject(twitterListsObject, ctx);
-   const dirtyListIDs = Object.keys(listsObject);
-   const listIDs = dirtyListIDs.filter(listID => listID !== 'lastUpdateTime');
-
-   let startingList = 'home';
-   if (listName != null) {
-      const [defaultList] = listIDs.filter(
-         listID =>
-            listsObject[listID].name.toLowerCase() === listName.toLowerCase()
-      );
-      if (defaultList) {
-         startingList = defaultList;
-      }
-   } else {
-      const [seeAllList] = listIDs.filter(
-         listID => listsObject[listID].name.toLowerCase() === 'see all'
-      );
-      if (seeAllList) {
-         startingList = seeAllList;
-      }
-   }
-
-   const tweets = await fetchListTweets(startingList, ctx);
-
-   const startingListData = JSON.stringify({
-      tweets,
-      startingListID: startingList
-   });
-
-   return {
-      message: startingListData
-   };
-
-
-}
-exports.getInitialTweets = getInitialTweets;
-
 async function getTwitterLists(parent, args, ctx, info) {
    const {
       twitterUserName,
