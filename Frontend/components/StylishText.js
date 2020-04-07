@@ -9,7 +9,7 @@ const StylishText = ({ text }) => {
    ) {
       return text;
    }
-   const styleTagSearchString = /(?:(?<style><style="(?<styleObjectRaw>.+)">(?<styleTextContent>.+)<\/style>)|(?<stars>\*\*(?<starsTextContent>.+)\*\*)|(?<bars>__(?<barsTextContent>.+)__))/gi;
+   const styleTagSearchString = /(?:(?<style><style="(?<styleObjectRaw>.+)">(?<styleTextContent>.+)<\/style>)|(?<stars>\*\*(?<starsTextContent>[^*]*(?:\*[^*]+)*)\*\*)|(?<bars>__(?<barsTextContent>[^_]*(?:\_[^_]+)*)__))/gi;
    // const styleTagRegexp = new RegExp(
    //    '<style="(?<named>.+)">(.+)<\\/style>',
    //    'gi'
@@ -45,6 +45,7 @@ const StylishText = ({ text }) => {
       }
 
       if (tag.groups.stars != null) {
+         console.log(tag.groups.starsTextContent);
          elementsArray.push(
             <span style={{ fontWeight: 700, color: 'white' }}>
                {tag.groups.starsTextContent}
