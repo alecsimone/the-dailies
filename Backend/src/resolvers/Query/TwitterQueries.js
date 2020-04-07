@@ -53,27 +53,27 @@ async function finishTwitterLogin(parent, { token, verifier }, ctx, info) {
 exports.finishTwitterLogin = finishTwitterLogin;
 
 async function makeListsObject(twitterListsObject, ctx) {
-   // let listsObject = JSON.parse(twitterListsObject);
-   // if (listsObject == null) {
-   //    listsObject = {};
-   // }
-   // let listData;
-   // if (
-   //    twitterListsObject === null ||
-   //    listsObject.lastUpdateTime < Date.now() - 24 * 60 * 60 * 1000
-   // ) {
-   //    listData = await getFreshLists(ctx);
-   //    listData.home = {
-   //       id: 'home',
-   //       name: 'Home',
-   //       user: twitterUserName,
-   //       sinceID: 1,
-   //       tweets: []
-   //    };
-   // } else {
-   //    listData = listsObject;
-   // }
-   // return listData;
+   let listsObject = JSON.parse(twitterListsObject);
+   if (listsObject == null) {
+      listsObject = {};
+   }
+   let listData;
+   if (
+      twitterListsObject === null ||
+      listsObject.lastUpdateTime < Date.now() - 24 * 60 * 60 * 1000
+   ) {
+      listData = await getFreshLists(ctx);
+      listData.home = {
+         id: 'home',
+         name: 'Home',
+         user: twitterUserName,
+         sinceID: 1,
+         tweets: []
+      };
+   } else {
+      listData = listsObject;
+   }
+   return listData;
 }
 
 async function getTwitterLists(parent, args, ctx, info) {
