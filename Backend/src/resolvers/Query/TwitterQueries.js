@@ -10,45 +10,45 @@ const {
 const { loggedInGate, fullMemberGate } = require('../../utils/Authentication');
 
 async function finishTwitterLogin(parent, { token, verifier }, ctx, info) {
-   // const tw = new LoginWithTwitter({
-   //    consumerKey: process.env.TWITTER_CONSUMER_KEY,
-   //    consumerSecret: process.env.TWITTER_CONSUMER_SECRET,
-   //    callbackUrl: `${process.env.FRONTEND_URL}/twitter`
-   // });
-   // const { twitterTokenSecret } = await ctx.db.query.member(
-   //    {
-   //       where: {
-   //          id: ctx.req.memberId
-   //       }
-   //    },
-   //    `{twitterTokenSecret}`
-   // );
-   // const decryptedTwitterTokenSecret = decipherString(twitterTokenSecret);
-   // tw.callback(
-   //    {
-   //       oauth_token: token,
-   //       oauth_verifier: verifier
-   //    },
-   //    decryptedTwitterTokenSecret,
-   //    async (err, user) => {
-   //       if (err) {
-   //          console.log(err);
-   //          return;
-   //       }
-   //       const encryptedTokenSecret = cipherString(user.userTokenSecret);
-   //       await ctx.db.mutation.updateMember({
-   //          where: { id: ctx.req.memberId },
-   //          data: {
-   //             twitterUserName: user.userName,
-   //             twitterUserID: user.userId,
-   //             twitterUserToken: user.userToken,
-   //             twitterUserTokenSecret: encryptedTokenSecret,
-   //             twitterTokenSecret: null
-   //          }
-   //       });
-   //    }
-   // );
-   // return { message: 'Success!' };
+   const tw = new LoginWithTwitter({
+      consumerKey: process.env.TWITTER_CONSUMER_KEY,
+      consumerSecret: process.env.TWITTER_CONSUMER_SECRET,
+      callbackUrl: `${process.env.FRONTEND_URL}/twitter`
+   });
+   const { twitterTokenSecret } = await ctx.db.query.member(
+      {
+         where: {
+            id: ctx.req.memberId
+         }
+      },
+      `{twitterTokenSecret}`
+   );
+   const decryptedTwitterTokenSecret = decipherString(twitterTokenSecret);
+   tw.callback(
+      {
+         oauth_token: token,
+         oauth_verifier: verifier
+      },
+      decryptedTwitterTokenSecret,
+      async (err, user) => {
+         if (err) {
+            console.log(err);
+            return;
+         }
+         const encryptedTokenSecret = cipherString(user.userTokenSecret);
+         await ctx.db.mutation.updateMember({
+            where: { id: ctx.req.memberId },
+            data: {
+               twitterUserName: user.userName,
+               twitterUserID: user.userId,
+               twitterUserToken: user.userToken,
+               twitterUserTokenSecret: encryptedTokenSecret,
+               twitterTokenSecret: null
+            }
+         });
+      }
+   );
+   return { message: 'Success!' };
 }
 exports.finishTwitterLogin = finishTwitterLogin;
 
@@ -97,8 +97,8 @@ async function getTwitterLists(parent, args, ctx, info) {
 exports.getTwitterLists = getTwitterLists;
 
 async function getTweet(parent, { tweetID }, ctx, info) {
-   // const tweet = await fetchTweet(tweetID, ctx);
-   // return { message: JSON.stringify(tweet) };
+   const tweet = await fetchTweet(tweetID, ctx);
+   return { message: JSON.stringify(tweet) };
 }
 exports.getTweet = getTweet;
 
