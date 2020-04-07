@@ -100,21 +100,21 @@ async function getTweet(parent, { tweetID }, ctx, info) {
 exports.getTweet = getTweet;
 
 async function refreshLists(parent, arts, ctx, info) {
-   // loggedInGate(ctx);
-   // fullMemberGate(ctx.req.member);
-   // const listData = {};
-   // const listData = await getFreshLists(
-   //    ctx
-   // );
-   // const listIDs = Object.keys(listData);
-   // await Promise.all(
-   //    listIDs.map(async id => {
-   //       const tweets = await fetchListTweets(id, ctx);
-   //       listData[id].tweets = tweets;
-   //    })
-   // );
-   // const fullListData = JSON.stringify(listData);
-   // return { message: fullListData };
+   loggedInGate(ctx);
+   fullMemberGate(ctx.req.member);
+   const listData = {};
+   const listData = await getFreshLists(
+      ctx
+   );
+   const listIDs = Object.keys(listData);
+   await Promise.all(
+      listIDs.map(async id => {
+         const tweets = await fetchListTweets(id, ctx);
+         listData[id].tweets = tweets;
+      })
+   );
+   const fullListData = JSON.stringify(listData);
+   return { message: fullListData };
 }
 exports.refreshLists = refreshLists;
 
