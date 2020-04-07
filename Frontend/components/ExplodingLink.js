@@ -145,3 +145,4 @@ ExplodingLink.propTypes = {
 };
 
 export default ExplodingLink;
+// export default React.memo(ExplodingLink);

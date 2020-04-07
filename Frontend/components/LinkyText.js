@@ -199,3 +199,4 @@ LinkyText.propTypes = {
 };
 
 export default LinkyText;
+// export default React.memo(LinkyText);

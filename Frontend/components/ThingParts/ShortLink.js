@@ -56,3 +56,4 @@ ShortLink.propTypes = {
 };
 
 export default ShortLink;
+// export default React.memo(ShortLink);

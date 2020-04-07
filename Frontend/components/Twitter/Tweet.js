@@ -350,4 +350,10 @@ Tweet.propTypes = {
    nextTweetReplyTarget: PropTypes.string
 };
 
-export default Tweet;
+// export default Tweet;
+export default React.memo(Tweet, (prevProps, nextProps) => {
+   if (prevProps.tweet.id_str === nextProps.tweet.id_str) {
+      return true;
+   }
+   return false;
+});
