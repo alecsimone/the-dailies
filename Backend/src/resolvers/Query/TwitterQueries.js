@@ -77,22 +77,19 @@ async function makeListsObject(twitterListsObject, ctx) {
 }
 
 async function getTwitterLists(parent, args, ctx, info) {
-   // const {
-   //    twitterUserName,
-   //    twitterListsObject
-   // } = await getTwitterInfo(ctx);
-   // const listData = await makeListsObject(twitterListsObject, ctx);
-   // const listIDs = Object.keys(listData);
-   // await Promise.all(
-   //    listIDs.map(async id => {
-   //       const tweets = await fetchListTweets(id, ctx);
-   //       listData[id].tweets = tweets;
-   //    })
-   // );
-   // const fullListData = JSON.stringify(listData);
-   // return {
-   //    message: fullListData
-   // };
+   const { twitterUserName, twitterListsObject } = await getTwitterInfo(ctx);
+   const listData = await makeListsObject(twitterListsObject, ctx);
+   const listIDs = Object.keys(listData);
+   await Promise.all(
+      listIDs.map(async id => {
+         const tweets = await fetchListTweets(id, ctx);
+         listData[id].tweets = tweets;
+      })
+   );
+   const fullListData = JSON.stringify(listData);
+   return {
+      message: fullListData
+   };
 }
 exports.getTwitterLists = getTwitterLists;
 
