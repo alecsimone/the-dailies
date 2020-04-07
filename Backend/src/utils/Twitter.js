@@ -182,8 +182,15 @@ const generateRequestURL = (baseURL, parameters) => {
    return requestURL;
 };
 
-const getFreshLists = async (userID, token, tokenSecret) => {
+const getFreshLists = async ctx => {
    console.log('Getting fresh lists');
+
+   const {
+      twitterUserID: userID,
+      twitterUserToken: token,
+      twitterUserTokenSecret: tokenSecret
+   } = await getTwitterInfo(ctx);
+
    const baseURL = 'https://api.twitter.com/1.1/lists/list.json';
    const parameters = {
       user_id: userID,
@@ -214,7 +221,34 @@ const getFreshLists = async (userID, token, tokenSecret) => {
    } else if (listsJson.errors) {
       throw new Error(listsJson.errors[0].message);
    }
-   return listsJson;
+
+   const listData = {};
+   listsJson.forEach(listObject => {
+      listData[listObject.id_str] = {
+         id: listObject.id_str,
+         name: listObject.name,
+         user: listObject.user.screen_name,
+         sinceID: twitterListsObject[listObject.id_str]
+            ? twitterListsObject[listObject.id_str].sinceID
+            : 1,
+         tweets: []
+      };
+   });
+
+   listData.lastUpdateTime = Date.now();
+
+   const listDataString = JSON.stringify(listData);
+
+   ctx.db.mutation.updateMember({
+      where: {
+         id: ctx.req.memberId
+      },
+      data: {
+         twitterListsObject: listDataString
+      }
+   });
+
+   return listData;
 };
 exports.getFreshLists = getFreshLists;
 
