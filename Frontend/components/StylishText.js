@@ -45,7 +45,6 @@ const StylishText = ({ text }) => {
       }
 
       if (tag.groups.stars != null) {
-         console.log(tag.groups.starsTextContent);
          elementsArray.push(
             <span style={{ fontWeight: 700, color: 'white' }}>
                {tag.groups.starsTextContent}

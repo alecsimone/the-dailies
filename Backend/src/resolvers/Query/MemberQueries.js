@@ -13,7 +13,7 @@ async function me(parent, args, ctx, info) {
    if (member && member.friends) {
       member.friends.forEach((friend, index) => {
          member.friends[index].createdThings = friend.createdThings.filter(
-            thing => canSeeThing(ctx.req.memberId, thing)
+            thing => canSeeThing(ctx, thing)
          );
       });
    }
@@ -41,7 +41,7 @@ async function member(parent, { id, displayName }, ctx, info) {
 
    if (member && member.createdThings && member.createdThings.length > 0) {
       member.createdThings = member.createdThings.filter(thing =>
-         canSeeThing(ctx.req.memberId, thing)
+         canSeeThing(ctx, thing)
       );
    }
 

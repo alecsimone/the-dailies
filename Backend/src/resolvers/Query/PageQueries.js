@@ -39,7 +39,7 @@ async function taxByTitle(parent, { title, personal }, ctx, info) {
 
    if (taxes[0].connectedThings && taxes[0].connectedThings.length > 0) {
       taxes[0].connectedThings = taxes[0].connectedThings.filter(thing =>
-         canSeeThing(ctx.req.memberId, thing)
+         canSeeThing(ctx, thing)
       );
    }
 
@@ -215,9 +215,7 @@ async function search(parent, { string }, ctx, info) {
       },
       info
    );
-   const safeThings = foundThings.filter(thing =>
-      canSeeThing(ctx.req.memberId, thing)
-   );
+   const safeThings = foundThings.filter(thing => canSeeThing(ctx, thing));
    return safeThings;
 }
 exports.search = search;

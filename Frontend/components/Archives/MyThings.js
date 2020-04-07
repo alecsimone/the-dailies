@@ -13,8 +13,11 @@ const MyThings = () => {
    if (me.createdThings == null || me.createdThings.length === 0) {
       return <p className="emptyThings">You haven't made any things yet.</p>;
    }
-   const myThings = me.createdThings;
+   let myThings = me.createdThings;
    myThings.sort((a, b) => (a.id < b.id ? 1 : -1));
+   if (me.broadcastView) {
+      myThings = myThings.filter(thing => thing.privacy !== 'Private');
+   }
 
    return (
       <Things things={myThings} displayType="list" cardSize="small" noPic />

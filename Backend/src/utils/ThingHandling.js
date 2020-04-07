@@ -186,7 +186,8 @@ const isExplodingLink = url => {
 };
 exports.isExplodingLink = isExplodingLink;
 
-const canSeeThing = (memberID, thingData) => {
+const canSeeThing = async (ctx, thingData) => {
+   const memberID = ctx.req.memberId;
    if (memberID === thingData.author.id) {
       return true;
    }
@@ -223,7 +224,7 @@ const canSeeThingGate = async (where, ctx) => {
       return true;
    }
 
-   if (canSeeThing(ctx.req.memberId, thingData)) {
+   if (canSeeThing(ctx, thingData)) {
       return true;
    }
    throw new Error("You don't have permission to see that thing.");
