@@ -8,6 +8,7 @@ import { GET_TWEETS_FOR_LIST } from './TwitterReader';
 import { filterTweets } from './Tweets';
 import { convertISOtoAgo } from '../../lib/ThingHandling';
 import ResetIcon from '../Icons/Reset';
+import LoadingRing from '../LoadingRing';
 
 const GET_TWITTER_LISTS = gql`
    query GET_TWITTER_LISTS {
@@ -128,6 +129,14 @@ const TwitterSidebar = ({
          changeLists(newListData);
       }
    });
+
+   if (loading) {
+      return (
+         <StyledTwitterSidebar className="twitterSidebar">
+            <LoadingRing />
+         </StyledTwitterSidebar>
+      );
+   }
 
    const changeLists = newTweetsData => {
       const { listID, listName, listTweets } = JSON.parse(
