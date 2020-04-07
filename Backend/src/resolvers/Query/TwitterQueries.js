@@ -149,10 +149,6 @@ async function refreshLists(parent, arts, ctx, info) {
    fullMemberGate(ctx.req.member);
 
    const listData = await getFreshLists(ctx);
-<<<<<<< HEAD
-=======
-
->>>>>>> BreaksProduction
    const listIDs = Object.keys(listData);
    await Promise.all(
       listIDs.map(async id => {
@@ -166,49 +162,6 @@ async function refreshLists(parent, arts, ctx, info) {
 exports.refreshLists = refreshLists;
 
 async function getTweetsForList(parent, { listID: requestedList }, ctx, info) {
-<<<<<<< HEAD
-   // loggedInGate(ctx);
-   // fullMemberGate(ctx.req.member);
-   // const {
-   //    twitterListsObject
-   // } = await getTwitterInfo(ctx);
-   // const listsObject = await makeListsObject(twitterListsObject, ctx);
-   // const dirtyListIDs = Object.keys(listsObject);
-   // const listIDs = dirtyListIDs.filter(listID => listID !== 'lastUpdateTime');
-   // let listName;
-   // if (isNaN(parseInt(requestedList))) {
-   //    if (requestedList == null) {
-   //       requestedList = 'home';
-   //       listName = 'Home';
-   //       const [seeAllList] = listIDs.filter(
-   //          listID => listsObject[listID].name.toLowerCase() === 'see all'
-   //       );
-   //       if (seeAllList) {
-   //          listName = "See All";
-   //          requestedList = seeAllList;
-   //       }
-   //    } else {
-   //       listName = requestedList;
-   //       const [selectedList] = listIDs.filter(
-   //          listID =>
-   //             listsObject[listID].name.toLowerCase() === requestedList.toLowerCase()
-   //       );
-   //       if (selectedList) {
-   //          requestedList = selectedList;
-   //       }
-   //    }
-   // } else {
-   //    listName = listsObject[requestedList].name;
-   // }
-   // const listTweets = await fetchListTweets(requestedList, ctx);
-   // const message = JSON.stringify({
-   //    listTweets,
-   //    listID: requestedList,
-   //    listName
-   // });
-   // // const message = JSON.stringify(listTweets);
-   // return { message };
-=======
    loggedInGate(ctx);
    fullMemberGate(ctx.req.member);
 
@@ -252,6 +205,5 @@ async function getTweetsForList(parent, { listID: requestedList }, ctx, info) {
    });
 
    return { message };
->>>>>>> BreaksProduction
 }
 exports.getTweetsForList = getTweetsForList;
