@@ -77,12 +77,19 @@ const StyledTwitterSidebar = styled.div`
 
 const ListElement = React.memo(
    ({ listID, active, data, memberInfo, getTweetsForList }) => {
-      const thisListsTweets = JSON.parse(data.tweets);
-      console.log('filtering tweets for sidebar');
-      const filteredTweets = filterTweets(
-         thisListsTweets,
-         memberInfo.twitterSeenIDs
-      );
+      const thisList = JSON.parse(memberInfo.twitterListsObject)[listID];
+
+      let tweetCount = '...';
+      if (data) {
+         const thisListsTweets = JSON.parse(data.tweets);
+         console.log('filtering tweets for sidebar');
+         const filteredTweets = filterTweets(
+            thisListsTweets,
+            memberInfo.twitterSeenIDs
+         );
+         tweetCount = filteredTweets.length;
+      }
+
       return (
          <div
             className={`listLink ${listID}${active ? ' selected' : ''}`}
@@ -93,18 +100,21 @@ const ListElement = React.memo(
                getTweetsForList({ variables: { listID } });
             }}
          >
-            <a>{data.name}</a>
+            <a>{thisList.name}</a>
             <span>
-               {data.user === memberInfo.twitterUserName
+               {thisList.user === memberInfo.twitterUserName
                   ? ''
-                  : `(@${data.user}) `}
-               ({filteredTweets.length})
+                  : `(@${thisList.user}) `}
+               ({tweetCount})
             </span>
          </div>
       );
    },
    (prevProps, nextProps) => {
-      if (prevProps.active !== nextProps.active) return false;
+      if (!prevProps.data) return false;
+      if (prevProps.data.tweets.length !== nextProps.data.tweets.length)
+         return false;
+      if (prevProps.active || nextProps.active) return false;
       return true;
    }
 );
@@ -125,12 +135,11 @@ const TwitterSidebar = ({
       ssr: false,
       fetchPolicy: 'network-only',
       onCompleted: () => {
-         console.log('changing lists!');
          changeLists(newListData);
       }
    });
 
-   if (loading) {
+   if (!myTwitterInfo) {
       return (
          <StyledTwitterSidebar className="twitterSidebar">
             <LoadingRing />
@@ -152,12 +161,17 @@ const TwitterSidebar = ({
    };
 
    let listElements;
-   if (data && myTwitterInfo) {
-      const listData = JSON.parse(data.getTwitterLists.message);
-      const dirtyListIDs = Object.keys(listData);
+   if (myTwitterInfo) {
+      const listsObject = JSON.parse(myTwitterInfo.me.twitterListsObject);
+      const dirtyListIDs = Object.keys(listsObject);
       const listIDs = dirtyListIDs.filter(
          listID => listID !== 'lastUpdateTime'
       );
+
+      let listData;
+      if (data) {
+         listData = JSON.parse(data.getTwitterLists.message);
+      }
 
       listElements = listIDs.map(listID => {
          if (listID === 'lastUpdateTime') {
@@ -167,13 +181,16 @@ const TwitterSidebar = ({
             <ListElement
                listID={listID}
                active={activeList === listID}
-               data={listData[listID]}
+               data={data ? listData[listID] : false}
                memberInfo={myTwitterInfo.me}
                getTweetsForList={getTweetsForList}
             />
          );
       });
-      listElements.unshift(
+   }
+
+   return (
+      <StyledTwitterSidebar className="twitterSidebar">
          <h5 key="twiterUsername">
             Welcome, @
             <a
@@ -184,10 +201,14 @@ const TwitterSidebar = ({
                {myTwitterInfo.me.twitterUserName}
             </a>
          </h5>
-      );
-      listElements.push(
+         {listElements}
          <div className="updateLists" key="updateLists">
-            Last updated {convertISOtoAgo(listData.lastUpdateTime)} ago
+            Last updated{' '}
+            {data
+               ? `${convertISOtoAgo(
+                    JSON.parse(data.getTwitterLists.message).lastUpdateTime
+                 )} ago`
+               : '...'}
             <ResetIcon
                className="refreshLists"
                onClick={() => {
@@ -197,12 +218,6 @@ const TwitterSidebar = ({
                }}
             />
          </div>
-      );
-   }
-
-   return (
-      <StyledTwitterSidebar className="twitterSidebar">
-         {listElements}
       </StyledTwitterSidebar>
    );
 };
