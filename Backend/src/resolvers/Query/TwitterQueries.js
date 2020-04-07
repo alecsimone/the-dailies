@@ -76,10 +76,6 @@ async function makeListsObject(twitterListsObject, ctx) {
    return listData;
 }
 
-<<<<<<< HEAD
-async function getTwitterLists(parent, args, ctx, info) {
-   const { twitterUserName, twitterListsObject } = await getTwitterInfo(ctx);
-=======
 async function getInitialTweets(parent, { listName }, ctx, info) {
    console.log('hello folks!');
    const { twitterListsObject } = await getTwitterInfo(ctx);
@@ -122,7 +118,6 @@ exports.getInitialTweets = getInitialTweets;
 async function getTwitterLists(parent, args, ctx, info) {
    const { twitterUserName, twitterListsObject } = await getTwitterInfo(ctx);
 
->>>>>>> BreaksProduction
    const listData = await makeListsObject(twitterListsObject, ctx);
    const listIDs = Object.keys(listData);
    await Promise.all(
