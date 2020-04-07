@@ -3,7 +3,8 @@ import { useMutation, useLazyQuery } from '@apollo/react-hooks';
 import styled from 'styled-components';
 import Tweet from './Tweet';
 import { setAlpha, setLightness, setSaturation } from '../../styles/functions';
-import { GET_TWEETS_FOR_LIST, GET_TWITTER_LISTS } from './TwitterReader';
+import { GET_TWEETS_FOR_LIST } from './TwitterReader';
+import { GET_TWITTER_LISTS } from './TwitterSidebar';
 import X from '../Icons/X';
 import ResetIcon from '../Icons/Reset';
 
@@ -180,18 +181,16 @@ const filterTweets = (tweets, seenIDs) => {
 };
 export { filterTweets };
 
-const Tweets = props => {
-   const {
-      list,
-      myTwitterInfo: {
-         id: dailiesID,
-         twitterSeenIDs: seenIDs,
-         twitterUserID: userID,
-         twitterListsObject: listsObject
-      }
-   } = props;
-   const tweets = JSON.parse(list.tweets);
-
+const Tweets = ({
+   tweets,
+   listID,
+   myTwitterInfo: {
+      id: dailiesID,
+      twitterSeenIDs: seenIDs,
+      twitterUserID: userID,
+      twitterListsObject: listsObject
+   }
+}) => {
    const markTweetsSeenHandler = newlySeenTweets => {};
 
    const [markTweetsSeen] = useMutation(MARK_TWEETS_SEEN);
@@ -199,7 +198,7 @@ const Tweets = props => {
       ssr: false,
       fetchPolicy: 'network-only',
       variables: {
-         listID: list.id
+         listID
       },
       onError: error => {
          console.log(error);
@@ -349,7 +348,7 @@ const Tweets = props => {
                         await setTimeout(() => {
                            markTweetsSeen({
                               variables: {
-                                 listID: list.id,
+                                 listID,
                                  tweetIDs
                               },
                               optimisticResponse: {
