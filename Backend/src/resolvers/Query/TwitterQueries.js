@@ -225,7 +225,6 @@ async function getTweetsForList(parent, { listID: requestedList }, ctx, info) {
       listID: requestedList,
       listName
    });
-   // const message = JSON.stringify(listTweets);
 
    return { message };
 }
