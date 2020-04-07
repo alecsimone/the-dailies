@@ -9,7 +9,10 @@ import TwitterLoginStarter from '../components/Twitter/TwitterLoginStarter';
 import TwitterLoginFinisher from '../components/Twitter/TwitterLoginFinisher';
 import Sidebar from '../components/Sidebar';
 
-const twitter = ({ query: { oauth_token, oauth_verifier, listname } }) => {
+const twitter = props => {
+   const {
+      query: { oauth_token, oauth_verifier, listname }
+   } = props;
    const { me, loading } = useContext(MemberContext);
 
    let content;

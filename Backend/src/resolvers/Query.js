@@ -12,7 +12,6 @@ const {
 const { me, member } = require('./Query/MemberQueries');
 const {
    finishTwitterLogin,
-   getInitialTweets,
    getTwitterLists,
    getTweet,
    refreshLists,
@@ -34,8 +33,7 @@ const Query = {
    refreshLists,
    getTweetsForList,
    search,
-   allThings,
-   getInitialTweets
+   allThings
 };
 
 module.exports = Query;

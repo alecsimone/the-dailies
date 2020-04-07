@@ -3,12 +3,24 @@ import gql from 'graphql-tag';
 import { useQuery, useLazyQuery } from '@apollo/react-hooks';
 import { useState } from 'react';
 import PropTypes from 'prop-types';
+import Router from 'next/router';
 import StyledPageWithSidebar from '../../styles/StyledPageWithSidebar';
 import Sidebar from '../Sidebar';
 import TwitterSidebar from './TwitterSidebar';
-import Tweets from './Tweets';
+import Tweets, { filterTweets } from './Tweets';
 import LoadingRing from '../LoadingRing';
 import ErrorMessage from '../ErrorMessage';
+import { convertISOtoAgo } from '../../lib/ThingHandling';
+import ResetIcon from '../Icons/Reset';
+
+const GET_TWITTER_LISTS = gql`
+   query GET_TWITTER_LISTS {
+      getTwitterLists {
+         message
+      }
+   }
+`;
+export { GET_TWITTER_LISTS };
 
 const GET_MY_TWITTER_INFO = gql`
    query GET_MY_TWITTER_INFO {
@@ -24,22 +36,13 @@ const GET_MY_TWITTER_INFO = gql`
 `;
 
 const GET_TWEETS_FOR_LIST = gql`
-   query GET_TWEETS_FOR_LIST($listID: String) {
+   query GET_TWEETS_FOR_LIST($listID: String!) {
       getTweetsForList(listID: $listID) {
          message
       }
    }
 `;
 export { GET_TWEETS_FOR_LIST };
-
-const GET_INITIAL_TWEETS = gql`
-   query GET_INITIAL_TWEETS($listName: String) {
-      getInitialTweets(listName: $listName) {
-         message
-      }
-   }
-`;
-export { GET_INITIAL_TWEETS };
 
 const GET_FRESH_LISTS = gql`
    query GET_FRESH_LISTS {
@@ -51,23 +54,49 @@ const GET_FRESH_LISTS = gql`
 
 const TwitterReader = ({ list }) => {
    const [activeList, setActiveList] = useState(false);
-   const [activeTweets, setActiveTweets] = useState(false);
 
-   // So right here, instead of getting all the lists, we want to run a new getInitialList query, and if list != null, we'll pass it along as a variable and the query will fetch that list for us.
-   const variables = {};
-   if (list != null) {
-      variables.listID = list;
-   }
-   const { loading, error, data } = useQuery(GET_TWEETS_FOR_LIST, {
-      variables,
-      ssr: false
-   });
-
+   const { loading, error, data } = useQuery(GET_TWITTER_LISTS, { ssr: false });
    const {
       loading: myInfoLoading,
       error: myInfoError,
       data: myTwitterInfo
    } = useQuery(GET_MY_TWITTER_INFO);
+
+   const changeLists = newTweetsData => {
+      const parsedData = JSON.parse(newTweetsData.getTweetsForList.message);
+      const { listID, listTweets } = parsedData;
+
+      const oldData = listTweetsClient.readQuery({
+         query: GET_TWITTER_LISTS
+      });
+      const parsedOldData = JSON.parse(oldData.getTwitterLists.message);
+      parsedOldData[listID].tweets = listTweets;
+      const reStringedData = JSON.stringify(parsedOldData);
+
+      const cachedData = listTweetsClient.writeQuery({
+         query: GET_TWITTER_LISTS,
+         data: {
+            __typename: 'query',
+            getTwitterLists: {
+               __typename: 'SuccessMessage',
+               message: reStringedData
+            }
+         }
+      });
+
+      const href = `/twitter?listname=${parsedOldData[listID].name}`;
+      const as = href;
+      Router.replace(href, as, { shallow: true });
+      setActiveList(listID);
+   };
+   const [
+      getTweetsForList,
+      { data: listTweets, client: listTweetsClient }
+   ] = useLazyQuery(GET_TWEETS_FOR_LIST, {
+      ssr: false,
+      fetchPolicy: 'network-only',
+      onCompleted: changeLists
+   });
 
    const updateLists = () => {
       const el = document.querySelector('svg.refreshLists');
@@ -109,23 +138,92 @@ const TwitterReader = ({ list }) => {
       content = <ErrorMessage error={myInfoError} />;
    }
 
+   let listElements;
    if (data && myTwitterInfo) {
-      const { listTweets: tweets, listID } = JSON.parse(
-         data.getTweetsForList.message
+      const listData = JSON.parse(data.getTwitterLists.message);
+      const dirtyListIDs = Object.keys(listData);
+      const listIDs = dirtyListIDs.filter(
+         listID => listID !== 'lastUpdateTime'
       );
+
       if (!activeList) {
-         setActiveList(listID);
-      }
-      if (!activeTweets) {
-         setActiveTweets(JSON.parse(tweets));
+         if (list != null) {
+            const [defaultList] = listIDs.filter(
+               listID =>
+                  listData[listID].name.toLowerCase() === list.toLowerCase()
+            );
+            setActiveList(defaultList);
+         } else {
+            const [seeAllList] = listIDs.filter(
+               listID => listData[listID].name.toLowerCase() === 'see all'
+            );
+            if (seeAllList) {
+               setActiveList(seeAllList);
+            } else {
+               setActiveList('home');
+            }
+         }
       }
 
+      listElements = listIDs.map(listID => {
+         if (listID === 'lastUpdateTime') {
+            return;
+         }
+         const thisListsTweets = JSON.parse(listData[listID].tweets);
+         const filteredTweets = filterTweets(
+            thisListsTweets,
+            myTwitterInfo.me.twitterSeenIDs
+         );
+         return (
+            <div
+               className={`listLink ${listID}${
+                  activeList === listID ? ' selected' : ''
+               }`}
+               key={listID}
+               onClick={() => {
+                  const el = document.querySelector(`.${CSS.escape(listID)}`);
+                  el.classList.add('loading');
+                  getTweetsForList({ variables: { listID } });
+               }}
+            >
+               <a>{listData[listID].name}</a>
+               <span>
+                  {listData[listID].user === myTwitterInfo.me.twitterUserName
+                     ? ''
+                     : `(@${listData[listID].user}) `}
+                  ({filteredTweets.length})
+               </span>
+            </div>
+         );
+      });
+      listElements.unshift(
+         <h5 key="twiterUsername">
+            Welcome, @
+            <a
+               className="twitterName"
+               href={`https://twitter.com/${myTwitterInfo.me.twitterUserName}`}
+               target="_blank"
+            >
+               {myTwitterInfo.me.twitterUserName}
+            </a>
+         </h5>
+      );
+      listElements.push(
+         <div className="updateLists" key="updateLists">
+            Last updated {convertISOtoAgo(listData.lastUpdateTime)} ago
+            <ResetIcon
+               className="refreshLists"
+               onClick={() => {
+                  const el = document.querySelector('svg.refreshLists');
+                  el.classList.add('loading');
+                  fetchFreshLists();
+               }}
+            />
+         </div>
+      );
+
       content = (
-         <Tweets
-            tweets={activeTweets}
-            listID={activeList}
-            myTwitterInfo={myTwitterInfo.me}
-         />
+         <Tweets list={listData[activeList]} myTwitterInfo={myTwitterInfo.me} />
       );
    }
 
@@ -136,14 +234,7 @@ const TwitterReader = ({ list }) => {
          </Head>
          <Sidebar
             extraColumnTitle="Tweets"
-            extraColumnContent={
-               <TwitterSidebar
-                  myTwitterInfo={myTwitterInfo}
-                  activeList={activeList}
-                  setActiveList={setActiveList}
-                  setActiveTweets={setActiveTweets}
-               />
-            }
+            extraColumnContent={<TwitterSidebar listElements={listElements} />}
          />
          <div className="mainSection">{content}</div>
       </StyledPageWithSidebar>
