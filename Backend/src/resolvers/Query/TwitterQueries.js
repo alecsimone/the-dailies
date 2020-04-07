@@ -102,10 +102,8 @@ exports.getTweet = getTweet;
 async function refreshLists(parent, arts, ctx, info) {
    loggedInGate(ctx);
    fullMemberGate(ctx.req.member);
-   const listData = {};
-   const listData = await getFreshLists(
-      ctx
-   );
+
+   const listData = await getFreshLists(ctx);
    const listIDs = Object.keys(listData);
    await Promise.all(
       listIDs.map(async id => {
