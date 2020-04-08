@@ -123,7 +123,7 @@ async function getInitialTweets(parent, { listName }, ctx, info) {
 exports.getInitialTweets = getInitialTweets;
 
 async function getTwitterLists(parent, args, ctx, info) {
-   const { twitterUserName, twitterListsObject } = await getTwitterInfo(ctx);
+   const { twitterListsObject } = await getTwitterInfo(ctx);
 
    const listData = await makeListsObject(twitterListsObject, ctx);
 
