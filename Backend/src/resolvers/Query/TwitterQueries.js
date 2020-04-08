@@ -124,6 +124,9 @@ exports.getInitialTweets = getInitialTweets;
 
 async function getTwitterLists(parent, args, ctx, info) {
    const { twitterListsObject } = await getTwitterInfo(ctx);
+   if (twitterListsObject == null) {
+      throw new Error("Yeah see the lists object didn't work");
+   }
 
    const listData = await makeListsObject(twitterListsObject, ctx);
 
@@ -175,6 +178,9 @@ async function getTweetsForList(parent, { listID: requestedList }, ctx, info) {
    fullMemberGate(ctx.req.member);
 
    const { twitterListsObject } = await getTwitterInfo(ctx);
+   if (twitterListsObject == null) {
+      throw new Error("twitterListsObject didn't work");
+   }
    const listsObject = await makeListsObject(twitterListsObject, ctx);
    const dirtyListIDs = Object.keys(listsObject);
    const listIDs = dirtyListIDs.filter(listID => listID !== 'lastUpdateTime');
