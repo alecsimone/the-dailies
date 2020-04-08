@@ -59,11 +59,7 @@ async function finishTwitterLogin(parent, { token, verifier }, ctx, info) {
 exports.finishTwitterLogin = finishTwitterLogin;
 
 async function makeListsObject(twitterListsObject, ctx) {
-   let listsObject = JSON.parse(twitterListsObject);
-   if (listsObject == null) {
-      listsObject = {};
-   }
-
+   const listsObject = {};
    let listData;
    if (
       twitterListsObject === null ||
@@ -78,7 +74,7 @@ async function makeListsObject(twitterListsObject, ctx) {
          tweets: []
       };
    } else {
-      listData = listsObject;
+      listData = JSON.parse(twitterListsObject);
    }
    return listData;
 }
@@ -124,9 +120,6 @@ exports.getInitialTweets = getInitialTweets;
 
 async function getTwitterLists(parent, args, ctx, info) {
    const { twitterListsObject } = await getTwitterInfo(ctx);
-   if (twitterListsObject == null) {
-      throw new Error("Yeah see the lists object didn't work");
-   }
 
    const listData = await makeListsObject(twitterListsObject, ctx);
 
@@ -178,9 +171,6 @@ async function getTweetsForList(parent, { listID: requestedList }, ctx, info) {
    fullMemberGate(ctx.req.member);
 
    const { twitterListsObject } = await getTwitterInfo(ctx);
-   if (twitterListsObject == null) {
-      throw new Error("twitterListsObject didn't work");
-   }
    const listsObject = await makeListsObject(twitterListsObject, ctx);
    const dirtyListIDs = Object.keys(listsObject);
    const listIDs = dirtyListIDs.filter(listID => listID !== 'lastUpdateTime');
