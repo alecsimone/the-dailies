@@ -1,23 +1,11 @@
-import gql from 'graphql-tag';
-import { useMutation, useLazyQuery } from '@apollo/react-hooks';
+import { useLazyQuery } from '@apollo/react-hooks';
 import styled from 'styled-components';
 import Tweet from './Tweet';
 import { setAlpha, setLightness, setSaturation } from '../../styles/functions';
 import { GET_TWEETS_FOR_LIST } from './TwitterReader';
-import { GET_TWITTER_LISTS } from './TwitterSidebar';
 import X from '../Icons/X';
 import ResetIcon from '../Icons/Reset';
-
-const MARK_TWEETS_SEEN = gql`
-   mutation MARK_TWEETS_SEEN($listID: String!, $tweetIDs: [String]!) {
-      markTweetsSeen(listID: $listID, tweetIDs: $tweetIDs) {
-         __typename
-         id
-         twitterListsObject
-         twitterSeenIDs
-      }
-   }
-`;
+import { filterTweets } from './TwitterReader';
 
 const StyledTweets = styled.section`
    position: absolute;
@@ -166,24 +154,11 @@ const StyledTweets = styled.section`
    }
 `;
 
-const filterTweets = (tweets, seenIDs) => {
-   if (!Array.isArray(tweets)) {
-      return tweets;
-   }
-   const filteredTweets = tweets.filter(tweet => {
-      if (seenIDs == null) return true;
-      if (tweet.retweeted_status != null) {
-         return !seenIDs.includes(tweet.retweeted_status.id_str);
-      }
-      return !seenIDs.includes(tweet.id_str);
-   });
-   return filteredTweets;
-};
-export { filterTweets };
-
 const Tweets = ({
    tweets,
    listID,
+   markTweetsSeen,
+   setActiveTweets,
    myTwitterInfo: {
       id: dailiesID,
       twitterSeenIDs: seenIDs,
@@ -191,9 +166,6 @@ const Tweets = ({
       twitterListsObject: listsObject
    }
 }) => {
-   const markTweetsSeenHandler = newlySeenTweets => {};
-
-   const [markTweetsSeen] = useMutation(MARK_TWEETS_SEEN);
    const [refreshList, { client }] = useLazyQuery(GET_TWEETS_FOR_LIST, {
       ssr: false,
       fetchPolicy: 'network-only',
@@ -208,26 +180,9 @@ const Tweets = ({
          if (button) {
             button.classList.remove('loading');
          }
-         const parsedData = JSON.parse(data.getTweetsForList.message);
-         const { listID, listTweets } = parsedData;
+         const { listTweets } = JSON.parse(data.getTweetsForList.message);
 
-         const oldData = client.readQuery({
-            query: GET_TWITTER_LISTS
-         });
-         const parsedOldData = JSON.parse(oldData.getTwitterLists.message);
-         parsedOldData[listID].tweets = listTweets;
-         const reStringedData = JSON.stringify(parsedOldData);
-
-         const cachedData = client.writeQuery({
-            query: GET_TWITTER_LISTS,
-            data: {
-               __typename: 'query',
-               getTwitterLists: {
-                  __typename: 'SuccessMessage',
-                  message: reStringedData
-               }
-            }
-         });
+         setActiveTweets(filterTweets(JSON.parse(listTweets), seenIDs));
       }
    });
 
@@ -236,10 +191,8 @@ const Tweets = ({
    const tweetersArray = [];
    const seenTweeters = [];
 
-   const filteredTweets = filterTweets(tweets, seenIDs);
-
    let tweetsDisplay;
-   if (filteredTweets.length === 0) {
+   if (tweets.length === 0) {
       tweetsDisplay = (
          <div className="tweeters empty">
             <h3>No new tweets.</h3>
@@ -255,9 +208,9 @@ const Tweets = ({
          </div>
       );
    } else {
-      filteredTweets.sort((a, b) => parseInt(a.id_str) - parseInt(b.id_str));
-      tweetsRemaining = filteredTweets.length;
-      filteredTweets.forEach(tweet => {
+      tweets.sort((a, b) => parseInt(a.id_str) - parseInt(b.id_str));
+      tweetsRemaining = tweets.length;
+      tweets.forEach(tweet => {
          const tweeter = tweet.user;
          if (!seenTweeters.includes(tweeter.screen_name)) {
             const tweeterObject = {
@@ -345,23 +298,23 @@ const Tweets = ({
                               tweetIDs.push(tweet.retweeted_status.id_str);
                            }
                         });
-                        await setTimeout(() => {
-                           markTweetsSeen({
-                              variables: {
-                                 listID,
-                                 tweetIDs
-                              },
-                              optimisticResponse: {
-                                 __typename: 'Mutation',
-                                 markTweetsSeen: {
-                                    __typename: 'Member',
-                                    id: dailiesID,
-                                    twitterListsObject: listsObject,
-                                    twitterSeenIDs: seenIDs.concat(tweetIDs)
-                                 }
+                        const newSeenIDs = seenIDs.concat(tweetIDs);
+                        setActiveTweets(filterTweets(tweets, newSeenIDs));
+                        markTweetsSeen({
+                           variables: {
+                              listID,
+                              tweetIDs
+                           },
+                           optimisticResponse: {
+                              __typename: 'Mutation',
+                              markTweetsSeen: {
+                                 __typename: 'Member',
+                                 id: dailiesID,
+                                 twitterListsObject: listsObject,
+                                 twitterSeenIDs: newSeenIDs
                               }
-                           });
-                        }, 1);
+                           }
+                        });
                      }}
                   />
                </h3>

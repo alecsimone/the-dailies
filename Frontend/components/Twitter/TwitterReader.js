@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import gql from 'graphql-tag';
-import { useQuery, useLazyQuery } from '@apollo/react-hooks';
+import { useQuery, useLazyQuery, useMutation } from '@apollo/react-hooks';
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 import StyledPageWithSidebar from '../../styles/StyledPageWithSidebar';
@@ -49,6 +49,31 @@ const GET_FRESH_LISTS = gql`
    }
 `;
 
+const MARK_TWEETS_SEEN = gql`
+   mutation MARK_TWEETS_SEEN($listID: String!, $tweetIDs: [String]!) {
+      markTweetsSeen(listID: $listID, tweetIDs: $tweetIDs) {
+         __typename
+         id
+         twitterListsObject
+         twitterSeenIDs
+      }
+   }
+`;
+
+const filterTweets = (tweets, seenIDs) => {
+   if (!Array.isArray(tweets) || seenIDs == null) {
+      return tweets;
+   }
+   const filteredTweets = tweets.filter(tweet => {
+      if (tweet.retweeted_status != null) {
+         return !seenIDs.includes(tweet.retweeted_status.id_str);
+      }
+      return !seenIDs.includes(tweet.id_str);
+   });
+   return filteredTweets;
+};
+export { filterTweets };
+
 const TwitterReader = ({ list }) => {
    const [activeList, setActiveList] = useState(false);
    const [activeTweets, setActiveTweets] = useState(false);
@@ -68,6 +93,8 @@ const TwitterReader = ({ list }) => {
       error: myInfoError,
       data: myTwitterInfo
    } = useQuery(GET_MY_TWITTER_INFO);
+
+   const [markTweetsSeen] = useMutation(MARK_TWEETS_SEEN);
 
    const updateLists = () => {
       const el = document.querySelector('svg.refreshLists');
@@ -117,14 +144,18 @@ const TwitterReader = ({ list }) => {
          setActiveList(listID);
       }
       if (!activeTweets) {
-         setActiveTweets(JSON.parse(tweets));
+         setActiveTweets(
+            filterTweets(JSON.parse(tweets), myTwitterInfo.me.twitterSeenIDs)
+         );
       }
 
       content = (
          <Tweets
             tweets={activeTweets}
             listID={activeList}
+            markTweetsSeen={markTweetsSeen}
             myTwitterInfo={myTwitterInfo.me}
+            setActiveTweets={setActiveTweets}
          />
       );
    }
@@ -140,6 +171,7 @@ const TwitterReader = ({ list }) => {
                <TwitterSidebar
                   myTwitterInfo={myTwitterInfo}
                   activeList={activeList}
+                  activeTweetCount={activeTweets.length}
                   setActiveList={setActiveList}
                   setActiveTweets={setActiveTweets}
                />
