@@ -77,6 +77,10 @@ const ListElement = React.memo(
             onClick={() => {
                const el = document.querySelector(`.${CSS.escape(listID)}`);
                el.classList.add('loading');
+
+               const refreshIcon = document.querySelector(`.listRefresher`);
+               refreshIcon.classList.add('loading');
+
                getTweetsForList({ variables: { listID } });
             }}
          >

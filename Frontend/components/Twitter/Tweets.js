@@ -207,7 +207,7 @@ const Tweets = ({
                   refreshList();
                }}
             >
-               <ResetIcon />
+               <ResetIcon className="listRefresher" />
             </button>
          </div>
       );
@@ -303,6 +303,7 @@ const Tweets = ({
 
                         const tweetIDs = [];
                         tweetersArray[i].tweets.forEach(tweet => {
+                           console.log(tweet);
                            tweetIDs.push(tweet.id_str);
                            if (tweet.retweeted_status) {
                               tweetIDs.push(tweet.retweeted_status.id_str);
