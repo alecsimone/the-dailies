@@ -11,8 +11,6 @@ type Query {
    searchTaxes(searchTerm: String, personal: Boolean!): [Tax]!
    taxByTitle(title: String!, personal: Boolean!): Tax
    finishTwitterLogin(token: String!, verifier: String!): SuccessMessage
-   getInitialTweets(listName: String): SuccessMessage!
-   getTwitterLists: SuccessMessage
    refreshLists: SuccessMessage
    getTweet(tweetID: String!): SuccessMessage!
    getTweetsForList(listID: String): SuccessMessage!

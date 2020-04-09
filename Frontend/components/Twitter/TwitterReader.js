@@ -32,15 +32,6 @@ const GET_TWEETS_FOR_LIST = gql`
 `;
 export { GET_TWEETS_FOR_LIST };
 
-const GET_INITIAL_TWEETS = gql`
-   query GET_INITIAL_TWEETS($listName: String) {
-      getInitialTweets(listName: $listName) {
-         message
-      }
-   }
-`;
-export { GET_INITIAL_TWEETS };
-
 const GET_FRESH_LISTS = gql`
    query GET_FRESH_LISTS {
       refreshLists {
@@ -78,21 +69,21 @@ const TwitterReader = ({ list }) => {
    const [activeList, setActiveList] = useState(false);
    const [activeTweets, setActiveTweets] = useState(false);
 
-   // So right here, instead of getting all the lists, we want to run a new getInitialList query, and if list != null, we'll pass it along as a variable and the query will fetch that list for us.
-   const variables = {};
-   if (list != null) {
-      variables.listID = list;
-   }
-   const { loading, error, data } = useQuery(GET_TWEETS_FOR_LIST, {
-      variables,
-      ssr: false
-   });
-
    const {
       loading: myInfoLoading,
       error: myInfoError,
       data: myTwitterInfo
    } = useQuery(GET_MY_TWITTER_INFO);
+
+   // If they didn't ask for a list in the url, which would've been passed down through the list prop, a blank get_tweets_for_list will return their default list.
+   const startingListVariables = {};
+   if (list != null) {
+      startingListVariables.listID = list;
+   }
+   const { loading, error, data } = useQuery(GET_TWEETS_FOR_LIST, {
+      variables: startingListVariables,
+      ssr: false
+   });
 
    const [markTweetsSeen] = useMutation(MARK_TWEETS_SEEN);
 

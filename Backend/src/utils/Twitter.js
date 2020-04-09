@@ -260,9 +260,8 @@ const fetchListTweets = async (listID, ctx) => {
       twitterUserTokenSecret
    } = await getTwitterInfo(ctx);
 
-   const listsObject = JSON.parse(rawListsObject);
-
    let sinceID;
+   const listsObject = JSON.parse(rawListsObject);
    if (listsObject == null || listsObject[listID] == null) {
       sinceID = 1;
    } else {

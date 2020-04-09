@@ -1,11 +1,11 @@
+import PropTypes from 'prop-types';
 import { useLazyQuery } from '@apollo/react-hooks';
 import styled from 'styled-components';
-import Tweet from './Tweet';
 import { setAlpha, setLightness, setSaturation } from '../../styles/functions';
-import { GET_TWEETS_FOR_LIST } from './TwitterReader';
+import { GET_TWEETS_FOR_LIST, filterTweets } from './TwitterReader';
+import Tweet from './Tweet';
 import X from '../Icons/X';
 import ResetIcon from '../Icons/Reset';
-import { filterTweets } from './TwitterReader';
 
 const StyledTweets = styled.section`
    position: absolute;
@@ -166,7 +166,7 @@ const Tweets = ({
       twitterListsObject: listsObject
    }
 }) => {
-   const [refreshList, { client }] = useLazyQuery(GET_TWEETS_FOR_LIST, {
+   const [refreshList] = useLazyQuery(GET_TWEETS_FOR_LIST, {
       ssr: false,
       fetchPolicy: 'network-only',
       variables: {
@@ -186,14 +186,18 @@ const Tweets = ({
       }
    });
 
-   let tweetersRemaining;
-   let tweetsRemaining;
-   const tweetersArray = [];
-   const seenTweeters = [];
+   let tweetContent; // What's gonna get rendered
 
-   let tweetsDisplay;
+   // Count displayed at the top
+   let tweetsRemaining;
+   let tweetersRemaining;
+
+   // Arrays holding all the tweets
+   const tweetersArray = []; // List of tweeters and their tweets
+   const seenTweeters = []; // Index of who's already on the list
+
    if (tweets.length === 0) {
-      tweetsDisplay = (
+      tweetContent = (
          <div className="tweeters empty">
             <h3>No new tweets.</h3>
             <button
@@ -210,7 +214,9 @@ const Tweets = ({
    } else {
       tweets.sort((a, b) => parseInt(a.id_str) - parseInt(b.id_str));
       tweetsRemaining = tweets.length;
+
       tweets.forEach(tweet => {
+         // We're grouping the tweets by tweeter, making an object for each one with their meta info and an array of all their tweets
          const tweeter = tweet.user;
          if (!seenTweeters.includes(tweeter.screen_name)) {
             const tweeterObject = {
@@ -234,9 +240,11 @@ const Tweets = ({
       });
       tweetersRemaining = tweetersArray.length;
 
-      const tweetElements = [];
+      // We make a list with Tweet components for all the tweets of the first 3 tweeters on our list
+      const tweetElements = []; // The list
 
       for (let i = 0; i < 3 && i < seenTweeters.length; i++) {
+         // Put all their tweets in a list
          const thisTweetersTweets = tweetersArray[i].tweets.map(
             (tweet, index) => (
                <Tweet
@@ -257,6 +265,7 @@ const Tweets = ({
             )
          );
 
+         // Make a header and container for it
          const thisTweeter = (
             <div
                className={`tweeterColumn column${i}`}
@@ -291,6 +300,7 @@ const Tweets = ({
                      onClick={async e => {
                         const theWholeTarget = e.target.closest('svg');
                         theWholeTarget.classList.add('loading');
+
                         const tweetIDs = [];
                         tweetersArray[i].tweets.forEach(tweet => {
                            tweetIDs.push(tweet.id_str);
@@ -299,7 +309,9 @@ const Tweets = ({
                            }
                         });
                         const newSeenIDs = seenIDs.concat(tweetIDs);
+
                         setActiveTweets(filterTweets(tweets, newSeenIDs));
+
                         markTweetsSeen({
                            variables: {
                               listID,
@@ -325,7 +337,7 @@ const Tweets = ({
          tweetElements.push(thisTweeter);
       }
 
-      tweetsDisplay = (
+      tweetContent = (
          <div className="tweeters">
             <div className="remainingCounters">
                {tweetsRemaining} tweets / {tweetersRemaining} tweeters
@@ -337,9 +349,22 @@ const Tweets = ({
 
    return (
       <StyledTweets>
-         <div className="tweets">{tweetsDisplay}</div>
+         <div className="tweets">{tweetContent}</div>
       </StyledTweets>
    );
+};
+
+Tweets.propTypes = {
+   tweets: PropTypes.array.isRequired,
+   listID: PropTypes.number.isRequired,
+   markTweetsSeen: PropTypes.func,
+   setActiveTweets: PropTypes.func,
+   myTwitterInfo: PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      twitterSeenIDs: PropTypes.array.isRequired,
+      twitterUserID: PropTypes.number.isRequired,
+      twitterListsObject: PropTypes.object.isRequired
+   })
 };
 
 export default Tweets;

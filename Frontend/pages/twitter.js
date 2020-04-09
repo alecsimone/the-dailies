@@ -12,6 +12,8 @@ import Sidebar from '../components/Sidebar';
 const twitter = ({ query: { oauth_token, oauth_verifier, listname } }) => {
    const { me, loading } = useContext(MemberContext);
 
+   // This page is the gateway. If you're not logged in, it bounces you. If you're logged in but haven't connected twitter, it does that. If you are logged in, it becomes the TwitterReader, which contains its own sidebar.
+
    let content;
    let sidebar;
    if (loading) {

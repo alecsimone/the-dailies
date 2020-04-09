@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import Router from 'next/router';
 import { useQuery, useLazyQuery } from '@apollo/react-hooks';
@@ -20,40 +21,45 @@ const ListElement = React.memo(
       });
 
       // To update seen tweets whenever we change lists (in case we saw some tweets on another device in the meantime), this is the query that needs to get seenIDs added to it
-      const [
-         getTweetsForList,
-         { data: newListData, client: listTweetsClient }
-      ] = useLazyQuery(GET_TWEETS_FOR_LIST, {
-         ssr: false,
-         fetchPolicy: 'network-only',
-         onCompleted: () => {
-            changeLists(newListData);
+      const [getTweetsForList, { data: newListData }] = useLazyQuery(
+         GET_TWEETS_FOR_LIST,
+         {
+            ssr: false,
+            fetchPolicy: 'network-only',
+            onCompleted: () => {
+               changeLists(newListData);
+            }
          }
-      });
+      );
 
       const changeLists = newTweetsData => {
          const { listID, listName, listTweets } = JSON.parse(
             newTweetsData.getTweetsForList.message
          );
 
-         setActiveTweets(JSON.parse(listTweets));
-
          const href = `/twitter?listname=${listName}`;
          const as = href;
          Router.replace(href, as, { shallow: true });
+
+         setActiveTweets(
+            filterTweets(JSON.parse(listTweets), memberInfo.twitterSeenIDs)
+         );
+
          setActiveList(listID);
       };
 
       const thisList = JSON.parse(memberInfo.twitterListsObject)[listID];
 
       let tweetCount;
+      if (error) {
+         // Retry?
+      }
       if (data) {
          if (active) {
             tweetCount = `(${activeTweetCount})`;
          } else {
             const message = JSON.parse(data?.getTweetsForList.message);
             const thisListsTweets = JSON.parse(message.listTweets);
-            console.log('filtering tweets for sidebar');
             const filteredTweets = filterTweets(
                thisListsTweets,
                memberInfo.twitterSeenIDs
@@ -85,15 +91,22 @@ const ListElement = React.memo(
       );
    },
    (prevProps, nextProps) => {
-      if (
-         prevProps.active &&
-         prevProps.activeTweetCount !== nextProps.activeTweetCount
-      ) {
-         return false;
-      }
       if (prevProps.active || nextProps.active) return false;
       return true;
    }
 );
+
+ListElement.propTypes = {
+   listID: PropTypes.number.isRequired,
+   active: PropTypes.bool.isRequired,
+   activeTweetCount: PropTypes.number,
+   memberInfo: PropTypes.shape({
+      twitterListsObject: PropTypes.string,
+      twitterSeenIDs: PropTypes.array,
+      twitterUserName: PropTypes.string
+   }),
+   setActiveList: PropTypes.func.isRequired,
+   setActiveTweets: PropTypes.func.isRequired
+};
 
 export default ListElement;

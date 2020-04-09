@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { setAlpha } from '../../styles/functions';
 import ListElement from './ListElement';
@@ -76,12 +77,13 @@ const TwitterSidebar = ({
       );
    }
 
-   let listElements;
+   // Make an array of the member's lists
    const listsObject = JSON.parse(myTwitterInfo.me.twitterListsObject);
    const dirtyListIDs = Object.keys(listsObject);
    const listIDs = dirtyListIDs.filter(listID => listID !== 'lastUpdateTime');
 
-   listElements = listIDs.map(listID => {
+   // Get a ListElement for each one
+   const listElements = listIDs.map(listID => {
       if (listID === 'lastUpdateTime') {
          return;
       }
@@ -124,4 +126,15 @@ const TwitterSidebar = ({
       </StyledTwitterSidebar>
    );
 };
+
+TwitterSidebar.propTypes = {
+   myTwitterInfo: PropTypes.shape({
+      me: PropTypes.object.isRequired
+   }),
+   activeList: PropTypes.number.isRequired,
+   activeTweetCount: PropTypes.number.isRequired,
+   setActiveList: PropTypes.func.isRequired,
+   setActiveTweets: PropTypes.func.isRequired
+};
+
 export default TwitterSidebar;
