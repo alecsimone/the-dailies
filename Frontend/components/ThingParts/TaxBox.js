@@ -47,24 +47,12 @@ const SEARCH_TAX_QUERY = gql`
             title
             featuredImage
          }
-         ... on Stack {
-            __typename
-            id
-            title
-            featuredImage
-         }
       }
    }
 `;
 
 const StyledTaxBox = styled.section`
    max-width: 100%;
-   /* &.tags {
-      margin: 5rem 0 1rem;
-   }
-   &.stacks {
-      margin: 1rem 0 5rem;
-   } */
    padding: 0 1rem;
    ${props => props.theme.mobileBreakpoint} {
       padding: 0;
@@ -78,14 +66,15 @@ const StyledTaxBox = styled.section`
       }
       .resultsContainer {
          position: absolute;
-         /* The container must be positioned down 1em for the font size, 2 * .25rem for the padding on the input, and then 1px for the border */
-         top: calc(1em + 2 * 0.25rem + 1px);
+         top: 3rem;
          left: 0;
          width: 100%;
          font-size: ${props => props.theme.smallText};
-         border: 1px solid
-            ${props => setAlpha(props.theme.highContrastGrey, 0.4)};
-         border-top: none;
+         background: ${props => props.theme.midBlack};
+         border: 3px solid
+            ${props => setAlpha(props.theme.highContrastGrey, 0.8)};
+         border-top: 2px solid
+            ${props => setAlpha(props.theme.highContrastGrey, 0.8)};
          .searchResult {
             padding: 0.25rem 1rem;
             &.highlighted {
@@ -110,9 +99,18 @@ const StyledTaxBox = styled.section`
 
 const debouncedAutocomplete = debounce(
    (generateAutocomplete, inputValue) => generateAutocomplete(inputValue),
-   250,
+   200,
    true
 );
+
+const getFinalSearchTerm = inputValue => {
+   if (inputValue.includes(',')) {
+      const finalCommaLocation = inputValue.lastIndexOf(',');
+      const finalSearchTermRaw = inputValue.substring(finalCommaLocation + 1);
+      return finalSearchTermRaw.trim();
+   }
+   return inputValue;
+};
 
 const TaxBox = ({ canEdit, personal }) => {
    const { id, partOfTags: tags, partOfStacks: stacks } = useContext(
@@ -126,19 +124,12 @@ const TaxBox = ({ canEdit, personal }) => {
    ] = useLazyQuery(SEARCH_TAX_QUERY);
 
    const generateAutocomplete = async inputValue => {
-      let searchTerm;
-      if (inputValue.includes(',')) {
-         const finalCommaLocation = inputValue.lastIndexOf(',');
-         const finalSearchTermRaw = inputValue.substring(
-            finalCommaLocation + 1
-         );
-         searchTerm = finalSearchTermRaw.trim();
-      } else {
-         searchTerm = inputValue;
-      }
+      const searchTerm = getFinalSearchTerm(inputValue);
+
       if (searchTerm === '') {
          return;
       }
+
       await searchTaxes({
          variables: {
             searchTerm,
@@ -159,7 +150,6 @@ const TaxBox = ({ canEdit, personal }) => {
    if (stacks && personal) {
       alreadyUsedTaxes = stacks.map(stackObj => stackObj.title);
    }
-
    const filterResults = results =>
       results.filter(taxResult => !alreadyUsedTaxes.includes(taxResult.title));
 
@@ -204,7 +194,9 @@ const TaxBox = ({ canEdit, personal }) => {
       const filteredResults = filterResults(searchData.searchTaxes);
       if (filteredResults.length === 0) {
          searchResults = (
-            <div className="searchResult empty">No Results For {taxInput}</div>
+            <div className="searchResult empty">
+               No Results For {getFinalSearchTerm(taxInput)}
+            </div>
          );
       } else {
          searchResults = filteredResults.map((result, index) => (
@@ -281,16 +273,20 @@ const TaxBox = ({ canEdit, personal }) => {
                      })}
                   />
                </form>
-               {(searchData || searchLoading) && taxInput !== '' && isOpen && (
-                  <div className="resultsContainer">{searchResults}</div>
-               )}
+               {(searchData || searchLoading) &&
+                  taxInput !== '' &&
+                  taxInput.length > 1 &&
+                  isOpen && (
+                     <div className="resultsContainer">{searchResults}</div>
+                  )}
             </div>
          )}
       </StyledTaxBox>
    );
 };
 TaxBox.propTypes = {
-   canEdit: PropTypes.bool
+   canEdit: PropTypes.bool,
+   personal: PropTypes.bool.isRequired
 };
 
 export default TaxBox;

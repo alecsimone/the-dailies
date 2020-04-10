@@ -4,6 +4,7 @@ import Head from 'next/head';
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import StyledPageWithSidebar from '../styles/StyledPageWithSidebar';
+import { StyledTaxContent } from './tag';
 import Sidebar from '../components/Sidebar';
 import Error from '../components/ErrorMessage';
 import LoadingRing from '../components/LoadingRing';
@@ -80,11 +81,14 @@ const stack = ({ query: { id, title } }) => {
             return bDate - aDate;
          });
          content = (
-            <Things
-               things={sortedThings}
-               displayType="grid"
-               cardSize="regular"
-            />
+            <StyledTaxContent className="content">
+               <h2>Tag: {title}</h2>
+               <Things
+                  things={sortedThings}
+                  displayType="grid"
+                  cardSize="regular"
+               />
+            </StyledTaxContent>
          );
          sidebar = (
             <Sidebar

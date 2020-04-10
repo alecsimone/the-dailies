@@ -29,36 +29,24 @@ const Taxes = ({ taxes, personal }) => {
 
    let taxElements;
    if (taxes) {
-      taxElements = cleanTaxes.map((tax, index) => {
-         if (index < cleanTaxes.length - 1)
-            return (
-               <React.Fragment key={tax.id}>
-                  <Link
-                     href={{
-                        pathname: personal ? '/stack' : '/tag',
-                        query: { title: tax.title }
-                     }}
-                  >
-                     <a>{tax.title}</a>
-                  </Link>
-                  ,{' '}
-               </React.Fragment>
-            );
-         return (
-            <React.Fragment key={tax.id}>
-               <Link
-                  href={{
-                     pathname: personal ? '/stack' : '/tag',
-                     query: { title: tax.title }
-                  }}
+      taxElements = cleanTaxes.map((tax, index) => (
+         <React.Fragment key={tax.id}>
+            <Link
+               href={{
+                  pathname: personal ? '/stack' : '/tag',
+                  query: { title: tax.title }
+               }}
+            >
+               <a
+                  key={tax.id}
+                  className={index < cleanTaxes.length - 1 ? 'bulk' : 'final'}
                >
-                  <a key={tax.id} className="final">
-                     {tax.title}
-                  </a>
-               </Link>
-            </React.Fragment>
-         );
-      });
+                  {tax.title}
+               </a>
+            </Link>
+            {index < cleanTaxes.length - 1 && ', '}
+         </React.Fragment>
+      ));
    }
 
    return (
@@ -85,4 +73,9 @@ Taxes.propTypes = {
    )
 };
 
-export default Taxes;
+export default React.memo(Taxes, (prev, next) => {
+   if (prev.taxes.length !== next.taxes.length) {
+      return false;
+   }
+   return true;
+});

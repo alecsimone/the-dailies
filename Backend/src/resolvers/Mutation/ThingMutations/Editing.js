@@ -14,28 +14,31 @@ const {
 const {fullMemberFields} = require('../../../utils/CardInterfaces');
 
 async function addTaxToThing(taxTitle, thingID, ctx, personal) {
+   // Note: there's an addTaxToThingHandler shoved in between the client and this function. This is the function shared by other backend operations.
+
    const typeToQuery = personal ? 'stacks' : 'tags';
    const partOf = personal ? 'partOfStacks' : 'partOfTags';
-   const where = {
-      title: taxTitle
-   }
+   const where = {};
    if (personal) {
       where.author = {
          id: ctx.req.memberId
       }
    }
-   const existingTax = await ctx.db.query[typeToQuery](
+   const allTaxes = await ctx.db.query[typeToQuery](
       {
          where
       },
-      `{id author {id}}`
+      `{id title author {id}}`
    );
+
+   const relevantTaxes = allTaxes.filter(tax => tax.title.toLowerCase().trim() == taxTitle.toLowerCase().trim());
+
    let dataObj;
-   if (existingTax[0] != null) {
+   if (relevantTaxes[0] != null) {
       dataObj = {
          [partOf]: {
             connect: {
-               id: existingTax[0].id
+               id: relevantTaxes[0].id
             }
          }
       };
@@ -43,7 +46,7 @@ async function addTaxToThing(taxTitle, thingID, ctx, personal) {
       dataObj = {
          [partOf]: {
             create: {
-               title: taxTitle,
+               title: taxTitle.trim(),
                author: {
                   connect: {
                      id: ctx.req.memberId
@@ -398,21 +401,25 @@ async function deleteThing(parent, {id}, ctx, info) {
 }
 exports.deleteThing = deleteThing;
 
-async function deleteTag(parent, {id}, ctx, info) {
+async function deleteTax(parent, {id, personal}, ctx, info) {
    loggedInGate(ctx);
    fullMemberGate(ctx.req.member);
-   editPermissionGate({}, id, 'Tag', ctx);
 
-   const deletedTag = await ctx.db.mutation.deleteTag({
+   const type = personal ? 'Stack' : 'Tag'
+
+   editPermissionGate({}, id, type, ctx);
+
+   const mutationType = `delete${type}`
+   const deletedTax = await ctx.db.mutation[mutationType]({
       where: {
          id
       }
    },
    info);
 
-   return deletedTag;
+   return deletedTax;
 }
-exports.deleteTag = deleteTag;
+exports.deleteTax = deleteTax;
 
 async function setColor(parent, { color, id, type}, ctx, info) {
    loggedInGate(ctx);

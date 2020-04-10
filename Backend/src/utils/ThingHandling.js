@@ -73,9 +73,9 @@ async function editPermissionGate(dataObj, id, type, ctx) {
    const lowerCasedType = type.toLowerCase();
    let fields;
    if (type === 'Tag') {
-      fields = `{author {id} public}`;
-   } else if (type === 'Thing') {
       fields = `{author {id}}`;
+   } else if (type === 'Thing') {
+      fields = ``;
    }
    const oldStuff = await ctx.db.query[lowerCasedType](
       {
@@ -83,10 +83,10 @@ async function editPermissionGate(dataObj, id, type, ctx) {
             id
          }
       },
-      `${fields}`
+      `{author {id}}`
    );
 
-   if (oldStuff.author.id !== ctx.req.memberId && !oldStuff.public) {
+   if (oldStuff.author.id !== ctx.req.memberId) {
       throw new Error(
          `You do not have permission to edit that ${lowerCasedType}`
       );
@@ -146,22 +146,18 @@ async function properUpdateStuff(dataObj, id, type, ctx) {
 }
 exports.properUpdateStuff = properUpdateStuff;
 
-async function searchAvailableTaxes(searchTerm, ctx, exact, personal) {
+async function searchAvailableTaxes(searchTerm, ctx, personal) {
    const typeToSearch = personal ? 'stacks' : 'tags';
-   const whereObj = {
-      [exact ? 'title' : 'title_contains']: searchTerm
-   };
-   if (personal) {
-      whereObj.author = {
-         id: ctx.req.memberId
-      };
-   }
-   return ctx.db.query[typeToSearch](
-      {
-         where: whereObj
-      },
+   const allTaxes = await ctx.db.query[typeToSearch](
+      {},
       `{__typename id title author {id}}`
    );
+
+   const relevantTaxes = allTaxes.filter(tax =>
+      tax.title.toLowerCase().includes(searchTerm.toLowerCase())
+   );
+
+   return relevantTaxes;
 }
 exports.searchAvailableTaxes = searchAvailableTaxes;
 

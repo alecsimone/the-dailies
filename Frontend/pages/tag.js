@@ -3,6 +3,7 @@ import { useQuery, useSubscription } from '@apollo/react-hooks';
 import Head from 'next/head';
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
 import StyledPageWithSidebar from '../styles/StyledPageWithSidebar';
 import Sidebar from '../components/Sidebar';
 import Error from '../components/ErrorMessage';
@@ -35,6 +36,16 @@ const SINGLE_TAG_SUBSCRIPTION = gql`
       }
    }
 `;
+
+const StyledTaxContent = styled.section`
+   h2 {
+      text-align: center;
+      margin: 0 auto 3rem;
+      font-weight: 600;
+      font-size: ${props => props.theme.smallHead};
+   }
+`;
+export { StyledTaxContent };
 
 const TagContext = React.createContext();
 export { TagContext };
@@ -93,11 +104,14 @@ const tag = ({ query: { id, title } }) => {
             return bDate - aDate;
          });
          content = (
-            <Things
-               things={sortedThings}
-               displayType="grid"
-               cardSize="regular"
-            />
+            <StyledTaxContent className="content">
+               <h2>Tag: {title}</h2>
+               <Things
+                  things={sortedThings}
+                  displayType="grid"
+                  cardSize="regular"
+               />
+            </StyledTaxContent>
          );
          sidebar = (
             <Sidebar

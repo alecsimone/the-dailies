@@ -8,10 +8,16 @@ import TrashIcon from './Icons/Trash';
 import ColorSelector from './ThingParts/ColorSelector';
 
 const DELETE_TAG_MUTATION = gql`
-   mutation DELETE_TAG_MUTATION($id: ID!) {
-      deleteTag(id: $id) {
-         __typename
-         id
+   mutation DELETE_TAG_MUTATION($id: ID!, $personal: Boolean!) {
+      deleteTax(id: $id, personal: $personal) {
+         ... on Tag {
+            __typename
+            id
+         }
+         ... on Stack {
+            __typename
+            id
+         }
       }
    }
 `;
@@ -38,9 +44,10 @@ const StyledTaxMeta = styled.div`
 const TaxMeta = ({ context, canEdit }) => {
    const { __typename: type, author, id, color } = useContext(context);
 
-   const [deleteTag] = useMutation(DELETE_TAG_MUTATION, {
+   const [deleteTax] = useMutation(DELETE_TAG_MUTATION, {
       variables: {
-         id
+         id,
+         personal: type === 'Stack'
       },
       onCompleted: () => Router.push({ pathname: '/' })
    });
@@ -59,7 +66,7 @@ const TaxMeta = ({ context, canEdit }) => {
                         )
                      ) {
                         e.target.classList.add('loading');
-                        deleteTag();
+                        deleteTax();
                      }
                   }}
                />

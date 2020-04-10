@@ -26,7 +26,7 @@ const {
    editLink,
    deleteThing,
    newBlankThing,
-   deleteTag,
+   deleteTax,
    setColor
 } = require('./Mutation/ThingMutations/Editing');
 const {
@@ -66,7 +66,7 @@ const Mutations = {
    deleteThing,
    readNotifications,
    newBlankThing,
-   deleteTag,
+   deleteTax,
    setColor,
    vote,
    toggleBroadcastView
