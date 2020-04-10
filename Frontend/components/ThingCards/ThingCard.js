@@ -155,7 +155,7 @@ const ThingCard = ({ data }) => {
                   <FeaturedImage
                      context={ThingCardContext}
                      key={`${id}-FeaturedImage`}
-                     titleLimit={80}
+                     titleLimit={120}
                      canEdit={false}
                   />
                </a>

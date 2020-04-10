@@ -105,7 +105,11 @@ const VoteBar = ({ votes, thingID }) => {
                meVoted = true;
             }
             voters.push(
-               <div className="voterBubble" title={`${displayName}: ${value}`}>
+               <div
+                  className="voterBubble"
+                  title={`${displayName}: ${value}`}
+                  key={voterID}
+               >
                   <Link href={{ pathname: '/member', query: { id: voterID } }}>
                      <a>
                         {avatar != null ? (

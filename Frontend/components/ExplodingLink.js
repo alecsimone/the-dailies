@@ -14,11 +14,24 @@ import Tweet from './Twitter/Tweet';
 import TweetGetter from './Twitter/TweetGetter';
 import LoadingRing from './LoadingRing';
 
-const ExplodingLink = props => {
-   const { url, keyString, alt, className } = props;
+const ExplodingLink = ({ url, keyString, alt, className }) => {
    const lowerCaseURL = url.toLowerCase();
 
    const { me } = useContext(MemberContext);
+
+   // Bracket Links
+   const bracketCheck = /\[(?<text>.+)\]\((?<href>.+)\)/gi;
+   const bracketMatchCheck = url.match(bracketCheck);
+   if (bracketMatchCheck != null && process.browser) {
+      const bracketMatch = url.matchAll(bracketCheck);
+      for (const match of bracketMatch) {
+         return (
+            <a href={match.groups.href} target="_blank">
+               {match.groups.text}
+            </a>
+         );
+      }
+   }
 
    // Images
    if (
@@ -122,7 +135,10 @@ const ExplodingLink = props => {
    }
 
    // Things on OurDailies
-   if (lowerCaseURL.includes(`${homeNoHTTP}/thing?id=`)) {
+   if (
+      lowerCaseURL.includes(`${homeNoHTTP}/thing?id=`) &&
+      bracketMatchCheck == null
+   ) {
       const thingIDPos = lowerCaseURL.indexOf('/thing?id=') + 10;
       let thingID;
       if (lowerCaseURL.includes('&')) {

@@ -71,7 +71,7 @@ const PrivacyDropdown = props => {
       privacyOptions = <MetaOption name={initialPrivacy} />;
    } else {
       privacyOptions = privacyOptionsData.__type.enumValues.map(option => (
-         <MetaOption name={option.name} />
+         <MetaOption name={option.name} key={option.name} />
       ));
    }
 
