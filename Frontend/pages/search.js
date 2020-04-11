@@ -16,6 +16,7 @@ const SEARCH_QUERY = gql`
       }
    }
 `;
+export { SEARCH_QUERY };
 
 const StyledSearchResults = styled.div`
    h3 {

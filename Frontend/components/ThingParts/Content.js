@@ -263,6 +263,7 @@ const StyledContent = styled.section`
          textarea {
             padding: 1rem;
             height: 4rem;
+            position: relative;
             ${props => props.theme.scroll};
          }
       }
@@ -294,6 +295,7 @@ const StyledContent = styled.section`
    }
    textarea {
       width: 100%;
+      position: relative;
       height: calc(5rem + 4px);
    }
    button {

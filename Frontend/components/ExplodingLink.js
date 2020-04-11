@@ -33,13 +33,29 @@ const ExplodingLink = ({ url, keyString, alt, className }) => {
       }
    }
 
-   // Images
+   // Bracket Thing References
+   const bracketedThingCheck = /\[[pPtT]:"(?<id>.+)"\]/gi;
+   const bracketedThingMatchCheck = url.match(bracketedThingCheck);
+   if (bracketedThingMatchCheck != null && process.browser) {
+      const bracketedThingMatch = url.matchAll(bracketedThingCheck);
+      for (const match of bracketedThingMatch) {
+         return (
+            <CardGenerator
+               key={match.groups.id}
+               id={match.groups.id}
+               cardType="small"
+            />
+         );
+      }
+   }
+
    if (
       lowerCaseURL.includes('.jpg') ||
       lowerCaseURL.includes('.png') ||
       lowerCaseURL.includes('.jpeg') ||
       lowerCaseURL.includes('.gif')
    ) {
+      // Images
       return (
          <a href={url} target="_blank" key={keyString}>
             <img src={url} className={className} alt={alt == null ? '' : alt} />

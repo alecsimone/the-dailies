@@ -1,6 +1,78 @@
+import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { useEffect } from 'react';
-import { dynamicallyResizeElement } from '../../styles/functions';
+import { useEffect, useState, useRef, useCallback } from 'react';
+import { useLazyQuery } from '@apollo/react-hooks';
+import { dynamicallyResizeElement, setAlpha } from '../../styles/functions';
+import { SEARCH_QUERY } from '../../pages/search';
+
+const StyledWrapper = styled.div`
+   width: 100%;
+   .postSearchTooltip {
+      background: ${props => props.theme.lightBlack};
+      border: 3px solid ${props => setAlpha(props.theme.highContrastGrey, 0.8)};
+      border-top: 2px solid
+         ${props => setAlpha(props.theme.highContrastGrey, 0.8)};
+      display: none;
+      position: absolute;
+      z-index: 2;
+      .postSearchResult {
+         padding: 0.25rem 1rem;
+         cursor: pointer;
+         border-bottom: 2px solid
+            ${props => setAlpha(props.theme.lowContrastGrey, 0.4)};
+         &:last-child {
+            border-bottom: none;
+         }
+         &.highlighted {
+            background: ${props => props.theme.majorColor};
+         }
+         &:hover {
+            background: ${props => props.theme.majorColor};
+         }
+      }
+   }
+`;
+
+const getCursorXY = (input, selectionPoint) => {
+   // stole this from https://medium.com/@jh3y/how-to-where-s-the-caret-getting-the-xy-position-of-the-caret-a24ba372990a
+   const { offsetLeft: inputX, offsetTop: inputY } = input;
+   // create a dummy element that will be a clone of our input
+   const div = document.createElement('div');
+   // get the computed style of the input and clone it onto the dummy element
+   const copyStyle = getComputedStyle(input);
+   for (const prop of copyStyle) {
+      div.style[prop] = copyStyle[prop];
+   }
+   // we need a character that will replace whitespace when filling our dummy element if it's a single line <input/>
+   const swap = '.';
+   const inputValue =
+      input.tagName === 'INPUT' ? input.value.replace(/ /g, swap) : input.value;
+   // set the div content to that of the textarea up until selection
+   const textContent = inputValue.substr(0, selectionPoint);
+   // set the text content of the dummy element div
+   div.textContent = textContent;
+   if (input.tagName === 'TEXTAREA') div.style.height = 'auto';
+   // if a single line input then the div needs to be single line and not break out like a text area
+   if (input.tagName === 'INPUT') div.style.width = 'auto';
+   // create a marker element to obtain caret position
+   const span = document.createElement('span');
+   // give the span the textContent of remaining content so that the recreated dummy element is as close as possible
+   span.textContent = inputValue.substr(selectionPoint) || '.';
+   // append the span marker to the div
+   div.appendChild(span);
+   // append the dummy element to the body
+   document.body.appendChild(div);
+   // get the marker position, this is the caret position top and left relative to the input
+   const { offsetLeft: spanX, offsetTop: spanY } = span;
+   // lastly, remove that dummy element
+   // NOTE:: can comment this out for debugging purposes if you want to see where that span is rendered
+   document.body.removeChild(div);
+   // return an object with the x and y of the caret. account for input positioning so that you don't need to wrap the input
+   return {
+      x: inputX + spanX,
+      y: inputY + spanY
+   };
+};
 
 const ContentInput = ({
    currentContent,
@@ -31,6 +103,169 @@ const ContentInput = ({
       }
    };
 
+   const [postSearchResults, setPostSearchResults] = useState([]);
+   const searchResultsRef = useRef(postSearchResults);
+   const [highlightedIndex, setHighlightedIndex] = useState(-1);
+   const highlightedIndexRef = useRef(highlightedIndex);
+   const currentContentRef = useRef(currentContent);
+
+   const [search, { loading: searchLoading, data: searchData }] = useLazyQuery(
+      SEARCH_QUERY,
+      {
+         onCompleted: data => {
+            setPostSearchResults(data.search);
+            searchResultsRef.current = data.search;
+         }
+      }
+   );
+
+   const closeResults = () => {
+      setPostSearchResults([]);
+      searchResultsRef.current = [];
+      setHighlightedIndex(-1);
+      highlightedIndexRef.current = -1;
+      const toolTip = document.querySelector('.postSearchTooltip');
+      toolTip.style.display = 'none';
+      window.removeEventListener('keydown', navigateResultsRef.current);
+   };
+
+   const chooseResult = () => {
+      const thisInput = document.querySelector(`#${id}`);
+
+      const selectionPoint = thisInput.selectionStart;
+      const mostRecentQuoteIndex = currentContentRef.current.lastIndexOf(
+         '"',
+         selectionPoint - 1
+      );
+
+      const previousText = currentContentRef.current.substring(
+         0,
+         mostRecentQuoteIndex + 1
+      );
+      const afterText = currentContentRef.current.substring(selectionPoint);
+      const selectedID =
+         searchResultsRef?.current[highlightedIndexRef.current]?.id;
+
+      const newContent = `${previousText + selectedID}"]${afterText}`;
+      updateContent(newContent);
+
+      const newCursorPos = mostRecentQuoteIndex + selectedID.length + 4;
+
+      thisInput.setSelectionRange(newCursorPos, newCursorPos);
+
+      closeResults();
+   };
+
+   const navigateResults = e => {
+      if (e.key === 'ArrowDown') {
+         e.preventDefault();
+         const newIndex =
+            highlightedIndexRef.current + 1 < searchResultsRef.current.length
+               ? highlightedIndexRef.current + 1
+               : 0;
+         setHighlightedIndex(newIndex);
+         highlightedIndexRef.current = newIndex;
+      } else if (e.key === 'ArrowUp') {
+         e.preventDefault();
+         const newIndex =
+            highlightedIndexRef.current - 1 < 0
+               ? searchResultsRef.current.length - 1
+               : highlightedIndexRef.current - 1;
+         setHighlightedIndex(newIndex);
+         highlightedIndexRef.current = newIndex;
+      } else if (e.key === 'Escape' || e.key === 'Backspace') {
+         closeResults();
+      } else if (e.key === 'Enter' || e.key === 'Tab') {
+         e.preventDefault();
+         chooseResult();
+      }
+   };
+   const navigateResultsRef = useRef(navigateResults);
+
+   const handleKeyUp = async e => {
+      if (e.key === 'Escape' || e.key === 'Enter' || e.key === 'Tab') return;
+      const input = e.target;
+      const selectionPoint = e.target.selectionStart;
+      const mostRecentQuoteIndex = currentContent.lastIndexOf(
+         '"',
+         selectionPoint - 1
+      );
+      if (mostRecentQuoteIndex < 3) return;
+
+      const previousThreeCharacters = currentContent.substring(
+         mostRecentQuoteIndex - 3,
+         mostRecentQuoteIndex
+      );
+
+      const toolTip = document.querySelector('.postSearchTooltip');
+
+      if (
+         (previousThreeCharacters.toLowerCase() !== '[p:' &&
+            previousThreeCharacters.toLowerCase() !== '[t:') ||
+         selectionPoint === mostRecentQuoteIndex + 1
+      ) {
+         closeResults();
+         return;
+      }
+
+      const searchTerm = currentContent.substring(
+         mostRecentQuoteIndex + 1,
+         selectionPoint
+      );
+
+      const searchResults = await search({
+         variables: {
+            string: searchTerm
+         }
+      });
+
+      if (toolTip.style.display === 'none') {
+         const cursorXY = getCursorXY(input, mostRecentQuoteIndex);
+         const inputStyle = window.getComputedStyle(input);
+         const inputLineHeight = inputStyle.getPropertyValue('line-height');
+
+         toolTip.setAttribute(
+            'style',
+            `display: block; top: calc(${
+               cursorXY.y
+            }px + ${inputLineHeight}); left: ${cursorXY.x}px`
+         );
+
+         console.log('adding another event listener');
+         window.addEventListener('keydown', navigateResultsRef.current);
+      }
+   };
+
+   let postSearchResultElements;
+   if (postSearchResults.length > 0) {
+      postSearchResultElements = postSearchResults.map((result, index) => (
+         <div
+            className={
+               index === highlightedIndex
+                  ? 'postSearchResult highlighted'
+                  : 'postSearchResult'
+            }
+            key={index}
+            onMouseDown={e => {
+               e.preventDefault();
+               setHighlightedIndex(index);
+               highlightedIndexRef.current = index;
+               chooseResult();
+            }}
+         >
+            {result.title}
+         </div>
+      ));
+   } else if (searchLoading) {
+      postSearchResultElements = (
+         <div className="postSearchResult">Searching posts...</div>
+      );
+   } else if (postSearchResults.length === 0) {
+      postSearchResultElements = (
+         <div className="postSearchResult">No posts found</div>
+      );
+   }
+
    return (
       <form
          onSubmit={async e => {
@@ -38,18 +273,26 @@ const ContentInput = ({
             postContent();
          }}
       >
-         <textarea
-            type="textarea"
-            id={id}
-            className="contentInput"
-            name="content"
-            value={currentContent}
-            onChange={e => {
-               updateContent(e.target.value);
-            }}
-            onKeyDown={e => handleKeyDown(e)}
-            placeholder="Add content"
-         />
+         <StyledWrapper>
+            <textarea
+               type="textarea"
+               id={id}
+               className="contentInput"
+               name="content"
+               value={currentContent}
+               onChange={e => {
+                  currentContentRef.current = e.target.value;
+                  updateContent(e.target.value);
+               }}
+               onKeyDown={e => handleKeyDown(e)}
+               onKeyUp={e => handleKeyUp(e)}
+               onBlur={e => {
+                  closeResults();
+               }}
+               placeholder="Add content"
+            />
+            <div className="postSearchTooltip">{postSearchResultElements}</div>
+         </StyledWrapper>
          <div className="postButtonWrapper">
             <button type="submit" className="post">
                add
