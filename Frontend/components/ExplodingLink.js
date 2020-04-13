@@ -25,26 +25,25 @@ const ExplodingLink = ({ url, keyString, alt, className }) => {
    if (bracketMatchCheck != null && process.browser) {
       const bracketMatch = url.matchAll(bracketCheck);
       for (const match of bracketMatch) {
+         const cleanText = match.groups.text.trim().toLowerCase();
+
+         if (
+            cleanText.toLowerCase().startsWith('p:') ||
+            cleanText.toLowerCase().startsWith('t:')
+         ) {
+            return (
+               <CardGenerator
+                  key={match.groups.href}
+                  id={match.groups.href}
+                  cardType="small"
+               />
+            );
+         }
+
          return (
             <a href={match.groups.href} target="_blank">
                {match.groups.text}
             </a>
-         );
-      }
-   }
-
-   // Bracket Thing References
-   const bracketedThingCheck = /\[[pPtT]:"(?<id>.+)"\]/gi;
-   const bracketedThingMatchCheck = url.match(bracketedThingCheck);
-   if (bracketedThingMatchCheck != null && process.browser) {
-      const bracketedThingMatch = url.matchAll(bracketedThingCheck);
-      for (const match of bracketedThingMatch) {
-         return (
-            <CardGenerator
-               key={match.groups.id}
-               id={match.groups.id}
-               cardType="small"
-            />
          );
       }
    }

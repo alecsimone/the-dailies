@@ -145,13 +145,18 @@ const ContentInput = ({
          mostRecentQuoteIndex + 1
       );
       const afterText = currentContentRef.current.substring(selectionPoint);
+
+      const selectedTitle =
+         searchResultsRef?.current[highlightedIndexRef.current]?.title;
       const selectedID =
          searchResultsRef?.current[highlightedIndexRef.current]?.id;
 
-      const newContent = `${previousText + selectedID}"]${afterText}`;
+      const newContent = `${previousText +
+         selectedTitle}"](${selectedID})${afterText}`;
       updateContent(newContent);
 
-      const newCursorPos = mostRecentQuoteIndex + selectedID.length + 4;
+      const newCursorPos =
+         mostRecentQuoteIndex + selectedTitle.length + selectedID.length + 6;
 
       thisInput.setSelectionRange(newCursorPos, newCursorPos);
 
