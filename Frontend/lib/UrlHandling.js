@@ -108,7 +108,7 @@ export { getGfycatSlugFromLink };
 
 const getTweetIDFromLink = url => {
    const lowerCaseURL = url.toLowerCase();
-   const statusPos = url.indexOf('/status/') + 8;
+   const statusPos = lowerCaseURL.indexOf('/status/') + 8;
    const parametersPos = url.indexOf('?', statusPos);
    if (parametersPos > -1) {
       return url.substring(statusPos, parametersPos);

@@ -77,7 +77,11 @@ const replaceReddit = rawText =>
    );
 
 const processLinksInText = (rawText, keyString = 0) => {
-   const urls = rawText.match(urlFinder);
+   let urls = rawText.match(urlFinder);
+
+   // Quick kludge until I find a way to not match this thing that happens surprisingly often
+   urls = urls?.filter(url => url.toLowerCase() !== '...in');
+
    if (urls == null) {
       return (
          <p key={keyString}>
