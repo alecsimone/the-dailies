@@ -83,13 +83,6 @@ const processLinksInText = (rawText, keyString = 0) => {
       );
    }
 
-   if (process.browser) {
-      const allURLs = rawText.matchAll(urlFinder);
-      for (const thisURL of allURLs) {
-         console.log(thisURL);
-      }
-   }
-
    if (urls.length === 1) {
       const url = urls[0];
       let fullUrl = url;

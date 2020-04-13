@@ -38,7 +38,7 @@ const StylishText = ({ text }) => {
 
          const tagElement = (
             <span style={styleObject} key={stoppedAtIndex}>
-               {tag.groups.styleTextContent}
+               <StylishText text={tag.groups.styleTextContent} />
             </span>
          );
          elementsArray.push(tagElement);
@@ -47,7 +47,7 @@ const StylishText = ({ text }) => {
       if (tag.groups.stars != null) {
          elementsArray.push(
             <span style={{ fontWeight: 700, color: 'white' }}>
-               {tag.groups.starsTextContent}
+               <StylishText text={tag.groups.starsTextContent} />
             </span>
          );
       }
@@ -55,7 +55,7 @@ const StylishText = ({ text }) => {
       if (tag.groups.bars != null) {
          elementsArray.push(
             <span style={{ fontStyle: 'italic' }}>
-               {tag.groups.barsTextContent}
+               <StylishText text={tag.groups.barsTextContent} />
             </span>
          );
       }
