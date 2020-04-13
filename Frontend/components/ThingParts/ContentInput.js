@@ -1,6 +1,6 @@
-import styled from 'styled-components';
+import styled, { ThemeContext } from 'styled-components';
 import PropTypes from 'prop-types';
-import { useEffect, useState, useRef, useCallback } from 'react';
+import { useEffect, useState, useRef, useContext } from 'react';
 import { useLazyQuery } from '@apollo/react-hooks';
 import { dynamicallyResizeElement, setAlpha } from '../../styles/functions';
 import { SEARCH_QUERY } from '../../pages/search';
@@ -108,6 +108,8 @@ const ContentInput = ({
    const [highlightedIndex, setHighlightedIndex] = useState(-1);
    const highlightedIndexRef = useRef(highlightedIndex);
    const currentContentRef = useRef(currentContent);
+
+   const { mobileBPWidthRaw } = useContext(ThemeContext);
 
    const [search, { loading: searchLoading, data: searchData }] = useLazyQuery(
       SEARCH_QUERY,
@@ -221,17 +223,26 @@ const ContentInput = ({
 
       if (toolTip.style.display === 'none') {
          const cursorXY = getCursorXY(input, mostRecentQuoteIndex);
+
          const inputStyle = window.getComputedStyle(input);
          const inputLineHeight = inputStyle.getPropertyValue('line-height');
+
+         let left;
+         if (window.innerWidth < mobileBPWidthRaw) {
+            left = 0;
+         } else if (window.innerWidth - 500 < cursorXY.x) {
+            left = window.innerWidth - 500;
+         } else {
+            left = cursorXY.x;
+         }
 
          toolTip.setAttribute(
             'style',
             `display: block; top: calc(${
                cursorXY.y
-            }px + ${inputLineHeight}); left: ${cursorXY.x}px`
+            }px + ${inputLineHeight}); left: ${left}px`
          );
 
-         console.log('adding another event listener');
          window.addEventListener('keydown', navigateResultsRef.current);
       }
    };
