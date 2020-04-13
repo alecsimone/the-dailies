@@ -38,7 +38,10 @@ const tcoReplacer = (text, entities, quotedTweetLink) => {
             (quotedTweetLink.expanded !== urlObject.expanded_url &&
                !urlObject.expanded_url.includes(quotedTweetLink.expanded))
          ) {
-            text = text.replace(urlObject.url, urlObject.expanded_url);
+            text = text.replace(
+               urlObject.url,
+               `\u200B${urlObject.expanded_url}\u200B`
+            );
          }
       });
    }
@@ -46,6 +49,7 @@ const tcoReplacer = (text, entities, quotedTweetLink) => {
       /https:\/\/t.co\/[-A-Z0-9+&@#\/%=~_|$?!:,.]*/gim,
       ''
    );
+   console.log(newText);
    return newText;
 };
 
