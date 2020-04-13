@@ -66,7 +66,10 @@ const replaceReddit = rawText =>
             matchIndex - 10,
             matchIndex
          );
-         if (precedingCharacters.toLowerCase() === 'reddit.com') {
+         if (
+            precedingCharacters.toLowerCase() === 'reddit.com' ||
+            precedingCharacters[precedingCharacters.length - 1] !== ' '
+         ) {
             return wholeMatch;
          }
          return `https://reddit.com${wholeMatch}`;

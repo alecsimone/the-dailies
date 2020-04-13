@@ -49,7 +49,6 @@ const tcoReplacer = (text, entities, quotedTweetLink) => {
       /https:\/\/t.co\/[-A-Z0-9+&@#\/%=~_|$?!:,.]*/gim,
       ''
    );
-   console.log(newText);
    return newText;
 };
 
