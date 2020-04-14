@@ -48,12 +48,12 @@ const StyledTwitterSidebar = styled.div`
          width: ${props => props.theme.smallText};
          opacity: 0.75;
          ${props => props.theme.mobileBreakpoint} {
-            opacity: 0.25;
+            opacity: 0.6;
          }
          cursor: pointer;
          transition: opacity 0.25s ease-in-out, transform 0.25s ease-in-out;
          &:hover {
-            opacity: 0.6;
+            opacity: 1;
          }
          &.loading {
             ${props => props.theme.spinBackward};

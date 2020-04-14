@@ -251,10 +251,15 @@ const StyledContent = styled.section`
       img.buttons,
       svg.buttons {
          width: 100%;
-         opacity: 0.2;
+         &.trashIcon {
+            opacity: 0.8;
+         }
+         &.editThis {
+            opacity: 0.25;
+         }
          &:hover {
             cursor: pointer;
-            opacity: 0.8;
+            opacity: 1;
          }
       }
       form {
