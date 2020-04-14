@@ -117,20 +117,37 @@ const getTweetIDFromLink = url => {
 };
 export { getTweetIDFromLink };
 
-// const urlFinder = /\b(?:(?:https?|ftp|file):\/\/|www\.|ftp\.)(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[-A-Z0-9+&@#\/%=~_|$?!:,.])*(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[A-Z0-9+&@#\/%=~_|$])\b/gim;
-
-// const urlFinder = /\b(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/|ftp:\/\/)?[a-z0-9]+([-.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?([a-z0-9-_/.?=]*)?\b/gim;
-
-// const urlFinder = /(?:(?:http[s]?:\/\/|ftp:\/\/|mailto:[-a-z0-9:?.=/_@]+)\S*|(?:[a-z0-9-.]+\.(?:com|org|net|tv|gg|us|uk|co\.uk|edu|gov|mil|biz|info|moby|ly|tech|xyz|ca|cn|fr|au|in|de|jp|ru|br|es|se|ch|nl)(?:(?=\s)|\/\S*))|(?:localhost:)\S*)/gim;
-
 const urlAcceptableCharacters = '[-a-z0-9%&?=.,;|$()@_~:<>!*/^+#@]';
 const topLevelDomains =
    'com|org|net|tv|gg|us|uk|co\\.uk|edu|gov|mil|biz|info|mobi|ly|tech|xyz|ca|cn|fr|au|in|de|jp|ru|br|es|se|ch|nl|int|jobs|name|tel|email|codes|pizza|am|fm|cx|gs|ms|al';
 export { topLevelDomains };
-const urlFinder = new RegExp(
-   `(?:\\[[^()]+\\]\\(\\S+\\))|(?:(?:http[s]?:\\/\\/|ftp:\\/\\/|mailto:[-a-z0-9:?.=/_@]+)${urlAcceptableCharacters}*|(?:(${urlAcceptableCharacters}+)\\.(?:${topLevelDomains})(?:(?=\\s|[,.;]|$)|\\/${urlAcceptableCharacters}*))|(?:localhost:)${urlAcceptableCharacters}*)`,
-   'gim'
-);
+
+const urlFinderParts = {
+   bracketFinder: new RegExp(/\[[^()]+\]\(\S+\)/, 'gim'),
+   protocolFinder: new RegExp(
+      `(?:http[s]?:\\/\\/|ftp:\\/\\/|mailto:[-a-z0-9:?.=/_@]+)${urlAcceptableCharacters}*`,
+      'gim'
+   ),
+   tldFinder: new RegExp(
+      `(${urlAcceptableCharacters}+)\\.(?:${topLevelDomains})(?:(?=\\s|[,.;]|$)|\\/${urlAcceptableCharacters}*)`,
+      'gim'
+   ),
+   localHostFinder: new RegExp(
+      `(?:localhost:)${urlAcceptableCharacters}*`,
+      'gim'
+   )
+};
+
+const urlFinderPartList = Object.keys(urlFinderParts);
+let urlFinderSource = '';
+urlFinderPartList.forEach((part, index) => {
+   urlFinderSource +=
+      index < urlFinderPartList.length - 1
+         ? `${urlFinderParts[part].source}|`
+         : urlFinderParts[part].source;
+});
+
+const urlFinder = new RegExp(urlFinderSource, 'gim');
 export { urlFinder };
 
 const extractHostname = function(url) {
