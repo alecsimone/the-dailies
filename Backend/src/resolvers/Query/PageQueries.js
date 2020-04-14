@@ -201,18 +201,24 @@ async function allThings(parent, args, ctx, info) {
 }
 exports.allThings = allThings;
 
-async function searchThings(string, ctx) {
+async function searchThings(string, ctx, isTitleOnly = false) {
    const everyThing = await ctx.db.query.things({}, `{${fullThingFields}}`);
 
    const term = string.toLowerCase().trim();
 
    const relevantThings = everyThing.filter(thing => {
       if (
-         (thing.title &&
-            thing.title
-               .toLowerCase()
-               .trim()
-               .includes(term)) ||
+         thing.title &&
+         thing.title
+            .toLowerCase()
+            .trim()
+            .includes(term)
+      ) {
+         return true;
+      }
+      if (isTitleOnly) return false;
+
+      if (
          (thing.link &&
             thing.link
                .toLowerCase()
@@ -252,44 +258,46 @@ async function searchThings(string, ctx) {
 }
 exports.searchThings = searchThings;
 
-async function search(parent, { string }, ctx, info) {
-   const foundThings = await ctx.db.query.things(
-      {
-         orderBy: 'id_DESC',
-         where: {
-            OR: [
-               {
-                  title_contains: string
-               },
-               {
-                  link_contains: string
-               },
-               {
-                  content_some: {
-                     content_contains: string
-                  }
-               },
-               {
-                  partOfTags_some: {
-                     title_contains: string
-                  }
-               },
-               {
-                  comments_some: {
-                     comment_contains: string
-                  }
-               },
-               {
-                  author: {
-                     displayName_contains: string
-                  }
-               }
-            ]
-         }
-      },
-      info
-   );
-   const safeThings = foundThings.filter(thing => canSeeThing(ctx, thing));
+async function search(parent, { string, isTitleOnly }, ctx, info) {
+   const relevantThings = await searchThings(string, ctx, isTitleOnly);
+
+   // const foundThings = await ctx.db.query.things(
+   //    {
+   //       orderBy: 'id_DESC',
+   //       where: {
+   //          OR: [
+   //             {
+   //                title_contains: string
+   //             },
+   //             {
+   //                link_contains: string
+   //             },
+   //             {
+   //                content_some: {
+   //                   content_contains: string
+   //                }
+   //             },
+   //             {
+   //                partOfTags_some: {
+   //                   title_contains: string
+   //                }
+   //             },
+   //             {
+   //                comments_some: {
+   //                   comment_contains: string
+   //                }
+   //             },
+   //             {
+   //                author: {
+   //                   displayName_contains: string
+   //                }
+   //             }
+   //          ]
+   //       }
+   //    },
+   //    info
+   // );
+   const safeThings = relevantThings.filter(thing => canSeeThing(ctx, thing));
    return safeThings;
 }
 exports.search = search;

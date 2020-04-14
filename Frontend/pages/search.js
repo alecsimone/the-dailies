@@ -10,8 +10,8 @@ import Sidebar from '../components/Sidebar';
 import Things from '../components/Archives/Things';
 
 const SEARCH_QUERY = gql`
-   query SEARCH_QUERY($string: String!) {
-      search(string: $string) {
+   query SEARCH_QUERY($string: String!, $isTitleOnly: Boolean) {
+      search(string: $string, isTitleOnly: $isTitleOnly) {
          ${smallThingCardFields}
       }
    }

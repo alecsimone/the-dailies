@@ -97,6 +97,7 @@ const ContentInput = ({
    const handleKeyDown = async e => {
       if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
          postContent();
+         return;
       }
       if (e.key === 'Escape' && setEditable) {
          setEditable(false);
@@ -191,6 +192,7 @@ const ContentInput = ({
 
    const handleKeyUp = async e => {
       if (e.key === 'Escape' || e.key === 'Enter' || e.key === 'Tab') return;
+
       const input = e.target;
       const selectionPoint = e.target.selectionStart;
       const mostRecentQuoteIndex = currentContent.lastIndexOf(
@@ -222,7 +224,8 @@ const ContentInput = ({
 
       const searchResults = await search({
          variables: {
-            string: searchTerm
+            string: searchTerm,
+            isTitleOnly: true
          }
       });
 

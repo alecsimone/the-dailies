@@ -150,16 +150,26 @@ const ThingCard = ({ data }) => {
             className="regularThingCard thingCard"
             style={{ borderTop: `0.5rem solid ${highlightColor}` }}
          >
-            <Link href={{ pathname: '/thing', query: { id } }}>
-               <a>
-                  <FeaturedImage
-                     context={ThingCardContext}
-                     key={`${id}-FeaturedImage`}
-                     titleLimit={120}
-                     canEdit={false}
-                  />
-               </a>
-            </Link>
+            {!featuredImage?.toLowerCase().includes('twitter.com') && (
+               <Link href={{ pathname: '/thing', query: { id } }}>
+                  <a>
+                     <FeaturedImage
+                        context={ThingCardContext}
+                        key={`${id}-FeaturedImage`}
+                        titleLimit={120}
+                        canEdit={false}
+                     />
+                  </a>
+               </Link>
+            )}
+            {featuredImage?.toLowerCase().includes('twitter.com') && (
+               <FeaturedImage
+                  context={ThingCardContext}
+                  key={`${id}-FeaturedImage`}
+                  titleLimit={120}
+                  canEdit={false}
+               />
+            )}
             <div className="meta">
                <div className="meta-left">
                   <AuthorLink author={author} /> {convertISOtoAgo(createdAt)}{' '}

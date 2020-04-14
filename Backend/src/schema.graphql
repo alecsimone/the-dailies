@@ -14,7 +14,7 @@ type Query {
    refreshLists: SuccessMessage
    getTweet(tweetID: String!): SuccessMessage!
    getTweetsForList(listID: String): SuccessMessage!
-   search(string: String!): [Thing]!
+   search(string: String!, isTitleOnly: Boolean): [Thing]!
 }
 
 type Mutation {

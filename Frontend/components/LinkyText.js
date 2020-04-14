@@ -79,7 +79,7 @@ const replaceReddit = rawText =>
 const processLinksInText = (rawText, keyString = 0) => {
    let urls = rawText.match(urlFinder);
 
-   // Quick kludge until I find a way to not match this thing that happens surprisingly often
+   // Quick kludge until I find a way to not match this pattern that happens surprisingly often
    urls = urls?.filter(url => url.toLowerCase() !== '...in');
 
    if (urls == null) {
@@ -190,7 +190,9 @@ const LinkyText = ({ text }) => {
    if (process.browser) {
       text = decodeHTML(text);
    }
-   const paragraphs = text.split('\n');
+   const fixedText = text.replace('®', '&reg'); // A lot of links have &reg in them, which gets turned into a registered trademark symbol and breaks the link
+
+   const paragraphs = fixedText.split('\n');
    const paragraphElements = paragraphs.map((graph, index) =>
       processLinksInText(
          replaceReddit(replaceEmails(replaceTwitterMentions(graph))),
