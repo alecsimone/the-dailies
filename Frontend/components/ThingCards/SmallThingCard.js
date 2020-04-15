@@ -81,11 +81,15 @@ const StyledSmallThingCard = styled.article`
    }
 `;
 
-const SmallThingCard = props => {
-   const {
-      data: { id, title, featuredImage, color, createdAt, author, privacy },
-      noPic
-   } = props;
+const SmallThingCard = ({ data, noPic }) => {
+   if (!data) {
+      return (
+         <StyledSmallThingCard className="smallThingCard thingCard">
+            <div className="meta">Bad thing input.</div>
+         </StyledSmallThingCard>
+      );
+   }
+   const { id, title, featuredImage, color, createdAt, author, privacy } = data;
 
    const { lowContrastGrey } = useContext(ThemeContext);
 

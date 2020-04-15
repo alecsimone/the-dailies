@@ -14,6 +14,9 @@ const CardGenerator = props => {
       }
    });
    if (data) {
+      if (data.thing == null) {
+         return <Error error={{ message: `No thing found for id: ${id}` }} />;
+      }
       return <SmallThingCard data={data.thing} key={id} />;
    }
    if (error) {
