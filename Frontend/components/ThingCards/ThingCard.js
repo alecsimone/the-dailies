@@ -157,9 +157,9 @@ const ThingCard = ({ data }) => {
       );
       if (firstPieceInOrder != null) {
          firstContentPiece = firstPieceInOrder;
-      } else {
-         firstContentPiece = content[0];
       }
+   } else {
+      firstContentPiece = content[0];
    }
 
    return (
