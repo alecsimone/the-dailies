@@ -47,9 +47,6 @@ async function taxByTitle(parent, { title, personal }, ctx, info) {
          );
       }
 
-      console.log('====================');
-      console.log(theTax.connectedThings);
-
       const searchResults = await searchThings(title, ctx);
       searchResults.forEach(result => {
          const preExistingCheck = theTax.connectedThings.filter(
@@ -59,9 +56,6 @@ async function taxByTitle(parent, { title, personal }, ctx, info) {
             theTax.connectedThings.push(result);
          }
       });
-
-      console.log('------------');
-      console.log(theTax.connectedThings);
 
       return theTax;
    }

@@ -29,6 +29,9 @@ const StyledThingCard = styled.div`
    a:hover {
       text-decoration: none;
    }
+   img, video {
+      max-width: 100%;
+   }
    .featuredImage {
       width: calc(100% + 3rem);
       margin: 0 -1.5rem;
@@ -131,6 +134,7 @@ const ThingCard = ({ data }) => {
       author,
       privacy,
       content,
+      contentOrder,
       partOfTags: tags,
       votes,
       score,
@@ -142,6 +146,20 @@ const ThingCard = ({ data }) => {
    let highlightColor = lowContrastGrey;
    if (color != null) {
       highlightColor = color;
+   }
+
+   // console.log(content);
+   let firstContentPiece = null;
+   if (contentOrder.length > 0) {
+      const firstContentPieceID = contentOrder[0];
+      const [firstPieceInOrder] = content.filter(
+         contentPiece => contentPiece.id === firstContentPieceID
+      );
+      if (firstPieceInOrder != null) {
+         firstContentPiece = firstPieceInOrder;
+      } else {
+         firstContentPiece = content[0];
+      }
    }
 
    return (
@@ -177,7 +195,7 @@ const ThingCard = ({ data }) => {
                </div>
                <div className="meta-right">{privacy}</div>
             </div>
-            <TruncCont cont={content[0]} limit={280} />
+            <TruncCont cont={firstContentPiece} limit={280} />
             {tags.length > 0 && <Taxes taxes={tags} personal={false} />}
             <VoteBar votes={votes} thingID={id} />
          </StyledThingCard>

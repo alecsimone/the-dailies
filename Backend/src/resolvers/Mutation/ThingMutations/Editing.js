@@ -143,6 +143,15 @@ async function addContentPiece(parent, { content, id, type }, ctx, info) {
    loggedInGate(ctx);
    fullMemberGate(ctx.req.member);
 
+   const { contentOrder: oldContentOrder } = await ctx.db.query[type.toLowerCase()](
+      {
+         where: {
+            id
+         }
+      },
+      `{contentOrder}`
+   );
+
    const dataObj = {
       content: {
          create: {
@@ -164,11 +173,25 @@ async function deleteContentPiece(
    loggedInGate(ctx);
    fullMemberGate(ctx.req.member);
 
+   const {contentOrder: oldContentOrder} = await ctx.db.query[type.toLowerCase()](
+      {
+         where: {
+            id
+         }
+      },
+      `{contentOrder}`
+   );
+
+   const newContentOrder = oldContentOrder.filter(id => id !== contentPieceID);
+
    const dataObj = {
       content: {
          delete: {
             id: contentPieceID
          }
+      },
+      contentOrder: {
+         set: newContentOrder
       }
    };
    const updatedThing = await properUpdateStuff(dataObj, id, type, ctx);
