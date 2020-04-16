@@ -1,7 +1,7 @@
 import Router from 'next/router';
 import NProgress from 'nprogress';
 import styled from 'styled-components';
-import { useState, useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import LogoBox from './LogoBox';
 import MemberBox from './MemberBox';
@@ -86,4 +86,4 @@ const Header = () => {
 };
 Header.propTypes = {};
 
-export default Header;
+export default React.memo(Header);

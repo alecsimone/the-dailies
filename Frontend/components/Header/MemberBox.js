@@ -123,4 +123,4 @@ const MemberBox = () => {
 
 MemberBox.propTypes = {};
 
-export default MemberBox;
+export default React.memo(MemberBox);

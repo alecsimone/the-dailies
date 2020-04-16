@@ -152,4 +152,4 @@ const NavButtons = ({ showSearch, setShowSearch }) => {
 };
 NavButtons.propTypes = {};
 
-export default NavButtons;
+export default React.memo(NavButtons);

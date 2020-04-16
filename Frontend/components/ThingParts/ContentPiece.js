@@ -78,4 +78,9 @@ ContentPiece.propTypes = {
    editContentPiece: PropTypes.func.isRequired
 };
 
-export default ContentPiece;
+export default React.memo(ContentPiece, (prev, next) => {
+   if (prev.rawContentString !== next.rawContentString) {
+      return false;
+   }
+   return true;
+});

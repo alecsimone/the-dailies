@@ -1,6 +1,6 @@
 import styled, { ThemeContext } from 'styled-components';
 import Link from 'next/link';
-import { useContext } from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { setAlpha, setLightness, setSaturation } from '../../styles/functions';
 import { isVideo } from '../../lib/UrlHandling';
@@ -145,8 +145,18 @@ SmallThingCard.propTypes = {
       title: PropTypes.string.isRequired,
       featuredImage: PropTypes.string,
       createdAt: PropTypes.string,
-      author: PropTypes.object.isRequired
+      author: PropTypes.object.isRequired,
+      privacy: PropTypes.string.isRequired
    })
 };
 
-export default SmallThingCard;
+export default React.memo(SmallThingCard, (prev, next) => {
+   if (
+      prev.data.title !== next.data.title ||
+      prev.data.featuredImage !== next.data.featuredImage ||
+      prev.data.privacy !== next.data.privacy
+   ) {
+      return false;
+   }
+   return true;
+});

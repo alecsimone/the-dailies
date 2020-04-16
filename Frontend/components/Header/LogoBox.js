@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import React from 'react';
 
 const StyledLogoBox = styled.div`
    display: inline-flex;
@@ -39,4 +40,4 @@ const LogoBox = () => (
 );
 LogoBox.propTypes = {};
 
-export default LogoBox;
+export default React.memo(LogoBox);
