@@ -329,7 +329,9 @@ const Content = props => {
       __typename: type = 'Thing',
       author
    } = useContext(context);
-   const [newContentPiece, setNewContentPiece] = useState('');
+   const [newContentPiece, setNewContentPiece] = useState(
+      'We need a nice long paragraph in here, with a [someshit] in it'
+   );
 
    const [
       addContentPiece,

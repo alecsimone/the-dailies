@@ -102,6 +102,89 @@ const ContentInput = ({
       if (e.key === 'Escape' && setEditable) {
          setEditable(false);
       }
+      if (
+         e.key === '(' &&
+         currentContentRef.current[e.target.selectionStart - 1] === ']' &&
+         e.target.selectionStart === e.target.selectionEnd
+      ) {
+         const thisInput = e.target;
+         const { selectionStart } = e.target;
+         const { selectionEnd } = e.target;
+
+         e.preventDefault();
+
+         const startingText = currentContentRef.current.substring(
+            0,
+            selectionStart
+         );
+         const bracketCheck = startingText.matchAll(/\[.+\]/gim);
+         for (const match of bracketCheck) {
+            if (match.index + match[0].length === selectionStart) {
+               const endingText = currentContentRef.current.substring(
+                  selectionEnd
+               );
+               const newText = `${startingText}()${endingText}`;
+
+               updateContent(newText);
+               currentContentRef.current = newText;
+               window.setTimeout(
+                  () =>
+                     thisInput.setSelectionRange(
+                        selectionStart + 1,
+                        selectionEnd + 1
+                     ),
+                  1
+               );
+            }
+         }
+      }
+      if (
+         (e.key === '(' ||
+            e.key === '[' ||
+            e.key === '{' ||
+            e.key === '"' ||
+            e.key === "'") &&
+         e.target.selectionStart !== e.target.selectionEnd
+      ) {
+         e.preventDefault();
+
+         const thisInput = e.target;
+         const { selectionStart } = e.target;
+         const { selectionEnd } = e.target;
+
+         let closer;
+         if (e.key === '(') {
+            closer = `)`;
+         } else if (e.key === '[') {
+            closer = `]`;
+         } else if (e.key === '{') {
+            closer = `}`;
+         } else if (e.key === '"') {
+            closer = `"`;
+         } else if (e.key === "'") {
+            closer = `'`;
+         } else if (e.key === '`') {
+            closer = '`';
+         }
+
+         const before = currentContentRef.current.substring(0, selectionStart);
+         const selection = currentContentRef.current.substring(
+            selectionStart,
+            selectionEnd
+         );
+         const after = currentContentRef.current.substring(selectionEnd);
+         const newContent = `${before}${e.key}${selection}${closer}${after}`;
+         updateContent(newContent);
+         currentContentRef.current = newContent;
+         window.setTimeout(
+            () =>
+               thisInput.setSelectionRange(
+                  selectionStart + 1,
+                  selectionEnd + 1
+               ),
+            1
+         );
+      }
    };
 
    const [postSearchResults, setPostSearchResults] = useState([]);
