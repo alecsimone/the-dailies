@@ -1,6 +1,9 @@
 import PropTypes from 'prop-types';
+import { useContext } from 'react';
+import { ThemeContext } from 'styled-components';
 
 const StylishText = ({ text }) => {
+   const theme = useContext(ThemeContext);
    if (
       text == null ||
       typeof text !== 'string' ||
@@ -9,7 +12,7 @@ const StylishText = ({ text }) => {
    ) {
       return text;
    }
-   const styleTagSearchString = /(?:(?<style><style="(?<styleObjectRaw>.+)">(?<styleTextContent>.+)<\/style>)|(?<stars>\*\*(?<starsTextContent>[^*]*(?:\*[^*]+)*)\*\*)|(?<bars>__(?<barsTextContent>[^_]*(?:\_[^_]+)*)__))/gi;
+   const styleTagSearchString = /(?:(?<style><style="(?<styleObjectRaw>.+)">(?<styleTextContent>.+)<\/style>)|(?<stars>\*\*(?<starsTextContent>[^*]*(?:\*[^*]+)*)\*\*)|(?<bars>__(?<barsTextContent>[^_]*(?:\_[^_]+)*)__)|(?<pounds>##(?<poundsTextContent>[^#]*(?:#[^#]+)*)##))/gi;
    // const styleTagRegexp = new RegExp(
    //    '<style="(?<named>.+)">(.+)<\\/style>',
    //    'gi'
@@ -56,6 +59,14 @@ const StylishText = ({ text }) => {
          elementsArray.push(
             <span style={{ fontStyle: 'italic' }}>
                <StylishText text={tag.groups.barsTextContent} />
+            </span>
+         );
+      }
+
+      if (tag.groups.pounds != null) {
+         elementsArray.push(
+            <span style={{ fontSize: theme.smallHead, fontWeight: '700' }}>
+               <StylishText text={tag.groups.poundsTextContent} />
             </span>
          );
       }
