@@ -8,6 +8,7 @@ import { useCombobox } from 'downshift';
 import Taxes from './Taxes';
 import { ThingContext } from '../../pages/thing';
 import { setAlpha } from '../../styles/functions';
+import { MemberContext } from '../Account/MemberProvider';
 
 const ADD_TAX_MUTATION = gql`
    mutation ADD_TAX_MUTATION(
@@ -22,11 +23,21 @@ const ADD_TAX_MUTATION = gql`
             __typename
             id
             title
+            author {
+               __typename
+               id
+               displayName
+            }
          }
          partOfStacks {
             __typename
             id
             title
+            author {
+               __typename
+               id
+               displayName
+            }
          }
       }
    }
@@ -116,6 +127,7 @@ const TaxBox = ({ canEdit, personal }) => {
    const { id, partOfTags: tags, partOfStacks: stacks } = useContext(
       ThingContext
    );
+   const { me } = useContext(MemberContext);
    const [taxInput, setTaxInput] = useState('');
 
    const [
@@ -239,11 +251,38 @@ const TaxBox = ({ canEdit, personal }) => {
          return;
       }
       const { title } = newTaxObj;
+
+      newTaxObj.__typename = personal ? 'Stack' : 'Tag';
+      if (newTaxObj.id == null) {
+         newTaxObj.id = 'unknownID';
+      }
+      // Optimistic response breaks if we don't provide an author for the tag we're creating
+      if (newTaxObj.author == null) {
+         newTaxObj.author = me;
+      }
+      let newTags = tags;
+      let newStacks = stacks;
+
+      if (personal) {
+         newStacks = stacks.concat([newTaxObj]);
+      } else {
+         newTags = tags.concat([newTaxObj]);
+      }
+
       await addTaxToThing({
          variables: {
             tax: title,
             thingID: id,
             personal
+         },
+         optimisticResponse: {
+            __typename: 'Mutation',
+            addTaxToThing: {
+               __typename: 'Thing',
+               id,
+               partOfTags: newTags,
+               partOfStacks: newStacks
+            }
          }
       });
       setTaxInput('');
