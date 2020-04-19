@@ -85,6 +85,9 @@ const StyledTweets = styled.section`
                &:hover {
                   opacity: 1;
                }
+               a, a:visited {
+                  color: ${props => props.theme.mainText};
+               }
                .bottom {
                   font-size: ${props => props.theme.tinyText};
                   font-weight: 400;
