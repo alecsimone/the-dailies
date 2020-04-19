@@ -246,23 +246,41 @@ const Tweets = ({
       for (let i = 0; i < 3 && i < seenTweeters.length; i++) {
          // Put all their tweets in a list
          const thisTweetersTweets = tweetersArray[i].tweets.map(
-            (tweet, index) => (
-               <Tweet
-                  tweet={tweet}
-                  key={tweet.id_str}
-                  previousTweet={
-                     index > 0
-                        ? tweetersArray[i].tweets[index - 1].id_str
-                        : null
-                  }
-                  nextTweetReplyTarget={
-                     index < tweetersArray[i].tweets.length - 1
-                        ? tweetersArray[i].tweets[index + 1]
+            (tweet, index) => {
+               let previousTweet;
+               const thePreviousTweet = tweetersArray[i].tweets[index - 1];
+               let nextTweet;
+               const theNextTweet = tweetersArray[i].tweets[index + 1];
+
+               if (index > 0) {
+                  // if the previous tweet is a retweet, we want the ID of the tweet that was retweeted, not the id of the tweet that is a retweet
+                  previousTweet =
+                     thePreviousTweet.retweeted_status != null
+                        ? thePreviousTweet.retweeted_status.id_str
+                        : thePreviousTweet.id_str;
+               } else {
+                  previousTweet = null;
+               }
+
+               if (index < tweetersArray[i].tweets.length - 1) {
+                  nextTweet =
+                     theNextTweet.retweeted_status != null
+                        ? theNextTweet.retweeted_status
                              .in_reply_to_status_id_str
-                        : null
-                  }
-               />
-            )
+                        : theNextTweet.in_reply_to_status_id_str;
+               } else {
+                  nextTweet = null;
+               }
+
+               return (
+                  <Tweet
+                     tweet={tweet}
+                     key={tweet.id_str}
+                     previousTweet={previousTweet}
+                     nextTweetReplyTarget={nextTweet}
+                  />
+               );
+            }
          );
 
          // Make a header and container for it

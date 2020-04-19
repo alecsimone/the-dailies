@@ -191,8 +191,42 @@ const Tweet = props => {
       quotedTweetContainer.push(<TweetGetter id={quotedTweetID} />);
    }
    if (retweetedTweet != null) {
+      // Check if the previousTweet (from props) is the tweet this tweet is replying to
+      const rtDirectReply =
+         previousTweet != null
+            ? previousTweet === retweetedTweet.in_reply_to_status_id_str
+            : false;
+      // Check if the nextTweetReplyTarget (from props) is this tweet. That is, if this tweet is the tweet the next one is replying to
+      const rtDirectlyRepliedTo =
+         nextTweetReplyTarget != null
+            ? nextTweetReplyTarget === retweetedTweet.id_str
+            : false;
+      let rtThreadStarter = false;
+      if (!rtDirectReply && rtDirectlyRepliedTo) {
+         rtThreadStarter = true;
+      }
+      let rtThreadEnder = false;
+      if (rtDirectReply && !rtDirectlyRepliedTo) {
+         rtThreadEnder = true;
+      }
+
+      // If it's part of a thread but not the starter, we don't show the header
+      if ((rtDirectReply || rtDirectlyRepliedTo) && !rtThreadStarter) {
+         return (
+            <Tweet
+               tweet={retweetedTweet}
+               previousTweet={previousTweet}
+               nextTweetReplyTarget={nextTweetReplyTarget}
+            />
+         );
+      }
+
       return (
-         <div className="tweet retweet">
+         <div
+            className={`tweet retweet${
+               rtThreadStarter ? ' threaded threadStarter' : ''
+            }`}
+         >
             <div className="retweeter tweetHead">
                <img
                   src={retweetedTweet.user.profile_image_url_https}
@@ -210,15 +244,21 @@ const Tweet = props => {
                   @{retweetedTweet.user.screen_name}
                </a>
             </div>
-            <Tweet tweet={retweetedTweet} />
+            <Tweet
+               tweet={retweetedTweet}
+               previousTweet={previousTweet}
+               nextTweetReplyTarget={nextTweetReplyTarget}
+            />
          </div>
       );
    }
 
    const linkout = `https://twitter.com/${user.screen_name}/status/${id}`;
 
+   // Check if the previousTweet (from props) is the tweet this tweet is replying to
    const directReply =
       previousTweet != null ? previousTweet === replyToID : false;
+   // Check if the nextTweetReplyTarget (from props) is this tweet. That is, if this tweet is the tweet the next one is replying to
    const directlyRepliedTo =
       nextTweetReplyTarget != null ? nextTweetReplyTarget === id : false;
    let threadStarter = false;
@@ -237,6 +277,7 @@ const Tweet = props => {
          }${threadStarter ? ' threadStarter' : ''}${
             threadEnder ? ' threadEnder' : ''
          }`}
+         onClick={() => console.log(props.tweet)}
       >
          {replyToID && !directReply && (
             <div className="repliedToTweet">

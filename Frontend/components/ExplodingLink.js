@@ -6,9 +6,10 @@ import CardGenerator from './ThingCards/CardGenerator';
 import {
    getYoutubeVideoIdFromLink,
    getGfycatSlugFromLink,
-   getTweetIDFromLink
+   getTweetIDFromLink,
+   urlFinder
 } from '../lib/UrlHandling';
-import { homeNoHTTP } from '../config';
+import { home, homeNoHTTP } from '../config';
 import ShortLink from './ThingParts/ShortLink';
 import Tweet from './Twitter/Tweet';
 import TweetGetter from './Twitter/TweetGetter';
@@ -40,8 +41,16 @@ const ExplodingLink = ({ url, keyString, alt, className }) => {
             );
          }
 
+         let { href } = match.groups;
+         let target = '_blank';
+         const linkCheck = href.match(urlFinder);
+         if (linkCheck == null) {
+            href = `${home}/thing?id=${href}`;
+            target = '_self';
+         }
+
          return (
-            <a href={match.groups.href} target="_blank">
+            <a href={href} target={target}>
                {match.groups.text}
             </a>
          );
