@@ -3,7 +3,7 @@ import { useContext } from 'react';
 import { ThemeContext } from 'styled-components';
 
 const StylishText = ({ text }) => {
-   const theme = useContext(ThemeContext);
+   const { smallHead } = useContext(ThemeContext);
    if (
       text == null ||
       typeof text !== 'string' ||
@@ -73,7 +73,7 @@ const StylishText = ({ text }) => {
 
       if (tag.groups.pounds != null) {
          elementsArray.push(
-            <span style={{ fontSize: theme.smallHead, fontWeight: '700' }}>
+            <span style={{ fontSize: smallHead, fontWeight: '700' }}>
                <StylishText text={tag.groups.poundsTextContent} />
             </span>
          );

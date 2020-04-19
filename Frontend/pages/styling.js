@@ -1,0 +1,222 @@
+import styled from 'styled-components';
+import Head from 'next/head';
+import StyledPageWithSidebar from '../styles/StyledPageWithSidebar';
+import { setAlpha } from '../styles/functions';
+import Sidebar from '../components/Sidebar';
+
+const StyledCheatSheet = styled.article`
+   padding: 3rem;
+   margin-bottom: 4rem;
+   border: 2px solid ${props => setAlpha(props.theme.lowContrastGrey, 0.15)};
+   background: ${props => props.theme.lightBlack};
+   box-shadow: 0 4px 4px ${props => setAlpha(props.theme.deepBlack, 0.2)};
+   max-width: 1280px;
+   ul {
+      background: ${props => props.theme.midBlack};
+      padding: 2rem 3rem;
+      li {
+         list-style-type: none;
+         h4 {
+            margin: 0;
+            font-size: ${props => props.theme.bigText};
+         }
+         p {
+            margin-left: 2rem;
+         }
+         span.emphasis {
+            font-weight: 600;
+            color: white;
+         }
+      }
+   }
+`;
+
+const Styling = props => {
+   console.log('you want some styles?');
+   return (
+      <StyledPageWithSidebar>
+         <Head>
+            <title>Style Cheat Sheet - OurDailies</title>
+         </Head>
+         <Sidebar />
+         <div className="mainSection">
+            <StyledCheatSheet>
+               OurDailies uses a pair of components called LinkyText and
+               StylishText which allow us to present text in a really pretty and
+               convenient way. If you're writing comments or making your own
+               things, here are some things you can do:
+               <ul>
+                  <li>
+                     <h4>Style Tag</h4>
+                     <p>
+                        You can enclose any text in a{' '}
+                        <span className="emphasis">{`<style>`}</span> tag to tag
+                        to apply any styling you'd like to it.
+                     </p>
+                     <p>
+                        The full syntax would be{' '}
+                        <span className="emphasis">{`<style="YOUR STYLING HERE">Text you want to style</style>`}</span>
+                        , and your styling should follow the syntax of using
+                        JavaScript to style html elements,{' '}
+                        <a
+                           href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Properties_Reference"
+                           target="_blank"
+                        >
+                           See here for more info
+                        </a>
+                        .
+                     </p>
+                     <p>
+                        So for example,{' '}
+                        <span className="emphasis">{`<style="fontWeight:bold; color:green">Text you want to style</style>`}</span>{' '}
+                        would produce bold, green text.
+                     </p>
+                  </li>
+                  <li>
+                     <h4>Pounds</h4>
+                     <p>
+                        Enclosing text in pound signs,{' '}
+                        <span className="emphasis">##like so##</span> turns it
+                        into a big ol' header.
+                     </p>
+                  </li>
+                  <li>
+                     <h4>Stars</h4>
+                     <p>
+                        Enclosing text in asterisks,{' '}
+                        <span className="emphasis">**like so**</span> makes it
+                        bold and bright.
+                     </p>
+                  </li>
+                  <li>
+                     <h4>Bars</h4>
+                     <p>
+                        Enclosing text in underscores,{' '}
+                        <span className="emphasis">__like so__</span> underlines
+                        it.
+                     </p>
+                  </li>
+                  <li>
+                     <h4>Slashes</h4>
+                     <p>
+                        Enclosing text in forward slashes,{' '}
+                        <span className="emphasis">//like so//</span> italicizes
+                        it.
+                     </p>
+                  </li>
+                  <li>
+                     <h4>Bracket Links</h4>
+                     <p>
+                        You can just paste a link in and it will work properly,
+                        but if you'd like to change the display text of the
+                        link,{' '}
+                        <a href="https://youtu.be/vDUYLDtC5Qw" target="_blank">
+                           like this
+                        </a>
+                        , you can use markdown's bracket notation.
+                     </p>
+                     <p>
+                        To do this, you put the display text inside brackets,
+                        immediately followed by the link URL inside parentheses,
+                        like this:{' '}
+                        <span className="emphasis">
+                           [display text](link URL)
+                        </span>
+                     </p>
+                     <p>
+                        So if you put [display text](link URL) into a comment or
+                        post on OurDailies, it will show up like this:{' '}
+                        <a href="link URL" target="_blank">
+                           display text
+                        </a>
+                        .
+                     </p>
+                     <p>
+                        If you don't provide a valid URL for the link URL inside
+                        the parentheses, we assume it's the ID of a Thing, and
+                        we'll make the link point at a thing with that ID.
+                     </p>
+                  </li>
+                  <li>
+                     <h4>Thing Search</h4>
+                     <p>
+                        You can search all the things on OurDailies and generate
+                        a link to them in many of the inputs on the site. As
+                        you're writing, if you type{' '}
+                        <span className="emphasis">[t:"SEARCH TEXT</span> a
+                        little results box will pop up showing Things matching
+                        your search text. If you select one, your search will be
+                        completed with a link to that thing.
+                     </p>
+                     <p>
+                        Just to be extra clear: Once you type [t:" whatever you
+                        type after the first quote and before any closing quote
+                        will start a search of all the Things on this site. You
+                        can then choose one and it will automatically make a
+                        link to that thing.
+                     </p>
+                     <p>
+                        The "t" is not case sensitive, and it can be a "p" (or a
+                        "P") also. (T for "thing" and p for "post")
+                     </p>
+                     <p>
+                        By default, this will create a little card for the thing
+                        you're linking to that will break up your paragraph, but
+                        you can easily edit the link that gets auto-filled into
+                        bracket notation to make it an inline link instead.
+                     </p>
+                  </li>
+                  <li>
+                     <h4>Exploding Links (Images, videos, links to things)</h4>
+                     <p>
+                        If you paste in a plain link to any image or video
+                        (including YouTube videos and GFYcats), the media file
+                        will be embedded directly into your post.
+                     </p>
+                     <p>
+                        This also works for links to Things on OurDailies. If
+                        you paste in a plain link to one of them, it will be
+                        replaced with a little card for the thing you're linking
+                        to.
+                     </p>
+                  </li>
+                  <li>
+                     <h4>Reddit Links</h4>
+                     <p>
+                        We also support linking to a subreddit by just typing{' '}
+                        <span className="emphasis">/r/SubredditName</span>, as
+                        you can do on reddit itself.
+                     </p>
+                     <p>
+                        For instance, if you type /r/funny, that will be
+                        replaced by a link to the funny subreddit.
+                     </p>
+                  </li>
+                  <li>
+                     <h4>Twitter Mentions</h4>
+                     <p>
+                        If you type <span className="emphasis">@SomeText</span>,
+                        it will be treated as a link to the user SomeText on
+                        twitter.
+                     </p>
+                     <p>
+                        One exception to this is that we also turn email
+                        addresses into mailto: links to that email address, so
+                        if you type in an email address, it will be treated like
+                        an email address and not like a twitter mention.
+                     </p>
+                  </li>
+               </ul>
+               One note: until I figure out a workaround, these things may only
+               be used WITHIN a paragraph. So if you want to make multiple
+               paragraphs bold, for instance, you have to wrap each of them with
+               double stars. Or if you want to make the end of one paragraph and
+               the start of the next one italicized, you have to wrap both
+               pieces in slashes.
+            </StyledCheatSheet>
+         </div>
+      </StyledPageWithSidebar>
+   );
+};
+
+export default Styling;

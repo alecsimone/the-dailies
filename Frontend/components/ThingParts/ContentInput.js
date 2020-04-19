@@ -4,6 +4,7 @@ import { useEffect, useState, useRef, useContext } from 'react';
 import { useLazyQuery } from '@apollo/react-hooks';
 import { dynamicallyResizeElement, setAlpha } from '../../styles/functions';
 import { SEARCH_QUERY } from '../../pages/search';
+import { home } from '../../config';
 
 const StyledWrapper = styled.div`
    width: 100%;
@@ -396,6 +397,13 @@ const ContentInput = ({
             <div className="postSearchTooltip">{postSearchResultElements}</div>
          </StyledWrapper>
          <div className="postButtonWrapper">
+            <div className="styleGuideLink">
+               See our{' '}
+               <a href={`${home}/styling`} target="_blank">
+                  Styling Cheat Sheet
+               </a>{' '}
+               for all the things you can do in that box.
+            </div>
             <button type="submit" className="post">
                add
             </button>

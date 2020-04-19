@@ -115,15 +115,12 @@ const GlobalStyle = createGlobalStyle`
    p, .explodingLinkGraph, .embed-container {
       margin: 1.8rem 0;
    }
-   a {
+   a, a:visited {
       text-decoration: none;
-      color: ${theme.mainText};
+      color: ${setLightness(theme.majorColor, 75)};
       overflow-wrap: break-word;
       word-wrap: break-word;
       word-break: break-word;
-      &:visited {
-         color: ${theme.mainText};
-      }
       &:hover {
          text-decoration: underline;
       }

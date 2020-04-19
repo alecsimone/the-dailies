@@ -295,7 +295,14 @@ const StyledContent = styled.section`
       margin-top: 4rem;
       .postButtonWrapper {
          width: 100%;
-         text-align: right;
+         /* text-align: right; */
+         display: flex;
+         justify-content: space-between;
+         .styleGuideLink {
+            opacity: 0.7;
+            display: inline-block;
+            font-size: ${props => props.theme.tinyText};
+         }
       }
    }
    textarea {
