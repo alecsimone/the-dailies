@@ -12,7 +12,7 @@ const StylishText = ({ text }) => {
    ) {
       return text;
    }
-   const styleTagSearchString = /(?:(?<style><style="(?<styleObjectRaw>.+)">(?<styleTextContent>.+)<\/style>)|(?<stars>\*\*(?<starsTextContent>[^*]*(?:\*[^*]+)*)\*\*)|(?<bars>__(?<barsTextContent>[^_]*(?:\_[^_]+)*)__)|(?<pounds>##(?<poundsTextContent>[^#]*(?:#[^#]+)*)##))/gi;
+   const styleTagSearchString = /(?:(?<style><style="(?<styleObjectRaw>.+)">(?<styleTextContent>.+)<\/style>)|(?<stars>\*\*(?<starsTextContent>[^*]*(?:\*[^*]+)*)\*\*)|(?<bars>__(?<barsTextContent>[^_]*(?:\_[^_]+)*)__)|(?<pounds>##(?<poundsTextContent>[^#]*(?:#[^#]+)*)##)|(?<slashes>\/\/(?<slashesTextContent>[^/]*(?:\/[^/]+)*)\/\/))/gi;
    // const styleTagRegexp = new RegExp(
    //    '<style="(?<named>.+)">(.+)<\\/style>',
    //    'gi'
@@ -57,8 +57,16 @@ const StylishText = ({ text }) => {
 
       if (tag.groups.bars != null) {
          elementsArray.push(
-            <span style={{ fontStyle: 'italic' }}>
+            <span style={{ textDecoration: 'underline' }}>
                <StylishText text={tag.groups.barsTextContent} />
+            </span>
+         );
+      }
+
+      if (tag.groups.slashes != null) {
+         elementsArray.push(
+            <span style={{ fontStyle: 'italic' }}>
+               <StylishText text={tag.groups.slashesTextContent} />
             </span>
          );
       }
