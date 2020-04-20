@@ -13,11 +13,13 @@ const StyledTaxes = styled.div`
       margin: 0.3rem 0rem;
       margin-left: 0;
    }
-   a {
+   a,
+   a:visited {
       display: inline-block;
       margin: 0.3rem 0;
       font-size: ${props => props.theme.smallText};
       font-weight: 300;
+      color: ${props => props.theme.mainText};
       &.final {
          margin-right: 1.25rem;
       }
