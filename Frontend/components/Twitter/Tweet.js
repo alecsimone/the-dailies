@@ -3,7 +3,7 @@ import { useMutation } from '@apollo/react-hooks';
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 import TweetGetter from './TweetGetter';
-import LinkyText from '../LinkyText';
+import RichText from '../RichText';
 import { convertISOtoAgo } from '../../lib/ThingHandling';
 import { home } from '../../config';
 import HeartIcon from '../Icons/Heart';
@@ -295,7 +295,7 @@ const Tweet = props => {
                )}
             </div>
          )}
-         <LinkyText text={tcoReplacedText} />
+         <RichText text={tcoReplacedText} />
          {quotedTweetContainer.length > 0 && quotedTweetContainer}
          {entities.length > 1 && <div className="entities">{entities}</div>}
          {entities.length === 1 && entities}

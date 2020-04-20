@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import LinkyText from '../LinkyText';
+import RichText from '../RichText';
 
 const TruncCont = props => {
    const { cont: contObj, limit } = props;
@@ -15,7 +15,7 @@ const TruncCont = props => {
    }
    return (
       <p className="truncCont">
-         <LinkyText text={cont} key={cont} />
+         <RichText text={cont} key={cont} />
       </p>
    );
 };

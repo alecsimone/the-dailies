@@ -14,6 +14,7 @@ import ShortLink from './ThingParts/ShortLink';
 import Tweet from './Twitter/Tweet';
 import TweetGetter from './Twitter/TweetGetter';
 import LoadingRing from './LoadingRing';
+import RichText from './RichText';
 
 const ExplodingLink = ({ url, keyString, alt, className }) => {
    const lowerCaseURL = url.toLowerCase();
@@ -51,7 +52,7 @@ const ExplodingLink = ({ url, keyString, alt, className }) => {
 
          return (
             <a href={href} target={target}>
-               {match.groups.text}
+               <RichText text={match.groups.text} key={match.groups.text} />
             </a>
          );
       }

@@ -276,6 +276,7 @@ const StyledContent = styled.section`
          margin: 0rem 0;
          flex-grow: 1;
          width: 100%;
+         white-space: pre-wrap;
          img,
          video,
          iframe {

@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { MemberContext } from '../Account/MemberProvider';
-import LinkyText from '../LinkyText';
+import RichText from '../RichText';
 import CommentInput from './CommentInput';
 import { setAlpha } from '../../styles/functions';
 import { convertISOtoAgo, pxToInt } from '../../lib/ThingHandling';
@@ -219,7 +219,7 @@ const Comment = ({ comment, comments, type, id }) => {
                      </Link>
                   )}
                   {!editing ? (
-                     <LinkyText text={comment.comment} />
+                     <RichText text={comment.comment} />
                   ) : (
                      <CommentInput
                         currentComment={editedComment}

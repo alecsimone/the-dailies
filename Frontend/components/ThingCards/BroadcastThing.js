@@ -2,7 +2,7 @@ import { useContext, useState } from 'react';
 import styled from 'styled-components';
 import { ThingContext } from '../../pages/thing';
 import { disabledCodewords } from '../../lib/ThingHandling';
-import LinkyText from '../LinkyText';
+import RichText from '../RichText';
 import { setAlpha, setLightness } from '../../styles/functions';
 import ExplodingLink from '../ExplodingLink';
 import ArrowIcon from '../Icons/Arrow';
@@ -184,7 +184,7 @@ const BroadcastThing = ({ id }) => {
       );
 
       displayContent = (
-         <LinkyText text={linklessText} key={content[currentContentPiece].id} />
+         <RichText text={linklessText} key={content[currentContentPiece].id} />
       );
    } else {
       displayContent = <p className="noContent">No content yet</p>;

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 import ContentInput from './ContentInput';
-import LinkyText from '../LinkyText';
+import RichText from '../RichText';
 import EditThis from '../Icons/EditThis';
 import TrashIcon from '../Icons/Trash';
 
@@ -31,7 +31,7 @@ const ContentPiece = props => {
 
    let content;
    if (!editable) {
-      content = <LinkyText text={rawContentString} key={id} />;
+      content = <RichText text={rawContentString} key={id} />;
    } else {
       content = (
          <ContentInput
