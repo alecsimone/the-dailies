@@ -61,7 +61,7 @@ const replaceReddit = rawText =>
          ) {
             return wholeMatch;
          }
-         return `https://reddit.com${wholeMatch}`;
+         return `https://reddit.com${wholeMatch}\u200B`;
       }
    );
 export { replaceReddit };
