@@ -267,8 +267,6 @@ const StyledContent = styled.section`
          max-width: 1040px;
          margin: calc(0.8rem - 2px) calc(-1rem - 1px);
          textarea {
-            color: ${props => props.theme.deepBlack};
-            font-weight: 500;
             padding: 1rem;
             height: 4rem;
             position: relative;
