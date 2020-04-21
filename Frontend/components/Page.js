@@ -279,7 +279,7 @@ const GlobalStyle = createGlobalStyle`
       &:first-child {
          margin-top: 3rem;
       }
-      padding: 0 1.5rem 2rem 1.5rem;
+      padding: 2rem 1.5rem;
       border: 1px solid ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
       border-radius: 3px;
       background: ${props => props.theme.midBlack};

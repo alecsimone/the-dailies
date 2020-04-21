@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 import { useMutation } from '@apollo/react-hooks';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import TweetGetter from './TweetGetter';
 import RichText from '../RichText';
@@ -98,6 +98,18 @@ const Tweet = props => {
    );
    const [likeTweet] = useMutation(LIKE_TWEET);
    const [saveTweet] = useMutation(SAVE_TWEET);
+
+   useEffect(() => {
+      if (threadStarter && process.browser) {
+         const thisTweet = document.querySelector(`.getter${id}`);
+         if (thisTweet != null) {
+            const parentContentPiece = thisTweet.closest('.contentPiece');
+            if (parentContentPiece != null) {
+               parentContentPiece.style.whiteSpace = 'normal';
+            }
+         }
+      }
+   }, [id, threadStarter]);
 
    const likeTweetHandler = () => {
       const tweetID = retweetedTweet ? retweetedTweet.id_str : id;
@@ -277,7 +289,6 @@ const Tweet = props => {
          }${threadStarter ? ' threadStarter' : ''}${
             threadEnder ? ' threadEnder' : ''
          }`}
-         onClick={() => console.log(props.tweet)}
       >
          {replyToID && !directReply && (
             <div className="repliedToTweet">

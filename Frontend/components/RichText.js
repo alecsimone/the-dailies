@@ -11,9 +11,7 @@ import {
 } from '../lib/TextHandling';
 import { urlFinder } from '../lib/UrlHandling';
 
-const RichText = ({ text }) => {
-   console.log('--------------------------------');
-   console.log(text);
+const RichText = ({ text, priorText, nextText }) => {
    const { smallHead } = useContext(ThemeContext);
 
    if (process.browser) {
@@ -40,11 +38,9 @@ const RichText = ({ text }) => {
    const allMatches = fixedText.matchAll(superMatcher);
 
    for (const match of allMatches) {
-      console.log(match);
-
       const tags = match[0].matchAll(styleTagSearchString);
       for (const tag of tags) {
-         if (tag[0].length !== match[0].length) continue;
+         if (tag[0] !== match[0]) continue;
          const startingText = fixedText.substring(
             stoppedAtIndex,
             match.index + tag.index
@@ -131,20 +127,30 @@ const RichText = ({ text }) => {
 
       const urls = match[0].matchAll(urlFinder);
       for (const url of urls) {
-         if (url[0].length !== match[0].length) continue;
+         if (url[0] !== match[0]) continue;
          let fullUrl = url[0];
 
-         // Quick kludge until I find a way to not match this pattern that happens surprisingly often
-         if (fullUrl.toLowerCase() === '...in') continue;
+         // Quick kludge until I find a cleaner way to not match this pattern that happens surprisingly often
+         if (fullUrl.substring(fullUrl.length - 5).toLowerCase() === '...in')
+            continue;
 
          if (!fullUrl.includes('://') && !fullUrl.includes('mailto')) {
             fullUrl = `https://${fullUrl}`;
          }
 
          const startingText = fixedText.substring(stoppedAtIndex, match.index);
+
+         stoppedAtIndex = match.index + url[0].length;
+
+         const endingText = fixedText.substring(stoppedAtIndex);
+
          if (startingText !== '' && startingText !== ' ') {
             elementsArray.push(
-               <RichText text={startingText} key={startingText} />
+               <RichText
+                  text={startingText}
+                  key={startingText}
+                  nextText={fullUrl}
+               />
             );
          }
 
@@ -153,17 +159,23 @@ const RichText = ({ text }) => {
                url={fullUrl}
                keyString={matchCount}
                key={matchCount}
+               priorText={priorText}
+               nextText={endingText || nextText}
             />
          );
          matchCount++;
          elementsArray.push(link);
 
-         stoppedAtIndex = match.index + url[0].length;
-
-         const endingText = fixedText.substring(stoppedAtIndex);
          if (endingText !== '' && endingText !== ' ') {
-            elementsArray.push(<RichText text={endingText} key={endingText} />);
+            elementsArray.push(
+               <RichText
+                  text={endingText}
+                  key={endingText}
+                  priorText={fullUrl}
+               />
+            );
          }
+
          return elementsArray;
       }
    }
@@ -172,7 +184,9 @@ const RichText = ({ text }) => {
 };
 
 RichText.propTypes = {
-   text: PropTypes.string.isRequired
+   text: PropTypes.string.isRequired,
+   priorText: PropTypes.string,
+   nextText: PropTypes.string
 };
 
 export default React.memo(RichText, (prev, next) => {

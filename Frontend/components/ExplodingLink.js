@@ -16,7 +16,14 @@ import TweetGetter from './Twitter/TweetGetter';
 import LoadingRing from './LoadingRing';
 import RichText from './RichText';
 
-const ExplodingLink = ({ url, keyString, alt, className }) => {
+const ExplodingLink = ({
+   url,
+   keyString,
+   alt,
+   className,
+   priorText,
+   nextText
+}) => {
    const lowerCaseURL = url.toLowerCase();
 
    const { me } = useContext(MemberContext);
@@ -118,9 +125,12 @@ const ExplodingLink = ({ url, keyString, alt, className }) => {
    ) {
       const tweetID = getTweetIDFromLink(url);
       return (
-         <div className="tweet" style={{ padding: 0, border: 'none' }}>
-            <TweetGetter id={tweetID} nested={false} />
-         </div>
+         <TweetGetter
+            id={tweetID}
+            nested={false}
+            priorText={priorText}
+            nextText={nextText}
+         />
       );
    }
 
@@ -182,7 +192,9 @@ ExplodingLink.propTypes = {
    url: PropTypes.string.isRequired,
    keyString: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
    alt: PropTypes.string,
-   className: PropTypes.string
+   className: PropTypes.string,
+   priorText: PropTypes.string,
+   nextText: PropTypes.string
 };
 
 export default ExplodingLink;

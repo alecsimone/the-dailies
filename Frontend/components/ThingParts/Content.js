@@ -288,6 +288,13 @@ const StyledContent = styled.section`
          .smallThingCard {
             margin: 2rem 0;
          }
+         .tweet.threadStarter {
+            margin-bottom: 0;
+            .quoteTweetContainer {
+               margin-top: 0;
+               margin-bottom: 0;
+            }
+         }
       }
    }
    form {
