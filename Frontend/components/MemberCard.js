@@ -30,6 +30,10 @@ const StyledMemberCard = styled.article`
          font-size: ${props => props.theme.bigText};
          font-weight: 700;
          margin-top: -0.5rem;
+         a,
+         a:visited {
+            color: ${props => props.theme.mainText};
+         }
       }
       .meta {
          font-size: ${props => props.theme.tinyText};

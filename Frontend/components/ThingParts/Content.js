@@ -237,6 +237,7 @@ const StyledContent = styled.section`
       display: flex;
       flex-wrap: wrap;
       align-items: baseline;
+      justify-content: space-between;
       margin: 0.6rem 0;
       border-bottom: 1px solid
          ${props => setAlpha(props.theme.lowContrastGrey, 0.2)};
@@ -266,6 +267,8 @@ const StyledContent = styled.section`
          max-width: 1040px;
          margin: calc(0.8rem - 2px) calc(-1rem - 1px);
          textarea {
+            color: ${props => props.theme.deepBlack};
+            font-weight: 500;
             padding: 1rem;
             height: 4rem;
             position: relative;
@@ -276,7 +279,9 @@ const StyledContent = styled.section`
          margin: 0rem 0;
          flex-grow: 1;
          width: 100%;
+         max-width: 1080px;
          white-space: pre-wrap;
+         padding: 2rem;
          img,
          video,
          iframe {
