@@ -306,7 +306,9 @@ const Tweet = props => {
                )}
             </div>
          )}
-         <RichText text={tcoReplacedText} />
+         <p>
+            <RichText text={tcoReplacedText} />
+         </p>
          {quotedTweetContainer.length > 0 && quotedTweetContainer}
          {entities.length > 1 && <div className="entities">{entities}</div>}
          {entities.length === 1 && entities}

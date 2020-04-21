@@ -144,7 +144,7 @@ const RichText = ({ text, priorText, nextText }) => {
 
          const endingText = fixedText.substring(stoppedAtIndex);
 
-         if (startingText !== '' && startingText !== ' ') {
+         if (startingText !== '' && startingText !== '') {
             elementsArray.push(
                <RichText
                   text={startingText}
@@ -166,7 +166,7 @@ const RichText = ({ text, priorText, nextText }) => {
          matchCount++;
          elementsArray.push(link);
 
-         if (endingText !== '' && endingText !== ' ') {
+         if (endingText !== '' && endingText !== '') {
             elementsArray.push(
                <RichText
                   text={endingText}
