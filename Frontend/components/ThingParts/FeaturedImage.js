@@ -4,6 +4,7 @@ import { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useMutation } from '@apollo/react-hooks';
 import Router from 'next/router';
+import Link from 'next/link';
 import TitleBar from './TitleBar';
 import ExplodingLink from '../ExplodingLink';
 import { setAlpha } from '../../styles/functions';
@@ -117,10 +118,7 @@ const StyledFeaturedImage = styled.div`
    }
 `;
 
-const FeaturedImage = props => {
-   const { canEdit } = props;
-   const { context, titleLimit } = props;
-
+const FeaturedImage = ({ canEdit, context, titleLimit, titleLink }) => {
    const { featuredImage, id, __typename: type = 'Thing' } = useContext(
       context
    );
@@ -172,6 +170,17 @@ const FeaturedImage = props => {
       }
    };
 
+   let titleBar = (
+      <TitleBar context={context} limit={titleLimit} canEdit={canEdit} />
+   );
+   if (titleLink != null) {
+      titleBar = (
+         <Link href={{ pathname: '/thing', query: { id } }}>
+            <a>{titleBar}</a>
+         </Link>
+      );
+   }
+
    return (
       <StyledFeaturedImage
          className={
@@ -180,7 +189,7 @@ const FeaturedImage = props => {
                : 'featuredImage image'
          }
       >
-         <TitleBar context={context} limit={titleLimit} canEdit={canEdit} />
+         {titleBar}
          {featuredImage &&
             !disabledCodewords.includes(featuredImage.toLowerCase()) && (
                <ExplodingLink

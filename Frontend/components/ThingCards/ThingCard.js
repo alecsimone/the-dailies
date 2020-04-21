@@ -148,7 +148,6 @@ const ThingCard = ({ data }) => {
       highlightColor = color;
    }
 
-   // console.log(content);
    let firstContentPiece = null;
    if (contentOrder.length > 0) {
       const firstContentPieceID = contentOrder[0];
@@ -186,6 +185,7 @@ const ThingCard = ({ data }) => {
                   key={`${id}-FeaturedImage`}
                   titleLimit={120}
                   canEdit={false}
+                  titleLink={{ pathname: '/thing', query: { id } }}
                />
             )}
             <div className="meta">

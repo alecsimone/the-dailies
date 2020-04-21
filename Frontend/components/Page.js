@@ -253,6 +253,7 @@ const GlobalStyle = createGlobalStyle`
       &.threaded {
          margin: 0;
          border-radius: 0;
+         padding-top: 1rem;
          &.threadStarter {
             margin-top: 3rem;
             border-radius: 3px 3px 0 0;

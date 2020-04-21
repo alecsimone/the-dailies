@@ -100,7 +100,7 @@ const Tweet = props => {
    const [saveTweet] = useMutation(SAVE_TWEET);
 
    useEffect(() => {
-      if (threadStarter && process.browser) {
+      if (process.browser) {
          const thisTweet = document.querySelector(`.getter${id}`);
          if (thisTweet != null) {
             const parentContentPiece = thisTweet.closest('.contentPiece');
@@ -109,7 +109,7 @@ const Tweet = props => {
             }
          }
       }
-   }, [id, threadStarter]);
+   }, [id]);
 
    const likeTweetHandler = () => {
       const tweetID = retweetedTweet ? retweetedTweet.id_str : id;
