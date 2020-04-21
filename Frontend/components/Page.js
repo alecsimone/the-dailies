@@ -250,6 +250,7 @@ const GlobalStyle = createGlobalStyle`
       }
    .tweet {
       margin: 3rem 0;
+      white-space: pre-wrap;
       &.threaded {
          margin: 0;
          border-radius: 0;
