@@ -161,6 +161,13 @@ const Styling = props => (
                      breaks up your paragraph, you can use "c:" to search
                      instead (or just replace the P or T with a C, for "Card").
                   </p>
+                  <p>
+                     Also, as an added bonus, you can trigger a thing search by
+                     typing <span className="emphasis">see: "SEARCH TEXT</span>{' '}
+                     (case insensitive). So if you want to reference another
+                     post, you can just type see: "Title", and we'll sort it out
+                     for you.
+                  </p>
                </li>
                <li>
                   <h4>Exploding Links (Images, videos, links to things)</h4>

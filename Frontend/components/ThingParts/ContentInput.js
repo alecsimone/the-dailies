@@ -225,6 +225,11 @@ const ContentInput = ({
          selectionPoint - 1
       );
 
+      const keyLetters = currentContentRef.current.substring(
+         mostRecentQuoteIndex - 5,
+         mostRecentQuoteIndex
+      );
+
       const previousText = currentContentRef.current.substring(
          0,
          mostRecentQuoteIndex + 1
@@ -236,8 +241,17 @@ const ContentInput = ({
       const selectedID =
          searchResultsRef?.current[highlightedIndexRef.current]?.id;
 
-      const newContent = `${previousText +
-         selectedTitle}"](${selectedID})${afterText}`;
+      let newContent;
+      if (keyLetters.toLowerCase() === 'see: ') {
+         const newPreviousText = currentContentRef.current.substring(
+            0,
+            mostRecentQuoteIndex
+         );
+         newContent = `${`${newPreviousText}[${selectedTitle}`}](${selectedID})${afterText}`;
+      } else {
+         newContent = `${previousText +
+            selectedTitle}"](${selectedID})${afterText}`;
+      }
       updateContent(newContent);
 
       const newCursorPos =
@@ -289,13 +303,18 @@ const ContentInput = ({
          mostRecentQuoteIndex - 3,
          mostRecentQuoteIndex
       );
+      const previousFiveCharacters = currentContent.substring(
+         mostRecentQuoteIndex - 5,
+         mostRecentQuoteIndex
+      );
 
       const toolTip = document.querySelector('.postSearchTooltip');
 
       if (
          (previousThreeCharacters.toLowerCase() !== '[p:' &&
             previousThreeCharacters.toLowerCase() !== '[t:' &&
-            previousThreeCharacters.toLowerCase() !== '[c:') ||
+            previousThreeCharacters.toLowerCase() !== '[c:' &&
+            previousFiveCharacters.toLowerCase() !== 'see: ') ||
          selectionPoint === mostRecentQuoteIndex + 1
       ) {
          closeResults();
