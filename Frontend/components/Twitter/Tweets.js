@@ -255,7 +255,21 @@ const Tweets = ({
                let nextTweet;
                const theNextTweet = tweetersArray[i].tweets[index + 1];
 
-               if (index > 0) {
+               // If either of these tweets does not have the same author as this one, we don't want to thread, so we'll set them to null.
+               const currentTweetAuthor =
+                  tweet.retweeted_status != null
+                     ? tweet.retweeted_status.user.id_str
+                     : tweet.user.id_str;
+               const previousTweetAuthor =
+                  thePreviousTweet?.retweeted_status != null
+                     ? thePreviousTweet?.retweeted_status?.user?.id_str
+                     : thePreviousTweet?.user?.id_str;
+               const nextTweetAuthor =
+                  theNextTweet?.retweeted_status != null
+                     ? theNextTweet?.retweeted_status?.user?.id_str
+                     : theNextTweet?.user?.id_str;
+
+               if (index > 0 && currentTweetAuthor === previousTweetAuthor) {
                   // if the previous tweet is a retweet, we want the ID of the tweet that was retweeted, not the id of the tweet that is a retweet
                   previousTweet =
                      thePreviousTweet.retweeted_status != null
@@ -265,7 +279,10 @@ const Tweets = ({
                   previousTweet = null;
                }
 
-               if (index < tweetersArray[i].tweets.length - 1) {
+               if (
+                  index < tweetersArray[i].tweets.length - 1 &&
+                  currentTweetAuthor === nextTweetAuthor
+               ) {
                   nextTweet =
                      theNextTweet.retweeted_status != null
                         ? theNextTweet.retweeted_status

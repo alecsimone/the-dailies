@@ -200,7 +200,9 @@ const Tweet = props => {
          </div>
       );
    } else if (quotedTweetID) {
-      quotedTweetContainer.push(<TweetGetter id={quotedTweetID} />);
+      quotedTweetContainer.push(
+         <TweetGetter id={quotedTweetID} key={quotedTweetID} />
+      );
    }
    if (retweetedTweet != null) {
       // Check if the previousTweet (from props) is the tweet this tweet is replying to
