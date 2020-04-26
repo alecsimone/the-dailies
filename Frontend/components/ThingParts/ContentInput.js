@@ -294,7 +294,8 @@ const ContentInput = ({
 
       if (
          (previousThreeCharacters.toLowerCase() !== '[p:' &&
-            previousThreeCharacters.toLowerCase() !== '[t:') ||
+            previousThreeCharacters.toLowerCase() !== '[t:' &&
+            previousThreeCharacters.toLowerCase() !== '[c:') ||
          selectionPoint === mostRecentQuoteIndex + 1
       ) {
          closeResults();

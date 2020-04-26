@@ -36,16 +36,30 @@ const ExplodingLink = ({
       for (const match of bracketMatch) {
          const cleanText = match.groups.text.trim().toLowerCase();
 
-         if (
-            cleanText.toLowerCase().startsWith('p:') ||
-            cleanText.toLowerCase().startsWith('t:')
-         ) {
+         if (cleanText.toLowerCase().startsWith('c:')) {
             return (
                <CardGenerator
                   key={match.groups.href}
                   id={match.groups.href}
                   cardType="small"
                />
+            );
+         }
+         if (
+            cleanText.toLowerCase().startsWith('p:') ||
+            cleanText.toLowerCase().startsWith('t:')
+         ) {
+            const linkText = match.groups.text.substring(
+               3,
+               match.groups.text.length - 1
+            );
+            return (
+               <a
+                  href={`${home}/thing?id=${match.groups.href}`}
+                  target={target}
+               >
+                  <RichText text={linkText} key={match.groups.text} />
+               </a>
             );
          }
 

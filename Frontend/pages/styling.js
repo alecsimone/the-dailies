@@ -153,10 +153,13 @@ const Styling = props => (
                      "P") also. (T for "thing" and p for "post")
                   </p>
                   <p>
-                     By default, this will create a little card for the thing
-                     you're linking to that will break up your paragraph, but
-                     you can easily edit the link that gets auto-filled into
-                     bracket notation to make it an inline link instead.
+                     Using P or T will create a bracket link where the link text
+                     is the post title (more precisely, the link text is the
+                     text between the quotes following the p: or t:, which is
+                     auto-filled with the post title). However, if you'd like to
+                     generate a little card for the thing you're linking to that
+                     breaks up your paragraph, you can use "c:" to search
+                     instead (or just replace the P or T with a C, for "Card").
                   </p>
                </li>
                <li>
