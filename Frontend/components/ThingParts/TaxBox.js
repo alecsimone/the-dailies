@@ -63,6 +63,7 @@ const SEARCH_TAX_QUERY = gql`
 `;
 
 const StyledTaxBox = styled.section`
+   position: relative;
    max-width: 100%;
    padding: 0 1rem;
    ${props => props.theme.mobileBreakpoint} {
@@ -74,9 +75,17 @@ const StyledTaxBox = styled.section`
       margin-top: 0.8rem;
       input {
          width: 30rem;
+         position: relative;
+         font-size: ${props => props.theme.smallText};
+         line-height: 1;
+         border-radius: 0;
+         &.loading {
+            background: ${props => setAlpha(props.theme.lowContrastGrey, 0.4)};
+         }
       }
       .resultsContainer {
          position: absolute;
+         z-index: 2;
          top: 3rem;
          left: 0;
          width: 100%;
@@ -88,6 +97,7 @@ const StyledTaxBox = styled.section`
             ${props => setAlpha(props.theme.highContrastGrey, 0.8)};
          .searchResult {
             padding: 0.25rem 1rem;
+            position: relative;
             &.highlighted {
                background: ${props => props.theme.majorColor};
             }
@@ -96,14 +106,6 @@ const StyledTaxBox = styled.section`
                color: ${props => setAlpha(props.theme.mainText, 0.6)};
             }
          }
-      }
-   }
-   input {
-      font-size: ${props => props.theme.smallText};
-      line-height: 1;
-      border-radius: 0;
-      &.loading {
-         background: ${props => setAlpha(props.theme.lowContrastGrey, 0.4)};
       }
    }
 `;
