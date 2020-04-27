@@ -11,14 +11,10 @@ import {
 } from '../lib/TextHandling';
 import { urlFinder } from '../lib/UrlHandling';
 
-const RichText = ({ text, priorText, nextText }) => {
+const RichText = ({ text, priorText, nextText, matchCount = 0 }) => {
    const { smallHead } = useContext(ThemeContext);
 
-   if (process.browser) {
-      text = decodeHTML(text);
-   }
-
-   const fixedText = replaceReddit(replaceEmails(replaceTwitterMentions(text)));
+   let fixedText = replaceReddit(replaceEmails(replaceTwitterMentions(text)));
 
    if (
       text == null ||
@@ -28,8 +24,10 @@ const RichText = ({ text, priorText, nextText }) => {
    ) {
       return fixedText;
    }
+
+   fixedText = decodeHTML(fixedText);
+
    const elementsArray = [];
-   let matchCount = 0;
    let stoppedAtIndex = 0;
    const superMatcherSource = `${urlFinder.source}|${
       styleTagSearchString.source
@@ -37,20 +35,29 @@ const RichText = ({ text, priorText, nextText }) => {
    const superMatcher = new RegExp(superMatcherSource, 'gim');
    const allMatches = fixedText.matchAll(superMatcher);
 
+   // First we do a big matchAll with a giant superstring of all the things we might be looking for.
    for (const match of allMatches) {
       const tags = match[0].matchAll(styleTagSearchString);
+      // Then we grab just the style searches
       for (const tag of tags) {
+         // And check if that's the first match of all matches
          if (tag[0] !== match[0]) continue;
+         // We break off any text before the match and put it in a RichText at the start of our elements array
          const startingText = fixedText.substring(
             stoppedAtIndex,
             match.index + tag.index
          );
          if (startingText !== '' && startingText !== ' ') {
             elementsArray.push(
-               <RichText text={startingText} key={startingText} />
+               <RichText
+                  text={startingText}
+                  key={startingText}
+                  matchCount={matchCount + 1}
+               />
             );
          }
 
+         // Then we go through each of the style tags and when we get a hit, we make an element that applies that style around a new RichText, and then pushes that element into our elements array
          if (tag.groups.style != null) {
             const splitTag = tag.groups.styleObjectRaw.split(/[:;]/gi);
             const styleObject = {};
@@ -66,6 +73,7 @@ const RichText = ({ text, priorText, nextText }) => {
                   <RichText
                      text={tag.groups.styleTextContent}
                      key={tag.groups.styleTextContent}
+                     matchCount={matchCount + 1}
                   />
                </span>
             );
@@ -78,6 +86,7 @@ const RichText = ({ text, priorText, nextText }) => {
                   <RichText
                      text={tag.groups.starsTextContent}
                      key={tag.groups.starsTextContent}
+                     matchCount={matchCount + 1}
                   />
                </span>
             );
@@ -89,6 +98,7 @@ const RichText = ({ text, priorText, nextText }) => {
                   <RichText
                      text={tag.groups.barsTextContent}
                      key={tag.groups.barsTextContent}
+                     matchCount={matchCount + 1}
                   />
                </span>
             );
@@ -100,6 +110,7 @@ const RichText = ({ text, priorText, nextText }) => {
                   <RichText
                      text={tag.groups.slashesTextContent}
                      key={tag.groups.slashesTextContent}
+                     matchCount={matchCount + 1}
                   />
                </span>
             );
@@ -111,6 +122,7 @@ const RichText = ({ text, priorText, nextText }) => {
                   <RichText
                      text={tag.groups.poundsTextContent}
                      key={tag.groups.poundsTextContent}
+                     matchCount={matchCount + 1}
                   />
                </span>
             );
@@ -120,11 +132,18 @@ const RichText = ({ text, priorText, nextText }) => {
 
          const endingText = fixedText.substring(stoppedAtIndex);
          if (endingText !== '' && endingText !== ' ') {
-            elementsArray.push(<RichText text={endingText} key={endingText} />);
+            elementsArray.push(
+               <RichText
+                  text={endingText}
+                  key={endingText}
+                  matchCount={matchCount + 1}
+               />
+            );
          }
          return elementsArray;
       }
 
+      // If it wasn't a style tag, we check if it's some kind of link
       const urls = match[0].matchAll(urlFinder);
       for (const url of urls) {
          if (url[0] !== match[0]) continue;
@@ -134,6 +153,7 @@ const RichText = ({ text, priorText, nextText }) => {
          if (fullUrl.substring(fullUrl.length - 5).toLowerCase() === '...in')
             continue;
 
+         // If there's no protocol and it's not a mailto, slap an https on that baby
          if (!fullUrl.includes('://') && !fullUrl.includes('mailto')) {
             fullUrl = `https://${fullUrl}`;
          }
@@ -144,16 +164,18 @@ const RichText = ({ text, priorText, nextText }) => {
 
          const endingText = fixedText.substring(stoppedAtIndex);
 
-         if (startingText !== '' && startingText !== '') {
+         if (startingText !== '') {
             elementsArray.push(
                <RichText
                   text={startingText}
                   key={startingText}
                   nextText={fullUrl}
+                  matchCount={matchCount + 1}
                />
             );
          }
 
+         // ExplodingLink will handle presenting the link itself, now that we've stripped out any leading or trailing text
          const link = (
             <ExplodingLink
                url={fullUrl}
@@ -163,15 +185,15 @@ const RichText = ({ text, priorText, nextText }) => {
                nextText={endingText || nextText}
             />
          );
-         matchCount++;
          elementsArray.push(link);
 
-         if (endingText !== '' && endingText !== '') {
+         if (endingText !== '') {
             elementsArray.push(
                <RichText
                   text={endingText}
                   key={endingText}
                   priorText={fullUrl}
+                  matchCount={matchCount + 1}
                />
             );
          }
