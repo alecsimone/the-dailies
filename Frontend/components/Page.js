@@ -79,7 +79,7 @@ const GlobalStyle = createGlobalStyle`
       background: ${setLightness(setSaturation(theme.majorColor, 90), 9)};
       /* background: ${setLightness(theme.primaryAccent, 3)}; */
       color: ${theme.mainText};
-      font-family: "Proxima Nova", sans-serif;
+      font-family: "proxima-nova", sans-serif;
       box-sizing: border-box;
       font-size: 8px;
       ${theme.scroll};
@@ -131,7 +131,7 @@ const GlobalStyle = createGlobalStyle`
    input {
       background: none;
       color: ${theme.mainText};
-      font-family: "Proxima Nova", sans-serif;
+      font-family: "proxima-nova", sans-serif;
       border-radius: 3px;
       border: none;
       border-bottom: 1px solid ${theme.lowContrastGrey};
@@ -148,7 +148,7 @@ const GlobalStyle = createGlobalStyle`
       border-bottom: 1px solid ${theme.lowContrastGrey};
       padding: 1rem 1rem calc(1rem - 1px) 1rem;
       line-height: 1.6;
-      font-family: "Proxima Nova", sans-serif;
+      font-family: "proxima-nova", sans-serif;
       font-size: ${props => props.theme.smallText};
       &:focus {
          border: 1px solid ${setAlpha(theme.highContrastGrey, 0.4)};
@@ -190,7 +190,7 @@ const GlobalStyle = createGlobalStyle`
       border: 1px solid ${theme.highContrastGrey};
       border-radius: 3px;
       color: ${theme.mainText};
-      font-family: "Proxima Nova", sans-serif;
+      font-family: "proxima-nova", sans-serif;
       cursor: pointer;
       &:hover {
          background: ${setAlpha(theme.lowContrastGrey, 0.1)};
