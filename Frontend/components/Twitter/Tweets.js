@@ -90,7 +90,7 @@ const StyledTweets = styled.section`
                }
                .bottom {
                   font-size: ${props => props.theme.tinyText};
-                  font-weight: 400;
+                  font-weight: 300;
                   opacity: 0.4;
                }
                a.tweeterNameLink {

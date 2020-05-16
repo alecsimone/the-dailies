@@ -26,7 +26,7 @@ const StyledFriendRequest = styled.div`
    display: flex;
    justify-content: space-around;
    font-size: ${props => props.theme.smallText};
-   font-weight: 400;
+   font-weight: 300;
    width: 100%;
    text-align: left;
    border-bottom: 1px solid

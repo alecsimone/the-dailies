@@ -98,7 +98,7 @@ const GlobalStyle = createGlobalStyle`
       margin: 0;
       font-size: ${theme.smallText};
       line-height: 1.6;
-      font-weight: 400;
+      font-weight: 300;
    }
    *::-webkit-scrollbar {
       width: .5rem;

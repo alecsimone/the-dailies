@@ -19,7 +19,7 @@ const StyledNotificationsContainer = styled.div`
    h3 {
       text-align: center;
       font-size: ${props => props.theme.bigText};
-      font-weight: 400;
+      font-weight: 300;
       margin: 2rem;
       ${props => props.theme.mobileBreakpoint} {
          margin: 1rem;
