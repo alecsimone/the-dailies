@@ -16,6 +16,7 @@ const Meta = () => (
          href="https://ourdailies.org/favicon.ico"
       />
       <link rel="stylesheet" type="text/css" href="/nprogress.css" />
+      <link rel="stylesheet" href="https://use.typekit.net/iwq0uru.css" />
       <title>Our Dailies</title>
    </Head>
 );

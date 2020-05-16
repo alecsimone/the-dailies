@@ -23,8 +23,7 @@ const SIGNUP_MUTATION = gql`
    }
 `;
 
-const Signup = props => {
-   const { callBack } = props;
+const Signup = ({ callBack }) => {
    const [displayName, setDisplayName] = useState('');
    const [password, setPassword] = useState('');
    const [confirmedPassword, setConfirmedPassword] = useState('');

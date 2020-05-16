@@ -49,7 +49,9 @@ async function signup(parent, args, ctx, info) {
 exports.signup = signup;
 
 async function login(parent, { email, password }, ctx, info) {
-   const member = await ctx.db.query.member({ where: { email } });
+   const member = await ctx.db.query.member({
+      where: { email: email.toLowerCase() }
+   });
    if (!member) {
       throw new Error("We don't know anyone with that email address");
    }

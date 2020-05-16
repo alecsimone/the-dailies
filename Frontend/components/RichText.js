@@ -37,11 +37,14 @@ const RichText = ({ text, priorText, nextText, matchCount = 0 }) => {
 
    // First we do a big matchAll with a giant superstring of all the things we might be looking for.
    for (const match of allMatches) {
+      // The URL searches have a lot of repetition in them, so they're written with variables and thus need to be constructed from a string, which I don't believe supports using named capture groups.
+
+      // So now we take just the style tags and use a proper regex search with named capture groups to parse them.
       const tags = match[0].matchAll(styleTagSearchString);
-      // Then we grab just the style searches
       for (const tag of tags) {
-         // And check if that's the first match of all matches
+         // But we're only interested in the first match of all matches
          if (tag[0] !== match[0]) continue;
+
          // We break off any text before the match and put it in a RichText at the start of our elements array
          const startingText = fixedText.substring(
             stoppedAtIndex,
@@ -58,13 +61,17 @@ const RichText = ({ text, priorText, nextText, matchCount = 0 }) => {
          }
 
          // Then we go through each of the style tags and when we get a hit, we make an element that applies that style around a new RichText, and then pushes that element into our elements array
+
+         // First, the general <style> tag, which is a little tricky
          if (tag.groups.style != null) {
             const splitTag = tag.groups.styleObjectRaw.split(/[:;]/gi);
             const styleObject = {};
             splitTag.forEach((tagPiece, index) => {
                if (index % 2 === 1) {
+                  // Actually we only want to do this once for each pair
                   return;
                }
+               // We're making an object with the first items in each pair as its properties and the second as their values
                styleObject[splitTag[index].trim()] = splitTag[index + 1].trim();
             });
 
