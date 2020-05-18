@@ -18,7 +18,7 @@ const theme = {
    midBlack: 'hsl(30, 1%, 4%)',
    lightBlack: 'hsl(210, 20%, 8%)',
 
-   mainText: 'hsl(210, 3%, 80%)',
+   mainText: 'hsl(210, 3%, 90%)',
    lowContrastGrey: 'hsl(210, 10%, 30%)',
    highContrastGrey: 'hsl(30, 10%, 60%)',
 
