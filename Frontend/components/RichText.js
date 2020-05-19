@@ -10,14 +10,13 @@ import {
    styleTagSearchString
 } from '../lib/TextHandling';
 import { urlFinder } from '../lib/UrlHandling';
-import { setAlpha, setSaturation } from '../styles/functions';
 
 const RichText = ({ text, priorText, nextText, matchCount = 0 }) => {
    if (text[0] === '\n' && text[1] === '\n') {
       // If the text starts with two new lines, we can drop one of them. We do want to keep the new line if there's only one though
       text = text.substring(1);
    }
-   const { smallHead, lowContrastGrey, majorColor } = useContext(ThemeContext);
+   const { smallHead } = useContext(ThemeContext);
 
    let fixedText = replaceReddit(replaceEmails(replaceTwitterMentions(text)));
 
@@ -146,9 +145,17 @@ const RichText = ({ text, priorText, nextText, matchCount = 0 }) => {
                const allQuotes = tag.groups.quoteTextContent;
                const firstClosingIndex = allQuotes.indexOf('">');
 
+               const firstQuoteText = allQuotes.substring(
+                  0,
+                  firstClosingIndex + 1
+               );
                const firstQuote = (
                   <blockquote>
-                     {allQuotes.substring(0, firstClosingIndex + 1)}
+                     <RichText
+                        text={firstQuoteText}
+                        key={firstQuoteText}
+                        matchCount={matchCount + 1}
+                     />
                   </blockquote>
                );
                // The +1 on that substring is because we need to include the " that was the start of our indexOf search
