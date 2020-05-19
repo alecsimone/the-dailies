@@ -33,6 +33,7 @@ const RichText = ({ text, priorText, nextText, matchCount = 0 }) => {
 
    const elementsArray = [];
    let stoppedAtIndex = 0;
+   let stoppedAtIndexOverride = false;
    const superMatcherSource = `${urlFinder.source}|${
       styleTagSearchString.source
    }`;
@@ -48,7 +49,6 @@ const RichText = ({ text, priorText, nextText, matchCount = 0 }) => {
       for (const tag of tags) {
          // But we're only interested in the first match of all matches
          if (tag[0] !== match[0]) continue;
-
          // We break off any text before the match and put it in a RichText at the start of our elements array
          const startingText = fixedText.substring(
             stoppedAtIndex,
@@ -160,19 +160,7 @@ const RichText = ({ text, priorText, nextText, matchCount = 0 }) => {
                );
                // The +1 on that substring is because we need to include the " that was the start of our indexOf search
                elementsArray.push(firstQuote);
-
-               // We're dealing with the textContent, which doesn't include the angle bracket part of the "> closing tag, so we have to tack it back on again so the later quote will match.
-               const endingQuoteText = `${allQuotes.substring(
-                  firstClosingIndex + 2
-               )}>`;
-               // + 2 because we need to include both the " and the > for the next rich text to recognize this as a blockquote.
-               elementsArray.push(
-                  <RichText
-                     text={endingQuoteText}
-                     key={endingQuoteText}
-                     matchCount={matchCount + 1}
-                  />
-               );
+               stoppedAtIndexOverride = firstClosingIndex + 3;
             } else {
                elementsArray.push(
                   <blockquote>
@@ -186,7 +174,11 @@ const RichText = ({ text, priorText, nextText, matchCount = 0 }) => {
             }
          }
 
-         stoppedAtIndex = match.index + tag.index + tag[0].length;
+         if (stoppedAtIndexOverride !== false) {
+            stoppedAtIndex = match.index + stoppedAtIndexOverride;
+         } else {
+            stoppedAtIndex = match.index + tag.index + tag[0].length;
+         }
 
          const endingText = fixedText.substring(stoppedAtIndex);
          if (endingText !== '' && endingText !== ' ') {
