@@ -115,10 +115,10 @@ const StyledTweets = styled.section`
             }
             .tweetsContainer {
                ${props => props.theme.scroll};
-               max-height: calc(100vh - 21rem);
+               max-height: calc(100vh - 22rem);
                padding: 0;
                ${props => props.theme.mobileBreakpoint} {
-                  max-height: calc(100vh - 22rem);
+                  max-height: calc(100vh - 23rem);
                   padding: 0 1rem;
                }
             }
