@@ -9,8 +9,8 @@ import { setAlpha, setLightness, setSaturation } from '../styles/functions';
 const theme = {
    tinyText: '1.25rem',
    miniText: '1.7rem',
-   smallText: '2rem',
-   bigText: '2.5rem',
+   smallText: '2.25rem',
+   bigText: '2.75rem',
    smallHead: '4rem',
    bigHead: '5rem',
 
@@ -79,8 +79,7 @@ const GlobalStyle = createGlobalStyle`
       background: ${setLightness(setSaturation(theme.majorColor, 90), 9)};
       /* background: ${setLightness(theme.primaryAccent, 3)}; */
       color: ${theme.mainText};
-      font-family: "Libre Franklin", sans-serif;
-      /* font-family: "proxima-nova", sans-serif; */
+      font-family: "proxima-nova", sans-serif;
       box-sizing: border-box;
       font-size: 8px;
       ${theme.scroll};
