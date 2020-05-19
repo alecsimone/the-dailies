@@ -79,7 +79,8 @@ const GlobalStyle = createGlobalStyle`
       background: ${setLightness(setSaturation(theme.majorColor, 90), 9)};
       /* background: ${setLightness(theme.primaryAccent, 3)}; */
       color: ${theme.mainText};
-      font-family: "proxima-nova", sans-serif;
+      font-family: "Libre Franklin", sans-serif;
+      /* font-family: "proxima-nova", sans-serif; */
       box-sizing: border-box;
       font-size: 8px;
       ${theme.scroll};
