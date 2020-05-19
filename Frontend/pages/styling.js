@@ -101,6 +101,16 @@ const Styling = props => (
                   </p>
                </li>
                <li>
+                  <h4>Blockquotes</h4>
+                  <p>
+                     Enclosing a quote in angle brackets,{' '}
+                     <span className="emphasis">
+                        {`<"`}like so{`">`}
+                     </span>{' '}
+                     will put it in blockquote formatting.
+                  </p>
+               </li>
+               <li>
                   <h4>Bracket Links</h4>
                   <p>
                      You can just paste a link in and it will work properly, but

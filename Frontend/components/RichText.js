@@ -10,9 +10,14 @@ import {
    styleTagSearchString
 } from '../lib/TextHandling';
 import { urlFinder } from '../lib/UrlHandling';
+import { setAlpha, setSaturation } from '../styles/functions';
 
 const RichText = ({ text, priorText, nextText, matchCount = 0 }) => {
-   const { smallHead } = useContext(ThemeContext);
+   if (text[0] === '\n' && text[1] === '\n') {
+      // If the text starts with two new lines, we can drop one of them. We do want to keep the new line if there's only one though
+      text = text.substring(1);
+   }
+   const { smallHead, lowContrastGrey, majorColor } = useContext(ThemeContext);
 
    let fixedText = replaceReddit(replaceEmails(replaceTwitterMentions(text)));
 
@@ -132,6 +137,33 @@ const RichText = ({ text, priorText, nextText, matchCount = 0 }) => {
                      matchCount={matchCount + 1}
                   />
                </span>
+            );
+         }
+
+         if (tag.groups.quote != null) {
+            elementsArray.push(
+               <blockquote
+                  style={{
+                     margin: '0',
+                     display: 'block',
+                     fontStyle: 'italic',
+                     opacity: '.9',
+                     background: `${setAlpha(
+                        setSaturation(majorColor, 25),
+                        0.15
+                     )}`,
+                     padding: '2rem',
+                     borderRadius: '3px',
+                     border: `2px solid ${setAlpha(lowContrastGrey, 0.2)}`,
+                     borderLeft: `0.4rem solid ${setSaturation(majorColor, 40)}`
+                  }}
+               >
+                  <RichText
+                     text={tag.groups.quoteTextContent}
+                     key={tag.groups.quoteTextContent}
+                     matchCount={matchCount + 1}
+                  />
+               </blockquote>
             );
          }
 

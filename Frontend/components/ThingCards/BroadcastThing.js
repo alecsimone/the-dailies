@@ -91,6 +91,7 @@ const StyledBroadcastThing = styled.article`
             border: none;
             margin: 0 auto;
             max-height: 100%;
+            white-space: pre-wrap;
             ${props => props.theme.scroll};
             p {
                max-width: 1200px;
@@ -155,14 +156,36 @@ const StyledBroadcastThing = styled.article`
 `;
 
 const BroadcastThing = ({ id }) => {
-   const { title, featuredImage, content } = useContext(ThingContext);
+   const { title, featuredImage, content, contentOrder } = useContext(
+      ThingContext
+   );
    const [currentContentPiece, setCurrentContentPiece] = useState(0);
    const [currentExplodingLink, setCurrentExplodingLink] = useState(0);
 
    let displayContent;
    const explodingLinks = [];
    if (content.length > 0) {
-      const urls = content[currentContentPiece].content.match(urlFinder);
+      let orderedContent;
+      if (contentOrder) {
+         orderedContent = [];
+         contentOrder.forEach(id => {
+            const [piece] = content.filter(
+               contentPiece => contentPiece.id === id
+            );
+            if (piece != null) {
+               orderedContent.push(piece);
+            }
+         });
+         content.forEach(contentPiece => {
+            if (contentOrder.includes(contentPiece.id)) {
+               return;
+            }
+            orderedContent.push(contentPiece);
+         });
+      } else {
+         orderedContent = content;
+      }
+      const urls = orderedContent[currentContentPiece].content.match(urlFinder);
       if (urls != null) {
          urls.forEach(url => {
             if (isImage(url) || isVideo(url)) {
@@ -172,7 +195,7 @@ const BroadcastThing = ({ id }) => {
       }
 
       let counter = 0;
-      const linklessText = content[currentContentPiece].content.replace(
+      const linklessText = orderedContent[currentContentPiece].content.replace(
          urlFinder,
          (url, captures, offset, fullText) => {
             if (isImage(url) || isVideo(url)) {
@@ -184,7 +207,10 @@ const BroadcastThing = ({ id }) => {
       );
 
       displayContent = (
-         <RichText text={linklessText} key={content[currentContentPiece].id} />
+         <RichText
+            text={linklessText}
+            key={orderedContent[currentContentPiece].id}
+         />
       );
    } else {
       displayContent = <p className="noContent">No content yet</p>;
