@@ -141,30 +141,42 @@ const RichText = ({ text, priorText, nextText, matchCount = 0 }) => {
          }
 
          if (tag.groups.quote != null) {
-            elementsArray.push(
-               <blockquote
-                  style={{
-                     margin: '0',
-                     display: 'block',
-                     fontStyle: 'italic',
-                     opacity: '.9',
-                     background: `${setAlpha(
-                        setSaturation(majorColor, 25),
-                        0.15
-                     )}`,
-                     padding: '2rem',
-                     borderRadius: '3px',
-                     border: `2px solid ${setAlpha(lowContrastGrey, 0.2)}`,
-                     borderLeft: `0.4rem solid ${setSaturation(majorColor, 40)}`
-                  }}
-               >
+            if (tag.groups.quoteTextContent.includes('">')) {
+               // I couldn't work out the regex to match only those <""> tags that didn't include <""> tags themselves, so we're dealing with it here.
+               const allQuotes = tag.groups.quoteTextContent;
+               const firstClosingIndex = allQuotes.indexOf('">');
+
+               const firstQuote = (
+                  <blockquote>
+                     {allQuotes.substring(0, firstClosingIndex + 1)}
+                  </blockquote>
+               );
+               // The +1 on that substring is because we need to include the " that was the start of our indexOf search
+               elementsArray.push(firstQuote);
+
+               // We're dealing with the textContent, which doesn't include the angle bracket part of the "> closing tag, so we have to tack it back on again so the later quote will match.
+               const endingQuoteText = `${allQuotes.substring(
+                  firstClosingIndex + 2
+               )}>`;
+               // + 2 because we need to include both the " and the > for the next rich text to recognize this as a blockquote.
+               elementsArray.push(
                   <RichText
-                     text={tag.groups.quoteTextContent}
-                     key={tag.groups.quoteTextContent}
+                     text={endingQuoteText}
+                     key={endingQuoteText}
                      matchCount={matchCount + 1}
                   />
-               </blockquote>
-            );
+               );
+            } else {
+               elementsArray.push(
+                  <blockquote>
+                     <RichText
+                        text={tag.groups.quoteTextContent}
+                        key={tag.groups.quoteTextContent}
+                        matchCount={matchCount + 1}
+                     />
+                  </blockquote>
+               );
+            }
          }
 
          stoppedAtIndex = match.index + tag.index + tag[0].length;

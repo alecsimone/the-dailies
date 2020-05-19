@@ -196,6 +196,17 @@ const GlobalStyle = createGlobalStyle`
          background: ${setAlpha(theme.lowContrastGrey, 0.1)};
       }
    }
+   blockquote {
+      margin: 0;
+      display: block;
+      font-style: italic;
+      opacity: 0.9;
+      background: ${setAlpha(setSaturation(theme.majorColor, 25), 0.15)};
+      padding: 2rem;
+      border-radius: 3px;
+      border: 2px solid ${setAlpha(theme.lowContrastGrey, 0.2)};
+      border-left: 0.4rem solid ${setSaturation(theme.majorColor, 40)};
+   }
    svg.resetIcon {
       transition: transform 0.25s ease-in-out;
       &:hover {
