@@ -64,21 +64,27 @@ const StyledFullThing = styled.article`
          margin: auto;
       }
    }
+   .votebar {
+      margin: 3rem 0 0;
+      ${props => props.theme.mobileBreakpoint} {
+         margin: 5rem 0 0;
+      }
+   }
    .taxBoxes {
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
-      margin: 0 0 3rem;
+      margin: 0;
       ${props => props.theme.mobileBreakpoint} {
          margin: 0;
+         flex-wrap: nowrap;
       }
       > * {
-         margin: 1rem 0;
+         flex-basis: 100%;
+         margin: 3rem 0;
          ${props => props.theme.mobileBreakpoint} {
             margin: 2rem 0;
-         }
-         ${props => props.theme.bigScreenBreakpoint} {
-            margin: 3rem 0;
+            flex-basis: 50%;
          }
       }
    }
@@ -117,11 +123,11 @@ const FullThing = props => {
             canEdit={canEdit}
          />
          <ThingMeta key={`${id}-ThingMeta`} canEdit={canEdit} />
+         <VoteBar votes={votes} thingID={id} />
          <div className="taxBoxes">
             <TaxBox key={`${id}-TagBox`} canEdit={canEdit} personal={false} />
             <TaxBox key={`${id}-StackBox`} canEdit={canEdit} personal />
          </div>
-         <VoteBar votes={votes} thingID={id} />
          <Content
             context={ThingContext}
             key={`${id}-Content`}

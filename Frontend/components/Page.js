@@ -150,6 +150,7 @@ const GlobalStyle = createGlobalStyle`
       line-height: 1.6;
       font-family: "proxima-nova", sans-serif;
       font-size: ${props => props.theme.smallText};
+      font-weight: 300;
       &:focus {
          border: 1px solid ${setAlpha(theme.highContrastGrey, 0.4)};
          border-bottom: 1px solid ${theme.highContrastGrey};

@@ -184,7 +184,7 @@ const REORDER_CONTENT_MUTATION = gql`
 `;
 
 const StyledContent = styled.section`
-   margin: 3rem 0;
+   margin: 0 0 3rem;
    padding: 1rem;
    padding-top: 0;
    background: ${props => props.theme.midBlack};

@@ -31,15 +31,6 @@ const StyledColorSelector = styled.div`
    position: relative;
    font-size: ${props => props.theme.smallText};
    z-index: 3;
-   .colorDisplay {
-      position: absolute;
-      left: 0.5rem;
-      bottom: 0.5rem;
-      width: 2rem;
-      height: 2rem;
-      border-radius: 3px;
-      border: 1px solid ${props => props.theme.lowContrastGrey};
-   }
    .colorInput {
       padding: calc(0.25rem + 1px) 3rem;
       font-size: ${props => props.theme.smallText};

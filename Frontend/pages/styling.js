@@ -107,7 +107,13 @@ const Styling = props => (
                      <span className="emphasis">
                         {`<"`}like so{`">`}
                      </span>{' '}
-                     will put it in blockquote formatting.
+                     will put it in blockquote formatting. If you want to apply
+                     styling to the whole quote (say, for instance, pounds or
+                     stars), do it OUTSIDE the angle brackets. You can also
+                     apply styling to any text within the block quote, but to
+                     style the whole thing, including the quotation marks, you
+                     have to enclose the angle brackets in that other style
+                     notation.
                   </p>
                </li>
                <li>

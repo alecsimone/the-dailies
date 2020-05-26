@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import gql from 'graphql-tag';
@@ -13,6 +13,7 @@ import ColorSelector from './ColorSelector';
 import PrivacyDropdown from './PrivacyDropdown';
 import ThingSourceLink from './ThingSourceLink';
 import TrashIcon from '../Icons/Trash';
+import EditThis from '../Icons/EditThis';
 import { ALL_THINGS_QUERY } from '../../pages';
 import { PUBLIC_THINGS_QUERY } from '../Archives/PublicThings';
 
@@ -35,19 +36,58 @@ const StyledThingMeta = styled.section`
    color: ${props => setLightness(props.theme.lowContrastGrey, 40)};
    ${props => props.theme.mobileBreakpoint} {
       padding-left: 1.25rem;
-      margin-top: 2rem;
+      margin-top: 1rem;
    }
    .metaPiece {
-      margin: 2rem 0;
+      margin: 0;
       flex-grow: 1;
       &:first-child {
          margin-top: 0.5rem;
       }
       &.selections {
          display: flex;
+         flex-wrap: wrap;
          justify-content: space-between;
          flex-grow: 0;
-         margin-left: 2rem;
+         max-width: 100%;
+         position: relative;
+         span.uneditable {
+            margin-left: 3rem;
+         }
+         > * {
+            margin: 2rem 0 0;
+            ${props => props.theme.mobileBreakpoint} {
+               margin: 0;
+            }
+         }
+         &.editing {
+            > * {
+               margin: 2rem 0;
+               ${props => props.theme.mobileBreakpoint} {
+                  margin: 0;
+                  margin-left: 2rem;
+               }
+            }
+         }
+         .colorDisplay {
+            position: absolute;
+            left: 0.5rem;
+            bottom: 0.75rem;
+            width: 2rem;
+            height: 2rem;
+            border-radius: 3px;
+            border: 1px solid ${props => props.theme.lowContrastGrey};
+         }
+         svg.editThis {
+            width: ${props => props.theme.smallText};
+            height: auto;
+            margin-left: 1rem;
+            cursor: pointer;
+            opacity: 0.4;
+            &:hover {
+               opacity: 0.8;
+            }
+         }
       }
       ${props => props.theme.mobileBreakpoint} {
          margin: 0;
@@ -106,6 +146,7 @@ const StyledThingMeta = styled.section`
    .trash {
       width: 3rem;
       height: 3rem;
+      margin: 0 1rem;
       cursor: pointer;
       ${props => props.theme.mobileBreakpoint} {
          opacity: 0.75;
@@ -165,6 +206,7 @@ const ThingMeta = props => {
    const { id, author, link, color, privacy, createdAt } = useContext(
       ThingContext
    );
+   const [editing, setEditing] = useState(false);
 
    const [deleteThing, { loading: deleting }] = useMutation(
       DELETE_THING_MUTATION,
@@ -189,6 +231,8 @@ const ThingMeta = props => {
       );
    }
 
+   const editButton = <EditThis onClick={() => setEditing(!editing)} />;
+
    return (
       <StyledThingMeta className="thingMeta">
          <div className="info metaPiece">
@@ -209,17 +253,31 @@ const ThingMeta = props => {
                }
             }}
          />
-         <div className="selections metaPiece">
-            {canEdit && (
-               <ColorSelector initialColor={color} type="Thing" id={id} />
-            )}
-            {canEdit ? (
-               <PrivacyDropdown initialPrivacy={privacy} id={id} />
-            ) : (
+         {!editing && (
+            <div className="selections metaPiece">
+               <div
+                  className="colorDisplay uneditable"
+                  style={{
+                     background: color == null ? 'transparent' : color
+                  }}
+               />
                <span className="uneditable">{privacy}</span>
-            )}
-         </div>
-         {(link || canEdit) && <ThingSourceLink canEdit={canEdit} />}
+               {editButton}
+            </div>
+         )}
+         {editing && (
+            <div className="selections metaPiece editing">
+               {canEdit && (
+                  <ColorSelector initialColor={color} type="Thing" id={id} />
+               )}
+               {canEdit ? (
+                  <PrivacyDropdown initialPrivacy={privacy} id={id} />
+               ) : (
+                  <span className="uneditable">{privacy}</span>
+               )}
+               {editButton}
+            </div>
+         )}
       </StyledThingMeta>
    );
 };

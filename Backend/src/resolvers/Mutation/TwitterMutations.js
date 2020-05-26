@@ -107,7 +107,7 @@ async function saveTweet(parent, { tweetURL, tweeter, tweetText }, ctx, info) {
    fullMemberGate(ctx.req.member);
 
    const dataObj = {
-      link: tweetURL
+      featuredImage: tweetURL
    };
    const titleBody =
       tweetText && tweetText.length > 100
