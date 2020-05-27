@@ -55,7 +55,7 @@ const StyledThingMeta = styled.section`
             margin-left: 3rem;
          }
          > * {
-            margin: 2rem 0 0;
+            margin: 2rem 0;
             ${props => props.theme.mobileBreakpoint} {
                margin: 0;
             }
@@ -231,7 +231,11 @@ const ThingMeta = props => {
       );
    }
 
-   const editButton = <EditThis onClick={() => setEditing(!editing)} />;
+   const editButton = canEdit ? (
+      <EditThis onClick={() => setEditing(!editing)} />
+   ) : (
+      ''
+   );
 
    return (
       <StyledThingMeta className="thingMeta">

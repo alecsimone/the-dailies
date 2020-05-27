@@ -220,7 +220,7 @@ const canSeeThingGate = async (where, ctx) => {
       return true;
    }
 
-   if (canSeeThing(ctx, thingData)) {
+   if (await canSeeThing(ctx, thingData)) {
       return true;
    }
    throw new Error("You don't have permission to see that thing.");
