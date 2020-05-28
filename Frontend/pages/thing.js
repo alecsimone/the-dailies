@@ -46,7 +46,7 @@ const SingleThing = props => {
       skip: props.query.id === 'new'
    });
 
-   const { me } = useContext(MemberContext);
+   const { me, loading: meLoading } = useContext(MemberContext);
 
    /* eslint-disable react-hooks/exhaustive-deps */
    // We need to make our thing container scroll to the top when we route to a new thing, but wesbos's eslint rules don't let you use a dependency for an effect that isn't referenced in the effect. I can't find any reason why that is or any better way of doing it, so I'm just turning off that rule for a minute.
@@ -73,7 +73,7 @@ const SingleThing = props => {
       content = <Error error={error} />;
       pageTitle = 'Unavailable Thing';
    }
-   if (loading) {
+   if (loading || meLoading) {
       content = <LoadingRing />;
       pageTitle = 'Loading Thing';
    } else if (props.query.id === 'new') {
