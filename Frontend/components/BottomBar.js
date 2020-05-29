@@ -93,7 +93,7 @@ const BottomBar = () => {
    });
 
    return (
-      <StyledBottomBar>
+      <StyledBottomBar className="bottomBar">
          <div
             className={`inputWrapper${
                inputPlaceholder == false ? ' hidden' : ''

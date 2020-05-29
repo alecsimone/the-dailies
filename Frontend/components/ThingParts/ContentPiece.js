@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import ContentInput from './ContentInput';
 import RichText from '../RichText';
@@ -13,10 +13,13 @@ const ContentPiece = props => {
       rawContentString,
       deleteContentPiece,
       editContentPiece,
-      canEdit
+      canEdit,
+      updateBlockPositions
    } = props;
 
    const [editedContent, setEditedContent] = useState(rawContentString);
+
+   useEffect(updateBlockPositions);
 
    const handleKeyDown = e => {
       if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {

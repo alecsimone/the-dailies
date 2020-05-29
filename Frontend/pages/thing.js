@@ -37,6 +37,7 @@ export { ThingContext };
 const StyledSingleThing = styled(StyledPageWithSidebar)`
    .mainSection {
       padding: 0;
+      position: relative;
    }
 `;
 
@@ -125,7 +126,7 @@ const SingleThing = props => {
 
    return (
       <ThingContext.Provider value={dataForContext}>
-         <StyledSingleThing>
+         <StyledSingleThing className="thingPage">
             <Head>
                <title>{pageTitle} - OurDailies</title>
             </Head>

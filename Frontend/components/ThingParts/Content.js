@@ -1,7 +1,7 @@
 import gql from 'graphql-tag';
 import styled from 'styled-components';
 import { useMutation } from '@apollo/react-hooks';
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import Reorder from 'react-reorder';
 import { setAlpha, setLightness } from '../../styles/functions';
@@ -234,20 +234,22 @@ const StyledContent = styled.section`
       user-select: none;
    }
    .contentBlock {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: baseline;
-      justify-content: space-between;
+      position: relative;
+      /* display: flex;
+      align-items: end;
+      justify-content: space-between; */
       margin: 0.6rem 0;
       border-bottom: 1px solid
          ${props => setAlpha(props.theme.lowContrastGrey, 0.2)};
       padding: 0;
       ${props => props.theme.mobileBreakpoint} {
-         flex-wrap: nowrap;
          padding: 1rem;
       }
       div.buttons {
          width: ${props => props.theme.smallText};
+         position: absolute;
+         bottom: 1rem;
+         right: 0;
       }
       img.buttons,
       svg.buttons {
@@ -279,7 +281,10 @@ const StyledContent = styled.section`
          width: 100%;
          max-width: 1080px;
          white-space: pre-wrap;
-         padding: 2rem;
+         padding: 2rem 4rem 2rem 1rem;
+         ${props => props.theme.mobileBreakpoint} {
+            padding: 2rem;
+         }
          img,
          video,
          iframe {
@@ -368,6 +373,120 @@ const Content = props => {
 
    const [reorderContent] = useMutation(REORDER_CONTENT_MUTATION);
    const [reordering, setReordering] = useState(false);
+
+   const stickifier = () => {
+      const mainSection = document.querySelector('.mainSection');
+      const thingPage = document.querySelector('.thingPage');
+
+      let viewableTop = 0;
+      let viewableBottom;
+
+      const bottomBar = document.querySelector('.bottomBar');
+      const bottomBarDisplay = window.getComputedStyle(bottomBar).display;
+
+      if (bottomBarDisplay === 'none') {
+         viewableTop = mainSection.scrollTop;
+         const wholeWindowHeight = window.innerHeight;
+         const header = document.getElementById('header');
+         const headerHeight = header.offsetHeight;
+         viewableBottom = viewableTop + wholeWindowHeight - headerHeight;
+      } else {
+         viewableTop = thingPage.scrollTop;
+         const bottomBar = document.querySelector('.bottomBar');
+         const bottomBarHeight = bottomBar.offsetHeight;
+         console.log(window.innerHeight, bottomBarHeight);
+         viewableBottom = viewableTop + window.innerHeight - bottomBarHeight;
+      }
+
+      contentBlockPositions.current.forEach(block => {
+         const buttons = block.block.querySelector('.buttons');
+         if (block.top < viewableBottom && block.bottom > viewableBottom) {
+            console.log("something's fixed");
+            const buttonRect = buttons.getBoundingClientRect();
+            buttons.style.position = 'fixed';
+            buttons.style.left = `${buttonRect.left}px`;
+            buttons.style.right = 'initial';
+
+            if (bottomBarDisplay === 'none') {
+               buttons.style.bottom = '2rem';
+            } else {
+               buttons.style.bottom = `calc(${
+                  bottomBar.offsetHeight
+               }px + 1rem)`;
+            }
+         } else {
+            buttons.style.position = 'absolute';
+            buttons.style.left = 'initial';
+            buttons.style.right = '0';
+            buttons.style.bottom = '1rem';
+         }
+      });
+   };
+
+   const contentBlockPositions = useRef([]);
+   const updateBlockPositions = () => {
+      const blockPositionsArray = [];
+
+      const blocks = document.querySelectorAll('.contentBlock');
+      const firstBlock = blocks[0];
+
+      const blockPaddingString = window.getComputedStyle(firstBlock).paddingTop;
+      const blockPaddingRaw = blockPaddingString.substring(
+         0,
+         blockPaddingString.length - 2
+      );
+      const blockPadding = parseInt(blockPaddingRaw);
+
+      const piece = firstBlock.querySelector('.contentPiece');
+      const piecePaddingString = window.getComputedStyle(piece).paddingTop;
+      const piecePaddingRaw = piecePaddingString.substring(
+         0,
+         piecePaddingString.length - 2
+      );
+      const piecePadding = parseInt(piecePaddingRaw);
+
+      const fullThing = firstBlock.offsetParent;
+      const fullThingOffset = fullThing.offsetTop;
+
+      blocks.forEach(block => {
+         const blockOffset = block.offsetTop;
+         const blockHeight = block.offsetHeight;
+
+         const buttons = block.querySelector('.buttons');
+         const buttonsHeight = buttons.offsetHeight;
+
+         const blockTop = blockOffset + blockPadding + fullThingOffset;
+         const top = blockTop + piecePadding + buttonsHeight;
+         const bottom = blockTop + blockHeight;
+         blockPositionsArray.push({
+            block,
+            top,
+            bottom
+         });
+      });
+      contentBlockPositions.current = blockPositionsArray;
+      stickifier();
+   };
+
+   useEffect(() => {
+      updateBlockPositions();
+   });
+
+   useEffect(() => {
+      const mainSection = document.querySelectorAll('.mainSection');
+      mainSection[0].addEventListener('scroll', stickifier);
+      const thingPage = document.querySelector('.thingPage');
+      if (thingPage != null) {
+         thingPage.addEventListener('scroll', stickifier);
+      }
+
+      return () => {
+         mainSection[0].removeEventListener('scroll', stickifier);
+         if (thingPage != null) {
+            thingPage.removeEventListener('scroll', stickifier);
+         }
+      };
+   }, [stickifier]);
 
    const sendNewContentPiece = async () => {
       setNewContentPiece('');
@@ -506,6 +625,7 @@ const Content = props => {
                rawContentString={contentPiece.content}
                deleteContentPiece={deletePiece}
                editContentPiece={editPiece}
+               updateBlockPositions={updateBlockPositions}
                key={contentPiece.id}
             />
          </div>
