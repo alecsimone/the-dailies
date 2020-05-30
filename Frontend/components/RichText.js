@@ -71,8 +71,8 @@ const RichText = ({ text, priorText, nextText, matchCount = 0 }) => {
             const splitTag = tag.groups.styleObjectRaw.split(/[:;]/gi);
             const styleObject = {};
             splitTag.forEach((tagPiece, index) => {
-               if (index % 2 === 1) {
-                  // Actually we only want to do this once for each pair
+               if (index % 2 === 1 || splitTag[index + 1] == null) {
+                  // Actually we only want to do this once for each pair, and we don't want to do it if there isn't a matching tag
                   return;
                }
                // We're making an object with the first items in each pair as its properties and the second as their values
