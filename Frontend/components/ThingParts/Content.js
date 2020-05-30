@@ -374,9 +374,41 @@ const Content = props => {
    const [reorderContent] = useMutation(REORDER_CONTENT_MUTATION);
    const [reordering, setReordering] = useState(false);
 
+   // This ref is going to hold all the data we need for making the edit buttons sticky. Things that don't change are populated in an effect that runs on the first render only, and everything else is populated in the stickifier function, which will be attached to a scroll listener by that same effect.
+   const stickingData = useRef({
+      blocksArray: []
+   });
+
    const stickifier = () => {
-      const mainSection = document.querySelector('.mainSection');
+      const blockPositionsArray = [];
+
+      const blocks = document.querySelectorAll('.contentBlock');
+      blocks.forEach(block => {
+         const blockOffset = block.offsetTop;
+         const blockHeight = block.offsetHeight;
+
+         const buttons = block.querySelector('.buttons');
+         const buttonsHeight = buttons.offsetHeight;
+
+         // The "top" we use for determining when to start sticking things is slightly different from the actual top of the element. I'm defining that top first so I can base the "top" off it as well as the bottom, which is the actual bottom
+         const blockTop =
+            blockOffset +
+            stickingData.current.blockPadding +
+            stickingData.current.fullThingOffset;
+         const top =
+            blockTop + stickingData.current.piecePadding + buttonsHeight;
+         const bottom = blockTop + blockHeight;
+         blockPositionsArray.push({
+            block,
+            top,
+            bottom
+         });
+      });
+      stickingData.current.blocksArray = blockPositionsArray;
+
+      // On mobile, the scrolling element is the thingPage container, on desktop, it's the mainSection container
       const thingPage = document.querySelector('.thingPage');
+      const mainSection = document.querySelector('.mainSection');
 
       let viewableTop = 0;
       let viewableBottom;
@@ -384,6 +416,7 @@ const Content = props => {
       const bottomBar = document.querySelector('.bottomBar');
       const bottomBarDisplay = window.getComputedStyle(bottomBar).display;
 
+      // bottomBar also only shows on mobile
       if (bottomBarDisplay === 'none') {
          viewableTop = mainSection.scrollTop;
          const wholeWindowHeight = window.innerHeight;
@@ -394,18 +427,20 @@ const Content = props => {
          viewableTop = thingPage.scrollTop;
          const bottomBar = document.querySelector('.bottomBar');
          const bottomBarHeight = bottomBar.offsetHeight;
-         console.log(window.innerHeight, bottomBarHeight);
          viewableBottom = viewableTop + window.innerHeight - bottomBarHeight;
       }
 
-      contentBlockPositions.current.forEach(block => {
+      stickingData.current.blocksArray.forEach(block => {
          const buttons = block.block.querySelector('.buttons');
+         const buttonsHeight = buttons.offsetHeight;
+         console.log(buttonsHeight);
+         // If the top of the element is onscreen but the bottom isn't, we want to fix the edit buttons in place at the bottom of the screen
          if (block.top < viewableBottom && block.bottom > viewableBottom) {
-            console.log("something's fixed");
             const buttonRect = buttons.getBoundingClientRect();
             buttons.style.position = 'fixed';
             buttons.style.left = `${buttonRect.left}px`;
             buttons.style.right = 'initial';
+            buttons.style.top = 'initial';
 
             if (bottomBarDisplay === 'none') {
                buttons.style.bottom = '2rem';
@@ -414,18 +449,36 @@ const Content = props => {
                   bottomBar.offsetHeight
                }px + 1rem)`;
             }
+         } else if (
+            block.top - buttonsHeight < viewableBottom &&
+            block.top < viewableBottom &&
+            block.bottom > viewableBottom
+         ) {
+            // If the top of the element is onscreen by less than the height of the buttons (which is already included in it when it's originally calculated), we want to absolutely position the buttons at the top right of the content block
+            buttons.style.position = 'absolute';
+            buttons.style.left = 'initial';
+            buttons.style.right = '0';
+            buttons.style.bottom = '0';
+            buttons.style.top = '1rem';
          } else {
+            // Otherwise we want to put them back in place at the bottom right of the content block
             buttons.style.position = 'absolute';
             buttons.style.left = 'initial';
             buttons.style.right = '0';
             buttons.style.bottom = '1rem';
+            buttons.style.top = 'initial';
          }
       });
    };
 
-   const contentBlockPositions = useRef([]);
-   const updateBlockPositions = () => {
-      const blockPositionsArray = [];
+   useEffect(() => {
+      // On desktop, mainSection does the scrolling. On mobile, it's thingPage
+      const thingPage = document.querySelector('.thingPage');
+      if (thingPage != null) {
+         thingPage.addEventListener('scroll', stickifier);
+      }
+      const mainSection = document.querySelector('.mainSection');
+      mainSection.addEventListener('scroll', stickifier);
 
       const blocks = document.querySelectorAll('.contentBlock');
       const firstBlock = blocks[0];
@@ -436,6 +489,7 @@ const Content = props => {
          blockPaddingString.length - 2
       );
       const blockPadding = parseInt(blockPaddingRaw);
+      stickingData.current.blockPadding = blockPadding;
 
       const piece = firstBlock.querySelector('.contentPiece');
       const piecePaddingString = window.getComputedStyle(piece).paddingTop;
@@ -444,44 +498,17 @@ const Content = props => {
          piecePaddingString.length - 2
       );
       const piecePadding = parseInt(piecePaddingRaw);
+      stickingData.current.piecePadding = piecePadding;
 
       const fullThing = firstBlock.offsetParent;
       const fullThingOffset = fullThing.offsetTop;
+      stickingData.current.fullThingOffset = fullThingOffset;
 
-      blocks.forEach(block => {
-         const blockOffset = block.offsetTop;
-         const blockHeight = block.offsetHeight;
-
-         const buttons = block.querySelector('.buttons');
-         const buttonsHeight = buttons.offsetHeight;
-
-         const blockTop = blockOffset + blockPadding + fullThingOffset;
-         const top = blockTop + piecePadding + buttonsHeight;
-         const bottom = blockTop + blockHeight;
-         blockPositionsArray.push({
-            block,
-            top,
-            bottom
-         });
-      });
-      contentBlockPositions.current = blockPositionsArray;
+      // Need to run it once here so that the edit buttons will be properly placed before the first scroll
       stickifier();
-   };
-
-   useEffect(() => {
-      updateBlockPositions();
-   });
-
-   useEffect(() => {
-      const mainSection = document.querySelectorAll('.mainSection');
-      mainSection[0].addEventListener('scroll', stickifier);
-      const thingPage = document.querySelector('.thingPage');
-      if (thingPage != null) {
-         thingPage.addEventListener('scroll', stickifier);
-      }
 
       return () => {
-         mainSection[0].removeEventListener('scroll', stickifier);
+         mainSection.removeEventListener('scroll', stickifier);
          if (thingPage != null) {
             thingPage.removeEventListener('scroll', stickifier);
          }
@@ -625,7 +652,6 @@ const Content = props => {
                rawContentString={contentPiece.content}
                deleteContentPiece={deletePiece}
                editContentPiece={editPiece}
-               updateBlockPositions={updateBlockPositions}
                key={contentPiece.id}
             />
          </div>
