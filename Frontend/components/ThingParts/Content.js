@@ -481,6 +481,7 @@ const Content = props => {
       mainSection.addEventListener('scroll', stickifier);
 
       const blocks = document.querySelectorAll('.contentBlock');
+      if (blocks.length === 0) return;
       const firstBlock = blocks[0];
 
       const blockPaddingString = window.getComputedStyle(firstBlock).paddingTop;
