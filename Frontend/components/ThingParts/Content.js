@@ -433,7 +433,6 @@ const Content = props => {
       stickingData.current.blocksArray.forEach(block => {
          const buttons = block.block.querySelector('.buttons');
          const buttonsHeight = buttons.offsetHeight;
-         console.log(buttonsHeight);
          // If the top of the element is onscreen but the bottom isn't, we want to fix the edit buttons in place at the bottom of the screen
          if (block.top < viewableBottom && block.bottom > viewableBottom) {
             const buttonRect = buttons.getBoundingClientRect();

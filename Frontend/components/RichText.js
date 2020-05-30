@@ -68,27 +68,48 @@ const RichText = ({ text, priorText, nextText, matchCount = 0 }) => {
 
          // First, the general <style> tag, which is a little tricky
          if (tag.groups.style != null) {
-            const splitTag = tag.groups.styleObjectRaw.split(/[:;]/gi);
-            const styleObject = {};
-            splitTag.forEach((tagPiece, index) => {
-               if (index % 2 === 1 || splitTag[index + 1] == null) {
-                  // Actually we only want to do this once for each pair, and we don't want to do it if there isn't a matching tag
-                  return;
-               }
-               // We're making an object with the first items in each pair as its properties and the second as their values
-               styleObject[splitTag[index].trim()] = splitTag[index + 1].trim();
-            });
+            if (tag.groups.styleObjectRaw.includes('</style>')) {
+               // I couldn't work out the regex to match only those style tags that didn't include style tags themselves, so we're dealing with it here.
+               const allTags = tag.groups.style;
+               const firstClosingIndex = allTags.indexOf('</style>');
 
-            const tagElement = (
-               <span style={styleObject} key={stoppedAtIndex}>
+               const firstTagText = allTags.substring(0, firstClosingIndex + 8);
+               console.log(firstTagText);
+               const firstTag = (
                   <RichText
-                     text={tag.groups.styleTextContent}
-                     key={tag.groups.styleTextContent}
+                     text={firstTagText}
+                     key={firstTagText}
                      matchCount={matchCount + 1}
                   />
-               </span>
-            );
-            elementsArray.push(tagElement);
+               );
+               // The +8 on that substring is because we need to include the </style> that was our indexOf search
+               elementsArray.push(firstTag);
+               stoppedAtIndexOverride = firstClosingIndex + 8;
+            } else {
+               const splitTag = tag.groups.styleObjectRaw.split(/[:;]/gi);
+               const styleObject = {};
+               splitTag.forEach((tagPiece, index) => {
+                  if (index % 2 === 1 || splitTag[index + 1] == null) {
+                     // Actually we only want to do this once for each pair, and we don't want to do it if there isn't a matching tag
+                     return;
+                  }
+                  // We're making an object with the first items in each pair as its properties and the second as their values
+                  styleObject[splitTag[index].trim()] = splitTag[
+                     index + 1
+                  ].trim();
+               });
+
+               const tagElement = (
+                  <span style={styleObject} key={stoppedAtIndex}>
+                     <RichText
+                        text={tag.groups.styleTextContent}
+                        key={tag.groups.styleTextContent}
+                        matchCount={matchCount + 1}
+                     />
+                  </span>
+               );
+               elementsArray.push(tagElement);
+            }
          }
 
          if (tag.groups.stars != null) {
