@@ -91,7 +91,7 @@ const TwitterReader = ({ list }) => {
       const el = document.querySelector('svg.refreshLists');
       el.classList.remove('loading');
       const cachedData = client.writeQuery({
-         query: GET_TWITTER_LISTS,
+         query: GET_FRESH_LISTS,
          data: {
             __typename: 'query',
             getTwitterLists: {
@@ -165,6 +165,7 @@ const TwitterReader = ({ list }) => {
                   activeTweetCount={activeTweets.length}
                   setActiveList={setActiveList}
                   setActiveTweets={setActiveTweets}
+                  fetchFreshLists={fetchFreshLists}
                />
             }
          />

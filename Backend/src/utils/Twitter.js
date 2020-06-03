@@ -188,7 +188,8 @@ const getFreshLists = async ctx => {
    const {
       twitterUserID: userID,
       twitterUserToken: token,
-      twitterUserTokenSecret: tokenSecret
+      twitterUserTokenSecret: tokenSecret,
+      twitterListsObject
    } = await getTwitterInfo(ctx);
 
    const baseURL = 'https://api.twitter.com/1.1/lists/list.json';

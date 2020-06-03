@@ -13,13 +13,16 @@ const ResetIcon = ({ onClick, className }) => {
          onClick={onClick}
       >
          <path
-            d="M30.56,133.69A79.19,79.19,0,1,0,102.25,21C77.88,21,55.54,33.75,41,51L35,69"
+            d="M27.56,133.69A79.19,79.19,0,1,0,99.25,21C74.88,21,52.54,33.75,38,51L32,69"
             fill="none"
             stroke={lowContrastGrey}
             strokeMiterlimit="10"
             strokeWidth="24"
          />
-         <polygon points="4 35 23 92 82 67 4 35" fill={lowContrastGrey} />
+         <polygon
+            points="15.38 93.16 74.47 73.37 5.42 31.64 15.38 93.16"
+            fill={lowContrastGrey}
+         />
       </svg>
    );
 };

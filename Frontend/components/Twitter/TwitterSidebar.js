@@ -71,7 +71,8 @@ const TwitterSidebar = ({
    activeList,
    activeTweetCount,
    setActiveList,
-   setActiveTweets
+   setActiveTweets,
+   fetchFreshLists
 }) => {
    if (!myTwitterInfo) {
       return (

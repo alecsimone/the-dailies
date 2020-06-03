@@ -58,13 +58,22 @@ async function finishTwitterLogin(parent, { token, verifier }, ctx, info) {
 }
 exports.finishTwitterLogin = finishTwitterLogin;
 
-async function makeListsObject(twitterListsObject, ctx) {
-   const listsObject = {};
-   let listData;
+async function makeListsObject(twitterListsObject, twitterUserName, ctx) {
+   let listData = JSON.parse(twitterListsObject);
    if (
       twitterListsObject === null ||
-      listsObject.lastUpdateTime < Date.now() - 24 * 60 * 60 * 1000
+      listData.lastUpdateTime < Date.now() - 24 * 60 * 60 * 1000
    ) {
+      listData.lastUpdateTime = Date.now();
+      const listDataString = JSON.stringify(listData);
+      await ctx.db.mutation.updateMember({
+         where: {
+            id: ctx.req.memberId
+         },
+         data: {
+            twitterListsObject: listDataString
+         }
+      });
       listData = await getFreshLists(ctx);
       listData.home = {
          id: 'home',
@@ -73,8 +82,6 @@ async function makeListsObject(twitterListsObject, ctx) {
          sinceID: 1,
          tweets: []
       };
-   } else {
-      listData = JSON.parse(twitterListsObject);
    }
    return listData;
 }
@@ -111,8 +118,16 @@ async function getTweetsForList(parent, { listID: requestedList }, ctx, info) {
    fullMemberGate(ctx.req.member);
 
    // Make an array of the member's listIDs
-   const { twitterListsObject } = await getTwitterInfo(ctx);
-   const listsObject = await makeListsObject(twitterListsObject, ctx);
+   const {
+      twitterListsObject,
+      twitterUserName,
+      twitterSeenIDs
+   } = await getTwitterInfo(ctx);
+   const listsObject = await makeListsObject(
+      twitterListsObject,
+      twitterUserName,
+      ctx
+   );
    const dirtyListIDs = Object.keys(listsObject);
    const listIDs = dirtyListIDs.filter(id => id !== 'lastUpdateTime');
 
@@ -155,7 +170,8 @@ async function getTweetsForList(parent, { listID: requestedList }, ctx, info) {
    const message = JSON.stringify({
       listTweets,
       listID,
-      listName
+      listName,
+      seenIDs: twitterSeenIDs
    });
 
    return { message };

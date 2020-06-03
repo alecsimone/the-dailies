@@ -183,9 +183,11 @@ const Tweets = ({
          if (button) {
             button.classList.remove('loading');
          }
-         const { listTweets } = JSON.parse(data.getTweetsForList.message);
+         const { listTweets, seenIDs: newSeenIDs } = JSON.parse(
+            data.getTweetsForList.message
+         );
 
-         setActiveTweets(filterTweets(JSON.parse(listTweets), seenIDs));
+         setActiveTweets(filterTweets(JSON.parse(listTweets), newSeenIDs));
       }
    });
 

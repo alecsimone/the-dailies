@@ -33,17 +33,18 @@ const ListElement = React.memo(
       );
 
       const changeLists = newTweetsData => {
-         const { listID, listName, listTweets } = JSON.parse(
-            newTweetsData.getTweetsForList.message
-         );
+         const {
+            listID,
+            listName,
+            listTweets,
+            seenIDs: newSeenIDs
+         } = JSON.parse(newTweetsData.getTweetsForList.message);
 
          const href = `/twitter?listname=${listName}`;
          const as = href;
          Router.replace(href, as, { shallow: true });
 
-         setActiveTweets(
-            filterTweets(JSON.parse(listTweets), memberInfo.twitterSeenIDs)
-         );
+         setActiveTweets(filterTweets(JSON.parse(listTweets), newSeenIDs));
 
          setActiveList(listID);
       };
