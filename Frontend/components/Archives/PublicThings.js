@@ -4,6 +4,7 @@ import Things from './Things';
 import Error from '../ErrorMessage';
 import LoadingRing from '../LoadingRing';
 import { smallThingCardFields } from '../../lib/CardInterfaces';
+import { sidebarPerPage } from '../../config';
 
 const PUBLIC_THINGS_QUERY = gql`
    query PUBLIC_THINGS_QUERY {
@@ -27,6 +28,8 @@ const PublicThings = ({ displayType = 'list' }) => {
             things={data.publicThings}
             displayType={displayType}
             cardSize={displayType === 'grid' ? 'regular' : 'small'}
+            scrollingParent={document.querySelector('.sidebarContent')}
+            perPage={sidebarPerPage}
          />
       );
    }

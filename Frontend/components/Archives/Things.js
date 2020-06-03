@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import Masonry from 'react-masonry-css';
-import { useContext } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { ThemeContext } from 'styled-components';
 import SmallThingCard from '../ThingCards/SmallThingCard';
 import ThingCard from '../ThingCards/ThingCard';
@@ -40,13 +40,45 @@ const StyledThings = styled.div`
    }
 `;
 
-const Things = ({ things, displayType, cardSize, noPic }) => {
+const Things = ({
+   things,
+   displayType,
+   cardSize,
+   noPic,
+   scrollingParent,
+   perPage
+}) => {
    const {
       desktopBPWidthRaw,
       bigScreenBPWidthRaw,
       massiveScreenBPWidthRaw
    } = useContext(ThemeContext);
-   const thingCards = things.map(thing => {
+
+   const [visibleThingCount, setVisibleThingCount] = useState(
+      perPage != null ? perPage : things.length
+   );
+
+   const scrollHandler = () => {
+      const maxScroll =
+         scrollingParent.scrollHeight - scrollingParent.offsetHeight;
+      if (
+         scrollingParent.scrollTop > maxScroll - 500 &&
+         visibleThingCount < things.length
+      ) {
+         setVisibleThingCount(visibleThingCount + perPage);
+      }
+   };
+
+   useEffect(() => {
+      if (scrollingParent == null) return;
+      scrollingParent.addEventListener('scroll', scrollHandler);
+
+      return () => scrollingParent.removeEventListener('scroll', scrollHandler);
+   }, [scrollHandler, scrollingParent]);
+
+   const truncatedThingList = things.slice(0, visibleThingCount);
+
+   const thingCards = truncatedThingList.map(thing => {
       if (cardSize === 'regular') {
          return <ThingCard data={thing} key={thing.id} />;
       }
@@ -80,7 +112,8 @@ Things.propTypes = {
    things: PropTypes.array.isRequired,
    displayType: PropTypes.oneOf(['list', 'grid']),
    cardSize: PropTypes.oneOf(['regular', 'small']),
-   noPic: PropTypes.bool
+   noPic: PropTypes.bool,
+   perPage: PropTypes.number
 };
 
 export default Things;

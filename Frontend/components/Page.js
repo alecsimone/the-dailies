@@ -194,7 +194,7 @@ const GlobalStyle = createGlobalStyle`
       font-family: "proxima-nova", sans-serif;
       cursor: pointer;
       &:hover {
-         background: ${setAlpha(theme.lowContrastGrey, 0.1)};
+         background: ${setAlpha(theme.lowContrastGrey, 0.3)};
       }
    }
    blockquote {

@@ -4,6 +4,7 @@ import Router from 'next/router';
 import Things from '../Archives/Things';
 import MemberCard from '../MemberCard';
 import { setAlpha } from '../../styles/functions';
+import { perPage } from '../../config';
 
 const StyledProfileContent = styled.div`
    position: absolute;
@@ -102,6 +103,12 @@ const ProfileContent = ({ member, isMe, defaultTab }) => {
                things={sortedThings}
                displayType="grid"
                cardSize="regular"
+               scrollingParent={
+                  process.browser
+                     ? document.querySelector('.mainSection')
+                     : null
+               }
+               perPage={perPage}
             />
          );
       } else {

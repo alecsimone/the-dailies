@@ -12,3 +12,5 @@ export const home =
       : 'https://ourdailies.org';
 export const homeNoHTTP =
    process.env.NODE_ENV === 'development' ? 'localhost:6969' : 'ourdailies.org';
+export const sidebarPerPage = 20;
+export const perPage = 10;

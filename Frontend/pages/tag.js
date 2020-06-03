@@ -12,6 +12,7 @@ import TaxSidebar from '../components/TaxSidebar';
 import Things from '../components/Archives/Things';
 import { taxFields } from '../lib/CardInterfaces';
 import { MemberContext } from '../components/Account/MemberProvider';
+import { perPage } from '../config';
 
 const SINGLE_TAX_QUERY = gql`
    query SINGLE_TAX_QUERY($title: String! $personal: Boolean!) {
@@ -110,6 +111,12 @@ const tag = ({ query: { id, title } }) => {
                   things={sortedThings}
                   displayType="grid"
                   cardSize="regular"
+                  scrollingParent={
+                     process.browser
+                        ? document.querySelector('.mainSection')
+                        : null
+                  }
+                  perPage={perPage}
                />
             </StyledTaxContent>
          );

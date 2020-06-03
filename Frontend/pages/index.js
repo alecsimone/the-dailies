@@ -6,6 +6,7 @@ import ErrorMessage from '../components/ErrorMessage';
 import { smallThingCardFields } from '../lib/CardInterfaces';
 import LoadingRing from '../components/LoadingRing';
 import Things from '../components/Archives/Things';
+import { perPage } from '../config';
 
 const ALL_THINGS_QUERY = gql`
    query ALL_THINGS_QUERY {
@@ -28,6 +29,10 @@ const Home = props => {
             things={data.allThings}
             cardSize="regular"
             displayType="grid"
+            scrollingParent={
+               process.browser ? document.querySelector('.mainSection') : null
+            }
+            perPage={perPage}
          />
       );
    } else if (loading) {

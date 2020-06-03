@@ -2,6 +2,7 @@ import { useContext } from 'react';
 import { MemberContext } from '../Account/MemberProvider';
 import Things from './Things';
 import LoadingRing from '../LoadingRing';
+import { sidebarPerPage } from '../../config';
 
 const MyFriendsThings = () => {
    const { me } = useContext(MemberContext);
@@ -27,7 +28,15 @@ const MyFriendsThings = () => {
          </p>
       );
    }
-   return <Things things={friendsThings} displayType="list" cardSize="small" />;
+   return (
+      <Things
+         things={friendsThings}
+         displayType="list"
+         cardSize="small"
+         scrollingParent={document.querySelector('.sidebarContent')}
+         perPage={sidebarPerPage}
+      />
+   );
 };
 MyFriendsThings.propTypes = {};
 

@@ -13,6 +13,7 @@ import Things from '../components/Archives/Things';
 import { taxFields } from '../lib/CardInterfaces';
 import { MemberContext } from '../components/Account/MemberProvider';
 import { SINGLE_TAX_QUERY } from './tag';
+import { perPage } from '../config';
 
 const SINGLE_STACK_SUBSCRIPTION = gql`
    subscription SINGLE_STACK_SUBSCRIPTION {
@@ -87,6 +88,12 @@ const stack = ({ query: { id, title } }) => {
                   things={sortedThings}
                   displayType="grid"
                   cardSize="regular"
+                  scrollingParent={
+                     process.browser
+                        ? document.querySelector('.mainSection')
+                        : null
+                  }
+                  perPage={perPage}
                />
             </StyledTaxContent>
          );

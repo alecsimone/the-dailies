@@ -8,6 +8,7 @@ import LoadingRing from '../components/LoadingRing';
 import StyledPageWithSidebar from '../styles/StyledPageWithSidebar';
 import Sidebar from '../components/Sidebar';
 import Things from '../components/Archives/Things';
+import { perPage } from '../config';
 
 const SEARCH_QUERY = gql`
    query SEARCH_QUERY($string: String!, $isTitleOnly: Boolean) {
@@ -90,6 +91,12 @@ const search = ({ query: { s: string } }) => {
                things={sortedThings}
                cardSize="regular"
                displayType="grid"
+               scrollingParent={
+                  process.browser
+                     ? document.querySelector('.mainSection')
+                     : null
+               }
+               perPage={perPage}
             />
          );
       } else {
