@@ -37,7 +37,7 @@ const Home = props => {
       content = <LoadingRing />;
    }
    return (
-      <StyledPageWithSidebar>
+      <StyledPageWithSidebar className="styledPageWithSidebar">
          <Sidebar />
          <div className="mainSection">{content}</div>
       </StyledPageWithSidebar>

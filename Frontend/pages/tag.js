@@ -134,7 +134,7 @@ const tag = ({ query: { id, title } }) => {
 
    return (
       <TagContext.Provider value={loading || error || data.taxByTitle}>
-         <StyledPageWithSidebar>
+         <StyledPageWithSidebar className="styledPageWithSidebar">
             <Head>
                <title>{pageTitle} - OurDailies</title>
             </Head>

@@ -74,7 +74,14 @@ const Things = ({
       if (scroller == null) return;
       scroller.addEventListener('scroll', scrollHandler);
 
-      return () => scroller.removeEventListener('scroll', scrollHandler);
+      // On mobile, the element that scrolls is the whole page, which has the class styledPageWithSidebar
+      const page = document.querySelector('.styledPageWithSidebar');
+      page.addEventListener('scroll', scrollHandler);
+
+      return () => {
+         scroller.removeEventListener('scroll', scrollHandler);
+         page.removeEventListener('scroll', scrollHandler);
+      };
    }, [scrollHandler, scrollingParentSelector]);
 
    const truncatedThingList = things.slice(0, visibleThingCount);

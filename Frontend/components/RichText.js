@@ -74,7 +74,6 @@ const RichText = ({ text, priorText, nextText, matchCount = 0 }) => {
                const firstClosingIndex = allTags.indexOf('</style>');
 
                const firstTagText = allTags.substring(0, firstClosingIndex + 8);
-               console.log(firstTagText);
                const firstTag = (
                   <RichText
                      text={firstTagText}

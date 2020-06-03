@@ -103,7 +103,7 @@ const search = ({ query: { s: string } }) => {
       content = <LoadingRing />;
    }
    return (
-      <StyledPageWithSidebar>
+      <StyledPageWithSidebar className="styledPageWithSidebar">
          <Sidebar />
          <StyledSearchResults className="mainSection">
             <h3 className="searchHeader">Results for "{string}"</h3>

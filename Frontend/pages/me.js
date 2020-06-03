@@ -55,7 +55,7 @@ const me = ({ query }) => {
    }
 
    return (
-      <StyledPageWithSidebar>
+      <StyledPageWithSidebar className="styledPageWithSidebar">
          <Head>
             <title>{pageTitle} - OurDailies</title>
          </Head>

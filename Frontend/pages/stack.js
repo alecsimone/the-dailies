@@ -111,7 +111,7 @@ const stack = ({ query: { id, title } }) => {
 
    return (
       <StackContext.Provider value={loading || error || data.taxByTitle}>
-         <StyledPageWithSidebar>
+         <StyledPageWithSidebar className="styledPageWithSidebar">
             <Head>
                <title>{pageTitle} - OurDailies</title>
             </Head>
