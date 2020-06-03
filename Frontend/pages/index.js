@@ -29,9 +29,7 @@ const Home = props => {
             things={data.allThings}
             cardSize="regular"
             displayType="grid"
-            scrollingParent={
-               process.browser ? document.querySelector('.mainSection') : null
-            }
+            scrollingParentSelector=".mainSection"
             perPage={perPage}
          />
       );

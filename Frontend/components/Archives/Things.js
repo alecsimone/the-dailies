@@ -45,7 +45,7 @@ const Things = ({
    displayType,
    cardSize,
    noPic,
-   scrollingParent,
+   scrollingParentSelector,
    perPage
 }) => {
    const {
@@ -58,11 +58,11 @@ const Things = ({
       perPage != null ? perPage : things.length
    );
 
-   const scrollHandler = () => {
-      const maxScroll =
-         scrollingParent.scrollHeight - scrollingParent.offsetHeight;
+   const scrollHandler = e => {
+      const scroller = e.target;
+      const maxScroll = scroller.scrollHeight - scroller.offsetHeight;
       if (
-         scrollingParent.scrollTop > maxScroll - 500 &&
+         scroller.scrollTop > maxScroll - 500 &&
          visibleThingCount < things.length
       ) {
          setVisibleThingCount(visibleThingCount + perPage);
@@ -70,11 +70,12 @@ const Things = ({
    };
 
    useEffect(() => {
-      if (scrollingParent == null) return;
-      scrollingParent.addEventListener('scroll', scrollHandler);
+      const scroller = document.querySelector(scrollingParentSelector);
+      if (scroller == null) return;
+      scroller.addEventListener('scroll', scrollHandler);
 
-      return () => scrollingParent.removeEventListener('scroll', scrollHandler);
-   }, [scrollHandler, scrollingParent]);
+      return () => scroller.removeEventListener('scroll', scrollHandler);
+   }, [scrollHandler, scrollingParentSelector]);
 
    const truncatedThingList = things.slice(0, visibleThingCount);
 

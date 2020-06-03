@@ -28,7 +28,7 @@ const PublicThings = ({ displayType = 'list' }) => {
             things={data.publicThings}
             displayType={displayType}
             cardSize={displayType === 'grid' ? 'regular' : 'small'}
-            scrollingParent={document.querySelector('.sidebarContent')}
+            scrollingParentSelector=".sidebarContent"
             perPage={sidebarPerPage}
          />
       );

@@ -88,11 +88,7 @@ const stack = ({ query: { id, title } }) => {
                   things={sortedThings}
                   displayType="grid"
                   cardSize="regular"
-                  scrollingParent={
-                     process.browser
-                        ? document.querySelector('.mainSection')
-                        : null
-                  }
+                  scrollingParentSelector=".mainSection"
                   perPage={perPage}
                />
             </StyledTaxContent>

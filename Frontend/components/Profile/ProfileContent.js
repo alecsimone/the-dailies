@@ -48,7 +48,6 @@ const StyledProfileContent = styled.div`
 `;
 
 const ProfileContent = ({ member, isMe, defaultTab }) => {
-   console.log(defaultTab);
    const [selectedTab, setSelectedTab] = useState(defaultTab || 'Things');
 
    /* eslint-disable react-hooks/exhaustive-deps */
@@ -103,11 +102,7 @@ const ProfileContent = ({ member, isMe, defaultTab }) => {
                things={sortedThings}
                displayType="grid"
                cardSize="regular"
-               scrollingParent={
-                  process.browser
-                     ? document.querySelector('.mainSection')
-                     : null
-               }
+               scrollingParentSelector=".mainSection"
                perPage={perPage}
             />
          );
