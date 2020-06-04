@@ -265,6 +265,16 @@ const StyledContent = styled.section`
             opacity: 1;
          }
       }
+      button.miniReorder {
+         border: none;
+         opacity: 0.6;
+         padding: 0 0.5rem;
+         margin: 0;
+         &:hover {
+            background: none;
+            opacity: 1;
+         }
+      }
       form {
          max-width: 1040px;
          margin: calc(0.8rem - 2px) calc(-1rem - 1px);
@@ -655,6 +665,8 @@ const Content = ({ context, canEdit }) => {
                rawContentString={contentPiece.content}
                deleteContentPiece={deletePiece}
                editContentPiece={editPiece}
+               setReordering={setReordering}
+               reordering={reordering}
                key={contentPiece.id}
             />
          </div>

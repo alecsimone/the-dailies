@@ -5,16 +5,16 @@ import RichText from '../RichText';
 import EditThis from '../Icons/EditThis';
 import TrashIcon from '../Icons/Trash';
 
-const ContentPiece = props => {
+const ContentPiece = ({
+   id,
+   rawContentString,
+   deleteContentPiece,
+   editContentPiece,
+   canEdit,
+   setReordering,
+   reordering
+}) => {
    const [editable, setEditable] = useState(false);
-
-   const {
-      id,
-      rawContentString,
-      deleteContentPiece,
-      editContentPiece,
-      canEdit
-   } = props;
 
    const [editedContent, setEditedContent] = useState(rawContentString);
 
@@ -67,6 +67,24 @@ const ContentPiece = props => {
                      onMouseDown={e => e.stopPropagation()}
                      onClick={() => deleteContentPiece(id)}
                   />
+               )}
+               {editable && (
+                  <button
+                     className="miniReorder"
+                     onClick={e => {
+                        e.preventDefault();
+                        if (
+                           reordering ||
+                           confirm(
+                              'Are you sure you want to reorder the content? Any unsaved changes will be lost.'
+                           )
+                        ) {
+                           setReordering(!reordering);
+                        }
+                     }}
+                  >
+                     {reordering ? 'L' : 'R'}
+                  </button>
                )}
             </div>
          )}
