@@ -133,16 +133,14 @@ const TwitterReader = ({ list }) => {
    }
 
    if (data && myTwitterInfo) {
-      const { listTweets: tweets, listID } = JSON.parse(
+      const { listTweets: tweets, listID, seenIDs: newSeenIDs } = JSON.parse(
          data.getTweetsForList.message
       );
       if (!activeList) {
          setActiveList(listID);
       }
       if (!activeTweets) {
-         setActiveTweets(
-            filterTweets(JSON.parse(tweets), myTwitterInfo.me.twitterSeenIDs)
-         );
+         setActiveTweets(filterTweets(JSON.parse(tweets), newSeenIDs));
       }
 
       content = (

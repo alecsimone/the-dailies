@@ -65,10 +65,8 @@ const ListElement = React.memo(
          } else {
             const message = JSON.parse(data?.getTweetsForList.message);
             const thisListsTweets = JSON.parse(message.listTweets);
-            const filteredTweets = filterTweets(
-               thisListsTweets,
-               memberInfo.twitterSeenIDs
-            );
+            const newSeenIDs = message.seenIDs;
+            const filteredTweets = filterTweets(thisListsTweets, newSeenIDs);
             tweetCount = `(${filteredTweets.length})`;
          }
       } else if (loading) {

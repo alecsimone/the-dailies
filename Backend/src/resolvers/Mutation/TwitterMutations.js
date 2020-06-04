@@ -74,13 +74,8 @@ async function markTweetsSeen(
    const { twitterListsObject, twitterSeenIDs } = await getTwitterInfo(ctx);
 
    tweetIDs.sort();
-   let sinceID;
-   if (lastTweeter) {
-      // If this is the last tweeter, we don't need to worry about other tweeters having older tweets than the ones in the list we got which the member hasn't seen yet, so we can set the sinceID to the most recent tweet in the list.
-      sinceID = parseInt(tweetIDs[tweetIDs.length - 1]);
-   } else {
-      sinceID = parseInt(tweetIDs[0]);
-   }
+   const newestTweetID = parseInt(tweetIDs[tweetIDs.length - 1]);
+   const oldestTweetID = parseInt(tweetIDs[0]);
 
    let listsObject;
    if (twitterListsObject == null) {
@@ -90,23 +85,30 @@ async function markTweetsSeen(
       // Otherwise parse the existing one
       listsObject = JSON.parse(twitterListsObject);
    }
-   // Then update this list in it with the new sinceID
-   listsObject[listID].sinceID = sinceID;
+   // If they don't have an object in there for this list yet, give them one
+   if (listsObject[listID] == null) listsObject[listID] = {};
 
-   const seenIDs = tweetIDs || [];
+   // Then update this list in it with the new data
+   if (listsObject[listID].highestIDSeen < newestTweetID) {
+      listsObject[listID].highestIDSeen = newestTweetID;
+   }
+   listsObject[listID].sinceID = lastTweeter
+      ? listsObject[listID].highestIDSeen
+      : oldestTweetID;
 
-   const stillUsefulSeenIDs = twitterSeenIDs.filter(
-      // any tweets older than the sinceID aren't showing up again, so let's lose em
-      id => parseInt(id) >= sinceID
-   );
-   const newSeenIDs = seenIDs.concat(stillUsefulSeenIDs);
+   const freshSeenIDs = tweetIDs || [];
+   const oldSeenIDs = listsObject[listID].seenIDs || [];
+   let newSeenIDs = oldSeenIDs.concat(freshSeenIDs);
+   if (newSeenIDs.length > 400) {
+      newSeenIDs = newSeenIDs.slice(0, 400);
+   }
+   listsObject[listID].seenIDs = newSeenIDs;
 
    const updatedMember = await ctx.db.mutation.updateMember(
       {
          where: { id: ctx.req.memberId },
          data: {
-            twitterListsObject: JSON.stringify(listsObject),
-            twitterSeenIDs: { set: newSeenIDs }
+            twitterListsObject: JSON.stringify(listsObject)
          }
       },
       info

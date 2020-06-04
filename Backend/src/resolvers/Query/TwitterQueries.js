@@ -118,11 +118,7 @@ async function getTweetsForList(parent, { listID: requestedList }, ctx, info) {
    fullMemberGate(ctx.req.member);
 
    // Make an array of the member's listIDs
-   const {
-      twitterListsObject,
-      twitterUserName,
-      twitterSeenIDs
-   } = await getTwitterInfo(ctx);
+   const { twitterListsObject, twitterUserName } = await getTwitterInfo(ctx);
    const listsObject = await makeListsObject(
       twitterListsObject,
       twitterUserName,
@@ -145,7 +141,6 @@ async function getTweetsForList(parent, { listID: requestedList }, ctx, info) {
          listName = 'See All';
          listID = seeAllList;
       }
-
       // If they did request a list, give it to them
    } else {
       // If requested list is not a number, it's a name
@@ -171,7 +166,7 @@ async function getTweetsForList(parent, { listID: requestedList }, ctx, info) {
       listTweets,
       listID,
       listName,
-      seenIDs: twitterSeenIDs
+      seenIDs: listsObject[listID].seenIDs
    });
 
    return { message };
