@@ -4,17 +4,21 @@ import ContentInput from './ContentInput';
 import RichText from '../RichText';
 import EditThis from '../Icons/EditThis';
 import TrashIcon from '../Icons/Trash';
+import { home } from '../../config';
 
 const ContentPiece = ({
    id,
+   thingID,
    rawContentString,
    deleteContentPiece,
    editContentPiece,
    canEdit,
    setReordering,
-   reordering
+   reordering,
+   highlighted
 }) => {
    const [editable, setEditable] = useState(false);
+   const [copied, setCopied] = useState(false);
 
    const [editedContent, setEditedContent] = useState(rawContentString);
 
@@ -45,7 +49,10 @@ const ContentPiece = ({
    }
 
    return (
-      <div className="contentBlock" key={id}>
+      <div
+         className={highlighted ? 'contentBlock highlighted' : 'contentBlock'}
+         key={id}
+      >
          <div
             className={canEdit ? 'contentPiece editable' : 'contentPiece'}
             key={id}
@@ -84,6 +91,20 @@ const ContentPiece = ({
                      }}
                   >
                      {reordering ? 'L' : 'R'}
+                  </button>
+               )}
+               {editable && (
+                  <button
+                     className="directLink"
+                     onClick={async () => {
+                        await navigator.clipboard.writeText(
+                           `${home}/thing?id=${thingID}&piece=${id}`
+                        );
+                        setCopied(true);
+                        setTimeout(() => setCopied(false), 3000);
+                     }}
+                  >
+                     {copied ? 'Copied!' : '#'}
                   </button>
                )}
             </div>

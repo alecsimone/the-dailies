@@ -101,6 +101,7 @@ const SingleThing = props => {
                <FullThing
                   id={props.query.id}
                   key={props.query.id}
+                  linkedPiece={props.query.piece}
                   canEdit={canEdit}
                />
             );

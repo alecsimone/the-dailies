@@ -245,6 +245,9 @@ const StyledContent = styled.section`
       ${props => props.theme.mobileBreakpoint} {
          padding: 1rem;
       }
+      &.highlighted {
+         background: ${props => setAlpha(props.theme.lowContrastGrey, 0.2)};
+      }
       div.buttons {
          width: ${props => props.theme.smallText};
          position: absolute;
@@ -265,7 +268,8 @@ const StyledContent = styled.section`
             opacity: 1;
          }
       }
-      button.miniReorder {
+      button.miniReorder,
+      button.directLink {
          border: none;
          opacity: 0.6;
          padding: 0 0.5rem;
@@ -356,7 +360,7 @@ const StyledContent = styled.section`
    }
 `;
 
-const Content = ({ context, canEdit }) => {
+const Content = ({ context, canEdit, linkedPiece }) => {
    const {
       content = [],
       contentOrder,
@@ -482,6 +486,7 @@ const Content = ({ context, canEdit }) => {
       });
    };
 
+   // Add the stickifier listeners
    useEffect(() => {
       if (!canEdit) return;
       // On desktop, mainSection does the scrolling. On mobile, it's thingPage
@@ -527,6 +532,21 @@ const Content = ({ context, canEdit }) => {
          }
       };
    }, [canEdit, stickifier]);
+
+   // scroll to a highlighted content block, if there is one
+   useEffect(() => {
+      const highlightedPiece = document.querySelector(
+         '.contentBlock.highlighted'
+      );
+      if (highlightedPiece == null) return;
+
+      const highlightedPieceOffset = highlightedPiece.offsetTop;
+
+      const thingPage = document.querySelector('.thingPage');
+      thingPage.scrollTop = highlightedPieceOffset;
+      const mainSection = document.querySelector('.mainSection');
+      mainSection.scrollTop = highlightedPieceOffset;
+   }, []);
 
    const sendNewContentPiece = async () => {
       setNewContentPiece('');
@@ -661,12 +681,14 @@ const Content = ({ context, canEdit }) => {
          >
             <ContentPiece
                id={contentPiece.id}
+               thingID={id}
                canEdit={canEdit}
                rawContentString={contentPiece.content}
                deleteContentPiece={deletePiece}
                editContentPiece={editPiece}
                setReordering={setReordering}
                reordering={reordering}
+               highlighted={linkedPiece === contentPiece.id}
                key={contentPiece.id}
             />
          </div>

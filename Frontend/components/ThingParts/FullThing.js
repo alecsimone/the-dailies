@@ -98,8 +98,7 @@ const setFullThingToLoading = id => {
 };
 export { setFullThingToLoading };
 
-const FullThing = props => {
-   const { canEdit } = props;
+const FullThing = ({ canEdit, linkedPiece }) => {
    const { id, color, votes } = useContext(ThingContext) || {};
 
    const { lowContrastGrey } = useContext(ThemeContext);
@@ -130,6 +129,7 @@ const FullThing = props => {
          </div>
          <Content
             context={ThingContext}
+            linkedPiece={linkedPiece}
             key={`${id}-Content`}
             canEdit={canEdit}
          />
