@@ -95,6 +95,7 @@ const TwitterSidebar = ({
       return (
          <ListElement
             listID={listID}
+            key={listID}
             active={activeList === listID}
             activeTweetCount={activeTweetCount}
             memberInfo={myTwitterInfo.me}
@@ -136,8 +137,9 @@ TwitterSidebar.propTypes = {
    myTwitterInfo: PropTypes.shape({
       me: PropTypes.object.isRequired
    }),
-   activeList: PropTypes.number.isRequired,
-   activeTweetCount: PropTypes.number.isRequired,
+   activeList: PropTypes.oneOfType([PropTypes.bool, PropTypes.string])
+      .isRequired,
+   activeTweetCount: PropTypes.number,
    setActiveList: PropTypes.func.isRequired,
    setActiveTweets: PropTypes.func.isRequired
 };

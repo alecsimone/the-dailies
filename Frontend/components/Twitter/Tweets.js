@@ -344,9 +344,9 @@ const Tweets = ({
                         const tweetIDs = [];
                         tweetersArray[i].tweets.forEach(tweet => {
                            tweetIDs.push(tweet.id_str);
-                           if (tweet.retweeted_status) {
-                              tweetIDs.push(tweet.retweeted_status.id_str);
-                           }
+                           // if (tweet.retweeted_status) {
+                           //    tweetIDs.push(tweet.retweeted_status.id_str);
+                           // }
                         });
                         const newSeenIDs = seenIDs.concat(tweetIDs);
 
@@ -355,7 +355,8 @@ const Tweets = ({
                         markTweetsSeen({
                            variables: {
                               listID,
-                              tweetIDs
+                              tweetIDs,
+                              lastTweeter: i === tweetersArray.length - 1
                            },
                            optimisticResponse: {
                               __typename: 'Mutation',
@@ -395,15 +396,15 @@ const Tweets = ({
 };
 
 Tweets.propTypes = {
-   tweets: PropTypes.array.isRequired,
-   listID: PropTypes.number.isRequired,
+   tweets: PropTypes.oneOfType([PropTypes.array, PropTypes.bool]).isRequired,
+   listID: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]).isRequired,
    markTweetsSeen: PropTypes.func,
    setActiveTweets: PropTypes.func,
    myTwitterInfo: PropTypes.shape({
       id: PropTypes.string.isRequired,
       twitterSeenIDs: PropTypes.array.isRequired,
-      twitterUserID: PropTypes.number.isRequired,
-      twitterListsObject: PropTypes.object.isRequired
+      twitterUserID: PropTypes.string.isRequired,
+      twitterListsObject: PropTypes.string.isRequired
    })
 };
 

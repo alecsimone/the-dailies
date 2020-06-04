@@ -41,8 +41,16 @@ const GET_FRESH_LISTS = gql`
 `;
 
 const MARK_TWEETS_SEEN = gql`
-   mutation MARK_TWEETS_SEEN($listID: String!, $tweetIDs: [String]!) {
-      markTweetsSeen(listID: $listID, tweetIDs: $tweetIDs) {
+   mutation MARK_TWEETS_SEEN(
+      $listID: String!
+      $tweetIDs: [String]!
+      $lastTweeter: Boolean
+   ) {
+      markTweetsSeen(
+         listID: $listID
+         tweetIDs: $tweetIDs
+         lastTweeter: $lastTweeter
+      ) {
          __typename
          id
          twitterListsObject
@@ -55,12 +63,9 @@ const filterTweets = (tweets, seenIDs) => {
    if (!Array.isArray(tweets) || seenIDs == null) {
       return tweets;
    }
-   const filteredTweets = tweets.filter(tweet => {
-      if (tweet.retweeted_status != null) {
-         return !seenIDs.includes(tweet.retweeted_status.id_str);
-      }
-      return !seenIDs.includes(tweet.id_str);
-   });
+   const filteredTweets = tweets.filter(
+      tweet => !seenIDs.includes(tweet.id_str)
+   );
    return filteredTweets;
 };
 export { filterTweets };

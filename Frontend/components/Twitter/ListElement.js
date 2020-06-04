@@ -47,6 +47,10 @@ const ListElement = React.memo(
          setActiveTweets(filterTweets(JSON.parse(listTweets), newSeenIDs));
 
          setActiveList(listID);
+         const refreshIcon = document.querySelector(`.listRefresher`);
+         if (refreshIcon != null) {
+            refreshIcon.classList.remove('loading');
+         }
       };
 
       const thisList = JSON.parse(memberInfo.twitterListsObject)[listID];
@@ -80,7 +84,9 @@ const ListElement = React.memo(
                el.classList.add('loading');
 
                const refreshIcon = document.querySelector(`.listRefresher`);
-               refreshIcon.classList.add('loading');
+               if (refreshIcon != null) {
+                  refreshIcon.classList.add('loading');
+               }
 
                getTweetsForList({ variables: { listID } });
             }}
@@ -102,7 +108,7 @@ const ListElement = React.memo(
 );
 
 ListElement.propTypes = {
-   listID: PropTypes.number.isRequired,
+   listID: PropTypes.string.isRequired,
    active: PropTypes.bool.isRequired,
    activeTweetCount: PropTypes.number,
    memberInfo: PropTypes.shape({

@@ -62,31 +62,44 @@ async function likeTweet(parent, { tweetID, alreadyLiked }, ctx, info) {
 }
 exports.likeTweet = likeTweet;
 
-async function markTweetsSeen(parent, { listID, tweetIDs }, ctx, info) {
+async function markTweetsSeen(
+   parent,
+   { listID, tweetIDs, lastTweeter },
+   ctx,
+   info
+) {
    loggedInGate(ctx);
    fullMemberGate(ctx.req.member);
 
    const { twitterListsObject, twitterSeenIDs } = await getTwitterInfo(ctx);
 
    tweetIDs.sort();
-   const oldestTweetID = parseInt(tweetIDs[0]);
+   let sinceID;
+   if (lastTweeter) {
+      // If this is the last tweeter, we don't need to worry about other tweeters having older tweets than the ones in the list we got which the member hasn't seen yet, so we can set the sinceID to the most recent tweet in the list.
+      sinceID = parseInt(tweetIDs[tweetIDs.length - 1]);
+   } else {
+      sinceID = parseInt(tweetIDs[0]);
+   }
 
    let listsObject;
    if (twitterListsObject == null) {
+      // If they don't have a twitterListsObject yet, make one for them
       listsObject = {};
    } else {
+      // Otherwise parse the existing one
       listsObject = JSON.parse(twitterListsObject);
-      listsObject[listID].sinceID = oldestTweetID;
    }
-   const seenIDs = [];
-   if (twitterSeenIDs != null) {
-      twitterSeenIDs.forEach(id => {
-         // if (parseInt(id) >= oldestTweetID) {
-         seenIDs.push(id);
-         // }
-      });
-   }
-   const newSeenIDs = seenIDs.concat(tweetIDs);
+   // Then update this list in it with the new sinceID
+   listsObject[listID].sinceID = sinceID;
+
+   const seenIDs = tweetIDs || [];
+
+   const stillUsefulSeenIDs = twitterSeenIDs.filter(
+      // any tweets older than the sinceID aren't showing up again, so let's lose em
+      id => parseInt(id) >= sinceID
+   );
+   const newSeenIDs = seenIDs.concat(stillUsefulSeenIDs);
 
    const updatedMember = await ctx.db.mutation.updateMember(
       {
