@@ -147,6 +147,7 @@ const TwitterReader = ({ list }) => {
          <Tweets
             tweets={activeTweets}
             listID={activeList}
+            seenIDs={newSeenIDs}
             markTweetsSeen={markTweetsSeen}
             myTwitterInfo={myTwitterInfo.me}
             setActiveTweets={setActiveTweets}

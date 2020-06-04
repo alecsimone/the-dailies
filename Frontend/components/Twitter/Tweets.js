@@ -160,11 +160,11 @@ const StyledTweets = styled.section`
 const Tweets = ({
    tweets,
    listID,
+   seenIDs,
    markTweetsSeen,
    setActiveTweets,
    myTwitterInfo: {
       id: dailiesID,
-      twitterSeenIDs: seenIDs,
       twitterUserID: userID,
       twitterListsObject: listsObject
    }
@@ -398,11 +398,11 @@ const Tweets = ({
 Tweets.propTypes = {
    tweets: PropTypes.oneOfType([PropTypes.array, PropTypes.bool]).isRequired,
    listID: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]).isRequired,
+   seenIDs: PropTypes.array.isRequired,
    markTweetsSeen: PropTypes.func,
    setActiveTweets: PropTypes.func,
    myTwitterInfo: PropTypes.shape({
       id: PropTypes.string.isRequired,
-      twitterSeenIDs: PropTypes.array.isRequired,
       twitterUserID: PropTypes.string.isRequired,
       twitterListsObject: PropTypes.string.isRequired
    })
