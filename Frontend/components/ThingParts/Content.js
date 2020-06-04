@@ -281,7 +281,10 @@ const StyledContent = styled.section`
          width: 100%;
          max-width: 1080px;
          white-space: pre-wrap;
-         padding: 2rem 4rem 2rem 1rem;
+         padding: 2rem;
+         &.editable {
+            padding: 2rem 4rem 2rem 1rem;
+         }
          ${props => props.theme.mobileBreakpoint} {
             padding: 2rem;
          }
@@ -343,8 +346,7 @@ const StyledContent = styled.section`
    }
 `;
 
-const Content = props => {
-   const { context, canEdit } = props;
+const Content = ({ context, canEdit }) => {
    const {
       content = [],
       contentOrder,
@@ -471,6 +473,7 @@ const Content = props => {
    };
 
    useEffect(() => {
+      if (!canEdit) return;
       // On desktop, mainSection does the scrolling. On mobile, it's thingPage
       const thingPage = document.querySelector('.thingPage');
       if (thingPage != null) {
@@ -513,7 +516,7 @@ const Content = props => {
             thingPage.removeEventListener('scroll', stickifier);
          }
       };
-   }, [stickifier]);
+   }, [canEdit, stickifier]);
 
    const sendNewContentPiece = async () => {
       setNewContentPiece('');

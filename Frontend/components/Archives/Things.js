@@ -76,11 +76,15 @@ const Things = ({
 
       // On mobile, the element that scrolls is the whole page, which has the class styledPageWithSidebar
       const page = document.querySelector('.styledPageWithSidebar');
-      page.addEventListener('scroll', scrollHandler);
+      if (page != null) {
+         page.addEventListener('scroll', scrollHandler);
+      }
 
       return () => {
          scroller.removeEventListener('scroll', scrollHandler);
-         page.removeEventListener('scroll', scrollHandler);
+         if (page != null) {
+            page.removeEventListener('scroll', scrollHandler);
+         }
       };
    }, [scrollHandler, scrollingParentSelector]);
 

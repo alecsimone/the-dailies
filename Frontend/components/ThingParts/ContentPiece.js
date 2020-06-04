@@ -46,7 +46,10 @@ const ContentPiece = props => {
 
    return (
       <div className="contentBlock" key={id}>
-         <div className="contentPiece" key={id}>
+         <div
+            className={canEdit ? 'contentPiece editable' : 'contentPiece'}
+            key={id}
+         >
             {content}
          </div>
          {canEdit && (
