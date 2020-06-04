@@ -54,7 +54,6 @@ const MARK_TWEETS_SEEN = gql`
          __typename
          id
          twitterListsObject
-         twitterSeenIDs
       }
    }
 `;

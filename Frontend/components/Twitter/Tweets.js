@@ -349,6 +349,8 @@ const Tweets = ({
                            // }
                         });
                         const newSeenIDs = seenIDs.concat(tweetIDs);
+                        const newListsObject = { ...JSON.parse(listsObject) };
+                        newListsObject[listID].seenIDs = newSeenIDs;
 
                         setActiveTweets(filterTweets(tweets, newSeenIDs));
 
@@ -363,8 +365,9 @@ const Tweets = ({
                               markTweetsSeen: {
                                  __typename: 'Member',
                                  id: dailiesID,
-                                 twitterListsObject: listsObject,
-                                 twitterSeenIDs: newSeenIDs
+                                 twitterListsObject: JSON.stringify(
+                                    newListsObject
+                                 )
                               }
                            }
                         });

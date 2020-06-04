@@ -20,7 +20,6 @@ const ListElement = React.memo(
          }
       });
 
-      // To update seen tweets whenever we change lists (in case we saw some tweets on another device in the meantime), this is the query that needs to get seenIDs added to it
       const [getTweetsForList, { data: newListData }] = useLazyQuery(
          GET_TWEETS_FOR_LIST,
          {
@@ -33,12 +32,9 @@ const ListElement = React.memo(
       );
 
       const changeLists = newTweetsData => {
-         const {
-            listID,
-            listName,
-            listTweets,
-            seenIDs: newSeenIDs
-         } = JSON.parse(newTweetsData.getTweetsForList.message);
+         const { listName, listTweets, seenIDs: newSeenIDs } = JSON.parse(
+            newTweetsData.getTweetsForList.message
+         );
 
          const href = `/twitter?listname=${listName}`;
          const as = href;
