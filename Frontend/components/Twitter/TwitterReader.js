@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import gql from 'graphql-tag';
 import { useQuery, useLazyQuery, useMutation } from '@apollo/react-hooks';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import StyledPageWithSidebar from '../../styles/StyledPageWithSidebar';
 import Sidebar from '../Sidebar';

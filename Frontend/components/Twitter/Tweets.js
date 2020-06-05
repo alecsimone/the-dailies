@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import { useLazyQuery } from '@apollo/react-hooks';
+import { useRef } from 'react';
 import styled from 'styled-components';
 import { setAlpha, setLightness, setSaturation } from '../../styles/functions';
 import { GET_TWEETS_FOR_LIST, filterTweets } from './TwitterReader';
@@ -191,6 +192,8 @@ const Tweets = ({
       }
    });
 
+   const allSeenTweets = useRef(seenIDs);
+
    let tweetContent; // What's gonna get rendered
 
    // Count displayed at the top
@@ -337,7 +340,7 @@ const Tweets = ({
                   </div>
                   <X
                      className="markSeen"
-                     onClick={async e => {
+                     onClick={e => {
                         const theWholeTarget = e.target.closest('svg');
                         theWholeTarget.classList.add('loading');
 
@@ -348,14 +351,17 @@ const Tweets = ({
                            //    tweetIDs.push(tweet.retweeted_status.id_str);
                            // }
                         });
-                        const newSeenIDs =
-                           seenIDs != null
-                              ? seenIDs.concat(tweetIDs)
+
+                        allSeenTweets.current =
+                           allSeenTweets.current != null
+                              ? allSeenTweets.current.concat(tweetIDs)
                               : tweetIDs;
                         const newListsObject = { ...JSON.parse(listsObject) };
-                        newListsObject[listID].seenIDs = newSeenIDs;
+                        newListsObject[listID].seenIDs = allSeenTweets.current;
 
-                        setActiveTweets(filterTweets(tweets, newSeenIDs));
+                        setActiveTweets(
+                           filterTweets(tweets, allSeenTweets.current)
+                        );
 
                         markTweetsSeen({
                            variables: {
@@ -372,6 +378,32 @@ const Tweets = ({
                                     newListsObject
                                  )
                               }
+                           },
+                           update: (client, { data }) => {
+                              const oldDataRaw = client.readQuery({
+                                 query: GET_TWEETS_FOR_LIST,
+                                 variables: {
+                                    listID
+                                 }
+                              });
+                              const oldMessage = JSON.parse(
+                                 oldDataRaw.getTweetsForList.message
+                              );
+                              oldMessage.seenIDs = allSeenTweets.current;
+                              const newMessage = JSON.stringify(oldMessage);
+                              const newData = {
+                                 getTweetsForList: {
+                                    __typename: 'SuccessMessage',
+                                    message: newMessage
+                                 }
+                              };
+                              client.writeQuery({
+                                 query: GET_TWEETS_FOR_LIST,
+                                 variables: {
+                                    listID
+                                 },
+                                 data: newData
+                              });
                            }
                         });
                      }}
