@@ -40,8 +40,12 @@ const StyledMemberMenu = styled.div`
    text-align: center;
    border: 3px solid ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
    border-top: 3px solid ${props => setAlpha(props.theme.lowContrastGrey, 0.05)};
+   a.userMenuLinkRow,
    .userMenuLinkRow {
+      display: block;
+      color: ${props => props.theme.mainText};
       padding: 1rem;
+      margin: 0;
       cursor: pointer;
       text-align: center;
       position: relative;
@@ -94,9 +98,6 @@ const StyledMemberMenu = styled.div`
          border-radius: 50%;
       }
    }
-   a {
-      color: ${props => props.theme.mainText};
-   }
    &.closed {
       display: none;
    }
@@ -129,9 +130,7 @@ const MemberMenu = () => {
    return (
       <StyledMemberMenu className="memberMenu">
          <Link href={{ pathname: '/me' }}>
-            <div className="userMenuLinkRow">
-               <a>Profile</a>
-            </div>
+            <a className="userMenuLinkRow">Profile</a>
          </Link>
          <Link
             href={{
@@ -139,9 +138,7 @@ const MemberMenu = () => {
                query: { stuff: 'Things' }
             }}
          >
-            <div className="userMenuLinkRow">
-               <a>My Things</a>
-            </div>
+            <a className="userMenuLinkRow">My Things</a>
          </Link>
          <Link
             href={{
@@ -149,9 +146,7 @@ const MemberMenu = () => {
                query: { stuff: 'Friends' }
             }}
          >
-            <div className="userMenuLinkRow">
-               <a>My Friends</a>
-            </div>
+            <a className="userMenuLinkRow">My Friends</a>
          </Link>
          <div
             className="userMenuLinkRow"
