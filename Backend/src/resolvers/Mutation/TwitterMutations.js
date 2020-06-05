@@ -98,7 +98,8 @@ async function markTweetsSeen(
 
    const freshSeenIDs = tweetIDs || [];
    const oldSeenIDs = listsObject[listID].seenIDs || [];
-   let newSeenIDs = oldSeenIDs.concat(freshSeenIDs);
+   let newSeenIDs =
+      oldSeenIDs != null ? oldSeenIDs.concat(freshSeenIDs) : freshSeenIDs;
    if (newSeenIDs.length > 400) {
       newSeenIDs = newSeenIDs.slice(0, 400);
    }

@@ -348,7 +348,10 @@ const Tweets = ({
                            //    tweetIDs.push(tweet.retweeted_status.id_str);
                            // }
                         });
-                        const newSeenIDs = seenIDs.concat(tweetIDs);
+                        const newSeenIDs =
+                           seenIDs != null
+                              ? seenIDs.concat(tweetIDs)
+                              : tweetIDs;
                         const newListsObject = { ...JSON.parse(listsObject) };
                         newListsObject[listID].seenIDs = newSeenIDs;
 
