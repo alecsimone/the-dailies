@@ -224,15 +224,19 @@ const getFreshLists = async ctx => {
    }
 
    const listData = {};
+   const oldListsObject = JSON.parse(twitterListsObject);
    listsJson.forEach(listObject => {
       listData[listObject.id_str] = {
          id: listObject.id_str,
          name: listObject.name,
          user: listObject.user.screen_name,
-         sinceID: twitterListsObject[listObject.id_str]
-            ? twitterListsObject[listObject.id_str].sinceID
+         sinceID: oldListsObject[listObject.id_str]
+            ? oldListsObject[listObject.id_str].sinceID
             : 1,
-         tweets: []
+         tweets: [],
+         seenIDs: oldListsObject[listObject.id_str]
+            ? oldListsObject[listObject.id_str].seenIDs
+            : []
       };
    });
 
