@@ -19,7 +19,7 @@ const ContentPiece = ({
    reordering,
    highlighted
 }) => {
-   const [editable, setEditable] = useState(true);
+   const [editable, setEditable] = useState(false);
    const [copied, setCopied] = useState(false);
 
    const [editedContent, setEditedContent] = useState(rawContentString);
