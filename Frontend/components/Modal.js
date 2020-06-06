@@ -39,18 +39,17 @@ const StyledModal = styled.section`
 const Modal = () => {
    const { content, setContent } = useContext(ModalContext);
 
-   useEffect(() => {
-      if (!content) return;
-      window.addEventListener('click', clickOutsideDetector);
-      return () => window.removeEventListener('click', clickOutsideDetector);
-   }, [clickOutsideDetector, content]);
-
    const clickOutsideDetector = e => {
       if (e.target.closest('.modalContainer') == null) {
          setContent(false);
          window.removeEventListener('click', clickOutsideDetector);
       }
    };
+   useEffect(() => {
+      if (!content) return;
+      window.addEventListener('click', clickOutsideDetector);
+      return () => window.removeEventListener('click', clickOutsideDetector);
+   }, [clickOutsideDetector, content]);
 
    if (content === false) {
       return null;
