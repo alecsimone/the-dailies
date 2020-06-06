@@ -26,7 +26,7 @@ const MyThings = () => {
          displayType="list"
          cardSize="small"
          noPic
-         scrollingParentSelector=".sidebarContent"
+         scrollingParentSelector=".sidebar"
          perPage={sidebarPerPage}
       />
    );

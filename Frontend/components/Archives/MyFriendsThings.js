@@ -33,7 +33,7 @@ const MyFriendsThings = () => {
          things={friendsThings}
          displayType="list"
          cardSize="small"
-         scrollingParentSelector=".sidebarContent"
+         scrollingParentSelector=".sidebar"
          perPage={sidebarPerPage}
       />
    );

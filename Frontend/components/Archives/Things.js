@@ -49,6 +49,7 @@ const Things = ({
    perPage
 }) => {
    const {
+      mobileBPWidthRaw,
       desktopBPWidthRaw,
       bigScreenBPWidthRaw,
       massiveScreenBPWidthRaw
@@ -66,10 +67,17 @@ const Things = ({
          visibleThingCount < things.length
       ) {
          setVisibleThingCount(visibleThingCount + perPage);
+      } else {
       }
    };
 
    useEffect(() => {
+      if (
+         window.outerWidth > mobileBPWidthRaw &&
+         scrollingParentSelector === '.sidebar'
+      ) {
+         scrollingParentSelector = '.sidebarContent';
+      }
       const scroller = document.querySelector(scrollingParentSelector);
       if (scroller == null) return;
       scroller.addEventListener('scroll', scrollHandler);
@@ -86,7 +94,7 @@ const Things = ({
             page.removeEventListener('scroll', scrollHandler);
          }
       };
-   }, [scrollHandler, scrollingParentSelector]);
+   }, [mobileBPWidthRaw, scrollHandler, scrollingParentSelector]);
 
    const truncatedThingList = things.slice(0, visibleThingCount);
 

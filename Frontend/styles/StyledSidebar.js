@@ -3,7 +3,7 @@ import { setAlpha, setLightness, setSaturation } from './functions';
 
 const StyledSidebar = styled.section`
    position: fixed;
-   max-height: calc(100% - 14rem); /* 8rem is the height of the bottom bar, 6rem is the height of the header */
+   max-height: calc(100% - 14rem + 2px); /* 8rem is the height of the bottom bar, 6rem is the height of the header, and then 2px just for good measure. I think it might be a border somewhere */
    ${props => props.theme.scroll};
    z-index: 3;
    ${props => props.theme.mobileBreakpoint} {
