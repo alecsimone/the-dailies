@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { ModalContext } from './ModalProvider';
 import X from './Icons/X';
 
@@ -38,6 +38,20 @@ const StyledModal = styled.section`
 
 const Modal = () => {
    const { content, setContent } = useContext(ModalContext);
+
+   useEffect(() => {
+      if (!content) return;
+      window.addEventListener('click', clickOutsideDetector);
+      return () => window.removeEventListener('click', clickOutsideDetector);
+   }, [clickOutsideDetector, content]);
+
+   const clickOutsideDetector = e => {
+      if (e.target.closest('.modalContainer') == null) {
+         setContent(false);
+         window.removeEventListener('click', clickOutsideDetector);
+      }
+   };
+
    if (content === false) {
       return null;
    }

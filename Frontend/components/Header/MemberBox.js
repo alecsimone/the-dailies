@@ -49,7 +49,6 @@ const MemberBox = () => {
       window.addEventListener('keydown', escapeDetector);
       window.addEventListener('click', clickOutsideDetector);
       setMemberMenuOpen(!memberMenuOpen);
-      console.log(memberMenuOpen);
    };
 
    const escapeDetector = e => {
@@ -60,14 +59,12 @@ const MemberBox = () => {
    };
 
    const clickOutsideDetector = e => {
-      console.log(e.target.closest('#avatar'));
       if (
          !e.target.classList.contains('MemberMenu') &&
          e.target.id !== 'avatar' &&
          e.target.closest('#avatar') == null &&
          e.target.closest('#broadcastToggle') == null
       ) {
-         console.log('goodbye');
          setMemberMenuOpen(false);
          window.removeEventListener('click', clickOutsideDetector);
       }
