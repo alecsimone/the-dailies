@@ -3,7 +3,10 @@ import { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import Link from 'next/link';
 import { MemberContext } from '../Account/MemberProvider';
+import { ModalContext } from '../ModalProvider';
 import MemberMenu from './MemberMenu';
+import Login from '../Account/Login';
+import Signup from '../Account/Signup';
 import { setAlpha } from '../../styles/functions';
 import DefaultAvatar from '../Icons/DefaultAvatar';
 
@@ -39,12 +42,14 @@ const StyledMemberBox = styled.div`
 
 const MemberBox = () => {
    const { me, loading: memberLoading } = useContext(MemberContext);
+   const { setContent } = useContext(ModalContext);
    const [memberMenuOpen, setMemberMenuOpen] = useState(false);
 
    const toggleMemberMenu = () => {
       window.addEventListener('keydown', escapeDetector);
       window.addEventListener('click', clickOutsideDetector);
       setMemberMenuOpen(!memberMenuOpen);
+      console.log(memberMenuOpen);
    };
 
    const escapeDetector = e => {
@@ -55,11 +60,14 @@ const MemberBox = () => {
    };
 
    const clickOutsideDetector = e => {
+      console.log(e.target.closest('#avatar'));
       if (
          !e.target.classList.contains('MemberMenu') &&
          e.target.id !== 'avatar' &&
+         e.target.closest('#avatar') == null &&
          e.target.closest('#broadcastToggle') == null
       ) {
+         console.log('goodbye');
          setMemberMenuOpen(false);
          window.removeEventListener('click', clickOutsideDetector);
       }
@@ -95,7 +103,7 @@ const MemberBox = () => {
       memberBoxContent = (
          <>
             <a>Logging in...</a>
-            <DefaultAvatar id="avatar" onClick={() => toggleMemberMenu()} />
+            <DefaultAvatar id="avatar" />
          </>
       );
    } else {
@@ -103,11 +111,25 @@ const MemberBox = () => {
          <>
             <p>
                <Link href={{ pathname: '/signup' }}>
-                  <a>Sign up</a>
+                  <a
+                     onClick={e => {
+                        e.preventDefault();
+                        setContent(<Signup />);
+                     }}
+                  >
+                     Sign up
+                  </a>
                </Link>{' '}
                or{' '}
                <Link href={{ pathname: '/login' }}>
-                  <a>Log in</a>
+                  <a
+                     onClick={e => {
+                        e.preventDefault();
+                        setContent(<Login />);
+                     }}
+                  >
+                     Log in
+                  </a>
                </Link>
             </p>
          </>

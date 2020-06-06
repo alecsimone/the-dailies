@@ -4,6 +4,8 @@ import Meta from './Header/Meta';
 import Header from './Header/Header';
 import BottomBar from './BottomBar';
 import MemberProvider from './Account/MemberProvider';
+import ModalProvider from './ModalProvider';
+import Modal from './Modal';
 import { setAlpha, setLightness, setSaturation } from '../styles/functions';
 
 const theme = {
@@ -476,15 +478,18 @@ const StyledPage = styled.div`
 const Page = ({ children }) => (
    <MemberProvider>
       <ThemeProvider theme={theme}>
-         <StyledPage id="page">
-            <Meta />
-            <Header />
-            <>
-               <GlobalStyle />
-               {children}
-            </>
-            <BottomBar />
-         </StyledPage>
+         <ModalProvider>
+            <StyledPage id="page">
+               <Meta />
+               <Header />
+               <>
+                  <GlobalStyle />
+                  {children}
+                  <Modal />
+               </>
+               <BottomBar />
+            </StyledPage>
+         </ModalProvider>
       </ThemeProvider>
    </MemberProvider>
 );

@@ -1,11 +1,12 @@
 import { useMutation } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import Router from 'next/router';
 import Error from '../ErrorMessage.js';
 import StyledForm from '../../styles/StyledForm';
 import { CURRENT_MEMBER_QUERY } from './MemberProvider';
+import { ModalContext } from '../ModalProvider';
 
 const SIGNUP_MUTATION = gql`
    mutation SIGNUP_MUTATION(
@@ -28,6 +29,7 @@ const Signup = ({ callBack }) => {
    const [password, setPassword] = useState('');
    const [confirmedPassword, setConfirmedPassword] = useState('');
    const [email, setEmail] = useState('');
+   const { setContent } = useContext(ModalContext);
 
    const saveToState = function(e) {
       if (e.target.name === 'displayName') {
@@ -62,6 +64,7 @@ const Signup = ({ callBack }) => {
             Router.push({
                pathname: '/'
             });
+            setContent(false);
             if (callBack) {
                callBack();
             }

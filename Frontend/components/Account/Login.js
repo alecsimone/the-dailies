@@ -1,11 +1,12 @@
 import { useMutation } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import Router from 'next/router';
 import Error from '../ErrorMessage.js';
 import StyledForm from '../../styles/StyledForm';
 import { CURRENT_MEMBER_QUERY } from './MemberProvider';
+import { ModalContext } from '../ModalProvider';
 import { ALL_THINGS_QUERY } from '../../pages/index';
 
 const LOGIN_MUTATION = gql`
@@ -25,6 +26,8 @@ const Login = props => {
    const [password, setPassword] = useState('');
 
    const [login, { data, loading, error }] = useMutation(LOGIN_MUTATION);
+
+   const { setContent } = useContext(ModalContext);
 
    const saveToState = function(e) {
       if (e.target.name === 'email') {
@@ -51,6 +54,7 @@ const Login = props => {
                Router.push({
                   pathname: '/'
                });
+               setContent(false);
             }
             if (callBack) {
                callBack();
