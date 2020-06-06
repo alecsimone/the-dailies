@@ -1,18 +1,25 @@
 import Link from 'next/link';
-import styled from 'styled-components';
+import styled, { ThemeContext } from 'styled-components';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useContext } from 'react';
+import { ModalContext } from '../ModalProvider';
 
 const StyledLogoBox = styled.div`
    display: inline-flex;
    align-items: center;
-   img {
-      width: ${props => props.theme.smallHead};
-      margin-top: -4px;
-      cursor: pointer;
+   a.logo {
+      line-height: 0;
+      height: ${props => props.theme.smallHead};
+      img {
+         width: ${props => props.theme.smallHead};
+         cursor: pointer;
+         ${props => props.theme.mobileBreakpoint} {
+            margin-top: -2px;
+         }
+      }
    }
-   a,
-   a:visited {
+   a.name,
+   a.name:visited {
       display: none;
       ${props => props.theme.mobileBreakpoint} {
          display: block;
@@ -28,16 +35,31 @@ const StyledLogoBox = styled.div`
    }
 `;
 
-const LogoBox = () => (
-   <StyledLogoBox className="logoBox">
-      <Link href="/">
-         <img src="/logo.png" alt="logo" />
-      </Link>
-      <Link href="/">
-         <a>OurDailies</a>
-      </Link>
-   </StyledLogoBox>
-);
+const LogoBox = () => {
+   const { mobileBPWidthRaw } = useContext(ThemeContext);
+   const { sidebarIsOpen, setSidebarIsOpen } = useContext(ModalContext);
+   return (
+      <StyledLogoBox className="logoBox">
+         <Link href="/">
+            <a
+               className="logo"
+               href="/"
+               onClick={e => {
+                  if (window.outerWidth <= mobileBPWidthRaw) {
+                     e.preventDefault();
+                     setSidebarIsOpen(!sidebarIsOpen);
+                  }
+               }}
+            >
+               <img src="/logo.png" alt="logo" />
+            </a>
+         </Link>
+         <Link href="/">
+            <a className="name">OurDailies</a>
+         </Link>
+      </StyledLogoBox>
+   );
+};
 LogoBox.propTypes = {};
 
 export default React.memo(LogoBox);

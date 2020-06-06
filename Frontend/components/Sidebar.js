@@ -2,6 +2,7 @@ import { useContext, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { ThemeContext } from 'styled-components';
 import { MemberContext } from './Account/MemberProvider';
+import { ModalContext } from './ModalProvider';
 import StyledSidebar from '../styles/StyledSidebar';
 import MyThings from './Archives/MyThings';
 import MyFriendsThings from './Archives/MyFriendsThings';
@@ -14,13 +15,14 @@ import DefaultAvatar from './Icons/DefaultAvatar';
 const Sidebar = props => {
    const { extraColumnTitle, extraColumnContent } = props;
    const { me, loading: memberLoading } = useContext(MemberContext);
+   const { sidebarIsOpen, setSidebarIsOpen } = useContext(ModalContext);
 
    const [selectedTab, setSelectedTab] = useState(
       extraColumnTitle == null ? 'default' : extraColumnTitle
    );
 
    const { mobileBPWidthRaw } = useContext(ThemeContext);
-   const [isOpen, setIsOpen] = useState(!me?.broadcastView);
+   // const [isOpen, setIsOpen] = useState(!me?.broadcastView);
 
    useEffect(() => {
       // we do this as an effect so the ssr doesn't make it start open
@@ -32,11 +34,11 @@ const Sidebar = props => {
             extraColumnTitle != 'Me' &&
             extraColumnTitle != 'Member')
       ) {
-         setIsOpen(false);
+         setSidebarIsOpen(false);
       } else {
-         setIsOpen(true);
+         setSidebarIsOpen(true);
       }
-   }, [extraColumnTitle, me, mobileBPWidthRaw]);
+   }, [extraColumnTitle, me, mobileBPWidthRaw, setSidebarIsOpen]);
 
    const headerColumns = me ? ['You', 'Friends', 'Public'] : ['Public'];
    if (extraColumnTitle != null) {
@@ -61,7 +63,7 @@ const Sidebar = props => {
          (selectedTab === column ||
             (selectedTab === 'default' && me && column === 'You') ||
             (selectedTab === 'default' && me == null && column === 'Public')) &&
-         isOpen;
+         sidebarIsOpen;
 
       return (
          <div
@@ -73,10 +75,10 @@ const Sidebar = props => {
             key={column}
             onClick={() => {
                if (isSelected) {
-                  setIsOpen(!isOpen);
+                  setSidebarIsOpen(!sidebarIsOpen);
                } else {
                   setSelectedTab(column);
-                  setIsOpen(true);
+                  setSidebarIsOpen(true);
                }
             }}
          >
@@ -101,14 +103,13 @@ const Sidebar = props => {
          className="headerTab toggle"
          key="toggle"
          onClick={() => {
-            localStorage.setItem('sidebarOpen', !isOpen);
-            setIsOpen(!isOpen);
+            setSidebarIsOpen(!sidebarIsOpen);
          }}
       >
-         {isOpen ? closeButton : openButton}
+         {sidebarIsOpen ? closeButton : openButton}
       </div>
    );
-   if (isOpen || (process.browser && window.outerWidth <= 900)) {
+   if (sidebarIsOpen || (process.browser && window.outerWidth <= 900)) {
       sidebarHeader.push(toggleButton);
    } else {
       sidebarHeader = toggleButton;
@@ -134,7 +135,7 @@ const Sidebar = props => {
    }
 
    return (
-      <StyledSidebar className={`sidebar${!isOpen ? ' hidden' : ''}`}>
+      <StyledSidebar className={`sidebar${!sidebarIsOpen ? ' hidden' : ''}`}>
          <header className="sidebarHeader">{sidebarHeader}</header>
          <div className="sidebarContainer">
             <div className="sidebarContent">{sidebarContent}</div>

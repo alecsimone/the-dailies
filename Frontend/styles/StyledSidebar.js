@@ -2,11 +2,34 @@ import styled from 'styled-components';
 import { setAlpha, setLightness, setSaturation } from './functions';
 
 const StyledSidebar = styled.section`
+   position: fixed;
+   max-height: calc(100% - 14rem); /* 8rem is the height of the bottom bar, 6rem is the height of the header */
+   ${props => props.theme.scroll};
+   z-index: 3;
+   ${props => props.theme.mobileBreakpoint} {
+      position: relative;
+      max-height: none;
+   }
+   transition: all 0.25s;
+   /* background: ${props => setLightness(props.theme.majorColor, 3)}; */
+   /* background: ${props =>
+      setLightness(setSaturation(props.theme.primaryAccent, 42), 2)}; */
+      background: ${props => props.theme.deepBlack};
+   border-right: 2px solid
+      ${props => setAlpha(props.theme.highContrastGrey, 0.1)};
+   display: grid;
+   grid-template-rows: auto 1fr;
+   ${props => props.theme.desktopBreakpoint} {
+      max-width: 600px;
+   }
    &.hidden {
       overflow: hidden;
       position: relative;
       .sidebarContainer {
          display: none;
+      }
+      .sidebarHeader {
+         position: relative;
       }
       ${props => props.theme.mobileBreakpoint} {
          max-width: 4rem;
@@ -16,20 +39,13 @@ const StyledSidebar = styled.section`
          }
       }
    }
-   transition: all 0.25s;
-   /* background: ${props => setLightness(props.theme.majorColor, 3)}; */
-   /* background: ${props =>
-      setLightness(setSaturation(props.theme.primaryAccent, 42), 2)}; */
-      background: ${props => props.theme.deepBlack};
-   border-right: 2px solid
-      ${props => setAlpha(props.theme.highContrastGrey, 0.1)};
-   position: relative;
-   display: grid;
-   grid-template-rows: auto 1fr;
-   ${props => props.theme.desktopBreakpoint} {
-      max-width: 600px;
-   }
    .sidebarHeader {
+      position: fixed;
+      z-index: 2;
+      background: black;
+      ${props => props.theme.mobileBreakpoint} {
+         position: relative;
+      }
       display: flex;
       width: 100%;
       line-height: 0;
@@ -81,6 +97,11 @@ const StyledSidebar = styled.section`
    }
    .sidebarContainer {
       position: relative;
+      padding-top: 4rem; /* Sidebar header is 3rem height + 1rem padding */
+      z-index: 1;
+      ${props => props.theme.mobileBreakpoint} {
+         padding-top: 0;
+      }
       .sidebarContent {
          ${props => props.theme.mobileBreakpoint} {
             position: absolute;
