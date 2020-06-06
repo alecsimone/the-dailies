@@ -95,20 +95,21 @@ const ContentPiece = ({
                      }}
                   />
                )}
-               {editable && copied ? (
-                  'copied'
-               ) : (
-                  <LinkIcon
-                     className="directLink buttons"
-                     onClick={async () => {
-                        await navigator.clipboard.writeText(
-                           `${home}/thing?id=${thingID}&piece=${id}`
-                        );
-                        setCopied(true);
-                        setTimeout(() => setCopied(false), 3000);
-                     }}
-                  />
-               )}
+               {editable &&
+                  (copied ? (
+                     'copied'
+                  ) : (
+                     <LinkIcon
+                        className="directLink buttons"
+                        onClick={async () => {
+                           await navigator.clipboard.writeText(
+                              `${home}/thing?id=${thingID}&piece=${id}`
+                           );
+                           setCopied(true);
+                           setTimeout(() => setCopied(false), 3000);
+                        }}
+                     />
+                  ))}
             </div>
          )}
       </div>
