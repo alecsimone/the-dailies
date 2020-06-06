@@ -61,8 +61,8 @@ const ContentPiece = ({
          >
             {content}
          </div>
-         {canEdit && (
-            <div className="buttons">
+         <div className="buttons buttonsContainer">
+            {canEdit && (
                <EditThis
                   className="edit buttons"
                   onMouseDown={e => e.stopPropagation()}
@@ -70,48 +70,47 @@ const ContentPiece = ({
                      setEditable(!editable);
                   }}
                />
-               {editable && (
-                  <TrashIcon
-                     className="delete buttons"
-                     onMouseDown={e => e.stopPropagation()}
-                     onClick={() => deleteContentPiece(id)}
-                  />
-               )}
-               {editable && (
-                  <ReorderIcon
-                     className={`reorder buttons${
-                        reordering ? ' reordering' : ''
-                     }`}
-                     onClick={e => {
-                        e.preventDefault();
-                        if (
-                           reordering ||
-                           confirm(
-                              'Are you sure you want to reorder the content? Any unsaved changes will be lost.'
-                           )
-                        ) {
-                           setReordering(!reordering);
-                        }
-                     }}
-                  />
-               )}
-               {editable &&
-                  (copied ? (
-                     'copied'
-                  ) : (
-                     <LinkIcon
-                        className="directLink buttons"
-                        onClick={async () => {
-                           await navigator.clipboard.writeText(
-                              `${home}/thing?id=${thingID}&piece=${id}`
-                           );
-                           setCopied(true);
-                           setTimeout(() => setCopied(false), 3000);
-                        }}
-                     />
-                  ))}
-            </div>
-         )}
+            )}
+            {editable && (
+               <TrashIcon
+                  className="delete buttons"
+                  onMouseDown={e => e.stopPropagation()}
+                  onClick={() => deleteContentPiece(id)}
+               />
+            )}
+            {editable && (
+               <ReorderIcon
+                  className={`reorder buttons${
+                     reordering ? ' reordering' : ''
+                  }`}
+                  onClick={e => {
+                     e.preventDefault();
+                     if (
+                        reordering ||
+                        confirm(
+                           'Are you sure you want to reorder the content? Any unsaved changes will be lost.'
+                        )
+                     ) {
+                        setReordering(!reordering);
+                     }
+                  }}
+               />
+            )}
+            {copied ? (
+               'copied'
+            ) : (
+               <LinkIcon
+                  className="directLink buttons"
+                  onClick={async () => {
+                     await navigator.clipboard.writeText(
+                        `${home}/thing?id=${thingID}&piece=${id}`
+                     );
+                     setCopied(true);
+                     setTimeout(() => setCopied(false), 3000);
+                  }}
+               />
+            )}
+         </div>
       </div>
    );
 };

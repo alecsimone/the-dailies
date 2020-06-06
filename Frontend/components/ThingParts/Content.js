@@ -297,10 +297,7 @@ const StyledContent = styled.section`
          width: 100%;
          max-width: 1080px;
          white-space: pre-wrap;
-         padding: 2rem;
-         &.editable {
-            padding: 2rem 4rem 2rem 1rem;
-         }
+         padding: 2rem 4rem 2rem 1rem;
          ${props => props.theme.mobileBreakpoint} {
             padding: 2rem;
          }
@@ -406,7 +403,7 @@ const Content = ({ context, canEdit, linkedPiece }) => {
          const blockOffset = block.offsetTop;
          const blockHeight = block.offsetHeight;
 
-         const buttons = block.querySelector('.buttons');
+         const buttons = block.querySelector('.buttonsContainer');
          if (buttons == null) continue;
          const buttonsHeight = buttons.offsetHeight;
 
@@ -451,7 +448,7 @@ const Content = ({ context, canEdit, linkedPiece }) => {
       }
 
       stickingData.current.blocksArray.forEach(block => {
-         const buttons = block.block.querySelector('.buttons');
+         const buttons = block.block.querySelector('.buttonsContainer');
          const buttonsHeight = buttons.offsetHeight;
          // If the top of the element is onscreen but the bottom isn't, we want to fix the edit buttons in place at the bottom of the screen
          if (block.top < viewableBottom && block.bottom > viewableBottom) {
@@ -492,7 +489,6 @@ const Content = ({ context, canEdit, linkedPiece }) => {
 
    // Add the stickifier listeners
    useEffect(() => {
-      if (!canEdit) return;
       // On desktop, mainSection does the scrolling. On mobile, it's thingPage
       const thingPage = document.querySelector('.thingPage');
       if (thingPage != null) {
@@ -535,7 +531,7 @@ const Content = ({ context, canEdit, linkedPiece }) => {
             thingPage.removeEventListener('scroll', stickifier);
          }
       };
-   }, [canEdit, stickifier]);
+   }, [stickifier]);
 
    // scroll to a highlighted content block, if there is one
    useEffect(() => {
