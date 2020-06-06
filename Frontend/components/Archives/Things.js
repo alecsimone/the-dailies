@@ -67,7 +67,6 @@ const Things = ({
          visibleThingCount < things.length
       ) {
          setVisibleThingCount(visibleThingCount + perPage);
-      } else {
       }
    };
 

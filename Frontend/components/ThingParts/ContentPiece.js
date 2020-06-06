@@ -4,7 +4,9 @@ import ContentInput from './ContentInput';
 import RichText from '../RichText';
 import EditThis from '../Icons/EditThis';
 import TrashIcon from '../Icons/Trash';
+import LinkIcon from '../Icons/Link';
 import { home } from '../../config';
+import ReorderIcon from '../Icons/Reorder';
 
 const ContentPiece = ({
    id,
@@ -17,7 +19,7 @@ const ContentPiece = ({
    reordering,
    highlighted
 }) => {
-   const [editable, setEditable] = useState(false);
+   const [editable, setEditable] = useState(true);
    const [copied, setCopied] = useState(false);
 
    const [editedContent, setEditedContent] = useState(rawContentString);
@@ -76,8 +78,10 @@ const ContentPiece = ({
                   />
                )}
                {editable && (
-                  <button
-                     className="miniReorder"
+                  <ReorderIcon
+                     className={`reorder buttons${
+                        reordering ? ' reordering' : ''
+                     }`}
                      onClick={e => {
                         e.preventDefault();
                         if (
@@ -89,13 +93,13 @@ const ContentPiece = ({
                            setReordering(!reordering);
                         }
                      }}
-                  >
-                     {reordering ? 'L' : 'R'}
-                  </button>
+                  />
                )}
-               {editable && (
-                  <button
-                     className="directLink"
+               {editable && copied ? (
+                  'copied'
+               ) : (
+                  <LinkIcon
+                     className="directLink buttons"
                      onClick={async () => {
                         await navigator.clipboard.writeText(
                            `${home}/thing?id=${thingID}&piece=${id}`
@@ -103,9 +107,7 @@ const ContentPiece = ({
                         setCopied(true);
                         setTimeout(() => setCopied(false), 3000);
                      }}
-                  >
-                     {copied ? 'Copied!' : '#'}
-                  </button>
+                  />
                )}
             </div>
          )}

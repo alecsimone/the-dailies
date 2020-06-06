@@ -263,22 +263,24 @@ const StyledContent = styled.section`
          &.editThis {
             opacity: 0.25;
          }
+         &.reorder {
+            opacity: 0.4;
+            &.reordering {
+               opacity: 1;
+               &:hover {
+                  opacity: 0.4;
+               }
+            }
+         }
+         &.directLink {
+            opacity: 0.4;
+         }
          &:hover {
             cursor: pointer;
             opacity: 1;
          }
       }
       button.miniReorder,
-      button.directLink {
-         border: none;
-         opacity: 0.6;
-         padding: 0 0.5rem;
-         margin: 0;
-         &:hover {
-            background: none;
-            opacity: 1;
-         }
-      }
       form {
          max-width: 1040px;
          margin: calc(0.8rem - 2px) calc(-1rem - 1px);
