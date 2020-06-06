@@ -369,6 +369,7 @@ const Content = ({ context, canEdit, linkedPiece }) => {
       author
    } = useContext(context);
    const [newContentPiece, setNewContentPiece] = useState('');
+   const locallyDeletedPieces = useRef([]);
 
    const [
       addContentPiece,

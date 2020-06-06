@@ -7,7 +7,7 @@ import { setAlpha } from '../../styles/functions';
 import { ThingContext } from '../../pages/thing';
 import { MemberContext } from '../Account/MemberProvider';
 import DefaultAvatar from '../Icons/DefaultAvatar';
-import { ALL_THINGS_QUERY } from '../../pages';
+import { ALL_THINGS_QUERY } from '../../pages/index';
 
 const VOTE_MUTATION = gql`
    mutation VOTE_MUTATION($thingID: ID!) {

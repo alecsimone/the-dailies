@@ -7,6 +7,7 @@ import { MemberContext } from '../Account/MemberProvider';
 import MetaOption from './MetaOption';
 import { checkForNewThingRedirect } from '../../lib/ThingHandling';
 import { setFullThingToLoading } from './FullThing';
+import { ALL_THINGS_QUERY } from '../../pages/index';
 
 const GET_PRIVACY_OPTIONS_QUERY = gql`
    query enumValuesOfPrivacySetting {
@@ -56,7 +57,12 @@ const PrivacyDropdown = props => {
                id,
                privacy: value
             }
-         }
+         },
+         refetchQueries: [
+            {
+               query: ALL_THINGS_QUERY
+            }
+         ]
       });
    };
 
