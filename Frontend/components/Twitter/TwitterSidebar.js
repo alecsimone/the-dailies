@@ -2,9 +2,9 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { setAlpha } from '../../styles/functions';
 import ListElement from './ListElement';
-import { convertISOtoAgo } from '../../lib/ThingHandling';
 import ResetIcon from '../Icons/Reset';
 import LoadingRing from '../LoadingRing';
+import TimeAgo from '../TimeAgo';
 
 const StyledTwitterSidebar = styled.div`
    padding: 0 2rem;
@@ -119,7 +119,8 @@ const TwitterSidebar = ({
          </h5>
          {listElements}
          <div className="updateLists" key="updateLists">
-            Last updated {convertISOtoAgo(listsObject.lastUpdateTime)} ago
+            Last updated{' '}
+            <TimeAgo time={listsObject.lastUpdateTime} toggleable />
             <ResetIcon
                className="refreshLists"
                onClick={() => {

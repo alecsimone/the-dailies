@@ -5,10 +5,10 @@ import Link from 'next/link';
 import FeaturedImage from '../ThingParts/FeaturedImage';
 import TruncCont from '../ThingParts/TruncCont';
 import Taxes from '../ThingParts/Taxes';
-import { convertISOtoAgo } from '../../lib/ThingHandling';
 import { setAlpha, setLightness } from '../../styles/functions';
 import AuthorLink from '../ThingParts/AuthorLink';
 import VoteBar from '../ThingParts/VoteBar';
+import TimeAgo from '../TimeAgo';
 
 const StyledThingCard = styled.div`
    width: 100%;
@@ -190,8 +190,8 @@ const ThingCard = ({ data }) => {
             )}
             <div className="meta">
                <div className="meta-left">
-                  <AuthorLink author={author} /> {convertISOtoAgo(createdAt)}{' '}
-                  ago
+                  <AuthorLink author={author} />{' '}
+                  <TimeAgo time={createdAt} toggleable />
                </div>
                <div className="meta-right">{privacy}</div>
             </div>

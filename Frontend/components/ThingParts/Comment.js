@@ -8,10 +8,11 @@ import { MemberContext } from '../Account/MemberProvider';
 import RichText from '../RichText';
 import CommentInput from './CommentInput';
 import { setAlpha } from '../../styles/functions';
-import { convertISOtoAgo, pxToInt } from '../../lib/ThingHandling';
+import { pxToInt } from '../../lib/ThingHandling';
 import EditThis from '../Icons/EditThis';
 import X from '../Icons/X';
 import DefaultAvatar from '../Icons/DefaultAvatar';
+import TimeAgo from '../TimeAgo';
 
 const DELETE_COMMENT_MUTATION = gql`
    mutation DELETE_COMMENT_MUTATION(
@@ -259,7 +260,7 @@ const Comment = ({ comment, comments, type, id }) => {
             )}
          </div>
          <div className="commentMeta">
-            {convertISOtoAgo(comment.createdAt)} ago
+            <TimeAgo time={comment.createdAt} toggleable />
          </div>
       </StyledComment>
    );

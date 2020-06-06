@@ -5,7 +5,6 @@ import gql from 'graphql-tag';
 import { useMutation } from '@apollo/react-hooks';
 import Router from 'next/router';
 import { ThingContext } from '../../pages/thing';
-import { convertISOtoAgo } from '../../lib/ThingHandling';
 import { setLightness, setAlpha } from '../../styles/functions';
 import AuthorLink from './AuthorLink';
 import ShortLink from './ShortLink';
@@ -14,6 +13,7 @@ import PrivacyDropdown from './PrivacyDropdown';
 import ThingSourceLink from './ThingSourceLink';
 import TrashIcon from '../Icons/Trash';
 import EditThis from '../Icons/EditThis';
+import TimeAgo from '../TimeAgo';
 import { ALL_THINGS_QUERY } from '../../pages';
 import { PUBLIC_THINGS_QUERY } from '../Archives/PublicThings';
 
@@ -118,6 +118,7 @@ const StyledThingMeta = styled.section`
       display: flex;
       align-items: center;
       justify-content: flex-start;
+      flex-wrap: wrap;
       .authorBlock {
          display: inline-flex;
          align-items: center;
@@ -242,7 +243,9 @@ const ThingMeta = props => {
          <div className="info metaPiece">
             {author && <AuthorLink author={author} />}{' '}
             {createdAt && (
-               <span className="ago">{convertISOtoAgo(createdAt)} ago </span>
+               <span className="ago">
+                  <TimeAgo time={createdAt} toggleable />
+               </span>
             )}
          </div>
          <TrashIcon

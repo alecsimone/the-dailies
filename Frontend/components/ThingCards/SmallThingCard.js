@@ -4,8 +4,9 @@ import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { setAlpha, setLightness, setSaturation } from '../../styles/functions';
 import { isVideo } from '../../lib/UrlHandling';
-import { convertISOtoAgo, disabledCodewords } from '../../lib/ThingHandling';
+import { disabledCodewords } from '../../lib/ThingHandling';
 import AuthorLink from '../ThingParts/AuthorLink';
+import TimeAgo from '../TimeAgo';
 
 const StyledSmallThingCard = styled.article`
    margin: 0;
@@ -98,8 +99,6 @@ const SmallThingCard = ({ data, noPic }) => {
       highlightColor = color;
    }
 
-   const timeAgo = convertISOtoAgo(createdAt);
-
    let isTweet = false;
    if (featuredImage) {
       const tweetMatches = featuredImage.match(/twitter\.com\/\w+\/status/i);
@@ -127,8 +126,8 @@ const SmallThingCard = ({ data, noPic }) => {
                      : title}
                </a>
                <div className="tinyMeta">
-                  <AuthorLink author={author} noPic={noPic} /> {timeAgo} ago.
-                  It's{' '}
+                  <AuthorLink author={author} noPic={noPic} />{' '}
+                  <TimeAgo time={createdAt} />. It's{' '}
                   {privacy === 'Public' || privacy === 'Private'
                      ? privacy
                      : `for ${privacy}${privacy === 'Friends' ? ' only' : ''}`}

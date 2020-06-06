@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import TweetGetter from './TweetGetter';
 import RichText from '../RichText';
-import { convertISOtoAgo } from '../../lib/ThingHandling';
+import TimeAgo from '../TimeAgo';
 import { home } from '../../config';
 import HeartIcon from '../Icons/Heart';
 import RetweetIcon from '../Icons/Retweet';
@@ -321,7 +321,7 @@ const Tweet = props => {
                   target="_blank"
                   className="linkToOriginalTweet"
                >
-                  {convertISOtoAgo(time)} ago
+                  <TimeAgo time={time} toggleable />
                </a>{' '}
                •{' '}
                <a
