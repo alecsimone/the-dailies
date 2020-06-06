@@ -5,13 +5,14 @@ import PropTypes from 'prop-types';
 import { setAlpha, setLightness, setSaturation } from '../../styles/functions';
 import { isVideo } from '../../lib/UrlHandling';
 import { disabledCodewords } from '../../lib/ThingHandling';
+import { stringToObject } from '../../lib/TextHandling';
 import AuthorLink from '../ThingParts/AuthorLink';
 import TimeAgo from '../TimeAgo';
 
 const StyledSmallThingCard = styled.article`
    margin: 0;
    width: 100%;
-   max-width: ${props => props.theme.mobileBPWidth};
+   max-width: 25em;
    display: inline-block;
    padding: 2rem 1rem;
    border: 1px solid ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
@@ -82,7 +83,7 @@ const StyledSmallThingCard = styled.article`
    }
 `;
 
-const SmallThingCard = ({ data, noPic }) => {
+const SmallThingCard = ({ data, noPic, fullQuery }) => {
    if (!data) {
       return (
          <StyledSmallThingCard className="smallThingCard thingCard">
@@ -107,8 +108,18 @@ const SmallThingCard = ({ data, noPic }) => {
       }
    }
 
+   let query;
+   let queryString;
+   if (fullQuery != null) {
+      queryString = `/thing?${fullQuery}`;
+      query = stringToObject(fullQuery, '&=');
+   } else {
+      query = { id };
+      queryString = `/thing?id=${id}`;
+   }
+
    return (
-      <Link href={{ pathname: '/thing', query: { id } }}>
+      <Link href={{ pathname: '/thing', query }}>
          <StyledSmallThingCard
             className="smallThingCard thingCard"
             style={{ borderLeft: `0.5rem solid ${highlightColor}` }}
@@ -120,7 +131,7 @@ const SmallThingCard = ({ data, noPic }) => {
                isTweet
             ) && <img className="thumb" src={featuredImage} />}
             <div className="meta">
-               <a href={`/thing?id=${id}`}>
+               <a href={queryString}>
                   {title.length > 60
                      ? `${title.substring(0, 60).trim()}...`
                      : title}

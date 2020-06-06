@@ -11,15 +11,35 @@ import { setAlpha, setLightness } from '../../styles/functions';
 import { MemberContext } from '../Account/MemberProvider';
 import NotificationsContainer from './NotificationsContainer';
 
-Router.onRouteChangeStart = () => {
+Router.events.on('routeChangeStart', target => {
+   // If we're routing to the same thing, we need to use Router.push so the browser back button will work properly in broadcast view, but we don't want to fire NProgress.start
+   if (window.location.pathname === '/thing' && target.startsWith('/thing')) {
+      const targetIDIndex = target.indexOf('id=') + 3;
+      const locationIDIndex = window.location.search.indexOf('id=') + 3;
+      if (targetIDIndex > -1 && locationIDIndex > -1) {
+         const targetAmpersandIndex = target.indexOf('&');
+         const targetIDStopIndex =
+            targetAmpersandIndex > -1 ? targetAmpersandIndex : target.length;
+         const targetID = target.substring(targetIDIndex, targetIDStopIndex);
+
+         const locationAmpersandIndex = window.location.search.indexOf('&');
+         const locationIDStopIndex =
+            locationAmpersandIndex > -1
+               ? locationAmpersandIndex
+               : window.location.search.length;
+         const locationID = window.location.search.substring(
+            locationIDIndex,
+            locationIDStopIndex
+         );
+         if (targetID === locationID) {
+            return;
+         }
+      }
+   }
    NProgress.start();
-};
-Router.onRouteChangeComplete = () => {
-   NProgress.done();
-};
-Router.onRouteChangeError = () => {
-   NProgress.done();
-};
+});
+Router.events.on('routeChangeComplete', () => NProgress.done());
+Router.events.on('routeChangeError', () => NProgress.done());
 
 const StyledHeader = styled.div`
    grid-column: -1 / 1;

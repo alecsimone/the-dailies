@@ -400,11 +400,12 @@ const Content = ({ context, canEdit, linkedPiece }) => {
       const blockPositionsArray = [];
 
       const blocks = document.querySelectorAll('.contentBlock');
-      blocks.forEach(block => {
+      for (const block of blocks) {
          const blockOffset = block.offsetTop;
          const blockHeight = block.offsetHeight;
 
          const buttons = block.querySelector('.buttons');
+         if (buttons == null) continue;
          const buttonsHeight = buttons.offsetHeight;
 
          // The "top" we use for determining when to start sticking things is slightly different from the actual top of the element. I'm defining that top first so I can base the "top" off it as well as the bottom, which is the actual bottom
@@ -420,7 +421,7 @@ const Content = ({ context, canEdit, linkedPiece }) => {
             top,
             bottom
          });
-      });
+      }
       stickingData.current.blocksArray = blockPositionsArray;
 
       // On mobile, the scrolling element is the thingPage container, on desktop, it's the mainSection container

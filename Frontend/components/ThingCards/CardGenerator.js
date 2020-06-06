@@ -5,9 +5,7 @@ import SmallThingCard from './SmallThingCard';
 import Error from '../ErrorMessage';
 import LoadingRing from '../LoadingRing';
 
-const CardGenerator = props => {
-   const { id, cardType } = props;
-
+const CardGenerator = ({ id, cardType, fullQuery }) => {
    const { data, loading, error } = useQuery(SINGLE_THING_QUERY, {
       variables: {
          id
@@ -17,7 +15,9 @@ const CardGenerator = props => {
       if (data.thing == null) {
          return <Error error={{ message: `No thing found for id: ${id}` }} />;
       }
-      return <SmallThingCard data={data.thing} key={id} />;
+      return (
+         <SmallThingCard data={data.thing} key={id} fullQuery={fullQuery} />
+      );
    }
    if (error) {
       return <Error error={error} />;

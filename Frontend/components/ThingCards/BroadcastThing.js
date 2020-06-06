@@ -1,3 +1,4 @@
+import Router from 'next/router';
 import { useContext, useState } from 'react';
 import styled from 'styled-components';
 import { ThingContext } from '../../pages/thing';
@@ -47,6 +48,7 @@ const StyledBroadcastThing = styled.article`
          align-items: center;
          border-right: 3px solid ${props => props.theme.deepBlack};
          .explodingLinksWrapper {
+            width: 100%;
             padding-top: 2rem;
             height: 100%;
             text-align: center;
@@ -114,7 +116,9 @@ const StyledBroadcastThing = styled.article`
       .contentNav {
          display: flex;
          justify-content: space-between;
+         align-items: center;
          position: absolute;
+         padding: 0 6rem;
          left: 0;
          width: 100%;
          bottom: 0;
@@ -152,21 +156,41 @@ const StyledBroadcastThing = styled.article`
             }
          }
       }
+      .broadcastCounter {
+         font-size: ${props => props.theme.smallText};
+         font-weight: 600;
+         opacity: 0.6;
+         flex-grow: 1;
+         text-align: center;
+      }
    }
 `;
 
-const BroadcastThing = ({ id }) => {
+const BroadcastThing = ({ id, linkedPiece }) => {
    const { title, featuredImage, content, contentOrder } = useContext(
       ThingContext
    );
-   const [currentContentPiece, setCurrentContentPiece] = useState(0);
    const [currentExplodingLink, setCurrentExplodingLink] = useState(0);
+
+   let startingThingIndex = 0;
+   if (linkedPiece) {
+      if (contentOrder.length > 0) {
+         startingThingIndex = contentOrder.indexOf(linkedPiece);
+      } else {
+         startingThingIndex = content.findIndex(
+            piece => piece.id === linkedPiece
+         );
+      }
+   }
+   const [currentContentPiece, setCurrentContentPiece] = useState(
+      startingThingIndex
+   );
 
    let displayContent;
    const explodingLinks = [];
+   let orderedContent;
    if (content.length > 0) {
-      let orderedContent;
-      if (contentOrder) {
+      if (contentOrder.length > 0) {
          orderedContent = [];
          contentOrder.forEach(id => {
             const [piece] = content.filter(
@@ -261,6 +285,9 @@ const BroadcastThing = ({ id }) => {
                               }
                            />
                         )}
+                        <div className="broadcastCounter">
+                           {currentExplodingLink + 1}/{explodingLinks.length}
+                        </div>
                         {currentExplodingLink < explodingLinks.length - 1 && (
                            <ArrowIcon
                               pointing="right"
@@ -285,18 +312,35 @@ const BroadcastThing = ({ id }) => {
                            <ArrowIcon
                               pointing="left"
                               className="leftArrow"
-                              onClick={() =>
-                                 setCurrentContentPiece(currentContentPiece - 1)
-                              }
+                              onClick={() => {
+                                 setCurrentContentPiece(
+                                    currentContentPiece - 1
+                                 );
+
+                                 const href = `/thing?id=${id}&piece=${
+                                    orderedContent[currentContentPiece - 1].id
+                                 }`;
+                                 Router.push(href);
+                              }}
                            />
                         )}
+                        <div className="broadcastCounter">
+                           {currentContentPiece + 1}/{content.length}
+                        </div>
                         {currentContentPiece < content.length - 1 && (
                            <ArrowIcon
                               pointing="right"
                               className="rightArrow"
-                              onClick={() =>
-                                 setCurrentContentPiece(currentContentPiece + 1)
-                              }
+                              onClick={() => {
+                                 setCurrentContentPiece(
+                                    currentContentPiece + 1
+                                 );
+
+                                 const href = `/thing?id=${id}&piece=${
+                                    orderedContent[currentContentPiece + 1].id
+                                 }`;
+                                 Router.push(href);
+                              }}
                            />
                         )}
                      </div>

@@ -7,7 +7,8 @@ import {
    replaceEmails,
    replaceReddit,
    decodeHTML,
-   styleTagSearchString
+   styleTagSearchString,
+   stringToObject
 } from '../lib/TextHandling';
 import { urlFinder } from '../lib/UrlHandling';
 
@@ -85,18 +86,10 @@ const RichText = ({ text, priorText, nextText, matchCount = 0 }) => {
                elementsArray.push(firstTag);
                stoppedAtIndexOverride = firstClosingIndex + 8;
             } else {
-               const splitTag = tag.groups.styleObjectRaw.split(/[:;]/gi);
-               const styleObject = {};
-               splitTag.forEach((tagPiece, index) => {
-                  if (index % 2 === 1 || splitTag[index + 1] == null) {
-                     // Actually we only want to do this once for each pair, and we don't want to do it if there isn't a matching tag
-                     return;
-                  }
-                  // We're making an object with the first items in each pair as its properties and the second as their values
-                  styleObject[splitTag[index].trim()] = splitTag[
-                     index + 1
-                  ].trim();
-               });
+               const styleObject = stringToObject(
+                  tag.groups.styleObjectRaw,
+                  ':;'
+               );
 
                const tagElement = (
                   <span style={styleObject} key={stoppedAtIndex}>
@@ -149,7 +142,7 @@ const RichText = ({ text, priorText, nextText, matchCount = 0 }) => {
 
          if (tag.groups.pounds != null) {
             elementsArray.push(
-               <span style={{ fontSize: smallHead, fontWeight: '700' }}>
+               <span style={{ fontSize: '2em', fontWeight: '700' }}>
                   <RichText
                      text={tag.groups.poundsTextContent}
                      key={tag.groups.poundsTextContent}

@@ -94,7 +94,11 @@ const SingleThing = props => {
 
          if (me?.broadcastView) {
             content = (
-               <BroadcastThing id={props.query.id} key={props.query.id} />
+               <BroadcastThing
+                  id={props.query.id}
+                  linkedPiece={props.query.piece}
+                  key={props.query.id}
+               />
             );
          } else {
             content = (

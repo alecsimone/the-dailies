@@ -24,6 +24,7 @@ const ExplodingLink = ({
    priorText,
    nextText
 }) => {
+   if (url == null) return null;
    const lowerCaseURL = url.toLowerCase();
 
    const { me } = useContext(MemberContext);
@@ -189,14 +190,24 @@ const ExplodingLink = ({
       bracketMatchCheck == null
    ) {
       const thingIDPos = lowerCaseURL.indexOf('/thing?id=') + 10;
+      const queryStartPos = lowerCaseURL.indexOf('/thing?') + 7;
       let thingID;
+      let fullQuery;
       if (lowerCaseURL.includes('&')) {
          const thingIDEnd = lowerCaseURL.indexOf('&');
          thingID = url.substring(thingIDPos, thingIDEnd);
+         fullQuery = url.substring(queryStartPos);
       } else {
          thingID = url.substring(thingIDPos);
       }
-      return <CardGenerator key={thingID} id={thingID} cardType="small" />;
+      return (
+         <CardGenerator
+            key={thingID}
+            id={thingID}
+            cardType="small"
+            fullQuery={fullQuery}
+         />
+      );
    }
 
    // General Links
