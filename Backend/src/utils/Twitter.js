@@ -440,3 +440,23 @@ const createOrDestroyLike = async (tweetID, action, token, tokenSecret) => {
    return newTweetData;
 };
 exports.createOrDestroyLike = createOrDestroyLike;
+
+const parseTweetID = string => {
+   string = string.toString();
+   let result = string;
+   let i = string.length - 1;
+   while (i > -1) {
+      if (string[i] === '0') {
+         result = `${result.substring(0, i)}9${result.substring(i + 1)}`;
+         i--;
+      } else {
+         result =
+            result.substring(0, i) +
+            (parseInt(string[i], 10) - 1).toString() +
+            result.substring(i + 1);
+         return result;
+      }
+   }
+   return result;
+};
+exports.parseTweetID = parseTweetID;

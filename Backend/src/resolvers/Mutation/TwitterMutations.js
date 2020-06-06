@@ -3,7 +3,8 @@ const {
    cipherString,
    decipherString,
    createOrDestroyLike,
-   getTwitterInfo
+   getTwitterInfo,
+   parseTweetID
 } = require('../../utils/Twitter');
 const { loggedInGate, fullMemberGate } = require('../../utils/Authentication');
 const { properUpdateStuff } = require('../../utils/ThingHandling');
@@ -74,8 +75,8 @@ async function markTweetsSeen(
    const { twitterListsObject, twitterSeenIDs } = await getTwitterInfo(ctx);
 
    tweetIDs.sort();
-   const newestTweetID = parseInt(tweetIDs[tweetIDs.length - 1]);
-   const oldestTweetID = parseInt(tweetIDs[0]);
+   const newestTweetID = tweetIDs[tweetIDs.length - 1];
+   const oldestTweetID = tweetIDs[0];
 
    let listsObject;
    if (twitterListsObject == null) {
@@ -89,20 +90,26 @@ async function markTweetsSeen(
    if (listsObject[listID] == null) listsObject[listID] = {};
 
    // Then update this list in it with the new data
-   if (listsObject[listID].highestIDSeen < newestTweetID) {
+   if (listsObject[listID].highestIDSeen == null) {
+      listsObject[listID].highestIDSeen = newestTweetID;
+   } else if (
+      parseTweetID(listsObject[listID].highestIDSeen) <
+      parseTweetID(newestTweetID)
+   ) {
       listsObject[listID].highestIDSeen = newestTweetID;
    }
+
    listsObject[listID].sinceID = lastTweeter
       ? listsObject[listID].highestIDSeen
       : oldestTweetID;
 
    const freshSeenIDs = tweetIDs || [];
    const oldSeenIDs = listsObject[listID].seenIDs || [];
-   let newSeenIDs =
+   const allSeenIDs =
       oldSeenIDs != null ? oldSeenIDs.concat(freshSeenIDs) : freshSeenIDs;
-   if (newSeenIDs.length > 400) {
-      newSeenIDs = newSeenIDs.slice(0, 400);
-   }
+   const newSeenIDs = allSeenIDs.filter(
+      id => parseTweetID(id) >= parseTweetID(listsObject[listID].sinceID)
+   );
    listsObject[listID].seenIDs = newSeenIDs;
 
    const updatedMember = await ctx.db.mutation.updateMember(
