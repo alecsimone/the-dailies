@@ -36,6 +36,10 @@ const StyledTweets = styled.section`
             overflow-x: auto;
             max-width: 100%;
             ${props => props.theme.scroll};
+            min-height: calc(100vh - 14rem + 2px);
+            ${props => props.theme.mobileBreakpoint} {
+               min-height: initial;
+            }
          }
          .tweeterColumn {
             margin: 0;

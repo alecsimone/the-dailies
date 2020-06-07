@@ -45,7 +45,7 @@ const TimeAgo = ({ time, toggleable }) => {
 
    const styleObject = {};
    let onClick;
-   if (toggleable) {
+   if (toggleable === true) {
       styleObject.cursor = 'pointer';
       onClick = () => setShowFullTime(!showFullTime);
    }

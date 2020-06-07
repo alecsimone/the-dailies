@@ -40,6 +40,32 @@ const Sidebar = props => {
       }
    }, [extraColumnTitle, me, mobileBPWidthRaw, setSidebarIsOpen]);
 
+   const clickCloseListener = e => {
+      // This only applies to mobile, because the sidebar covers everything
+      if (window.outerWidth > mobileBPWidthRaw) return;
+
+      // If they click a smallThingCard (post in one of the things list) or listLink (list element on twitter reader), we want to close the sidebar to get it out of the way.
+      if (
+         e.target.closest('.listLink') != null ||
+         e.target.closest('.smallThingCard') != null
+      ) {
+         setSidebarIsOpen(false);
+      }
+   };
+
+   useEffect(() => {
+      const sidebar = document.querySelector('.sidebar');
+      if (sidebar) {
+         sidebar.addEventListener('click', clickCloseListener);
+      }
+
+      return () => {
+         if (sidebar) {
+            sidebar.removeEventListener('click', clickCloseListener);
+         }
+      };
+   });
+
    const headerColumns = me ? ['You', 'Friends', 'Public'] : ['Public'];
    if (extraColumnTitle != null) {
       headerColumns.push(extraColumnTitle);

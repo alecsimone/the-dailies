@@ -321,7 +321,7 @@ const Tweet = props => {
                   target="_blank"
                   className="linkToOriginalTweet"
                >
-                  <TimeAgo time={time} toggleable />
+                  <TimeAgo time={time} />
                </a>{' '}
                •{' '}
                <a
