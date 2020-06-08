@@ -49,7 +49,8 @@ type Comment {
   createdAt: DateTime!
   updatedAt: DateTime
   onThing: Thing
-  onComment: Comment
+  replies(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Comment!]
+  replyTo: Comment
   onTag: Tag
 }
 
@@ -64,7 +65,8 @@ input CommentCreateInput {
   author: MemberCreateOneWithoutCommentsInput!
   comment: String!
   onThing: ThingCreateOneWithoutCommentsInput
-  onComment: CommentCreateOneInput
+  replies: CommentCreateManyWithoutRepliesInput
+  replyTo: CommentCreateOneWithoutReplyToInput
   onTag: TagCreateOneWithoutCommentsInput
 }
 
@@ -88,8 +90,18 @@ input CommentCreateManyWithoutOnThingInput {
   connect: [CommentWhereUniqueInput!]
 }
 
+input CommentCreateManyWithoutRepliesInput {
+  create: [CommentCreateWithoutRepliesInput!]
+  connect: [CommentWhereUniqueInput!]
+}
+
 input CommentCreateOneInput {
   create: CommentCreateInput
+  connect: CommentWhereUniqueInput
+}
+
+input CommentCreateOneWithoutReplyToInput {
+  create: CommentCreateWithoutReplyToInput
   connect: CommentWhereUniqueInput
 }
 
@@ -97,7 +109,8 @@ input CommentCreateWithoutAuthorInput {
   id: ID
   comment: String!
   onThing: ThingCreateOneWithoutCommentsInput
-  onComment: CommentCreateOneInput
+  replies: CommentCreateManyWithoutRepliesInput
+  replyTo: CommentCreateOneWithoutReplyToInput
   onTag: TagCreateOneWithoutCommentsInput
 }
 
@@ -106,14 +119,34 @@ input CommentCreateWithoutOnTagInput {
   author: MemberCreateOneWithoutCommentsInput!
   comment: String!
   onThing: ThingCreateOneWithoutCommentsInput
-  onComment: CommentCreateOneInput
+  replies: CommentCreateManyWithoutRepliesInput
+  replyTo: CommentCreateOneWithoutReplyToInput
 }
 
 input CommentCreateWithoutOnThingInput {
   id: ID
   author: MemberCreateOneWithoutCommentsInput!
   comment: String!
-  onComment: CommentCreateOneInput
+  replies: CommentCreateManyWithoutRepliesInput
+  replyTo: CommentCreateOneWithoutReplyToInput
+  onTag: TagCreateOneWithoutCommentsInput
+}
+
+input CommentCreateWithoutRepliesInput {
+  id: ID
+  author: MemberCreateOneWithoutCommentsInput!
+  comment: String!
+  onThing: ThingCreateOneWithoutCommentsInput
+  replyTo: CommentCreateOneWithoutReplyToInput
+  onTag: TagCreateOneWithoutCommentsInput
+}
+
+input CommentCreateWithoutReplyToInput {
+  id: ID
+  author: MemberCreateOneWithoutCommentsInput!
+  comment: String!
+  onThing: ThingCreateOneWithoutCommentsInput
+  replies: CommentCreateManyWithoutRepliesInput
   onTag: TagCreateOneWithoutCommentsInput
 }
 
@@ -212,7 +245,8 @@ input CommentUpdateDataInput {
   author: MemberUpdateOneRequiredWithoutCommentsInput
   comment: String
   onThing: ThingUpdateOneWithoutCommentsInput
-  onComment: CommentUpdateOneInput
+  replies: CommentUpdateManyWithoutRepliesInput
+  replyTo: CommentUpdateOneWithoutReplyToInput
   onTag: TagUpdateOneWithoutCommentsInput
 }
 
@@ -220,7 +254,8 @@ input CommentUpdateInput {
   author: MemberUpdateOneRequiredWithoutCommentsInput
   comment: String
   onThing: ThingUpdateOneWithoutCommentsInput
-  onComment: CommentUpdateOneInput
+  replies: CommentUpdateManyWithoutRepliesInput
+  replyTo: CommentUpdateOneWithoutReplyToInput
   onTag: TagUpdateOneWithoutCommentsInput
 }
 
@@ -280,6 +315,18 @@ input CommentUpdateManyWithoutOnThingInput {
   updateMany: [CommentUpdateManyWithWhereNestedInput!]
 }
 
+input CommentUpdateManyWithoutRepliesInput {
+  create: [CommentCreateWithoutRepliesInput!]
+  delete: [CommentWhereUniqueInput!]
+  connect: [CommentWhereUniqueInput!]
+  set: [CommentWhereUniqueInput!]
+  disconnect: [CommentWhereUniqueInput!]
+  update: [CommentUpdateWithWhereUniqueWithoutRepliesInput!]
+  upsert: [CommentUpsertWithWhereUniqueWithoutRepliesInput!]
+  deleteMany: [CommentScalarWhereInput!]
+  updateMany: [CommentUpdateManyWithWhereNestedInput!]
+}
+
 input CommentUpdateManyWithWhereNestedInput {
   where: CommentScalarWhereInput!
   data: CommentUpdateManyDataInput!
@@ -294,10 +341,20 @@ input CommentUpdateOneInput {
   connect: CommentWhereUniqueInput
 }
 
+input CommentUpdateOneWithoutReplyToInput {
+  create: CommentCreateWithoutReplyToInput
+  update: CommentUpdateWithoutReplyToDataInput
+  upsert: CommentUpsertWithoutReplyToInput
+  delete: Boolean
+  disconnect: Boolean
+  connect: CommentWhereUniqueInput
+}
+
 input CommentUpdateWithoutAuthorDataInput {
   comment: String
   onThing: ThingUpdateOneWithoutCommentsInput
-  onComment: CommentUpdateOneInput
+  replies: CommentUpdateManyWithoutRepliesInput
+  replyTo: CommentUpdateOneWithoutReplyToInput
   onTag: TagUpdateOneWithoutCommentsInput
 }
 
@@ -305,13 +362,31 @@ input CommentUpdateWithoutOnTagDataInput {
   author: MemberUpdateOneRequiredWithoutCommentsInput
   comment: String
   onThing: ThingUpdateOneWithoutCommentsInput
-  onComment: CommentUpdateOneInput
+  replies: CommentUpdateManyWithoutRepliesInput
+  replyTo: CommentUpdateOneWithoutReplyToInput
 }
 
 input CommentUpdateWithoutOnThingDataInput {
   author: MemberUpdateOneRequiredWithoutCommentsInput
   comment: String
-  onComment: CommentUpdateOneInput
+  replies: CommentUpdateManyWithoutRepliesInput
+  replyTo: CommentUpdateOneWithoutReplyToInput
+  onTag: TagUpdateOneWithoutCommentsInput
+}
+
+input CommentUpdateWithoutRepliesDataInput {
+  author: MemberUpdateOneRequiredWithoutCommentsInput
+  comment: String
+  onThing: ThingUpdateOneWithoutCommentsInput
+  replyTo: CommentUpdateOneWithoutReplyToInput
+  onTag: TagUpdateOneWithoutCommentsInput
+}
+
+input CommentUpdateWithoutReplyToDataInput {
+  author: MemberUpdateOneRequiredWithoutCommentsInput
+  comment: String
+  onThing: ThingUpdateOneWithoutCommentsInput
+  replies: CommentUpdateManyWithoutRepliesInput
   onTag: TagUpdateOneWithoutCommentsInput
 }
 
@@ -335,9 +410,19 @@ input CommentUpdateWithWhereUniqueWithoutOnThingInput {
   data: CommentUpdateWithoutOnThingDataInput!
 }
 
+input CommentUpdateWithWhereUniqueWithoutRepliesInput {
+  where: CommentWhereUniqueInput!
+  data: CommentUpdateWithoutRepliesDataInput!
+}
+
 input CommentUpsertNestedInput {
   update: CommentUpdateDataInput!
   create: CommentCreateInput!
+}
+
+input CommentUpsertWithoutReplyToInput {
+  update: CommentUpdateWithoutReplyToDataInput!
+  create: CommentCreateWithoutReplyToInput!
 }
 
 input CommentUpsertWithWhereUniqueNestedInput {
@@ -362,6 +447,12 @@ input CommentUpsertWithWhereUniqueWithoutOnThingInput {
   where: CommentWhereUniqueInput!
   update: CommentUpdateWithoutOnThingDataInput!
   create: CommentCreateWithoutOnThingInput!
+}
+
+input CommentUpsertWithWhereUniqueWithoutRepliesInput {
+  where: CommentWhereUniqueInput!
+  update: CommentUpdateWithoutRepliesDataInput!
+  create: CommentCreateWithoutRepliesInput!
 }
 
 input CommentWhereInput {
@@ -411,7 +502,10 @@ input CommentWhereInput {
   updatedAt_gt: DateTime
   updatedAt_gte: DateTime
   onThing: ThingWhereInput
-  onComment: CommentWhereInput
+  replies_every: CommentWhereInput
+  replies_some: CommentWhereInput
+  replies_none: CommentWhereInput
+  replyTo: CommentWhereInput
   onTag: TagWhereInput
   AND: [CommentWhereInput!]
   OR: [CommentWhereInput!]

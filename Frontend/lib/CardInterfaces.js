@@ -281,10 +281,6 @@ const fullMemberFields = `
          id
          title
       }
-      onComment {
-         __typename
-         id
-      }
       onTag {
          __typename
          id

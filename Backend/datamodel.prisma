@@ -63,7 +63,8 @@ type Comment {
   createdAt: DateTime! @createdAt
   updatedAt: DateTime @updatedAt
   onThing: Thing
-  onComment: Comment
+  replies: [Comment] @relation(name: "Replies")
+  replyTo: Comment @relation(name: "Replyto")
   onTag: Tag
 }
 
