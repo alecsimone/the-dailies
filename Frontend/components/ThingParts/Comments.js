@@ -172,6 +172,7 @@ const Comments = ({ context }) => {
          updatedAt: now.toISOString()
       };
       comments.push(newComment);
+
       setCurrentComment('');
       await addComment({
          variables: {
@@ -209,6 +210,7 @@ const Comments = ({ context }) => {
                   query,
                   variables: { id }
                });
+               console.log(oldData);
                oldData[data.addComment.__typename.toLowerCase()].comments =
                   data.addComment.comments;
                client.writeQuery({

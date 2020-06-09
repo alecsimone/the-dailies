@@ -54,7 +54,7 @@ async function editPermissionGate(dataObj, id, type, ctx) {
       if (dataObj.comments.delete) {
          commentID = dataObj.comments.delete.id;
       } else if (dataObj.comments.update) {
-         commentID = dataObj.comments.update.id;
+         commentID = dataObj.comments.update.where.id;
       }
       const comment = await ctx.db.query.comment(
          {

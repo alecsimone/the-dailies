@@ -122,7 +122,7 @@ const MemberBox = () => {
                   <a
                      onClick={e => {
                         e.preventDefault();
-                        setContent(<Login />);
+                        setContent(<Login redirect={false} />);
                      }}
                   >
                      Log in

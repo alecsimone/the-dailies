@@ -385,10 +385,8 @@ async function addComment(parent, {comment, id, type, replyToID}, ctx, info) {
       return updatedStuff;
    } else {
       const updatedStuff = await properUpdateStuff(dataObj, id, type, ctx);
+      return updatedStuff;
    }
-
-
-   return updatedStuff;
 }
 exports.addComment = addComment;
 

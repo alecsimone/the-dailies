@@ -61,10 +61,10 @@ const CommentInput = ({
 
    const handleKeyDown = e => {
       if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
-         if (replyToID == null) {
-            postComment();
-         } else {
+         if (updateComment == null) {
             postReply();
+         } else {
+            postComment();
          }
       }
    };
@@ -102,12 +102,12 @@ const CommentInput = ({
          onSubmit={e => {
             e.preventDefault();
             console.log('hey');
-            if (replyToID == null) {
-               console.log('you');
-               postComment();
+            if (updateComment == null) {
+               console.log('a');
+               // postReply();
             } else {
-               console.log('ya');
-               postReply();
+               console.log('b');
+               // postComment();
             }
          }}
       >
@@ -117,9 +117,9 @@ const CommentInput = ({
             className="commentInput"
             name="commentInput"
             placeholder={replyToID == null ? 'Add comment' : 'Add reply'}
-            value={replyToID == null ? currentComment : reply}
+            value={updateComment == null ? reply : currentComment}
             onChange={e => {
-               if (replyToID == null) {
+               if (updateComment != null) {
                   updateComment(e.target.value);
                } else {
                   setReply(e.target.value);

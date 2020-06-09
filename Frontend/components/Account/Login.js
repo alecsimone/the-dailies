@@ -54,11 +54,11 @@ const Login = props => {
                Router.push({
                   pathname: '/'
                });
-               setContent(false);
             }
             if (callBack) {
                callBack();
             }
+            setContent(false);
          }}
       >
          <fieldset disabled={loading} aria-busy={loading}>

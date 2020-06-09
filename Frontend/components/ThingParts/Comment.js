@@ -215,6 +215,10 @@ const Comment = ({ comment, comments, type, id }) => {
    const [originalComment] = comments.filter(
       unrecursedComment => unrecursedComment.id === comment.id
    );
+   if (originalComment == null) {
+      // When we delete a comment, it seems to still try to render even though it's not in comments anymore. So originalComment will be null and everything will get all fucked up. But since we deleted the comment, we don't need it anymore anyway, hence, return null.
+      return null;
+   }
    if (originalComment?.replies?.length > 0) {
       replyElements = originalComment.replies.map(reply => (
          <Comment
@@ -292,7 +296,7 @@ const Comment = ({ comment, comments, type, id }) => {
             )}
          </div>
          <div className="commentMeta">
-            <TimeAgo time={comment.createdAt} toggleable />
+            <TimeAgo time={originalComment.createdAt} toggleable />
             <a className="replyLink" onClick={() => setReplying(!replying)}>
                {replying ? 'Cancel Reply' : 'Reply'}
             </a>
@@ -301,7 +305,6 @@ const Comment = ({ comment, comments, type, id }) => {
             <div className="replyInputWrapper">
                <CommentInput
                   currentComment=""
-                  updateComment={setEditedComment}
                   postComment={sendNewComment}
                   replyToID={comment.id}
                   stuffID={id}
