@@ -43,7 +43,7 @@ type Mutation {
   setFeaturedImage(featuredImage: String!, id: ID!, type: String!): Stuff
   setStuffTitle(title: String!, id: ID!, type: String!): Stuff,
   setPublicity(public: Boolean!, id: ID!, type: String!): Stuff
-  addComment(comment: String!, id: ID!, type: String!): Stuff
+  addComment(comment: String!, id: ID!, type: String!, replyToID: ID): Stuff
   editComment(commentID: ID!, stuffID: ID!, type: String!, newComment: String!): Stuff
   deleteComment(commentID: ID!, stuffID: ID!, type: String!): Stuff
   editLink(link: String!, id: ID!): Thing

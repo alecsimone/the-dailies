@@ -64,7 +64,7 @@ type Comment {
   updatedAt: DateTime @updatedAt
   onThing: Thing
   replies: [Comment] @relation(name: "Replies")
-  replyTo: Comment @relation(name: "Replyto")
+  replyTo: Comment @relation(name: "ReplyTo")
   onTag: Tag
 }
 

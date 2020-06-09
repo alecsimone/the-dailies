@@ -31,8 +31,18 @@ const StyledComments = styled.section`
 `;
 
 const ADD_COMMENT_MUTATION = gql`
-   mutation ADD_COMMENT_MUTATION($comment: String!, $id: ID!, $type: String!) {
-      addComment(comment: $comment, id: $id, type: $type) {
+   mutation ADD_COMMENT_MUTATION(
+      $comment: String!
+      $id: ID!
+      $type: String!
+      $replyToID: ID
+   ) {
+      addComment(
+         comment: $comment
+         id: $id
+         type: $type
+         replyToID: $replyToID
+      ) {
          ... on Tag {
             __typename
             id
@@ -83,6 +93,30 @@ const ADD_COMMENT_MUTATION = gql`
                   rep
                }
                comment
+               replies {
+                  __typename
+                  id
+                  author {
+                     __typename
+                     id
+                     displayName
+                     avatar
+                     rep
+                  }
+                  comment
+               }
+               replyTo {
+                  __typename
+                  id
+                  author {
+                     __typename
+                     id
+                     displayName
+                     avatar
+                     rep
+                  }
+                  comment
+               }
                createdAt
                updatedAt
             }
@@ -90,9 +124,9 @@ const ADD_COMMENT_MUTATION = gql`
       }
    }
 `;
+export { ADD_COMMENT_MUTATION };
 
-const Comments = props => {
-   const { context } = props;
+const Comments = ({ context }) => {
    const { comments, id, __typename: type } = useContext(context);
 
    const { me } = useContext(MemberContext);
@@ -100,8 +134,13 @@ const Comments = props => {
    const [currentComment, setCurrentComment] = useState('');
 
    let commentElements;
+
    if (comments && comments.length > 0) {
-      commentElements = comments.map(comment => (
+      const topLevelComments = comments.filter(
+         comment => comment.replyTo == null
+      );
+
+      commentElements = topLevelComments.map(comment => (
          <Comment
             comment={comment}
             comments={comments}

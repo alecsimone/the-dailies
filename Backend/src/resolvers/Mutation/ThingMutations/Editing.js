@@ -327,7 +327,7 @@ async function setPublicity(parent, {public, id, type}, ctx, info) {
 }
 exports.setPublicity = setPublicity;
 
-async function addComment(parent, {comment, id, type}, ctx, info) {
+async function addComment(parent, {comment, id, type, replyToID}, ctx, info) {
    loggedInGate(ctx);
    fullMemberGate(ctx.req.member);
 
@@ -349,7 +349,45 @@ async function addComment(parent, {comment, id, type}, ctx, info) {
       linkQuery: id
    }, ctx);
 
-   const updatedStuff = await properUpdateStuff(dataObj, id, type, ctx);
+   if (replyToID != null) {
+      const updatedComment = await ctx.db.mutation.updateComment({
+         where: {
+            id: replyToID
+         },
+         data: {
+            replies: {
+               create: {
+                  comment,
+                  author: {
+                     connect: {
+                        id: ctx.req.memberId
+                     }
+                  },
+                  replyTo: {
+                     connect: {
+                        id: replyToID
+                     }
+                  },
+                  [`on${type}`]: {
+                     connect: {
+                        id
+                     }
+                  }
+               }
+            }
+         }
+      }, info);
+      const updatedStuff = await ctx.db.query[type.toLowerCase()]({
+         where: {
+            id
+         }
+      }, info);
+      return updatedStuff;
+   } else {
+      const updatedStuff = await properUpdateStuff(dataObj, id, type, ctx);
+   }
+
+
    return updatedStuff;
 }
 exports.addComment = addComment;

@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import { MemberContext } from '../Account/MemberProvider';
 import RichText from '../RichText';
 import CommentInput from './CommentInput';
-import { setAlpha } from '../../styles/functions';
+import { setAlpha, setLightness } from '../../styles/functions';
 import { pxToInt } from '../../lib/ThingHandling';
 import EditThis from '../Icons/EditThis';
 import X from '../Icons/X';
@@ -158,6 +158,15 @@ const StyledComment = styled.div`
       margin-top: 2rem;
       font-size: ${props => props.theme.tinyText};
       color: ${props => props.theme.lowContrastGrey};
+      a.replyLink {
+         color: ${props =>
+            setAlpha(setLightness(props.theme.majorColor, 70), 0.9)};
+         margin-left: 0.5rem;
+         cursor: pointer;
+      }
+   }
+   .replyInputWrapper {
+      margin-top: 2rem;
    }
 `;
 
@@ -169,6 +178,8 @@ const Comment = ({ comment, comments, type, id }) => {
 
    const [editing, setEditing] = useState(false);
    const [editedComment, setEditedComment] = useState(comment.comment);
+
+   const [replying, setReplying] = useState(false);
 
    const sendNewComment = async () => {
       const indexOfEditedComment = comments.findIndex(
@@ -194,6 +205,27 @@ const Comment = ({ comment, comments, type, id }) => {
          }
       });
    };
+
+   /*
+   Because I'm confused by writing recursive graphql queries, we're solving the problem this way. This comment might be a reply, but in the original query we only check for replies one level deep.
+
+   But, we did get all the comments on whatever type of stuff this is in the original query, and those will have the replies. So we're going to pluck the original instance of this comment out instead of using the one that was passed through props to check for replies, because the original one will always have replies but the prop one will only have replies at the top level.
+   */
+   let replyElements;
+   const [originalComment] = comments.filter(
+      unrecursedComment => unrecursedComment.id === comment.id
+   );
+   if (originalComment.replies?.length > 0) {
+      replyElements = originalComment.replies.map(reply => (
+         <Comment
+            comment={reply}
+            comments={comments}
+            key={reply.id}
+            type={type}
+            id={id}
+         />
+      ));
+   }
 
    return (
       <StyledComment>
@@ -261,7 +293,24 @@ const Comment = ({ comment, comments, type, id }) => {
          </div>
          <div className="commentMeta">
             <TimeAgo time={comment.createdAt} toggleable />
+            <a className="replyLink" onClick={() => setReplying(!replying)}>
+               {replying ? 'Cancel Reply' : 'Reply'}
+            </a>
          </div>
+         {replying && (
+            <div className="replyInputWrapper">
+               <CommentInput
+                  currentComment=""
+                  updateComment={setEditedComment}
+                  postComment={sendNewComment}
+                  replyToID={comment.id}
+                  stuffID={id}
+                  type={type}
+                  setReplying={setReplying}
+               />
+            </div>
+         )}
+         {replyElements}
       </StyledComment>
    );
 };

@@ -1,6 +1,9 @@
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { useEffect } from 'react';
+import { useEffect, useState, useContext } from 'react';
+import { useMutation } from '@apollo/react-hooks';
+import { MemberContext } from '../Account/MemberProvider';
+import { ADD_COMMENT_MUTATION } from './Comments';
 import { setAlpha } from '../../styles/functions';
 import { dynamicallyResizeElement } from '../../styles/functions';
 
@@ -29,9 +32,16 @@ const StyledCommentInput = styled.form`
    }
 `;
 
-const CommentInput = props => {
-   const { currentComment, updateComment, postComment } = props;
-
+const CommentInput = ({
+   currentComment,
+   updateComment,
+   postComment,
+   replyToID,
+   stuffID,
+   type,
+   setReplying
+}) => {
+   const { me } = useContext(MemberContext);
    useEffect(() => {
       const inputs = document.querySelectorAll(`.commentInput`);
       if (inputs.length > 0) {
@@ -45,17 +55,60 @@ const CommentInput = props => {
       }
    }, [currentComment]);
 
+   const [reply, setReply] = useState('');
+
+   const [addComment] = useMutation(ADD_COMMENT_MUTATION);
+
    const handleKeyDown = e => {
       if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
-         postComment();
+         if (replyToID == null) {
+            postComment();
+         } else {
+            postReply();
+         }
       }
+   };
+
+   const postReply = async () => {
+      const now = new Date();
+      const newComment = {
+         __typename: 'Comment',
+         author: {
+            __typename: 'Member',
+            avatar: me.avatar,
+            displayName: me.displayName,
+            id: me.id,
+            rep: me.rep
+         },
+         comment: reply,
+         createdAt: now.toISOString(),
+         id: 'temporaryID',
+         updatedAt: now.toISOString()
+      };
+      await addComment({
+         variables: {
+            comment: reply,
+            id: stuffID,
+            type,
+            replyToID
+         }
+      });
+      setReply('');
+      setReplying(false);
    };
 
    return (
       <StyledCommentInput
          onSubmit={e => {
             e.preventDefault();
-            postComment();
+            console.log('hey');
+            if (replyToID == null) {
+               console.log('you');
+               postComment();
+            } else {
+               console.log('ya');
+               postReply();
+            }
          }}
       >
          <textarea
@@ -63,10 +116,14 @@ const CommentInput = props => {
             id="commentInput"
             className="commentInput"
             name="commentInput"
-            placeholder="Add comment"
-            value={currentComment}
+            placeholder={replyToID == null ? 'Add comment' : 'Add reply'}
+            value={replyToID == null ? currentComment : reply}
             onChange={e => {
-               updateComment(e.target.value);
+               if (replyToID == null) {
+                  updateComment(e.target.value);
+               } else {
+                  setReply(e.target.value);
+               }
                dynamicallyResizeElement(e.target);
             }}
             onKeyDown={e => handleKeyDown(e)}

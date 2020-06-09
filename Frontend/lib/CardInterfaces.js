@@ -13,6 +13,42 @@ const commentFields = `
       }
    }
    comment
+   replies {
+      __typename
+      id
+      author {
+         __typename
+         id
+         displayName
+         avatar
+         rep
+         friends {
+            __typename
+            id
+         }
+      }
+      comment
+      createdAt
+      updatedAt
+   }
+   replyTo {
+      __typename
+      id
+      author {
+         __typename
+         id
+         displayName
+         avatar
+         rep
+         friends {
+            __typename
+            id
+         }
+      }
+      comment
+      createdAt
+      updatedAt
+   }
    createdAt
    updatedAt
 `;
