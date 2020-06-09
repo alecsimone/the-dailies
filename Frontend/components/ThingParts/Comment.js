@@ -215,7 +215,7 @@ const Comment = ({ comment, comments, type, id }) => {
    const [originalComment] = comments.filter(
       unrecursedComment => unrecursedComment.id === comment.id
    );
-   if (originalComment.replies?.length > 0) {
+   if (originalComment?.replies?.length > 0) {
       replyElements = originalComment.replies.map(reply => (
          <Comment
             comment={reply}
