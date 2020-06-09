@@ -7,8 +7,8 @@ import PropTypes from 'prop-types';
 import { MemberContext } from '../Account/MemberProvider';
 import RichText from '../RichText';
 import CommentInput from './CommentInput';
+import { ADD_COMMENT_MUTATION } from './Comments';
 import { setAlpha, setLightness } from '../../styles/functions';
-import { pxToInt } from '../../lib/ThingHandling';
 import EditThis from '../Icons/EditThis';
 import X from '../Icons/X';
 import DefaultAvatar from '../Icons/DefaultAvatar';
@@ -171,8 +171,9 @@ const StyledComment = styled.div`
 `;
 
 const Comment = ({ comment, comments, type, id }) => {
-   const { me, loading: memberLoading } = useContext(MemberContext);
+   const { me } = useContext(MemberContext);
 
+   const [addComment] = useMutation(ADD_COMMENT_MUTATION);
    const [editComment] = useMutation(EDIT_COMMENT_MUTATION);
    const [deleteComment] = useMutation(DELETE_COMMENT_MUTATION);
 
@@ -180,8 +181,9 @@ const Comment = ({ comment, comments, type, id }) => {
    const [editedComment, setEditedComment] = useState(comment.comment);
 
    const [replying, setReplying] = useState(false);
+   const [reply, setReply] = useState('');
 
-   const sendNewComment = async () => {
+   const sendCommentUpdate = async () => {
       const indexOfEditedComment = comments.findIndex(
          currentComment => currentComment.id === comment.id
       );
@@ -206,29 +208,58 @@ const Comment = ({ comment, comments, type, id }) => {
       });
    };
 
-   /*
-   Because I'm confused by writing recursive graphql queries, we're solving the problem this way. This comment might be a reply, but in the original query we only check for replies one level deep.
+   const postReply = async () => {
+      // We don't need these till we set up optimistic response for replies
+      // const now = new Date();
+      // const newComment = {
+      //    __typename: 'Comment',
+      //    author: {
+      //       __typename: 'Member',
+      //       avatar: me.avatar,
+      //       displayName: me.displayName,
+      //       id: me.id,
+      //       rep: me.rep
+      //    },
+      //    comment: reply,
+      //    createdAt: now.toISOString(),
+      //    id: 'temporaryID',
+      //    updatedAt: now.toISOString()
+      // };
+      await addComment({
+         variables: {
+            comment: reply,
+            id,
+            type,
+            replyToID: comment.id
+         }
+      });
+      setReply('');
+      setReplying(false);
+   };
 
-   But, we did get all the comments on whatever type of stuff this is in the original query, and those will have the replies. So we're going to pluck the original instance of this comment out instead of using the one that was passed through props to check for replies, because the original one will always have replies but the prop one will only have replies at the top level.
-   */
    let replyElements;
-   const [originalComment] = comments.filter(
-      unrecursedComment => unrecursedComment.id === comment.id
-   );
-   if (originalComment == null) {
-      // When we delete a comment, it seems to still try to render even though it's not in comments anymore. So originalComment will be null and everything will get all fucked up. But since we deleted the comment, we don't need it anymore anyway, hence, return null.
-      return null;
-   }
-   if (originalComment?.replies?.length > 0) {
-      replyElements = originalComment.replies.map(reply => (
-         <Comment
-            comment={reply}
-            comments={comments}
-            key={reply.id}
-            type={type}
-            id={id}
-         />
-      ));
+   if (comment.replies?.length > 0) {
+      replyElements = comment.replies.map(replyData => {
+         /*
+         Because I'm confused by writing recursive graphql queries, we're solving the problem this way. In our original stuff query, we got all the comments and all their data. But the connected replies only go one level deep, so we can't tunnel down the replies field all the way. Instead, we just grab the full data from the original stuff query and pass that.
+         */
+         const [fullReplyData] = comments.filter(
+            fullData => fullData.id === replyData.id
+         );
+
+         // Deleted comments try to render sometime, even though they're not in comments anymore. But since they're deleted, we don't need to render them. Hence, return null.
+         if (fullReplyData == null) return null;
+
+         return (
+            <Comment
+               comment={fullReplyData}
+               comments={comments}
+               key={replyData.id}
+               type={type}
+               id={id}
+            />
+         );
+      });
    }
 
    return (
@@ -261,7 +292,8 @@ const Comment = ({ comment, comments, type, id }) => {
                      <CommentInput
                         currentComment={editedComment}
                         updateComment={setEditedComment}
-                        postComment={sendNewComment}
+                        postComment={sendCommentUpdate}
+                        isReply={comment.replyTo != null}
                      />
                   )}
                </div>
@@ -296,7 +328,7 @@ const Comment = ({ comment, comments, type, id }) => {
             )}
          </div>
          <div className="commentMeta">
-            <TimeAgo time={originalComment.createdAt} toggleable />
+            <TimeAgo time={comment.createdAt} toggleable />
             <a className="replyLink" onClick={() => setReplying(!replying)}>
                {replying ? 'Cancel Reply' : 'Reply'}
             </a>
@@ -304,12 +336,11 @@ const Comment = ({ comment, comments, type, id }) => {
          {replying && (
             <div className="replyInputWrapper">
                <CommentInput
-                  currentComment=""
-                  postComment={sendNewComment}
+                  currentComment={reply}
+                  updateComment={setReply}
+                  postComment={postReply}
                   replyToID={comment.id}
-                  stuffID={id}
-                  type={type}
-                  setReplying={setReplying}
+                  isReply
                />
             </div>
          )}

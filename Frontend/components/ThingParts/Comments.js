@@ -127,10 +127,12 @@ const ADD_COMMENT_MUTATION = gql`
 export { ADD_COMMENT_MUTATION };
 
 const Comments = ({ context }) => {
+   // Which kind of context we're using, i.e. what type of stuff this is, comes through props. Everything else gets pulled out of that.
    const { comments, id, __typename: type } = useContext(context);
 
    const { me } = useContext(MemberContext);
 
+   // This refers only to the input to add a new top-level comment. Replies are handled in their parent comment.
    const [currentComment, setCurrentComment] = useState('');
 
    let commentElements;
@@ -190,7 +192,7 @@ const Comments = ({ context }) => {
          },
          update: (client, { data }) => {
             if (data.__typename == null) {
-               // Our optimistic response includes a typename for the mutation, but the server's data doesn't
+               // Our optimistic response includes a typename for the mutation, but the server's data doesn't. So once we get the actual id of the new comment back from the server, we update the cache to add it.
                let query;
                switch (data.addComment.__typename) {
                   case 'Thing':
