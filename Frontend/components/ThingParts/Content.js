@@ -652,6 +652,8 @@ const Content = ({ context, canEdit, linkedPiece }) => {
       });
    };
 
+   if ((content == null || content.length === 0) && !canEdit) return null;
+
    let contentElements;
    if (content) {
       let orderedContent;

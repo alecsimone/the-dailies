@@ -99,7 +99,7 @@ const setFullThingToLoading = id => {
 export { setFullThingToLoading };
 
 const FullThing = ({ canEdit, linkedPiece }) => {
-   const { id, color, votes } = useContext(ThingContext) || {};
+   const { id, color, votes, content } = useContext(ThingContext) || {};
 
    const { lowContrastGrey } = useContext(ThemeContext);
 
@@ -127,12 +127,14 @@ const FullThing = ({ canEdit, linkedPiece }) => {
             <TaxBox key={`${id}-TagBox`} canEdit={canEdit} personal={false} />
             <TaxBox key={`${id}-StackBox`} canEdit={canEdit} personal />
          </div>
-         <Content
-            context={ThingContext}
-            linkedPiece={linkedPiece}
-            key={`${id}-Content`}
-            canEdit={canEdit}
-         />
+         {((content != null && content.length > 0) || canEdit) && (
+            <Content
+               context={ThingContext}
+               linkedPiece={linkedPiece}
+               key={`${id}-Content`}
+               canEdit={canEdit}
+            />
+         )}
          {id !== 'new' && (
             <Comments context={ThingContext} key={`${id}-Comments`} />
          )}
