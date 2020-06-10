@@ -1,5 +1,5 @@
 import styled, { ThemeContext } from 'styled-components';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { ThingContext } from '../../pages/thing';
 import Content from './Content';
@@ -98,10 +98,28 @@ const setFullThingToLoading = id => {
 };
 export { setFullThingToLoading };
 
-const FullThing = ({ canEdit, linkedPiece }) => {
+const FullThing = ({ canEdit, linkedPiece, linkedComment }) => {
    const { id, color, votes, content } = useContext(ThingContext) || {};
 
    const { lowContrastGrey } = useContext(ThemeContext);
+
+   // scroll to a highlighted content block or comment, if there is one
+   useEffect(() => {
+      const highlightedPiece = document.querySelector(
+         '.contentBlock.highlighted'
+      );
+      const highlightedComment = document.querySelector('.comment.highlighted');
+      if (highlightedPiece == null && highlightedComment == null) return;
+
+      const highlightedElement = highlightedPiece || highlightedComment;
+
+      const highlightedElementOffset = highlightedElement.offsetTop;
+
+      const thingPage = document.querySelector('.thingPage');
+      thingPage.scrollTop = highlightedElementOffset;
+      const mainSection = document.querySelector('.mainSection');
+      mainSection.scrollTop = highlightedElementOffset;
+   }, []);
 
    let highlightColor = lowContrastGrey;
    if (color != null) {
@@ -136,7 +154,11 @@ const FullThing = ({ canEdit, linkedPiece }) => {
             />
          )}
          {id !== 'new' && (
-            <Comments context={ThingContext} key={`${id}-Comments`} />
+            <Comments
+               context={ThingContext}
+               key={`${id}-Comments`}
+               linkedComment={linkedComment}
+            />
          )}
       </StyledFullThing>
    );

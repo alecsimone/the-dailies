@@ -106,6 +106,7 @@ const SingleThing = props => {
                   id={props.query.id}
                   key={props.query.id}
                   linkedPiece={props.query.piece}
+                  linkedComment={props.query.comment}
                   canEdit={canEdit}
                />
             );

@@ -533,21 +533,6 @@ const Content = ({ context, canEdit, linkedPiece }) => {
       };
    }, [stickifier]);
 
-   // scroll to a highlighted content block, if there is one
-   useEffect(() => {
-      const highlightedPiece = document.querySelector(
-         '.contentBlock.highlighted'
-      );
-      if (highlightedPiece == null) return;
-
-      const highlightedPieceOffset = highlightedPiece.offsetTop;
-
-      const thingPage = document.querySelector('.thingPage');
-      thingPage.scrollTop = highlightedPieceOffset;
-      const mainSection = document.querySelector('.mainSection');
-      mainSection.scrollTop = highlightedPieceOffset;
-   }, []);
-
    const sendNewContentPiece = async () => {
       setNewContentPiece('');
       content.push({

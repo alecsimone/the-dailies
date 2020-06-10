@@ -13,6 +13,9 @@ import EditThis from '../Icons/EditThis';
 import X from '../Icons/X';
 import DefaultAvatar from '../Icons/DefaultAvatar';
 import TimeAgo from '../TimeAgo';
+import TrashIcon from '../Icons/Trash';
+import LinkIcon from '../Icons/Link';
+import { home } from '../../config';
 
 const DELETE_COMMENT_MUTATION = gql`
    mutation DELETE_COMMENT_MUTATION(
@@ -102,6 +105,9 @@ const StyledComment = styled.div`
    border: 1px solid ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
    padding: 2rem;
    border-radius: 3px;
+   &.highlighted {
+      background: ${props => setAlpha(props.theme.lowContrastGrey, 0.2)};
+   }
    .commentContent {
       display: flex;
       align-items: stretch;
@@ -141,15 +147,20 @@ const StyledComment = styled.div`
          align-items: center;
          justify-items: space-between;
          svg {
-            width: 2rem;
-            height: 2rem;
-            opacity: 0.25;
+            width: ${props => props.theme.smallText};
             cursor: pointer;
+            margin-bottom: 1.5rem;
+            &.editThis {
+               opacity: 0.25;
+            }
+            &.trashIcon {
+               opacity: 0.8;
+            }
+            &.linkIcon {
+               opacity: 0.4;
+            }
             &:hover {
                opacity: 1;
-            }
-            &.editThis {
-               margin-top: 1rem;
             }
          }
       }
@@ -170,7 +181,7 @@ const StyledComment = styled.div`
    }
 `;
 
-const Comment = ({ comment, comments, type, id }) => {
+const Comment = ({ comment, comments, linkedComment, type, id }) => {
    const { me } = useContext(MemberContext);
 
    const [addComment] = useMutation(ADD_COMMENT_MUTATION);
@@ -182,6 +193,8 @@ const Comment = ({ comment, comments, type, id }) => {
 
    const [replying, setReplying] = useState(false);
    const [reply, setReply] = useState('');
+
+   const [copied, setCopied] = useState(false);
 
    const sendCommentUpdate = async () => {
       const indexOfEditedComment = comments.findIndex(
@@ -254,6 +267,7 @@ const Comment = ({ comment, comments, type, id }) => {
             <Comment
                comment={fullReplyData}
                comments={comments}
+               linkedComment={linkedComment}
                key={replyData.id}
                type={type}
                id={id}
@@ -263,7 +277,11 @@ const Comment = ({ comment, comments, type, id }) => {
    }
 
    return (
-      <StyledComment>
+      <StyledComment
+         className={
+            linkedComment === comment.id ? 'comment highlighted' : 'comment'
+         }
+      >
          <div className="commentContent">
             <div className="commentLeft">
                {comment.author.avatar != null ? (
@@ -298,34 +316,56 @@ const Comment = ({ comment, comments, type, id }) => {
                   )}
                </div>
             </div>
-            {me && me.id === comment.author.id && (
-               <div className="buttons">
-                  <X
+
+            <div className="buttons">
+               {me && me.id === comment.author.id && (
+                  <EditThis onClick={() => setEditing(!editing)} />
+               )}
+               {editing && (
+                  <TrashIcon
                      className="deleteCommentButton"
                      onClick={() => {
-                        const newComments = comments.filter(
-                           currentComment => currentComment.id !== comment.id
-                        );
-                        deleteComment({
-                           variables: {
-                              commentID: comment.id,
-                              stuffID: id,
-                              type
-                           },
-                           optimisticResponse: {
-                              __typename: 'Mutation',
-                              deleteComment: {
-                                 __typename: type,
-                                 id,
-                                 comments: newComments
+                        if (
+                           confirm(
+                              'Are you sure you want to delete that comment?'
+                           )
+                        ) {
+                           const newComments = comments.filter(
+                              currentComment => currentComment.id !== comment.id
+                           );
+                           deleteComment({
+                              variables: {
+                                 commentID: comment.id,
+                                 stuffID: id,
+                                 type
+                              },
+                              optimisticResponse: {
+                                 __typename: 'Mutation',
+                                 deleteComment: {
+                                    __typename: type,
+                                    id,
+                                    comments: newComments
+                                 }
                               }
-                           }
-                        });
+                           });
+                        }
                      }}
                   />
-                  <EditThis onClick={() => setEditing(!editing)} />
-               </div>
-            )}
+               )}
+               {copied ? (
+                  'copied'
+               ) : (
+                  <LinkIcon
+                     onClick={async () => {
+                        await navigator.clipboard.writeText(
+                           `${home}/thing?id=${id}&comment=${comment.id}`
+                        );
+                        setCopied(true);
+                        setTimeout(() => setCopied(false), 3000);
+                     }}
+                  />
+               )}
+            </div>
          </div>
          <div className="commentMeta">
             <TimeAgo time={comment.createdAt} toggleable />

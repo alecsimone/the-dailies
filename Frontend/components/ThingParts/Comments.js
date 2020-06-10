@@ -126,7 +126,7 @@ const ADD_COMMENT_MUTATION = gql`
 `;
 export { ADD_COMMENT_MUTATION };
 
-const Comments = ({ context }) => {
+const Comments = ({ context, linkedComment }) => {
    // Which kind of context we're using, i.e. what type of stuff this is, comes through props. Everything else gets pulled out of that.
    const { comments, id, __typename: type } = useContext(context);
 
@@ -147,6 +147,7 @@ const Comments = ({ context }) => {
             comment={comment}
             comments={comments}
             key={comment.id}
+            linkedComment={linkedComment}
             type={type}
             id={id}
          />

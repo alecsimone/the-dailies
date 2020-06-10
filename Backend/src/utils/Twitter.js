@@ -402,6 +402,7 @@ const fetchTweet = async (tweetID, ctx) => {
       }
    });
    const tweetJson = await tweet.json();
+   tweetJson.favorited = false;
    ctx.db.mutation.createTweet({
       data: {
          id_str: tweetJson.id_str,
