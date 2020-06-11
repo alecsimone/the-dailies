@@ -416,13 +416,42 @@ async function deleteComment(parent, { commentID, stuffID, type }, ctx, info) {
    loggedInGate(ctx);
    fullMemberGate(ctx.req.member);
 
-   const dataObj = {
-      comments: {
-         delete: {
-            id: commentID
+   const oldComment = await ctx.db.query.comment({
+      where: {
+         id: commentID
+      }
+   }, `{replies {id}}`);
+
+   let dataObj;
+   // If the comment has replies, we just want to set its text to [deleted]. Otherwise we can actually delete it.
+   if (oldComment && oldComment.replies != null && oldComment.replies.length > 0) {
+      dataObj = {
+         comments: {
+            update: {
+               where: {
+                  id: commentID
+               },
+               data: {
+                  comment: '//[deleted]//',
+                  author: {
+                     connect: {
+                        id: 'deleted'
+                     }
+                  },
+               }
+            }
+         }
+      }
+   } else {
+      dataObj = {
+         comments: {
+            delete: {
+               id: commentID
+            }
          }
       }
    }
+
 
    const updatedStuff = await properUpdateStuff(dataObj, stuffID, type, ctx);
    return updatedStuff;

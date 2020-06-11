@@ -131,6 +131,9 @@ const StyledComment = styled.div`
                color: ${props => props.theme.majorColor};
                margin-right: 0.5rem;
                font-weight: 700;
+               &.deleted {
+                  color: ${props => props.theme.lowContrastGrey};
+               }
             }
             p:first-of-type {
                display: inline;
@@ -276,6 +279,32 @@ const Comment = ({ comment, comments, linkedComment, type, id }) => {
       });
    }
 
+   let authorAvatar = <DefaultAvatar className="avatar" />;
+   let authorLink = (
+      <Link
+         href={{
+            pathname: '/member',
+            query: { id: comment.author.id }
+         }}
+      >
+         <a
+            className={
+               comment.author.id === 'deleted' ? 'author deleted' : 'author'
+            }
+         >
+            {comment.author.displayName}
+         </a>
+      </Link>
+   );
+   if (comment.author.id === 'deleted') {
+      authorAvatar = null;
+      authorLink = null;
+   } else if (comment.author.avatar != null) {
+      authorAvatar = (
+         <img className="avatar" src={comment.author.avatar} alt="avatar" />
+      );
+   }
+
    return (
       <StyledComment
          className={
@@ -284,26 +313,9 @@ const Comment = ({ comment, comments, linkedComment, type, id }) => {
       >
          <div className="commentContent">
             <div className="commentLeft">
-               {comment.author.avatar != null ? (
-                  <img
-                     className="avatar"
-                     src={comment.author.avatar}
-                     alt="avatar"
-                  />
-               ) : (
-                  <DefaultAvatar className="avatar" />
-               )}
+               {authorAvatar}
                <div className="commentAndAuthorContainer">
-                  {!editing && (
-                     <Link
-                        href={{
-                           pathname: '/member',
-                           query: { id: comment.author.id }
-                        }}
-                     >
-                        <a className="author">{comment.author.displayName}</a>
-                     </Link>
-                  )}
+                  {!editing && authorLink}
                   {!editing ? (
                      <RichText text={comment.comment} />
                   ) : (
@@ -330,9 +342,30 @@ const Comment = ({ comment, comments, linkedComment, type, id }) => {
                               'Are you sure you want to delete that comment?'
                            )
                         ) {
-                           const newComments = comments.filter(
-                              currentComment => currentComment.id !== comment.id
-                           );
+                           let newComments;
+                           if (
+                              comment.replies != null &&
+                              comment.replies.length > 0
+                           ) {
+                              const commentIndex = comments.findIndex(
+                                 comm => comm.id === comment.id
+                              );
+                              newComments = [...comments];
+                              newComments[commentIndex].comment =
+                                 '//[deleted]//';
+                              newComments[commentIndex].author = {
+                                 displayName: 'Deleted',
+                                 id: 'deleted',
+                                 avatar: null
+                              };
+                              console.log(newComments[commentIndex].author);
+                              setEditing(false);
+                           } else {
+                              newComments = comments.filter(
+                                 currentComment =>
+                                    currentComment.id !== comment.id
+                              );
+                           }
                            deleteComment({
                               variables: {
                                  commentID: comment.id,
