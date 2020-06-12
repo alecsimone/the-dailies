@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import Reorder from 'react-reorder';
 import { setAlpha, setLightness } from '../../styles/functions';
 import ContentPiece from './ContentPiece';
-import ContentInput from './ContentInput';
+import RichTextArea from '../RichTextArea';
 import { checkForNewThingRedirect } from '../../lib/ThingHandling';
 import { SINGLE_THING_QUERY } from '../../pages/thing';
 import { SINGLE_TAX_QUERY } from '../../pages/tag';
@@ -738,11 +738,13 @@ const Content = ({ context, canEdit, linkedPiece }) => {
       <StyledContent className="content">
          {contentElements}
          {canEdit && (
-            <ContentInput
-               currentContent={newContentPiece}
-               updateContent={setNewContentPiece}
-               postContent={sendNewContentPiece}
-               id={id}
+            <RichTextArea
+               text={newContentPiece}
+               setText={setNewContentPiece}
+               postText={sendNewContentPiece}
+               placeholder="Add content"
+               buttonText="add"
+               id={`${id}-content`}
             />
          )}
          {canEdit && (

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import ContentInput from './ContentInput';
 import RichText from '../RichText';
+import RichTextArea from '../RichTextArea';
 import EditThis from '../Icons/EditThis';
 import TrashIcon from '../Icons/Trash';
 import LinkIcon from '../Icons/Link';
@@ -40,11 +40,13 @@ const ContentPiece = ({
       content = <RichText text={rawContentString} key={id} />;
    } else {
       content = (
-         <ContentInput
-            currentContent={editedContent}
-            updateContent={setEditedContent}
-            postContent={postContent}
+         <RichTextArea
+            text={editedContent}
+            setText={setEditedContent}
+            postText={postContent}
             setEditable={setEditable}
+            placeholder="Add content"
+            buttonText="add"
             id={id}
          />
       );

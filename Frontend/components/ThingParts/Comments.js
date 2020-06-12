@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { useMutation } from '@apollo/react-hooks';
 import { MemberContext } from '../Account/MemberProvider';
 import Comment from './Comment';
-import CommentInput from './CommentInput';
+import RichTextArea from '../RichTextArea';
 import { SINGLE_THING_QUERY } from '../../pages/thing';
 import { SINGLE_TAX_QUERY } from '../../pages/tag';
 import { setAlpha } from '../../styles/functions';
@@ -27,6 +27,42 @@ const StyledComments = styled.section`
    }
    .noComments {
       margin: 2rem;
+   }
+   .richTextArea {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      textarea {
+         width: 100%;
+         height: calc(5rem + 3px);
+         position: relative;
+      }
+      button {
+         margin: 1rem 0;
+         padding: 0.6rem;
+         font-size: ${props => props.theme.smallText};
+         font-weight: 500;
+         &.post {
+            background: ${props => setAlpha(props.theme.majorColor, 0.8)};
+            color: ${props => props.theme.mainText};
+            &:hover {
+               background: ${props => props.theme.majorColor};
+               box-shadow: 0 0 6px
+                  ${props => setAlpha(props.theme.majorColor, 0.6)};
+            }
+         }
+      }
+      .postButtonWrapper {
+         width: 100%;
+         /* text-align: right; */
+         display: flex;
+         justify-content: space-between;
+         .styleGuideLink {
+            opacity: 0.7;
+            display: inline-block;
+            font-size: ${props => props.theme.tinyText};
+         }
+      }
    }
 `;
 
@@ -231,11 +267,13 @@ const Comments = ({ context, linkedComment }) => {
          <header>COMMENTS</header>
          {commentElements}
          {me && (
-            <CommentInput
-               currentComment={currentComment}
-               updateComment={setCurrentComment}
-               postComment={sendNewComment}
-               id={id}
+            <RichTextArea
+               text={currentComment}
+               setText={setCurrentComment}
+               postText={sendNewComment}
+               placeholder="Add comment"
+               buttonText="comment"
+               id={`${id}-comment`}
             />
          )}
       </StyledComments>

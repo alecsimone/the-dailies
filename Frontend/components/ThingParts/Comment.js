@@ -6,6 +6,7 @@ import { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { MemberContext } from '../Account/MemberProvider';
 import RichText from '../RichText';
+import RichTextArea from '../RichTextArea';
 import CommentInput from './CommentInput';
 import { ADD_COMMENT_MUTATION } from './Comments';
 import { setAlpha, setLightness } from '../../styles/functions';
@@ -319,11 +320,14 @@ const Comment = ({ comment, comments, linkedComment, type, id }) => {
                   {!editing ? (
                      <RichText text={comment.comment} />
                   ) : (
-                     <CommentInput
-                        currentComment={editedComment}
-                        updateComment={setEditedComment}
-                        postComment={sendCommentUpdate}
-                        isReply={comment.replyTo != null}
+                     <RichTextArea
+                        text={editedComment}
+                        setText={setEditedComment}
+                        postText={sendCommentUpdate}
+                        setEditable={setEditing}
+                        placeholder="Add comment"
+                        buttonText="comment"
+                        id={comment.id}
                      />
                   )}
                </div>
@@ -408,12 +412,14 @@ const Comment = ({ comment, comments, linkedComment, type, id }) => {
          </div>
          {replying && (
             <div className="replyInputWrapper">
-               <CommentInput
-                  currentComment={reply}
-                  updateComment={setReply}
-                  postComment={postReply}
-                  replyToID={comment.id}
-                  isReply
+               <RichTextArea
+                  text={reply}
+                  setText={setReply}
+                  postText={postReply}
+                  setEditable={setReplying}
+                  placeholder="Add reply"
+                  buttonText="reply"
+                  id={`${comment.id}-reply`}
                />
             </div>
          )}
