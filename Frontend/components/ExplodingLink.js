@@ -1,9 +1,10 @@
 import { useContext } from 'react';
 import PropTypes from 'prop-types';
-import { TwitterTweetEmbed } from 'react-twitter-embed';
+import Link from 'next/link';
 import { MemberContext } from './Account/MemberProvider';
 import CardGenerator from './ThingCards/CardGenerator';
 import {
+   getThingQueryFromLink,
    getYoutubeVideoIdFromLink,
    getGfycatSlugFromLink,
    getTweetIDFromLink,
@@ -55,21 +56,38 @@ const ExplodingLink = ({
                match.groups.text.length - 1
             );
             return (
-               <a
-                  href={`${home}/thing?id=${match.groups.href}`}
-                  target={target}
+               <Link
+                  href={{
+                     pathname: '/thing',
+                     query: { id: match.groups.href }
+                  }}
                >
-                  <RichText text={linkText} key={match.groups.text} />
-               </a>
+                  <a target={target}>
+                     <RichText text={linkText} key={match.groups.text} />
+                  </a>
+               </Link>
             );
          }
 
-         let { href } = match.groups;
-         let target = '_blank';
+         const { href } = match.groups;
+         const target = '_blank';
          const linkCheck = href.match(urlFinder);
-         if (linkCheck == null) {
-            href = `${home}/thing?id=${href}`;
-            target = '_self';
+         if (linkCheck == null || href.includes(homeNoHTTP)) {
+            return (
+               <Link
+                  href={{
+                     pathname: '/thing',
+                     query: getThingQueryFromLink(href)
+                  }}
+               >
+                  <a>
+                     <RichText
+                        text={match.groups.text}
+                        key={match.groups.text}
+                     />
+                  </a>
+               </Link>
+            );
          }
 
          return (

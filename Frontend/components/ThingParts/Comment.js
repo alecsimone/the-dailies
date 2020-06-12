@@ -7,7 +7,6 @@ import PropTypes from 'prop-types';
 import { MemberContext } from '../Account/MemberProvider';
 import RichText from '../RichText';
 import RichTextArea from '../RichTextArea';
-import CommentInput from './CommentInput';
 import { ADD_COMMENT_MUTATION } from './Comments';
 import { setAlpha, setLightness } from '../../styles/functions';
 import EditThis from '../Icons/EditThis';

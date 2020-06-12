@@ -193,6 +193,7 @@ const RichTextArea = ({
 
    const chooseResult = () => {
       const thisInput = document.querySelector(`#${id}`);
+      if (thisInput == null) return;
 
       // A search can be triggered by a few different key phrases (see:, [p:", etc). So we need to get the letters before the cursor to know what it was, as it changes how we close the link we will ultimately generate. They all are kicked off by a quote though, so we'll get the most recent quote and work back from there
       const selectionPoint = thisInput.selectionStart;

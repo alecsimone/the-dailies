@@ -125,6 +125,7 @@ const TitleBar = ({ context, limit, canEdit = true }) => {
          }
          window.removeEventListener('click', clickOutsideDetector);
          const titleInput = document.querySelector('#titleInput');
+         if (titleInput == null) return;
          titleInput.spellcheck = false;
       }
    };

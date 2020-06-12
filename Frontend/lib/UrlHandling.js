@@ -1,4 +1,5 @@
 import { homeNoHTTP } from '../config';
+import { stringToObject } from './TextHandling';
 
 const isVideo = url => {
    if (url == null) return false;
@@ -54,6 +55,41 @@ const isExplodingLink = url => {
    return false;
 };
 export { isExplodingLink };
+
+const getThingIdFromLink = url => {
+   if (!url.includes(homeNoHTTP)) return;
+
+   const lowerCasedURL = url.toLowerCase();
+
+   const idStartPos = lowerCasedURL.indexOf('id=');
+   const allParamsAfterAndIncludingID = lowerCasedURL.substring(idStartPos);
+   let wholeIDParam;
+   if (allParamsAfterAndIncludingID.includes('&')) {
+      wholeIDParam = allParamsAfterAndIncludingID.substring(
+         0,
+         allParamsAfterAndIncludingID.indexOf('&')
+      );
+   } else {
+      wholeIDParam = allParamsAfterAndIncludingID;
+   }
+
+   const id = wholeIDParam.substring(3);
+   return id;
+};
+export { getThingIdFromLink };
+
+const getThingQueryFromLink = url => {
+   if (!url.includes(homeNoHTTP)) return;
+
+   const lowerCasedURL = url.toLowerCase();
+
+   const queryStartPos = lowerCasedURL.indexOf('?');
+   const queryString = lowerCasedURL.substring(queryStartPos + 1);
+
+   const query = stringToObject(queryString, '=&');
+   return query;
+};
+export { getThingQueryFromLink };
 
 const getYoutubeVideoIdFromLink = url => {
    const lowerCaseURL = url.toLowerCase();
