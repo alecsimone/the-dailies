@@ -121,6 +121,8 @@ const encloseSelectedText = (e, textRef, setText) => {
       closer = `"`;
    } else if (e.key === "'") {
       closer = `'`;
+   } else if (e.key === '<') {
+      closer = '>';
    } else if (e.key === '`') {
       closer = '`';
    }
@@ -297,9 +299,12 @@ const RichTextArea = ({
             e.key === '[' ||
             e.key === '{' ||
             e.key === '"' ||
+            e.key === '<' ||
+            e.key === '`' ||
             e.key === "'") &&
          e.target.selectionStart !== e.target.selectionEnd
       ) {
+         console.log('hi');
          encloseSelectedText(e, textRef, setText);
       }
    };

@@ -154,7 +154,7 @@ const StyledComment = styled.div`
             cursor: pointer;
             margin-bottom: 1.5rem;
             &.editThis {
-               opacity: 0.25;
+               opacity: 0.4;
             }
             &.trashIcon {
                opacity: 0.8;

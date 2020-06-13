@@ -261,7 +261,7 @@ const StyledContent = styled.section`
             opacity: 0.8;
          }
          &.editThis {
-            opacity: 0.25;
+            opacity: 0.4;
          }
          &.reorder {
             opacity: 0.4;

@@ -223,6 +223,13 @@ const Styling = props => (
                      and not like a twitter mention.
                   </p>
                </li>
+               <li>
+                  <h4>Enclose selected text</h4>
+                  As a fun little bonus, if you have text selected and type
+                  either a{' '}
+                  <span className="emphasis">{`(, [, \{, \", \', or \``}</span>,
+                  we'll wrap that text in that kind of character.
+               </li>
             </ul>
          </StyledCheatSheet>
       </div>
