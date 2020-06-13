@@ -81,7 +81,8 @@ const Styling = props => (
                   <p>
                      Enclosing text in asterisks,{' '}
                      <span className="emphasis">**like so**</span> makes it bold
-                     and bright.
+                     and bright. You can also add these by pressing ctrl/cmd +
+                     b, with or without text selected.
                   </p>
                </li>
                <li>
@@ -89,7 +90,8 @@ const Styling = props => (
                   <p>
                      Enclosing text in underscores,{' '}
                      <span className="emphasis">__like so__</span> underlines
-                     it.
+                     it. You can also add these by pressing ctrl/cmd + u, with
+                     or without text selected.
                   </p>
                </li>
                <li>
@@ -97,7 +99,8 @@ const Styling = props => (
                   <p>
                      Enclosing text in forward slashes,{' '}
                      <span className="emphasis">//like so//</span> italicizes
-                     it.
+                     it. You can also add these by pressing ctrl/cmd + i, with
+                     or without text selected.
                   </p>
                </li>
                <li>

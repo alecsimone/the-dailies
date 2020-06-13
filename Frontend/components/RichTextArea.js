@@ -106,6 +106,28 @@ const autoCloseBracketLink = (e, textRef, setText) => {
    }
 };
 
+const wrapTextWithTag = (e, tag, textRef, setText) => {
+   const thisInput = e.target;
+   const { selectionStart, selectionEnd } = e.target;
+
+   const before = textRef.current.substring(0, selectionStart);
+   const selection = textRef.current.substring(selectionStart, selectionEnd);
+   const after = textRef.current.substring(selectionEnd);
+   const newText = `${before}${tag}${selection}${tag}${after}`;
+
+   setText(newText);
+   textRef.current = newText;
+   // we need to make sure the text has changed before we set the new selection, otherwise it won't be based on the updated text
+   window.setTimeout(
+      () =>
+         thisInput.setSelectionRange(
+            selectionStart + tag.length,
+            selectionEnd + tag.length
+         ),
+      1
+   );
+};
+
 const encloseSelectedText = (e, textRef, setText) => {
    e.preventDefault();
 
@@ -307,6 +329,19 @@ const RichTextArea = ({
          e.target.selectionStart !== e.target.selectionEnd
       ) {
          encloseSelectedText(e, textRef, setText);
+         return;
+      }
+      if (e.key === 'b' && (e.ctrlKey || e.metaKey)) {
+         e.preventDefault();
+         wrapTextWithTag(e, '**', textRef, setText);
+      }
+      if (e.key === 'i' && (e.ctrlKey || e.metaKey)) {
+         e.preventDefault();
+         wrapTextWithTag(e, '//', textRef, setText);
+      }
+      if (e.key === 'u' && (e.ctrlKey || e.metaKey)) {
+         e.preventDefault();
+         wrapTextWithTag(e, '__', textRef, setText);
       }
    };
 
