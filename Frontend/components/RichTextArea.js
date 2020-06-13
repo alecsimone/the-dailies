@@ -54,19 +54,21 @@ const getCursorXY = (input, selectionPoint) => {
    if (input.tagName === 'TEXTAREA') div.style.height = 'auto';
    // if a single line input then the div needs to be single line and not break out like a text area
    if (input.tagName === 'INPUT') div.style.width = 'auto';
+   div.style.display = 'block'; // My addition: if the parent isn't display block, the offsetTop won't work
    // create a marker element to obtain caret position
    const span = document.createElement('span');
    // give the span the textContent of remaining content so that the recreated dummy element is as close as possible
    span.textContent = inputValue.substr(selectionPoint) || '.';
    // append the span marker to the div
    div.appendChild(span);
-   // append the dummy element to the body
-   document.body.appendChild(div);
+   // append the dummy element to the parent (My change. The original code had it on the document body, but then it isn't really constrained by the size of its parent and thus doesn't yield the proper spanY)
+   const parent = input.parentElement;
+   parent.appendChild(div);
    // get the marker position, this is the caret position top and left relative to the input
    const { offsetLeft: spanX, offsetTop: spanY } = span;
    // lastly, remove that dummy element
    // NOTE:: can comment this out for debugging purposes if you want to see where that span is rendered
-   document.body.removeChild(div);
+   parent.removeChild(div);
    // return an object with the x and y of the caret. account for input positioning so that you don't need to wrap the input
    return {
       x: inputX + spanX,
@@ -304,7 +306,6 @@ const RichTextArea = ({
             e.key === "'") &&
          e.target.selectionStart !== e.target.selectionEnd
       ) {
-         console.log('hi');
          encloseSelectedText(e, textRef, setText);
       }
    };
