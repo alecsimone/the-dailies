@@ -72,7 +72,24 @@ const ExplodingLink = ({
          const { href } = match.groups;
          const target = '_blank';
          const linkCheck = href.match(urlFinder);
-         if (linkCheck == null || href.includes(homeNoHTTP)) {
+         if (linkCheck == null) {
+            return (
+               <Link
+                  href={{
+                     pathname: '/thing',
+                     query: { id: href }
+                  }}
+               >
+                  <a>
+                     <RichText
+                        text={match.groups.text}
+                        key={match.groups.text}
+                     />
+                  </a>
+               </Link>
+            );
+         }
+         if (href.includes(homeNoHTTP)) {
             return (
                <Link
                   href={{
