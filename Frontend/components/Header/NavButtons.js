@@ -90,8 +90,8 @@ const StyledNav = styled.nav`
    }
 `;
 
-const NavButtons = ({ showSearch, setShowSearch }) => {
-   const [searchTerm, setSearchTerm] = useState('');
+const NavButtons = ({ showSearch, setShowSearch, search }) => {
+   const [searchTerm, setSearchTerm] = useState(search || '');
    const [newBlankThing] = useMutation(NEW_BLANK_THING, {
       onCompleted: data => {
          Router.push({

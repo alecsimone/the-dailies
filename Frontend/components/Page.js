@@ -475,13 +475,13 @@ const StyledPage = styled.div`
    height: 100vh;
 `;
 
-const Page = ({ children }) => (
+const Page = ({ children, pageProps }) => (
    <MemberProvider>
       <ThemeProvider theme={theme}>
          <ModalProvider>
             <StyledPage id="page">
                <Meta />
-               <Header />
+               <Header pageProps={pageProps} />
                <>
                   <GlobalStyle />
                   {children}

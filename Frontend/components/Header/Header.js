@@ -87,14 +87,23 @@ const StyledHeader = styled.div`
    }
 `;
 
-const Header = () => {
+const Header = ({ pageProps }) => {
    const [showSearch, setShowSearch] = useState(false);
    const { me } = useContext(MemberContext);
+
+   let search;
+   if (pageProps != null && pageProps?.query?.s != null) {
+      search = pageProps.query.s;
+   }
 
    return (
       <StyledHeader id="header">
          <div className={`headerContents${showSearch ? ' showSearch' : ''}`}>
-            <NavButtons showSearch={showSearch} setShowSearch={setShowSearch} />
+            <NavButtons
+               showSearch={showSearch}
+               setShowSearch={setShowSearch}
+               search={search}
+            />
             <LogoBox />
             <div className="memberColumn">
                {me && <NotificationsIcon />}
