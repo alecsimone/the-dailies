@@ -249,7 +249,6 @@ const Comments = ({ context, linkedComment }) => {
                   query,
                   variables: { id }
                });
-               console.log(oldData);
                oldData[data.addComment.__typename.toLowerCase()].comments =
                   data.addComment.comments;
                client.writeQuery({

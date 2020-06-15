@@ -187,7 +187,9 @@ const StyledComment = styled.div`
 const Comment = ({ comment, comments, linkedComment, type, id }) => {
    const { me } = useContext(MemberContext);
 
-   const [addComment] = useMutation(ADD_COMMENT_MUTATION);
+   const [addComment] = useMutation(ADD_COMMENT_MUTATION, {
+      onCompleted: data => console.log(data)
+   });
    const [editComment] = useMutation(EDIT_COMMENT_MUTATION);
    const [deleteComment] = useMutation(DELETE_COMMENT_MUTATION);
 
@@ -225,32 +227,55 @@ const Comment = ({ comment, comments, linkedComment, type, id }) => {
    };
 
    const postReply = async () => {
-      // We don't need these till we set up optimistic response for replies
-      // const now = new Date();
-      // const newComment = {
-      //    __typename: 'Comment',
-      //    author: {
-      //       __typename: 'Member',
-      //       avatar: me.avatar,
-      //       displayName: me.displayName,
-      //       id: me.id,
-      //       rep: me.rep
-      //    },
-      //    comment: reply,
-      //    createdAt: now.toISOString(),
-      //    id: 'temporaryID',
-      //    updatedAt: now.toISOString()
-      // };
+      const now = new Date();
+      const newComment = {
+         __typename: 'Comment',
+         author: {
+            __typename: 'Member',
+            avatar: me.avatar,
+            displayName: me.displayName,
+            id: me.id,
+            rep: me.rep
+         },
+         comment: reply,
+         createdAt: now.toISOString(),
+         id: 'temporaryID',
+         replyTo: {
+            __typename: 'Comment',
+            id: comment.id
+         },
+         updatedAt: now.toISOString()
+      };
+      comments.push(newComment);
+
+      const originalCommentIndex = comments.findIndex(
+         fullData => fullData.id === comment.id
+      );
+      if (
+         originalCommentIndex != null &&
+         comments[originalCommentIndex] != null
+      ) {
+         comments[originalCommentIndex].replies.push(newComment);
+      }
+      setReply('');
+      setReplying(false);
+
       await addComment({
          variables: {
             comment: reply,
             id,
             type,
             replyToID: comment.id
+         },
+         optimisticResponse: {
+            __typename: 'Mutation',
+            addComment: {
+               __typename: type,
+               id,
+               comments
+            }
          }
       });
-      setReply('');
-      setReplying(false);
    };
 
    let replyElements;
@@ -361,7 +386,6 @@ const Comment = ({ comment, comments, linkedComment, type, id }) => {
                                  id: 'deleted',
                                  avatar: null
                               };
-                              console.log(newComments[commentIndex].author);
                               setEditing(false);
                            } else {
                               newComments = comments.filter(

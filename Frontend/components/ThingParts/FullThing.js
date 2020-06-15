@@ -116,10 +116,8 @@ const FullThing = ({ canEdit, linkedPiece, linkedComment }) => {
 
       const thingPage = document.querySelector('.thingPage');
       thingPage.scrollTop = highlightedElementOffset;
-      console.log(thingPage.scrollTop, highlightedElementOffset);
       const mainSection = document.querySelector('.mainSection');
       mainSection.scrollTop = highlightedElementOffset;
-      console.log(mainSection.scrollTop, highlightedElementOffset);
    }, []);
 
    let highlightColor = lowContrastGrey;
