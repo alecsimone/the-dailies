@@ -30,6 +30,33 @@ const StyledTweets = styled.section`
             }
             opacity: 0.9;
             font-weight: 200;
+            display: flex;
+            align-items: center;
+            button {
+               border: none;
+               padding: 0;
+               &:hover {
+                  background: none;
+               }
+               svg {
+                  width: ${props => props.theme.smallText};
+                  margin-left: 1rem;
+                  opacity: .8;
+                  cursor: pointer;
+                  &:hover {
+                     opacity: 1;
+                  }
+                  &.loading {
+                     ${props => props.theme.spinBackward};
+                  }
+                  path {
+                     stroke: ${props => props.theme.mainText};
+                  }
+                  polygon {
+                     fill: ${props => props.theme.mainText};
+                  }
+               }
+            }
          }
          .tweeterColumnsContainer {
             display: flex;
@@ -423,7 +450,16 @@ const Tweets = ({
       tweetContent = (
          <div className="tweeters">
             <div className="remainingCounters">
-               {tweetsRemaining} tweets / {tweetersRemaining} tweeters
+               {tweetsRemaining} tweets / {tweetersRemaining} tweeters{' '}
+               <button
+                  id="refreshButton"
+                  onClick={e => {
+                     e.target.classList.add('loading');
+                     refreshList();
+                  }}
+               >
+                  <ResetIcon />
+               </button>
             </div>
             <div className="tweeterColumnsContainer">{tweetElements}</div>
          </div>
