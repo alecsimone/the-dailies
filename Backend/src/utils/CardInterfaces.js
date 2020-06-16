@@ -92,6 +92,18 @@ const commentFields = `
          }
       }
       comment
+      votes {
+         __typename
+         id
+         voter {
+            __typename
+            id
+            displayName
+            rep
+            avatar
+         }
+         value
+      }
       createdAt
       updatedAt
    }
@@ -101,6 +113,7 @@ const commentFields = `
       author {
          __typename
          id
+         displayName
          avatar
          rep
          friends {
@@ -109,6 +122,18 @@ const commentFields = `
          }
       }
       comment
+      votes {
+         __typename
+         id
+         voter {
+            __typename
+            id
+            displayName
+            rep
+            avatar
+         }
+         value
+      }
       createdAt
       updatedAt
    }

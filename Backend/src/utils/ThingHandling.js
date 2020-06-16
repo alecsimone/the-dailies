@@ -28,7 +28,6 @@ async function updateStuffAndNotifySubs(data, id, type, ctx) {
    } else if (type === 'Comment') {
       fields = commentFields;
    }
-
    const updatedStuff = await ctx.db.mutation[mutationType](
       {
          where: {

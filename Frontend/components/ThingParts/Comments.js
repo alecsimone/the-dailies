@@ -9,6 +9,7 @@ import RichTextArea from '../RichTextArea';
 import { SINGLE_THING_QUERY } from '../../pages/thing';
 import { SINGLE_TAX_QUERY } from '../../pages/tag';
 import { setAlpha } from '../../styles/functions';
+import { commentFields } from '../../lib/CardInterfaces';
 
 const StyledComments = styled.section`
    padding: 1rem;
@@ -83,78 +84,21 @@ const ADD_COMMENT_MUTATION = gql`
             __typename
             id
             comments {
-               __typename
-               id
-               author {
-                  __typename
-                  id
-                  displayName
-                  avatar
-                  rep
-               }
-               comment
-               createdAt
-               updatedAt
+               ${commentFields}
             }
          }
          ... on Stack {
             __typename
             id
             comments {
-               __typename
-               id
-               author {
-                  __typename
-                  id
-                  displayName
-                  avatar
-                  rep
-               }
-               comment
-               createdAt
-               updatedAt
+               ${commentFields}
             }
          }
          ... on Thing {
             __typename
             id
             comments {
-               __typename
-               id
-               author {
-                  __typename
-                  id
-                  displayName
-                  avatar
-                  rep
-               }
-               comment
-               replies {
-                  __typename
-                  id
-                  author {
-                     __typename
-                     id
-                     displayName
-                     avatar
-                     rep
-                  }
-                  comment
-               }
-               replyTo {
-                  __typename
-                  id
-                  author {
-                     __typename
-                     id
-                     displayName
-                     avatar
-                     rep
-                  }
-                  comment
-               }
-               createdAt
-               updatedAt
+               ${commentFields}
             }
          }
       }

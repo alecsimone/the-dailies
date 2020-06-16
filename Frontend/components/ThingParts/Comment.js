@@ -8,6 +8,8 @@ import { MemberContext } from '../Account/MemberProvider';
 import RichText from '../RichText';
 import RichTextArea from '../RichTextArea';
 import { ADD_COMMENT_MUTATION } from './Comments';
+import { SINGLE_THING_QUERY } from '../../pages/thing';
+import { SINGLE_TAX_QUERY } from '../../pages/tag';
 import { setAlpha, setLightness } from '../../styles/functions';
 import EditThis from '../Icons/EditThis';
 import X from '../Icons/X';
@@ -17,6 +19,7 @@ import TrashIcon from '../Icons/Trash';
 import LinkIcon from '../Icons/Link';
 import { home } from '../../config';
 import VoteBar from './VoteBar';
+import { commentFields } from '../../lib/CardInterfaces';
 
 const DELETE_COMMENT_MUTATION = gql`
    mutation DELETE_COMMENT_MUTATION(
@@ -29,27 +32,21 @@ const DELETE_COMMENT_MUTATION = gql`
             __typename
             id
             comments {
-               __typename
-               id
-               comment
+               ${commentFields}
             }
          }
          ... on Tag {
             __typename
             id
             comments {
-               __typename
-               id
-               comment
+               ${commentFields}
             }
          }
          ... on Stack {
             __typename
             id
             comments {
-               __typename
-               id
-               comment
+               ${commentFields}
             }
          }
       }
@@ -73,27 +70,21 @@ const EDIT_COMMENT_MUTATION = gql`
             __typename
             id
             comments {
-               __typename
-               id
-               comment
+               ${commentFields}
             }
          }
          ... on Tag {
             __typename
             id
             comments {
-               __typename
-               id
-               comment
+               ${commentFields}
             }
          }
          ... on Stack {
             __typename
             id
             comments {
-               __typename
-               id
-               comment
+               ${commentFields}
             }
          }
       }
@@ -208,9 +199,7 @@ const StyledComment = styled.div`
 const Comment = ({ comment, comments, linkedComment, type, id }) => {
    const { me } = useContext(MemberContext);
 
-   const [addComment] = useMutation(ADD_COMMENT_MUTATION, {
-      onCompleted: data => console.log(data)
-   });
+   const [addComment] = useMutation(ADD_COMMENT_MUTATION);
    const [editComment] = useMutation(EDIT_COMMENT_MUTATION);
    const [deleteComment] = useMutation(DELETE_COMMENT_MUTATION);
 
@@ -263,8 +252,11 @@ const Comment = ({ comment, comments, linkedComment, type, id }) => {
          id: 'temporaryID',
          replyTo: {
             __typename: 'Comment',
-            id: comment.id
+            id: comment.id,
+            author: comment.author,
+            comment: comment.comment
          },
+         replies: [],
          votes: [],
          updatedAt: now.toISOString()
       };
@@ -281,7 +273,6 @@ const Comment = ({ comment, comments, linkedComment, type, id }) => {
       }
       setReply('');
       setReplying(false);
-
       await addComment({
          variables: {
             comment: reply,
@@ -295,6 +286,37 @@ const Comment = ({ comment, comments, linkedComment, type, id }) => {
                __typename: type,
                id,
                comments
+            }
+         },
+         update: (client, { data }) => {
+            if (data.__typename == null) {
+               // Our optimistic response includes a typename for the mutation, but the server's data doesn't. So once we get the actual id of the new comment back from the server, we update the cache to add it.
+               let query;
+               switch (data.addComment.__typename) {
+                  case 'Thing':
+                     query = SINGLE_THING_QUERY;
+                     break;
+                  case 'Tag':
+                     query = SINGLE_TAX_QUERY;
+                     break;
+                  case 'Stack':
+                     query = SINGLE_TAX_QUERY;
+                     break;
+                  default:
+                     console.log('Unknown stuff type');
+                     return;
+               }
+               const oldData = client.readQuery({
+                  query,
+                  variables: { id }
+               });
+               oldData[data.addComment.__typename.toLowerCase()].comments =
+                  data.addComment.comments; // replacing the comments data in the original query with the comments data we just got back from the mutation response
+               client.writeQuery({
+                  query,
+                  variables: { id },
+                  data: oldData
+               });
             }
          }
       });
