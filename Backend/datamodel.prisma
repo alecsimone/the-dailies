@@ -66,6 +66,8 @@ type Comment {
   replies: [Comment] @relation(name: "Replies")
   replyTo: Comment @relation(name: "ReplyTo")
   onTag: Tag
+  votes: [Vote]
+  score: Int
 }
 
 type Vote {

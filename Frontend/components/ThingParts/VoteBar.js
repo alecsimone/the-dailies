@@ -10,25 +10,44 @@ import DefaultAvatar from '../Icons/DefaultAvatar';
 import { ALL_THINGS_QUERY } from '../../pages/index';
 
 const VOTE_MUTATION = gql`
-   mutation VOTE_MUTATION($thingID: ID!) {
-      vote(thingID: $thingID) {
-         __typename
-         id
-         votes {
+   mutation VOTE_MUTATION($id: ID!, $type: String!) {
+      vote(id: $id, type: $type) {
+         ... on Thing {
             __typename
             id
-            value
-            voter {
+            votes {
                __typename
                id
-               displayName
-               rep
-               avatar
+               value
+               voter {
+                  __typename
+                  id
+                  displayName
+                  rep
+                  avatar
+               }
+            }
+         }
+         ... on Comment {
+            __typename
+            id
+            votes {
+               __typename
+               id
+               value
+               voter {
+                  __typename
+                  id
+                  displayName
+                  rep
+                  avatar
+               }
             }
          }
       }
    }
 `;
+export { VOTE_MUTATION };
 
 const StyledVoteBar = styled.section`
    background: ${props => props.theme.midBlack};
@@ -89,7 +108,7 @@ const StyledVoteBar = styled.section`
    }
 `;
 
-const VoteBar = ({ votes, thingID }) => {
+const VoteBar = ({ votes, id, type }) => {
    const { me } = useContext(MemberContext);
    const [vote] = useMutation(VOTE_MUTATION, {
       refetchQueries: [{ query: ALL_THINGS_QUERY }]
@@ -158,13 +177,14 @@ const VoteBar = ({ votes, thingID }) => {
                   }
                   vote({
                      variables: {
-                        thingID
+                        id,
+                        type
                      },
                      optimisticResponse: {
                         __typename: 'Mutation',
                         vote: {
-                           __typename: 'Thing',
-                           id: thingID,
+                           __typename: type,
+                           id,
                            votes: newVotes,
                            score: newScore
                         }

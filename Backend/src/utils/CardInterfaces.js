@@ -101,7 +101,6 @@ const commentFields = `
       author {
          __typename
          id
-         displayName
          avatar
          rep
          friends {
@@ -113,6 +112,19 @@ const commentFields = `
       createdAt
       updatedAt
    }
+   votes {
+      __typename
+      id
+      voter {
+         __typename
+         id
+         displayName
+         rep
+         avatar
+      }
+      value
+   }
+   score
    createdAt
    updatedAt
 `;

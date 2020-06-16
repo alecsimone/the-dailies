@@ -1,7 +1,8 @@
 const {
    fullThingFields,
    tagFields,
-   fullMemberFields
+   fullMemberFields,
+   commentFields
 } = require('./CardInterfaces');
 const { publishMeUpdate } = require('../resolvers/Mutation/MemberMutations');
 
@@ -24,6 +25,8 @@ async function updateStuffAndNotifySubs(data, id, type, ctx) {
       fields = tagFields;
    } else if (type === 'Thing') {
       fields = fullThingFields;
+   } else if (type === 'Comment') {
+      fields = commentFields;
    }
 
    const updatedStuff = await ctx.db.mutation[mutationType](
@@ -140,7 +143,6 @@ async function properUpdateStuff(dataObj, id, type, ctx) {
    editPermissionGate(dataObj, id, type, ctx);
 
    const updatedStuff = await updateStuffAndNotifySubs(dataObj, id, type, ctx);
-
    publishMeUpdate(ctx);
    return updatedStuff;
 }

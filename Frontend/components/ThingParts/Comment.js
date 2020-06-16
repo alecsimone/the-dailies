@@ -16,6 +16,7 @@ import TimeAgo from '../TimeAgo';
 import TrashIcon from '../Icons/Trash';
 import LinkIcon from '../Icons/Link';
 import { home } from '../../config';
+import VoteBar from './VoteBar';
 
 const DELETE_COMMENT_MUTATION = gql`
    mutation DELETE_COMMENT_MUTATION(
@@ -172,11 +173,31 @@ const StyledComment = styled.div`
       margin-top: 2rem;
       font-size: ${props => props.theme.tinyText};
       color: ${props => props.theme.lowContrastGrey};
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       a.replyLink {
          color: ${props =>
             setAlpha(setLightness(props.theme.majorColor, 70), 0.9)};
          margin-left: 0.5rem;
          cursor: pointer;
+      }
+      .metaRight {
+         flex-grow: 1;
+         .votebar {
+            margin: 0 0 0 2rem;
+            padding: 0;
+            opacity: 0.8;
+            .left {
+               img.voteButton {
+                  width: ${props => props.theme.smallText};
+                  height: ${props => props.theme.smallText};
+               }
+            }
+            .right {
+               font-size: ${props => props.theme.smallText};
+            }
+         }
       }
    }
    .replyInputWrapper {
@@ -428,10 +449,20 @@ const Comment = ({ comment, comments, linkedComment, type, id }) => {
             </div>
          </div>
          <div className="commentMeta">
-            <TimeAgo time={comment.createdAt} toggleable />
-            <a className="replyLink" onClick={() => setReplying(!replying)}>
-               {replying ? 'Cancel Reply' : 'Reply'}
-            </a>
+            <div className="metaLeft">
+               <TimeAgo time={comment.createdAt} toggleable />
+               {me != null && (
+                  <a
+                     className="replyLink"
+                     onClick={() => setReplying(!replying)}
+                  >
+                     {replying ? 'Cancel Reply' : 'Reply'}
+                  </a>
+               )}
+            </div>
+            <div className="metaRight">
+               <VoteBar type="Comment" id={comment.id} votes={comment.votes} />
+            </div>
          </div>
          {replying && (
             <div className="replyInputWrapper">

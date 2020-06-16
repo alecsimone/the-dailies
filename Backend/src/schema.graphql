@@ -60,11 +60,11 @@ type Mutation {
   newBlankThing: Thing
   deleteTax(id: ID!, personal: Boolean!): Tax
   setColor(color: String!, id: ID!, type: String!): Stuff
-  vote(thingID: ID!): Thing
+  vote(id: ID!, type: String!): Stuff
   toggleBroadcastView(newState: Boolean!): Member
 }
 
-union Stuff = Thing | Tag | Stack
+union Stuff = Thing | Tag | Stack | Comment
 union Tax = Tag | Stack
 
 type Subscription {

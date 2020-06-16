@@ -4,7 +4,7 @@ const {
 } = require('../../../utils/Authentication');
 const { properUpdateStuff } = require('../../../utils/ThingHandling');
 
-async function vote(parent, { thingID }, ctx, info) {
+async function vote(parent, { id, type }, ctx, info) {
    loggedInGate(ctx);
    fullMemberGate(ctx.req.member);
 
@@ -17,19 +17,19 @@ async function vote(parent, { thingID }, ctx, info) {
       `{rep}`
    );
 
-   const oldThing = await ctx.db.query.thing(
+   const oldStuff = await ctx.db.query[type.toLowerCase()](
       {
          where: {
-            id: thingID
+            id
          }
       },
-      `{id score votes {id voter {id}}}`
+      `{id score votes {id voter {id} value}}`
    );
-   if (oldThing == null) {
-      throw new Error('Thing not found');
+   if (oldStuff == null) {
+      throw new Error(`${type} not found`);
    }
 
-   const [myVote] = oldThing.votes.filter(
+   const [myVote] = oldStuff.votes.filter(
       ({ voter }) => voter.id === ctx.req.memberId
    );
 
@@ -45,17 +45,17 @@ async function vote(parent, { thingID }, ctx, info) {
             }
          }
       };
-      dataObj.score = oldThing.score + myVoterInfo.rep;
+      dataObj.score = oldStuff.score + myVoterInfo.rep;
    } else {
       dataObj.votes = {
          delete: {
             id: myVote.id
          }
       };
-      dataObj.score = oldThing.score - myVoterInfo.rep;
+      dataObj.score = oldStuff.score - myVote.value;
    }
 
-   const updatedThing = await properUpdateStuff(dataObj, thingID, 'Thing', ctx);
-   return updatedThing;
+   const updatedStuff = await properUpdateStuff(dataObj, id, type, ctx);
+   return updatedStuff;
 }
 exports.vote = vote;

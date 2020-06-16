@@ -49,6 +49,19 @@ const commentFields = `
       createdAt
       updatedAt
    }
+   votes {
+      __typename
+      id
+      voter {
+         __typename
+         id
+         displayName
+         rep
+         avatar
+      }
+      value
+   }
+   score
    createdAt
    updatedAt
 `;

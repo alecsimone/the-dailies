@@ -52,6 +52,8 @@ type Comment {
   replies(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Comment!]
   replyTo: Comment
   onTag: Tag
+  votes(where: VoteWhereInput, orderBy: VoteOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Vote!]
+  score: Int
 }
 
 type CommentConnection {
@@ -68,6 +70,8 @@ input CommentCreateInput {
   replies: CommentCreateManyWithoutRepliesInput
   replyTo: CommentCreateOneWithoutReplyToInput
   onTag: TagCreateOneWithoutCommentsInput
+  votes: VoteCreateManyWithoutOnCommentInput
+  score: Int
 }
 
 input CommentCreateManyInput {
@@ -95,13 +99,13 @@ input CommentCreateManyWithoutRepliesInput {
   connect: [CommentWhereUniqueInput!]
 }
 
-input CommentCreateOneInput {
-  create: CommentCreateInput
+input CommentCreateOneWithoutReplyToInput {
+  create: CommentCreateWithoutReplyToInput
   connect: CommentWhereUniqueInput
 }
 
-input CommentCreateOneWithoutReplyToInput {
-  create: CommentCreateWithoutReplyToInput
+input CommentCreateOneWithoutVotesInput {
+  create: CommentCreateWithoutVotesInput
   connect: CommentWhereUniqueInput
 }
 
@@ -112,6 +116,8 @@ input CommentCreateWithoutAuthorInput {
   replies: CommentCreateManyWithoutRepliesInput
   replyTo: CommentCreateOneWithoutReplyToInput
   onTag: TagCreateOneWithoutCommentsInput
+  votes: VoteCreateManyWithoutOnCommentInput
+  score: Int
 }
 
 input CommentCreateWithoutOnTagInput {
@@ -121,6 +127,8 @@ input CommentCreateWithoutOnTagInput {
   onThing: ThingCreateOneWithoutCommentsInput
   replies: CommentCreateManyWithoutRepliesInput
   replyTo: CommentCreateOneWithoutReplyToInput
+  votes: VoteCreateManyWithoutOnCommentInput
+  score: Int
 }
 
 input CommentCreateWithoutOnThingInput {
@@ -130,6 +138,8 @@ input CommentCreateWithoutOnThingInput {
   replies: CommentCreateManyWithoutRepliesInput
   replyTo: CommentCreateOneWithoutReplyToInput
   onTag: TagCreateOneWithoutCommentsInput
+  votes: VoteCreateManyWithoutOnCommentInput
+  score: Int
 }
 
 input CommentCreateWithoutRepliesInput {
@@ -139,6 +149,8 @@ input CommentCreateWithoutRepliesInput {
   onThing: ThingCreateOneWithoutCommentsInput
   replyTo: CommentCreateOneWithoutReplyToInput
   onTag: TagCreateOneWithoutCommentsInput
+  votes: VoteCreateManyWithoutOnCommentInput
+  score: Int
 }
 
 input CommentCreateWithoutReplyToInput {
@@ -148,6 +160,19 @@ input CommentCreateWithoutReplyToInput {
   onThing: ThingCreateOneWithoutCommentsInput
   replies: CommentCreateManyWithoutRepliesInput
   onTag: TagCreateOneWithoutCommentsInput
+  votes: VoteCreateManyWithoutOnCommentInput
+  score: Int
+}
+
+input CommentCreateWithoutVotesInput {
+  id: ID
+  author: MemberCreateOneWithoutCommentsInput!
+  comment: String!
+  onThing: ThingCreateOneWithoutCommentsInput
+  replies: CommentCreateManyWithoutRepliesInput
+  replyTo: CommentCreateOneWithoutReplyToInput
+  onTag: TagCreateOneWithoutCommentsInput
+  score: Int
 }
 
 type CommentEdge {
@@ -164,6 +189,8 @@ enum CommentOrderByInput {
   createdAt_DESC
   updatedAt_ASC
   updatedAt_DESC
+  score_ASC
+  score_DESC
 }
 
 type CommentPreviousValues {
@@ -171,6 +198,7 @@ type CommentPreviousValues {
   comment: String!
   createdAt: DateTime!
   updatedAt: DateTime
+  score: Int
 }
 
 input CommentScalarWhereInput {
@@ -218,6 +246,14 @@ input CommentScalarWhereInput {
   updatedAt_lte: DateTime
   updatedAt_gt: DateTime
   updatedAt_gte: DateTime
+  score: Int
+  score_not: Int
+  score_in: [Int!]
+  score_not_in: [Int!]
+  score_lt: Int
+  score_lte: Int
+  score_gt: Int
+  score_gte: Int
   AND: [CommentScalarWhereInput!]
   OR: [CommentScalarWhereInput!]
   NOT: [CommentScalarWhereInput!]
@@ -248,6 +284,8 @@ input CommentUpdateDataInput {
   replies: CommentUpdateManyWithoutRepliesInput
   replyTo: CommentUpdateOneWithoutReplyToInput
   onTag: TagUpdateOneWithoutCommentsInput
+  votes: VoteUpdateManyWithoutOnCommentInput
+  score: Int
 }
 
 input CommentUpdateInput {
@@ -257,10 +295,13 @@ input CommentUpdateInput {
   replies: CommentUpdateManyWithoutRepliesInput
   replyTo: CommentUpdateOneWithoutReplyToInput
   onTag: TagUpdateOneWithoutCommentsInput
+  votes: VoteUpdateManyWithoutOnCommentInput
+  score: Int
 }
 
 input CommentUpdateManyDataInput {
   comment: String
+  score: Int
 }
 
 input CommentUpdateManyInput {
@@ -277,6 +318,7 @@ input CommentUpdateManyInput {
 
 input CommentUpdateManyMutationInput {
   comment: String
+  score: Int
 }
 
 input CommentUpdateManyWithoutAuthorInput {
@@ -332,19 +374,19 @@ input CommentUpdateManyWithWhereNestedInput {
   data: CommentUpdateManyDataInput!
 }
 
-input CommentUpdateOneInput {
-  create: CommentCreateInput
-  update: CommentUpdateDataInput
-  upsert: CommentUpsertNestedInput
+input CommentUpdateOneWithoutReplyToInput {
+  create: CommentCreateWithoutReplyToInput
+  update: CommentUpdateWithoutReplyToDataInput
+  upsert: CommentUpsertWithoutReplyToInput
   delete: Boolean
   disconnect: Boolean
   connect: CommentWhereUniqueInput
 }
 
-input CommentUpdateOneWithoutReplyToInput {
-  create: CommentCreateWithoutReplyToInput
-  update: CommentUpdateWithoutReplyToDataInput
-  upsert: CommentUpsertWithoutReplyToInput
+input CommentUpdateOneWithoutVotesInput {
+  create: CommentCreateWithoutVotesInput
+  update: CommentUpdateWithoutVotesDataInput
+  upsert: CommentUpsertWithoutVotesInput
   delete: Boolean
   disconnect: Boolean
   connect: CommentWhereUniqueInput
@@ -356,6 +398,8 @@ input CommentUpdateWithoutAuthorDataInput {
   replies: CommentUpdateManyWithoutRepliesInput
   replyTo: CommentUpdateOneWithoutReplyToInput
   onTag: TagUpdateOneWithoutCommentsInput
+  votes: VoteUpdateManyWithoutOnCommentInput
+  score: Int
 }
 
 input CommentUpdateWithoutOnTagDataInput {
@@ -364,6 +408,8 @@ input CommentUpdateWithoutOnTagDataInput {
   onThing: ThingUpdateOneWithoutCommentsInput
   replies: CommentUpdateManyWithoutRepliesInput
   replyTo: CommentUpdateOneWithoutReplyToInput
+  votes: VoteUpdateManyWithoutOnCommentInput
+  score: Int
 }
 
 input CommentUpdateWithoutOnThingDataInput {
@@ -372,6 +418,8 @@ input CommentUpdateWithoutOnThingDataInput {
   replies: CommentUpdateManyWithoutRepliesInput
   replyTo: CommentUpdateOneWithoutReplyToInput
   onTag: TagUpdateOneWithoutCommentsInput
+  votes: VoteUpdateManyWithoutOnCommentInput
+  score: Int
 }
 
 input CommentUpdateWithoutRepliesDataInput {
@@ -380,6 +428,8 @@ input CommentUpdateWithoutRepliesDataInput {
   onThing: ThingUpdateOneWithoutCommentsInput
   replyTo: CommentUpdateOneWithoutReplyToInput
   onTag: TagUpdateOneWithoutCommentsInput
+  votes: VoteUpdateManyWithoutOnCommentInput
+  score: Int
 }
 
 input CommentUpdateWithoutReplyToDataInput {
@@ -388,6 +438,18 @@ input CommentUpdateWithoutReplyToDataInput {
   onThing: ThingUpdateOneWithoutCommentsInput
   replies: CommentUpdateManyWithoutRepliesInput
   onTag: TagUpdateOneWithoutCommentsInput
+  votes: VoteUpdateManyWithoutOnCommentInput
+  score: Int
+}
+
+input CommentUpdateWithoutVotesDataInput {
+  author: MemberUpdateOneRequiredWithoutCommentsInput
+  comment: String
+  onThing: ThingUpdateOneWithoutCommentsInput
+  replies: CommentUpdateManyWithoutRepliesInput
+  replyTo: CommentUpdateOneWithoutReplyToInput
+  onTag: TagUpdateOneWithoutCommentsInput
+  score: Int
 }
 
 input CommentUpdateWithWhereUniqueNestedInput {
@@ -415,14 +477,14 @@ input CommentUpdateWithWhereUniqueWithoutRepliesInput {
   data: CommentUpdateWithoutRepliesDataInput!
 }
 
-input CommentUpsertNestedInput {
-  update: CommentUpdateDataInput!
-  create: CommentCreateInput!
-}
-
 input CommentUpsertWithoutReplyToInput {
   update: CommentUpdateWithoutReplyToDataInput!
   create: CommentCreateWithoutReplyToInput!
+}
+
+input CommentUpsertWithoutVotesInput {
+  update: CommentUpdateWithoutVotesDataInput!
+  create: CommentCreateWithoutVotesInput!
 }
 
 input CommentUpsertWithWhereUniqueNestedInput {
@@ -507,6 +569,17 @@ input CommentWhereInput {
   replies_none: CommentWhereInput
   replyTo: CommentWhereInput
   onTag: TagWhereInput
+  votes_every: VoteWhereInput
+  votes_some: VoteWhereInput
+  votes_none: VoteWhereInput
+  score: Int
+  score_not: Int
+  score_in: [Int!]
+  score_not_in: [Int!]
+  score_lt: Int
+  score_lte: Int
+  score_gt: Int
+  score_gte: Int
   AND: [CommentWhereInput!]
   OR: [CommentWhereInput!]
   NOT: [CommentWhereInput!]
@@ -4888,8 +4961,13 @@ input VoteCreateInput {
   id: ID
   voter: MemberCreateOneWithoutVotesInput!
   onThing: ThingCreateOneWithoutVotesInput
-  onComment: CommentCreateOneInput
+  onComment: CommentCreateOneWithoutVotesInput
   value: Int!
+}
+
+input VoteCreateManyWithoutOnCommentInput {
+  create: [VoteCreateWithoutOnCommentInput!]
+  connect: [VoteWhereUniqueInput!]
 }
 
 input VoteCreateManyWithoutOnThingInput {
@@ -4902,17 +4980,24 @@ input VoteCreateManyWithoutVoterInput {
   connect: [VoteWhereUniqueInput!]
 }
 
+input VoteCreateWithoutOnCommentInput {
+  id: ID
+  voter: MemberCreateOneWithoutVotesInput!
+  onThing: ThingCreateOneWithoutVotesInput
+  value: Int!
+}
+
 input VoteCreateWithoutOnThingInput {
   id: ID
   voter: MemberCreateOneWithoutVotesInput!
-  onComment: CommentCreateOneInput
+  onComment: CommentCreateOneWithoutVotesInput
   value: Int!
 }
 
 input VoteCreateWithoutVoterInput {
   id: ID
   onThing: ThingCreateOneWithoutVotesInput
-  onComment: CommentCreateOneInput
+  onComment: CommentCreateOneWithoutVotesInput
   value: Int!
 }
 
@@ -4993,7 +5078,7 @@ input VoteSubscriptionWhereInput {
 input VoteUpdateInput {
   voter: MemberUpdateOneRequiredWithoutVotesInput
   onThing: ThingUpdateOneWithoutVotesInput
-  onComment: CommentUpdateOneInput
+  onComment: CommentUpdateOneWithoutVotesInput
   value: Int
 }
 
@@ -5003,6 +5088,18 @@ input VoteUpdateManyDataInput {
 
 input VoteUpdateManyMutationInput {
   value: Int
+}
+
+input VoteUpdateManyWithoutOnCommentInput {
+  create: [VoteCreateWithoutOnCommentInput!]
+  delete: [VoteWhereUniqueInput!]
+  connect: [VoteWhereUniqueInput!]
+  set: [VoteWhereUniqueInput!]
+  disconnect: [VoteWhereUniqueInput!]
+  update: [VoteUpdateWithWhereUniqueWithoutOnCommentInput!]
+  upsert: [VoteUpsertWithWhereUniqueWithoutOnCommentInput!]
+  deleteMany: [VoteScalarWhereInput!]
+  updateMany: [VoteUpdateManyWithWhereNestedInput!]
 }
 
 input VoteUpdateManyWithoutOnThingInput {
@@ -5034,16 +5131,27 @@ input VoteUpdateManyWithWhereNestedInput {
   data: VoteUpdateManyDataInput!
 }
 
+input VoteUpdateWithoutOnCommentDataInput {
+  voter: MemberUpdateOneRequiredWithoutVotesInput
+  onThing: ThingUpdateOneWithoutVotesInput
+  value: Int
+}
+
 input VoteUpdateWithoutOnThingDataInput {
   voter: MemberUpdateOneRequiredWithoutVotesInput
-  onComment: CommentUpdateOneInput
+  onComment: CommentUpdateOneWithoutVotesInput
   value: Int
 }
 
 input VoteUpdateWithoutVoterDataInput {
   onThing: ThingUpdateOneWithoutVotesInput
-  onComment: CommentUpdateOneInput
+  onComment: CommentUpdateOneWithoutVotesInput
   value: Int
+}
+
+input VoteUpdateWithWhereUniqueWithoutOnCommentInput {
+  where: VoteWhereUniqueInput!
+  data: VoteUpdateWithoutOnCommentDataInput!
 }
 
 input VoteUpdateWithWhereUniqueWithoutOnThingInput {
@@ -5054,6 +5162,12 @@ input VoteUpdateWithWhereUniqueWithoutOnThingInput {
 input VoteUpdateWithWhereUniqueWithoutVoterInput {
   where: VoteWhereUniqueInput!
   data: VoteUpdateWithoutVoterDataInput!
+}
+
+input VoteUpsertWithWhereUniqueWithoutOnCommentInput {
+  where: VoteWhereUniqueInput!
+  update: VoteUpdateWithoutOnCommentDataInput!
+  create: VoteCreateWithoutOnCommentInput!
 }
 
 input VoteUpsertWithWhereUniqueWithoutOnThingInput {
