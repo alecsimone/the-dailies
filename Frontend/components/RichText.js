@@ -13,10 +13,10 @@ import {
 import { urlFinder } from '../lib/UrlHandling';
 
 const RichText = ({ text, priorText, nextText, matchCount = 0 }) => {
-   if (text[0] === '\n' && text[1] === '\n') {
-      // If the text starts with two new lines, we can drop one of them. We do want to keep the new line if there's only one though
-      text = text.substring(1);
-   }
+   // if (text[0] === '\n' && text[1] === '\n') {
+   //    // If the text starts with two new lines, we can drop one of them. We do want to keep the new line if there's only one though
+   //    text = text.substring(1);
+   // }
    const { smallHead } = useContext(ThemeContext);
 
    let fixedText = replaceReddit(replaceEmails(replaceTwitterMentions(text)));
