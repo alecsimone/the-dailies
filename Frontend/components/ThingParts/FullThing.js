@@ -139,7 +139,7 @@ const FullThing = ({ canEdit, linkedPiece, linkedComment }) => {
             canEdit={canEdit}
          />
          <ThingMeta key={`${id}-ThingMeta`} canEdit={canEdit} />
-         <VoteBar votes={votes} thingID={id} />
+         <VoteBar votes={votes} id={id} type="Thing" />
          <div className="taxBoxes">
             <TaxBox key={`${id}-TagBox`} canEdit={canEdit} personal={false} />
             <TaxBox key={`${id}-StackBox`} canEdit={canEdit} personal />
