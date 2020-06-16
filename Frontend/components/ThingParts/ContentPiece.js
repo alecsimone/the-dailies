@@ -81,6 +81,15 @@ const ContentPiece = ({
                   className="edit buttons"
                   onMouseDown={e => e.stopPropagation()}
                   onClick={() => {
+                     if (!editable) {
+                        setEditable(true);
+                        return;
+                     }
+                     if (rawContentString !== editedContent) {
+                        if (!confirm('Discard changes?')) {
+                           return;
+                        }
+                     }
                      setEditable(!editable);
                   }}
                />
