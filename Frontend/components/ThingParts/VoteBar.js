@@ -108,7 +108,7 @@ const StyledVoteBar = styled.section`
    }
 `;
 
-const VoteBar = ({ votes, id, type }) => {
+const VoteBar = ({ votes = [], id, type }) => {
    const { me } = useContext(MemberContext);
    const [vote] = useMutation(VOTE_MUTATION, {
       refetchQueries: [{ query: ALL_THINGS_QUERY }]
@@ -117,7 +117,7 @@ const VoteBar = ({ votes, id, type }) => {
    let meVoted = false;
    const voters = [];
    let computedScore = 0;
-   if (votes) {
+   if (votes.length > 0) {
       votes.forEach(
          ({ voter: { id: voterID, displayName, avatar }, value }) => {
             if (me && voterID === me.id) {

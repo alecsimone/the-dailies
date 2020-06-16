@@ -208,6 +208,7 @@ const Comments = ({ context, linkedComment }) => {
          comment: currentComment,
          createdAt: now.toISOString(),
          id: 'temporaryID',
+         votes: [],
          updatedAt: now.toISOString()
       };
       comments.push(newComment);

@@ -265,6 +265,7 @@ const Comment = ({ comment, comments, linkedComment, type, id }) => {
             __typename: 'Comment',
             id: comment.id
          },
+         votes: [],
          updatedAt: now.toISOString()
       };
       comments.push(newComment);
