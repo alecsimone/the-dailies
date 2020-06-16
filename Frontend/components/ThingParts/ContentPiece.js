@@ -56,6 +56,13 @@ const ContentPiece = ({
       <div
          className={highlighted ? 'contentBlock highlighted' : 'contentBlock'}
          key={id}
+         onMouseUp={() => {
+            if (!canEdit) return;
+            const selection = window.getSelection();
+            if (selection.type === 'Caret' && !editable) {
+               setEditable(true);
+            }
+         }}
       >
          <div
             className={canEdit ? 'contentPiece editable' : 'contentPiece'}
