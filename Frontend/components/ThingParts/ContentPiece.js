@@ -56,8 +56,12 @@ const ContentPiece = ({
       <div
          className={highlighted ? 'contentBlock highlighted' : 'contentBlock'}
          key={id}
-         onMouseUp={() => {
+         onMouseUp={e => {
             if (!canEdit) return;
+
+            // If they clicked an edit button, kill this, cause we're settingEditable already
+            if (e.target.closest('.editThis') != null) return;
+
             const selection = window.getSelection();
             if (selection.type === 'Caret' && !editable) {
                setEditable(true);
