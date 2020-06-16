@@ -62,9 +62,10 @@ const ContentPiece = ({
             key={id}
             onMouseUp={e => {
                if (!canEdit) return;
+               console.log(e.button);
 
                // If it's a right click, we don't want to switch to editing
-               if (e.button === 2) return;
+               if (e.button !== 0) return;
 
                const selection = window.getSelection();
                if (selection.type === 'Caret' && !editable) {
