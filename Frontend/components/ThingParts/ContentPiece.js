@@ -56,21 +56,21 @@ const ContentPiece = ({
       <div
          className={highlighted ? 'contentBlock highlighted' : 'contentBlock'}
          key={id}
-         onMouseUp={e => {
-            if (!canEdit) return;
-
-            // If they clicked an edit button, kill this, cause we're settingEditable already
-            if (e.target.closest('.editThis') != null) return;
-
-            const selection = window.getSelection();
-            if (selection.type === 'Caret' && !editable) {
-               setEditable(true);
-            }
-         }}
       >
          <div
             className={canEdit ? 'contentPiece editable' : 'contentPiece'}
             key={id}
+            onMouseUp={e => {
+               if (!canEdit) return;
+
+               // If it's a right click, we don't want to switch to editing
+               if (e.button === 2) return;
+
+               const selection = window.getSelection();
+               if (selection.type === 'Caret' && !editable) {
+                  setEditable(true);
+               }
+            }}
          >
             {content}
          </div>

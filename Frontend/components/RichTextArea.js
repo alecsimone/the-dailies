@@ -174,6 +174,7 @@ const RichTextArea = ({
    buttonText,
    id
 }) => {
+   const originalText = useRef(text);
    const textRef = useRef(text);
    const { mobileBPWidthRaw } = useContext(ThemeContext);
 
@@ -194,6 +195,17 @@ const RichTextArea = ({
          console.log(text);
       }
    }, [text]);
+
+   const secondRightClickListener = e => {
+      if (e.button === 2) {
+         if (originalText.current !== textRef.current) {
+            if (!confirm('Discard changes?')) {
+               return;
+            }
+         }
+         setEditable(false);
+      }
+   };
 
    const [search, { loading: searchLoading }] = useLazyQuery(SEARCH_QUERY, {
       onCompleted: data => {
@@ -305,6 +317,11 @@ const RichTextArea = ({
       }
       // Quit editing on escape
       if (e.key === 'Escape' && setEditable) {
+         if (originalText.current !== textRef.current) {
+            if (!confirm('Discard changes?')) {
+               return;
+            }
+         }
          setEditable(false);
          return;
       }
@@ -467,6 +484,26 @@ const RichTextArea = ({
                onKeyUp={e => handleKeyUp(e)}
                onBlur={e => {
                   closeResults();
+               }}
+               onMouseUp={e => {
+                  if (e.button === 2) {
+                     window.setTimeout(
+                        () =>
+                           window.addEventListener(
+                              'mouseup',
+                              secondRightClickListener
+                           ),
+                        1
+                     );
+                     window.setTimeout(
+                        () =>
+                           window.removeEventListener(
+                              'mouseup',
+                              secondRightClickListener
+                           ),
+                        250
+                     );
+                  }
                }}
                placeholder={placeholder}
             />
