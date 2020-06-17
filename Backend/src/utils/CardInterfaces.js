@@ -169,6 +169,7 @@ const fullThingFields = `
          __typename
          id
       }
+      rep
    }
    featuredImage
    link
@@ -247,6 +248,7 @@ const tagFields = `
       __typename
       id
       displayName
+      rep
    }
    color
    content {
