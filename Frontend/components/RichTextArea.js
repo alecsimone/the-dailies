@@ -110,20 +110,59 @@ const wrapTextWithTag = (e, tag, textRef, setText) => {
    const thisInput = e.target;
    const { selectionStart, selectionEnd } = e.target;
 
-   const before = textRef.current.substring(0, selectionStart);
-   const selection = textRef.current.substring(selectionStart, selectionEnd);
-   const after = textRef.current.substring(selectionEnd);
-   const newText = `${before}${tag}${selection}${tag}${after}`;
+   // Check if the text is already wrapped with the tag, and if so, remove it
+   const fourCharactersSurroundingStart = textRef.current.substring(
+      selectionStart - 2,
+      selectionStart + 2
+   );
+   const fourCharactersSurroundingEnd = textRef.current.substring(
+      selectionEnd - 2,
+      selectionEnd + 2
+   );
+
+   let newText;
+   let newSelectionStart;
+   let newSelectionEnd;
+   if (
+      fourCharactersSurroundingStart.includes(tag) &&
+      fourCharactersSurroundingEnd.includes(tag)
+   ) {
+      // So what we're gonna do here is take the text up to two characters before the selection, the selection minus the two characters on either end, and the text starting two characters after the end of the selection. This will leave us with a four character gap on either side of the selection, which will be filled in by our de-tagged fourCharacters from earlier
+      const before = textRef.current.substring(0, selectionStart - 2);
+      const selectionMinusFour = textRef.current.substring(
+         selectionStart + 2,
+         selectionEnd - 2
+      );
+      const after = textRef.current.substring(selectionEnd + 2);
+
+      const detaggedStartCharacters = fourCharactersSurroundingStart.replace(
+         tag,
+         ''
+      );
+      const detaggedEndCharacters = fourCharactersSurroundingEnd.replace(
+         tag,
+         ''
+      );
+
+      newText = `${before}${detaggedStartCharacters}${selectionMinusFour}${detaggedEndCharacters}${after}`;
+
+      newSelectionStart = selectionStart - tag.length;
+      newSelectionEnd = selectionEnd - tag.length;
+   } else {
+      const before = textRef.current.substring(0, selectionStart);
+      const selection = textRef.current.substring(selectionStart, selectionEnd);
+      const after = textRef.current.substring(selectionEnd);
+      newText = `${before}${tag}${selection}${tag}${after}`;
+
+      newSelectionStart = selectionStart + tag.length;
+      newSelectionEnd = selectionEnd + tag.length;
+   }
 
    setText(newText);
    textRef.current = newText;
    // we need to make sure the text has changed before we set the new selection, otherwise it won't be based on the updated text
    window.setTimeout(
-      () =>
-         thisInput.setSelectionRange(
-            selectionStart + tag.length,
-            selectionEnd + tag.length
-         ),
+      () => thisInput.setSelectionRange(newSelectionStart, newSelectionEnd),
       1
    );
 };

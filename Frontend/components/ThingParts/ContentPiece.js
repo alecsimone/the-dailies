@@ -62,7 +62,6 @@ const ContentPiece = ({
             key={id}
             onMouseUp={e => {
                if (!canEdit) return;
-               console.log(e.button);
 
                // If it's a right click, we don't want to switch to editing
                if (e.button !== 0) return;

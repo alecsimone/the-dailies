@@ -12,6 +12,7 @@ const smallThingCardFields = `
          __typename
          id
       }
+      rep
    }
    content {
       __typename
