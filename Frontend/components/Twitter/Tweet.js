@@ -122,7 +122,6 @@ const Tweet = props => {
       });
       setLiked(!liked);
    };
-
    const replyRemovedText = replyRemover(fullText, display_text_range);
    const hashtagReplacedText = hashtagReplacer(replyRemovedText);
    const tcoReplacedText = tcoReplacer(
@@ -308,9 +307,11 @@ const Tweet = props => {
                )}
             </div>
          )}
-         <p>
-            <RichText text={tcoReplacedText} />
-         </p>
+         {tcoReplacedText != null && tcoReplacedText !== '' && (
+            <p>
+               <RichText text={tcoReplacedText} />
+            </p>
+         )}
          {quotedTweetContainer.length > 0 && quotedTweetContainer}
          {entities.length > 1 && <div className="entities">{entities}</div>}
          {entities.length === 1 && entities}
