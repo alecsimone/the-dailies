@@ -61,10 +61,15 @@ const ContentPiece = ({
             className={canEdit ? 'contentPiece editable' : 'contentPiece'}
             key={id}
             onMouseUp={e => {
-               if (!canEdit) return;
+               if (!canEdit || reordering) return;
 
                // If it's a right click, we don't want to switch to editing
                if (e.button !== 0) return;
+
+               // If they clicked a link, we don't want to switch to editing
+               if (e.target.closest('a') != null) return;
+               // same for a thingCard
+               if (e.target.closest('.thingCard') != null) return;
 
                const selection = window.getSelection();
                if (selection.type === 'Caret' && !editable) {
