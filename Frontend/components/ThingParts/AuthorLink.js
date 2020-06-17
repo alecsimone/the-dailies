@@ -15,7 +15,9 @@ const AuthorLink = ({ author, noPic }) => {
                ) : (
                   <img className="authorImg" src={author.avatar} />
                ))}
-            <a className="authorLink">{author.displayName}</a>
+            <a className="authorLink">
+               {author.rep != null && `[${author.rep}]`} {author.displayName}
+            </a>
          </div>
       </Link>
    );
@@ -23,6 +25,8 @@ const AuthorLink = ({ author, noPic }) => {
 AuthorLink.propTypes = {
    author: PropTypes.shape({
       id: PropTypes.string.isRequired,
+      avatar: PropTypes.string,
+      rep: PropTypes.number.isRequired,
       displayName: PropTypes.string.isRequired
    })
 };

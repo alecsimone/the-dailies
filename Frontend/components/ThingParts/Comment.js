@@ -361,6 +361,7 @@ const Comment = ({ comment, comments, linkedComment, type, id }) => {
                comment.author.id === 'deleted' ? 'author deleted' : 'author'
             }
          >
+            {comment.author.rep != null && `[${comment.author.rep}]`}{' '}
             {comment.author.displayName}
          </a>
       </Link>

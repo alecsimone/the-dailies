@@ -85,6 +85,7 @@ const smallThingCardFields = `
             id
          }
       }
+      rep
    }
    content {
       __typename
@@ -143,6 +144,7 @@ const fullThingFields = `
          __typename
          id
       }
+      rep
    }
    featuredImage
    link
