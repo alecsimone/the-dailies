@@ -186,7 +186,7 @@ const FeaturedImage = ({ canEdit, context, titleLimit, titleLink }) => {
       <Head>
          <meta
             property={isVideo(featuredImage) ? 'og:video' : 'og:image'}
-            content={featuredImage}
+            content={featuredImage != null ? featuredImage : '/logo.png'}
          />
       </Head>
    );
@@ -199,6 +199,7 @@ const FeaturedImage = ({ canEdit, context, titleLimit, titleLink }) => {
                : 'featuredImage image'
          }
       >
+         {openGraph}
          {titleBar}
          {featuredImage &&
             !disabledCodewords.includes(featuredImage.toLowerCase()) && (
