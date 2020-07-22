@@ -57,6 +57,7 @@ const Styling = props => (
                      <a
                         href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Properties_Reference"
                         target="_blank"
+                        rel="noopener noreferrer"
                      >
                         See here for more info
                      </a>
@@ -124,7 +125,11 @@ const Styling = props => (
                   <p>
                      You can just paste a link in and it will work properly, but
                      if you'd like to change the display text of the link,{' '}
-                     <a href="https://youtu.be/vDUYLDtC5Qw" target="_blank">
+                     <a
+                        href="https://youtu.be/vDUYLDtC5Qw"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                     >
                         like this
                      </a>
                      , you can use markdown's bracket notation.
@@ -138,7 +143,11 @@ const Styling = props => (
                   <p>
                      So if you put [display text](link URL) into a comment or
                      post on OurDailies, it will show up like this:{' '}
-                     <a href="link URL" target="_blank">
+                     <a
+                        href="link URL"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                     >
                         display text
                      </a>
                      .

@@ -45,7 +45,13 @@ const ShortLink = ({ link, limit }) => {
    }
 
    return (
-      <a className="shortlink" href={link} target={target} key={link}>
+      <a
+         className="shortlink"
+         href={link}
+         target={target}
+         key={link}
+         rel="noopener noreferrer"
+      >
          {shortlink}
       </a>
    );

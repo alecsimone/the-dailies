@@ -108,7 +108,7 @@ const ExplodingLink = ({
          }
 
          return (
-            <a href={href} target={target}>
+            <a href={href} target={target} rel="noopener noreferrer">
                <RichText text={match.groups.text} key={match.groups.text} />
             </a>
          );
@@ -123,7 +123,12 @@ const ExplodingLink = ({
    ) {
       // Images
       return (
-         <a href={url} target="_blank" key={keyString}>
+         <a
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
+            key={keyString}
+         >
             <img src={url} className={className} alt={alt == null ? '' : alt} />
          </a>
       );
@@ -195,7 +200,7 @@ const ExplodingLink = ({
          hashtag = url.substring(hashtagStartPos);
       }
       return (
-         <a href={url} target="_blank">
+         <a href={url} target="_blank" rel="noopener noreferrer">
             #{hashtag}
          </a>
       );
@@ -213,7 +218,7 @@ const ExplodingLink = ({
          user = url.substring(userStart);
       }
       return (
-         <a href={url} target="_blank">
+         <a href={url} target="_blank" rel="noopener noreferrer">
             @{user}
          </a>
       );

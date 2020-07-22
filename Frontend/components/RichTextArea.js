@@ -554,7 +554,11 @@ const RichTextArea = ({
          <div className="postButtonWrapper">
             <div className="styleGuideLink">
                See our{' '}
-               <a href={`${home}/styling`} target="_blank">
+               <a
+                  href={`${home}/styling`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+               >
                   Styling Cheat Sheet
                </a>{' '}
                for all the things you can do in that box.

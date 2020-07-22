@@ -113,6 +113,7 @@ const TwitterSidebar = ({
                className="twitterName"
                href={`https://twitter.com/${myTwitterInfo.me.twitterUserName}`}
                target="_blank"
+               rel="noopener noreferrer"
             >
                {myTwitterInfo.me.twitterUserName}
             </a>

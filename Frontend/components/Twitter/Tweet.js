@@ -139,6 +139,7 @@ const Tweet = props => {
                   <a
                      href={entity.media_url_https}
                      target="_blank"
+                     rel="noopener noreferrer"
                      key={`${entity.id_str}-photo-${index}`}
                   >
                      <img
@@ -191,6 +192,7 @@ const Tweet = props => {
                <a
                   href={`https://twitter.com/${quotedTweet.user.screen_name}`}
                   target="_blank"
+                  rel="noopener noreferrer"
                >
                   @{quotedTweet.user.screen_name}
                </a>
@@ -320,6 +322,7 @@ const Tweet = props => {
                <a
                   href={linkout}
                   target="_blank"
+                  rel="noopener noreferrer"
                   className="linkToOriginalTweet"
                >
                   <TimeAgo time={time} />

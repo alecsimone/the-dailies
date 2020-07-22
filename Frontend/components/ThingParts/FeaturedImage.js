@@ -4,6 +4,7 @@ import { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useMutation } from '@apollo/react-hooks';
 import Router from 'next/router';
+import Head from 'next/head';
 import Link from 'next/link';
 import TitleBar from './TitleBar';
 import ExplodingLink from '../ExplodingLink';
@@ -180,6 +181,15 @@ const FeaturedImage = ({ canEdit, context, titleLimit, titleLink }) => {
          </Link>
       );
    }
+
+   const openGraph = (
+      <Head>
+         <meta
+            property={isVideo(featuredImage) ? 'og:video' : 'og:image'}
+            content={featuredImage}
+         />
+      </Head>
+   );
 
    return (
       <StyledFeaturedImage
