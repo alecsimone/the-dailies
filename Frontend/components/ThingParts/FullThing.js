@@ -130,7 +130,6 @@ const FullThing = ({ canEdit, linkedPiece, linkedComment }) => {
          className="fullThing"
          style={{ borderTop: `0.6rem solid ${highlightColor}` }}
       >
-         {openGraph}
          <div className="loadingRing">
             <LoadingRing />
          </div>
