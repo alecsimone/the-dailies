@@ -150,6 +150,10 @@ const SingleThing = ({ query }) => {
                   }
                   key="ogDescription"
                />
+               <meta
+                  property="og:title"
+                  content={data ? data.thing.title : 'Our Dailies'}
+               />
             </Head>
             <Sidebar />
             <div className="mainSection thing">{content}</div>
