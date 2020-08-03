@@ -19,6 +19,7 @@ const Meta = () => (
       <link rel="stylesheet" href="https://use.typekit.net/iwq0uru.css" />
       <title>Our Dailies</title>
       <meta property="og:type" content="website" key="ogType" />
+      <meta property="og:site_name" content="Our Dailies" />
    </Head>
 );
 Meta.propTypes = {};

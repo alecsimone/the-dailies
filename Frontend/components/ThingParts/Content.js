@@ -740,7 +740,11 @@ const Content = ({ context, canEdit, linkedPiece }) => {
          <Head>
             <meta
                property="og:description"
-               content={orderedContent[0].content}
+               content={
+                  orderedContent[0] == null
+                     ? 'A thing without any content'
+                     : orderedContent[0].content
+               }
             />
          </Head>
          {contentElements}
