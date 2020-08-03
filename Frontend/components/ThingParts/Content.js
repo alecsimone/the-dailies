@@ -641,8 +641,8 @@ const Content = ({ context, canEdit, linkedPiece }) => {
    if ((content == null || content.length === 0) && !canEdit) return null;
 
    let contentElements;
+   let orderedContent;
    if (content) {
-      let orderedContent;
       if (contentOrder && contentOrder.length > 0) {
          orderedContent = [];
          contentOrder.forEach(id => {
@@ -738,7 +738,10 @@ const Content = ({ context, canEdit, linkedPiece }) => {
    return (
       <StyledContent className="content">
          <Head>
-            <meta property="og:description" content={content} />
+            <meta
+               property="og:description"
+               content={orderedContent[0].content}
+            />
          </Head>
          {contentElements}
          {canEdit && (
