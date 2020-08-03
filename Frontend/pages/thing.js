@@ -134,7 +134,7 @@ const SingleThing = ({ query }) => {
          <StyledSingleThing className="thingPage">
             <Head>
                <title>{pageTitle} - OurDailies</title>
-               <meta property="og:type" content="article" />
+               <meta property="og:type" content="article" key="ogType" />
                <meta
                   property="og:url"
                   content={`${home}/thing?id=${query.id}`}
