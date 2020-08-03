@@ -24,9 +24,7 @@ const ME_SUBSCRIPTION = gql`
 const MemberContext = React.createContext();
 
 const MemberProvider = ({ children }) => {
-   const { loading, error, data, client } = useQuery(CURRENT_MEMBER_QUERY, {
-      ssr: false
-   });
+   const { loading, error, data, client } = useQuery(CURRENT_MEMBER_QUERY);
 
    const {
       data: subscriptionData,

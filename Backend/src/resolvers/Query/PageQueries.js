@@ -66,14 +66,15 @@ exports.taxByTitle = taxByTitle;
 
 async function thing(parent, { where }, ctx, info) {
    await canSeeThingGate(where, ctx);
+   console.log(`Getting thing ${where.id}`);
 
-   const thing = await ctx.db.query.thing(
+   const thingData = await ctx.db.query.thing(
       {
          where
       },
       info
    );
-   return thing;
+   return thingData;
 }
 exports.thing = thing;
 

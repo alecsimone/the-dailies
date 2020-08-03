@@ -417,7 +417,6 @@ const RichTextArea = ({
          mostRecentQuoteIndex - 5,
          mostRecentQuoteIndex
       );
-      console.log(previousThreeCharacters);
 
       const parent = input.closest('form');
       const toolTip = parent.querySelector('.postSearchTooltip');

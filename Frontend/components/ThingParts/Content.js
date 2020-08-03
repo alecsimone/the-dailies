@@ -642,7 +642,7 @@ const Content = ({ context, canEdit, linkedPiece }) => {
    let contentElements;
    if (content) {
       let orderedContent;
-      if (contentOrder) {
+      if (contentOrder && contentOrder.length > 0) {
          orderedContent = [];
          contentOrder.forEach(id => {
             const [piece] = content.filter(

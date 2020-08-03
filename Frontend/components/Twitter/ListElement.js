@@ -13,7 +13,6 @@ const ListElement = ({
    setActiveTweets
 }) => {
    const { loading, error, data } = useQuery(GET_TWEETS_FOR_LIST, {
-      ssr: false,
       variables: {
          listID
       }
@@ -22,7 +21,7 @@ const ListElement = ({
    const [getTweetsForList, { data: newListData }] = useLazyQuery(
       GET_TWEETS_FOR_LIST,
       {
-         ssr: false,
+         // ssr: false,
          fetchPolicy: 'network-only',
          onCompleted: () => {
             changeLists(newListData);

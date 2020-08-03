@@ -9,8 +9,8 @@ import ws from 'ws';
 import { getMainDefinition } from 'apollo-utilities';
 import { endpoint, endpointNoHTTP } from '../config';
 
-function createClient({ headers }) {
-   const cache = new InMemoryCache();
+function createClient({ headers, initialState }) {
+   const cache = new InMemoryCache().restore(initialState);
    cache.writeData({
       data: {}
    });
@@ -77,6 +77,7 @@ function createClient({ headers }) {
    );
 
    return new ApolloClient({
+      ssrMode: true,
       link: ApolloLink.from([
          onError(({ graphQLErrors, networkError }) => {
             if (graphQLErrors)

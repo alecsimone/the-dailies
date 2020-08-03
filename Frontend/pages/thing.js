@@ -41,10 +41,10 @@ const StyledSingleThing = styled(StyledPageWithSidebar)`
    }
 `;
 
-const SingleThing = props => {
+const SingleThing = ({ query }) => {
    const { loading, error, data } = useQuery(SINGLE_THING_QUERY, {
-      variables: { id: props.query.id },
-      skip: props.query.id === 'new'
+      variables: { id: query.id },
+      skip: query.id === 'new'
    });
 
    const { me, loading: meLoading } = useContext(MemberContext);
@@ -56,15 +56,15 @@ const SingleThing = props => {
       if (containerArray.length >= 1) {
          containerArray[0].scrollTo(0, 0);
       }
-   }, [props.query.id]);
+   }, [query.id]);
    /* eslint-enable */
 
    const {
       data: subscriptionData,
       loading: subscriptionLoading
    } = useSubscription(SINGLE_THING_SUBSCRIPTION, {
-      variables: { id: props.query.id },
-      skip: props.query.id === 'new'
+      variables: { id: query.id },
+      skip: query.id === 'new'
    });
 
    let content;
@@ -73,13 +73,6 @@ const SingleThing = props => {
    if (error) {
       content = <Error error={error} />;
       pageTitle = 'Unavailable Thing';
-   }
-   if (loading || meLoading) {
-      content = <LoadingRing />;
-      pageTitle = 'Loading Thing';
-   } else if (props.query.id === 'new') {
-      content = <FullThing id="new" key="new" canEdit />;
-      pageTitle = 'New Thing';
    } else if (data) {
       if (data.thing != null) {
          let canEdit = false;
@@ -95,18 +88,18 @@ const SingleThing = props => {
          if (me?.broadcastView) {
             content = (
                <BroadcastThing
-                  id={props.query.id}
-                  linkedPiece={props.query.piece}
-                  key={props.query.id}
+                  id={query.id}
+                  linkedPiece={query.piece}
+                  key={query.id}
                />
             );
          } else {
             content = (
                <FullThing
-                  id={props.query.id}
-                  key={props.query.id}
-                  linkedPiece={props.query.piece}
-                  linkedComment={props.query.comment}
+                  id={query.id}
+                  key={query.id}
+                  linkedPiece={query.piece}
+                  linkedComment={query.comment}
                   canEdit={canEdit}
                />
             );
@@ -115,6 +108,12 @@ const SingleThing = props => {
          content = <p>Thing not found.</p>;
       }
       pageTitle = data.thing == null ? "Couldn't find thing" : data.thing.title;
+   } else if (loading || meLoading) {
+      content = <LoadingRing />;
+      pageTitle = 'Loading Thing';
+   } else if (query.id === 'new') {
+      content = <FullThing id="new" key="new" canEdit />;
+      pageTitle = 'New Thing';
    }
 
    let dataForContext;
@@ -122,7 +121,7 @@ const SingleThing = props => {
       dataForContext = loading;
    } else if (error) {
       dataForContext = error;
-   } else if (props.query.id === 'new') {
+   } else if (query.id === 'new') {
       dataForContext = {
          id: 'new'
       };

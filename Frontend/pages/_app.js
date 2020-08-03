@@ -16,11 +16,12 @@ if (process.browser) {
 
 class MyApp extends App {
    render() {
-      const { Component, apollo, pageProps } = this.props;
+      const { Component, apollo, apolloState, pageProps } = this.props;
+
       return (
          <ApolloProvider client={apollo}>
             <Page pageProps={pageProps}>
-               <Component {...pageProps} />
+               <Component {...pageProps} prefetchedData={apolloState.data} />
             </Page>
          </ApolloProvider>
       );
