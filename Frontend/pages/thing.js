@@ -139,6 +139,17 @@ const SingleThing = ({ query }) => {
                   property="og:url"
                   content={`${home}/thing?id=${query.id}`}
                />
+               <meta
+                  property="og:description"
+                  content={
+                     data
+                        ? `A Thing by ${data.thing.author.displayName} with ${
+                             data.thing.score
+                          } votes`
+                        : 'A Thing you might find interesting'
+                  }
+                  key="ogDescription"
+               />
             </Head>
             <Sidebar />
             <div className="mainSection thing">{content}</div>

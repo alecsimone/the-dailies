@@ -20,6 +20,7 @@ const Meta = () => (
       <title>Our Dailies</title>
       <meta property="og:type" content="website" key="ogType" />
       <meta property="og:site_name" content="Our Dailies" />
+      <meta property="og:description" content="What did you learn today?" />
    </Head>
 );
 Meta.propTypes = {};
