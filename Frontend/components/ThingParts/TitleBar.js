@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { useContext, useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import Router from 'next/router';
+import Head from 'next/head';
 import { setAlpha, dynamicallyResizeElement } from '../../styles/functions';
 import { checkForNewThingRedirect } from '../../lib/ThingHandling';
 import { setFullThingToLoading } from './FullThing';
@@ -165,6 +166,9 @@ const TitleBar = ({ context, limit, canEdit = true }) => {
 
    return (
       <StyledTitleBar className="titleBarContainer">
+         <Head>
+            <meta property="og:title" content={title} />
+         </Head>
          {titleElement}
       </StyledTitleBar>
    );

@@ -4,6 +4,7 @@ import { useMutation } from '@apollo/react-hooks';
 import { useContext, useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import Reorder from 'react-reorder';
+import Head from 'next/head';
 import { setAlpha, setLightness } from '../../styles/functions';
 import ContentPiece from './ContentPiece';
 import RichTextArea from '../RichTextArea';
@@ -736,6 +737,9 @@ const Content = ({ context, canEdit, linkedPiece }) => {
 
    return (
       <StyledContent className="content">
+         <Head>
+            <meta property="og:description" content={content} />
+         </Head>
          {contentElements}
          {canEdit && (
             <RichTextArea

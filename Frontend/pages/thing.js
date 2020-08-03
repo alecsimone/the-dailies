@@ -11,6 +11,7 @@ import { fullThingFields } from '../lib/CardInterfaces';
 import FullThing from '../components/ThingParts/FullThing';
 import Sidebar from '../components/Sidebar';
 import BroadcastThing from '../components/ThingCards/BroadcastThing';
+import { home } from '../config';
 
 const SINGLE_THING_QUERY = gql`
    query SINGLE_THING_QUERY($id: ID!) {
@@ -69,7 +70,6 @@ const SingleThing = ({ query }) => {
 
    let content;
    let pageTitle;
-   let thing;
    if (error) {
       content = <Error error={error} />;
       pageTitle = 'Unavailable Thing';
@@ -134,6 +134,11 @@ const SingleThing = ({ query }) => {
          <StyledSingleThing className="thingPage">
             <Head>
                <title>{pageTitle} - OurDailies</title>
+               <meta property="og:type" content="article" />
+               <meta
+                  property="og:url"
+                  content={`${home}/thing?id=${query.id}`}
+               />
             </Head>
             <Sidebar />
             <div className="mainSection thing">{content}</div>
