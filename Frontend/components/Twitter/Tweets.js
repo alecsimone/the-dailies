@@ -202,7 +202,7 @@ const Tweets = ({
    }
 }) => {
    const [refreshList] = useLazyQuery(GET_TWEETS_FOR_LIST, {
-      ssr: false,
+      // ssr: false,
       fetchPolicy: 'network-only',
       variables: {
          listID
