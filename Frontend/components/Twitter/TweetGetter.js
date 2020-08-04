@@ -20,7 +20,8 @@ const TweetGetter = props => {
    const { loading, error, data } = useQuery(GET_TWEET, {
       variables: {
          tweetID: id
-      }
+      },
+      ssr: false
    });
 
    const tweetCheck = new RegExp(

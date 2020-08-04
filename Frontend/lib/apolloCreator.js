@@ -77,7 +77,7 @@ function createClient({ headers, initialState }) {
    );
 
    return new ApolloClient({
-      ssrMode: true,
+      ssrMode: false,
       link: ApolloLink.from([
          onError(({ graphQLErrors, networkError }) => {
             if (graphQLErrors)
