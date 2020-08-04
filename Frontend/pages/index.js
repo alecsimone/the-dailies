@@ -18,7 +18,7 @@ const ALL_THINGS_QUERY = gql`
 export { ALL_THINGS_QUERY };
 
 const Home = props => {
-   const { data, loading, error } = useQuery(ALL_THINGS_QUERY);
+   const { data, loading, error } = useQuery(ALL_THINGS_QUERY, { ssr: false });
 
    let content;
    if (error) {

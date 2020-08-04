@@ -475,24 +475,28 @@ const StyledPage = styled.div`
    height: 100vh;
 `;
 
-const Page = ({ children, pageProps }) => (
-   <MemberProvider>
-      <ThemeProvider theme={theme}>
-         <ModalProvider>
-            <StyledPage id="page">
-               <Meta />
-               <Header pageProps={pageProps} />
-               <>
-                  <GlobalStyle />
-                  {children}
-                  <Modal />
-               </>
-               <BottomBar />
-            </StyledPage>
-         </ModalProvider>
-      </ThemeProvider>
-   </MemberProvider>
-);
+const Page = ({ children, pageProps }) => {
+   const isHome = Object.keys(pageProps).length === 0; // We use this to disable SSR on the homepage so that our https redirect will work
+
+   return (
+      <MemberProvider isHome={isHome}>
+         <ThemeProvider theme={theme}>
+            <ModalProvider>
+               <StyledPage id="page">
+                  <Meta />
+                  <Header pageProps={pageProps} />
+                  <>
+                     <GlobalStyle />
+                     {children}
+                     <Modal />
+                  </>
+                  <BottomBar />
+               </StyledPage>
+            </ModalProvider>
+         </ThemeProvider>
+      </MemberProvider>
+   );
+};
 Page.propTypes = {
    children: PropTypes.node
 };
