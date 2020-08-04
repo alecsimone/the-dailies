@@ -46,7 +46,8 @@ const TweetGetter = props => {
       variables: {
          tweetID: nextTweetID
       },
-      skip: !nextTweetID
+      skip: !nextTweetID,
+      ssr: false
    });
 
    if (loading || nextTweetLoading) {

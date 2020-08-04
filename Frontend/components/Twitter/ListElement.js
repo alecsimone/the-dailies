@@ -15,13 +15,14 @@ const ListElement = ({
    const { loading, error, data } = useQuery(GET_TWEETS_FOR_LIST, {
       variables: {
          listID
-      }
+      },
+      ssr: false
    });
 
    const [getTweetsForList, { data: newListData }] = useLazyQuery(
       GET_TWEETS_FOR_LIST,
       {
-         // ssr: false,
+         ssr: false,
          fetchPolicy: 'network-only',
          onCompleted: () => {
             changeLists(newListData);

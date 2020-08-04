@@ -85,8 +85,8 @@ const TwitterReader = ({ list }) => {
       startingListVariables.listID = list;
    }
    const { loading, error, data } = useQuery(GET_TWEETS_FOR_LIST, {
-      variables: startingListVariables
-      // ssr: false
+      variables: startingListVariables,
+      ssr: false
    });
 
    const [markTweetsSeen] = useMutation(MARK_TWEETS_SEEN);
@@ -114,7 +114,7 @@ const TwitterReader = ({ list }) => {
          client
       }
    ] = useLazyQuery(GET_FRESH_LISTS, {
-      // ssr: false,
+      ssr: false,
       onCompleted: updateLists,
       fetchPolicy: 'network-only'
    });
