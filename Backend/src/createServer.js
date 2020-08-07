@@ -31,13 +31,6 @@ function createServer() {
       resolverValidationOptions: {
          requireResolversForResolveType: false
       },
-      plugins: [
-         {
-            requestDidStart(requestContext) {
-               console.log(requestContext.request.operationName);
-            }
-         }
-      ],
       introspection: true,
       subscriptions: {
          onConnect: (connectionParams, webSocket) => {
