@@ -1,17 +1,16 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var prisma_lib_1 = require("prisma-client-lib");
-var typeDefs = require("./prisma-schema").typeDefs;
+Object.defineProperty(exports, '__esModule', { value: true });
+const prisma_lib_1 = require('prisma-client-lib');
+const { typeDefs } = require('./prisma-schema');
 
-var models = [
-  {
-    name: "User",
-    embedded: false
-  }
+const models = [
+   {
+      name: 'User',
+      embedded: false
+   }
 ];
 exports.Prisma = prisma_lib_1.makePrismaClientClass({
-  typeDefs,
-  models,
-  endpoint: `https://us1.prisma.sh/alec-simone/Dailies-DB/dev`
+   typeDefs,
+   models,
+   endpoint: `https://us1.prisma.sh/alec-simone/Dailies-DB/dev`
 });
 exports.prisma = new exports.Prisma();
