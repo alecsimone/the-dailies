@@ -40,6 +40,7 @@ const isExplodingLink = url => {
       lowerCaseURL.includes('.jpg') ||
       lowerCaseURL.includes('.png') ||
       lowerCaseURL.includes('.jpeg') ||
+      lowerCaseURL.includes('.webp') ||
       lowerCaseURL.includes('.gif') ||
       lowerCaseURL.includes('.mp4') ||
       lowerCaseURL.includes('.webm') ||

@@ -178,7 +178,10 @@ const RichText = ({ text, priorText, nextText, matchCount = 0 }) => {
                elementsArray.push(
                   <blockquote>
                      <RichText
-                        text={tag.groups.quoteTextContent}
+                        text={tag.groups.quoteTextContent.substring(
+                           1,
+                           tag.groups.quoteTextContent.length - 1
+                        )}
                         key={tag.groups.quoteTextContent}
                         matchCount={matchCount + 1}
                      />

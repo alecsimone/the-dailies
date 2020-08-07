@@ -8,7 +8,9 @@ import {
    getYoutubeVideoIdFromLink,
    getGfycatSlugFromLink,
    getTweetIDFromLink,
-   urlFinder
+   urlFinder,
+   isImage,
+   isVideo
 } from '../lib/UrlHandling';
 import { home, homeNoHTTP } from '../config';
 import ShortLink from './ThingParts/ShortLink';
@@ -115,12 +117,7 @@ const ExplodingLink = ({
       }
    }
 
-   if (
-      lowerCaseURL.includes('.jpg') ||
-      lowerCaseURL.includes('.png') ||
-      lowerCaseURL.includes('.jpeg') ||
-      lowerCaseURL.includes('.gif')
-   ) {
+   if (isImage(lowerCaseURL)) {
       // Images
       return (
          <a
