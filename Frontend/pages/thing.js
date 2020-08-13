@@ -60,13 +60,13 @@ const SingleThing = ({ query }) => {
    }, [query.id]);
    /* eslint-enable */
 
-   // const {
-   //    data: subscriptionData,
-   //    loading: subscriptionLoading
-   // } = useSubscription(SINGLE_THING_SUBSCRIPTION, {
-   //    variables: { id: query.id },
-   //    skip: query.id === 'new'
-   // });
+   const {
+      data: subscriptionData,
+      loading: subscriptionLoading
+   } = useSubscription(SINGLE_THING_SUBSCRIPTION, {
+      variables: { id: query.id },
+      skip: query.id === 'new'
+   });
 
    let content;
    let pageTitle;

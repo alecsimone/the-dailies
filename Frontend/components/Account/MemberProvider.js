@@ -28,10 +28,10 @@ const MemberProvider = ({ children, isHome }) => {
       ssr: !isHome
    });
 
-   // const {
-   //    data: subscriptionData,
-   //    loading: subscriptionLoading
-   // } = useSubscription(ME_SUBSCRIPTION);
+   const {
+      data: subscriptionData,
+      loading: subscriptionLoading
+   } = useSubscription(ME_SUBSCRIPTION);
 
    let memberData = {};
    if (error) {
