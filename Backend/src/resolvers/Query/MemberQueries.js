@@ -1,6 +1,7 @@
 const { canSeeThing } = require('../../utils/ThingHandling');
 
 async function me(parent, args, ctx, info) {
+   console.log('me');
    if (!ctx.req.memberId) {
       return null;
    }

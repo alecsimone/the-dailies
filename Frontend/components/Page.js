@@ -477,7 +477,6 @@ const StyledPage = styled.div`
 
 const Page = ({ children, pageProps }) => {
    const isHome = Object.keys(pageProps).length === 0; // We use this to disable SSR on the homepage so that our https redirect will work
-   console.log(isHome);
 
    return (
       <MemberProvider isHome={isHome}>
