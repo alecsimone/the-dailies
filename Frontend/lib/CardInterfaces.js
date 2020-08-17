@@ -236,6 +236,37 @@ const taxFields = `
 `;
 export { taxFields };
 
+const basicMemberFields = `
+   __typename
+   id
+   displayName
+   avatar
+   rep
+   notifications {
+      __typename
+      id
+      kind
+      initiator {
+         __typename
+         id
+         avatar
+         rep
+         displayName
+         role
+         friends {
+            __typename
+            id
+         }
+      }
+      unread
+      linkQuery
+   }
+   broadcastView
+   role
+   twitterUserName
+`;
+export { basicMemberFields };
+
 const fullMemberFields = `
    __typename
    id
