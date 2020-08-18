@@ -1,11 +1,12 @@
 import gql from 'graphql-tag';
+import { useQuery } from '@apollo/react-hooks';
 import { useContext } from 'react';
 import Head from 'next/head';
 import PropTypes from 'prop-types';
 import StyledPageWithSidebar from '../styles/StyledPageWithSidebar';
 import { MemberContext } from '../components/Account/MemberProvider';
 import Sidebar from '../components/Sidebar';
-import Error from '../components/ErrorMessage';
+import ErrorMessage from '../components/ErrorMessage';
 import LoadingRing from '../components/LoadingRing';
 import ProfileSidebar from '../components/Profile/ProfileSidebar';
 import ProfileContent from '../components/Profile/ProfileContent';
@@ -20,12 +21,28 @@ const ME_PAGE_QUERY = gql`
 `;
 
 const me = ({ query }) => {
-   const { me, loading } = useContext(MemberContext);
+   const { data, loading, error } = useQuery(ME_PAGE_QUERY);
 
    let pageTitle;
    let content;
    let sidebar;
-   if (loading) {
+   if (error) {
+      pageTitle = "Couldn't find you";
+      content = <p>You were not found.</p>;
+      sidebar = <Sidebar key="missingYou" />;
+   } else if (data && data.me) {
+      pageTitle = data.me.displayName;
+      content = (
+         <ProfileContent member={data.me} isMe defaultTab={query.stuff} />
+      );
+      sidebar = (
+         <Sidebar
+            extraColumnContent={<ProfileSidebar member={data.me} canEdit />}
+            extraColumnTitle="Me"
+            key="meData"
+         />
+      );
+   } else if (loading) {
       pageTitle = 'Loading You';
       content = <LoadingRing />;
       sidebar = (
@@ -35,23 +52,6 @@ const me = ({ query }) => {
             key="loading"
          />
       );
-   } else if (me) {
-      if (me != null) {
-         pageTitle = me.displayName;
-
-         content = <ProfileContent member={me} isMe defaultTab={query.stuff} />;
-         sidebar = (
-            <Sidebar
-               extraColumnContent={<ProfileSidebar member={me} canEdit />}
-               extraColumnTitle="Me"
-               key="meData"
-            />
-         );
-      }
-   } else {
-      pageTitle = "Couldn't find you";
-      content = <p>You were not found.</p>;
-      sidebar = <Sidebar key="missingYou" />;
    }
 
    return (
