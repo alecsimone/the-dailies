@@ -183,8 +183,6 @@ const generateRequestURL = (baseURL, parameters) => {
 };
 
 const getFreshLists = async ctx => {
-   console.log('Getting fresh lists');
-
    const {
       twitterUserID: userID,
       twitterUserToken: token,
