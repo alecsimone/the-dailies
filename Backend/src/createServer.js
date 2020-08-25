@@ -16,7 +16,6 @@ function createServer() {
       resolvers: {
          Mutation,
          Query,
-         Subscription,
          Stuff: {
             __resolveType(obj, context, info) {
                return obj.__typename;
