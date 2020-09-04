@@ -4,7 +4,7 @@ import { ThemeContext } from 'styled-components';
 const SidebarHeaderIcon = ({ onClick, className, icon }) => {
    const { lowContrastGrey } = useContext(ThemeContext);
    let contents;
-   if (icon === 'You') {
+   if (icon.toLowerCase() === 'you') {
       contents = [
          <circle key="youCircle1" cx="200" cy="58.5" r="49" />,
          <path
@@ -12,7 +12,7 @@ const SidebarHeaderIcon = ({ onClick, className, icon }) => {
             d="M109.23,200c0-50.68,40.64-91.76,90.77-91.76s90.77,41.08,90.77,91.76"
          />
       ];
-   } else if (icon === 'Friends') {
+   } else if (icon.toLowerCase() === 'friends') {
       contents = [
          <circle key="friendsCircle1" cx="109" cy="59" r="49" />,
          <path
@@ -25,7 +25,7 @@ const SidebarHeaderIcon = ({ onClick, className, icon }) => {
             d="M200.23,200.38c0-50.68,40.64-91.76,90.77-91.76s90.77,41.08,90.77,91.76"
          />
       ];
-   } else if (icon === 'Public') {
+   } else if (icon.toLowerCase() === 'public') {
       contents = [
          <circle key="publicCircle1" cx="96.12" cy="66.61" r="46.36" />,
          <path
@@ -50,7 +50,7 @@ const SidebarHeaderIcon = ({ onClick, className, icon }) => {
             strokeWidth="12"
          />
       ];
-   } else if (icon === 'Tag') {
+   } else if (icon.toLowerCase() === 'tag') {
       contents = [
          <polygon
             key="tagPolygon1"
@@ -82,7 +82,7 @@ const SidebarHeaderIcon = ({ onClick, className, icon }) => {
             strokeWidth="12"
          />
       ];
-   } else if (icon === 'Stack') {
+   } else if (icon.toLowerCase() === 'stack') {
       contents = [
          <path
             key="stackPath1"
@@ -103,7 +103,7 @@ const SidebarHeaderIcon = ({ onClick, className, icon }) => {
             strokeWidth="12"
          />
       ];
-   } else if (icon === 'Tweets') {
+   } else if (icon.toLowerCase() === 'tweets') {
       contents = [
          <path
             key="tweetsPath"

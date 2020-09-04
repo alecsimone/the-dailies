@@ -6,6 +6,8 @@ import BottomBar from './BottomBar';
 import MemberProvider from './Account/MemberProvider';
 import ModalProvider from './ModalProvider';
 import Modal from './Modal';
+import NavSidebar from './NavSidebar';
+import MyThings from './Archives/MyThings';
 import { setAlpha, setLightness, setSaturation } from '../styles/functions';
 
 const theme = {
@@ -254,6 +256,35 @@ const GlobalStyle = createGlobalStyle`
          transform: rotateY(0deg);
       }
    }
+   section.threeColumns {
+      display: flex;
+      ${props => props.theme.scroll};
+      max-height: 100%;
+      .navSidebar {
+         width: 20%;
+         max-width: 400px;
+         margin: 0;
+         max-height: 100%;
+         overflow: hidden;
+         ${props => props.theme.scroll};
+      }
+      .mainSection {
+         padding: 0;
+         flex-grow: 1;
+         max-height: 100%;
+         overflow: hidden;
+         ${props => props.theme.scroll};
+      }
+      .myThingsBar {
+         width: 25%;
+         max-width: 512px;
+         margin: 0;
+         background: ${props => props.theme.deepBlack};
+         max-height: 100%;
+         overflow: hidden;
+         ${props => props.theme.scroll};
+      }
+   }
    .tweetHead {
          display: flex;
          align-items: center;
@@ -487,7 +518,13 @@ const Page = ({ children, pageProps }) => {
                   <Header pageProps={pageProps} />
                   <>
                      <GlobalStyle />
-                     {children}
+                     <section className="threeColumns">
+                        <NavSidebar />
+                        <div className="mainSection">{children}</div>
+                        <div className="myThingsBar">
+                           <MyThings />
+                        </div>
+                     </section>
                      <Modal />
                   </>
                   <BottomBar />

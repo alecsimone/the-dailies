@@ -4,5 +4,10 @@
       "titleBar.inactiveForeground": "#000000CC",
       "titleBar.activeBackground": "#FFC600",
       "titleBar.inactiveBackground": "#FFC600CC"
-    }
+   },
+   "files.watcherExclude": {
+      "**/.git/objects/**": true,
+      "**/.git/subtree-cache/**": true,
+      "**/.hg/store/**": true
+   }
   }

@@ -12,6 +12,7 @@ import TimeAgo from '../TimeAgo';
 
 const StyledThingCard = styled.div`
    width: 100%;
+   max-width: 1200px;
    padding: 0 1.5rem 1.5rem;
    background: ${props => props.theme.lightBlack};
    box-shadow: 0 2px 4px

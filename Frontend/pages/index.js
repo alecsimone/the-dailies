@@ -1,7 +1,6 @@
 import gql from 'graphql-tag';
 import { useQuery } from '@apollo/react-hooks';
-import StyledPageWithSidebar from '../styles/StyledPageWithSidebar';
-import Sidebar from '../components/Sidebar';
+import styled from 'styled-components';
 import ErrorMessage from '../components/ErrorMessage';
 import { smallThingCardFields } from '../lib/CardInterfaces';
 import LoadingRing from '../components/LoadingRing';
@@ -17,6 +16,13 @@ const ALL_THINGS_QUERY = gql`
 `;
 export { ALL_THINGS_QUERY };
 
+const StyledHomepage = styled.section`
+   padding: 2rem 0;
+   .things .thingCard {
+      margin: auto;
+   }
+`;
+
 const Home = props => {
    const { data, loading, error } = useQuery(ALL_THINGS_QUERY, { ssr: false });
 
@@ -28,7 +34,7 @@ const Home = props => {
          <Things
             things={data.allThings}
             cardSize="regular"
-            displayType="grid"
+            displayType="list"
             scrollingParentSelector=".mainSection"
             perPage={perPage}
          />
@@ -37,10 +43,9 @@ const Home = props => {
       content = <LoadingRing />;
    }
    return (
-      <StyledPageWithSidebar className="styledPageWithSidebar">
-         <Sidebar />
+      <StyledHomepage className="homepage">
          <div className="mainSection">{content}</div>
-      </StyledPageWithSidebar>
+      </StyledHomepage>
    );
 };
 
