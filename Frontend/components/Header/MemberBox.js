@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { ThemeContext } from 'styled-components';
 import { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import Link from 'next/link';
@@ -40,8 +40,9 @@ const StyledMemberBox = styled.div`
    }
 `;
 
-const MemberBox = () => {
+const MemberBox = ({ showingThingsSidebar, setShowingThingsSidebar }) => {
    const { me, loading: memberLoading } = useContext(MemberContext);
+   const { mobileBPWidthRaw } = useContext(ThemeContext);
    const { setContent } = useContext(ModalContext);
    const [memberMenuOpen, setMemberMenuOpen] = useState(false);
 
@@ -70,6 +71,19 @@ const MemberBox = () => {
       }
    };
 
+   const toggleThingsSidebar = (e, setShowing, showing) => {
+      e.preventDefault();
+      if (showing === 'default') {
+         if (window.outerWidth <= mobileBPWidthRaw) {
+            setShowing(true);
+         } else {
+            setShowing(false);
+         }
+         return;
+      }
+      setShowing(!showing);
+   };
+
    let memberBoxContent;
    if (me) {
       memberBoxContent = (
@@ -88,10 +102,25 @@ const MemberBox = () => {
                   src={me.avatar}
                   alt="avatar"
                   id="avatar"
-                  onClick={() => toggleMemberMenu()}
+                  onClick={e => {
+                     toggleThingsSidebar(
+                        e,
+                        setShowingThingsSidebar,
+                        showingThingsSidebar
+                     );
+                  }}
                />
             ) : (
-               <DefaultAvatar id="avatar" onClick={() => toggleMemberMenu()} />
+               <DefaultAvatar
+                  id="avatar"
+                  onClick={e => {
+                     toggleThingsSidebar(
+                        e,
+                        setShowingThingsSidebar,
+                        showingThingsSidebar
+                     );
+                  }}
+               />
             )}
             {memberMenuOpen && <MemberMenu />}
          </>

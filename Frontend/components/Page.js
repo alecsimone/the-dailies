@@ -1,4 +1,5 @@
 import styled, { ThemeProvider, createGlobalStyle } from 'styled-components';
+import { useState } from 'react';
 import PropTypes from 'prop-types';
 import Meta from './Header/Meta';
 import Header from './Header/Header';
@@ -257,32 +258,84 @@ const GlobalStyle = createGlobalStyle`
       }
    }
    section.threeColumns {
-      display: flex;
-      ${props => props.theme.scroll};
-      max-height: 100%;
       .navSidebar {
-         width: 20%;
-         max-width: 400px;
+         display: block;
+         position: absolute;
          margin: 0;
-         max-height: 100%;
          overflow: hidden;
+         width: 100%;
+         height: calc(100% - 13.5rem - 4px);
+         top: calc(6.75rem + 2px); /* bottom bar is 6.75rem with a 2px border */
+         z-index: 9;
          ${props => props.theme.scroll};
-      }
-      .mainSection {
-         padding: 0;
-         flex-grow: 1;
-         max-height: 100%;
-         overflow: hidden;
-         ${props => props.theme.scroll};
+         transition: transform .25s;
+         &.visible {
+            transform: translateX(0%);
+         }
+         &.hidden {
+            transform: translateX(-100%);
+         }
       }
       .myThingsBar {
-         width: 25%;
-         max-width: 512px;
+         display: block;
+         position: absolute;
          margin: 0;
-         background: ${props => props.theme.deepBlack};
-         max-height: 100%;
          overflow: hidden;
+         width: 100%;
+         height: calc(100% - 13.5rem - 4px);
+         top: calc(6.75rem + 2px); /* bottom bar is 6.75rem with a 2px border */
+         z-index: 9;
          ${props => props.theme.scroll};
+         background: ${props => props.theme.midBlack};
+         transition: all .25s;
+         &.visible {
+            transform: translateX(0%);
+         }
+         &.hidden, &.default {
+            transform: translateX(100%);
+         }
+      }
+      ${props => props.theme.bigScreenBreakpoint} {
+         display: flex;
+         ${props => props.theme.scroll};
+         max-height: 100%;
+         max-width: 100vw;
+         overflow-x: hidden;
+         .navSidebar {
+            position: relative;
+            width: 20%;
+            top: 0;
+            height: 100%;
+            max-width: 400px;
+            max-height: 100%;
+            &.visible, &.hidden {
+               transform: none;
+            }
+         }
+         .mainSection {
+            padding: 0;
+            flex-grow: 1;
+            max-height: 100%;
+            overflow: hidden;
+            ${props => props.theme.scroll};
+         }
+         .myThingsBar {
+            position: relative;
+            width: 25%;
+            top: 0%;
+            height: 100%;
+            max-width: 512px;
+            max-height: 100%;
+            &.visible, &.default {
+               transform: none;
+               /* max-width: 512px; */
+            }
+            &.hidden {
+               width: 0;
+               flex-shrink: 1;
+               /* max-width: 0; */
+            }
+         }
       }
    }
    .tweetHead {
@@ -508,6 +561,16 @@ const StyledPage = styled.div`
 
 const Page = ({ children, pageProps }) => {
    const isHome = Object.keys(pageProps).length === 0; // We use this to disable SSR on the homepage so that our https redirect will work
+   const [showingNavSidebar, setShowingNavSidebar] = useState(false);
+   const [showingThingsSidebar, setShowingThingsSidebar] = useState('default');
+   let thingsSidebarClasses = 'myThingsBar';
+   if (showingThingsSidebar === true) {
+      thingsSidebarClasses += ' visible';
+   } else if (showingThingsSidebar === false) {
+      thingsSidebarClasses += ' hidden';
+   } else if (showingThingsSidebar === 'default') {
+      thingsSidebarClasses += ' default';
+   }
 
    return (
       <MemberProvider isHome={isHome}>
@@ -515,13 +578,19 @@ const Page = ({ children, pageProps }) => {
             <ModalProvider>
                <StyledPage id="page">
                   <Meta />
-                  <Header pageProps={pageProps} />
+                  <Header
+                     pageProps={pageProps}
+                     showingNavSidebar={showingNavSidebar}
+                     setShowingNavSidebar={setShowingNavSidebar}
+                     showingThingsSidebar={showingThingsSidebar}
+                     setShowingThingsSidebar={setShowingThingsSidebar}
+                  />
                   <>
                      <GlobalStyle />
                      <section className="threeColumns">
-                        <NavSidebar />
+                        <NavSidebar showing={showingNavSidebar} />
                         <div className="mainSection">{children}</div>
-                        <div className="myThingsBar">
+                        <div className={thingsSidebarClasses}>
                            <MyThings />
                         </div>
                      </section>

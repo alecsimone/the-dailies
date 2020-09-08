@@ -8,7 +8,7 @@ import X from './Icons/X';
 import DefaultAvatar from './Icons/DefaultAvatar';
 
 const StyledNavSidebar = styled.section`
-   background: ${props => props.theme.deepBlack};
+   background: ${props => props.theme.midBlack};
    border-right: 3px solid
       ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
    text-align: center;
@@ -110,8 +110,10 @@ const StyledNavSidebar = styled.section`
    }
 `;
 
-const NavSidebar = () => (
-   <StyledNavSidebar className="navSidebar">
+const NavSidebar = ({ showing }) => (
+   <StyledNavSidebar
+      className={showing ? 'navSidebar visible' : 'navSidebar hidden'}
+   >
       <Link href="/">
          <a>
             <div className="navLine">

@@ -45,7 +45,7 @@ const StyledHeader = styled.div`
    grid-column: -1 / 1;
    border-bottom: 3px solid
       ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
-   background: ${props => props.theme.deepBlack};
+   background: ${props => props.theme.midBlack};
    padding: 0.5rem 0;
    .headerContents {
       display: grid;
@@ -87,7 +87,13 @@ const StyledHeader = styled.div`
    }
 `;
 
-const Header = ({ pageProps }) => {
+const Header = ({
+   pageProps,
+   showingNavSidebar,
+   setShowingNavSidebar,
+   showingThingsSidebar,
+   setShowingThingsSidebar
+}) => {
    const [showSearch, setShowSearch] = useState(false);
    const { me } = useContext(MemberContext);
 
@@ -104,10 +110,16 @@ const Header = ({ pageProps }) => {
                setShowSearch={setShowSearch}
                search={search}
             />
-            <LogoBox />
+            <LogoBox
+               showingNavSidebar={showingNavSidebar}
+               setShowingNavSidebar={setShowingNavSidebar}
+            />
             <div className="memberColumn">
                {me && <NotificationsIcon />}
-               <MemberBox />
+               <MemberBox
+                  showingThingsSidebar={showingThingsSidebar}
+                  setShowingThingsSidebar={setShowingThingsSidebar}
+               />
             </div>
          </div>
       </StyledHeader>
