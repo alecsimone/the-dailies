@@ -42,11 +42,7 @@ const Home = props => {
    } else if (loading) {
       content = <LoadingRing />;
    }
-   return (
-      <StyledHomepage className="homepage">
-         <div className="mainSection">{content}</div>
-      </StyledHomepage>
-   );
+   return <StyledHomepage className="homepage">{content}</StyledHomepage>;
 };
 
 export default Home;

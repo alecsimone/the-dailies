@@ -35,11 +35,8 @@ const SINGLE_THING_SUBSCRIPTION = gql`
 const ThingContext = React.createContext();
 export { ThingContext };
 
-const StyledSingleThing = styled(StyledPageWithSidebar)`
-   .mainSection {
-      padding: 0;
-      position: relative;
-   }
+const StyledSingleThing = styled.section`
+   position: relative;
 `;
 
 const SingleThing = ({ query }) => {
@@ -155,8 +152,7 @@ const SingleThing = ({ query }) => {
                   content={data ? data.thing.title : 'Our Dailies'}
                />
             </Head>
-            <Sidebar />
-            <div className="mainSection thing">{content}</div>
+            {content}
          </StyledSingleThing>
       </ThingContext.Provider>
    );

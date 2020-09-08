@@ -562,7 +562,9 @@ const StyledPage = styled.div`
 const Page = ({ children, pageProps }) => {
    const isHome = Object.keys(pageProps).length === 0; // We use this to disable SSR on the homepage so that our https redirect will work
    const [showingNavSidebar, setShowingNavSidebar] = useState(false);
-   const [showingThingsSidebar, setShowingThingsSidebar] = useState('default');
+   const [showingThingsSidebar, setShowingThingsSidebar] = useState(
+      isHome ? 'default' : false
+   );
    let thingsSidebarClasses = 'myThingsBar';
    if (showingThingsSidebar === true) {
       thingsSidebarClasses += ' visible';
