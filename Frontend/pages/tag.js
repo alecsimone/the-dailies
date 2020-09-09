@@ -13,6 +13,7 @@ import Things from '../components/Archives/Things';
 import { taxFields } from '../lib/CardInterfaces';
 import { MemberContext } from '../components/Account/MemberProvider';
 import { perPage } from '../config';
+import { setAlpha } from '../styles/functions';
 
 const SINGLE_TAX_QUERY = gql`
    query SINGLE_TAX_QUERY($title: String! $personal: Boolean!) {
@@ -47,6 +48,39 @@ const StyledTaxContent = styled.section`
    }
 `;
 export { StyledTaxContent };
+
+const StyledTagPage = styled.section`
+   position: relative;
+   display: flex;
+   flex-direction: column-reverse;
+   ${props => props.theme.desktopBreakpoint} {
+      height: 100%;
+      max-height: 100%;
+      flex-direction: row;
+   }
+   .tagContent {
+      width: 100%;
+      position: relative;
+      ${props => props.theme.desktopBreakpoint} {
+         width: 75%;
+         overflow: hidden;
+         padding: 0 2rem;
+         ${props => props.theme.scroll};
+      }
+   }
+   .sidebar {
+      width: 100%;
+      background: ${props => props.theme.midBlack};
+      height: 100%;
+      border-left: 3px solid
+         ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
+      ${props => props.theme.desktopBreakpoint} {
+         width: 25%;
+         overflow: hidden;
+         ${props => props.theme.scroll};
+      }
+   }
+`;
 
 const TagContext = React.createContext();
 export { TagContext };
@@ -84,18 +118,11 @@ const tag = ({ query: { id, title } }) => {
    if (error) {
       pageTitle = 'Unavailable Tag';
       content = <Error error={error} />;
-      sidebar = <Sidebar key="error" />;
    }
    if (loading) {
       pageTitle = 'Loading Tag';
       content = <LoadingRing />;
-      sidebar = (
-         <Sidebar
-            extraColumnContent={<p>Loading Tag...</p>}
-            extraColumnTitle="Tag"
-            key="loading"
-         />
-      );
+      sidebar = <LoadingRing />;
    } else if (data) {
       if (data.taxByTitle != null) {
          pageTitle = data.taxByTitle.title;
@@ -116,31 +143,22 @@ const tag = ({ query: { id, title } }) => {
                />
             </StyledTaxContent>
          );
-         sidebar = (
-            <Sidebar
-               extraColumnContent={
-                  <TaxSidebar context={TagContext} canEdit={canEdit} />
-               }
-               extraColumnTitle="Tag"
-               key="tagData"
-            />
-         );
+         sidebar = <TaxSidebar context={TagContext} canEdit={canEdit} />;
       } else {
          pageTitle = "Couldn't find tag";
          content = <p>Tag not found.</p>;
-         sidebar = <Sidebar key="missingTag" />;
       }
    }
 
    return (
       <TagContext.Provider value={loading || error || data.taxByTitle}>
-         <StyledPageWithSidebar className="styledPageWithSidebar">
+         <StyledTagPage className="styledTagPage">
             <Head>
                <title>{pageTitle} - OurDailies</title>
             </Head>
-            {sidebar}
-            <div className="mainSection">{content}</div>
-         </StyledPageWithSidebar>
+            <div className="tagContent">{content}</div>
+            <div className="sidebar">{sidebar}</div>
+         </StyledTagPage>
       </TagContext.Provider>
    );
 };

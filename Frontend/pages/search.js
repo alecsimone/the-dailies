@@ -20,6 +20,8 @@ const SEARCH_QUERY = gql`
 export { SEARCH_QUERY };
 
 const StyledSearchResults = styled.div`
+   position: relative;
+   padding: 2rem;
    h3 {
       margin-top: 0;
    }
@@ -103,13 +105,10 @@ const search = ({ query: { s: string } }) => {
       content = <LoadingRing />;
    }
    return (
-      <StyledPageWithSidebar className="styledPageWithSidebar">
-         <Sidebar />
-         <StyledSearchResults className="mainSection">
-            <h3 className="searchHeader">Results for "{string}"</h3>
-            {content}
-         </StyledSearchResults>
-      </StyledPageWithSidebar>
+      <StyledSearchResults>
+         <h3 className="searchHeader">Results for "{string}"</h3>
+         {content}
+      </StyledSearchResults>
    );
 };
 search.getInitialProps = async ctx => ({ query: ctx.query });

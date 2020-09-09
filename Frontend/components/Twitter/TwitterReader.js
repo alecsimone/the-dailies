@@ -10,6 +10,7 @@ import SidebarHeaderIcon from '../Icons/SidebarHeaderIcon';
 import LoadingRing from '../LoadingRing';
 import ErrorMessage from '../ErrorMessage';
 import X from '../Icons/X';
+import { setAlpha } from '../../styles/functions';
 
 const GET_MY_TWITTER_INFO = gql`
    query GET_MY_TWITTER_INFO {
@@ -92,6 +93,8 @@ const StyledTwitterReader = styled.section`
          position: relative;
          width: 20%;
          padding: 0rem 0;
+         border-left: 3px solid
+            ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
          svg.twitterLogo {
             height: ${props => props.theme.bigText};
             margin: 2rem auto 0;

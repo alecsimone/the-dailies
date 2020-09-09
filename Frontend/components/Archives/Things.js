@@ -37,6 +37,9 @@ const StyledThings = styled.div`
             margin-top: 0;
          }
       }
+      .regularThingCard {
+         margin: 2rem auto;
+      }
    }
 `;
 

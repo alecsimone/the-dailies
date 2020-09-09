@@ -29,7 +29,7 @@ const StyledHomepage = styled.section`
       overflow: hidden;
       ${props => props.theme.scroll};
       .things .thingCard {
-         margin: auto;
+         margin: 0 auto 4rem;
       }
    }
    .sidebar {

@@ -242,6 +242,7 @@ const basicMemberFields = `
    displayName
    avatar
    rep
+
    notifications {
       __typename
       id

@@ -259,14 +259,15 @@ const GlobalStyle = createGlobalStyle`
    }
    section.threeColumns {
       position: relative;
+      overflow-x: hidden;
       .navSidebar {
          display: block;
          position: absolute;
          margin: 0;
          overflow: hidden;
          width: 100%;
-         height: calc(100% - 13.5rem - 4px);
-         top: calc(6.75rem + 2px); /* bottom bar is 6.75rem with a 2px border */
+         height: 100%;
+         top: 0;
          z-index: 9;
          ${props => props.theme.scroll};
          transition: transform .25s;
@@ -282,7 +283,6 @@ const GlobalStyle = createGlobalStyle`
          ${props => props.theme.scroll};
          max-height: 100%;
          max-width: 100vw;
-         overflow-x: hidden;
          .navSidebar {
             position: relative;
             width: 20%;
@@ -308,8 +308,8 @@ const GlobalStyle = createGlobalStyle`
          margin: 0;
          overflow: hidden;
          width: 100%;
-         height: calc(100% - 13.5rem - 4px);
-         top: calc(6.75rem + 2px); /* bottom bar is 6.75rem with a 2px border */
+         height: 100%;
+         top: 0;
          right: 0;
          z-index: 9;
          ${props => props.theme.scroll};

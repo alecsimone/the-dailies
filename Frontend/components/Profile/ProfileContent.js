@@ -100,9 +100,9 @@ const ProfileContent = ({ member, isMe, defaultTab }) => {
          selection = (
             <Things
                things={sortedThings}
-               displayType="grid"
+               displayType="list"
                cardSize="regular"
-               scrollingParentSelector=".mainSection"
+               scrollingParentSelector=".content"
                perPage={perPage}
             />
          );

@@ -3,7 +3,7 @@ import { useQuery, useSubscription } from '@apollo/react-hooks';
 import { useContext } from 'react';
 import Head from 'next/head';
 import PropTypes from 'prop-types';
-import StyledPageWithSidebar from '../styles/StyledPageWithSidebar';
+import { StyledProfilePage } from './me';
 import { MemberContext } from '../components/Account/MemberProvider';
 import Sidebar from '../components/Sidebar';
 import Error from '../components/ErrorMessage';
@@ -43,7 +43,6 @@ const member = ({ query }) => {
    if (error) {
       pageTitle = 'Member Unavailable';
       content = <Error error={error} />;
-      sidebar = <Sidebar key="error" />;
    }
    if (loading) {
       pageTitle = 'Loading Member';
@@ -74,30 +73,21 @@ const member = ({ query }) => {
                defaultTab={query.stuff}
             />
          );
-         sidebar = (
-            <Sidebar
-               extraColumnContent={
-                  <ProfileSidebar member={data.member} canEdit={canEdit} />
-               }
-               extraColumnTitle="Member"
-               key="memberData"
-            />
-         );
+         sidebar = <ProfileSidebar member={data.member} canEdit={canEdit} />;
       } else {
          pageTitle = "Couldn't find member";
          content = <p>Member not found.</p>;
-         sidebar = <Sidebar key="missingMember" />;
       }
    }
 
    return (
-      <StyledPageWithSidebar className="styledPageWithSidebar">
+      <StyledProfilePage>
          <Head>
             <title>{pageTitle} - OurDailies</title>
          </Head>
-         {sidebar}
-         <div className="mainSection">{content}</div>
-      </StyledPageWithSidebar>
+         <section className="content">{content}</section>
+         <section className="sidebar">{sidebar}</section>
+      </StyledProfilePage>
    );
 };
 member.propTypes = {
