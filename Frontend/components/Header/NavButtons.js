@@ -4,10 +4,10 @@ import { useMutation } from '@apollo/react-hooks';
 import { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import Router from 'next/router';
+import SearchBar from '../SearchBar';
 import { NEW_BLANK_THING } from '../../pages/new';
 import { setAlpha, setLightness, setSaturation } from '../../styles/functions';
 import X from '../Icons/X';
-import SearchIcon from '../Icons/Search';
 import { ALL_THINGS_QUERY } from '../../pages/index';
 import { PUBLIC_THINGS_QUERY } from '../Archives/PublicThings';
 
@@ -36,62 +36,19 @@ const StyledNav = styled.nav`
          }
       }
    }
-   .searchBar {
-      margin-left: 2rem;
-      font-size: ${props => props.theme.bigText};
-      font-weight: 700;
-      display: inline-flex;
-      align-items: center;
-      flex-grow: 1;
-      padding-right: 3rem;
-      svg.searchIcon {
-         cursor: pointer;
-         width: ${props => props.theme.bigText};
-         height: ${props => props.theme.bigText};
-         ${props => props.theme.desktopBreakpoint} {
-            cursor: auto;
-         }
+   .searchForm {
+      ${props => props.theme.mobileBreakpoint} {
+         width: 33%;
       }
-      .searchForm {
-         width: 100%;
-         ${props => props.theme.mobileBreakpoint} {
-            width: 33%;
-         }
-         input {
-            width: 100%;
-            height: 4rem;
-            margin: 1rem;
-            padding: 0 1rem;
-            transition: all .25s;
-            margin-left: 1rem;
-            background: ${props => props.theme.midBlack};
-            font-size: ${props => props.theme.bigText};
-            z-index: 2;
-            ${props => props.theme.desktopBreakpoint} {
-               max-width: 40rem;
-               opacity: .6;
-            }
-            &:focus {
-               opacity: 1;
-            }
-         }
-         &.hidden {
-            @media screen and (max-width: ${props =>
-               props.theme.desktopBPWidth}) {
-               input {
-                  max-width: 0;
-                  min-width: 0;
-                  padding: 0;
-                  overflow: hidden;
-               }
-            }
+      input {
+         ${props => props.theme.desktopBreakpoint} {
+            max-width: 40rem;
          }
       }
    }
 `;
 
 const NavButtons = ({ showSearch, setShowSearch, search }) => {
-   const [searchTerm, setSearchTerm] = useState(search || '');
    const [newBlankThing] = useMutation(NEW_BLANK_THING, {
       onCompleted: data => {
          Router.push({
@@ -124,30 +81,11 @@ const NavButtons = ({ showSearch, setShowSearch, search }) => {
                <X className="newPost" color={lowContrastGrey} />
             </a>
          </Link>
-         <div className="searchBar">
-            <SearchIcon onClick={() => setShowSearch(!showSearch)} />
-            <form
-               className={showSearch ? 'searchForm show' : 'searchForm hidden'}
-               onSubmit={e => {
-                  e.preventDefault();
-                  setShowSearch(false);
-                  Router.push({
-                     pathname: '/search',
-                     query: {
-                        s: searchTerm
-                     }
-                  });
-                  setSearchTerm('');
-               }}
-            >
-               <input
-                  type="text"
-                  placeholder="Search"
-                  value={searchTerm}
-                  onChange={e => setSearchTerm(e.target.value)}
-               />
-            </form>
-         </div>
+         <SearchBar
+            showSearch={showSearch}
+            setShowSearch={setShowSearch}
+            search={search}
+         />
       </StyledNav>
    );
 };

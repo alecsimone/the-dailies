@@ -2,7 +2,7 @@ import styled, { ThemeContext } from 'styled-components';
 import { useState, useRef, useContext, useEffect } from 'react';
 import { useLazyQuery } from '@apollo/react-hooks';
 import { dynamicallyResizeElement, setAlpha } from '../styles/functions';
-import { SEARCH_QUERY } from '../pages/search';
+import { SEARCH_QUERY } from './SearchResults';
 import { home } from '../config';
 
 const StyledWrapper = styled.div`
