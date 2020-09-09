@@ -109,20 +109,21 @@ const NavButtons = ({ showSearch, setShowSearch, search }) => {
    const { lowContrastGrey } = useContext(ThemeContext);
    return (
       <StyledNav className="navButtons">
-         <a
-            href="/new"
-            id="newPostButton"
-            onClick={e => {
-               e.preventDefault();
-               const plusIcon = e.target.parentNode;
-               if (!plusIcon.classList.contains('loading')) {
-                  plusIcon.classList.add('loading');
-                  newBlankThing();
-               }
-            }}
-         >
-            <X className="newPost" color={lowContrastGrey} />
-         </a>
+         <Link href="/new">
+            <a
+               id="newPostButton"
+               onClick={e => {
+                  e.preventDefault();
+                  const plusIcon = e.target.parentNode;
+                  if (!plusIcon.classList.contains('loading')) {
+                     plusIcon.classList.add('loading');
+                     newBlankThing();
+                  }
+               }}
+            >
+               <X className="newPost" color={lowContrastGrey} />
+            </a>
+         </Link>
          <div className="searchBar">
             <SearchIcon onClick={() => setShowSearch(!showSearch)} />
             <form

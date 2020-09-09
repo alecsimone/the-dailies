@@ -315,6 +315,9 @@ const GlobalStyle = createGlobalStyle`
          ${props => props.theme.scroll};
          background: ${props => props.theme.midBlack};
          transition: all .25s;
+         p.emptyThings {
+            padding: 0 2rem;
+         }
          &.visible {
             transform: translateX(0%);
          }

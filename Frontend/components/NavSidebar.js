@@ -1,17 +1,39 @@
+import gql from 'graphql-tag';
 import styled from 'styled-components';
 import Link from 'next/link';
+import Router from 'next/router';
+import { useMutation } from '@apollo/react-hooks';
+import { NEW_BLANK_THING } from '../pages/new';
 import { setAlpha } from '../styles/functions';
 import Home from './Icons/Home';
 import SidebarHeaderIcon from './Icons/SidebarHeaderIcon';
 import Search from './Icons/Search';
 import X from './Icons/X';
 import DefaultAvatar from './Icons/DefaultAvatar';
+import { ALL_THINGS_QUERY } from '../pages/index';
+import { PUBLIC_THINGS_QUERY } from './Archives/PublicThings';
+import { CURRENT_MEMBER_QUERY } from './Account/MemberProvider';
+
+const LOGOUT_MUTATION = gql`
+   mutation LOG_OUT_MUTATION {
+      logout {
+         message
+      }
+   }
+`;
 
 const StyledNavSidebar = styled.section`
    background: ${props => props.theme.midBlack};
    border-right: 3px solid
       ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
    text-align: center;
+   .container {
+      max-height: 800px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+   }
    a {
       &:hover {
          text-decoration: none;
@@ -91,7 +113,7 @@ const StyledNavSidebar = styled.section`
          &.homeIcon {
             fill: ${props => props.theme.lowContrastGrey};
          }
-         &.newPost {
+         &.navNewPost {
             transform: rotate(45deg);
             &.loading {
                ${props => props.theme.spin};
@@ -110,79 +132,137 @@ const StyledNavSidebar = styled.section`
    }
 `;
 
-const NavSidebar = ({ showing }) => (
-   <StyledNavSidebar
-      className={showing ? 'navSidebar visible' : 'navSidebar hidden'}
-   >
-      <Link href="/">
-         <a>
-            <div className="navLine">
-               <span className="navIcon">
-                  <Home />
-               </span>
-               <span className="navLabel">Home</span>
-            </div>
-         </a>
-      </Link>
-      <a>
-         <div className="navLine">
-            <span className="navIcon">
-               <SidebarHeaderIcon icon="You" className="wide" />
-            </span>
-            <span className="navLabel">My Things</span>
+const NavSidebar = ({ showing }) => {
+   const [newBlankThing] = useMutation(NEW_BLANK_THING, {
+      onCompleted: data => {
+         Router.push({
+            pathname: '/thing',
+            query: { id: data.newBlankThing.id }
+         });
+         const newPostButton = document.querySelector('.navNewPost');
+         newPostButton.classList.remove('loading');
+      },
+      refetchQueries: [
+         { query: ALL_THINGS_QUERY },
+         { query: PUBLIC_THINGS_QUERY }
+      ]
+   });
+
+   const [logout] = useMutation(LOGOUT_MUTATION);
+   return (
+      <StyledNavSidebar
+         className={showing ? 'navSidebar visible' : 'navSidebar hidden'}
+      >
+         <div className="container">
+            <Link href="/">
+               <a>
+                  <div className="navLine">
+                     <span className="navIcon">
+                        <Home />
+                     </span>
+                     <span className="navLabel">Home</span>
+                  </div>
+               </a>
+            </Link>
+            <Link href="/me">
+               <a>
+                  <div className="navLine">
+                     <span className="navIcon">
+                        <SidebarHeaderIcon icon="You" className="wide" />
+                     </span>
+                     <span className="navLabel">My Things</span>
+                  </div>
+               </a>
+            </Link>
+            <Link
+               href={{
+                  pathname: '/me',
+                  query: { stuff: 'Friends' }
+               }}
+            >
+               <a>
+                  <div className="navLine">
+                     <span className="navIcon">
+                        <SidebarHeaderIcon icon="Friends" className="wide" />
+                     </span>
+                     <span className="navLabel">Friends</span>
+                  </div>
+               </a>
+            </Link>
+            <Link href="/search">
+               <a>
+                  <div className="navLine">
+                     <span className="navIcon">
+                        <Search />
+                     </span>
+                     <span className="navLabel">Search</span>
+                  </div>
+               </a>
+            </Link>
+            <Link href="/twitter">
+               <a>
+                  <div className="navLine">
+                     <span className="navIcon">
+                        <SidebarHeaderIcon icon="Tweets" className="wide" />
+                     </span>
+                     <span className="navLabel">Twitter</span>
+                  </div>
+               </a>
+            </Link>
+            <Link href="/new">
+               <a
+                  onClick={e => {
+                     e.preventDefault();
+                     const thisLine = e.target.parentNode;
+                     const plusIconList = thisLine.getElementsByClassName(
+                        'navNewPost'
+                     );
+                     const plusIcon = plusIconList[0];
+                     if (!plusIcon.classList.contains('loading')) {
+                        plusIcon.classList.add('loading');
+                        newBlankThing();
+                     }
+                  }}
+               >
+                  <div className="navLine">
+                     <span className="navIcon">
+                        <X color="lowContrastGrey" className="navNewPost" />
+                     </span>
+                     <span className="navLabel">New Thing</span>
+                  </div>
+               </a>
+            </Link>
+            <Link href="/me">
+               <a>
+                  <div className="navLine">
+                     <span className="navIcon">
+                        <DefaultAvatar />
+                     </span>
+                     <span className="navLabel">Profile</span>
+                  </div>
+               </a>
+            </Link>
+            <a
+               onClick={() => {
+                  if (!confirm('Are you sure you want to logout?')) return;
+                  logout({
+                     refetchQueries: [
+                        { query: CURRENT_MEMBER_QUERY },
+                        { query: ALL_THINGS_QUERY }
+                     ]
+                  });
+               }}
+            >
+               <div className="navLine">
+                  <span className="navIcon">
+                     <X color="lowContrastGrey" />
+                  </span>
+                  <span className="navLabel">Logout</span>
+               </div>
+            </a>
          </div>
-      </a>
-      <a>
-         <div className="navLine">
-            <span className="navIcon">
-               <SidebarHeaderIcon icon="Friends" className="wide" />
-            </span>
-            <span className="navLabel">Friends</span>
-         </div>
-      </a>
-      <a>
-         <div className="navLine">
-            <span className="navIcon">
-               <Search />
-            </span>
-            <span className="navLabel">Search</span>
-         </div>
-      </a>
-      <Link href="/twitter">
-         <a>
-            <div className="navLine">
-               <span className="navIcon">
-                  <SidebarHeaderIcon icon="Tweets" className="wide" />
-               </span>
-               <span className="navLabel">Twitter</span>
-            </div>
-         </a>
-      </Link>
-      <a>
-         <div className="navLine">
-            <span className="navIcon">
-               <X color="lowContrastGrey" className="newPost" />
-            </span>
-            <span className="navLabel">New Thing</span>
-         </div>
-      </a>
-      <a>
-         <div className="navLine">
-            <span className="navIcon">
-               <DefaultAvatar />
-            </span>
-            <span className="navLabel">Profile</span>
-         </div>
-      </a>
-      <a>
-         <div className="navLine">
-            <span className="navIcon">
-               <X color="lowContrastGrey" />
-            </span>
-            <span className="navLabel">Logout</span>
-         </div>
-      </a>
-   </StyledNavSidebar>
-);
+      </StyledNavSidebar>
+   );
+};
 
 export default NavSidebar;

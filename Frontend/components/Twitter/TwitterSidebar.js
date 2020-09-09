@@ -17,7 +17,7 @@ const StyledTwitterSidebar = styled.div`
       }
    }
    .listLink {
-      padding: 0.6rem 1rem;
+      padding: 1.25rem 1rem;
       border-radius: 3px;
       line-height: 1;
       a,

@@ -2,8 +2,7 @@ import gql from 'graphql-tag';
 import { useMutation } from '@apollo/react-hooks';
 import { useEffect } from 'react';
 import Router from 'next/router';
-import StyledPageWithSidebar from '../styles/StyledPageWithSidebar';
-import Sidebar from '../components/Sidebar';
+import styled from 'styled-components';
 
 const NEW_BLANK_THING = gql`
    mutation NEW_BLANK_THING {
@@ -14,6 +13,11 @@ const NEW_BLANK_THING = gql`
    }
 `;
 export { NEW_BLANK_THING };
+
+const StyledNewThing = styled.section`
+   position: relative;
+   padding: 2rem;
+`;
 
 const NewThing = () => {
    const [newBlankThing] = useMutation(NEW_BLANK_THING, {
@@ -29,11 +33,6 @@ const NewThing = () => {
       newBlankThing();
    }, [newBlankThing]);
 
-   return (
-      <StyledPageWithSidebar>
-         <Sidebar />
-         <div className="mainSection">Creating thing...</div>
-      </StyledPageWithSidebar>
-   );
+   return <StyledNewThing>Creating thing...</StyledNewThing>;
 };
 export default NewThing;

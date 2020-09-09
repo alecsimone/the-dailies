@@ -1,6 +1,7 @@
 import gql from 'graphql-tag';
 import { useQuery } from '@apollo/react-hooks';
 import styled from 'styled-components';
+import { useContext } from 'react';
 import ErrorMessage from '../components/ErrorMessage';
 import { smallThingCardFields } from '../lib/CardInterfaces';
 import LoadingRing from '../components/LoadingRing';
@@ -35,6 +36,9 @@ const StyledHomepage = styled.section`
    .sidebar {
       width: 25%;
       display: none;
+      p.emptyThings {
+         padding: 0 2rem;
+      }
       ${props => props.theme.desktopBreakpoint} {
          max-height: 100%;
          display: block;
