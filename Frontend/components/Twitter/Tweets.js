@@ -58,6 +58,22 @@ const StyledTweets = styled.section`
                }
             }
          }
+         .listInfo {
+            padding: 0 2rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            span.selectedListName {
+               color: ${props => props.theme.secondaryAccent};
+               font-weight: bold;
+            }
+            span.changeList {
+               text-decoration: underline;
+               cursor: pointer;
+            }
+            ${props => props.theme.desktopBreakpoint} {
+               display: none;
+            }
+         }
          .tweeterColumnsContainer {
             display: flex;
             overflow-x: auto;
@@ -89,16 +105,16 @@ const StyledTweets = styled.section`
                ${props => setAlpha(props.theme.deepBlack, 0.4)};
             &.column1 {
                display: none;
-               ${props => props.theme.desktopBreakpoint} {
-                  display: block;
-               }
-            }
-            &.column2 {
-               display: none;
                ${props => props.theme.bigScreenBreakpoint} {
                   display: block;
                }
             }
+            /* &.column2 {
+               display: none;
+               ${props => props.theme.bigScreenBreakpoint} {
+                  display: block;
+               }
+            } */
             h3.tweeterHeader {
                position: relative;
                top: 0;
@@ -199,7 +215,9 @@ const Tweets = ({
       id: dailiesID,
       twitterUserID: userID,
       twitterListsObject: listsObject
-   }
+   },
+   showingListsSidebar,
+   setShowingListsSidebar
 }) => {
    const [refreshList] = useLazyQuery(GET_TWEETS_FOR_LIST, {
       ssr: false,
@@ -282,7 +300,7 @@ const Tweets = ({
       // We make a list with Tweet components for all the tweets of the first 3 tweeters on our list
       const tweetElements = []; // The list
 
-      for (let i = 0; i < 3 && i < seenTweeters.length; i++) {
+      for (let i = 0; i < 2 && i < seenTweeters.length; i++) {
          // Put all their tweets in a list
          const thisTweetersTweets = tweetersArray[i].tweets.map(
             (tweet, index) => {
@@ -450,7 +468,7 @@ const Tweets = ({
       tweetContent = (
          <div className="tweeters">
             <div className="remainingCounters">
-               {tweetsRemaining} tweets / {tweetersRemaining} tweeters{' '}
+               {tweetsRemaining} tweets / {tweetersRemaining} tweeters
                <button
                   id="refreshButton"
                   onClick={e => {
@@ -460,6 +478,20 @@ const Tweets = ({
                >
                   <ResetIcon />
                </button>
+            </div>
+            <div className="listInfo">
+               <span>
+                  Viewing list:{' '}
+                  <span className="selectedListName">
+                     {JSON.parse(listsObject)[listID].name}
+                  </span>
+               </span>{' '}
+               <span
+                  className="changeList"
+                  onClick={() => setShowingListsSidebar(true)}
+               >
+                  Change List
+               </span>
             </div>
             <div className="tweeterColumnsContainer">{tweetElements}</div>
          </div>

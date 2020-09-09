@@ -258,6 +258,7 @@ const GlobalStyle = createGlobalStyle`
       }
    }
    section.threeColumns {
+      position: relative;
       .navSidebar {
          display: block;
          position: absolute;
@@ -276,26 +277,7 @@ const GlobalStyle = createGlobalStyle`
             transform: translateX(-100%);
          }
       }
-      .myThingsBar {
-         display: block;
-         position: absolute;
-         margin: 0;
-         overflow: hidden;
-         width: 100%;
-         height: calc(100% - 13.5rem - 4px);
-         top: calc(6.75rem + 2px); /* bottom bar is 6.75rem with a 2px border */
-         z-index: 9;
-         ${props => props.theme.scroll};
-         background: ${props => props.theme.midBlack};
-         transition: all .25s;
-         &.visible {
-            transform: translateX(0%);
-         }
-         &.hidden, &.default {
-            transform: translateX(100%);
-         }
-      }
-      ${props => props.theme.bigScreenBreakpoint} {
+      ${props => props.theme.desktopBreakpoint} {
          display: flex;
          ${props => props.theme.scroll};
          max-height: 100%;
@@ -319,10 +301,29 @@ const GlobalStyle = createGlobalStyle`
             overflow: hidden;
             ${props => props.theme.scroll};
          }
-         .myThingsBar {
-            position: relative;
+      }
+      .myThingsBar {
+         display: block;
+         position: absolute;
+         margin: 0;
+         overflow: hidden;
+         width: 100%;
+         height: calc(100% - 13.5rem - 4px);
+         top: calc(6.75rem + 2px); /* bottom bar is 6.75rem with a 2px border */
+         right: 0;
+         z-index: 9;
+         ${props => props.theme.scroll};
+         background: ${props => props.theme.midBlack};
+         transition: all .25s;
+         &.visible {
+            transform: translateX(0%);
+         }
+         &.hidden, &.default {
+            transform: translateX(100%);
+         }
+         ${props => props.theme.desktopBreakpoint} {
             width: 25%;
-            top: 0%;
+            top: 0;
             height: 100%;
             max-width: 512px;
             max-height: 100%;
@@ -562,37 +563,35 @@ const StyledPage = styled.div`
 const Page = ({ children, pageProps }) => {
    const isHome = Object.keys(pageProps).length === 0; // We use this to disable SSR on the homepage so that our https redirect will work
    const [showingNavSidebar, setShowingNavSidebar] = useState(false);
-   const [showingThingsSidebar, setShowingThingsSidebar] = useState(
-      isHome ? 'default' : false
-   );
-   let thingsSidebarClasses = 'myThingsBar';
-   if (showingThingsSidebar === true) {
-      thingsSidebarClasses += ' visible';
-   } else if (showingThingsSidebar === false) {
-      thingsSidebarClasses += ' hidden';
-   } else if (showingThingsSidebar === 'default') {
-      thingsSidebarClasses += ' default';
-   }
+   const [thingsSidebarIsOpen, setThingsSidebarIsOpen] = useState(false);
 
    return (
       <MemberProvider isHome={isHome}>
          <ThemeProvider theme={theme}>
-            <ModalProvider>
+            <ModalProvider
+               sidebarIsOpen={thingsSidebarIsOpen}
+               setSidebarIsOpen={setThingsSidebarIsOpen}
+               isHome={isHome}
+            >
                <StyledPage id="page">
                   <Meta />
                   <Header
                      pageProps={pageProps}
                      showingNavSidebar={showingNavSidebar}
                      setShowingNavSidebar={setShowingNavSidebar}
-                     showingThingsSidebar={showingThingsSidebar}
-                     setShowingThingsSidebar={setShowingThingsSidebar}
                   />
                   <>
                      <GlobalStyle />
                      <section className="threeColumns">
                         <NavSidebar showing={showingNavSidebar} />
                         <div className="mainSection">{children}</div>
-                        <div className={thingsSidebarClasses}>
+                        <div
+                           className={
+                              thingsSidebarIsOpen
+                                 ? 'myThingsBar visible'
+                                 : 'myThingsBar hidden'
+                           }
+                        >
                            <MyThings />
                         </div>
                      </section>

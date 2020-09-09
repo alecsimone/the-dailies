@@ -1,14 +1,15 @@
 import Head from 'next/head';
 import gql from 'graphql-tag';
+import styled from 'styled-components';
 import { useQuery, useLazyQuery, useMutation } from '@apollo/react-hooks';
 import { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
-import StyledPageWithSidebar from '../../styles/StyledPageWithSidebar';
-import Sidebar from '../Sidebar';
 import TwitterSidebar from './TwitterSidebar';
 import Tweets from './Tweets';
+import SidebarHeaderIcon from '../Icons/SidebarHeaderIcon';
 import LoadingRing from '../LoadingRing';
 import ErrorMessage from '../ErrorMessage';
+import X from '../Icons/X';
 
 const GET_MY_TWITTER_INFO = gql`
    query GET_MY_TWITTER_INFO {
@@ -54,6 +55,56 @@ const MARK_TWEETS_SEEN = gql`
          __typename
          id
          twitterListsObject
+      }
+   }
+`;
+
+const StyledTwitterReader = styled.section`
+   position: relative;
+   display: flex;
+   height: 100%;
+   .content {
+      width: 80%;
+      flex-grow: 1;
+      position: relative;
+   }
+   .sidebar {
+      display: none;
+      background: ${props => props.theme.midBlack};
+      height: 100%;
+      text-align: center;
+      width: 100%;
+      position: absolute;
+      &.visible {
+         display: block;
+         svg.sidebarCloseIcon {
+            height: ${props => props.theme.smallHead};
+            margin: 2rem auto 0;
+            opacity: 0.8;
+            cursor: pointer;
+         }
+         svg.twitterLogo {
+            display: none;
+         }
+      }
+      ${props => props.theme.desktopBreakpoint} {
+         display: block;
+         position: relative;
+         width: 20%;
+         padding: 0rem 0;
+         svg.twitterLogo {
+            height: ${props => props.theme.bigText};
+            margin: 2rem auto 0;
+            path {
+               fill: ${props => props.theme.majorColor};
+            }
+         }
+         svg.sidebarCloseIcon {
+            display: none;
+         }
+      }
+      .twitterSidebar {
+         text-align: left;
       }
    }
 `;
@@ -119,6 +170,8 @@ const TwitterReader = ({ list }) => {
       fetchPolicy: 'network-only'
    });
 
+   const [showingListsSidebar, setShowingListsSidebar] = useState(true);
+
    let content;
    if (loading || myInfoLoading) {
       content = <LoadingRing />;
@@ -150,30 +203,38 @@ const TwitterReader = ({ list }) => {
             markTweetsSeen={markTweetsSeen}
             myTwitterInfo={myTwitterInfo.me}
             setActiveTweets={setActiveTweets}
+            showingListsSidebar={showingListsSidebar}
+            setShowingListsSidebar={setShowingListsSidebar}
          />
       );
    }
 
    return (
-      <StyledPageWithSidebar>
+      <StyledTwitterReader>
          <Head>
             <title>Twitter Reader - OurDailies</title>
          </Head>
-         <Sidebar
-            extraColumnTitle="Tweets"
-            extraColumnContent={
-               <TwitterSidebar
-                  myTwitterInfo={myTwitterInfo}
-                  activeList={activeList}
-                  activeTweetCount={activeTweets.length}
-                  setActiveList={setActiveList}
-                  setActiveTweets={setActiveTweets}
-                  fetchFreshLists={fetchFreshLists}
-               />
+         <div className="content">{content}</div>
+         <div
+            className={
+               showingListsSidebar ? 'sidebar visible' : 'sidebar hidden'
             }
-         />
-         <div className="mainSection">{content}</div>
-      </StyledPageWithSidebar>
+         >
+            <SidebarHeaderIcon icon="tweets" className="twitterLogo" />
+            <X
+               className="sidebarCloseIcon"
+               onClick={() => setShowingListsSidebar(false)}
+            />
+            <TwitterSidebar
+               myTwitterInfo={myTwitterInfo}
+               activeList={activeList}
+               activeTweetCount={activeTweets.length}
+               setActiveList={setActiveList}
+               setActiveTweets={setActiveTweets}
+               fetchFreshLists={fetchFreshLists}
+            />
+         </div>
+      </StyledTwitterReader>
    );
 };
 TwitterReader.propTypes = {

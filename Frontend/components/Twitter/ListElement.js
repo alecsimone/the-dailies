@@ -89,7 +89,7 @@ const ListElement = ({
                ? ''
                : `(@${thisList.user}) `}
             {tweetCount}
-         </span>
+         </span>{' '}
       </div>
    );
 };

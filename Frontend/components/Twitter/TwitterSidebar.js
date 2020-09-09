@@ -120,7 +120,7 @@ const TwitterSidebar = ({
          </h5>
          {listElements}
          <div className="updateLists" key="updateLists">
-            Last updated{' '}
+            Last updated{'  '}
             <TimeAgo time={listsObject.lastUpdateTime} toggleable />
             <ResetIcon
                className="refreshLists"

@@ -3,17 +3,21 @@ import { MemberContext } from './Account/MemberProvider';
 
 const ModalContext = React.createContext();
 
-const ModalProvider = ({ children }) => {
+const ModalProvider = ({
+   children,
+   sidebarIsOpen,
+   setSidebarIsOpen,
+   isHome
+}) => {
    const [content, setContent] = useState(false);
 
    const { me } = useContext(MemberContext);
-
-   const [sidebarIsOpen, setSidebarIsOpen] = useState(!me?.broadcastView);
    const modalData = {
       content,
       setContent,
       sidebarIsOpen,
-      setSidebarIsOpen
+      setSidebarIsOpen,
+      isHome
    };
 
    return (

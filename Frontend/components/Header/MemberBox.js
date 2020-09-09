@@ -40,17 +40,13 @@ const StyledMemberBox = styled.div`
    }
 `;
 
-const MemberBox = ({ showingThingsSidebar, setShowingThingsSidebar }) => {
+const MemberBox = () => {
    const { me, loading: memberLoading } = useContext(MemberContext);
    const { mobileBPWidthRaw } = useContext(ThemeContext);
-   const { setContent } = useContext(ModalContext);
+   const { setContent, sidebarIsOpen, setSidebarIsOpen, isHome } = useContext(
+      ModalContext
+   );
    const [memberMenuOpen, setMemberMenuOpen] = useState(false);
-
-   const toggleMemberMenu = () => {
-      window.addEventListener('keydown', escapeDetector);
-      window.addEventListener('click', clickOutsideDetector);
-      setMemberMenuOpen(!memberMenuOpen);
-   };
 
    const escapeDetector = e => {
       if (e.which === 27) {
@@ -71,17 +67,10 @@ const MemberBox = ({ showingThingsSidebar, setShowingThingsSidebar }) => {
       }
    };
 
-   const toggleThingsSidebar = (e, setShowing, showing) => {
+   const toggleThingsSidebar = e => {
       e.preventDefault();
-      if (showing === 'default') {
-         if (window.outerWidth <= mobileBPWidthRaw) {
-            setShowing(true);
-         } else {
-            setShowing(false);
-         }
-         return;
-      }
-      setShowing(!showing);
+      if (isHome && !sidebarIsOpen) return;
+      setSidebarIsOpen(!sidebarIsOpen);
    };
 
    let memberBoxContent;
@@ -103,22 +92,14 @@ const MemberBox = ({ showingThingsSidebar, setShowingThingsSidebar }) => {
                   alt="avatar"
                   id="avatar"
                   onClick={e => {
-                     toggleThingsSidebar(
-                        e,
-                        setShowingThingsSidebar,
-                        showingThingsSidebar
-                     );
+                     toggleThingsSidebar(e);
                   }}
                />
             ) : (
                <DefaultAvatar
                   id="avatar"
                   onClick={e => {
-                     toggleThingsSidebar(
-                        e,
-                        setShowingThingsSidebar,
-                        showingThingsSidebar
-                     );
+                     toggleThingsSidebar(e);
                   }}
                />
             )}

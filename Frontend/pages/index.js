@@ -5,6 +5,7 @@ import ErrorMessage from '../components/ErrorMessage';
 import { smallThingCardFields } from '../lib/CardInterfaces';
 import LoadingRing from '../components/LoadingRing';
 import Things from '../components/Archives/Things';
+import MyThings from '../components/Archives/MyThings';
 import { perPage } from '../config';
 
 const ALL_THINGS_QUERY = gql`
@@ -17,9 +18,30 @@ const ALL_THINGS_QUERY = gql`
 export { ALL_THINGS_QUERY };
 
 const StyledHomepage = styled.section`
-   padding: 2rem 0;
-   .things .thingCard {
-      margin: auto;
+   display: flex;
+   position: relative;
+   height: 100%;
+   .content {
+      width: 75%;
+      max-height: 100%;
+      flex-grow: 1;
+      padding: 2rem 0;
+      overflow: hidden;
+      ${props => props.theme.scroll};
+      .things .thingCard {
+         margin: auto;
+      }
+   }
+   .sidebar {
+      width: 25%;
+      display: none;
+      ${props => props.theme.desktopBreakpoint} {
+         max-height: 100%;
+         display: block;
+         background: ${props => props.theme.midBlack};
+         overflow: hidden;
+         ${props => props.theme.scroll};
+      }
    }
 `;
 
@@ -42,7 +64,14 @@ const Home = props => {
    } else if (loading) {
       content = <LoadingRing />;
    }
-   return <StyledHomepage className="homepage">{content}</StyledHomepage>;
+   return (
+      <StyledHomepage className="homepage">
+         <div className="content">{content}</div>
+         <div className="sidebar">
+            <MyThings />
+         </div>
+      </StyledHomepage>
+   );
 };
 
 export default Home;
