@@ -242,7 +242,40 @@ const basicMemberFields = `
    displayName
    avatar
    rep
-
+   friends {
+      __typename
+      id
+      displayName
+      avatar
+      rep
+      role
+      createdThings {
+         ${smallThingCardFields}
+      }
+      friends {
+         __typename
+         id
+         displayName
+         avatar
+         rep
+      }
+   }
+   friendRequests {
+      __typename
+      id
+      avatar
+      rep
+      displayName
+      role
+      friends {
+         __typename
+         id
+      }
+   }
+   ignoredFriendRequests {
+      __typename
+      id
+   }
    notifications {
       __typename
       id

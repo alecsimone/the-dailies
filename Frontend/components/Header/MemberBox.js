@@ -42,6 +42,7 @@ const StyledMemberBox = styled.div`
 
 const MemberBox = () => {
    const { me, loading: memberLoading } = useContext(MemberContext);
+   console.log(me);
    const { mobileBPWidthRaw } = useContext(ThemeContext);
    const {
       setContent,
