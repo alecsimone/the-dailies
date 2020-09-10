@@ -74,12 +74,6 @@ const Things = ({
    };
 
    useEffect(() => {
-      if (
-         window.outerWidth > mobileBPWidthRaw &&
-         scrollingParentSelector === '.sidebar'
-      ) {
-         scrollingParentSelector = '.sidebarContent';
-      }
       const scroller = document.querySelector(scrollingParentSelector);
       if (scroller == null) return;
       scroller.addEventListener('scroll', scrollHandler);
@@ -96,7 +90,7 @@ const Things = ({
             page.removeEventListener('scroll', scrollHandler);
          }
       };
-   }, [mobileBPWidthRaw, scrollHandler, scrollingParentSelector]);
+   }, [scrollHandler, scrollingParentSelector]);
 
    const truncatedThingList = things.slice(0, visibleThingCount);
 

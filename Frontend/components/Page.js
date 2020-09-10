@@ -595,6 +595,7 @@ const Page = ({ children, pageProps }) => {
                         >
                            <MyThings
                               setShowingSidebar={setThingsSidebarIsOpen}
+                              scrollingSelector=".myThingsBar"
                            />
                         </div>
                      </section>

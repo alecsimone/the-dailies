@@ -20,7 +20,7 @@ const MY_THINGS_QUERY = gql`
    }
 `;
 
-const MyThings = ({ setShowingSidebar }) => {
+const MyThings = ({ setShowingSidebar, scrollingSelector }) => {
    const { me } = useContext(MemberContext);
    const { setContent } = useContext(ModalContext);
 
@@ -81,7 +81,7 @@ const MyThings = ({ setShowingSidebar }) => {
                displayType="list"
                cardSize="small"
                noPic
-               scrollingParentSelector=".sidebar"
+               scrollingParentSelector={scrollingSelector}
                perPage={sidebarPerPage}
             />
          </div>

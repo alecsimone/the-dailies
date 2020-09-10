@@ -61,7 +61,7 @@ const Home = props => {
             things={data.allThings}
             cardSize="regular"
             displayType="list"
-            scrollingParentSelector=".mainSection"
+            scrollingParentSelector=".content"
             perPage={perPage}
          />
       );
@@ -72,7 +72,7 @@ const Home = props => {
       <StyledHomepage className="homepage">
          <div className="content">{content}</div>
          <div className="sidebar">
-            <MyThings />
+            <MyThings scrollingSelector=".sidebar" />
          </div>
       </StyledHomepage>
    );
