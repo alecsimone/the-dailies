@@ -278,6 +278,9 @@ const GlobalStyle = createGlobalStyle`
             transform: translateX(-100%);
          }
       }
+      .mainSection {
+         height: 100%;
+      }
       ${props => props.theme.desktopBreakpoint} {
          display: flex;
          ${props => props.theme.scroll};
@@ -297,7 +300,6 @@ const GlobalStyle = createGlobalStyle`
          .mainSection {
             padding: 0;
             flex-grow: 1;
-            height: 100%;
             max-height: 100%;
             overflow: hidden;
             ${props => props.theme.scroll};
