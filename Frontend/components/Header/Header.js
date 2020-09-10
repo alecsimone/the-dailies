@@ -87,7 +87,7 @@ const StyledHeader = styled.div`
    }
 `;
 
-const Header = ({ pageProps, showingNavSidebar, setShowingNavSidebar }) => {
+const Header = ({ pageProps }) => {
    const [showSearch, setShowSearch] = useState(false);
    const { me } = useContext(MemberContext);
 
@@ -104,10 +104,7 @@ const Header = ({ pageProps, showingNavSidebar, setShowingNavSidebar }) => {
                setShowSearch={setShowSearch}
                search={search}
             />
-            <LogoBox
-               showingNavSidebar={showingNavSidebar}
-               setShowingNavSidebar={setShowingNavSidebar}
-            />
+            <LogoBox />
             <div className="memberColumn">
                {me && <NotificationsIcon />}
                <MemberBox />

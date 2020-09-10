@@ -5,8 +5,10 @@ const ModalContext = React.createContext();
 
 const ModalProvider = ({
    children,
-   sidebarIsOpen,
-   setSidebarIsOpen,
+   thingsSidebarIsOpen,
+   setThingsSidebarIsOpen,
+   navSidebarIsOpen,
+   setNavSidebarIsOpen,
    isHome
 }) => {
    const [content, setContent] = useState(false);
@@ -15,8 +17,10 @@ const ModalProvider = ({
    const modalData = {
       content,
       setContent,
-      sidebarIsOpen,
-      setSidebarIsOpen,
+      thingsSidebarIsOpen,
+      setThingsSidebarIsOpen,
+      navSidebarIsOpen,
+      setNavSidebarIsOpen,
       isHome
    };
 

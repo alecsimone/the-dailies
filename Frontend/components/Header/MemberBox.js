@@ -43,9 +43,14 @@ const StyledMemberBox = styled.div`
 const MemberBox = () => {
    const { me, loading: memberLoading } = useContext(MemberContext);
    const { mobileBPWidthRaw } = useContext(ThemeContext);
-   const { setContent, sidebarIsOpen, setSidebarIsOpen, isHome } = useContext(
-      ModalContext
-   );
+   const {
+      setContent,
+      thingsSidebarIsOpen,
+      setThingsSidebarIsOpen,
+      navSidebarIsOpen,
+      setNavSidebarIsOpen,
+      isHome
+   } = useContext(ModalContext);
    const [memberMenuOpen, setMemberMenuOpen] = useState(false);
 
    const escapeDetector = e => {
@@ -69,8 +74,11 @@ const MemberBox = () => {
 
    const toggleThingsSidebar = e => {
       e.preventDefault();
-      if (isHome && !sidebarIsOpen) return;
-      setSidebarIsOpen(!sidebarIsOpen);
+      if (isHome && !thingsSidebarIsOpen) return;
+      if (navSidebarIsOpen === true && thingsSidebarIsOpen === false) {
+         setNavSidebarIsOpen(false);
+      }
+      setThingsSidebarIsOpen(!thingsSidebarIsOpen);
    };
 
    let memberBoxContent;

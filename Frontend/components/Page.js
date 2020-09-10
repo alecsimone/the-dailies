@@ -565,28 +565,26 @@ const StyledPage = styled.div`
 
 const Page = ({ children, pageProps }) => {
    const isHome = Object.keys(pageProps).length === 0; // We use this to disable SSR on the homepage so that our https redirect will work
-   const [showingNavSidebar, setShowingNavSidebar] = useState(false);
+   const [navSidebarIsOpen, setNavSidebarIsOpen] = useState(false);
    const [thingsSidebarIsOpen, setThingsSidebarIsOpen] = useState(false);
 
    return (
       <MemberProvider isHome={isHome}>
          <ThemeProvider theme={theme}>
             <ModalProvider
-               sidebarIsOpen={thingsSidebarIsOpen}
-               setSidebarIsOpen={setThingsSidebarIsOpen}
+               thingsSidebarIsOpen={thingsSidebarIsOpen}
+               setThingsSidebarIsOpen={setThingsSidebarIsOpen}
+               navSidebarIsOpen={navSidebarIsOpen}
+               setNavSidebarIsOpen={setNavSidebarIsOpen}
                isHome={isHome}
             >
                <StyledPage id="page">
                   <Meta />
-                  <Header
-                     pageProps={pageProps}
-                     showingNavSidebar={showingNavSidebar}
-                     setShowingNavSidebar={setShowingNavSidebar}
-                  />
+                  <Header pageProps={pageProps} />
                   <>
                      <GlobalStyle />
                      <section className="threeColumns">
-                        <NavSidebar showing={showingNavSidebar} />
+                        <NavSidebar />
                         <div className="mainSection">{children}</div>
                         <div
                            className={
@@ -595,7 +593,9 @@ const Page = ({ children, pageProps }) => {
                                  : 'myThingsBar hidden'
                            }
                         >
-                           <MyThings />
+                           <MyThings
+                              setShowingSidebar={setThingsSidebarIsOpen}
+                           />
                         </div>
                      </section>
                      <Modal />

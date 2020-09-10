@@ -2,6 +2,7 @@ import gql from 'graphql-tag';
 import styled from 'styled-components';
 import Link from 'next/link';
 import Router from 'next/router';
+import { useContext } from 'react';
 import { useMutation } from '@apollo/react-hooks';
 import { NEW_BLANK_THING } from '../pages/new';
 import { setAlpha } from '../styles/functions';
@@ -10,6 +11,7 @@ import SidebarHeaderIcon from './Icons/SidebarHeaderIcon';
 import Search from './Icons/Search';
 import X from './Icons/X';
 import DefaultAvatar from './Icons/DefaultAvatar';
+import { ModalContext } from './ModalProvider';
 import { ALL_THINGS_QUERY } from '../pages/index';
 import { PUBLIC_THINGS_QUERY } from './Archives/PublicThings';
 import { CURRENT_MEMBER_QUERY } from './Account/MemberProvider';
@@ -132,7 +134,7 @@ const StyledNavSidebar = styled.section`
    }
 `;
 
-const NavSidebar = ({ showing }) => {
+const NavSidebar = () => {
    const [newBlankThing] = useMutation(NEW_BLANK_THING, {
       onCompleted: data => {
          Router.push({
@@ -147,15 +149,18 @@ const NavSidebar = ({ showing }) => {
          { query: PUBLIC_THINGS_QUERY }
       ]
    });
+   const { navSidebarIsOpen, setNavSidebarIsOpen } = useContext(ModalContext);
 
    const [logout] = useMutation(LOGOUT_MUTATION);
    return (
       <StyledNavSidebar
-         className={showing ? 'navSidebar visible' : 'navSidebar hidden'}
+         className={
+            navSidebarIsOpen ? 'navSidebar visible' : 'navSidebar hidden'
+         }
       >
          <div className="container">
             <Link href="/">
-               <a>
+               <a onClick={() => setNavSidebarIsOpen(false)}>
                   <div className="navLine">
                      <span className="navIcon">
                         <Home />
@@ -165,7 +170,7 @@ const NavSidebar = ({ showing }) => {
                </a>
             </Link>
             <Link href="/me">
-               <a>
+               <a onClick={() => setNavSidebarIsOpen(false)}>
                   <div className="navLine">
                      <span className="navIcon">
                         <SidebarHeaderIcon icon="You" className="wide" />
@@ -180,7 +185,7 @@ const NavSidebar = ({ showing }) => {
                   query: { stuff: 'Friends' }
                }}
             >
-               <a>
+               <a onClick={() => setNavSidebarIsOpen(false)}>
                   <div className="navLine">
                      <span className="navIcon">
                         <SidebarHeaderIcon icon="Friends" className="wide" />
@@ -190,7 +195,7 @@ const NavSidebar = ({ showing }) => {
                </a>
             </Link>
             <Link href="/search">
-               <a>
+               <a onClick={() => setNavSidebarIsOpen(false)}>
                   <div className="navLine">
                      <span className="navIcon">
                         <Search />
@@ -200,7 +205,7 @@ const NavSidebar = ({ showing }) => {
                </a>
             </Link>
             <Link href="/twitter">
-               <a>
+               <a onClick={() => setNavSidebarIsOpen(false)}>
                   <div className="navLine">
                      <span className="navIcon">
                         <SidebarHeaderIcon icon="Tweets" className="wide" />
@@ -212,6 +217,7 @@ const NavSidebar = ({ showing }) => {
             <Link href="/new">
                <a
                   onClick={e => {
+                     setNavSidebarIsOpen(false);
                      e.preventDefault();
                      const thisLine = e.target.parentNode;
                      const plusIconList = thisLine.getElementsByClassName(
@@ -233,7 +239,7 @@ const NavSidebar = ({ showing }) => {
                </a>
             </Link>
             <Link href="/me">
-               <a>
+               <a onClick={() => setNavSidebarIsOpen(false)}>
                   <div className="navLine">
                      <span className="navIcon">
                         <DefaultAvatar />
@@ -251,6 +257,7 @@ const NavSidebar = ({ showing }) => {
                         { query: ALL_THINGS_QUERY }
                      ]
                   });
+                  setNavSidebarIsOpen(false);
                }}
             >
                <div className="navLine">

@@ -35,9 +35,14 @@ const StyledLogoBox = styled.div`
    }
 `;
 
-const LogoBox = ({ showingNavSidebar, setShowingNavSidebar }) => {
+const LogoBox = () => {
    const { mobileBPWidthRaw } = useContext(ThemeContext);
-   const { sidebarIsOpen, setSidebarIsOpen } = useContext(ModalContext);
+   const {
+      thingsSidebarIsOpen,
+      setThingsSidebarIsOpen,
+      navSidebarIsOpen,
+      setNavSidebarIsOpen
+   } = useContext(ModalContext);
    return (
       <StyledLogoBox className="logoBox">
          <Link href="/">
@@ -47,8 +52,13 @@ const LogoBox = ({ showingNavSidebar, setShowingNavSidebar }) => {
                onClick={e => {
                   if (window.outerWidth <= mobileBPWidthRaw) {
                      e.preventDefault();
-                     // setSidebarIsOpen(!sidebarIsOpen);
-                     setShowingNavSidebar(!showingNavSidebar);
+                     if (
+                        thingsSidebarIsOpen === true &&
+                        navSidebarIsOpen === false
+                     ) {
+                        setThingsSidebarIsOpen(false);
+                     }
+                     setNavSidebarIsOpen(!navSidebarIsOpen);
                   }
                }}
             >

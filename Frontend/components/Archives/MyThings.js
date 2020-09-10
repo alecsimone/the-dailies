@@ -20,7 +20,7 @@ const MY_THINGS_QUERY = gql`
    }
 `;
 
-const MyThings = () => {
+const MyThings = ({ setShowingSidebar }) => {
    const { me } = useContext(MemberContext);
    const { setContent } = useContext(ModalContext);
 
@@ -69,14 +69,22 @@ const MyThings = () => {
       }
 
       return (
-         <Things
-            things={myThings}
-            displayType="list"
-            cardSize="small"
-            noPic
-            scrollingParentSelector=".sidebar"
-            perPage={sidebarPerPage}
-         />
+         <div
+            onClick={() => {
+               if (setShowingSidebar != null) {
+                  setShowingSidebar(false);
+               }
+            }}
+         >
+            <Things
+               things={myThings}
+               displayType="list"
+               cardSize="small"
+               noPic
+               scrollingParentSelector=".sidebar"
+               perPage={sidebarPerPage}
+            />
+         </div>
       );
    }
 
