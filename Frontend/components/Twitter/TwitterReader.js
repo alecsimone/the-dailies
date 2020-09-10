@@ -173,7 +173,7 @@ const TwitterReader = ({ list }) => {
       fetchPolicy: 'network-only'
    });
 
-   const [showingListsSidebar, setShowingListsSidebar] = useState(true);
+   const [showingListsSidebar, setShowingListsSidebar] = useState(false);
 
    let content;
    if (loading || myInfoLoading) {
