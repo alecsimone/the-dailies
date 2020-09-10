@@ -74,7 +74,12 @@ const MemberBox = () => {
 
    const toggleThingsSidebar = e => {
       e.preventDefault();
-      if (isHome && !thingsSidebarIsOpen) return;
+      if (
+         isHome &&
+         !thingsSidebarIsOpen &&
+         window.outerWidth > mobileBPWidthRaw
+      )
+         return;
       if (navSidebarIsOpen === true && thingsSidebarIsOpen === false) {
          setNavSidebarIsOpen(false);
       }
