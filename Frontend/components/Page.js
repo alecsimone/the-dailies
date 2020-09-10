@@ -297,6 +297,7 @@ const GlobalStyle = createGlobalStyle`
          .mainSection {
             padding: 0;
             flex-grow: 1;
+            height: 100%;
             max-height: 100%;
             overflow: hidden;
             ${props => props.theme.scroll};
