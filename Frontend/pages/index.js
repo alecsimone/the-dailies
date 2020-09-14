@@ -32,6 +32,9 @@ const StyledHomepage = styled.section`
       .things .thingCard {
          margin: 0 auto 4rem;
       }
+      ${props => props.theme.desktopBreakpoint} {
+         padding: 2rem;
+      }
    }
    .sidebar {
       width: 25%;

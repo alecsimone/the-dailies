@@ -200,6 +200,9 @@ const StyledTweets = styled.section`
                   }
                }
             }
+            .listInfo {
+               margin-top: 6rem;
+            }
          }
       }
    }
@@ -266,6 +269,20 @@ const Tweets = ({
             >
                <ResetIcon className="listRefresher" />
             </button>
+            <div className="listInfo">
+               <span>
+                  Viewing list:{' '}
+                  <span className="selectedListName">
+                     {JSON.parse(listsObject)[listID].name}
+                  </span>
+               </span>{' '}
+               <span
+                  className="changeList"
+                  onClick={() => setShowingListsSidebar(true)}
+               >
+                  Change List
+               </span>
+            </div>
          </div>
       );
    } else {

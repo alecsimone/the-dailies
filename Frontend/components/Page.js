@@ -262,12 +262,12 @@ const GlobalStyle = createGlobalStyle`
       overflow-x: hidden;
       .navSidebar {
          display: block;
-         position: absolute;
+         position: fixed;
          margin: 0;
          overflow: hidden;
          width: 100%;
-         height: 100%;
-         top: 0;
+         height: calc(100% - 13.5rem - 4px); /* 6.75rem + 2px is the height of the header and bottom bar */
+         top: calc(6.75rem + 2px);
          z-index: 9;
          ${props => props.theme.scroll};
          transition: transform .25s;
@@ -307,12 +307,12 @@ const GlobalStyle = createGlobalStyle`
       }
       .myThingsBar {
          display: block;
-         position: absolute;
+         position: fixed;
          margin: 0;
          overflow: hidden;
          width: 100%;
-         height: 100%;
-         top: 0;
+         height: calc(100% - 13.5rem - 4px); /* 6.75rem + 2px is the height of the header and bottom bar */
+         top: calc(6.75rem + 2px);
          right: 0;
          z-index: 9;
          ${props => props.theme.scroll};
@@ -328,6 +328,7 @@ const GlobalStyle = createGlobalStyle`
             transform: translateX(100%);
          }
          ${props => props.theme.desktopBreakpoint} {
+            position: absolute;
             width: 25%;
             top: 0;
             height: 100%;

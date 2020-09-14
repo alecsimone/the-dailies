@@ -10,7 +10,8 @@ const ListElement = ({
    activeTweetCount,
    memberInfo,
    setActiveList,
-   setActiveTweets
+   setActiveTweets,
+   setShowingListsSidebar
 }) => {
    const { loading, error, data } = useQuery(GET_TWEETS_FOR_LIST, {
       variables: {
@@ -81,6 +82,7 @@ const ListElement = ({
             }
 
             getTweetsForList({ variables: { listID } });
+            setShowingListsSidebar(false);
          }}
       >
          <a>{thisList.name}</a>

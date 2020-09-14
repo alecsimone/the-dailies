@@ -72,10 +72,15 @@ const StyledTwitterReader = styled.section`
    .sidebar {
       display: none;
       background: ${props => props.theme.midBlack};
-      height: 100%;
+      height: calc(
+         100% - 13.5rem - 4px
+      ); /* 6.75rem + 2px is the height of the header and bottom bar */
+      top: calc(6.75rem + 2px);
+      width: 100%;
+      right: 0;
       text-align: center;
       width: 100%;
-      position: absolute;
+      position: fixed;
       &.visible {
          display: block;
          svg.sidebarCloseIcon {
@@ -91,7 +96,10 @@ const StyledTwitterReader = styled.section`
       ${props => props.theme.desktopBreakpoint} {
          display: block;
          position: relative;
+         height: 100%;
          width: 20%;
+         top: 0;
+         right: 0;
          padding: 0rem 0;
          border-left: 3px solid
             ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
@@ -140,7 +148,8 @@ const TwitterReader = ({ list }) => {
    }
    const { loading, error, data } = useQuery(GET_TWEETS_FOR_LIST, {
       variables: startingListVariables,
-      ssr: false
+      ssr: false,
+      fetchPolicy: 'network-only'
    });
 
    const [markTweetsSeen] = useMutation(MARK_TWEETS_SEEN);
@@ -235,6 +244,7 @@ const TwitterReader = ({ list }) => {
                setActiveList={setActiveList}
                setActiveTweets={setActiveTweets}
                fetchFreshLists={fetchFreshLists}
+               setShowingListsSidebar={setShowingListsSidebar}
             />
          </div>
       </StyledTwitterReader>

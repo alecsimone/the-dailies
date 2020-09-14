@@ -72,7 +72,8 @@ const TwitterSidebar = ({
    activeTweetCount,
    setActiveList,
    setActiveTweets,
-   fetchFreshLists
+   fetchFreshLists,
+   setShowingListsSidebar
 }) => {
    if (!myTwitterInfo) {
       return (
@@ -101,6 +102,7 @@ const TwitterSidebar = ({
             memberInfo={myTwitterInfo.me}
             setActiveList={setActiveList}
             setActiveTweets={setActiveTweets}
+            setShowingListsSidebar={setShowingListsSidebar}
          />
       );
    });

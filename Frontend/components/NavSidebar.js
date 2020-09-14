@@ -48,6 +48,18 @@ const StyledNavSidebar = styled.section`
       cursor: pointer;
       padding: 2rem 1.5rem;
       transition: all 0.2s;
+      ${props => props.theme.mobileBreakpoint} {
+         justify-content: space-around;
+         .navLabel {
+            display: none;
+         }
+      }
+      ${props => props.theme.midScreenBreakpoint} {
+         justify-content: stretch;
+         .navLabel {
+            display: block;
+         }
+      }
       &:hover {
          background: hsla(0, 0%, 100%, 0.05);
          svg {
