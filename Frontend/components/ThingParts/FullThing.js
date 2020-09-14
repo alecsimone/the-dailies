@@ -142,7 +142,6 @@ const FullThing = ({ canEdit, linkedPiece, linkedComment }) => {
          <VoteBar votes={votes} id={id} type="Thing" />
          <div className="taxBoxes">
             <TaxBox key={`${id}-TagBox`} canEdit={canEdit} personal={false} />
-            <TaxBox key={`${id}-StackBox`} canEdit={canEdit} personal />
          </div>
          {((content != null && content.length > 0) || canEdit) && (
             <Content
