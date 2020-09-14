@@ -82,7 +82,7 @@ const ListElement = ({
             }
 
             getTweetsForList({ variables: { listID } });
-            setShowingListsSidebar(false);
+            window.setTimeout(() => setShowingListsSidebar(false), 250);
          }}
       >
          <a>{thisList.name}</a>

@@ -266,8 +266,8 @@ const GlobalStyle = createGlobalStyle`
          margin: 0;
          overflow: hidden;
          width: 100%;
-         height: calc(100% - 13.5rem - 4px); /* 6.75rem + 2px is the height of the header and bottom bar */
-         top: calc(6.75rem + 2px);
+         height: calc(100% - 13.5rem - 4px); /* 6.75rem + 1px is the height of the header and bottom bar */
+         top: calc(6.75rem + 1px);
          z-index: 9;
          ${props => props.theme.scroll};
          transition: transform .25s;
@@ -311,8 +311,8 @@ const GlobalStyle = createGlobalStyle`
          margin: 0;
          overflow: hidden;
          width: 100%;
-         height: calc(100% - 13.5rem - 4px); /* 6.75rem + 2px is the height of the header and bottom bar */
-         top: calc(6.75rem + 2px);
+         height: calc(100% - 13.5rem - 4px); /* 6.75rem + 1px is the height of the header and bottom bar */
+         top: calc(6.75rem + 1px);
          right: 0;
          z-index: 9;
          ${props => props.theme.scroll};

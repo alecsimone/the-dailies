@@ -74,8 +74,8 @@ const StyledTwitterReader = styled.section`
       background: ${props => props.theme.midBlack};
       height: calc(
          100% - 13.5rem - 4px
-      ); /* 6.75rem + 2px is the height of the header and bottom bar */
-      top: calc(6.75rem + 2px);
+      ); /* 6.75rem + 1px is the height of the header and bottom bar */
+      top: calc(6.75rem + 1px);
       width: 100%;
       right: 0;
       text-align: center;
