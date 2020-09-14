@@ -266,7 +266,7 @@ const GlobalStyle = createGlobalStyle`
          margin: 0;
          overflow: hidden;
          width: 100%;
-         height: calc(100% - 13.5rem - 4px); /* 6.75rem + 1px is the height of the header and bottom bar */
+         height: calc(100% - 13.5rem - 3px); /* 6.75rem is the height of each of the header and bottom bar. The header has a 1px border, the bottom bar 2px */
          top: calc(6.75rem + 1px);
          z-index: 9;
          ${props => props.theme.scroll};
@@ -311,7 +311,7 @@ const GlobalStyle = createGlobalStyle`
          margin: 0;
          overflow: hidden;
          width: 100%;
-         height: calc(100% - 13.5rem - 4px); /* 6.75rem + 1px is the height of the header and bottom bar */
+         height: calc(100% - 13.5rem - 3px); /* 6.75rem is the height of each of the header and bottom bar. The header has a 1px border, the bottom bar 2px */
          top: calc(6.75rem + 1px);
          right: 0;
          z-index: 9;
