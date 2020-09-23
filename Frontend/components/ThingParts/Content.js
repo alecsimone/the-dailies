@@ -252,7 +252,7 @@ const StyledContent = styled.section`
       .contentArea {
          position: relative;
          flex-grow: 1;
-         max-width: 900px;
+         max-width: 60%;
          ${props => props.theme.desktopBreakpoint} {
             border-right: 1px solid
                ${props => setAlpha(props.theme.lowContrastGrey, 0.2)};
@@ -307,7 +307,7 @@ const StyledContent = styled.section`
             margin: 0rem 0;
             flex-grow: 1;
             width: 100%;
-            max-width: 1080px;
+            max-width: 900px;
             white-space: pre-wrap;
             padding: 2rem 4rem 2rem 1rem;
             ${props => props.theme.mobileBreakpoint} {
@@ -335,24 +335,24 @@ const StyledContent = styled.section`
       }
       .commentsArea {
          padding: 0 2rem;
+         &.full {
+            width: 60%;
+         }
+         &.collapsed,
+         &.expanded {
+            width: 40%;
+         }
+         &.expanded,
+         &.full {
+            .commentsContainer {
+               max-height: 40rem;
+               overflow: hidden;
+               ${props => props.theme.scroll};
+            }
+         }
          .commentsContainer {
             .comment {
                max-width: 900px;
-            }
-            svg.commentDisplayControlArrow {
-               display: block;
-               margin: auto;
-               cursor: pointer;
-               height: ${props => props.theme.bigHead};
-               transition: all 0.2s;
-               rect {
-                  fill: ${props => setLightness(props.theme.mainText, 70)};
-               }
-               &:hover {
-                  rect {
-                     fill: ${props => props.theme.mainText};
-                  }
-               }
             }
             &.collapsed {
                opacity: 0.75;
@@ -443,14 +443,26 @@ const StyledContent = styled.section`
                }
             }
             &.full {
+               .replyCount,
                .newCommentArea {
                   display: none;
                }
             }
          }
-         button.expandToggle {
-            margin: auto;
+         svg.commentDisplayControlArrow {
             display: block;
+            margin: auto;
+            cursor: pointer;
+            height: ${props => props.theme.bigHead};
+            transition: all 0.2s;
+            rect {
+               fill: ${props => setLightness(props.theme.mainText, 70)};
+            }
+            &:hover {
+               rect {
+                  fill: ${props => props.theme.mainText};
+               }
+            }
          }
       }
    }

@@ -68,6 +68,9 @@ const StyledComments = styled.section`
       }
    }
    .comment {
+      .commentLeft {
+         max-width: 1000px;
+      }
       .replyCount {
          display: none;
       }

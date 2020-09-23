@@ -215,23 +215,21 @@ const ContentPiece = ({
             </div>
          </div>
          {showingComments && (
-            <div className="commentsArea">
-               <ContentPieceComments
-                  comments={comments}
-                  id={id}
-                  key={id}
-                  input={
-                     <RichTextArea
-                        text={commentText}
-                        setText={setCommentText}
-                        postText={sendNewComment}
-                        placeholder="Add comment"
-                        buttonText="comment"
-                        id={id}
-                     />
-                  }
-               />
-            </div>
+            <ContentPieceComments
+               comments={comments}
+               id={id}
+               key={id}
+               input={
+                  <RichTextArea
+                     text={commentText}
+                     setText={setCommentText}
+                     postText={sendNewComment}
+                     placeholder="Add comment"
+                     buttonText="comment"
+                     id={id}
+                  />
+               }
+            />
          )}
       </div>
    );

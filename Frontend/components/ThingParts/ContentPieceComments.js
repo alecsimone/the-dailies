@@ -54,24 +54,26 @@ const ContentPieceComment = ({ comments, id, input }) => {
       arrowDirection = 'left';
    }
    return (
-      <div className={`commentsContainer ${commentView}`}>
-         {commentElements}
-         {commentView === 'collapsed' && topLevelComments.length > 3 && (
+      <div className={`commentsArea ${commentView}`}>
+         <div className={`commentsContainer ${commentView}`}>
+            {commentElements}
+            {commentView === 'collapsed' && topLevelComments.length > 3 && (
+               <div
+                  className="moreCommentsCount"
+                  onClick={() => setCommentView('expanded')}
+               >
+                  {topLevelComments.length - 3} more threads
+               </div>
+            )}
             <div
-               className="moreCommentsCount"
-               onClick={() => setCommentView('expanded')}
+               className={
+                  comments.length > 0
+                     ? 'newCommentArea'
+                     : 'newCommentArea noComments'
+               }
             >
-               {topLevelComments.length - 3} more threads
+               {input}
             </div>
-         )}
-         <div
-            className={
-               comments.length > 0
-                  ? 'newCommentArea'
-                  : 'newCommentArea noComments'
-            }
-         >
-            {input}
          </div>
          {comments.length > 0 && (
             <ArrowIcon

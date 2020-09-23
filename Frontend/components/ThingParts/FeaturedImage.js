@@ -81,7 +81,7 @@ const StyledFeaturedImage = styled.div`
          position: relative;
          display: flex;
          align-items: center;
-         justify-content: center;
+         justify-content: start;
       }
       input#featuredImageInput {
          font-size: ${props => props.theme.smallText};

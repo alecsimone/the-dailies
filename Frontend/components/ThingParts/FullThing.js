@@ -87,10 +87,6 @@ const StyledFullThing = styled.article`
          }
       }
    }
-   section.commentsSection {
-      max-width: 1000px;
-      margin: auto;
-   }
 `;
 
 const setFullThingToLoading = id => {
