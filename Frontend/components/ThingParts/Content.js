@@ -235,89 +235,222 @@ const StyledContent = styled.section`
    }
    .contentBlock {
       position: relative;
-      /* display: flex;
-      align-items: end;
-      justify-content: space-between; */
       margin: 0.6rem 0;
       border-bottom: 1px solid
          ${props => setAlpha(props.theme.lowContrastGrey, 0.2)};
       padding: 0;
+      min-height: 15rem;
       ${props => props.theme.mobileBreakpoint} {
          padding: 1rem;
+      }
+      ${props => props.theme.desktopBreakpoint} {
+         display: flex;
       }
       &.highlighted {
          background: ${props => setAlpha(props.theme.lowContrastGrey, 0.2)};
       }
-      div.buttons {
-         width: ${props => props.theme.smallText};
-         position: absolute;
-         bottom: 1rem;
-         right: 0;
-      }
-      img.buttons,
-      svg.buttons {
-         width: 100%;
-         &.trashIcon {
-            opacity: 0.8;
+      .contentArea {
+         position: relative;
+         flex-grow: 1;
+         max-width: 900px;
+         ${props => props.theme.desktopBreakpoint} {
+            border-right: 1px solid
+               ${props => setAlpha(props.theme.lowContrastGrey, 0.2)};
          }
-         &.editThis {
-            opacity: 0.4;
+         div.buttons {
+            width: ${props => props.theme.smallText};
+            position: absolute;
+            bottom: 1rem;
+            right: 1rem;
          }
-         &.reorder {
-            opacity: 0.4;
-            &.reordering {
+         .commentButton {
+            cursor: pointer;
+         }
+         img.buttons,
+         svg.buttons {
+            width: 100%;
+            &.trashIcon {
+               opacity: 0.8;
+            }
+            &.editThis {
+               opacity: 0.4;
+            }
+            &.reorder {
+               opacity: 0.4;
+               &.reordering {
+                  opacity: 1;
+                  &:hover {
+                     opacity: 0.4;
+                  }
+               }
+            }
+            &.directLink {
+               opacity: 0.4;
+            }
+            &:hover {
+               cursor: pointer;
                opacity: 1;
-               &:hover {
-                  opacity: 0.4;
+            }
+         }
+         button.miniReorder,
+         form {
+            max-width: 1040px;
+            margin: calc(0.8rem - 2px) calc(-1rem - 1px);
+            textarea {
+               padding: 1rem;
+               height: 4rem;
+               position: relative;
+               ${props => props.theme.scroll};
+            }
+         }
+         .contentPiece {
+            margin: 0rem 0;
+            flex-grow: 1;
+            width: 100%;
+            max-width: 1080px;
+            white-space: pre-wrap;
+            padding: 2rem 4rem 2rem 1rem;
+            ${props => props.theme.mobileBreakpoint} {
+               padding: 2rem;
+            }
+            img,
+            video,
+            iframe {
+               max-width: 100%;
+            }
+            iframe {
+               width: 100%;
+            }
+            .smallThingCard {
+               margin: 2rem 0;
+            }
+            .tweet.threadStarter {
+               margin-bottom: 0;
+               .quoteTweetContainer {
+                  margin-top: 0;
+                  margin-bottom: 0;
                }
             }
          }
-         &.directLink {
-            opacity: 0.4;
-         }
-         &:hover {
-            cursor: pointer;
-            opacity: 1;
-         }
       }
-      button.miniReorder,
-      form {
-         max-width: 1040px;
-         margin: calc(0.8rem - 2px) calc(-1rem - 1px);
-         textarea {
-            padding: 1rem;
-            height: 4rem;
-            position: relative;
-            ${props => props.theme.scroll};
-         }
-      }
-      .contentPiece {
-         margin: 0rem 0;
-         flex-grow: 1;
-         width: 100%;
-         max-width: 1080px;
-         white-space: pre-wrap;
-         padding: 2rem 4rem 2rem 1rem;
-         ${props => props.theme.mobileBreakpoint} {
-            padding: 2rem;
-         }
-         img,
-         video,
-         iframe {
-            max-width: 100%;
-         }
-         iframe {
-            width: 100%;
-         }
-         .smallThingCard {
-            margin: 2rem 0;
-         }
-         .tweet.threadStarter {
-            margin-bottom: 0;
-            .quoteTweetContainer {
-               margin-top: 0;
-               margin-bottom: 0;
+      .commentsArea {
+         padding: 0 2rem;
+         .commentsContainer {
+            .comment {
+               max-width: 900px;
             }
+            svg.commentDisplayControlArrow {
+               display: block;
+               margin: auto;
+               cursor: pointer;
+               height: ${props => props.theme.bigHead};
+               transition: all 0.2s;
+               rect {
+                  fill: ${props => setLightness(props.theme.mainText, 70)};
+               }
+               &:hover {
+                  rect {
+                     fill: ${props => props.theme.mainText};
+                  }
+               }
+            }
+            &.collapsed {
+               opacity: 0.75;
+               transition: opacity 0.25s ease-out;
+               &:hover {
+                  opacity: 1;
+               }
+               .commentMeta,
+               .buttons,
+               .replyContainer,
+               .newCommentArea {
+                  display: none;
+               }
+               .newCommentArea.noComments {
+                  display: block;
+                  form.richTextArea {
+                     margin-top: 0;
+                  }
+               }
+               .comment {
+                  position: relative;
+                  padding: 1rem;
+                  margin: 1rem 0;
+                  cursor: pointer;
+                  max-height: 10rem;
+                  overflow: hidden;
+                  transition: all 0.2s;
+                  .commentAndAuthorContainer {
+                     margin-top: -1rem;
+                     padding-right: 0;
+                  }
+                  img.avatar {
+                     width: ${props => props.theme.smallText};
+                     min-width: ${props => props.theme.smallText};
+                     height: ${props => props.theme.smallText};
+                  }
+                  &:hover {
+                     background: ${props => props.theme.lightBlack};
+                     &:before {
+                        background: linear-gradient(
+                           transparent 7rem,
+                           ${props => props.theme.lightBlack} 9.25rem
+                        );
+                     }
+                  }
+                  &:before {
+                     content: '';
+                     width: 100%;
+                     height: 100%;
+                     position: absolute;
+                     left: 0;
+                     top: 0;
+                     background: linear-gradient(
+                        transparent 7rem,
+                        ${props => props.theme.midBlack} 9.25rem
+                     );
+                     transition: all none;
+                  }
+               }
+               .moreCommentsCount {
+                  font-size: ${props => props.theme.miniText};
+                  text-align: center;
+                  line-height: 1;
+                  cursor: pointer;
+               }
+            }
+            &.expanded {
+               .comment {
+                  cursor: pointer;
+                  .replyContainer {
+                     text-align: center;
+                     font-size: ${props => props.theme.tinyText};
+                     line-height: 1;
+                     padding-top: 1rem;
+                     margin-bottom: -1rem;
+                     .comment {
+                        display: none;
+                     }
+                  }
+                  &:hover {
+                     background: ${props => props.theme.lightBlack};
+                  }
+               }
+               .newCommentArea {
+                  textarea {
+                     min-height: 5.75rem;
+                  }
+               }
+            }
+            &.full {
+               .newCommentArea {
+                  display: none;
+               }
+            }
+         }
+         button.expandToggle {
+            margin: auto;
+            display: block;
          }
       }
    }
@@ -473,14 +606,14 @@ const Content = ({ context, canEdit, linkedPiece }) => {
             // If the top of the element is onscreen by less than the height of the buttons (which is already included in it when it's originally calculated), we want to absolutely position the buttons at the top right of the content block
             buttons.style.position = 'absolute';
             buttons.style.left = 'initial';
-            buttons.style.right = '0';
+            buttons.style.right = '1rem';
             buttons.style.bottom = '0';
             buttons.style.top = '1rem';
          } else {
             // Otherwise we want to put them back in place at the bottom right of the content block
             buttons.style.position = 'absolute';
             buttons.style.left = 'initial';
-            buttons.style.right = '0';
+            buttons.style.right = '1rem';
             buttons.style.bottom = '1rem';
             buttons.style.top = 'initial';
          }
@@ -671,12 +804,13 @@ const Content = ({ context, canEdit, linkedPiece }) => {
                thingID={id}
                canEdit={canEdit}
                rawContentString={contentPiece.content}
+               comments={contentPiece.comments}
                deleteContentPiece={deletePiece}
                editContentPiece={editPiece}
                setReordering={setReordering}
                reordering={reordering}
                highlighted={linkedPiece === contentPiece.id}
-               key={contentPiece.id}
+               key={contentPiece.id + contentPiece.comments.length} // We're adding the comments length to force this component to re-render when we add or delete a new comment. It doesn't seem to without it.
             />
          </div>
       ));

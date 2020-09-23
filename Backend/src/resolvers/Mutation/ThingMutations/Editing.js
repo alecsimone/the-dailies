@@ -377,7 +377,9 @@ async function addComment(parent, {comment, id, type, replyToID}, ctx, info) {
             }
          }
       }, info);
-      const updatedStuff = await ctx.db.query[type.toLowerCase()]({
+      let lowerCasedType = type.toLowerCase();
+      if (type === "ContentPiece") {lowerCasedType = 'contentPiece';}
+      const updatedStuff = await ctx.db.query[lowerCasedType]({
          where: {
             id
          }

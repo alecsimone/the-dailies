@@ -20,7 +20,6 @@ const StyledFullThing = styled.article`
    ${props => props.theme.mobileBreakpoint} {
       margin: 1rem 0;
       padding: 2rem;
-      max-width: 1440px;
       position: absolute;
       top: 2rem;
       left: 3%;
@@ -87,6 +86,10 @@ const StyledFullThing = styled.article`
             flex-basis: 50%;
          }
       }
+   }
+   section.commentsSection {
+      max-width: 1000px;
+      margin: auto;
    }
 `;
 

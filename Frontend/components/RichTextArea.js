@@ -7,6 +7,7 @@ import { home } from '../config';
 
 const StyledWrapper = styled.div`
    width: 100%;
+   max-width: 900px;
    .postSearchTooltip {
       background: ${props => props.theme.lightBlack};
       border: 3px solid ${props => setAlpha(props.theme.highContrastGrey, 0.8)};

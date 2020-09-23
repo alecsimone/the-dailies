@@ -2,7 +2,8 @@ const {
    fullThingFields,
    tagFields,
    fullMemberFields,
-   commentFields
+   commentFields,
+   contentPieceFields
 } = require('./CardInterfaces');
 const { publishMeUpdate } = require('../resolvers/Mutation/MemberMutations');
 
@@ -27,6 +28,8 @@ async function updateStuffAndNotifySubs(data, id, type, ctx) {
       fields = fullThingFields;
    } else if (type === 'Comment') {
       fields = commentFields;
+   } else if (type === 'ContentPiece') {
+      fields = contentPieceFields;
    }
    const updatedStuff = await ctx.db.mutation[mutationType](
       {

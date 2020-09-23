@@ -33,6 +33,8 @@ const StyledComments = styled.section`
       display: flex;
       flex-wrap: wrap;
       justify-content: flex-end;
+      max-width: 900px;
+      margin: auto;
       textarea {
          width: 100%;
          height: calc(5rem + 3px);
@@ -65,6 +67,11 @@ const StyledComments = styled.section`
          }
       }
    }
+   .comment {
+      .replyCount {
+         display: none;
+      }
+   }
 `;
 
 const ADD_COMMENT_MUTATION = gql`
@@ -95,6 +102,13 @@ const ADD_COMMENT_MUTATION = gql`
             }
          }
          ... on Thing {
+            __typename
+            id
+            comments {
+               ${commentFields}
+            }
+         }
+         ... on ContentPiece {
             __typename
             id
             comments {
@@ -207,7 +221,7 @@ const Comments = ({ context, linkedComment }) => {
    };
 
    return (
-      <StyledComments>
+      <StyledComments className="commentsSection">
          <header>COMMENTS</header>
          {commentElements}
          {me && (

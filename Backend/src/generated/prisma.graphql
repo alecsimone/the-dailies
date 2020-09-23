@@ -49,6 +49,7 @@ type Comment {
   createdAt: DateTime!
   updatedAt: DateTime
   onThing: Thing
+  onContentPiece: ContentPiece
   replies(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Comment!]
   replyTo: Comment
   onTag: Tag
@@ -67,6 +68,7 @@ input CommentCreateInput {
   author: MemberCreateOneWithoutCommentsInput!
   comment: String!
   onThing: ThingCreateOneWithoutCommentsInput
+  onContentPiece: ContentPieceCreateOneWithoutCommentsInput
   replies: CommentCreateManyWithoutRepliesInput
   replyTo: CommentCreateOneWithoutReplyToInput
   onTag: TagCreateOneWithoutCommentsInput
@@ -81,6 +83,11 @@ input CommentCreateManyInput {
 
 input CommentCreateManyWithoutAuthorInput {
   create: [CommentCreateWithoutAuthorInput!]
+  connect: [CommentWhereUniqueInput!]
+}
+
+input CommentCreateManyWithoutOnContentPieceInput {
+  create: [CommentCreateWithoutOnContentPieceInput!]
   connect: [CommentWhereUniqueInput!]
 }
 
@@ -113,6 +120,19 @@ input CommentCreateWithoutAuthorInput {
   id: ID
   comment: String!
   onThing: ThingCreateOneWithoutCommentsInput
+  onContentPiece: ContentPieceCreateOneWithoutCommentsInput
+  replies: CommentCreateManyWithoutRepliesInput
+  replyTo: CommentCreateOneWithoutReplyToInput
+  onTag: TagCreateOneWithoutCommentsInput
+  votes: VoteCreateManyWithoutOnCommentInput
+  score: Int
+}
+
+input CommentCreateWithoutOnContentPieceInput {
+  id: ID
+  author: MemberCreateOneWithoutCommentsInput!
+  comment: String!
+  onThing: ThingCreateOneWithoutCommentsInput
   replies: CommentCreateManyWithoutRepliesInput
   replyTo: CommentCreateOneWithoutReplyToInput
   onTag: TagCreateOneWithoutCommentsInput
@@ -125,6 +145,7 @@ input CommentCreateWithoutOnTagInput {
   author: MemberCreateOneWithoutCommentsInput!
   comment: String!
   onThing: ThingCreateOneWithoutCommentsInput
+  onContentPiece: ContentPieceCreateOneWithoutCommentsInput
   replies: CommentCreateManyWithoutRepliesInput
   replyTo: CommentCreateOneWithoutReplyToInput
   votes: VoteCreateManyWithoutOnCommentInput
@@ -135,6 +156,7 @@ input CommentCreateWithoutOnThingInput {
   id: ID
   author: MemberCreateOneWithoutCommentsInput!
   comment: String!
+  onContentPiece: ContentPieceCreateOneWithoutCommentsInput
   replies: CommentCreateManyWithoutRepliesInput
   replyTo: CommentCreateOneWithoutReplyToInput
   onTag: TagCreateOneWithoutCommentsInput
@@ -147,6 +169,7 @@ input CommentCreateWithoutRepliesInput {
   author: MemberCreateOneWithoutCommentsInput!
   comment: String!
   onThing: ThingCreateOneWithoutCommentsInput
+  onContentPiece: ContentPieceCreateOneWithoutCommentsInput
   replyTo: CommentCreateOneWithoutReplyToInput
   onTag: TagCreateOneWithoutCommentsInput
   votes: VoteCreateManyWithoutOnCommentInput
@@ -158,6 +181,7 @@ input CommentCreateWithoutReplyToInput {
   author: MemberCreateOneWithoutCommentsInput!
   comment: String!
   onThing: ThingCreateOneWithoutCommentsInput
+  onContentPiece: ContentPieceCreateOneWithoutCommentsInput
   replies: CommentCreateManyWithoutRepliesInput
   onTag: TagCreateOneWithoutCommentsInput
   votes: VoteCreateManyWithoutOnCommentInput
@@ -169,6 +193,7 @@ input CommentCreateWithoutVotesInput {
   author: MemberCreateOneWithoutCommentsInput!
   comment: String!
   onThing: ThingCreateOneWithoutCommentsInput
+  onContentPiece: ContentPieceCreateOneWithoutCommentsInput
   replies: CommentCreateManyWithoutRepliesInput
   replyTo: CommentCreateOneWithoutReplyToInput
   onTag: TagCreateOneWithoutCommentsInput
@@ -281,6 +306,7 @@ input CommentUpdateDataInput {
   author: MemberUpdateOneRequiredWithoutCommentsInput
   comment: String
   onThing: ThingUpdateOneWithoutCommentsInput
+  onContentPiece: ContentPieceUpdateOneWithoutCommentsInput
   replies: CommentUpdateManyWithoutRepliesInput
   replyTo: CommentUpdateOneWithoutReplyToInput
   onTag: TagUpdateOneWithoutCommentsInput
@@ -292,6 +318,7 @@ input CommentUpdateInput {
   author: MemberUpdateOneRequiredWithoutCommentsInput
   comment: String
   onThing: ThingUpdateOneWithoutCommentsInput
+  onContentPiece: ContentPieceUpdateOneWithoutCommentsInput
   replies: CommentUpdateManyWithoutRepliesInput
   replyTo: CommentUpdateOneWithoutReplyToInput
   onTag: TagUpdateOneWithoutCommentsInput
@@ -329,6 +356,18 @@ input CommentUpdateManyWithoutAuthorInput {
   disconnect: [CommentWhereUniqueInput!]
   update: [CommentUpdateWithWhereUniqueWithoutAuthorInput!]
   upsert: [CommentUpsertWithWhereUniqueWithoutAuthorInput!]
+  deleteMany: [CommentScalarWhereInput!]
+  updateMany: [CommentUpdateManyWithWhereNestedInput!]
+}
+
+input CommentUpdateManyWithoutOnContentPieceInput {
+  create: [CommentCreateWithoutOnContentPieceInput!]
+  delete: [CommentWhereUniqueInput!]
+  connect: [CommentWhereUniqueInput!]
+  set: [CommentWhereUniqueInput!]
+  disconnect: [CommentWhereUniqueInput!]
+  update: [CommentUpdateWithWhereUniqueWithoutOnContentPieceInput!]
+  upsert: [CommentUpsertWithWhereUniqueWithoutOnContentPieceInput!]
   deleteMany: [CommentScalarWhereInput!]
   updateMany: [CommentUpdateManyWithWhereNestedInput!]
 }
@@ -395,6 +434,18 @@ input CommentUpdateOneWithoutVotesInput {
 input CommentUpdateWithoutAuthorDataInput {
   comment: String
   onThing: ThingUpdateOneWithoutCommentsInput
+  onContentPiece: ContentPieceUpdateOneWithoutCommentsInput
+  replies: CommentUpdateManyWithoutRepliesInput
+  replyTo: CommentUpdateOneWithoutReplyToInput
+  onTag: TagUpdateOneWithoutCommentsInput
+  votes: VoteUpdateManyWithoutOnCommentInput
+  score: Int
+}
+
+input CommentUpdateWithoutOnContentPieceDataInput {
+  author: MemberUpdateOneRequiredWithoutCommentsInput
+  comment: String
+  onThing: ThingUpdateOneWithoutCommentsInput
   replies: CommentUpdateManyWithoutRepliesInput
   replyTo: CommentUpdateOneWithoutReplyToInput
   onTag: TagUpdateOneWithoutCommentsInput
@@ -406,6 +457,7 @@ input CommentUpdateWithoutOnTagDataInput {
   author: MemberUpdateOneRequiredWithoutCommentsInput
   comment: String
   onThing: ThingUpdateOneWithoutCommentsInput
+  onContentPiece: ContentPieceUpdateOneWithoutCommentsInput
   replies: CommentUpdateManyWithoutRepliesInput
   replyTo: CommentUpdateOneWithoutReplyToInput
   votes: VoteUpdateManyWithoutOnCommentInput
@@ -415,6 +467,7 @@ input CommentUpdateWithoutOnTagDataInput {
 input CommentUpdateWithoutOnThingDataInput {
   author: MemberUpdateOneRequiredWithoutCommentsInput
   comment: String
+  onContentPiece: ContentPieceUpdateOneWithoutCommentsInput
   replies: CommentUpdateManyWithoutRepliesInput
   replyTo: CommentUpdateOneWithoutReplyToInput
   onTag: TagUpdateOneWithoutCommentsInput
@@ -426,6 +479,7 @@ input CommentUpdateWithoutRepliesDataInput {
   author: MemberUpdateOneRequiredWithoutCommentsInput
   comment: String
   onThing: ThingUpdateOneWithoutCommentsInput
+  onContentPiece: ContentPieceUpdateOneWithoutCommentsInput
   replyTo: CommentUpdateOneWithoutReplyToInput
   onTag: TagUpdateOneWithoutCommentsInput
   votes: VoteUpdateManyWithoutOnCommentInput
@@ -436,6 +490,7 @@ input CommentUpdateWithoutReplyToDataInput {
   author: MemberUpdateOneRequiredWithoutCommentsInput
   comment: String
   onThing: ThingUpdateOneWithoutCommentsInput
+  onContentPiece: ContentPieceUpdateOneWithoutCommentsInput
   replies: CommentUpdateManyWithoutRepliesInput
   onTag: TagUpdateOneWithoutCommentsInput
   votes: VoteUpdateManyWithoutOnCommentInput
@@ -446,6 +501,7 @@ input CommentUpdateWithoutVotesDataInput {
   author: MemberUpdateOneRequiredWithoutCommentsInput
   comment: String
   onThing: ThingUpdateOneWithoutCommentsInput
+  onContentPiece: ContentPieceUpdateOneWithoutCommentsInput
   replies: CommentUpdateManyWithoutRepliesInput
   replyTo: CommentUpdateOneWithoutReplyToInput
   onTag: TagUpdateOneWithoutCommentsInput
@@ -460,6 +516,11 @@ input CommentUpdateWithWhereUniqueNestedInput {
 input CommentUpdateWithWhereUniqueWithoutAuthorInput {
   where: CommentWhereUniqueInput!
   data: CommentUpdateWithoutAuthorDataInput!
+}
+
+input CommentUpdateWithWhereUniqueWithoutOnContentPieceInput {
+  where: CommentWhereUniqueInput!
+  data: CommentUpdateWithoutOnContentPieceDataInput!
 }
 
 input CommentUpdateWithWhereUniqueWithoutOnTagInput {
@@ -497,6 +558,12 @@ input CommentUpsertWithWhereUniqueWithoutAuthorInput {
   where: CommentWhereUniqueInput!
   update: CommentUpdateWithoutAuthorDataInput!
   create: CommentCreateWithoutAuthorInput!
+}
+
+input CommentUpsertWithWhereUniqueWithoutOnContentPieceInput {
+  where: CommentWhereUniqueInput!
+  update: CommentUpdateWithoutOnContentPieceDataInput!
+  create: CommentCreateWithoutOnContentPieceInput!
 }
 
 input CommentUpsertWithWhereUniqueWithoutOnTagInput {
@@ -564,6 +631,7 @@ input CommentWhereInput {
   updatedAt_gt: DateTime
   updatedAt_gte: DateTime
   onThing: ThingWhereInput
+  onContentPiece: ContentPieceWhereInput
   replies_every: CommentWhereInput
   replies_some: CommentWhereInput
   replies_none: CommentWhereInput
@@ -592,6 +660,7 @@ input CommentWhereUniqueInput {
 type ContentPiece {
   id: ID!
   content: String!
+  comments(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Comment!]
   onThing: Thing
   onTag: Tag
 }
@@ -605,6 +674,7 @@ type ContentPieceConnection {
 input ContentPieceCreateInput {
   id: ID
   content: String!
+  comments: CommentCreateManyWithoutOnContentPieceInput
   onThing: ThingCreateOneWithoutContentInput
   onTag: TagCreateOneWithoutContentInput
 }
@@ -624,15 +694,29 @@ input ContentPieceCreateManyWithoutOnThingInput {
   connect: [ContentPieceWhereUniqueInput!]
 }
 
+input ContentPieceCreateOneWithoutCommentsInput {
+  create: ContentPieceCreateWithoutCommentsInput
+  connect: ContentPieceWhereUniqueInput
+}
+
+input ContentPieceCreateWithoutCommentsInput {
+  id: ID
+  content: String!
+  onThing: ThingCreateOneWithoutContentInput
+  onTag: TagCreateOneWithoutContentInput
+}
+
 input ContentPieceCreateWithoutOnTagInput {
   id: ID
   content: String!
+  comments: CommentCreateManyWithoutOnContentPieceInput
   onThing: ThingCreateOneWithoutContentInput
 }
 
 input ContentPieceCreateWithoutOnThingInput {
   id: ID
   content: String!
+  comments: CommentCreateManyWithoutOnContentPieceInput
   onTag: TagCreateOneWithoutContentInput
 }
 
@@ -707,12 +791,14 @@ input ContentPieceSubscriptionWhereInput {
 
 input ContentPieceUpdateDataInput {
   content: String
+  comments: CommentUpdateManyWithoutOnContentPieceInput
   onThing: ThingUpdateOneWithoutContentInput
   onTag: TagUpdateOneWithoutContentInput
 }
 
 input ContentPieceUpdateInput {
   content: String
+  comments: CommentUpdateManyWithoutOnContentPieceInput
   onThing: ThingUpdateOneWithoutContentInput
   onTag: TagUpdateOneWithoutContentInput
 }
@@ -766,13 +852,30 @@ input ContentPieceUpdateManyWithWhereNestedInput {
   data: ContentPieceUpdateManyDataInput!
 }
 
+input ContentPieceUpdateOneWithoutCommentsInput {
+  create: ContentPieceCreateWithoutCommentsInput
+  update: ContentPieceUpdateWithoutCommentsDataInput
+  upsert: ContentPieceUpsertWithoutCommentsInput
+  delete: Boolean
+  disconnect: Boolean
+  connect: ContentPieceWhereUniqueInput
+}
+
+input ContentPieceUpdateWithoutCommentsDataInput {
+  content: String
+  onThing: ThingUpdateOneWithoutContentInput
+  onTag: TagUpdateOneWithoutContentInput
+}
+
 input ContentPieceUpdateWithoutOnTagDataInput {
   content: String
+  comments: CommentUpdateManyWithoutOnContentPieceInput
   onThing: ThingUpdateOneWithoutContentInput
 }
 
 input ContentPieceUpdateWithoutOnThingDataInput {
   content: String
+  comments: CommentUpdateManyWithoutOnContentPieceInput
   onTag: TagUpdateOneWithoutContentInput
 }
 
@@ -789,6 +892,11 @@ input ContentPieceUpdateWithWhereUniqueWithoutOnTagInput {
 input ContentPieceUpdateWithWhereUniqueWithoutOnThingInput {
   where: ContentPieceWhereUniqueInput!
   data: ContentPieceUpdateWithoutOnThingDataInput!
+}
+
+input ContentPieceUpsertWithoutCommentsInput {
+  update: ContentPieceUpdateWithoutCommentsDataInput!
+  create: ContentPieceCreateWithoutCommentsInput!
 }
 
 input ContentPieceUpsertWithWhereUniqueNestedInput {
@@ -838,6 +946,9 @@ input ContentPieceWhereInput {
   content_not_starts_with: String
   content_ends_with: String
   content_not_ends_with: String
+  comments_every: CommentWhereInput
+  comments_some: CommentWhereInput
+  comments_none: CommentWhereInput
   onThing: ThingWhereInput
   onTag: TagWhereInput
   AND: [ContentPieceWhereInput!]

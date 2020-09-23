@@ -98,6 +98,7 @@ const StyledTwitterReader = styled.section`
          position: relative;
          height: 100%;
          width: 20%;
+         min-width: 40rem;
          top: 0;
          right: 0;
          padding: 0rem 0;

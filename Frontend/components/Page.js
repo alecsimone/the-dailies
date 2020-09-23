@@ -277,6 +277,12 @@ const GlobalStyle = createGlobalStyle`
          &.hidden {
             transform: translateX(-100%);
          }
+         ${props => props.theme.mobileBreakpoint} {
+            width: 10%;
+         }
+         ${props => props.theme.midScreenBreakpoint} {
+            width: 20%;
+         }
       }
       .mainSection {
          height: 100%;
@@ -288,7 +294,6 @@ const GlobalStyle = createGlobalStyle`
          max-width: 100vw;
          .navSidebar {
             position: relative;
-            width: 20%;
             top: 0;
             height: 100%;
             max-width: 400px;

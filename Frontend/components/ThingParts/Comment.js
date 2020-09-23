@@ -49,6 +49,13 @@ const DELETE_COMMENT_MUTATION = gql`
                ${commentFields}
             }
          }
+         ... on ContentPiece {
+            __typename
+            id
+            comments {
+               ${commentFields}
+            }
+         }
       }
    }
 `;
@@ -81,6 +88,13 @@ const EDIT_COMMENT_MUTATION = gql`
             }
          }
          ... on Stack {
+            __typename
+            id
+            comments {
+               ${commentFields}
+            }
+         }
+         ... on ContentPiece {
             __typename
             id
             comments {
@@ -302,6 +316,9 @@ const Comment = ({ comment, comments, linkedComment, type, id }) => {
                   case 'Stack':
                      query = SINGLE_TAX_QUERY;
                      break;
+                  case 'ContentPiece':
+                     query = SINGLE_THING_QUERY;
+                     break;
                   default:
                      console.log('Unknown stuff type');
                      return;
@@ -347,6 +364,12 @@ const Comment = ({ comment, comments, linkedComment, type, id }) => {
          );
       });
    }
+   let replyCount = 0;
+   if (comment.replies?.length > 0) {
+      comment.replies.forEach(reply => {
+         replyCount += 1;
+      });
+   }
 
    let authorAvatar = <DefaultAvatar className="avatar" />;
    let authorLink = (
@@ -375,12 +398,13 @@ const Comment = ({ comment, comments, linkedComment, type, id }) => {
       );
    }
 
+   let commentClassList = 'comment';
+   if (linkedComment === comment.id) {
+      commentClassList += ' highlighted';
+   }
+
    return (
-      <StyledComment
-         className={
-            linkedComment === comment.id ? 'comment highlighted' : 'comment'
-         }
-      >
+      <StyledComment className={commentClassList}>
          <div className="commentContent">
             <div className="commentLeft">
                {authorAvatar}
@@ -501,7 +525,14 @@ const Comment = ({ comment, comments, linkedComment, type, id }) => {
                />
             </div>
          )}
-         {replyElements}
+         {replyCount > 0 && (
+            <div className="replyContainer">
+               <div className="replyCount">
+                  {replyCount} Repl{replyCount === 1 ? 'y' : 'ies'}
+               </div>
+               {replyElements}
+            </div>
+         )}
       </StyledComment>
    );
 };

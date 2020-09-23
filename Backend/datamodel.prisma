@@ -24,6 +24,7 @@ type Thing {
 type ContentPiece {
    id: ID! @id @unique
    content: String!
+   comments: [Comment]
    onThing: Thing
    onTag: Tag
 }
@@ -63,6 +64,7 @@ type Comment {
   createdAt: DateTime! @createdAt
   updatedAt: DateTime @updatedAt
   onThing: Thing
+  onContentPiece: ContentPiece
   replies: [Comment] @relation(name: "Replies")
   replyTo: Comment @relation(name: "ReplyTo")
   onTag: Tag

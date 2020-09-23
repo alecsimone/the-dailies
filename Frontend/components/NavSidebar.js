@@ -172,7 +172,7 @@ const NavSidebar = () => {
       >
          <div className="container">
             <Link href="/">
-               <a onClick={() => setNavSidebarIsOpen(false)}>
+               <a onClick={() => setNavSidebarIsOpen(false)} title="Home">
                   <div className="navLine">
                      <span className="navIcon">
                         <Home />
@@ -182,7 +182,7 @@ const NavSidebar = () => {
                </a>
             </Link>
             <Link href="/me">
-               <a onClick={() => setNavSidebarIsOpen(false)}>
+               <a onClick={() => setNavSidebarIsOpen(false)} title="My Things">
                   <div className="navLine">
                      <span className="navIcon">
                         <SidebarHeaderIcon icon="You" className="wide" />
@@ -197,7 +197,7 @@ const NavSidebar = () => {
                   query: { stuff: 'Friends' }
                }}
             >
-               <a onClick={() => setNavSidebarIsOpen(false)}>
+               <a onClick={() => setNavSidebarIsOpen(false)} title="Friends">
                   <div className="navLine">
                      <span className="navIcon">
                         <SidebarHeaderIcon icon="Friends" className="wide" />
@@ -207,7 +207,7 @@ const NavSidebar = () => {
                </a>
             </Link>
             <Link href="/search">
-               <a onClick={() => setNavSidebarIsOpen(false)}>
+               <a onClick={() => setNavSidebarIsOpen(false)} title="Search">
                   <div className="navLine">
                      <span className="navIcon">
                         <Search />
@@ -217,7 +217,7 @@ const NavSidebar = () => {
                </a>
             </Link>
             <Link href="/twitter">
-               <a onClick={() => setNavSidebarIsOpen(false)}>
+               <a onClick={() => setNavSidebarIsOpen(false)} title="Twitter">
                   <div className="navLine">
                      <span className="navIcon">
                         <SidebarHeaderIcon icon="Tweets" className="wide" />
@@ -241,6 +241,7 @@ const NavSidebar = () => {
                         newBlankThing();
                      }
                   }}
+                  title="New Thing"
                >
                   <div className="navLine">
                      <span className="navIcon">
@@ -251,7 +252,7 @@ const NavSidebar = () => {
                </a>
             </Link>
             <Link href="/me">
-               <a onClick={() => setNavSidebarIsOpen(false)}>
+               <a onClick={() => setNavSidebarIsOpen(false)} title="Profile">
                   <div className="navLine">
                      <span className="navIcon">
                         <DefaultAvatar />
@@ -271,6 +272,7 @@ const NavSidebar = () => {
                   });
                   setNavSidebarIsOpen(false);
                }}
+               title="Logout"
             >
                <div className="navLine">
                   <span className="navIcon">

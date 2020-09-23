@@ -156,6 +156,16 @@ const commentFields = `
 `;
 exports.commentFields = commentFields;
 
+const contentPieceFields = `
+   __typename
+   id
+   content
+   comments {
+      ${commentFields}
+   }
+`;
+exports.contentPieceFields = contentPieceFields;
+
 const fullThingFields = `
    __typename
    id
@@ -174,9 +184,7 @@ const fullThingFields = `
    featuredImage
    link
    content {
-      __typename
-      id
-      content
+      ${contentPieceFields}
    }
    contentOrder
    partOfTags {

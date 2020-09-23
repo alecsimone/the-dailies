@@ -152,6 +152,9 @@ const fullThingFields = `
       __typename
       id
       content
+      comments {
+         ${commentFields}
+      }
    }
    contentOrder
    partOfTags {

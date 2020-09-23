@@ -64,7 +64,7 @@ type Mutation {
   toggleBroadcastView(newState: Boolean!): Member
 }
 
-union Stuff = Thing | Tag | Stack | Comment
+union Stuff = Thing | Tag | Stack | Comment | ContentPiece
 union Tax = Tag | Stack
 
 type Subscription {
