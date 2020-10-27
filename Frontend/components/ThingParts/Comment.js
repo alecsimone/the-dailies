@@ -210,7 +210,14 @@ const StyledComment = styled.div`
    }
 `;
 
-const Comment = ({ comment, comments, linkedComment, type, id }) => {
+const Comment = ({
+   comment,
+   comments,
+   linkedComment,
+   type,
+   id,
+   selectComment
+}) => {
    const { me } = useContext(MemberContext);
 
    const [addComment] = useMutation(ADD_COMMENT_MUTATION);
@@ -360,16 +367,26 @@ const Comment = ({ comment, comments, linkedComment, type, id }) => {
                key={replyData.id}
                type={type}
                id={id}
+               selectComment={selectComment}
             />
          );
       });
    }
    let replyCount = 0;
-   if (comment.replies?.length > 0) {
-      comment.replies.forEach(reply => {
-         replyCount += 1;
-      });
-   }
+   const countReplies = (thisComment, allComments) => {
+      if (thisComment.replies?.length > 0) {
+         thisComment.replies.forEach(thisReply => {
+            const [fullReplyData] = allComments.filter(
+               fullData => fullData.id === thisReply.id
+            );
+            if (fullReplyData !== null && fullReplyData.replies.length > 0) {
+               countReplies(fullReplyData, allComments);
+            }
+            replyCount += 1;
+         });
+      }
+   };
+   countReplies(comment, comments);
 
    let authorAvatar = <DefaultAvatar className="avatar" />;
    let authorLink = (
@@ -404,7 +421,15 @@ const Comment = ({ comment, comments, linkedComment, type, id }) => {
    }
 
    return (
-      <StyledComment className={commentClassList}>
+      <StyledComment
+         className={commentClassList}
+         onClick={e => {
+            if (selectComment != null) {
+               selectComment(comment.id);
+               e.stopPropagation();
+            }
+         }}
+      >
          <div className="commentContent">
             <div className="commentLeft">
                {authorAvatar}

@@ -7,12 +7,12 @@ const ContentPieceComment = ({ comments, id, input }) => {
    const [selectedComment, setSelectedComment] = useState(false);
    const topLevelComments = comments.filter(comment => comment.replyTo == null);
    let commentElements;
+   let siblingSlider;
    if (commentView === 'collapsed' || commentView === 'expanded') {
       commentElements = topLevelComments.map(comment => (
          <div
             className="commentWrapper"
             onClick={() => {
-               console.log(comment.id);
                setCommentView('full');
                setSelectedComment(comment.id);
             }}
@@ -37,10 +37,55 @@ const ContentPieceComment = ({ comments, id, input }) => {
                comments={comments}
                key={selectedCommentData.id}
                type="ContentPiece"
-               id={selectedCommentData.id}
+               id={id}
+               selectComment={setSelectedComment}
             />
          </div>
       );
+      let siblingComments;
+      if (selectedCommentData.replyTo == null) {
+         siblingComments = topLevelComments;
+      } else {
+         const parentCommentBasicData = selectedCommentData.replyTo;
+         const parentCommentID = parentCommentBasicData.id;
+         const [parentComment] = comments.filter(
+            comment => comment.id === parentCommentID
+         );
+         siblingComments = parentComment.replies;
+      }
+
+      if (siblingComments.length > 1) {
+         const thisCommentIndex = siblingComments.findIndex(
+            comment => comment.id === selectedCommentData.id
+         );
+         siblingSlider = (
+            <div className="siblingSlider">
+               {thisCommentIndex > 0 && (
+                  <ArrowIcon
+                     className="siblingSliderArrow"
+                     pointing="left"
+                     onClick={() =>
+                        setSelectedComment(
+                           siblingComments[thisCommentIndex - 1].id
+                        )
+                     }
+                  />
+               )}
+               {thisCommentIndex + 1} / {siblingComments.length}
+               {thisCommentIndex + 1 < siblingComments.length && (
+                  <ArrowIcon
+                     className="siblingSliderArrow"
+                     pointing="right"
+                     onClick={() =>
+                        setSelectedComment(
+                           siblingComments[thisCommentIndex + 1].id
+                        )
+                     }
+                  />
+               )}
+            </div>
+         );
+      }
    }
    if (commentView === 'collapsed') {
       commentElements = commentElements.filter((comment, index) => index < 3);
@@ -76,20 +121,23 @@ const ContentPieceComment = ({ comments, id, input }) => {
             </div>
          </div>
          {comments.length > 0 && (
-            <ArrowIcon
-               className="commentDisplayControlArrow"
-               pointing={arrowDirection}
-               onClick={() => {
-                  if (commentView === 'collapsed') {
-                     setCommentView('expanded');
-                  } else if (commentView === 'expanded') {
-                     setCommentView('collapsed');
-                  } else if (commentView === 'full') {
-                     setCommentView('expanded');
-                     setSelectedComment(false);
-                  }
-               }}
-            />
+            <div className="commentsControls">
+               {siblingSlider}
+               <ArrowIcon
+                  className="commentDisplayControlArrow"
+                  pointing={arrowDirection}
+                  onClick={() => {
+                     if (commentView === 'collapsed') {
+                        setCommentView('expanded');
+                     } else if (commentView === 'expanded') {
+                        setCommentView('collapsed');
+                     } else if (commentView === 'full') {
+                        setCommentView('expanded');
+                        setSelectedComment(false);
+                     }
+                  }}
+               />
+            </div>
          )}
       </div>
    );

@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import RichText from '../RichText';
 import RichTextArea from '../RichTextArea';
 import EditThis from '../Icons/EditThis';
+import CommentIcon from '../Icons/CommentIcon';
 import TrashIcon from '../Icons/Trash';
 import LinkIcon from '../Icons/Link';
 import ContentPieceComments from './ContentPieceComments';
@@ -153,7 +154,10 @@ const ContentPiece = ({
                   className="commentButton"
                   onClick={() => setShowingComments(!showingComments)}
                >
-                  C
+                  <span className="commentCount">
+                     {comments.length < 100 ? comments.length : '+'}
+                  </span>
+                  <CommentIcon />
                </div>
                {canEdit && (
                   <EditThis

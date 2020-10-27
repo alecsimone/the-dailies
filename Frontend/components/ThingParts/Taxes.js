@@ -27,10 +27,9 @@ const StyledTaxes = styled.div`
 `;
 
 const Taxes = ({ taxes, personal }) => {
-   const cleanTaxes = taxes.filter(tax => tax.title != '');
-
    let taxElements;
    if (taxes) {
+      const cleanTaxes = taxes.filter(tax => tax.title != '');
       taxElements = cleanTaxes.map((tax, index) => (
          <React.Fragment key={tax.id}>
             <Link

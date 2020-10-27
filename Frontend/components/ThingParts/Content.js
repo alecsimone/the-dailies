@@ -264,7 +264,38 @@ const StyledContent = styled.section`
             right: 1rem;
          }
          .commentButton {
+            position: relative;
             cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: ${props => props.theme.smallText};
+            height: ${props => props.theme.smallText};
+            margin-bottom: 1rem;
+
+            span.commentCount {
+               position: relative;
+               font-size: ${props => props.theme.tinyText};
+               font-weight: bold;
+               z-index: 2;
+               line-height: 1;
+               margin-bottom: 0.6rem;
+            }
+            .commentIcon {
+               position: absolute;
+               left: 0;
+               top: 0;
+               width: 100%;
+               height: 100%;
+               z-index: 1;
+            }
+            &:hover {
+               rect,
+               polygon {
+                  fill: ${props =>
+                     setLightness(props.theme.lowContrastGrey, 40)};
+               }
+            }
          }
          img.buttons,
          svg.buttons {
@@ -449,18 +480,38 @@ const StyledContent = styled.section`
                }
             }
          }
-         svg.commentDisplayControlArrow {
-            display: block;
-            margin: auto;
-            cursor: pointer;
-            height: ${props => props.theme.bigHead};
-            transition: all 0.2s;
-            rect {
-               fill: ${props => setLightness(props.theme.mainText, 70)};
+         .commentsControls {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            .siblingSlider {
+               display: flex;
+               align-items: center;
+               svg.siblingSliderArrow {
+                  width: ${props => props.theme.bigText};
+                  cursor: pointer;
+                  rect {
+                     fill: ${props => setLightness(props.theme.mainText, 70)};
+                  }
+                  &:hover {
+                     rect {
+                        fill: ${props => props.theme.mainText};
+                     }
+                  }
+               }
             }
-            &:hover {
+            svg.commentDisplayControlArrow {
+               display: block;
+               cursor: pointer;
+               height: ${props => props.theme.bigHead};
+               transition: all 0.2s;
                rect {
-                  fill: ${props => props.theme.mainText};
+                  fill: ${props => setLightness(props.theme.mainText, 70)};
+               }
+               &:hover {
+                  rect {
+                     fill: ${props => props.theme.mainText};
+                  }
                }
             }
          }
@@ -469,7 +520,8 @@ const StyledContent = styled.section`
    form {
       display: flex;
       flex-wrap: wrap;
-      margin-top: 4rem;
+      max-width: 900px;
+      margin: 4rem auto 0;
       .postButtonWrapper {
          width: 100%;
          /* text-align: right; */
