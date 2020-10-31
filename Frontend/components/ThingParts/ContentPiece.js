@@ -1,6 +1,8 @@
 import { useState, useContext } from 'react';
 import { useMutation } from '@apollo/react-hooks';
 import PropTypes from 'prop-types';
+import { ThemeContext } from 'styled-components';
+import { useSwipeable } from 'react-swipeable';
 import RichText from '../RichText';
 import RichTextArea from '../RichTextArea';
 import EditThis from '../Icons/EditThis';
@@ -28,7 +30,19 @@ const ContentPiece = ({
 }) => {
    const [editable, setEditable] = useState(false);
    const [copied, setCopied] = useState(false);
-   const [showingComments, setShowingComments] = useState(comments.length > 0);
+   const { midScreenBPWidthRaw } = useContext(ThemeContext);
+
+   const isSmallScreen =
+      process.browser && window.outerWidth <= midScreenBPWidthRaw;
+
+   const [showingComments, setShowingComments] = useState(
+      !isSmallScreen && comments.length > 0
+   );
+
+   const swipeHandlers = useSwipeable({
+      onSwipedLeft: () => setShowingComments(true),
+      onSwipedRight: () => setShowingComments(false)
+   });
 
    const [editedContent, setEditedContent] = useState(rawContentString);
 
@@ -104,11 +118,11 @@ const ContentPiece = ({
       });
    };
 
-   let content;
+   let contentElement;
    if (!editable) {
-      content = <RichText text={rawContentString} key={id} />;
+      contentElement = <RichText text={rawContentString} key={id} />;
    } else {
-      content = (
+      contentElement = (
          <RichTextArea
             text={editedContent}
             setText={setEditedContent}
@@ -121,17 +135,52 @@ const ContentPiece = ({
       );
    }
 
+   const commentsElement = (
+      <ContentPieceComments
+         comments={comments}
+         id={id}
+         key={id}
+         input={
+            <RichTextArea
+               text={commentText}
+               setText={setCommentText}
+               postText={sendNewComment}
+               placeholder="Add comment"
+               buttonText="comment"
+               id={id}
+            />
+         }
+      />
+   );
+
+   let contentArea;
+   if (isSmallScreen) {
+      if (showingComments) {
+         contentArea = commentsElement;
+      } else {
+         contentArea = contentElement;
+      }
+   } else {
+      contentArea = contentElement;
+   }
+
    return (
       <div
          className={highlighted ? 'contentBlock highlighted' : 'contentBlock'}
          key={id}
+         {...swipeHandlers}
       >
          <div className="contentArea">
             <div
                className={canEdit ? 'contentPiece editable' : 'contentPiece'}
                key={id}
                onMouseUp={e => {
-                  if (!canEdit || reordering) return;
+                  if (
+                     !canEdit ||
+                     reordering ||
+                     (isSmallScreen && showingComments)
+                  )
+                     return;
 
                   // If it's a right click, we don't want to switch to editing
                   if (e.button !== 0) return;
@@ -140,6 +189,8 @@ const ContentPiece = ({
                   if (e.target.closest('a') != null) return;
                   // same for a thingCard
                   if (e.target.closest('.thingCard') != null) return;
+                  // or any of the buttons
+                  if (e.target.closest('.buttons') != null) return;
 
                   const selection = window.getSelection();
                   if (selection.type === 'Caret' && !editable) {
@@ -147,7 +198,7 @@ const ContentPiece = ({
                   }
                }}
             >
-               {content}
+               {contentArea}
             </div>
             <div className="buttons buttonsContainer">
                <div
@@ -218,23 +269,7 @@ const ContentPiece = ({
                )}
             </div>
          </div>
-         {showingComments && (
-            <ContentPieceComments
-               comments={comments}
-               id={id}
-               key={id}
-               input={
-                  <RichTextArea
-                     text={commentText}
-                     setText={setCommentText}
-                     postText={sendNewComment}
-                     placeholder="Add comment"
-                     buttonText="comment"
-                     id={id}
-                  />
-               }
-            />
-         )}
+         {showingComments && !isSmallScreen && commentsElement}
       </div>
    );
 };

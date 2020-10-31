@@ -12,6 +12,7 @@ const ContentPieceComment = ({ comments, id, input }) => {
       commentElements = topLevelComments.map(comment => (
          <div
             className="commentWrapper"
+            key={comment.id}
             onClick={() => {
                setCommentView('full');
                setSelectedComment(comment.id);

@@ -252,16 +252,19 @@ const StyledContent = styled.section`
       .contentArea {
          position: relative;
          flex-grow: 1;
-         max-width: 60%;
-         ${props => props.theme.desktopBreakpoint} {
+         max-width: 100%;
+         min-height: 15rem;
+         ${props => props.theme.midScreenBreakpoint} {
+            max-width: 60%;
             border-right: 1px solid
                ${props => setAlpha(props.theme.lowContrastGrey, 0.2)};
+            padding-right: 1rem;
          }
          div.buttons {
             width: ${props => props.theme.smallText};
             position: absolute;
             bottom: 1rem;
-            right: 1rem;
+            right: 0;
          }
          .commentButton {
             position: relative;
@@ -272,14 +275,16 @@ const StyledContent = styled.section`
             width: ${props => props.theme.smallText};
             height: ${props => props.theme.smallText};
             margin-bottom: 1rem;
-
             span.commentCount {
                position: relative;
                font-size: ${props => props.theme.tinyText};
                font-weight: bold;
                z-index: 2;
                line-height: 1;
-               margin-bottom: 0.6rem;
+               margin-bottom: 0.4rem;
+               ${props => props.theme.desktopBreakpoint} {
+                  margin-bottom: 0.6rem;
+               }
             }
             .commentIcon {
                position: absolute;
@@ -305,6 +310,7 @@ const StyledContent = styled.section`
             }
             &.editThis {
                opacity: 0.4;
+               cursor: pointer;
             }
             &.reorder {
                opacity: 0.4;
@@ -365,13 +371,21 @@ const StyledContent = styled.section`
          }
       }
       .commentsArea {
-         padding: 0 2rem;
+         width: 100%;
+         padding: 0;
+         ${props => props.theme.midScreenBreakpoint} {
+            padding: 0 2rem;
+         }
          &.full {
-            width: 60%;
+            ${props => props.theme.midScreenBreakpoint} {
+               width: 60%;
+            }
          }
          &.collapsed,
          &.expanded {
-            width: 40%;
+            ${props => props.theme.midScreenBreakpoint} {
+               width: 40%;
+            }
          }
          &.expanded,
          &.full {
@@ -603,6 +617,7 @@ const Content = ({ context, canEdit, linkedPiece }) => {
          const buttons = block.querySelector('.buttonsContainer');
          if (buttons == null) continue;
          const buttonsHeight = buttons.offsetHeight;
+         const buttonsCSS = getComputedStyle(buttons);
 
          // The "top" we use for determining when to start sticking things is slightly different from the actual top of the element. I'm defining that top first so I can base the "top" off it as well as the bottom, which is the actual bottom
          const blockTop =
@@ -630,6 +645,8 @@ const Content = ({ context, canEdit, linkedPiece }) => {
       const bottomBar = document.querySelector('.bottomBar');
       const bottomBarDisplay = window.getComputedStyle(bottomBar).display;
 
+      let buttonsRightPosition;
+
       // bottomBar also only shows on mobile
       if (bottomBarDisplay === 'none') {
          viewableTop = mainSection.scrollTop;
@@ -637,11 +654,13 @@ const Content = ({ context, canEdit, linkedPiece }) => {
          const header = document.getElementById('header');
          const headerHeight = header.offsetHeight;
          viewableBottom = viewableTop + wholeWindowHeight - headerHeight;
+         buttonsRightPosition = '1rem';
       } else {
          viewableTop = thingPage.scrollTop;
          const bottomBar = document.querySelector('.bottomBar');
          const bottomBarHeight = bottomBar.offsetHeight;
          viewableBottom = viewableTop + window.innerHeight - bottomBarHeight;
+         buttonsRightPosition = '0';
       }
 
       stickingData.current.blocksArray.forEach(block => {
@@ -670,14 +689,14 @@ const Content = ({ context, canEdit, linkedPiece }) => {
             // If the top of the element is onscreen by less than the height of the buttons (which is already included in it when it's originally calculated), we want to absolutely position the buttons at the top right of the content block
             buttons.style.position = 'absolute';
             buttons.style.left = 'initial';
-            buttons.style.right = '1rem';
+            buttons.style.right = buttonsRightPosition;
             buttons.style.bottom = '0';
             buttons.style.top = '1rem';
          } else {
             // Otherwise we want to put them back in place at the bottom right of the content block
             buttons.style.position = 'absolute';
             buttons.style.left = 'initial';
-            buttons.style.right = '1rem';
+            buttons.style.right = buttonsRightPosition;
             buttons.style.bottom = '1rem';
             buttons.style.top = 'initial';
          }
