@@ -436,7 +436,7 @@ const Comment = ({
                <div className="commentAndAuthorContainer">
                   {!editing && authorLink}
                   {!editing ? (
-                     <RichText text={comment.comment} />
+                     <RichText text={comment.comment} key={comment.id} />
                   ) : (
                      <RichTextArea
                         text={editedComment}

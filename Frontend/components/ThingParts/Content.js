@@ -249,6 +249,23 @@ const StyledContent = styled.section`
       &.highlighted {
          background: ${props => setAlpha(props.theme.lowContrastGrey, 0.2)};
       }
+      .overflowWrapper {
+         width: 100%;
+         overflow: hidden;
+         .contentAndCommentContainer {
+            width: 200%;
+            display: flex;
+            .contentWrapper {
+               display: inline-block;
+               width: 100%;
+               margin-right: 4rem;
+            }
+            .commentsWrapper {
+               display: inline-block;
+               width: 100%;
+            }
+         }
+      }
       .contentArea {
          position: relative;
          flex-grow: 1;
@@ -332,13 +349,15 @@ const StyledContent = styled.section`
          button.miniReorder,
          form {
             max-width: 1040px;
-            margin: calc(0.8rem - 2px) calc(-1rem - 1px);
             textarea {
                padding: 1rem;
                height: 4rem;
                position: relative;
                ${props => props.theme.scroll};
             }
+         }
+         button.miniReorder {
+            margin: calc(0.8rem - 2px) calc(-1rem - 1px);
          }
          .contentPiece {
             margin: 0rem 0;

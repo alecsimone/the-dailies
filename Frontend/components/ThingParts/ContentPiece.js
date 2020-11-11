@@ -44,6 +44,9 @@ const ContentPiece = ({
       onSwipedRight: () => setShowingComments(false)
    });
 
+   const [touchStart, setTouchStart] = useState(0);
+   const [touchEnd, setTouchEnd] = useState(0);
+
    const [editedContent, setEditedContent] = useState(rawContentString);
 
    const handleKeyDown = e => {
@@ -153,13 +156,45 @@ const ContentPiece = ({
       />
    );
 
+   let translation = touchEnd - touchStart;
+   console.log(translation);
+   if (!showingComments && translation > 0) {
+      translation = 0;
+   }
+   if (showingComments && translation < 0) {
+      translation = 0;
+   }
+
    let contentArea;
    if (isSmallScreen) {
-      if (showingComments) {
-         contentArea = commentsElement;
-      } else {
-         contentArea = contentElement;
-      }
+      contentArea = (
+         <div className="overflowWrapper">
+            <div className="contentAndCommentContainer">
+               <div
+                  className="contentWrapper"
+                  style={{
+                     transform: `translateX(calc(${translation}px - ${
+                        showingComments ? '100' : '0'
+                     }% - ${showingComments ? '4' : '0'}rem))`
+                     // We need the 4rem to deal with the margin on contentWrapper
+                  }}
+               >
+                  {contentElement}
+               </div>
+               <div
+                  className="commentsWrapper"
+                  style={{
+                     transform: `translateX(calc(${translation}px - ${
+                        showingComments ? '100' : '0'
+                     }% - ${showingComments ? '4' : '0'}rem))`
+                     // We need the 4rem to deal with the margin on contentWrapper
+                  }}
+               >
+                  {commentsElement}
+               </div>
+            </div>
+         </div>
+      );
    } else {
       contentArea = contentElement;
    }
@@ -169,18 +204,22 @@ const ContentPiece = ({
          className={highlighted ? 'contentBlock highlighted' : 'contentBlock'}
          key={id}
          {...swipeHandlers}
+         onTouchStart={e => {
+            setTouchStart(e.touches[0].clientX);
+            setTouchEnd(e.touches[0].clientX);
+         }}
+         onTouchMove={e => setTouchEnd(e.touches[0].clientX)}
+         onTouchEnd={e => {
+            setTouchStart(0);
+            setTouchEnd(0);
+         }}
       >
          <div className="contentArea">
             <div
                className={canEdit ? 'contentPiece editable' : 'contentPiece'}
                key={id}
                onMouseUp={e => {
-                  if (
-                     !canEdit ||
-                     reordering ||
-                     (isSmallScreen && showingComments)
-                  )
-                     return;
+                  if (!canEdit || reordering || isSmallScreen) return;
 
                   // If it's a right click, we don't want to switch to editing
                   if (e.button !== 0) return;
