@@ -2,7 +2,6 @@ import { useState, useContext } from 'react';
 import { useMutation } from '@apollo/react-hooks';
 import PropTypes from 'prop-types';
 import { ThemeContext } from 'styled-components';
-import { useSwipeable } from 'react-swipeable';
 import RichText from '../RichText';
 import RichTextArea from '../RichTextArea';
 import EditThis from '../Icons/EditThis';
@@ -38,11 +37,6 @@ const ContentPiece = ({
    const [showingComments, setShowingComments] = useState(
       !isSmallScreen && comments.length > 0
    );
-
-   const swipeHandlers = useSwipeable({
-      onSwipedLeft: () => setShowingComments(true),
-      onSwipedRight: () => setShowingComments(false)
-   });
 
    const [touchStart, setTouchStart] = useState(0);
    const [touchEnd, setTouchEnd] = useState(0);
@@ -157,7 +151,6 @@ const ContentPiece = ({
    );
 
    let translation = touchEnd - touchStart;
-   console.log(translation);
    if (!showingComments && translation > 0) {
       translation = 0;
    }
@@ -203,13 +196,19 @@ const ContentPiece = ({
       <div
          className={highlighted ? 'contentBlock highlighted' : 'contentBlock'}
          key={id}
-         {...swipeHandlers}
          onTouchStart={e => {
             setTouchStart(e.touches[0].clientX);
             setTouchEnd(e.touches[0].clientX);
          }}
          onTouchMove={e => setTouchEnd(e.touches[0].clientX)}
          onTouchEnd={e => {
+            console.log(touchEnd - touchStart);
+            if (touchEnd - touchStart < -50) {
+               setShowingComments(true);
+            }
+            if (touchEnd - touchStart > 50) {
+               setShowingComments(false);
+            }
             setTouchStart(0);
             setTouchEnd(0);
          }}
