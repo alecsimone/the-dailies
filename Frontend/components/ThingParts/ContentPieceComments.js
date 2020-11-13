@@ -3,12 +3,15 @@ import Comment from './Comment';
 import ArrowIcon from '../Icons/Arrow';
 
 const ContentPieceComment = ({ comments, id, input }) => {
-   const [commentView, setCommentView] = useState('collapsed'); // We have 3 view states: collapsed, expanded, and full
+   const [commentView, setCommentView] = useState('collapsed'); // We have 3 view states: collapsed, expanded, and full. Collapsed is supposed to be the default.
    const [selectedComment, setSelectedComment] = useState(false);
+
    const topLevelComments = comments.filter(comment => comment.replyTo == null);
+
    let commentElements;
    let siblingSlider;
    if (commentView === 'collapsed' || commentView === 'expanded') {
+      // If the view is collapsed or expanded, we're going to show a list of comments. At the end of this conditional, we'll limit the number for collapsed view.
       commentElements = topLevelComments.map(comment => (
          <div
             className="commentWrapper"
@@ -28,6 +31,7 @@ const ContentPieceComment = ({ comments, id, input }) => {
          </div>
       ));
    } else if (commentView === 'full') {
+      // If the view is full, we're going to show only the selected comment
       const [selectedCommentData] = comments.filter(
          comment => comment.id === selectedComment
       );
@@ -43,10 +47,13 @@ const ContentPieceComment = ({ comments, id, input }) => {
             />
          </div>
       );
+
       let siblingComments;
       if (selectedCommentData.replyTo == null) {
+         // If this isn't a reply, then its siblings are the other top level comments
          siblingComments = topLevelComments;
       } else {
+         // Otherwise we get the full data from our master comment list to find the siblings
          const parentCommentBasicData = selectedCommentData.replyTo;
          const parentCommentID = parentCommentBasicData.id;
          const [parentComment] = comments.filter(
@@ -56,6 +63,7 @@ const ContentPieceComment = ({ comments, id, input }) => {
       }
 
       if (siblingComments.length > 1) {
+         // If there are siblings, we build a nav to move between them
          const thisCommentIndex = siblingComments.findIndex(
             comment => comment.id === selectedCommentData.id
          );
@@ -93,12 +101,13 @@ const ContentPieceComment = ({ comments, id, input }) => {
    }
    let arrowDirection;
    if (commentView === 'collapsed') {
-      arrowDirection = 'down';
+      arrowDirection = 'down'; // to expand
    } else if (commentView === 'expanded') {
-      arrowDirection = 'up';
+      arrowDirection = 'up'; // to collapse
    } else if (commentView === 'full') {
-      arrowDirection = 'left';
+      arrowDirection = 'left'; // to go back
    }
+
    return (
       <div className={`commentsArea ${commentView}`}>
          <div className={`commentsContainer ${commentView}`}>

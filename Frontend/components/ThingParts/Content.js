@@ -1,741 +1,72 @@
-import gql from 'graphql-tag';
-import styled from 'styled-components';
 import { useMutation } from '@apollo/react-hooks';
 import { useContext, useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import Reorder from 'react-reorder';
-import { setAlpha, setLightness } from '../../styles/functions';
+import StyledContent from '../../styles/StyledContent';
 import ContentPiece from './ContentPiece';
 import RichTextArea from '../RichTextArea';
 import { checkForNewThingRedirect } from '../../lib/ThingHandling';
+import {
+   ADD_CONTENTPIECE_MUTATION,
+   DELETE_CONTENTPIECE_MUTATION,
+   EDIT_CONTENTPIECE_MUTATION,
+   REORDER_CONTENT_MUTATION,
+   stickifier
+} from '../../lib/ContentHandling';
 import { SINGLE_THING_QUERY } from '../../pages/thing';
 import { SINGLE_TAX_QUERY } from '../../pages/tag';
 import { setFullThingToLoading } from './FullThing';
 
-const ADD_CONTENTPIECE_MUTATION = gql`
-   mutation ADD_CONTENTPIECE_MUTATION(
-      $content: String!
-      $id: ID!
-      $type: String!
-   ) {
-      addContentPiece(content: $content, id: $id, type: $type) {
-         ... on Tag {
-            __typename
-            id
-            content {
-               __typename
-               id
-               content
-            }
-         }
-         ... on Stack {
-            __typename
-            id
-            content {
-               __typename
-               id
-               content
-            }
-         }
-         ... on Thing {
-            __typename
-            id
-            content {
-               __typename
-               id
-               content
-            }
-         }
-      }
-   }
-`;
-
-const DELETE_CONTENTPIECE_MUTATION = gql`
-   mutation DELETE_CONTENTPIECE_MUTATION(
-      $contentPieceID: ID!
-      $id: ID!
-      $type: String!
-   ) {
-      deleteContentPiece(
-         contentPieceID: $contentPieceID
-         id: $id
-         type: $type
-      ) {
-         ... on Tag {
-            __typename
-            id
-            content {
-               __typename
-               id
-               content
-            }
-         }
-         ... on Stack {
-            __typename
-            id
-            content {
-               __typename
-               id
-               content
-            }
-         }
-         ... on Thing {
-            __typename
-            id
-            content {
-               __typename
-               id
-               content
-            }
-         }
-      }
-   }
-`;
-
-const EDIT_CONTENTPIECE_MUTATION = gql`
-   mutation EDIT_CONTENTPIECE_MUTATION(
-      $contentPieceID: ID!
-      $content: String!
-      $id: ID!
-      $type: String!
-   ) {
-      editContentPiece(
-         contentPieceID: $contentPieceID
-         content: $content
-         id: $id
-         type: $type
-      ) {
-         ... on Tag {
-            __typename
-            id
-            content {
-               __typename
-               id
-               content
-            }
-         }
-         ... on Stack {
-            __typename
-            id
-            content {
-               __typename
-               id
-               content
-            }
-         }
-         ... on Thing {
-            __typename
-            id
-            content {
-               __typename
-               id
-               content
-            }
-         }
-      }
-   }
-`;
-
-const REORDER_CONTENT_MUTATION = gql`
-   mutation REORDER_CONTENT_MUTATION(
-      $id: ID!
-      $type: String!
-      $oldPosition: Int!
-      $newPosition: Int!
-   ) {
-      reorderContent(
-         id: $id
-         type: $type
-         oldPosition: $oldPosition
-         newPosition: $newPosition
-      ) {
-         ... on Tag {
-            __typename
-            id
-            content {
-               __typename
-               id
-               content
-            }
-            contentOrder
-         }
-         ... on Stack {
-            __typename
-            id
-            content {
-               __typename
-               id
-               content
-            }
-            contentOrder
-         }
-         ... on Thing {
-            __typename
-            id
-            content {
-               __typename
-               id
-               content
-            }
-            contentOrder
-         }
-      }
-   }
-`;
-
-const StyledContent = styled.section`
-   margin: 0 0 3rem;
-   padding: 1rem;
-   padding-top: 0;
-   background: ${props => props.theme.midBlack};
-   border-top: 1px solid ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
-   ${props => props.theme.mobileBreakpoint} {
-      margin: 5rem 0;
-      padding: 1rem 2rem;
-      padding-top: 0;
-      border: 1px solid ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
-      border-radius: 0.5rem;
-   }
-   p,
-   .graph {
-      margin: 0;
-   }
-   p {
-      max-width: 1000px;
-      min-height: 1em;
-   }
-   a,
-   a:visited {
-      color: ${props => setLightness(props.theme.majorColor, 75)};
-   }
-   button.reorder {
-      display: block;
-      position: relative;
-      z-index: 0;
-      margin: 0 auto 1rem;
-      opacity: 0.4;
-      font-weight: 300;
-      &:hover {
-         opacity: 1;
-      }
-   }
-   .reordering {
-      background: ${props => setAlpha(props.theme.lowContrastGrey, 0.1)};
-      cursor: pointer;
-      border-radius: 3px;
-   }
-   .placeholder {
-      background: ${props => props.theme.majorColor};
-      color: ${props => props.theme.majorColor};
-   }
-   .dragged {
-      background: ${props => props.theme.lowContrastGrey};
-      border: 2px solid ${props => setAlpha(props.theme.highContrastGrey, 0.6)};
-      user-select: none;
-   }
-   .contentBlock {
-      position: relative;
-      margin: 0.6rem 0;
-      border-bottom: 1px solid
-         ${props => setAlpha(props.theme.lowContrastGrey, 0.2)};
-      padding: 0;
-      min-height: 15rem;
-      ${props => props.theme.mobileBreakpoint} {
-         padding: 1rem;
-      }
-      ${props => props.theme.desktopBreakpoint} {
-         display: flex;
-      }
-      &.highlighted {
-         background: ${props => setAlpha(props.theme.lowContrastGrey, 0.2)};
-      }
-      .overflowWrapper {
-         width: 100%;
-         overflow: hidden;
-         .contentAndCommentContainer {
-            width: 200%;
-            display: flex;
-            .contentWrapper {
-               display: inline-block;
-               width: 100%;
-               margin-right: 4rem;
-            }
-            .commentsWrapper {
-               display: inline-block;
-               width: 100%;
-            }
-         }
-      }
-      .contentArea {
-         position: relative;
-         flex-grow: 1;
-         max-width: 100%;
-         min-height: 15rem;
-         ${props => props.theme.midScreenBreakpoint} {
-            max-width: 60%;
-            border-right: 1px solid
-               ${props => setAlpha(props.theme.lowContrastGrey, 0.2)};
-            padding-right: 1rem;
-         }
-         div.buttons {
-            width: ${props => props.theme.smallText};
-            position: absolute;
-            bottom: 1rem;
-            right: 0;
-         }
-         .commentButton {
-            position: relative;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: ${props => props.theme.smallText};
-            height: ${props => props.theme.smallText};
-            margin-bottom: 1rem;
-            span.commentCount {
-               position: relative;
-               font-size: ${props => props.theme.tinyText};
-               font-weight: bold;
-               z-index: 2;
-               line-height: 1;
-               margin-bottom: 0.4rem;
-               ${props => props.theme.desktopBreakpoint} {
-                  margin-bottom: 0.6rem;
-               }
-            }
-            .commentIcon {
-               position: absolute;
-               left: 0;
-               top: 0;
-               width: 100%;
-               height: 100%;
-               z-index: 1;
-            }
-            &:hover {
-               rect,
-               polygon {
-                  fill: ${props =>
-                     setLightness(props.theme.lowContrastGrey, 40)};
-               }
-            }
-         }
-         img.buttons,
-         svg.buttons {
-            width: 100%;
-            &.trashIcon {
-               opacity: 0.8;
-            }
-            &.editThis {
-               opacity: 0.4;
-               cursor: pointer;
-            }
-            &.reorder {
-               opacity: 0.4;
-               &.reordering {
-                  opacity: 1;
-                  &:hover {
-                     opacity: 0.4;
-                  }
-               }
-            }
-            &.directLink {
-               opacity: 0.4;
-            }
-            &:hover {
-               cursor: pointer;
-               opacity: 1;
-            }
-         }
-         button.miniReorder,
-         form {
-            max-width: 1040px;
-            textarea {
-               padding: 1rem;
-               height: 4rem;
-               position: relative;
-               ${props => props.theme.scroll};
-            }
-         }
-         button.miniReorder {
-            margin: calc(0.8rem - 2px) calc(-1rem - 1px);
-         }
-         .contentPiece {
-            margin: 0rem 0;
-            flex-grow: 1;
-            width: 100%;
-            max-width: 900px;
-            white-space: pre-wrap;
-            padding: 2rem 4rem 2rem 1rem;
-            ${props => props.theme.mobileBreakpoint} {
-               padding: 2rem;
-            }
-            img,
-            video,
-            iframe {
-               max-width: 100%;
-            }
-            iframe {
-               width: 100%;
-            }
-            .smallThingCard {
-               margin: 2rem 0;
-            }
-            .tweet.threadStarter {
-               margin-bottom: 0;
-               .quoteTweetContainer {
-                  margin-top: 0;
-                  margin-bottom: 0;
-               }
-            }
-         }
-      }
-      .commentsArea {
-         width: 100%;
-         padding: 0;
-         ${props => props.theme.midScreenBreakpoint} {
-            padding: 0 2rem;
-         }
-         &.full {
-            ${props => props.theme.midScreenBreakpoint} {
-               width: 60%;
-            }
-         }
-         &.collapsed,
-         &.expanded {
-            ${props => props.theme.midScreenBreakpoint} {
-               width: 40%;
-            }
-         }
-         &.expanded,
-         &.full {
-            .commentsContainer {
-               max-height: 40rem;
-               overflow: hidden;
-               ${props => props.theme.scroll};
-            }
-         }
-         .commentsContainer {
-            .comment {
-               max-width: 900px;
-            }
-            &.collapsed {
-               opacity: 0.75;
-               transition: opacity 0.25s ease-out;
-               &:hover {
-                  opacity: 1;
-               }
-               .commentMeta,
-               .buttons,
-               .replyContainer,
-               .newCommentArea {
-                  display: none;
-               }
-               .newCommentArea.noComments {
-                  display: block;
-                  form.richTextArea {
-                     margin-top: 0;
-                  }
-               }
-               .comment {
-                  position: relative;
-                  padding: 1rem;
-                  margin: 1rem 0;
-                  cursor: pointer;
-                  max-height: 10rem;
-                  overflow: hidden;
-                  transition: all 0.2s;
-                  .commentAndAuthorContainer {
-                     margin-top: -1rem;
-                     padding-right: 0;
-                  }
-                  img.avatar {
-                     width: ${props => props.theme.smallText};
-                     min-width: ${props => props.theme.smallText};
-                     height: ${props => props.theme.smallText};
-                  }
-                  &:hover {
-                     background: ${props => props.theme.lightBlack};
-                     &:before {
-                        background: linear-gradient(
-                           transparent 7rem,
-                           ${props => props.theme.lightBlack} 9.25rem
-                        );
-                     }
-                  }
-                  &:before {
-                     content: '';
-                     width: 100%;
-                     height: 100%;
-                     position: absolute;
-                     left: 0;
-                     top: 0;
-                     background: linear-gradient(
-                        transparent 7rem,
-                        ${props => props.theme.midBlack} 9.25rem
-                     );
-                     transition: all none;
-                  }
-               }
-               .moreCommentsCount {
-                  font-size: ${props => props.theme.miniText};
-                  text-align: center;
-                  line-height: 1;
-                  cursor: pointer;
-               }
-            }
-            &.expanded {
-               .comment {
-                  cursor: pointer;
-                  .replyContainer {
-                     text-align: center;
-                     font-size: ${props => props.theme.tinyText};
-                     line-height: 1;
-                     padding-top: 1rem;
-                     margin-bottom: -1rem;
-                     .comment {
-                        display: none;
-                     }
-                  }
-                  &:hover {
-                     background: ${props => props.theme.lightBlack};
-                  }
-               }
-               .newCommentArea {
-                  textarea {
-                     min-height: 5.75rem;
-                  }
-               }
-            }
-            &.full {
-               .replyCount,
-               .newCommentArea {
-                  display: none;
-               }
-            }
-         }
-         .commentsControls {
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
-            .siblingSlider {
-               display: flex;
-               align-items: center;
-               svg.siblingSliderArrow {
-                  width: ${props => props.theme.bigText};
-                  cursor: pointer;
-                  rect {
-                     fill: ${props => setLightness(props.theme.mainText, 70)};
-                  }
-                  &:hover {
-                     rect {
-                        fill: ${props => props.theme.mainText};
-                     }
-                  }
-               }
-            }
-            svg.commentDisplayControlArrow {
-               display: block;
-               cursor: pointer;
-               height: ${props => props.theme.bigHead};
-               transition: all 0.2s;
-               rect {
-                  fill: ${props => setLightness(props.theme.mainText, 70)};
-               }
-               &:hover {
-                  rect {
-                     fill: ${props => props.theme.mainText};
-                  }
-               }
-            }
-         }
-      }
-   }
-   form {
-      display: flex;
-      flex-wrap: wrap;
-      max-width: 900px;
-      margin: 4rem auto 0;
-      .postButtonWrapper {
-         width: 100%;
-         /* text-align: right; */
-         display: flex;
-         justify-content: space-between;
-         .styleGuideLink {
-            opacity: 0.7;
-            display: inline-block;
-            font-size: ${props => props.theme.tinyText};
-         }
-      }
-   }
-   textarea {
-      width: 100%;
-      position: relative;
-      height: calc(5rem + 4px);
-   }
-   button {
-      margin: 1rem 0;
-      padding: 0.6rem;
-      font-size: ${props => props.theme.smallText};
-      font-weight: 500;
-      &.post {
-         background: ${props => setAlpha(props.theme.majorColor, 0.8)};
-         color: ${props => props.theme.mainText};
-         &:hover {
-            background: ${props => props.theme.majorColor};
-            box-shadow: 0 0 6px
-               ${props => setAlpha(props.theme.majorColor, 0.6)};
-         }
-      }
-   }
-`;
-
 const Content = ({ context, canEdit, linkedPiece }) => {
+   // First we'll pull in all our data from context
    const {
       content = [],
       contentOrder,
       id,
-      __typename: type = 'Thing',
-      author
+      __typename: type = 'Thing'
    } = useContext(context);
-   const [newContentPiece, setNewContentPiece] = useState('');
-   const locallyDeletedPieces = useRef([]);
 
-   const [
-      addContentPiece,
-      { data: addData, loading: addLoading, error: addError }
-   ] = useMutation(ADD_CONTENTPIECE_MUTATION, {
+   // Then we'll set up our mutation hooks
+   const [addContentPiece] = useMutation(ADD_CONTENTPIECE_MUTATION, {
       onCompleted: data => checkForNewThingRedirect(id, 'addContentPiece', data)
    });
 
-   const [
-      deleteContentPiece,
-      { data: deleteData, loading: deleteLoading, error: deleteError }
-   ] = useMutation(DELETE_CONTENTPIECE_MUTATION);
+   const [deleteContentPiece] = useMutation(DELETE_CONTENTPIECE_MUTATION);
 
-   const [
-      editContentPiece,
-      { data: editData, loading: editLoading, error: editError }
-   ] = useMutation(EDIT_CONTENTPIECE_MUTATION);
+   const [editContentPiece] = useMutation(EDIT_CONTENTPIECE_MUTATION);
 
    const [reorderContent] = useMutation(REORDER_CONTENT_MUTATION);
    const [reordering, setReordering] = useState(false);
+
+   // This state holds the input for the add new content input at the bottom of the content section
+   const [newContentPiece, setNewContentPiece] = useState('');
 
    // This ref is going to hold all the data we need for making the edit buttons sticky. Things that don't change are populated in an effect that runs on the first render only, and everything else is populated in the stickifier function, which will be attached to a scroll listener by that same effect.
    const stickingData = useRef({
       blocksArray: []
    });
 
-   const stickifier = () => {
-      const blockPositionsArray = [];
-
-      const blocks = document.querySelectorAll('.contentBlock');
-      for (const block of blocks) {
-         const blockOffset = block.offsetTop;
-         const blockHeight = block.offsetHeight;
-
-         const buttons = block.querySelector('.buttonsContainer');
-         if (buttons == null) continue;
-         const buttonsHeight = buttons.offsetHeight;
-         const buttonsCSS = getComputedStyle(buttons);
-
-         // The "top" we use for determining when to start sticking things is slightly different from the actual top of the element. I'm defining that top first so I can base the "top" off it as well as the bottom, which is the actual bottom
-         const blockTop =
-            blockOffset +
-            stickingData.current.blockPadding +
-            stickingData.current.fullThingOffset;
-         const top =
-            blockTop + stickingData.current.piecePadding + buttonsHeight;
-         const bottom = blockTop + blockHeight;
-         blockPositionsArray.push({
-            block,
-            top,
-            bottom
-         });
-      }
-      stickingData.current.blocksArray = blockPositionsArray;
-
-      // On mobile, the scrolling element is the thingPage container, on desktop, it's the mainSection container
-      const thingPage = document.querySelector('.thingPage');
-      const mainSection = document.querySelector('.mainSection');
-
-      let viewableTop = 0;
-      let viewableBottom;
-
-      const bottomBar = document.querySelector('.bottomBar');
-      const bottomBarDisplay = window.getComputedStyle(bottomBar).display;
-
-      let buttonsRightPosition;
-
-      // bottomBar also only shows on mobile
-      if (bottomBarDisplay === 'none') {
-         viewableTop = mainSection.scrollTop;
-         const wholeWindowHeight = window.innerHeight;
-         const header = document.getElementById('header');
-         const headerHeight = header.offsetHeight;
-         viewableBottom = viewableTop + wholeWindowHeight - headerHeight;
-         buttonsRightPosition = '1rem';
-      } else {
-         viewableTop = thingPage.scrollTop;
-         const bottomBar = document.querySelector('.bottomBar');
-         const bottomBarHeight = bottomBar.offsetHeight;
-         viewableBottom = viewableTop + window.innerHeight - bottomBarHeight;
-         buttonsRightPosition = '0';
-      }
-
-      stickingData.current.blocksArray.forEach(block => {
-         const buttons = block.block.querySelector('.buttonsContainer');
-         const buttonsHeight = buttons.offsetHeight;
-         // If the top of the element is onscreen but the bottom isn't, we want to fix the edit buttons in place at the bottom of the screen
-         if (block.top < viewableBottom && block.bottom > viewableBottom) {
-            const buttonRect = buttons.getBoundingClientRect();
-            buttons.style.position = 'fixed';
-            buttons.style.left = `${buttonRect.left}px`;
-            buttons.style.right = 'initial';
-            buttons.style.top = 'initial';
-
-            if (bottomBarDisplay === 'none') {
-               buttons.style.bottom = '2rem';
-            } else {
-               buttons.style.bottom = `calc(${
-                  bottomBar.offsetHeight
-               }px + 1rem)`;
-            }
-         } else if (
-            block.top - buttonsHeight < viewableBottom &&
-            block.top < viewableBottom &&
-            block.bottom > viewableBottom
-         ) {
-            // If the top of the element is onscreen by less than the height of the buttons (which is already included in it when it's originally calculated), we want to absolutely position the buttons at the top right of the content block
-            buttons.style.position = 'absolute';
-            buttons.style.left = 'initial';
-            buttons.style.right = buttonsRightPosition;
-            buttons.style.bottom = '0';
-            buttons.style.top = '1rem';
-         } else {
-            // Otherwise we want to put them back in place at the bottom right of the content block
-            buttons.style.position = 'absolute';
-            buttons.style.left = 'initial';
-            buttons.style.right = buttonsRightPosition;
-            buttons.style.bottom = '1rem';
-            buttons.style.top = 'initial';
-         }
-      });
+   const stickifierHandler = () => {
+      // We need this little function so we can pass a parameter to stickifier when it's called by the scroll listener, and we can't just use an arrow function in the listener because then we can't remove it
+      stickifier(stickingData);
    };
 
    // Add the stickifier listeners
    useEffect(() => {
-      // On desktop, mainSection does the scrolling. On mobile, it's thingPage
-      const thingPage = document.querySelector('.thingPage');
-      if (thingPage != null) {
-         thingPage.addEventListener('scroll', stickifier);
-      }
+      // mainSection does the scrolling on big screens, threeColumns on mobile, so we'll add a listener to it so we can move the buttons on scroll
       const mainSection = document.querySelector('.mainSection');
-      mainSection.addEventListener('scroll', stickifier);
+      mainSection.addEventListener('scroll', stickifierHandler);
 
+      const threeColumns = document.querySelector('.threeColumns');
+      threeColumns.addEventListener('scroll', stickifierHandler);
+
+      // get all the content blocks. If there aren't any, no need for sticky buttons, so we return.
       const blocks = document.querySelectorAll('.contentBlock');
       if (blocks.length === 0) return;
+
       const firstBlock = blocks[0];
 
+      // Get the raw number of pixels of padding on the content block, and store it in stickingData. We'll have to cut the "px" off the end of the value we get back from getComputedStyle
       const blockPaddingString = window.getComputedStyle(firstBlock).paddingTop;
       const blockPaddingRaw = blockPaddingString.substring(
          0,
@@ -744,6 +75,7 @@ const Content = ({ context, canEdit, linkedPiece }) => {
       const blockPadding = parseInt(blockPaddingRaw);
       stickingData.current.blockPadding = blockPadding;
 
+      // Do the same for the contentPiece
       const piece = firstBlock.querySelector('.contentPiece');
       const piecePaddingString = window.getComputedStyle(piece).paddingTop;
       const piecePaddingRaw = piecePaddingString.substring(
@@ -754,26 +86,26 @@ const Content = ({ context, canEdit, linkedPiece }) => {
       stickingData.current.piecePadding = piecePadding;
 
       const fullThing = firstBlock.offsetParent;
+      // This only works because the full thing element is the closest ancestor to content blocks which is positioned. If we change this at some point, we'll have to add a check here to make sure we get the right element.
       const fullThingOffset = fullThing.offsetTop;
       stickingData.current.fullThingOffset = fullThingOffset;
 
       // Need to run it once here so that the edit buttons will be properly placed before the first scroll
-      stickifier();
+      stickifier(stickingData);
 
       return () => {
-         mainSection.removeEventListener('scroll', stickifier);
-         if (thingPage != null) {
-            thingPage.removeEventListener('scroll', stickifier);
-         }
+         mainSection.removeEventListener('scroll', stickifierHandler);
+         threeColumns.removeEventListener('scroll', stickifierHandler);
       };
-   }, [stickifier]);
+   }, [stickifierHandler]);
 
    const sendNewContentPiece = async () => {
       setNewContentPiece('');
       content.push({
          __typename: 'ContentPiece',
          content: newContentPiece,
-         id: 'temporaryID'
+         id: 'temporaryID',
+         comments: []
       });
       setFullThingToLoading(id);
       await addContentPiece({
@@ -787,7 +119,8 @@ const Content = ({ context, canEdit, linkedPiece }) => {
             addContentPiece: {
                __typename: type,
                id,
-               content
+               content,
+               comments: []
             }
          },
          update: (client, { data }) => {
@@ -877,6 +210,7 @@ const Content = ({ context, canEdit, linkedPiece }) => {
    let contentElements;
    let orderedContent;
    if (content) {
+      // If we have a contentOrder array, we're going to order the content to match it
       if (contentOrder && contentOrder.length > 0) {
          orderedContent = [];
          contentOrder.forEach(id => {
@@ -1000,7 +334,8 @@ Content.propTypes = {
       Consumer: PropTypes.object.isRequired,
       Provider: PropTypes.object.isRequired
    }).isRequired,
-   canEdit: PropTypes.bool
+   canEdit: PropTypes.bool,
+   linkedPiece: PropTypes.string // this is a query parameter that can be passed through the url to highlight a specific content piece on a thing
 };
 
 export default Content;

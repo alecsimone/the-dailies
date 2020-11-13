@@ -27,9 +27,16 @@ const ContentPiece = ({
    reordering,
    highlighted
 }) => {
-   const [editable, setEditable] = useState(false);
-   const [copied, setCopied] = useState(false);
+   const { me } = useContext(MemberContext);
    const { midScreenBPWidthRaw } = useContext(ThemeContext);
+
+   const [editable, setEditable] = useState(false);
+   const [editedContent, setEditedContent] = useState(rawContentString);
+   const [commentText, setCommentText] = useState('');
+
+   const [touchStart, setTouchStart] = useState(0);
+   const [touchEnd, setTouchEnd] = useState(0);
+   const [copied, setCopied] = useState(false);
 
    const isSmallScreen =
       process.browser && window.outerWidth <= midScreenBPWidthRaw;
@@ -38,26 +45,13 @@ const ContentPiece = ({
       !isSmallScreen && comments.length > 0
    );
 
-   const [touchStart, setTouchStart] = useState(0);
-   const [touchEnd, setTouchEnd] = useState(0);
-
-   const [editedContent, setEditedContent] = useState(rawContentString);
-
-   const handleKeyDown = e => {
-      if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
-         postContent();
-      }
-   };
-
    const postContent = () => {
       editContentPiece(id, editedContent);
       setEditable(false);
    };
 
-   const { me } = useContext(MemberContext);
-
-   const [commentText, setCommentText] = useState('');
    const [addComment] = useMutation(ADD_COMMENT_MUTATION);
+
    const sendNewComment = async () => {
       const now = new Date();
       const newComment = {
@@ -151,15 +145,16 @@ const ContentPiece = ({
    );
 
    let translation = touchEnd - touchStart;
-   if (!showingComments && translation > 0) {
+   if (!showingComments && translation > 10) {
       translation = 0;
    }
-   if (showingComments && translation < 0) {
+   if (showingComments && translation < -10) {
       translation = 0;
    }
 
    let contentArea;
    if (isSmallScreen) {
+      // If we're on a small screen, we need to put the comments and the content together into an element that can slide from side to side, hiding whatever is overflowing its container
       contentArea = (
          <div className="overflowWrapper">
             <div className="contentAndCommentContainer">
@@ -202,7 +197,6 @@ const ContentPiece = ({
          }}
          onTouchMove={e => setTouchEnd(e.touches[0].clientX)}
          onTouchEnd={e => {
-            console.log(touchEnd - touchStart);
             if (touchEnd - touchStart < -50) {
                setShowingComments(true);
             }

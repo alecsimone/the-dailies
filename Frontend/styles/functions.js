@@ -1,4 +1,4 @@
-import { pxToInt } from '../lib/ThingHandling';
+import { pxToInt } from '../lib/TextHandling';
 
 function setSaturation(baseColor, saturation) {
    if (isHSL(baseColor)) {
