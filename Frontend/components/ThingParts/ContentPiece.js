@@ -145,10 +145,10 @@ const ContentPiece = ({
    );
 
    let translation = touchEnd - touchStart;
-   if (!showingComments && translation > -10) {
+   if (!showingComments && translation > -15) {
       translation = 0;
    }
-   if (showingComments && translation < 10) {
+   if (showingComments && translation < 15) {
       translation = 0;
    }
 
@@ -197,10 +197,10 @@ const ContentPiece = ({
          }}
          onTouchMove={e => setTouchEnd(e.touches[0].clientX)}
          onTouchEnd={e => {
-            if (touchEnd - touchStart < -50) {
+            if (touchEnd - touchStart < -100) {
                setShowingComments(true);
             }
-            if (touchEnd - touchStart > 50) {
+            if (touchEnd - touchStart > 100) {
                setShowingComments(false);
             }
             setTouchStart(0);
