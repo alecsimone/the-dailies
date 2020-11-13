@@ -1,7 +1,7 @@
 import styled, { ThemeContext } from 'styled-components';
 import Link from 'next/link';
 import { useMutation } from '@apollo/react-hooks';
-import { useState, useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import Router from 'next/router';
 import SearchBar from '../SearchBar';
