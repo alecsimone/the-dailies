@@ -18,6 +18,15 @@ class MyApp extends App {
    render() {
       const { Component, apollo, apolloState, pageProps } = this.props;
 
+      if (process.browser) {
+         if (
+            window.location.protocol === 'http:' &&
+            window.location.hostname !== 'localhost'
+         ) {
+            return <div>Switching to a secure connection...</div>;
+         }
+      }
+
       return (
          <ApolloProvider client={apollo}>
             <Page pageProps={pageProps}>

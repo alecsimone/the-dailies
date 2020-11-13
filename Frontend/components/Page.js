@@ -570,6 +570,7 @@ const StyledPage = styled.div`
    display: grid;
    grid-template-rows: auto 1fr auto;
    height: 100vh;
+   height: calc(var(--vh, 1vh) * 100);
 `;
 
 const Page = ({ children, pageProps }) => {
