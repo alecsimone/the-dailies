@@ -145,10 +145,10 @@ const ContentPiece = ({
    );
 
    let translation = touchEnd - touchStart;
-   if (!showingComments && translation > -15) {
+   if (!showingComments && translation > -25) {
       translation = 0;
    }
-   if (showingComments && translation < 15) {
+   if (showingComments && translation < 25) {
       translation = 0;
    }
 
