@@ -81,6 +81,8 @@ const StyledTweets = styled.section`
             ${props => props.theme.scroll};
             min-height: calc(100vh - 14rem + 2px);
             min-height: calc(var(--vh, 1vh) * 100 - 14rem + 2px);
+            height: calc(100vh - 14rem + 2px);
+            height: calc(var(--vh, 1vh) * 100 - 14rem + 2px);
             ${props => props.theme.mobileBreakpoint} {
                min-height: initial;
             }
