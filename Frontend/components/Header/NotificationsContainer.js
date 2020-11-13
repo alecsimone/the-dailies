@@ -16,8 +16,9 @@ const READ_NOTIFICATIONS_MUTATION = gql`
 `;
 
 const StyledNotificationsContainer = styled.div`
+   max-height: calc(100vh - 6rem - 0.75rem - 3px);
    max-height: calc(
-      100vh - 6rem - 0.75rem - 3px
+      var(--vh, 1vh) * 100 - 6rem - 0.75rem - 3px
    ); /* 6 rem is the height of the header, .5rem is its padding, and 3px is the border-bottom. I'm not really sure why we need the extra .25rem, but we do. */
    overflow: hidden;
    ${props => props.theme.scroll};
