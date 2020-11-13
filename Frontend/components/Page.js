@@ -1,5 +1,5 @@
 import styled, { ThemeProvider, createGlobalStyle } from 'styled-components';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import Meta from './Header/Meta';
 import Header from './Header/Header';
@@ -577,6 +577,13 @@ const Page = ({ children, pageProps }) => {
    const isHome = Object.keys(pageProps).length === 0; // We use this to disable SSR on the homepage so that our https redirect will work
    const [navSidebarIsOpen, setNavSidebarIsOpen] = useState(false);
    const [thingsSidebarIsOpen, setThingsSidebarIsOpen] = useState(false);
+
+   useEffect(() => {
+      if (!process.browser) return;
+
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+   }, []);
 
    return (
       <MemberProvider isHome={isHome}>
