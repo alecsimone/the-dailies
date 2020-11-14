@@ -105,12 +105,12 @@ const tag = ({ query: { id, title } }) => {
       }
    }
 
-   // const {
-   //    data: subscriptionData,
-   //    loading: subscriptionLoading
-   // } = useSubscription(SINGLE_TAG_SUBSCRIPTION, {
-   //    variables: { id }
-   // });
+   const {
+      data: subscriptionData,
+      loading: subscriptionLoading
+   } = useSubscription(SINGLE_TAG_SUBSCRIPTION, {
+      variables: { id }
+   });
 
    let pageTitle;
    let content;

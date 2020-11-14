@@ -48,12 +48,12 @@ const stack = ({ query: { id, title } }) => {
       }
    }
 
-   // const {
-   //    data: subscriptionData,
-   //    loading: subscriptionLoading
-   // } = useSubscription(SINGLE_STACK_SUBSCRIPTION, {
-   //    variables: { id }
-   // });
+   const {
+      data: subscriptionData,
+      loading: subscriptionLoading
+   } = useSubscription(SINGLE_STACK_SUBSCRIPTION, {
+      variables: { id }
+   });
 
    let pageTitle;
    let content;
