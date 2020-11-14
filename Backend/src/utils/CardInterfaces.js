@@ -163,6 +163,9 @@ const contentPieceFields = `
    comments {
       ${commentFields}
    }
+   onThing {
+      id
+   }
 `;
 exports.contentPieceFields = contentPieceFields;
 

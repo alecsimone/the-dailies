@@ -310,7 +310,27 @@ async function sendNotification(notification, ctx) {
          },
          `{author {id}}`
       );
-      notification.recipient = theThing.author.id;
+      if (theThing == null) {
+         const theContentPiece = await ctx.db.query.contentPiece(
+            {
+               where: {
+                  id: notification.linkQuery
+               }
+            },
+            `{onThing {id}}`
+         );
+         const theContainingThing = await ctx.db.query.thing(
+            {
+               where: {
+                  id: theContentPiece.onThing.id
+               }
+            },
+            `{author {id}}`
+         );
+         notification.recipient = theContainingThing.author.id;
+      } else {
+         notification.recipient = theThing.author.id;
+      }
    }
 
    if (notification.recipient === ctx.req.memberId) {

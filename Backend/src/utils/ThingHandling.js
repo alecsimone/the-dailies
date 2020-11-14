@@ -40,7 +40,19 @@ async function updateStuffAndNotifySubs(data, id, type, ctx) {
       },
       `{${fields}}`
    );
-   publishStuffUpdate(type, updatedStuff, ctx);
+   if (type === 'ContentPiece') {
+      const updatedThing = await ctx.db.query.thing(
+         {
+            where: {
+               id: updatedStuff.onThing.id
+            }
+         },
+         `{${fullThingFields}}`
+      );
+      publishStuffUpdate('Thing', updatedThing, ctx);
+   } else {
+      publishStuffUpdate(type, updatedStuff, ctx);
+   }
    return updatedStuff;
 }
 
