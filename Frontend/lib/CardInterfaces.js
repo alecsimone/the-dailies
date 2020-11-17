@@ -28,6 +28,18 @@ const commentFields = `
          }
       }
       comment
+      votes {
+         __typename
+         id
+         voter {
+            __typename
+            id
+            displayName
+            rep
+            avatar
+         }
+         value
+      }
       createdAt
       updatedAt
    }
@@ -46,6 +58,18 @@ const commentFields = `
          }
       }
       comment
+      votes {
+         __typename
+         id
+         voter {
+            __typename
+            id
+            displayName
+            rep
+            avatar
+         }
+         value
+      }
       createdAt
       updatedAt
    }
@@ -66,6 +90,20 @@ const commentFields = `
    updatedAt
 `;
 export { commentFields };
+
+const contentPieceFields = `
+   __typename
+   id
+   content
+   comments {
+      ${commentFields}
+   }
+   onThing {
+      id
+   }
+   summary
+`;
+export { contentPieceFields };
 
 const smallThingCardFields = `
    __typename
@@ -92,14 +130,18 @@ const smallThingCardFields = `
       id
       content
    }
+   summary
    contentOrder
    partOfTags {
       __typename
       id
       title
       author {
+         __typename
          id
+         displayName
          avatar
+         rep
       }
    }
    partOfStacks {
@@ -107,8 +149,11 @@ const smallThingCardFields = `
       id
       title
       author {
+         __typename
          id
+         displayName
          avatar
+         rep
       }
    }
    color
@@ -138,8 +183,8 @@ const fullThingFields = `
    author {
       __typename
       id
-      displayName
       avatar
+      displayName
       friends {
          __typename
          id
@@ -149,21 +194,20 @@ const fullThingFields = `
    featuredImage
    link
    content {
-      __typename
-      id
-      content
-      comments {
-         ${commentFields}
-      }
+      ${contentPieceFields}
    }
+   summary
    contentOrder
    partOfTags {
       __typename
       id
       title
       author {
+         __typename
          id
+         displayName
          avatar
+         rep
       }
    }
    partOfStacks {
@@ -171,8 +215,11 @@ const fullThingFields = `
       id
       title
       author {
+         __typename
          id
+         displayName
          avatar
+         rep
       }
    }
    color

@@ -47,6 +47,9 @@ const StyledTwitterSidebar = styled.div`
       }
       display: flex;
       align-items: center;
+      span {
+         margin-left: 0.25rem;
+      }
       svg {
          margin-left: 1rem;
          width: ${props => props.theme.smallText};

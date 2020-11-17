@@ -1,68 +1,3 @@
-const smallThingCardFields = `
-   __typename
-   id
-   title
-   featuredImage
-   author {
-      __typename
-      id
-      displayName
-      avatar
-      friends {
-         __typename
-         id
-      }
-      rep
-   }
-   content {
-      __typename
-      id
-      content
-   }
-   contentOrder
-   partOfTags {
-      __typename
-      id
-      title
-      author {
-         __typename
-         id
-         displayName
-         avatar
-         rep
-      }
-   }
-   partOfStacks {
-      __typename
-      id
-      title
-      author {
-         __typename
-         id
-         displayName
-         avatar
-         rep
-      }
-   }
-   color
-   votes {
-      __typename
-      id
-      value
-      voter {
-         __typename
-         id
-         displayName
-         rep
-         avatar
-      }
-   }
-   score
-   createdAt
-   updatedAt
-   privacy
-`;
-
 const commentFields = `
    __typename
    id
@@ -166,8 +101,80 @@ const contentPieceFields = `
    onThing {
       id
    }
+   summary
 `;
 exports.contentPieceFields = contentPieceFields;
+
+const smallThingCardFields = `
+   __typename
+   id
+   title
+   featuredImage
+   author {
+      __typename
+      id
+      displayName
+      avatar
+      friends {
+         __typename
+         id
+         friends {
+            __typename
+            id
+         }
+      }
+      rep
+   }
+   content {
+      __typename
+      id
+      content
+   }
+   summary
+   contentOrder
+   partOfTags {
+      __typename
+      id
+      title
+      author {
+         __typename
+         id
+         displayName
+         avatar
+         rep
+      }
+   }
+   partOfStacks {
+      __typename
+      id
+      title
+      author {
+         __typename
+         id
+         displayName
+         avatar
+         rep
+      }
+   }
+   color
+   votes {
+      __typename
+      id
+      value
+      voter {
+         __typename
+         id
+         displayName
+         rep
+         avatar
+      }
+   }
+   score
+   createdAt
+   updatedAt
+   privacy
+`;
+exports.smallThingCardFields = smallThingCardFields;
 
 const fullThingFields = `
    __typename
@@ -189,6 +196,7 @@ const fullThingFields = `
    content {
       ${contentPieceFields}
    }
+   summary
    contentOrder
    partOfTags {
       __typename

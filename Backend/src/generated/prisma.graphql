@@ -660,6 +660,7 @@ input CommentWhereUniqueInput {
 type ContentPiece {
   id: ID!
   content: String!
+  summary: String
   comments(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Comment!]
   onThing: Thing
   onTag: Tag
@@ -674,6 +675,7 @@ type ContentPieceConnection {
 input ContentPieceCreateInput {
   id: ID
   content: String!
+  summary: String
   comments: CommentCreateManyWithoutOnContentPieceInput
   onThing: ThingCreateOneWithoutContentInput
   onTag: TagCreateOneWithoutContentInput
@@ -702,6 +704,7 @@ input ContentPieceCreateOneWithoutCommentsInput {
 input ContentPieceCreateWithoutCommentsInput {
   id: ID
   content: String!
+  summary: String
   onThing: ThingCreateOneWithoutContentInput
   onTag: TagCreateOneWithoutContentInput
 }
@@ -709,6 +712,7 @@ input ContentPieceCreateWithoutCommentsInput {
 input ContentPieceCreateWithoutOnTagInput {
   id: ID
   content: String!
+  summary: String
   comments: CommentCreateManyWithoutOnContentPieceInput
   onThing: ThingCreateOneWithoutContentInput
 }
@@ -716,6 +720,7 @@ input ContentPieceCreateWithoutOnTagInput {
 input ContentPieceCreateWithoutOnThingInput {
   id: ID
   content: String!
+  summary: String
   comments: CommentCreateManyWithoutOnContentPieceInput
   onTag: TagCreateOneWithoutContentInput
 }
@@ -730,11 +735,14 @@ enum ContentPieceOrderByInput {
   id_DESC
   content_ASC
   content_DESC
+  summary_ASC
+  summary_DESC
 }
 
 type ContentPiecePreviousValues {
   id: ID!
   content: String!
+  summary: String
 }
 
 input ContentPieceScalarWhereInput {
@@ -766,6 +774,20 @@ input ContentPieceScalarWhereInput {
   content_not_starts_with: String
   content_ends_with: String
   content_not_ends_with: String
+  summary: String
+  summary_not: String
+  summary_in: [String!]
+  summary_not_in: [String!]
+  summary_lt: String
+  summary_lte: String
+  summary_gt: String
+  summary_gte: String
+  summary_contains: String
+  summary_not_contains: String
+  summary_starts_with: String
+  summary_not_starts_with: String
+  summary_ends_with: String
+  summary_not_ends_with: String
   AND: [ContentPieceScalarWhereInput!]
   OR: [ContentPieceScalarWhereInput!]
   NOT: [ContentPieceScalarWhereInput!]
@@ -791,6 +813,7 @@ input ContentPieceSubscriptionWhereInput {
 
 input ContentPieceUpdateDataInput {
   content: String
+  summary: String
   comments: CommentUpdateManyWithoutOnContentPieceInput
   onThing: ThingUpdateOneWithoutContentInput
   onTag: TagUpdateOneWithoutContentInput
@@ -798,6 +821,7 @@ input ContentPieceUpdateDataInput {
 
 input ContentPieceUpdateInput {
   content: String
+  summary: String
   comments: CommentUpdateManyWithoutOnContentPieceInput
   onThing: ThingUpdateOneWithoutContentInput
   onTag: TagUpdateOneWithoutContentInput
@@ -805,6 +829,7 @@ input ContentPieceUpdateInput {
 
 input ContentPieceUpdateManyDataInput {
   content: String
+  summary: String
 }
 
 input ContentPieceUpdateManyInput {
@@ -821,6 +846,7 @@ input ContentPieceUpdateManyInput {
 
 input ContentPieceUpdateManyMutationInput {
   content: String
+  summary: String
 }
 
 input ContentPieceUpdateManyWithoutOnTagInput {
@@ -863,18 +889,21 @@ input ContentPieceUpdateOneWithoutCommentsInput {
 
 input ContentPieceUpdateWithoutCommentsDataInput {
   content: String
+  summary: String
   onThing: ThingUpdateOneWithoutContentInput
   onTag: TagUpdateOneWithoutContentInput
 }
 
 input ContentPieceUpdateWithoutOnTagDataInput {
   content: String
+  summary: String
   comments: CommentUpdateManyWithoutOnContentPieceInput
   onThing: ThingUpdateOneWithoutContentInput
 }
 
 input ContentPieceUpdateWithoutOnThingDataInput {
   content: String
+  summary: String
   comments: CommentUpdateManyWithoutOnContentPieceInput
   onTag: TagUpdateOneWithoutContentInput
 }
@@ -946,6 +975,20 @@ input ContentPieceWhereInput {
   content_not_starts_with: String
   content_ends_with: String
   content_not_ends_with: String
+  summary: String
+  summary_not: String
+  summary_in: [String!]
+  summary_not_in: [String!]
+  summary_lt: String
+  summary_lte: String
+  summary_gt: String
+  summary_gte: String
+  summary_contains: String
+  summary_not_contains: String
+  summary_starts_with: String
+  summary_not_starts_with: String
+  summary_ends_with: String
+  summary_not_ends_with: String
   comments_every: CommentWhereInput
   comments_some: CommentWhereInput
   comments_none: CommentWhereInput
@@ -4081,6 +4124,7 @@ type Thing {
   link: String
   content(where: ContentPieceWhereInput, orderBy: ContentPieceOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ContentPiece!]
   contentOrder: [String!]!
+  summary: String
   partOfTags(where: TagWhereInput, orderBy: TagOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Tag!]
   partOfStacks(where: StackWhereInput, orderBy: StackOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Stack!]
   color: String
@@ -4114,6 +4158,7 @@ input ThingCreateInput {
   link: String
   content: ContentPieceCreateManyWithoutOnThingInput
   contentOrder: ThingCreatecontentOrderInput
+  summary: String
   partOfTags: TagCreateManyWithoutConnectedThingsInput
   partOfStacks: StackCreateManyWithoutConnectedThingsInput
   color: String
@@ -4169,6 +4214,7 @@ input ThingCreateWithoutAuthorInput {
   link: String
   content: ContentPieceCreateManyWithoutOnThingInput
   contentOrder: ThingCreatecontentOrderInput
+  summary: String
   partOfTags: TagCreateManyWithoutConnectedThingsInput
   partOfStacks: StackCreateManyWithoutConnectedThingsInput
   color: String
@@ -4190,6 +4236,7 @@ input ThingCreateWithoutCommentsInput {
   link: String
   content: ContentPieceCreateManyWithoutOnThingInput
   contentOrder: ThingCreatecontentOrderInput
+  summary: String
   partOfTags: TagCreateManyWithoutConnectedThingsInput
   partOfStacks: StackCreateManyWithoutConnectedThingsInput
   color: String
@@ -4209,6 +4256,7 @@ input ThingCreateWithoutContentInput {
   featuredImage: String
   link: String
   contentOrder: ThingCreatecontentOrderInput
+  summary: String
   partOfTags: TagCreateManyWithoutConnectedThingsInput
   partOfStacks: StackCreateManyWithoutConnectedThingsInput
   color: String
@@ -4230,6 +4278,7 @@ input ThingCreateWithoutPartOfStacksInput {
   link: String
   content: ContentPieceCreateManyWithoutOnThingInput
   contentOrder: ThingCreatecontentOrderInput
+  summary: String
   partOfTags: TagCreateManyWithoutConnectedThingsInput
   color: String
   votes: VoteCreateManyWithoutOnThingInput
@@ -4250,6 +4299,7 @@ input ThingCreateWithoutPartOfTagsInput {
   link: String
   content: ContentPieceCreateManyWithoutOnThingInput
   contentOrder: ThingCreatecontentOrderInput
+  summary: String
   partOfStacks: StackCreateManyWithoutConnectedThingsInput
   color: String
   votes: VoteCreateManyWithoutOnThingInput
@@ -4270,6 +4320,7 @@ input ThingCreateWithoutPassesInput {
   link: String
   content: ContentPieceCreateManyWithoutOnThingInput
   contentOrder: ThingCreatecontentOrderInput
+  summary: String
   partOfTags: TagCreateManyWithoutConnectedThingsInput
   partOfStacks: StackCreateManyWithoutConnectedThingsInput
   color: String
@@ -4290,6 +4341,7 @@ input ThingCreateWithoutVotesInput {
   link: String
   content: ContentPieceCreateManyWithoutOnThingInput
   contentOrder: ThingCreatecontentOrderInput
+  summary: String
   partOfTags: TagCreateManyWithoutConnectedThingsInput
   partOfStacks: StackCreateManyWithoutConnectedThingsInput
   color: String
@@ -4316,6 +4368,8 @@ enum ThingOrderByInput {
   featuredImage_DESC
   link_ASC
   link_DESC
+  summary_ASC
+  summary_DESC
   color_ASC
   color_DESC
   score_ASC
@@ -4340,6 +4394,7 @@ type ThingPreviousValues {
   featuredImage: String
   link: String
   contentOrder: [String!]!
+  summary: String
   color: String
   score: Int!
   winner: DateTime
@@ -4407,6 +4462,20 @@ input ThingScalarWhereInput {
   link_not_starts_with: String
   link_ends_with: String
   link_not_ends_with: String
+  summary: String
+  summary_not: String
+  summary_in: [String!]
+  summary_not_in: [String!]
+  summary_lt: String
+  summary_lte: String
+  summary_gt: String
+  summary_gte: String
+  summary_contains: String
+  summary_not_contains: String
+  summary_starts_with: String
+  summary_not_starts_with: String
+  summary_ends_with: String
+  summary_not_ends_with: String
   color: String
   color_not: String
   color_in: [String!]
@@ -4501,6 +4570,7 @@ input ThingUpdateInput {
   link: String
   content: ContentPieceUpdateManyWithoutOnThingInput
   contentOrder: ThingUpdatecontentOrderInput
+  summary: String
   partOfTags: TagUpdateManyWithoutConnectedThingsInput
   partOfStacks: StackUpdateManyWithoutConnectedThingsInput
   color: String
@@ -4519,6 +4589,7 @@ input ThingUpdateManyDataInput {
   featuredImage: String
   link: String
   contentOrder: ThingUpdatecontentOrderInput
+  summary: String
   color: String
   score: Int
   winner: DateTime
@@ -4532,6 +4603,7 @@ input ThingUpdateManyMutationInput {
   featuredImage: String
   link: String
   contentOrder: ThingUpdatecontentOrderInput
+  summary: String
   color: String
   score: Int
   winner: DateTime
@@ -4623,6 +4695,7 @@ input ThingUpdateWithoutAuthorDataInput {
   link: String
   content: ContentPieceUpdateManyWithoutOnThingInput
   contentOrder: ThingUpdatecontentOrderInput
+  summary: String
   partOfTags: TagUpdateManyWithoutConnectedThingsInput
   partOfStacks: StackUpdateManyWithoutConnectedThingsInput
   color: String
@@ -4643,6 +4716,7 @@ input ThingUpdateWithoutCommentsDataInput {
   link: String
   content: ContentPieceUpdateManyWithoutOnThingInput
   contentOrder: ThingUpdatecontentOrderInput
+  summary: String
   partOfTags: TagUpdateManyWithoutConnectedThingsInput
   partOfStacks: StackUpdateManyWithoutConnectedThingsInput
   color: String
@@ -4661,6 +4735,7 @@ input ThingUpdateWithoutContentDataInput {
   featuredImage: String
   link: String
   contentOrder: ThingUpdatecontentOrderInput
+  summary: String
   partOfTags: TagUpdateManyWithoutConnectedThingsInput
   partOfStacks: StackUpdateManyWithoutConnectedThingsInput
   color: String
@@ -4681,6 +4756,7 @@ input ThingUpdateWithoutPartOfStacksDataInput {
   link: String
   content: ContentPieceUpdateManyWithoutOnThingInput
   contentOrder: ThingUpdatecontentOrderInput
+  summary: String
   partOfTags: TagUpdateManyWithoutConnectedThingsInput
   color: String
   votes: VoteUpdateManyWithoutOnThingInput
@@ -4700,6 +4776,7 @@ input ThingUpdateWithoutPartOfTagsDataInput {
   link: String
   content: ContentPieceUpdateManyWithoutOnThingInput
   contentOrder: ThingUpdatecontentOrderInput
+  summary: String
   partOfStacks: StackUpdateManyWithoutConnectedThingsInput
   color: String
   votes: VoteUpdateManyWithoutOnThingInput
@@ -4719,6 +4796,7 @@ input ThingUpdateWithoutPassesDataInput {
   link: String
   content: ContentPieceUpdateManyWithoutOnThingInput
   contentOrder: ThingUpdatecontentOrderInput
+  summary: String
   partOfTags: TagUpdateManyWithoutConnectedThingsInput
   partOfStacks: StackUpdateManyWithoutConnectedThingsInput
   color: String
@@ -4738,6 +4816,7 @@ input ThingUpdateWithoutVotesDataInput {
   link: String
   content: ContentPieceUpdateManyWithoutOnThingInput
   contentOrder: ThingUpdatecontentOrderInput
+  summary: String
   partOfTags: TagUpdateManyWithoutConnectedThingsInput
   partOfStacks: StackUpdateManyWithoutConnectedThingsInput
   color: String
@@ -4864,6 +4943,20 @@ input ThingWhereInput {
   content_every: ContentPieceWhereInput
   content_some: ContentPieceWhereInput
   content_none: ContentPieceWhereInput
+  summary: String
+  summary_not: String
+  summary_in: [String!]
+  summary_not_in: [String!]
+  summary_lt: String
+  summary_lte: String
+  summary_gt: String
+  summary_gte: String
+  summary_contains: String
+  summary_not_contains: String
+  summary_starts_with: String
+  summary_not_starts_with: String
+  summary_ends_with: String
+  summary_not_ends_with: String
   partOfTags_every: TagWhereInput
   partOfTags_some: TagWhereInput
   partOfTags_none: TagWhereInput

@@ -62,6 +62,7 @@ type Mutation {
   setColor(color: String!, id: ID!, type: String!): Stuff
   vote(id: ID!, type: String!): Stuff
   toggleBroadcastView(newState: Boolean!): Member
+  editSummary(summary: String!, id: ID!, type: String!): Thing
 }
 
 union Stuff = Thing | Tag | Stack | Comment | ContentPiece

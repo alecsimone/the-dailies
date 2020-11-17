@@ -524,3 +524,17 @@ async function setColor(parent, { color, id, type}, ctx, info) {
    return updatedStuff;
 }
 exports.setColor = setColor;
+
+async function editSummary(parent, {summary, id, type}, ctx, info) {
+   loggedInGate(ctx);
+   fullMemberGate(ctx.req.member);
+   editPermissionGate({}, id, type, ctx);
+
+   const dataObj = {
+      summary
+   };
+
+   const updatedStuff = await properUpdateStuff(dataObj, id, type, ctx);
+   return updatedStuff;
+}
+exports.editSummary = editSummary;

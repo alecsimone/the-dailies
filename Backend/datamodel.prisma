@@ -6,6 +6,7 @@ type Thing {
   link: String
   content: [ContentPiece!] @scalarList(strategy:RELATION)
   contentOrder: [String!] @scalarList(strategy:RELATION)
+  summary: String
   partOfTags: [Tag]
   partOfStacks: [Stack]
   color: String
@@ -24,6 +25,7 @@ type Thing {
 type ContentPiece {
    id: ID! @id @unique
    content: String!
+   summary: String
    comments: [Comment]
    onThing: Thing
    onTag: Tag

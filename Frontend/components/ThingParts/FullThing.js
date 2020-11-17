@@ -2,6 +2,7 @@ import styled, { ThemeContext } from 'styled-components';
 import { useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { ThingContext } from '../../pages/thing';
+import ThingSummary from './ThingSummary';
 import Content from './Content';
 import TaxBox from './TaxBox';
 import ThingMeta from './ThingMeta';
@@ -98,7 +99,8 @@ const setFullThingToLoading = id => {
 export { setFullThingToLoading };
 
 const FullThing = ({ canEdit, linkedPiece, linkedComment }) => {
-   const { id, color, votes, content } = useContext(ThingContext) || {};
+   const { id, color, votes, content, summary } =
+      useContext(ThingContext) || {};
 
    const { lowContrastGrey } = useContext(ThemeContext);
 
@@ -142,6 +144,14 @@ const FullThing = ({ canEdit, linkedPiece, linkedComment }) => {
          <div className="taxBoxes">
             <TaxBox key={`${id}-TagBox`} canEdit={canEdit} personal={false} />
          </div>
+         {(summary != null || canEdit) && (
+            <ThingSummary
+               summary={summary}
+               thingID={id}
+               key={`${id}-Summary`}
+               canEdit={canEdit}
+            />
+         )}
          {((content != null && content.length > 0) || canEdit) && (
             <Content
                context={ThingContext}
