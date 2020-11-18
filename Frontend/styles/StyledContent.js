@@ -129,6 +129,12 @@ const StyledContent = styled.section`
                display: inline-block;
                width: 100%;
             }
+            .givesSize {
+               height: auto;
+            }
+            .doesNotGiveSize {
+               height: 0;
+            }
          }
       }
       .contentArea {

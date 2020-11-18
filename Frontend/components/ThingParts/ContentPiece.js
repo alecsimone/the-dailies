@@ -48,8 +48,8 @@ const ContentPiece = ({
       process.browser && window.outerWidth <= midScreenBPWidthRaw;
 
    const [showingComments, setShowingComments] = useState(
-      !isSmallScreen && comments.length > 0
-   );
+      !isSmallScreen && comments.length > 0 && process.browser
+   ); // We need that process.browser to prevent the server side rendering from messing up the client side render. Please don't ask me why.
 
    const postContent = () => {
       editContentPiece(id, editedContent, editedSummary);
@@ -205,13 +205,18 @@ const ContentPiece = ({
 
    let contentArea;
    if (isSmallScreen || !process.browser) {
+      console.log(showingComments);
       // We need the "|| !process.browser" to keep the server side render from messing everything up on the client side render. Please don't ask me why.
       // If we're on a small screen, we need to put the comments and the content together into an element that can slide from side to side, hiding whatever is overflowing its container
       contentArea = (
          <div className="overflowWrapper">
             <div className="contentAndCommentContainer">
                <div
-                  className="contentWrapper"
+                  className={`contentWrapper${
+                     translation === 0 && showingComments
+                        ? ' doesNotGiveSize'
+                        : ' givesSize'
+                  }`}
                   style={{
                      transform: `translateX(calc(${translation}px - ${
                         showingComments ? '100' : '0'
@@ -222,7 +227,11 @@ const ContentPiece = ({
                   {contentElement}
                </div>
                <div
-                  className="commentsWrapper"
+                  className={`commentsWrapper${
+                     translation === 0 && !showingComments
+                        ? ' doesNotGiveSize'
+                        : ' givesSize'
+                  }`}
                   style={{
                      transform: `translateX(calc(${translation}px - ${
                         showingComments ? '100' : '0'
