@@ -3,23 +3,11 @@ import { setAlpha, setLightness } from './functions';
 
 const StyledContent = styled.section`
    margin: 0 0 3rem;
-   padding: 1rem;
    padding-top: 0;
-
    ${props => props.theme.mobileBreakpoint} {
       margin: 5rem 0;
       padding: 1rem 2rem;
       padding-top: 0;
-   }
-   .contentSectionWrapper {
-      background: ${props => props.theme.midBlack};
-      border-top: 1px solid
-         ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
-      ${props => props.theme.mobileBreakpoint} {
-         border: 1px solid
-            ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
-         border-radius: 0.5rem;
-      }
    }
    .contentExpansionToggleWrapper {
       text-align: center;
@@ -60,6 +48,17 @@ const StyledContent = styled.section`
                }
             }
          }
+      }
+   }
+   .contentSectionWrapper {
+      padding: 1rem;
+      background: ${props => props.theme.midBlack};
+      border-top: 1px solid
+         ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
+      ${props => props.theme.mobileBreakpoint} {
+         border: 1px solid
+            ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
+         border-radius: 0.5rem;
       }
    }
    p,

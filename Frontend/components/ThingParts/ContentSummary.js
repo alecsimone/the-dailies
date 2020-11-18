@@ -40,7 +40,7 @@ const ContentSummary = ({
    } else {
       return <div />;
    }
-   return summaryElement;
+   return <div className="summaryComponentWrapper">{summaryElement}</div>;
 };
 
 export default ContentSummary;
