@@ -110,6 +110,7 @@ type Member {
   createdThings: [Thing]
   ownedTags: [Tag]
   defaultPrivacy: PrivacySetting
+  defaultExpansion: Boolean @default(value: false)
   broadcastView: Boolean @default(value: false)
   comments: [Comment]
   password: String!

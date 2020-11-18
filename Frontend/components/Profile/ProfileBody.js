@@ -14,6 +14,7 @@ const EDIT_PROFILE_MUTATION = gql`
       $email: String
       $twitchName: String
       $defaultPrivacy: String
+      $defaultExpansion: String
    ) {
       editProfile(
          id: $id
@@ -22,6 +23,7 @@ const EDIT_PROFILE_MUTATION = gql`
          email: $email
          twitchName: $twitchName
          defaultPrivacy: $defaultPrivacy
+         defaultExpansion: $defaultExpansion
       ) {
          __typename
          id
@@ -30,6 +32,7 @@ const EDIT_PROFILE_MUTATION = gql`
          email
          twitchName
          defaultPrivacy
+         defaultExpansion
       }
    }
 `;
@@ -76,6 +79,13 @@ const ProfileBody = ({ member, me, isMe, canEdit, confirmFriendRequest }) => {
       });
    };
 
+   let defaultExpansion;
+   if (member.defaultExpansion == null) {
+      defaultExpansion = false;
+   } else {
+      defaultExpansion = member.defaultExpansion;
+   }
+
    return (
       <div className="profileBody">
          <Avatar
@@ -102,6 +112,7 @@ const ProfileBody = ({ member, me, isMe, canEdit, confirmFriendRequest }) => {
                      ? 'Private'
                      : member.defaultPrivacy
                }
+               initialExpansion={defaultExpansion}
                editProfile={editProfile}
                id={member.id}
             />

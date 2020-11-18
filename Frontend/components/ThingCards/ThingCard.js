@@ -165,7 +165,6 @@ const ThingCard = ({ data }) => {
 
    let contentElement;
    if (summary != null && summary !== '') {
-      console.log(summary);
       contentElement = <TruncCont cont={summary} limit={280} />;
    } else {
       contentElement = <TruncCont cont={firstContentPiece} limit={280} />;

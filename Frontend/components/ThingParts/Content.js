@@ -16,6 +16,7 @@ import {
 import { SINGLE_THING_QUERY } from '../../pages/thing';
 import { SINGLE_TAX_QUERY } from '../../pages/tag';
 import { setFullThingToLoading } from './FullThing';
+import { MemberContext } from '../Account/MemberProvider';
 
 const Content = ({ context, canEdit, linkedPiece }) => {
    // First we'll pull in all our data from context
@@ -25,6 +26,13 @@ const Content = ({ context, canEdit, linkedPiece }) => {
       id,
       __typename: type = 'Thing'
    } = useContext(context);
+
+   // Then we'll pull in the member data so we can get default expansion from it
+   const { me } = useContext(MemberContext);
+   let { defaultExpansion } = me;
+   if (defaultExpansion == null) {
+      defaultExpansion = false;
+   }
 
    // Then we'll set up our mutation hooks
    const [addContentPiece] = useMutation(ADD_CONTENTPIECE_MUTATION, {
@@ -41,7 +49,7 @@ const Content = ({ context, canEdit, linkedPiece }) => {
    // We need to make an object whose properties are the ids of all the content pieces on this thing, each of which starts out false
    const expandedContentObject = {};
    content.forEach(contentPiece => {
-      expandedContentObject[contentPiece.id] = false;
+      expandedContentObject[contentPiece.id] = defaultExpansion;
    });
    const [contentExpansionObject, setContentExpansionObject] = useState(
       expandedContentObject

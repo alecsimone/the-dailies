@@ -363,6 +363,7 @@ const fullMemberFields = `
       ${smallThingCardFields}
    }
    defaultPrivacy
+   defaultExpansion
    broadcastView
    comments {
       __typename

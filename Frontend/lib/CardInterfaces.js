@@ -346,6 +346,7 @@ const basicMemberFields = `
       linkQuery
    }
    broadcastView
+   defaultExpansion
    role
    twitterUserName
 `;
@@ -428,6 +429,7 @@ const fullMemberFields = `
       ${smallThingCardFields}
    }
    defaultPrivacy
+   defaultExpansion
    broadcastView
    comments {
       __typename

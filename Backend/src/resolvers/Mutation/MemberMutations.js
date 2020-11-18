@@ -80,7 +80,15 @@ exports.logout = logout;
 
 async function editProfile(
    parent,
-   { id, avatar, displayName, email, twitchName, defaultPrivacy },
+   {
+      id,
+      avatar,
+      displayName,
+      email,
+      twitchName,
+      defaultPrivacy,
+      defaultExpansion
+   },
    ctx,
    info
 ) {
@@ -109,6 +117,13 @@ async function editProfile(
    }
    if (defaultPrivacy != null) {
       dataObj.defaultPrivacy = defaultPrivacy;
+   }
+   if (defaultExpansion != null) {
+      if (defaultExpansion === 'Expanded') {
+         dataObj.defaultExpansion = true;
+      } else if (defaultExpansion === 'Collapsed') {
+         dataObj.defaultExpansion = false;
+      }
    }
    const newMe = await properEditMe(dataObj, id, ctx);
    return newMe;

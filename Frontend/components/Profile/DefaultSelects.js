@@ -22,7 +22,12 @@ const StyledSelectsWrapper = styled.div`
    }
 `;
 
-const DefaultSelects = ({ initialPrivacy, editProfile, id }) => {
+const DefaultSelects = ({
+   initialPrivacy,
+   initialExpansion,
+   editProfile,
+   id
+}) => {
    const handleSelect = e => {
       const optimisticResponse = {
          __typename: 'Mutation',
@@ -32,6 +37,11 @@ const DefaultSelects = ({ initialPrivacy, editProfile, id }) => {
             [e.target.name]: e.target.value
          }
       };
+
+      if (e.target.name === 'defaultExpansion') {
+         optimisticResponse.editProfile.defaultExpansion =
+            e.target.value === 'Expanded';
+      } // We pass a value of either Expanded or Collapsed, but they need to be converted to True or False respectively
 
       editProfile({
          variables: {
@@ -66,6 +76,17 @@ const DefaultSelects = ({ initialPrivacy, editProfile, id }) => {
                onChange={handleSelect}
             >
                {privacyOptions}
+            </select>
+         </div>
+         <div className="privacySelectWrapper selectWrapper">
+            Default Expansion:
+            <select
+               name="defaultExpansion"
+               value={initialExpansion ? 'Expanded' : 'Collapsed'}
+               onChange={handleSelect}
+            >
+               <MetaOption name="Expanded" />
+               <MetaOption name="Collapsed" />
             </select>
          </div>
       </StyledSelectsWrapper>

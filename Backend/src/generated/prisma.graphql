@@ -1029,6 +1029,7 @@ type Member {
   createdThings(where: ThingWhereInput, orderBy: ThingOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Thing!]
   ownedTags(where: TagWhereInput, orderBy: TagOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Tag!]
   defaultPrivacy: PrivacySetting
+  defaultExpansion: Boolean
   broadcastView: Boolean
   comments(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Comment!]
   password: String!
@@ -1073,6 +1074,7 @@ input MemberCreateInput {
   createdThings: ThingCreateManyWithoutAuthorInput
   ownedTags: TagCreateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
+  defaultExpansion: Boolean
   broadcastView: Boolean
   comments: CommentCreateManyWithoutAuthorInput
   password: String!
@@ -1167,6 +1169,7 @@ input MemberCreateWithoutCommentsInput {
   createdThings: ThingCreateManyWithoutAuthorInput
   ownedTags: TagCreateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
+  defaultExpansion: Boolean
   broadcastView: Boolean
   password: String!
   roles: MemberCreaterolesInput
@@ -1201,6 +1204,7 @@ input MemberCreateWithoutCreatedThingsInput {
   passes: PassCreateManyWithoutPasserInput
   ownedTags: TagCreateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
+  defaultExpansion: Boolean
   broadcastView: Boolean
   comments: CommentCreateManyWithoutAuthorInput
   password: String!
@@ -1236,6 +1240,7 @@ input MemberCreateWithoutFriendRequestsInput {
   createdThings: ThingCreateManyWithoutAuthorInput
   ownedTags: TagCreateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
+  defaultExpansion: Boolean
   broadcastView: Boolean
   comments: CommentCreateManyWithoutAuthorInput
   password: String!
@@ -1271,6 +1276,7 @@ input MemberCreateWithoutFriendsInput {
   createdThings: ThingCreateManyWithoutAuthorInput
   ownedTags: TagCreateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
+  defaultExpansion: Boolean
   broadcastView: Boolean
   comments: CommentCreateManyWithoutAuthorInput
   password: String!
@@ -1306,6 +1312,7 @@ input MemberCreateWithoutIgnoredFriendRequestsInput {
   createdThings: ThingCreateManyWithoutAuthorInput
   ownedTags: TagCreateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
+  defaultExpansion: Boolean
   broadcastView: Boolean
   comments: CommentCreateManyWithoutAuthorInput
   password: String!
@@ -1341,6 +1348,7 @@ input MemberCreateWithoutNotificationsInput {
   createdThings: ThingCreateManyWithoutAuthorInput
   ownedTags: TagCreateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
+  defaultExpansion: Boolean
   broadcastView: Boolean
   comments: CommentCreateManyWithoutAuthorInput
   password: String!
@@ -1376,6 +1384,7 @@ input MemberCreateWithoutOwnedTagsInput {
   passes: PassCreateManyWithoutPasserInput
   createdThings: ThingCreateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
+  defaultExpansion: Boolean
   broadcastView: Boolean
   comments: CommentCreateManyWithoutAuthorInput
   password: String!
@@ -1411,6 +1420,7 @@ input MemberCreateWithoutPassesInput {
   createdThings: ThingCreateManyWithoutAuthorInput
   ownedTags: TagCreateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
+  defaultExpansion: Boolean
   broadcastView: Boolean
   comments: CommentCreateManyWithoutAuthorInput
   password: String!
@@ -1446,6 +1456,7 @@ input MemberCreateWithoutVotesInput {
   createdThings: ThingCreateManyWithoutAuthorInput
   ownedTags: TagCreateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
+  defaultExpansion: Boolean
   broadcastView: Boolean
   comments: CommentCreateManyWithoutAuthorInput
   password: String!
@@ -1490,6 +1501,8 @@ enum MemberOrderByInput {
   email_DESC
   defaultPrivacy_ASC
   defaultPrivacy_DESC
+  defaultExpansion_ASC
+  defaultExpansion_DESC
   broadcastView_ASC
   broadcastView_DESC
   password_ASC
@@ -1530,6 +1543,7 @@ type MemberPreviousValues {
   twitchName: String
   email: String!
   defaultPrivacy: PrivacySetting
+  defaultExpansion: Boolean
   broadcastView: Boolean
   password: String!
   roles: [Role!]!
@@ -1674,6 +1688,8 @@ input MemberScalarWhereInput {
   defaultPrivacy_not: PrivacySetting
   defaultPrivacy_in: [PrivacySetting!]
   defaultPrivacy_not_in: [PrivacySetting!]
+  defaultExpansion: Boolean
+  defaultExpansion_not: Boolean
   broadcastView: Boolean
   broadcastView_not: Boolean
   password: String
@@ -1858,6 +1874,7 @@ input MemberUpdateDataInput {
   createdThings: ThingUpdateManyWithoutAuthorInput
   ownedTags: TagUpdateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
+  defaultExpansion: Boolean
   broadcastView: Boolean
   comments: CommentUpdateManyWithoutAuthorInput
   password: String
@@ -1893,6 +1910,7 @@ input MemberUpdateInput {
   createdThings: ThingUpdateManyWithoutAuthorInput
   ownedTags: TagUpdateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
+  defaultExpansion: Boolean
   broadcastView: Boolean
   comments: CommentUpdateManyWithoutAuthorInput
   password: String
@@ -1920,6 +1938,7 @@ input MemberUpdateManyDataInput {
   twitchName: String
   email: String
   defaultPrivacy: PrivacySetting
+  defaultExpansion: Boolean
   broadcastView: Boolean
   password: String
   roles: MemberUpdaterolesInput
@@ -1946,6 +1965,7 @@ input MemberUpdateManyMutationInput {
   twitchName: String
   email: String
   defaultPrivacy: PrivacySetting
+  defaultExpansion: Boolean
   broadcastView: Boolean
   password: String
   roles: MemberUpdaterolesInput
@@ -2078,6 +2098,7 @@ input MemberUpdateWithoutCommentsDataInput {
   createdThings: ThingUpdateManyWithoutAuthorInput
   ownedTags: TagUpdateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
+  defaultExpansion: Boolean
   broadcastView: Boolean
   password: String
   roles: MemberUpdaterolesInput
@@ -2111,6 +2132,7 @@ input MemberUpdateWithoutCreatedThingsDataInput {
   passes: PassUpdateManyWithoutPasserInput
   ownedTags: TagUpdateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
+  defaultExpansion: Boolean
   broadcastView: Boolean
   comments: CommentUpdateManyWithoutAuthorInput
   password: String
@@ -2145,6 +2167,7 @@ input MemberUpdateWithoutFriendRequestsDataInput {
   createdThings: ThingUpdateManyWithoutAuthorInput
   ownedTags: TagUpdateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
+  defaultExpansion: Boolean
   broadcastView: Boolean
   comments: CommentUpdateManyWithoutAuthorInput
   password: String
@@ -2179,6 +2202,7 @@ input MemberUpdateWithoutFriendsDataInput {
   createdThings: ThingUpdateManyWithoutAuthorInput
   ownedTags: TagUpdateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
+  defaultExpansion: Boolean
   broadcastView: Boolean
   comments: CommentUpdateManyWithoutAuthorInput
   password: String
@@ -2213,6 +2237,7 @@ input MemberUpdateWithoutIgnoredFriendRequestsDataInput {
   createdThings: ThingUpdateManyWithoutAuthorInput
   ownedTags: TagUpdateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
+  defaultExpansion: Boolean
   broadcastView: Boolean
   comments: CommentUpdateManyWithoutAuthorInput
   password: String
@@ -2247,6 +2272,7 @@ input MemberUpdateWithoutNotificationsDataInput {
   createdThings: ThingUpdateManyWithoutAuthorInput
   ownedTags: TagUpdateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
+  defaultExpansion: Boolean
   broadcastView: Boolean
   comments: CommentUpdateManyWithoutAuthorInput
   password: String
@@ -2281,6 +2307,7 @@ input MemberUpdateWithoutOwnedTagsDataInput {
   passes: PassUpdateManyWithoutPasserInput
   createdThings: ThingUpdateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
+  defaultExpansion: Boolean
   broadcastView: Boolean
   comments: CommentUpdateManyWithoutAuthorInput
   password: String
@@ -2315,6 +2342,7 @@ input MemberUpdateWithoutPassesDataInput {
   createdThings: ThingUpdateManyWithoutAuthorInput
   ownedTags: TagUpdateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
+  defaultExpansion: Boolean
   broadcastView: Boolean
   comments: CommentUpdateManyWithoutAuthorInput
   password: String
@@ -2349,6 +2377,7 @@ input MemberUpdateWithoutVotesDataInput {
   createdThings: ThingUpdateManyWithoutAuthorInput
   ownedTags: TagUpdateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
+  defaultExpansion: Boolean
   broadcastView: Boolean
   comments: CommentUpdateManyWithoutAuthorInput
   password: String
@@ -2584,6 +2613,8 @@ input MemberWhereInput {
   defaultPrivacy_not: PrivacySetting
   defaultPrivacy_in: [PrivacySetting!]
   defaultPrivacy_not_in: [PrivacySetting!]
+  defaultExpansion: Boolean
+  defaultExpansion_not: Boolean
   broadcastView: Boolean
   broadcastView_not: Boolean
   comments_every: CommentWhereInput

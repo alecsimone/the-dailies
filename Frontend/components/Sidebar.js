@@ -24,21 +24,21 @@ const Sidebar = props => {
    const { mobileBPWidthRaw } = useContext(ThemeContext);
    // const [isOpen, setIsOpen] = useState(!me?.broadcastView);
 
-   useEffect(() => {
-      // we do this as an effect so the ssr doesn't make it start open
-      if (
-         (me && me.broadcastView) ||
-         (process.browser &&
-            window.outerWidth <= mobileBPWidthRaw &&
-            extraColumnTitle != 'Tag' &&
-            extraColumnTitle != 'Me' &&
-            extraColumnTitle != 'Member')
-      ) {
-         setSidebarIsOpen(false);
-      } else {
-         setSidebarIsOpen(true);
-      }
-   }, [extraColumnTitle, me, mobileBPWidthRaw, setSidebarIsOpen]);
+   // useEffect(() => {
+   //    // we do this as an effect so the ssr doesn't make it start open
+   //    if (
+   //       (me && me.broadcastView) ||
+   //       (process.browser &&
+   //          window.outerWidth <= mobileBPWidthRaw &&
+   //          extraColumnTitle != 'Tag' &&
+   //          extraColumnTitle != 'Me' &&
+   //          extraColumnTitle != 'Member')
+   //    ) {
+   //       setSidebarIsOpen(false);
+   //    } else {
+   //       setSidebarIsOpen(true);
+   //    }
+   // }, [extraColumnTitle, me, mobileBPWidthRaw, setSidebarIsOpen]);
 
    const clickCloseListener = e => {
       // This only applies to mobile, because the sidebar covers everything

@@ -134,8 +134,7 @@ const StyledProfileSidebar = styled.div`
    }
 `;
 
-const ProfileSidebar = props => {
-   const { member, canEdit } = props;
+const ProfileSidebar = ({ member, canEdit }) => {
    const { me } = useContext(MemberContext);
 
    const isMe = me && me.id === member.id;
