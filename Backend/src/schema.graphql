@@ -34,9 +34,9 @@ type Mutation {
       tags: String
       privacy: String
   ): Thing
-  addContentPiece(content: String, id: ID!, type: String!): Stuff
+  addContentPiece(content: String, summary: String, id: ID!, type: String!): Stuff
   deleteContentPiece(contentPieceID: ID!, id: ID!, type: String!): Stuff
-  editContentPiece(contentPieceID: ID!, content: String!, id: ID!, type: String!): Stuff
+  editContentPiece(contentPieceID: ID!, content: String!, summary: String, id: ID!, type: String!): Stuff
   reorderContent(id: ID!, type: String!, oldPosition: Int!, newPosition: Int!): Stuff
   setThingPrivacy(privacySetting: PrivacySetting!, thingID: ID!): Thing
   addTaxToThing(tax: String!, thingID: ID!, personal: Boolean): Thing

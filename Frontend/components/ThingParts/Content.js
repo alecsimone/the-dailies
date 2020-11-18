@@ -38,6 +38,31 @@ const Content = ({ context, canEdit, linkedPiece }) => {
    const [reorderContent] = useMutation(REORDER_CONTENT_MUTATION);
    const [reordering, setReordering] = useState(false);
 
+   // We need to make an object whose properties are the ids of all the content pieces on this thing, each of which starts out false
+   const expandedContentObject = {};
+   content.forEach(contentPiece => {
+      expandedContentObject[contentPiece.id] = false;
+   });
+   const [contentExpansionObject, setContentExpansionObject] = useState(
+      expandedContentObject
+   );
+
+   // Then we need a function to switch an individual value in that object
+   const handleContentExpansion = (pieceID, state) => {
+      setContentExpansionObject(prevState => ({
+         ...prevState,
+         [pieceID]: state
+      }));
+   };
+
+   // And a function to set all values in that object to something
+   const setAllExpansion = state => {
+      const keys = Object.keys(contentExpansionObject);
+      const newContentExpansionObject = {};
+      keys.forEach(key => (newContentExpansionObject[key] = state));
+      setContentExpansionObject(newContentExpansionObject);
+   };
+
    // This state holds the input for the add new content input at the bottom of the content section
    const [newContentPiece, setNewContentPiece] = useState('');
 
@@ -181,7 +206,7 @@ const Content = ({ context, canEdit, linkedPiece }) => {
       });
    };
 
-   const editPiece = async (contentPieceID, newContent) => {
+   const editPiece = async (contentPieceID, newContent, newSummary) => {
       const indexOfEditedContentPiece = content.findIndex(
          contentPiece => contentPiece.id === contentPieceID
       );
@@ -191,6 +216,7 @@ const Content = ({ context, canEdit, linkedPiece }) => {
          variables: {
             contentPieceID,
             content: newContent,
+            summary: newSummary,
             id,
             type
          },
@@ -199,10 +225,13 @@ const Content = ({ context, canEdit, linkedPiece }) => {
             editContentPiece: {
                __typename: type,
                id,
-               content: newContent
+               content: newContent,
+               summary: newSummary
             }
          }
       });
+
+      handleContentExpansion(contentPieceID, true);
    };
 
    if ((content == null || content.length === 0) && !canEdit) return null;
@@ -241,6 +270,9 @@ const Content = ({ context, canEdit, linkedPiece }) => {
                canEdit={canEdit}
                rawContentString={contentPiece.content}
                comments={contentPiece.comments}
+               summary={contentPiece.summary}
+               expanded={contentExpansionObject[contentPiece.id]}
+               setExpanded={handleContentExpansion}
                deleteContentPiece={deletePiece}
                editContentPiece={editPiece}
                setReordering={setReordering}
@@ -304,28 +336,90 @@ const Content = ({ context, canEdit, linkedPiece }) => {
       );
    }
 
+   const contentWithSummaries = content.filter(
+      contentObject =>
+         contentObject.summary != null && contentObject.summary !== ''
+   );
+   let contentExpansionToggle;
+   if (contentWithSummaries.length > 0) {
+      let universalExpansion = 'unset';
+      const contentExpansionObjectKeys = Object.keys(contentExpansionObject);
+      contentExpansionObjectKeys.forEach(key => {
+         const [thisPiece] = content.filter(piece => piece.id === key);
+         if (thisPiece.summary != null && thisPiece.summary !== '') {
+            if (universalExpansion === 'unset') {
+               universalExpansion = contentExpansionObject[key]
+                  ? 'expanded'
+                  : 'collapsed';
+            } else {
+               if (
+                  universalExpansion === 'expanded' &&
+                  contentExpansionObject[key] === false
+               ) {
+                  universalExpansion = false;
+               }
+               if (
+                  universalExpansion === 'collapsed' &&
+                  contentExpansionObject[key] === true
+               ) {
+                  universalExpansion = false;
+               }
+            }
+         }
+      });
+      contentExpansionToggle = (
+         <div className="contentExpansionToggleWrapper">
+            <div className="contentExpansionToggle">
+               <div
+                  className={`toggleOption${
+                     universalExpansion === 'collapsed'
+                        ? ' selected'
+                        : ' unselected'
+                  }`}
+                  onClick={() => setAllExpansion(false)}
+               >
+                  Collapsed
+               </div>
+               <div
+                  className={`toggleOption${
+                     universalExpansion === 'expanded'
+                        ? ' selected'
+                        : ' unselected'
+                  }`}
+                  onClick={() => setAllExpansion(true)}
+               >
+                  Expanded
+               </div>
+            </div>
+         </div>
+      );
+   }
+
    return (
       <StyledContent className="content">
-         {contentElements}
-         {canEdit && (
-            <RichTextArea
-               text={newContentPiece}
-               setText={setNewContentPiece}
-               postText={sendNewContentPiece}
-               placeholder="Add content"
-               buttonText="add"
-               id={`${id}-content`}
-            />
-         )}
-         {canEdit && (
-            <button
-               type="button"
-               className="reorder"
-               onClick={() => setReordering(!reordering)}
-            >
-               {reordering ? 'Lock Content' : 'Reorder Content'}
-            </button>
-         )}
+         {contentExpansionToggle}
+         <div className="contentSectionWrapper">
+            {contentElements}
+            {canEdit && (
+               <RichTextArea
+                  text={newContentPiece}
+                  setText={setNewContentPiece}
+                  postText={sendNewContentPiece}
+                  placeholder="Add content"
+                  buttonText="add"
+                  id={`${id}-content`}
+               />
+            )}
+            {canEdit && (
+               <button
+                  type="button"
+                  className="reorder"
+                  onClick={() => setReordering(!reordering)}
+               >
+                  {reordering ? 'Lock Content' : 'Reorder Content'}
+               </button>
+            )}
+         </div>
       </StyledContent>
    );
 };

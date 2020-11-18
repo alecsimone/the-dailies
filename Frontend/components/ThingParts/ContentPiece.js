@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { ThemeContext } from 'styled-components';
 import RichText from '../RichText';
 import RichTextArea from '../RichTextArea';
+import ContentSummary from './ContentSummary';
 import EditThis from '../Icons/EditThis';
 import CommentIcon from '../Icons/CommentIcon';
 import TrashIcon from '../Icons/Trash';
@@ -14,11 +15,15 @@ import { ADD_COMMENT_MUTATION } from './Comments';
 import { SINGLE_THING_QUERY } from '../../pages/thing';
 import { MemberContext } from '../Account/MemberProvider';
 import ReorderIcon from '../Icons/Reorder';
+import ArrowIcon from '../Icons/Arrow';
 
 const ContentPiece = ({
    id,
    thingID,
    rawContentString,
+   summary,
+   expanded,
+   setExpanded,
    comments,
    deleteContentPiece,
    editContentPiece,
@@ -32,6 +37,7 @@ const ContentPiece = ({
 
    const [editable, setEditable] = useState(false);
    const [editedContent, setEditedContent] = useState(rawContentString);
+   const [editedSummary, setEditedSummary] = useState(summary);
    const [commentText, setCommentText] = useState('');
 
    const [touchStart, setTouchStart] = useState(0);
@@ -46,7 +52,7 @@ const ContentPiece = ({
    );
 
    const postContent = () => {
-      editContentPiece(id, editedContent);
+      editContentPiece(id, editedContent, editedSummary);
       setEditable(false);
    };
 
@@ -111,18 +117,63 @@ const ContentPiece = ({
 
    let contentElement;
    if (!editable) {
-      contentElement = <RichText text={rawContentString} key={id} />;
+      contentElement = (
+         <div>
+            {(summary == null || summary === '' || expanded) && (
+               <RichText text={rawContentString} key={id} />
+            )}
+            {(summary != null || summary !== '' || canEdit) && (
+               <div
+                  className={`contentSummaryBox${
+                     expanded ? ' expanded' : ' collapsed'
+                  }`}
+               >
+                  <ContentSummary
+                     key={id}
+                     summary={editedSummary}
+                     setSummary={setEditedSummary}
+                     postText={postContent}
+                     setEditable={setEditable}
+                     id={id}
+                     thingID={thingID}
+                     editable={editable}
+                  />
+               </div>
+            )}
+         </div>
+      );
    } else {
       contentElement = (
-         <RichTextArea
-            text={editedContent}
-            setText={setEditedContent}
-            postText={postContent}
-            setEditable={setEditable}
-            placeholder="Add content"
-            buttonText="add"
-            id={id}
-         />
+         <div>
+            <RichTextArea
+               text={editedContent}
+               setText={setEditedContent}
+               postText={postContent}
+               setEditable={setEditable}
+               placeholder="Add content"
+               buttonText={
+                  rawContentString == null || rawContentString === ''
+                     ? 'add'
+                     : 'edit'
+               }
+               id={id}
+               key={id}
+            />
+            {(summary != null || summary !== '' || canEdit) && (
+               <div className="contentSummaryBox">
+                  <ContentSummary
+                     key={id}
+                     summary={editedSummary}
+                     setSummary={setEditedSummary}
+                     postText={postContent}
+                     setEditable={setEditable}
+                     id={id}
+                     thingID={thingID}
+                     editable={editable}
+                  />
+               </div>
+            )}
+         </div>
       );
    }
 
@@ -223,6 +274,8 @@ const ContentPiece = ({
                   if (e.target.closest('.thingCard') != null) return;
                   // or any of the buttons
                   if (e.target.closest('.buttons') != null) return;
+                  // or the expand/collapse arrow
+                  if (e.target.closest('.arrow') != null) return;
 
                   const selection = window.getSelection();
                   if (selection.type === 'Caret' && !editable) {
@@ -231,6 +284,12 @@ const ContentPiece = ({
                }}
             >
                {contentArea}
+               {!editable && summary !== null && summary != '' && (
+                  <ArrowIcon
+                     pointing={expanded ? 'up' : 'down'}
+                     onClick={() => setExpanded(id, !expanded)}
+                  />
+               )}
             </div>
             <div className="buttons buttonsContainer">
                <div
@@ -315,6 +374,12 @@ ContentPiece.propTypes = {
 
 export default React.memo(ContentPiece, (prev, next) => {
    if (prev.rawContentString !== next.rawContentString) {
+      return false;
+   }
+   if (prev.expanded !== next.expanded) {
+      return false;
+   }
+   if (prev.summary !== next.summary) {
       return false;
    }
    return true;

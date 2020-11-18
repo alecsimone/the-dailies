@@ -4,10 +4,11 @@ import { commentFields } from './CardInterfaces';
 const ADD_CONTENTPIECE_MUTATION = gql`
    mutation ADD_CONTENTPIECE_MUTATION(
       $content: String!
+      $summary: String
       $id: ID!
       $type: String!
    ) {
-      addContentPiece(content: $content, id: $id, type: $type) {
+      addContentPiece(content: $content, summary: $summary, id: $id, type: $type) {
          ... on Tag {
             __typename
             id
@@ -36,6 +37,7 @@ const ADD_CONTENTPIECE_MUTATION = gql`
                comments {
                   ${commentFields}
                }
+               summary
             }
          }
       }
@@ -90,12 +92,14 @@ const EDIT_CONTENTPIECE_MUTATION = gql`
    mutation EDIT_CONTENTPIECE_MUTATION(
       $contentPieceID: ID!
       $content: String!
+      $summary: String
       $id: ID!
       $type: String!
    ) {
       editContentPiece(
          contentPieceID: $contentPieceID
          content: $content
+         summary: $summary
          id: $id
          type: $type
       ) {
@@ -124,6 +128,7 @@ const EDIT_CONTENTPIECE_MUTATION = gql`
                __typename
                id
                content
+               summary
             }
          }
       }

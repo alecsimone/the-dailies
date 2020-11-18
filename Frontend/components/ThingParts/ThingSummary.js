@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { useState } from 'react';
 import { useMutation } from '@apollo/react-hooks';
 import { setAlpha } from '../../styles/functions';
+import RichText from '../RichText';
 import RichTextArea from '../RichTextArea';
 import EditThis from '../Icons/EditThis';
 import X from '../Icons/X';
@@ -20,19 +21,30 @@ const EDIT_SUMMARY_MUTATION = gql`
       }
    }
 `;
+export { EDIT_SUMMARY_MUTATION };
 
 const StyledSummary = styled.section`
    position: relative;
-   background: ${props => props.theme.midBlack};
-   padding: 2rem calc(${props => props.theme.bigText} + 3.5rem) 2rem 2rem; /* the right value is bigText for the width of the editThis icon, then 1rem for it's right positioning, and 1.5rem for the margin between the box and it */
+   background: ${props => props.theme.deepBlack};
+   margin-bottom: 3rem;
+   padding: 1rem calc(${props => props.theme.bigText} + 2.5rem) 1rem 1rem; /* the right value is bigText for the width of the editThis icon, then 1rem for it's right positioning, and 1.5rem for the margin between the box and it */
+   ${props => props.theme.mobileBreakpoint} {
+      margin-bottom: 0;
+      padding: 2rem calc(${props => props.theme.bigText} + 3.5rem);
+   }
    border: 1px solid ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
-   span.summary {
+   .summaryElement {
+      max-width: 1200px;
+      margin: auto;
       font-weight: bold;
-      color: white;
+      text-align: center;
    }
    form.richTextArea {
       width: 100%;
-      max-width: 900px;
+      ${props => props.theme.mobileBreakpoint} {
+         max-width: 900px;
+         margin: auto;
+      }
       textarea {
          width: 100%;
       }
@@ -65,8 +77,12 @@ const StyledSummary = styled.section`
    }
    .editButtonContainer {
       position: absolute;
-      right: 2rem;
       top: 1.25rem;
+      right: 1rem;
+      ${props => props.theme.mobileBreakpoint} {
+         top: 2.25rem;
+         right: 2rem;
+      }
       width: ${props => props.theme.bigText};
       svg {
          width: 100%;
@@ -142,14 +158,14 @@ const ThingSummary = ({ summary: inheritedSummary, thingID, canEdit }) => {
             postText={updateSummary}
             setEditable={setEditing}
             placeholder="Add summary"
-            buttonText="edit"
+            buttonText={summary == null || summary == '' ? 'add' : 'edit'}
             id={thingID}
          />
       );
    } else {
       summaryElement = (
          <div className="summaryElement">
-            TL;DR: <span className="summary">{inheritedSummary}</span>
+            <RichText text={inheritedSummary} />
          </div>
       );
    }

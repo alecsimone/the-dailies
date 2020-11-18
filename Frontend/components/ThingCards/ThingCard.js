@@ -138,6 +138,7 @@ const ThingCard = ({ data }) => {
       contentOrder,
       partOfTags: tags,
       votes,
+      summary,
       score,
       createdAt
    } = data;
@@ -160,6 +161,14 @@ const ThingCard = ({ data }) => {
       }
    } else {
       firstContentPiece = content[0];
+   }
+
+   let contentElement;
+   if (summary != null && summary !== '') {
+      console.log(summary);
+      contentElement = <TruncCont cont={summary} limit={280} />;
+   } else {
+      contentElement = <TruncCont cont={firstContentPiece} limit={280} />;
    }
 
    return (
@@ -196,7 +205,7 @@ const ThingCard = ({ data }) => {
                </div>
                <div className="meta-right">{privacy}</div>
             </div>
-            <TruncCont cont={firstContentPiece} limit={280} />
+            {contentElement}
             {tags.length > 0 && <Taxes taxes={tags} personal={false} />}
             <VoteBar votes={votes} thingID={id} />
          </StyledThingCard>

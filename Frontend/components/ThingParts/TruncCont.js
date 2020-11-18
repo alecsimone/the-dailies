@@ -8,7 +8,9 @@ const TruncCont = props => {
       return <div />;
    }
 
-   let cont = contObj.content;
+   let cont = contObj.content || contObj; // If contObj.content is undefined, let's assume they gave us a string
+
+   if (typeof cont !== 'string') return <div />; // If they didn't give us a string in either of those two ways, gtfo
 
    if (cont.length > limit) {
       cont = `${cont.substring(0, limit).trim()}...`;

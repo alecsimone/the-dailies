@@ -1,5 +1,5 @@
 import styled, { ThemeContext } from 'styled-components';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { ThingContext } from '../../pages/thing';
 import ThingSummary from './ThingSummary';

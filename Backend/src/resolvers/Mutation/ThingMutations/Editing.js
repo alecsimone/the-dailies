@@ -139,7 +139,7 @@ async function newBlankThing(parent, args, ctx, info) {
 }
 exports.newBlankThing = newBlankThing;
 
-async function addContentPiece(parent, { content, id, type }, ctx, info) {
+async function addContentPiece(parent, { content, summary, id, type }, ctx, info) {
    loggedInGate(ctx);
    fullMemberGate(ctx.req.member);
 
@@ -155,7 +155,8 @@ async function addContentPiece(parent, { content, id, type }, ctx, info) {
    const dataObj = {
       content: {
          create: {
-            content
+            content,
+            summary
          }
       }
    };
@@ -201,7 +202,7 @@ exports.deleteContentPiece = deleteContentPiece;
 
 async function editContentPiece(
    parent,
-   { contentPieceID, content, id, type },
+   { contentPieceID, content, summary, id, type },
    ctx,
    info
 ) {
@@ -215,7 +216,8 @@ async function editContentPiece(
                id: contentPieceID
             },
             data: {
-               content
+               content,
+               summary
             }
          }
       }

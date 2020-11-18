@@ -5,14 +5,62 @@ const StyledContent = styled.section`
    margin: 0 0 3rem;
    padding: 1rem;
    padding-top: 0;
-   background: ${props => props.theme.midBlack};
-   border-top: 1px solid ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
+
    ${props => props.theme.mobileBreakpoint} {
       margin: 5rem 0;
       padding: 1rem 2rem;
       padding-top: 0;
-      border: 1px solid ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
-      border-radius: 0.5rem;
+   }
+   .contentSectionWrapper {
+      background: ${props => props.theme.midBlack};
+      border-top: 1px solid
+         ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
+      ${props => props.theme.mobileBreakpoint} {
+         border: 1px solid
+            ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
+         border-radius: 0.5rem;
+      }
+   }
+   .contentExpansionToggleWrapper {
+      text-align: center;
+      margin: 3rem auto;
+      .contentExpansionToggle {
+         display: inline-flex;
+         cursor: pointer;
+         margin: auto;
+         justify-content: center;
+         border: 1px solid
+            ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
+         &:hover {
+            .toggleOption {
+               &.selected {
+                  background: ${props => setAlpha(props.theme.midBlack, 0.4)};
+               }
+               &.unselected {
+                  background: ;
+               }
+            }
+         }
+         .toggleOption {
+            padding: 1rem;
+            &:first-child {
+               border-right: 1px solid
+                  ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
+            }
+            &.selected {
+               background: ${props => props.theme.midBlack};
+               &:hover {
+                  background: ${props => props.theme.midBlack};
+                  cursor: auto;
+               }
+            }
+            &.unselected {
+               &:hover {
+                  background: ${props => props.theme.midBlack};
+               }
+            }
+         }
+      }
    }
    p,
    .graph {
@@ -53,11 +101,11 @@ const StyledContent = styled.section`
    }
    .contentBlock {
       position: relative;
+      padding: 0;
+      min-height: 15rem;
       margin: 0.6rem 0;
       border-bottom: 1px solid
          ${props => setAlpha(props.theme.lowContrastGrey, 0.2)};
-      padding: 0;
-      min-height: 15rem;
       ${props => props.theme.mobileBreakpoint} {
          padding: 1rem;
       }
@@ -203,6 +251,29 @@ const StyledContent = styled.section`
                .quoteTweetContainer {
                   margin-top: 0;
                   margin-bottom: 0;
+               }
+            }
+            .contentSummaryBox {
+               &.expanded {
+                  margin-top: 4rem;
+               }
+               span.summaryText {
+                  color: white;
+                  font-weight: bold;
+               }
+            }
+            svg.arrow {
+               width: ${props => props.theme.bigHead};
+               cursor: pointer;
+               margin: auto;
+               display: block;
+               rect {
+                  fill: ${props => setLightness(props.theme.mainText, 70)};
+               }
+               &:hover {
+                  rect {
+                     fill: ${props => props.theme.mainText};
+                  }
                }
             }
          }

@@ -212,6 +212,8 @@ const RichTextArea = ({
    setEditable,
    placeholder,
    buttonText,
+   hideStyleGuideLink,
+   hideButton,
    id
 }) => {
    const originalText = useRef(text);
@@ -552,20 +554,24 @@ const RichTextArea = ({
             </div>
          </StyledWrapper>
          <div className="postButtonWrapper">
-            <div className="styleGuideLink">
-               See our{' '}
-               <a
-                  href={`${home}/styling`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-               >
-                  Styling Cheat Sheet
-               </a>{' '}
-               for all the things you can do in that box.
-            </div>
-            <button type="submit" className="post">
-               {buttonText}
-            </button>
+            {hideStyleGuideLink !== true && (
+               <div className="styleGuideLink">
+                  See our{' '}
+                  <a
+                     href={`${home}/styling`}
+                     target="_blank"
+                     rel="noopener noreferrer"
+                  >
+                     Styling Cheat Sheet
+                  </a>{' '}
+                  for all the things you can do in that box.
+               </div>
+            )}
+            {hideButton !== true && (
+               <button type="submit" className="post">
+                  {buttonText}
+               </button>
+            )}
          </div>
       </form>
    );
