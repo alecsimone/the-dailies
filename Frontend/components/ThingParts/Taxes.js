@@ -75,7 +75,7 @@ Taxes.propTypes = {
 };
 
 export default React.memo(Taxes, (prev, next) => {
-   if (prev.taxes.length !== next.taxes.length) {
+   if (prev.taxes && next.taxes && prev.taxes.length !== next.taxes.length) {
       return false;
    }
    return true;

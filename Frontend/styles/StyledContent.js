@@ -251,6 +251,10 @@ const StyledContent = styled.section`
             .smallThingCard {
                margin: 2rem 0;
             }
+            .regularThingCard {
+               border: 1px solid
+                  ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
+            }
             .tweet.threadStarter {
                margin-bottom: 0;
                .quoteTweetContainer {
@@ -280,6 +284,9 @@ const StyledContent = styled.section`
                      fill: ${props => props.theme.mainText};
                   }
                }
+            }
+            .contentSlider svg.arrow {
+               margin: 0; /* need this here because I'm not sure how to make the svg.arrow on ThingCards more specific from within them */
             }
          }
       }

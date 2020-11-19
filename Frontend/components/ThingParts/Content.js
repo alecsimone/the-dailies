@@ -11,7 +11,8 @@ import {
    DELETE_CONTENTPIECE_MUTATION,
    EDIT_CONTENTPIECE_MUTATION,
    REORDER_CONTENT_MUTATION,
-   stickifier
+   stickifier,
+   orderContent
 } from '../../lib/ContentHandling';
 import { SINGLE_THING_QUERY } from '../../pages/thing';
 import { SINGLE_TAX_QUERY } from '../../pages/tag';
@@ -247,26 +248,7 @@ const Content = ({ context, canEdit, linkedPiece }) => {
    let contentElements;
    let orderedContent;
    if (content) {
-      // If we have a contentOrder array, we're going to order the content to match it
-      if (contentOrder && contentOrder.length > 0) {
-         orderedContent = [];
-         contentOrder.forEach(id => {
-            const [piece] = content.filter(
-               contentPiece => contentPiece.id === id
-            );
-            if (piece != null) {
-               orderedContent.push(piece);
-            }
-         });
-         content.forEach(contentPiece => {
-            if (contentOrder.includes(contentPiece.id)) {
-               return;
-            }
-            orderedContent.push(contentPiece);
-         });
-      } else {
-         orderedContent = content;
-      }
+      orderedContent = orderContent(content, contentOrder);
       contentElements = orderedContent.map(contentPiece => (
          <div
             key={contentPiece.id}

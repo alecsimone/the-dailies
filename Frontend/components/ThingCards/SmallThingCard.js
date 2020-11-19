@@ -1,6 +1,6 @@
 import styled, { ThemeContext } from 'styled-components';
 import Link from 'next/link';
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { setAlpha, setLightness, setSaturation } from '../../styles/functions';
 import { isVideo } from '../../lib/UrlHandling';
@@ -8,12 +8,15 @@ import { disabledCodewords } from '../../lib/ThingHandling';
 import { stringToObject } from '../../lib/TextHandling';
 import AuthorLink from '../ThingParts/AuthorLink';
 import TimeAgo from '../TimeAgo';
+import ThingCard from './ThingCard';
+import ArrowIcon from '../Icons/Arrow';
 
 const StyledSmallThingCard = styled.article`
    margin: 0;
    width: 100%;
    max-width: 25em;
    display: inline-block;
+   position: relative;
    padding: 2rem 1rem;
    border: 1px solid ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
    box-shadow: 0 2px 2px hsla(0, 0%, 0%, 0.1);
@@ -81,9 +84,20 @@ const StyledSmallThingCard = styled.article`
          }
       }
    }
+   #arrowWrapper {
+      svg.arrow {
+         width: ${props => props.theme.bigText};
+         position: absolute;
+         right: 1rem;
+         bottom: 1rem;
+      }
+   }
 `;
 
 const SmallThingCard = ({ data, noPic, fullQuery }) => {
+   const { lowContrastGrey } = useContext(ThemeContext);
+   const [expanded, setExpanded] = useState(false);
+
    if (!data) {
       return (
          <StyledSmallThingCard className="smallThingCard thingCard">
@@ -93,7 +107,9 @@ const SmallThingCard = ({ data, noPic, fullQuery }) => {
    }
    const { id, title, featuredImage, color, createdAt, author, privacy } = data;
 
-   const { lowContrastGrey } = useContext(ThemeContext);
+   if (expanded) {
+      return <ThingCard data={data} setExpanded={setExpanded} />;
+   }
 
    let highlightColor = lowContrastGrey;
    if (color != null) {
@@ -144,6 +160,15 @@ const SmallThingCard = ({ data, noPic, fullQuery }) => {
                      : `for ${privacy}${privacy === 'Friends' ? ' only' : ''}`}
                   .
                </div>
+            </div>
+            <div id="arrowWrapper">
+               <ArrowIcon
+                  pointing="down"
+                  onClick={e => {
+                     e.stopPropagation();
+                     setExpanded(true);
+                  }}
+               />
             </div>
          </StyledSmallThingCard>
       </Link>

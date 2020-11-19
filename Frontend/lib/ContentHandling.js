@@ -285,3 +285,24 @@ const stickifier = stickingData => {
    });
 };
 export { stickifier };
+
+const orderContent = (content, contentOrder) => {
+   if (contentOrder == null || contentOrder.length === 0) return content; // If we don't get a contentOrder array, we just give back the content
+
+   const orderedContent = [];
+   contentOrder.forEach(id => {
+      const [piece] = content.filter(contentPiece => contentPiece.id === id);
+      if (piece != null) {
+         orderedContent.push(piece);
+      }
+   });
+   content.forEach(contentPiece => {
+      if (contentOrder.includes(contentPiece.id)) {
+         return;
+      }
+      orderedContent.push(contentPiece);
+   });
+
+   return orderedContent;
+};
+export { orderContent };

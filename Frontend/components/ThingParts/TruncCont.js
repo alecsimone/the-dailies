@@ -1,8 +1,24 @@
+import styled from 'styled-components';
+import { useState } from 'react';
 import PropTypes from 'prop-types';
 import RichText from '../RichText';
+import ArrowIcon from '../Icons/Arrow';
 
-const TruncCont = props => {
-   const { cont: contObj, limit } = props;
+const StyledTruncCont = styled.div`
+   white-space: pre-wrap;
+   svg.arrow {
+      width: ${props => props.theme.smallHead};
+      display: block;
+      margin: auto;
+      opacity: 0.7;
+      &:hover {
+         opacity: 1;
+      }
+   }
+`;
+
+const TruncCont = ({ cont: contObj, limit }) => {
+   const [expanded, setExpanded] = useState(false);
 
    if (contObj == null) {
       return <div />;
@@ -12,13 +28,19 @@ const TruncCont = props => {
 
    if (typeof cont !== 'string') return <div />; // If they didn't give us a string in either of those two ways, gtfo
 
-   if (cont.length > limit) {
+   if (cont.length > limit && !expanded) {
       cont = `${cont.substring(0, limit).trim()}...`;
    }
    return (
-      <p className="truncCont">
+      <StyledTruncCont className="truncCont">
          <RichText text={cont} key={cont} />
-      </p>
+         {cont.length > limit && (
+            <ArrowIcon
+               pointing={expanded ? 'up' : 'down'}
+               onClick={() => setExpanded(!expanded)}
+            />
+         )}
+      </StyledTruncCont>
    );
 };
 TruncCont.propTypes = {

@@ -85,6 +85,8 @@ const StyledTweets = styled.section`
             height: calc(var(--vh, 1vh) * 100 - 14rem + 2px);
             ${props => props.theme.mobileBreakpoint} {
                min-height: initial;
+               align-items: baseline;
+               height: auto;
             }
          }
          .tweeterColumn {

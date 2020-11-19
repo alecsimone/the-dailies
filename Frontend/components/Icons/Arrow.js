@@ -2,9 +2,10 @@ import { useContext } from 'react';
 import { ThemeContext } from 'styled-components';
 
 const ArrowIcon = ({ onClick, className, pointing }) => {
-   const { lowContrastGrey } = useContext(ThemeContext);
+   const { lowContrastGrey, mainText } = useContext(ThemeContext);
    const style = {
-      transition: 'all .3s'
+      transition: 'all .3s',
+      cursor: 'pointer'
    };
    switch (pointing.toLowerCase()) {
       case 'down':
@@ -36,7 +37,7 @@ const ArrowIcon = ({ onClick, className, pointing }) => {
             width="18"
             height="76.37"
             transform="translate(-51.54 87.08) rotate(-45)"
-            fill={lowContrastGrey}
+            fill={mainText}
          />
          <rect
             x="111.63"
@@ -44,7 +45,7 @@ const ArrowIcon = ({ onClick, className, pointing }) => {
             width="18"
             height="76.37"
             transform="translate(131.15 265.82) rotate(-135)"
-            fill={lowContrastGrey}
+            fill={mainText}
          />
       </svg>
    );

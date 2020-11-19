@@ -205,7 +205,6 @@ const ContentPiece = ({
 
    let contentArea;
    if (isSmallScreen || !process.browser) {
-      console.log(showingComments);
       // We need the "|| !process.browser" to keep the server side render from messing everything up on the client side render. Please don't ask me why.
       // If we're on a small screen, we need to put the comments and the content together into an element that can slide from side to side, hiding whatever is overflowing its container
       contentArea = (

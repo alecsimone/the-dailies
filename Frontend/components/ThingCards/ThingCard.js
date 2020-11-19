@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import styled, { ThemeContext } from 'styled-components';
 import Link from 'next/link';
@@ -6,11 +6,15 @@ import FeaturedImage from '../ThingParts/FeaturedImage';
 import TruncCont from '../ThingParts/TruncCont';
 import Taxes from '../ThingParts/Taxes';
 import { setAlpha, setLightness } from '../../styles/functions';
+import { orderContent } from '../../lib/ContentHandling';
 import AuthorLink from '../ThingParts/AuthorLink';
 import VoteBar from '../ThingParts/VoteBar';
 import TimeAgo from '../TimeAgo';
+import ArrowIcon from '../Icons/Arrow';
 
 const StyledThingCard = styled.div`
+   position: relative;
+   display: block;
    width: 100%;
    max-width: 1200px;
    padding: 0 1.5rem 1.5rem;
@@ -108,6 +112,27 @@ const StyledThingCard = styled.div`
          }
       }
    }
+   .cardOverflowWrapper {
+      width: 100%;
+      overflow: hidden;
+      .cardPiecesContainer {
+         width: 300%;
+         display: flex;
+         .previousContentWrapper, .currentContentWrapper, .nextContentWrapper {
+            display: inline-block;
+            width: 33.3%;
+         }
+         .currentContentWrapper {
+            margin: 0;
+         }
+         .givesSize {
+            height: auto;
+         }
+         .doesNotGiveSize {
+            height: 0;
+         }
+      }
+   }
    .truncCont {
       margin: 3rem 0 1.5rem;
       padding: .8rem 1.25rem;
@@ -115,6 +140,24 @@ const StyledThingCard = styled.div`
       /* opacity: .9; */
       background: ${props => props.theme.midBlack};
       border: 1px solid ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
+   }
+   .contentSlider {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      svg.arrow {
+         width: ${props => props.theme.bigText};
+         margin: 0;
+         cursor: pointer;
+         rect {
+            fill: ${props => setLightness(props.theme.mainText, 70)};
+         }
+         &:hover {
+            rect {
+               fill: ${props => props.theme.mainText};
+            }
+         }
+      }
    }
    .tags {
       margin-top: 2rem;
@@ -127,7 +170,7 @@ const StyledThingCard = styled.div`
 
 const ThingCardContext = React.createContext();
 
-const ThingCard = ({ data }) => {
+const ThingCard = ({ data, setExpanded }) => {
    const {
       id,
       featuredImage,
@@ -143,31 +186,147 @@ const ThingCard = ({ data }) => {
       createdAt
    } = data;
 
-   const { lowContrastGrey } = useContext(ThemeContext);
+   const [contentSliderPosition, setContentSliderPosition] = useState(0);
+   const [touchStart, setTouchStart] = useState(0);
+   const [touchEnd, setTouchEnd] = useState(0);
+
+   const { lowContrastGrey, midScreenBPWidthRaw } = useContext(ThemeContext);
+
+   const isSmallScreen =
+      process.browser && window.outerWidth <= midScreenBPWidthRaw;
 
    let highlightColor = lowContrastGrey;
    if (color != null) {
       highlightColor = color;
    }
 
-   let firstContentPiece = null;
-   if (contentOrder.length > 0) {
-      const firstContentPieceID = contentOrder[0];
-      const [firstPieceInOrder] = content.filter(
-         contentPiece => contentPiece.id === firstContentPieceID
-      );
-      if (firstPieceInOrder != null) {
-         firstContentPiece = firstPieceInOrder;
-      }
-   } else {
-      firstContentPiece = content[0];
+   const contentArray = orderContent(content, contentOrder);
+   if (summary != null && summary !== '' && !contentArray.includes(summary)) {
+      contentArray.unshift(summary);
    }
 
-   let contentElement;
-   if (summary != null && summary !== '') {
-      contentElement = <TruncCont cont={summary} limit={280} />;
+   let translation = touchEnd - touchStart;
+   if (contentSliderPosition === 0 && translation > -25) {
+      translation = 0;
+   }
+   if (contentSliderPosition + 1 === contentArray.length && translation < 25) {
+      translation = 0;
+   }
+
+   let contentArea;
+   if (isSmallScreen || !process.browser) {
+      // We need the "|| !process.browser" to keep the server side render from messing everything up on the client side render. Please don't ask me why.
+      // If we're on a small screen, we need to put the content pieces next to each other in an element that can slide from side to side, hiding whatever is overflowing its container
+      contentArea = (
+         <div
+            className="cardTouchWatcher"
+            key={id}
+            onTouchStart={e => {
+               e.stopPropagation();
+               setTouchStart(e.touches[0].clientX);
+               setTouchEnd(e.touches[0].clientX);
+            }}
+            onTouchMove={e => {
+               e.stopPropagation();
+               setTouchEnd(e.touches[0].clientX);
+            }}
+            onTouchEnd={e => {
+               e.stopPropagation();
+               if (
+                  touchEnd - touchStart < -100 &&
+                  contentSliderPosition + 1 < contentArray.length
+               ) {
+                  setContentSliderPosition(contentSliderPosition + 1);
+               }
+               if (touchEnd - touchStart > 100 && contentSliderPosition > 0) {
+                  setContentSliderPosition(contentSliderPosition - 1);
+               }
+               setTouchStart(0);
+               setTouchEnd(0);
+            }}
+         >
+            <div className="cardOverflowWrapper">
+               <div className="cardPiecesContainer">
+                  {contentSliderPosition > 0 && (
+                     <div
+                        className={`previousContentWrapper${
+                           translation <= 0 ? ' doesNotGiveSize' : ' givesSize'
+                        }`}
+                        style={{
+                           transform: `translateX(calc(${translation}px - ${
+                              contentSliderPosition > 0 ? '100' : '0'
+                           }%))`
+                        }}
+                     >
+                        <TruncCont
+                           cont={contentArray[contentSliderPosition - 1]}
+                           limit={280}
+                        />
+                     </div>
+                  )}
+                  <div
+                     className="currentContentWrapper"
+                     style={{
+                        transform: `translateX(calc(${translation}px - ${
+                           contentSliderPosition > 0 ? '100' : '0'
+                        }%))`
+                     }}
+                  >
+                     <TruncCont
+                        cont={contentArray[contentSliderPosition]}
+                        limit={280}
+                     />
+                  </div>
+                  {contentSliderPosition + 1 < contentArray.length && (
+                     <div
+                        className={`nextContentWrapper${
+                           translation >= 0 ? ' doesNotGiveSize' : ' givesSize'
+                        }`}
+                        style={{
+                           transform: `translateX(calc(${translation}px - ${
+                              contentSliderPosition > 0 ? '100' : '0'
+                           }%))`
+                        }}
+                     >
+                        <TruncCont
+                           cont={contentArray[contentSliderPosition + 1]}
+                           limit={280}
+                        />
+                     </div>
+                  )}
+               </div>
+            </div>
+         </div>
+      );
    } else {
-      contentElement = <TruncCont cont={firstContentPiece} limit={280} />;
+      contentArea = (
+         <TruncCont cont={contentArray[contentSliderPosition]} limit={280} />
+      );
+   }
+
+   let contentSlider;
+   if (contentArray.length > 0) {
+      contentSlider = (
+         <div className="contentSlider">
+            {contentSliderPosition > 0 && (
+               <ArrowIcon
+                  pointing="left"
+                  onClick={() =>
+                     setContentSliderPosition(contentSliderPosition - 1)
+                  }
+               />
+            )}
+            {contentSliderPosition + 1} / {contentArray.length}
+            {contentSliderPosition + 1 < contentArray.length && (
+               <ArrowIcon
+                  pointing="right"
+                  onClick={() =>
+                     setContentSliderPosition(contentSliderPosition + 1)
+                  }
+               />
+            )}
+         </div>
+      );
    }
 
    return (
@@ -204,9 +363,21 @@ const ThingCard = ({ data }) => {
                </div>
                <div className="meta-right">{privacy}</div>
             </div>
-            {contentElement}
+            {contentArea}
+            {contentSlider}
             {tags.length > 0 && <Taxes taxes={tags} personal={false} />}
             <VoteBar votes={votes} thingID={id} />
+            {setExpanded != null && (
+               <div id="arrowWrapper">
+                  <ArrowIcon
+                     pointing="up"
+                     onClick={e => {
+                        e.stopPropagation();
+                        setExpanded(false);
+                     }}
+                  />
+               </div>
+            )}
          </StyledThingCard>
       </ThingCardContext.Provider>
    );
