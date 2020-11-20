@@ -218,6 +218,9 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
    if (contentSliderPosition + 1 === contentArray.length && translation < 25) {
       translation = 0;
    }
+   if (translation > -25 && translation < 25) {
+      translation = 0;
+   }
 
    let contentArea;
    if (isSmallScreen || !process.browser) {
@@ -228,15 +231,18 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
             className="cardTouchWatcher"
             key={id}
             onTouchStart={e => {
+               e.preventDefault();
                e.stopPropagation();
                setTouchStart(e.touches[0].clientX);
                setTouchEnd(e.touches[0].clientX);
             }}
             onTouchMove={e => {
+               e.preventDefault();
                e.stopPropagation();
                setTouchEnd(e.touches[0].clientX);
             }}
             onTouchEnd={e => {
+               e.preventDefault();
                e.stopPropagation();
                if (
                   touchEnd - touchStart < -100 &&
