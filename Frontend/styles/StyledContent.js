@@ -120,14 +120,14 @@ const StyledContent = styled.section`
          .contentAndCommentContainer {
             width: 200%;
             display: flex;
-            .contentWrapper {
-               display: inline-block;
-               width: 100%;
-               margin-right: 4rem;
-            }
+            .contentWrapper,
             .commentsWrapper {
                display: inline-block;
-               width: 100%;
+               width: 50%;
+            }
+            .contentWrapper {
+               margin-right: 4rem;
+               min-width: 50%;
             }
             .givesSize {
                height: auto;
@@ -265,10 +265,6 @@ const StyledContent = styled.section`
             .contentSummaryBox {
                &.expanded {
                   margin-top: 4rem;
-               }
-               span.summaryText {
-                  color: white;
-                  font-weight: bold;
                }
             }
             svg.arrow {

@@ -94,7 +94,7 @@ const StyledSmallThingCard = styled.article`
    }
 `;
 
-const SmallThingCard = ({ data, noPic, fullQuery }) => {
+const SmallThingCard = ({ data, noPic, fullQuery, borderSide }) => {
    const { lowContrastGrey } = useContext(ThemeContext);
    const [expanded, setExpanded] = useState(false);
 
@@ -108,7 +108,13 @@ const SmallThingCard = ({ data, noPic, fullQuery }) => {
    const { id, title, featuredImage, color, createdAt, author, privacy } = data;
 
    if (expanded) {
-      return <ThingCard data={data} setExpanded={setExpanded} />;
+      return (
+         <ThingCard
+            data={data}
+            setExpanded={setExpanded}
+            borderSide={borderSide}
+         />
+      );
    }
 
    let highlightColor = lowContrastGrey;

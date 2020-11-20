@@ -26,7 +26,6 @@ const StyledThingCard = styled.div`
       box-shadow: 0 2px 4px
       ${props => setAlpha(props.theme.midBlack, 0.4)};
    }
-   border-top: 0.5rem solid ${props => props.theme.majorColor};
    ${props => props.theme.mobileBreakpoint} {
       border-radius: 3px;
       padding: 0 2.5rem 1.25rem;
@@ -120,10 +119,10 @@ const StyledThingCard = styled.div`
          display: flex;
          .previousContentWrapper, .currentContentWrapper, .nextContentWrapper {
             display: inline-block;
-            width: 33.3%;
+            width: 34%;
          }
          .currentContentWrapper {
-            margin: 0;
+            margin: 0 1.5rem;
          }
          .givesSize {
             height: auto;
@@ -166,11 +165,18 @@ const StyledThingCard = styled.div`
       width: calc(100% + 3rem);
       margin: 1rem -1.5rem 0;
    }
+   #arrowWrapper {
+      svg.arrow {
+         width: ${props => props.theme.smallHead};
+         display: block;
+         margin: 1rem auto 0;
+      }
+   }
 `;
 
 const ThingCardContext = React.createContext();
 
-const ThingCard = ({ data, setExpanded }) => {
+const ThingCard = ({ data, setExpanded, borderSide }) => {
    const {
       id,
       featuredImage,
@@ -253,9 +259,7 @@ const ThingCard = ({ data, setExpanded }) => {
                            translation <= 0 ? ' doesNotGiveSize' : ' givesSize'
                         }`}
                         style={{
-                           transform: `translateX(calc(${translation}px - ${
-                              contentSliderPosition > 0 ? '100' : '0'
-                           }%))`
+                           transform: `translateX(calc(${translation}px - 100% - 2rem))`
                         }}
                      >
                         <TruncCont
@@ -268,8 +272,12 @@ const ThingCard = ({ data, setExpanded }) => {
                      className="currentContentWrapper"
                      style={{
                         transform: `translateX(calc(${translation}px - ${
-                           contentSliderPosition > 0 ? '100' : '0'
-                        }%))`
+                           contentSliderPosition > 0 ? '1' : '2'
+                        }rem - ${contentSliderPosition > 0 ? '100' : '0'}% - ${
+                           contentSliderPosition + 1 === contentArray.length
+                              ? '1'
+                              : '0'
+                        }rem))`
                      }}
                   >
                      <TruncCont
@@ -333,7 +341,11 @@ const ThingCard = ({ data, setExpanded }) => {
       <ThingCardContext.Provider value={data}>
          <StyledThingCard
             className="regularThingCard thingCard"
-            style={{ borderTop: `0.5rem solid ${highlightColor}` }}
+            style={{
+               [borderSide === 'left'
+                  ? 'borderLeft'
+                  : 'borderTop']: `0.5rem solid ${highlightColor}`
+            }}
          >
             {!featuredImage?.toLowerCase().includes('twitter.com') && (
                <Link href={{ pathname: '/thing', query: { id } }}>

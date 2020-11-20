@@ -49,7 +49,8 @@ const Things = ({
    cardSize,
    noPic,
    scrollingParentSelector,
-   perPage
+   perPage,
+   borderSide
 }) => {
    const {
       mobileBPWidthRaw,
@@ -96,9 +97,18 @@ const Things = ({
 
    const thingCards = truncatedThingList.map(thing => {
       if (cardSize === 'regular') {
-         return <ThingCard data={thing} key={thing.id} />;
+         return (
+            <ThingCard data={thing} key={thing.id} borderSide={borderSide} />
+         );
       }
-      return <SmallThingCard data={thing} key={thing.id} noPic={noPic} />;
+      return (
+         <SmallThingCard
+            data={thing}
+            key={thing.id}
+            noPic={noPic}
+            borderSide={borderSide}
+         />
+      );
    });
    if (displayType === 'grid') {
       return (

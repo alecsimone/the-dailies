@@ -332,6 +332,9 @@ const GlobalStyle = createGlobalStyle`
          &.hidden, &.default {
             transform: translateX(100%);
          }
+         .list .regularThingCard {
+            margin: 0;
+         }
          ${props => props.theme.desktopBreakpoint} {
             position: absolute;
             width: 25%;
@@ -618,6 +621,7 @@ const Page = ({ children, pageProps }) => {
                            <MyThings
                               setShowingSidebar={setThingsSidebarIsOpen}
                               scrollingSelector=".myThingsBar"
+                              borderSide="left"
                            />
                         </div>
                      </section>

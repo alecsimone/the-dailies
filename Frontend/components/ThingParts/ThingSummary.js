@@ -36,7 +36,6 @@ const StyledSummary = styled.section`
    .summaryElement {
       max-width: 1200px;
       margin: auto;
-      font-weight: bold;
       text-align: center;
    }
    form.richTextArea {

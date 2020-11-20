@@ -42,6 +42,9 @@ const StyledHomepage = styled.section`
       p.emptyThings {
          padding: 0 2rem;
       }
+      .list .regularThingCard {
+         margin: 0;
+      }
       ${props => props.theme.desktopBreakpoint} {
          max-height: 100%;
          display: block;
@@ -75,7 +78,7 @@ const Home = props => {
       <StyledHomepage className="homepage">
          <div className="content">{content}</div>
          <div className="sidebar">
-            <MyThings scrollingSelector=".sidebar" />
+            <MyThings scrollingSelector=".sidebar" borderSide="left" />
          </div>
       </StyledHomepage>
    );

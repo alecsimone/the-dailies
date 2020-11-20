@@ -30,9 +30,9 @@ const Content = ({ context, canEdit, linkedPiece }) => {
 
    // Then we'll pull in the member data so we can get default expansion from it
    const { me } = useContext(MemberContext);
-   let { defaultExpansion } = me;
-   if (defaultExpansion == null) {
-      defaultExpansion = false;
+   let defaultExpansion = false;
+   if (me != null) {
+      defaultExpansion = me.defaultExpansion;
    }
 
    // Then we'll set up our mutation hooks
@@ -268,7 +268,11 @@ const Content = ({ context, canEdit, linkedPiece }) => {
                setReordering={setReordering}
                reordering={reordering}
                highlighted={linkedPiece === contentPiece.id}
-               key={contentPiece.id + contentPiece.comments.length} // We're adding the comments length to force this component to re-render when we add or delete a new comment. It doesn't seem to without it.
+               key={`${contentPiece.id}${
+                  contentPiece.comments != null
+                     ? contentPiece.comments.length
+                     : ''
+               }`} // We're adding the comments length to force this component to re-render when we add or delete a new comment. It doesn't seem to without it.
             />
          </div>
       ));

@@ -20,7 +20,7 @@ const MY_THINGS_QUERY = gql`
    }
 `;
 
-const MyThings = ({ setShowingSidebar, scrollingSelector }) => {
+const MyThings = ({ setShowingSidebar, scrollingSelector, borderSide }) => {
    const { me } = useContext(MemberContext);
    const { setContent } = useContext(ModalContext);
 
@@ -70,7 +70,8 @@ const MyThings = ({ setShowingSidebar, scrollingSelector }) => {
 
       return (
          <div
-            onClick={() => {
+            onClick={e => {
+               if (e.target.closest('.contentSlider') != null) return; // If they're using the content slider on an expanded thing card, we don't want to close the sidebar
                if (setShowingSidebar != null) {
                   setShowingSidebar(false);
                }
@@ -83,6 +84,7 @@ const MyThings = ({ setShowingSidebar, scrollingSelector }) => {
                noPic
                scrollingParentSelector={scrollingSelector}
                perPage={sidebarPerPage}
+               borderSide={borderSide}
             />
          </div>
       );
