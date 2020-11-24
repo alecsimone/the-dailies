@@ -126,6 +126,17 @@ const SingleThing = ({ query }) => {
       dataForContext = data.thing;
    }
 
+   let ogDescription = 'A Thing you might find interesting';
+   if (data && data.thing) {
+      if (data.thing.summary != null && data.thing.summary !== '') {
+         ogDescription = data.thing.summary;
+      } else {
+         ogDescription = `A Thing by ${data.thing.author.displayName} with ${
+            data.thing.score
+         } votes`;
+      }
+   }
+
    return (
       <ThingContext.Provider value={dataForContext}>
          <StyledSingleThing className="thingPage">
@@ -138,13 +149,7 @@ const SingleThing = ({ query }) => {
                />
                <meta
                   property="og:description"
-                  content={
-                     data
-                        ? `A Thing by ${data.thing.author.displayName} with ${
-                             data.thing.score
-                          } votes`
-                        : 'A Thing you might find interesting'
-                  }
+                  content={ogDescription}
                   key="ogDescription"
                />
                <meta
