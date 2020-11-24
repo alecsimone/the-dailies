@@ -16,7 +16,7 @@ import {
 } from '../../lib/ContentHandling';
 import { SINGLE_THING_QUERY } from '../../pages/thing';
 import { SINGLE_TAX_QUERY } from '../../pages/tag';
-import { setFullThingToLoading } from './FullThing';
+// import { setFullThingToLoading } from './FullThing';
 import { MemberContext } from '../Account/MemberProvider';
 
 const Content = ({ context, canEdit, linkedPiece }) => {
@@ -141,7 +141,7 @@ const Content = ({ context, canEdit, linkedPiece }) => {
          id: 'temporaryID',
          comments: []
       });
-      setFullThingToLoading(id);
+      // setFullThingToLoading(id);
       await addContentPiece({
          variables: {
             content: newContentPiece,

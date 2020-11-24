@@ -25,6 +25,7 @@ const StyledFullThing = styled.article`
       top: 2rem;
       left: 3%;
       width: 94%;
+      max-width: 1920px;
       padding: 3rem;
       padding-top: 0;
       border-radius: 1rem;
@@ -53,6 +54,9 @@ const StyledFullThing = styled.article`
       img.featured,
       .tweet {
          margin-top: 3rem;
+         max-height: 70vh;
+         max-height: calc(var(--vh, 1vh) * 70);
+         object-fit: contain;
       }
    }
    .tweet {
@@ -90,13 +94,13 @@ const StyledFullThing = styled.article`
    }
 `;
 
-const setFullThingToLoading = id => {
-   if (id === 'new') {
-      const fullThing = document.querySelector('.fullThing');
-      fullThing.classList.add('loading');
-   }
-};
-export { setFullThingToLoading };
+// const setFullThingToLoading = id => {
+//    if (id === 'new') {
+//       const fullThing = document.querySelector('.fullThing');
+//       fullThing.classList.add('loading');
+//    }
+// };
+// export { setFullThingToLoading };
 
 const FullThing = ({ canEdit, linkedPiece, linkedComment }) => {
    const { id, color, votes, content, summary } =

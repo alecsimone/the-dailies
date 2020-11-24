@@ -6,7 +6,7 @@ import Router from 'next/router';
 import { MemberContext } from '../Account/MemberProvider';
 import MetaOption from './MetaOption';
 import { checkForNewThingRedirect } from '../../lib/ThingHandling';
-import { setFullThingToLoading } from './FullThing';
+// import { setFullThingToLoading } from './FullThing';
 import { ALL_THINGS_QUERY } from '../../pages/index';
 
 const GET_PRIVACY_OPTIONS_QUERY = gql`
@@ -47,7 +47,7 @@ const PrivacyDropdown = props => {
       const {
          target: { value }
       } = e;
-      setFullThingToLoading(id);
+      // setFullThingToLoading(id);
       setThingPrivacy({
          variables: { privacySetting: value, thingID: id },
          optimisticResponse: {

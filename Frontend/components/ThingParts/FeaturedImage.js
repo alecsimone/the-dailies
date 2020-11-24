@@ -14,7 +14,7 @@ import {
    disabledCodewords,
    checkForNewThingRedirect
 } from '../../lib/ThingHandling';
-import { setFullThingToLoading } from './FullThing';
+// import { setFullThingToLoading } from './FullThing';
 import EditThis from '../Icons/EditThis';
 
 const SET_FEATURED_IMAGE_MUTATION = gql`
@@ -59,7 +59,7 @@ const StyledFeaturedImage = styled.div`
       ${props => setAlpha(props.theme.lowContrastGrey, 0.4)};
    img,
    video {
-      width: 100%;
+      max-width: 100%;
       object-fit: cover;
       z-index: 0;
    }
@@ -145,7 +145,7 @@ const FeaturedImage = ({ canEdit, context, titleLimit, titleLink }) => {
          window.alert("That's not a valid featured image, sorry");
          return;
       }
-      setFullThingToLoading(id);
+      // setFullThingToLoading(id);
       setFeaturedImage({
          variables: {
             featuredImage: featuredImageInput,

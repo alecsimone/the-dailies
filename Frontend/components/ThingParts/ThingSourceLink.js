@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { ThingContext } from '../../pages/thing';
 import { MemberContext } from '../Account/MemberProvider';
 import ShortLink from './ShortLink';
-import { setFullThingToLoading } from './FullThing';
+// import { setFullThingToLoading } from './FullThing';
 import {
    checkForNewThingRedirect,
    disabledCodewords
@@ -46,7 +46,7 @@ const ThingSourceLink = ({ canEdit }) => {
          window.alert("That's not a valid link, sorry");
          return;
       }
-      setFullThingToLoading(id);
+      // setFullThingToLoading(id);
       await editLink({
          variables: {
             link: currentLink,

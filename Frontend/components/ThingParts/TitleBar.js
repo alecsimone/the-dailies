@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import Router from 'next/router';
 import { setAlpha, dynamicallyResizeElement } from '../../styles/functions';
 import { checkForNewThingRedirect } from '../../lib/ThingHandling';
-import { setFullThingToLoading } from './FullThing';
+// import { setFullThingToLoading } from './FullThing';
 
 const SET_TITLE_MUTATION = gql`
    mutation SET_TITLE_MUTATION($title: String!, $id: ID!, $type: String!) {
@@ -100,7 +100,7 @@ const TitleBar = ({ context, limit, canEdit = true }) => {
    };
 
    const submitTitle = async () => {
-      setFullThingToLoading(id);
+      // setFullThingToLoading(id);
       setStuffTitle({
          variables: {
             title: editedTitleRef.current,

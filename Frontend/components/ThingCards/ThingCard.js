@@ -58,6 +58,7 @@ const StyledThingCard = styled.div`
       video {
          width: 100%;
          max-height: 30rem;
+         object-fit: contain;
          margin-top: 2.5rem;
       }
       img.featuredImage {

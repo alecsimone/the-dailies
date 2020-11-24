@@ -1,6 +1,7 @@
 import styled, { ThemeProvider, createGlobalStyle } from 'styled-components';
 import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import { useRouter } from 'next/router';
 import Meta from './Header/Meta';
 import Header from './Header/Header';
 import BottomBar from './BottomBar';
@@ -577,7 +578,8 @@ const StyledPage = styled.div`
 `;
 
 const Page = ({ children, pageProps }) => {
-   const isHome = Object.keys(pageProps).length === 0; // We use this to disable SSR on the homepage so that our https redirect will work
+   const router = useRouter();
+   const isHome = router.pathname === '/'; // We use this to disable SSR on the homepage so that our https redirect will work
    const [navSidebarIsOpen, setNavSidebarIsOpen] = useState(false);
    const [thingsSidebarIsOpen, setThingsSidebarIsOpen] = useState(false);
 
