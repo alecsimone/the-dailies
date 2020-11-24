@@ -126,7 +126,7 @@ const StyledThingCard = styled.div`
                margin: 0 1.5rem;
                max-height: 400px;
                overflow: scroll;
-               touch-action: none;
+               /* touch-action: none; */
                ${props => props.theme.midScreenBreakpoint} {
                   max-height: 600px;
                }
@@ -248,16 +248,17 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
             onTouchMove={e => {
                e.stopPropagation();
 
-               if (translation === 0) {
-                  const touchWatcher = e.target.closest(
-                     '.currentContentWrapper'
-                  );
-                  const initialScroll = touchWatcher.scrollTop;
-                  const scrollDistance = touchStartY - e.touches[0].clientY;
-                  const newScroll = initialScroll + scrollDistance;
-                  touchWatcher.scrollTop = newScroll;
-                  setTouchStartY(e.touches[0].clientY);
-               }
+               // Not using this as it loses the native touch scroll function's flick ability, and the native behavior isn't so bad now that I've made this part scroll instead of the whole page
+               // if (translation === 0) {
+               //    const touchWatcher = e.target.closest(
+               //       '.currentContentWrapper'
+               //    );
+               //    const initialScroll = touchWatcher.scrollTop;
+               //    const scrollDistance = touchStartY - e.touches[0].clientY;
+               //    const newScroll = initialScroll + scrollDistance;
+               //    touchWatcher.scrollTop = newScroll;
+               //    setTouchStartY(e.touches[0].clientY);
+               // }
 
                setTouchEnd(e.touches[0].clientX);
             }}
