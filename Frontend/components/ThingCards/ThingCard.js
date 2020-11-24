@@ -222,13 +222,23 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
    }
 
    let translation = touchEnd - touchStart;
-   if (contentSliderPosition === 0 && translation > -25) {
+   const minimumTranslationDistance = 30;
+   if (
+      contentSliderPosition === 0 &&
+      translation > minimumTranslationDistance * -1
+   ) {
       translation = 0;
    }
-   if (contentSliderPosition + 1 === contentArray.length && translation < 25) {
+   if (
+      contentSliderPosition + 1 === contentArray.length &&
+      translation < minimumTranslationDistance
+   ) {
       translation = 0;
    }
-   if (translation > -25 && translation < 25) {
+   if (
+      translation > minimumTranslationDistance * -1 &&
+      translation < minimumTranslationDistance
+   ) {
       translation = 0;
    }
 
@@ -266,12 +276,12 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
             onTouchEnd={e => {
                e.stopPropagation();
                if (
-                  touchEnd - touchStart < -100 &&
+                  touchEnd - touchStart < -111 &&
                   contentSliderPosition + 1 < contentArray.length
                ) {
                   setContentSliderPosition(contentSliderPosition + 1);
                }
-               if (touchEnd - touchStart > 100 && contentSliderPosition > 0) {
+               if (touchEnd - touchStart > 111 && contentSliderPosition > 0) {
                   setContentSliderPosition(contentSliderPosition - 1);
                }
                setTouchStart(0);

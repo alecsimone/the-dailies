@@ -6,7 +6,10 @@ import Sidebar from '../components/Sidebar';
 
 const StyledCheatSheet = styled.article`
    padding: 3rem;
-   margin-bottom: 4rem;
+   margin: 0;
+   ${props => props.theme.mobileBreakpoint} {
+      margin: 4rem;
+   }
    border: 2px solid ${props => setAlpha(props.theme.lowContrastGrey, 0.15)};
    background: ${props => props.theme.lightBlack};
    box-shadow: 0 4px 4px ${props => setAlpha(props.theme.deepBlack, 0.2)};
@@ -32,11 +35,10 @@ const StyledCheatSheet = styled.article`
 `;
 
 const Styling = props => (
-   <StyledPageWithSidebar>
+   <section>
       <Head>
          <title>Style Cheat Sheet - OurDailies</title>
       </Head>
-      <Sidebar />
       <div className="mainSection">
          <StyledCheatSheet>
             If you're writing comments or making your own things, here are some
@@ -245,7 +247,7 @@ const Styling = props => (
             </ul>
          </StyledCheatSheet>
       </div>
-   </StyledPageWithSidebar>
+   </section>
 );
 
 export default Styling;
