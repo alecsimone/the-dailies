@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import Comment from './Comment';
 import ArrowIcon from '../Icons/Arrow';
 
@@ -105,7 +105,7 @@ const ContentPieceComment = ({ comments, id, input }) => {
    } else if (commentView === 'expanded') {
       arrowDirection = 'up'; // to collapse
    } else if (commentView === 'full') {
-      arrowDirection = 'left'; // to go back
+      arrowDirection = 'right'; // to go back
    }
 
    return (
@@ -132,7 +132,6 @@ const ContentPieceComment = ({ comments, id, input }) => {
          </div>
          {comments.length > 0 && (
             <div className="commentsControls">
-               {siblingSlider}
                <ArrowIcon
                   className="commentDisplayControlArrow"
                   pointing={arrowDirection}
@@ -147,6 +146,7 @@ const ContentPieceComment = ({ comments, id, input }) => {
                      }
                   }}
                />
+               {siblingSlider}
             </div>
          )}
       </div>

@@ -111,24 +111,32 @@ const StyledThingCard = styled.div`
          }
       }
    }
-   .cardOverflowWrapper {
-      width: 100%;
-      overflow: hidden;
-      .cardPiecesContainer {
-         width: 300%;
-         display: flex;
-         .previousContentWrapper, .currentContentWrapper, .nextContentWrapper {
-            display: inline-block;
-            width: 34%;
-         }
-         .currentContentWrapper {
-            margin: 0 1.5rem;
-         }
-         .givesSize {
-            height: auto;
-         }
-         .doesNotGiveSize {
-            height: 0;
+   .cardTouchWatcher {
+      .cardOverflowWrapper {
+         width: 100%;
+         overflow: hidden;
+         .cardPiecesContainer {
+            width: 300%;
+            display: flex;
+            .previousContentWrapper, .currentContentWrapper, .nextContentWrapper {
+               display: inline-block;
+               width: 34%;
+            }
+            .currentContentWrapper {
+               margin: 0 1.5rem;
+               max-height: 400px;
+               overflow: scroll;
+               touch-action: none;
+               ${props => props.theme.midScreenBreakpoint} {
+                  max-height: 600px;
+               }
+            }
+            .givesSize {
+               height: auto;
+            }
+            .doesNotGiveSize {
+               height: 0;
+            }
          }
       }
    }
@@ -194,6 +202,7 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
 
    const [contentSliderPosition, setContentSliderPosition] = useState(0);
    const [touchStart, setTouchStart] = useState(0);
+   const [touchStartY, setTouchStartY] = useState(0);
    const [touchEnd, setTouchEnd] = useState(0);
 
    const { lowContrastGrey, midScreenBPWidthRaw } = useContext(ThemeContext);
@@ -233,10 +242,23 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
             onTouchStart={e => {
                e.stopPropagation();
                setTouchStart(e.touches[0].clientX);
+               setTouchStartY(e.touches[0].clientY);
                setTouchEnd(e.touches[0].clientX);
             }}
             onTouchMove={e => {
                e.stopPropagation();
+
+               if (translation === 0) {
+                  const touchWatcher = e.target.closest(
+                     '.currentContentWrapper'
+                  );
+                  const initialScroll = touchWatcher.scrollTop;
+                  const scrollDistance = touchStartY - e.touches[0].clientY;
+                  const newScroll = initialScroll + scrollDistance;
+                  touchWatcher.scrollTop = newScroll;
+                  setTouchStartY(e.touches[0].clientY);
+               }
+
                setTouchEnd(e.touches[0].clientX);
             }}
             onTouchEnd={e => {

@@ -21,7 +21,6 @@ const EDIT_SUMMARY_MUTATION = gql`
       }
    }
 `;
-export { EDIT_SUMMARY_MUTATION };
 
 const StyledSummary = styled.section`
    position: relative;
@@ -37,6 +36,26 @@ const StyledSummary = styled.section`
       max-width: 1200px;
       margin: auto;
       text-align: center;
+   }
+   .addSummaryPrompt {
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      &:hover {
+         svg.x {
+            width: ${props => props.theme.smallText};
+            transition: all 0.25s;
+         }
+      }
+      svg.x {
+         transition: all 0.25s;
+         transform: rotate(45deg);
+         width: ${props => props.theme.miniText};
+         margin-right: 1rem;
+         rect {
+            fill: ${props => props.theme.mainText};
+         }
+      }
    }
    form.richTextArea {
       width: 100%;
@@ -98,9 +117,7 @@ const StyledSummary = styled.section`
 `;
 
 const ThingSummary = ({ summary: inheritedSummary, thingID, canEdit }) => {
-   const [editing, setEditing] = useState(
-      (inheritedSummary == null || inheritedSummary == '') && canEdit
-   );
+   const [editing, setEditing] = useState(false);
    const [summary, setSummary] = useState(
       inheritedSummary == null ? '' : inheritedSummary
    );
@@ -149,7 +166,14 @@ const ThingSummary = ({ summary: inheritedSummary, thingID, canEdit }) => {
    };
 
    let summaryElement;
-   if (editing) {
+   if ((inheritedSummary == null || inheritedSummary === '') && !editing) {
+      summaryElement = (
+         <div className="addSummaryPrompt" onClick={() => setEditing(true)}>
+            <X />
+            Add Summary
+         </div>
+      );
+   } else if (editing) {
       summaryElement = (
          <RichTextArea
             text={summary}

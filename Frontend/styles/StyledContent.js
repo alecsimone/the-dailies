@@ -127,7 +127,6 @@ const StyledContent = styled.section`
             }
             .contentWrapper {
                margin-right: 4rem;
-               min-width: 50%;
             }
             .givesSize {
                height: auto;

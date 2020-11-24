@@ -268,11 +268,7 @@ const Content = ({ context, canEdit, linkedPiece }) => {
                setReordering={setReordering}
                reordering={reordering}
                highlighted={linkedPiece === contentPiece.id}
-               key={`${contentPiece.id}${
-                  contentPiece.comments != null
-                     ? contentPiece.comments.length
-                     : ''
-               }`} // We're adding the comments length to force this component to re-render when we add or delete a new comment. It doesn't seem to without it.
+               key={contentPiece.id}
             />
          </div>
       ));

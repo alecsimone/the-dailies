@@ -1,7 +1,6 @@
 import { useMutation } from 'react';
 import RichTextArea from '../RichTextArea';
 import RichText from '../RichText';
-import { EDIT_SUMMARY_MUTATION } from './ThingSummary';
 
 const ContentSummary = ({
    summary,

@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { ThemeContext } from 'styled-components';
 
-const ArrowIcon = ({ onClick, className, pointing }) => {
+const ArrowIcon = ({ onClick, className, pointing = 'down' }) => {
    const { lowContrastGrey, mainText } = useContext(ThemeContext);
    const style = {
       transition: 'all .3s',

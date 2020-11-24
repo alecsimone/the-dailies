@@ -151,11 +151,7 @@ const ContentPiece = ({
                postText={postContent}
                setEditable={setEditable}
                placeholder="Add content"
-               buttonText={
-                  rawContentString == null || rawContentString === ''
-                     ? 'add'
-                     : 'edit'
-               }
+               buttonText="save edit"
                id={id}
                key={id}
             />
@@ -389,6 +385,9 @@ export default React.memo(ContentPiece, (prev, next) => {
       return false;
    }
    if (prev.summary !== next.summary) {
+      return false;
+   }
+   if (prev.comments.length !== next.comments.length) {
       return false;
    }
    return true;

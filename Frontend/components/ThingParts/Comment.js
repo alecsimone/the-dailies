@@ -379,7 +379,11 @@ const Comment = ({
             const [fullReplyData] = allComments.filter(
                fullData => fullData.id === thisReply.id
             );
-            if (fullReplyData !== null && fullReplyData.replies.length > 0) {
+            if (
+               fullReplyData != null &&
+               fullReplyData.replies != null &&
+               fullReplyData.replies.length > 0
+            ) {
                countReplies(fullReplyData, allComments);
             }
             replyCount += 1;
