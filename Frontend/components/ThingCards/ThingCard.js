@@ -121,9 +121,10 @@ const StyledThingCard = styled.div`
             .previousContentWrapper, .currentContentWrapper, .nextContentWrapper {
                display: inline-block;
                width: 34%;
+               margin: 3rem 0;
             }
             .currentContentWrapper {
-               margin: 0 1.5rem;
+               margin: 3rem 1.5rem;
                max-height: 400px;
                overflow: scroll;
                /* touch-action: none; */
@@ -141,7 +142,7 @@ const StyledThingCard = styled.div`
       }
    }
    .truncCont {
-      margin: 3rem 0 1.5rem;
+      margin: 0;
       padding: .8rem 1.25rem;
       border-radius: 3px;
       /* opacity: .9; */
