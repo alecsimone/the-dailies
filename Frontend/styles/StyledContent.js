@@ -156,6 +156,9 @@ const StyledContent = styled.section`
             position: absolute;
             bottom: 1rem;
             right: 0;
+            ${props => props.theme.midScreenBreakpoint} {
+               right: 1rem;
+            }
          }
          .commentButton {
             position: relative;
