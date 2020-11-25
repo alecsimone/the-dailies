@@ -45,9 +45,12 @@ const sortThingsByRelevancy = (things, string) => {
       const bOccurances = bString.match(searchString);
 
       // This time we're multiplying by the occurances of the whole string
-      aScore *= aOccurances.length;
-      bScore *= bOccurances.length;
-
+      if (aOccurances != null) {
+         aScore *= aOccurances.length;
+      }
+      if (bOccurances != null) {
+         bScore *= bOccurances.length;
+      }
       // And then if the title includes the whole string, it gets a 5x bonus
       if (a.title.includes(string)) {
          aScore *= 5;
