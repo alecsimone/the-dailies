@@ -268,6 +268,8 @@ const Content = ({ context, canEdit, linkedPiece }) => {
                setReordering={setReordering}
                reordering={reordering}
                highlighted={linkedPiece === contentPiece.id}
+               stickifier={stickifier}
+               stickifierData={stickingData}
                key={contentPiece.id}
             />
          </div>

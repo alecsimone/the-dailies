@@ -110,6 +110,7 @@ const StyledContent = styled.section`
       }
       ${props => props.theme.desktopBreakpoint} {
          display: flex;
+         align-items: flex-start;
       }
       &.highlighted {
          background: ${props => setAlpha(props.theme.lowContrastGrey, 0.2)};
@@ -141,6 +142,9 @@ const StyledContent = styled.section`
          flex-grow: 1;
          max-width: 100%;
          min-height: 15rem;
+         ${props => props.theme.desktopBreakpoint} {
+            align-self: stretch;
+         }
          ${props => props.theme.midScreenBreakpoint} {
             max-width: 60%;
             border-right: 1px solid

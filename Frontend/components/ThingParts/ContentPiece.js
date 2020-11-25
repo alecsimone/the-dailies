@@ -16,6 +16,7 @@ import { SINGLE_THING_QUERY } from '../../pages/thing';
 import { MemberContext } from '../Account/MemberProvider';
 import ReorderIcon from '../Icons/Reorder';
 import ArrowIcon from '../Icons/Arrow';
+import { stickifier } from '../../lib/ContentHandling';
 
 const ContentPiece = ({
    id,
@@ -30,7 +31,9 @@ const ContentPiece = ({
    canEdit,
    setReordering,
    reordering,
-   highlighted
+   highlighted,
+   stickifier,
+   stickifierData
 }) => {
    const { me } = useContext(MemberContext);
    const { midScreenBPWidthRaw } = useContext(ThemeContext);
@@ -299,7 +302,10 @@ const ContentPiece = ({
             <div className="buttons buttonsContainer">
                <div
                   className="commentButton"
-                  onClick={() => setShowingComments(!showingComments)}
+                  onClick={() => {
+                     setShowingComments(!showingComments);
+                     window.setTimeout(() => stickifier(stickifierData), 1);
+                  }}
                >
                   <span className="commentCount">
                      {comments.length < 100 ? comments.length : '+'}

@@ -206,6 +206,7 @@ const stickifier = stickingData => {
       const bottom = blockTop + blockHeight;
       blockPositionsArray.push({
          block,
+         blockTop,
          top,
          bottom
       });
@@ -221,13 +222,13 @@ const stickifier = stickingData => {
 
    const bottomBar = document.querySelector('.bottomBar');
    const bottomBarDisplay = window.getComputedStyle(bottomBar).display;
+   const header = document.getElementById('header');
    const headerHeight = header.offsetHeight;
 
    let buttonsRightPosition;
 
    // bottomBar only shows on small screens
    if (bottomBarDisplay === 'none') {
-      const header = document.getElementById('header');
       viewableTop = mainSection.scrollTop;
 
       // On big screens, the viewable bottom is the height of the window minus the height of the header, and the buttons are 1rem from the right
@@ -245,6 +246,7 @@ const stickifier = stickingData => {
 
    // Now we go through each block and see where it is relative to the screen
    stickingData.current.blocksArray.forEach(block => {
+      // First we'll deal with the buttons
       const buttons = block.block.querySelector('.buttonsContainer');
       const buttonsHeight = buttons.offsetHeight;
       if (
@@ -281,6 +283,55 @@ const stickifier = stickingData => {
          buttons.style.right = buttonsRightPosition;
          buttons.style.bottom = '1rem';
          buttons.style.top = 'initial';
+      }
+
+      // Then we'll deal with the comments
+      let comments = block.block.querySelector('.commentsArea');
+      if (comments != null) {
+         const mobileOnlyWrapper = comments.closest(
+            '.contentAndCommentContainer'
+         );
+         if (mobileOnlyWrapper != null) {
+            comments = false; // If we're on mobile, we don't need the comments to be sticky
+         }
+         const contentArea = block.block.querySelector('.contentArea');
+         if (comments.offsetHeight >= contentArea.offsetHeight) {
+            // If the comments aren't smaller than the parent, we don't want to make them sticky
+            comments = false;
+         }
+      }
+
+      if (comments) {
+         // if the top of the block is above the top of the viewport, and the bottom of the block is below the top of the viewport by MORE than the height of the comments box, fix the comments to the top of the screen
+         const commentsRect = comments.getBoundingClientRect();
+         if (
+            block.blockTop < viewableTop &&
+            block.bottom > viewableTop + commentsRect.height
+         ) {
+            comments.style.position = 'fixed';
+            comments.style.left = `${commentsRect.left}px`;
+            comments.style.width = `${commentsRect.width}px`;
+            comments.style.top = `calc(${headerHeight}px + 1rem)`;
+            comments.style.bottom = `initial`;
+            comments.style.right = `initial`;
+         } else if (
+            block.bottom > viewableTop &&
+            block.bottom < viewableTop + commentsRect.height &&
+            block.bottom < viewableBottom
+         ) {
+            // If the bottom of the block is below the top of the viewport by LESS than the height of the comments box, and the bottom of the block is above the bottom of the viewport, absolutely position the comments at the bottom of the block
+            comments.style.position = 'absolute';
+            comments.style.left = 'initial';
+            comments.style.right = '1rem';
+            comments.style.bottom = '1rem';
+            comments.style.top = 'initial';
+         } else {
+            comments.style.position = 'relative';
+            comments.style.left = 'initial';
+            comments.style.right = 'initial';
+            comments.style.bottom = 'initial';
+            comments.style.top = 'initial';
+         }
       }
    });
 };
