@@ -54,6 +54,9 @@ const StyledThingMeta = styled.section`
          span.uneditable {
             margin-left: 3rem;
          }
+         &.editable {
+            cursor: pointer;
+         }
          > * {
             margin: 2rem 0;
             ${props => props.theme.mobileBreakpoint} {
@@ -248,26 +251,35 @@ const ThingMeta = props => {
                </span>
             )}
          </div>
-         <TrashIcon
-            className={deleting ? 'trash deleting' : 'trash'}
-            onClick={() => {
-               if (confirm('Are you sure you want to delete this thing?')) {
-                  deleteThing({
-                     variables: {
-                        id
-                     }
-                  });
-               }
-            }}
-         />
+         {canEdit && (
+            <TrashIcon
+               className={deleting ? 'trash deleting' : 'trash'}
+               onClick={() => {
+                  if (confirm('Are you sure you want to delete this thing?')) {
+                     deleteThing({
+                        variables: {
+                           id
+                        }
+                     });
+                  }
+               }}
+            />
+         )}
          {!editing && (
-            <div className="selections metaPiece">
-               <div
-                  className="colorDisplay uneditable"
-                  style={{
-                     background: color == null ? 'transparent' : color
-                  }}
-               />
+            <div
+               className={`selections metaPiece${canEdit ? ' editable' : ''}`}
+               onClick={() => {
+                  if (canEdit) setEditing(true);
+               }}
+            >
+               {canEdit && (
+                  <div
+                     className="colorDisplay uneditable"
+                     style={{
+                        background: color == null ? 'transparent' : color
+                     }}
+                  />
+               )}
                <span className="uneditable">{privacy}</span>
                {editButton}
             </div>
