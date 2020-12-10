@@ -330,7 +330,7 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
    const commentsElement = (
       <ContentPieceComments
          comments={
-            contentArray[contentSliderPosition].comments != null
+            contentArray[contentSliderPosition]?.comments != null
                ? contentArray[contentSliderPosition].comments
                : []
          }
@@ -338,10 +338,12 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
          key={id}
          input={
             <RichTextArea
-               text={commentTextObject[contentArray[contentSliderPosition].id]}
+               text={
+                  commentTextObject[(contentArray[contentSliderPosition]?.id)]
+               }
                setText={newValue =>
                   handleCommentChanges(
-                     contentArray[contentSliderPosition].id,
+                     contentArray[contentSliderPosition]?.id,
                      newValue
                   )
                }
@@ -545,8 +547,8 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
                </div>
                <div className="meta-right">{privacy}</div>
             </div>
-            {contentArea}
-            {contentSlider}
+            {contentArray.length > 0 && contentArea}
+            {contentArray.length > 1 && contentSlider}
             {tags.length > 0 && <Taxes taxes={tags} personal={false} />}
             <VoteBar votes={votes} thingID={id} />
             {setExpanded != null && (

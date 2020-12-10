@@ -40,7 +40,9 @@ const TruncCont = ({ cont: contObj, limit }) => {
       <StyledTruncCont className="truncCont">
          <RichText text={cont} key={cont} />
          {(cont.length > limit ||
-            (contObj.summary != null && contObj.summary !== '')) && (
+            (contObj != null &&
+               contObj.summary != null &&
+               contObj.summary !== '')) && (
             <ArrowIcon
                pointing={expanded ? 'up' : 'down'}
                onClick={() => setExpanded(!expanded)}
