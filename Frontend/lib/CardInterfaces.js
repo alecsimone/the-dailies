@@ -132,6 +132,7 @@ const smallThingCardFields = `
       comments {
          ${commentFields}
       }
+      summary
    }
    summary
    contentOrder
