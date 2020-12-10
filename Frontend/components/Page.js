@@ -355,6 +355,11 @@ const GlobalStyle = createGlobalStyle`
          }
       }
    }
+   .styleGuideLink {
+      opacity: 0.7;
+      display: inline-block;
+      font-size: ${props => props.theme.tinyText};
+   }
    .tweetHead {
          display: flex;
          align-items: center;

@@ -2,8 +2,11 @@ import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import styled, { ThemeContext } from 'styled-components';
 import Link from 'next/link';
+import { useMutation } from '@apollo/react-hooks';
 import FeaturedImage from '../ThingParts/FeaturedImage';
 import TruncCont from '../ThingParts/TruncCont';
+import ContentPieceComments from '../ThingParts/ContentPieceComments';
+import RichTextArea from '../RichTextArea';
 import Taxes from '../ThingParts/Taxes';
 import { setAlpha, setLightness } from '../../styles/functions';
 import { orderContent } from '../../lib/ContentHandling';
@@ -11,6 +14,9 @@ import AuthorLink from '../ThingParts/AuthorLink';
 import VoteBar from '../ThingParts/VoteBar';
 import TimeAgo from '../TimeAgo';
 import ArrowIcon from '../Icons/Arrow';
+import CommentsButton from '../ThingParts/CommentsButton';
+import { MemberContext } from '../Account/MemberProvider';
+import { ADD_COMMENT_MUTATION } from '../ThingParts/Comments';
 
 const StyledThingCard = styled.div`
    position: relative;
@@ -76,6 +82,29 @@ const StyledThingCard = styled.div`
          }
       }
    }
+   .contentArea {
+      position: relative;
+      margin: 0;
+      padding: .8rem calc(${props =>
+         props.theme.smallText} + 2.25rem) .8rem 1.25rem;
+      border-radius: 3px;
+      background: ${props => props.theme.midBlack};
+      border: 1px solid ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
+      .commentsButtonComponentWrapper {
+         position: absolute;
+         right: 1rem;
+         bottom: 0;
+      }
+      .truncCont .arrow {
+         margin-left: calc(50% - .5rem); /* That .5rem is pretty arbitrary afaik */
+      }
+      .commentsControls {
+         .arrow {
+            margin-left: 3rem /* On this one we're making up for the off-centerness caused by putting padding right to allow space for the comment button */
+         }
+      }
+
+   }
    .meta {
       display: flex;
       flex-wrap: wrap;
@@ -127,7 +156,7 @@ const StyledThingCard = styled.div`
             .currentContentWrapper {
                margin: 3rem 1.5rem;
                max-height: 400px;
-               overflow: scroll;
+               ${props => props.theme.scroll};
                /* touch-action: none; */
                ${props => props.theme.midScreenBreakpoint} {
                   max-height: 600px;
@@ -141,14 +170,6 @@ const StyledThingCard = styled.div`
             }
          }
       }
-   }
-   .truncCont {
-      margin: 0;
-      padding: .8rem 1.25rem;
-      border-radius: 3px;
-      /* opacity: .9; */
-      background: ${props => props.theme.midBlack};
-      border: 1px solid ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
    }
    .contentSlider {
       display: flex;
@@ -203,11 +224,79 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
    } = data;
 
    const [contentSliderPosition, setContentSliderPosition] = useState(0);
+   const [showingComments, setShowingComments] = useState(false);
    const [touchStart, setTouchStart] = useState(0);
    const [touchStartY, setTouchStartY] = useState(0);
    const [touchEnd, setTouchEnd] = useState(0);
 
    const { lowContrastGrey, midScreenBPWidthRaw } = useContext(ThemeContext);
+   const { me } = useContext(MemberContext);
+
+   // First let's make our array of the orderedContent so we can add comments to it when we need to
+   const contentArray = orderContent(content, contentOrder);
+   if (summary != null && summary !== '' && !contentArray.includes(summary)) {
+      contentArray.unshift(summary);
+   }
+
+   // We need an object whose properties are the ids of all the content pieces on this thing, each of which starts out with an empty string, and put that in state for the comment text
+   const contentCommentsObject = {};
+   content.forEach(piece => {
+      contentCommentsObject[piece.id] = '';
+   });
+   const [commentTextObject, setCommentTextObject] = useState(
+      contentCommentsObject
+   );
+
+   // Then we need a function to switch an individual value in that object
+   const handleCommentChanges = (pieceID, newValue) => {
+      setCommentTextObject(prevState => ({
+         ...prevState,
+         [pieceID]: newValue
+      }));
+   };
+
+   const [addComment] = useMutation(ADD_COMMENT_MUTATION);
+
+   // And finally a function to send new comments to the server
+   const postNewComment = async () => {
+      const pieceID = contentArray[contentSliderPosition].id;
+      const now = new Date();
+      const newComment = {
+         __typename: 'Comment',
+         author: {
+            __typename: 'Member',
+            avatar: me.avatar,
+            displayName: me.displayName,
+            id: me.id,
+            rep: me.rep
+         },
+         comment: commentTextObject[pieceID],
+         createdAt: now.toISOString(),
+         id: 'temporaryID',
+         votes: [],
+         updatedAt: now.toISOString()
+      };
+
+      contentArray[contentSliderPosition].comments.push(newComment);
+
+      handleCommentChanges(pieceID, '');
+      await addComment({
+         variables: {
+            comment: commentTextObject[pieceID],
+            id: pieceID,
+            type: 'ContentPiece'
+         },
+         optimisticResponse: {
+            __typename: 'Mutation',
+            addComment: {
+               __typename: 'ContentPiece',
+               id: pieceID,
+               comments: contentArray[contentSliderPosition].comments
+            }
+         }
+      });
+      // TODO: Add the update function a la Comments.js line 192
+   };
 
    const isSmallScreen =
       process.browser && window.outerWidth <= midScreenBPWidthRaw;
@@ -215,11 +304,6 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
    let highlightColor = lowContrastGrey;
    if (color != null) {
       highlightColor = color;
-   }
-
-   const contentArray = orderContent(content, contentOrder);
-   if (summary != null && summary !== '' && !contentArray.includes(summary)) {
-      contentArray.unshift(summary);
    }
 
    let translation = touchEnd - touchStart;
@@ -242,6 +326,55 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
    ) {
       translation = 0;
    }
+
+   const commentsElement = (
+      <ContentPieceComments
+         comments={
+            contentArray[contentSliderPosition].comments != null
+               ? contentArray[contentSliderPosition].comments
+               : []
+         }
+         id={id}
+         key={id}
+         input={
+            <RichTextArea
+               text={commentTextObject[contentArray[contentSliderPosition].id]}
+               setText={newValue =>
+                  handleCommentChanges(
+                     contentArray[contentSliderPosition].id,
+                     newValue
+                  )
+               }
+               postText={postNewComment}
+               placeholder="Add comment"
+               buttonText="comment"
+               id={id}
+            />
+         }
+      />
+   );
+
+   const contentElement = (
+      <div className="contentArea">
+         {showingComments ? (
+            commentsElement
+         ) : (
+            <TruncCont cont={contentArray[contentSliderPosition]} limit={280} />
+         )}
+         {(contentSliderPosition > 0 || summary == null || summary === '') && (
+            <div className="commentsButtonComponentWrapper">
+               <CommentsButton
+                  onClick={() => setShowingComments(!showingComments)}
+                  count={
+                     content[contentSliderPosition]?.comments?.length != null
+                        ? content[contentSliderPosition]?.comments?.length
+                        : 0
+                  }
+               />
+            </div>
+         )}
+      </div>
+   );
 
    let contentArea;
    if (isSmallScreen || !process.browser) {
@@ -281,9 +414,11 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
                   contentSliderPosition + 1 < contentArray.length
                ) {
                   setContentSliderPosition(contentSliderPosition + 1);
+                  setShowingComments(false);
                }
                if (touchEnd - touchStart > 111 && contentSliderPosition > 0) {
                   setContentSliderPosition(contentSliderPosition - 1);
+                  setShowingComments(false);
                }
                setTouchStart(0);
                setTouchEnd(0);
@@ -318,10 +453,7 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
                         }rem))`
                      }}
                   >
-                     <TruncCont
-                        cont={contentArray[contentSliderPosition]}
-                        limit={280}
-                     />
+                     {contentElement}
                   </div>
                   {contentSliderPosition + 1 < contentArray.length && (
                      <div
@@ -345,9 +477,7 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
          </div>
       );
    } else {
-      contentArea = (
-         <TruncCont cont={contentArray[contentSliderPosition]} limit={280} />
-      );
+      contentArea = contentElement;
    }
 
    let contentSlider;
@@ -357,18 +487,20 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
             {contentSliderPosition > 0 && (
                <ArrowIcon
                   pointing="left"
-                  onClick={() =>
-                     setContentSliderPosition(contentSliderPosition - 1)
-                  }
+                  onClick={() => {
+                     setContentSliderPosition(contentSliderPosition - 1);
+                     setShowingComments(false);
+                  }}
                />
             )}
             {contentSliderPosition + 1} / {contentArray.length}
             {contentSliderPosition + 1 < contentArray.length && (
                <ArrowIcon
                   pointing="right"
-                  onClick={() =>
-                     setContentSliderPosition(contentSliderPosition + 1)
-                  }
+                  onClick={() => {
+                     setContentSliderPosition(contentSliderPosition + 1);
+                     setShowingComments(false);
+                  }}
                />
             )}
          </div>

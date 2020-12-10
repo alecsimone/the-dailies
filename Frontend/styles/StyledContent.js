@@ -160,42 +160,6 @@ const StyledContent = styled.section`
                right: 1rem;
             }
          }
-         .commentButton {
-            position: relative;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: ${props => props.theme.smallText};
-            height: ${props => props.theme.smallText};
-            margin-bottom: 1rem;
-            span.commentCount {
-               position: relative;
-               font-size: ${props => props.theme.tinyText};
-               font-weight: bold;
-               z-index: 2;
-               line-height: 1;
-               margin-bottom: 0.4rem;
-               ${props => props.theme.desktopBreakpoint} {
-                  margin-bottom: 0.6rem;
-               }
-            }
-            .commentIcon {
-               position: absolute;
-               left: 0;
-               top: 0;
-               width: 100%;
-               height: 100%;
-               z-index: 1;
-            }
-            &:hover {
-               rect,
-               polygon {
-                  fill: ${props =>
-                     setLightness(props.theme.lowContrastGrey, 40)};
-               }
-            }
-         }
          img.buttons,
          svg.buttons {
             width: 100%;
@@ -292,164 +256,24 @@ const StyledContent = styled.section`
             }
          }
       }
-      .commentsArea {
-         width: 100%;
-         padding: 0;
+   }
+   .commentsArea {
+      &.full {
          ${props => props.theme.midScreenBreakpoint} {
-            padding: 0 2rem;
+            width: 60%;
          }
-         &.full {
-            ${props => props.theme.midScreenBreakpoint} {
-               width: 60%;
-            }
+      }
+      &.collapsed,
+      &.expanded {
+         ${props => props.theme.midScreenBreakpoint} {
+            width: 40%;
          }
-         &.collapsed,
-         &.expanded {
-            ${props => props.theme.midScreenBreakpoint} {
-               width: 40%;
-            }
-         }
-         &.expanded,
-         &.full {
-            .commentsContainer {
-               max-height: 40rem;
-               overflow: hidden;
-               ${props => props.theme.scroll};
-            }
-         }
-         .commentsContainer {
-            .comment {
-               max-width: 900px;
-            }
-            &.collapsed {
-               opacity: 0.75;
-               transition: opacity 0.25s ease-out;
-               &:hover {
-                  opacity: 1;
-               }
-               .commentMeta,
-               .buttons,
-               .replyContainer,
-               .newCommentArea {
-                  display: none;
-               }
-               .newCommentArea.noComments {
-                  display: block;
-                  form.richTextArea {
-                     margin-top: 0;
-                  }
-               }
-               .comment {
-                  position: relative;
-                  padding: 1rem;
-                  margin: 1rem 0;
-                  cursor: pointer;
-                  max-height: 10rem;
-                  overflow: hidden;
-                  transition: all 0.2s;
-                  .commentAndAuthorContainer {
-                     margin-top: -1rem;
-                     padding-right: 0;
-                  }
-                  img.avatar {
-                     width: ${props => props.theme.smallText};
-                     min-width: ${props => props.theme.smallText};
-                     height: ${props => props.theme.smallText};
-                  }
-                  &:hover {
-                     background: ${props => props.theme.lightBlack};
-                     &:before {
-                        background: linear-gradient(
-                           transparent 7rem,
-                           ${props => props.theme.lightBlack} 9.25rem
-                        );
-                     }
-                  }
-                  &:before {
-                     content: '';
-                     width: 100%;
-                     height: 100%;
-                     position: absolute;
-                     left: 0;
-                     top: 0;
-                     background: linear-gradient(
-                        transparent 7rem,
-                        ${props => props.theme.midBlack} 9.25rem
-                     );
-                     transition: all none;
-                  }
-               }
-               .moreCommentsCount {
-                  font-size: ${props => props.theme.miniText};
-                  text-align: center;
-                  line-height: 1;
-                  cursor: pointer;
-               }
-            }
-            &.expanded {
-               .comment {
-                  cursor: pointer;
-                  .replyContainer {
-                     text-align: center;
-                     font-size: ${props => props.theme.tinyText};
-                     line-height: 1;
-                     padding-top: 1rem;
-                     margin-bottom: -1rem;
-                     .comment {
-                        display: none;
-                     }
-                  }
-                  &:hover {
-                     background: ${props => props.theme.lightBlack};
-                  }
-               }
-               .newCommentArea {
-                  textarea {
-                     min-height: 5.75rem;
-                  }
-               }
-            }
-            &.full {
-               .replyCount,
-               .newCommentArea {
-                  display: none;
-               }
-            }
-         }
-         .commentsControls {
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
-            .siblingSlider {
-               display: flex;
-               align-items: center;
-               svg.siblingSliderArrow {
-                  width: ${props => props.theme.bigText};
-                  cursor: pointer;
-                  rect {
-                     fill: ${props => setLightness(props.theme.mainText, 70)};
-                  }
-                  &:hover {
-                     rect {
-                        fill: ${props => props.theme.mainText};
-                     }
-                  }
-               }
-            }
-            svg.commentDisplayControlArrow {
-               display: block;
-               cursor: pointer;
-               height: ${props => props.theme.bigHead};
-               transition: all 0.2s;
-               rect {
-                  fill: ${props => setLightness(props.theme.mainText, 70)};
-               }
-               &:hover {
-                  rect {
-                     fill: ${props => props.theme.mainText};
-                  }
-               }
-            }
+      }
+      &.collapsed {
+         opacity: 0.75;
+         transition: opacity 0.25s ease-out;
+         &:hover {
+            opacity: 1;
          }
       }
    }
@@ -463,11 +287,6 @@ const StyledContent = styled.section`
          /* text-align: right; */
          display: flex;
          justify-content: space-between;
-         .styleGuideLink {
-            opacity: 0.7;
-            display: inline-block;
-            font-size: ${props => props.theme.tinyText};
-         }
       }
    }
    textarea {

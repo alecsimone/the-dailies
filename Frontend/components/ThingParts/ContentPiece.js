@@ -10,6 +10,7 @@ import CommentIcon from '../Icons/CommentIcon';
 import TrashIcon from '../Icons/Trash';
 import LinkIcon from '../Icons/Link';
 import ContentPieceComments from './ContentPieceComments';
+import CommentsButton from './CommentsButton';
 import { home } from '../../config';
 import { ADD_COMMENT_MUTATION } from './Comments';
 import { SINGLE_THING_QUERY } from '../../pages/thing';
@@ -300,17 +301,14 @@ const ContentPiece = ({
                )}
             </div>
             <div className="buttons buttonsContainer">
-               <div
-                  className="commentButton"
-                  onClick={() => {
-                     setShowingComments(!showingComments);
-                     window.setTimeout(() => stickifier(stickifierData), 1);
-                  }}
-               >
-                  <span className="commentCount">
-                     {comments.length < 100 ? comments.length : '+'}
-                  </span>
-                  <CommentIcon />
+               <div className="commentButton">
+                  <CommentsButton
+                     count={comments.length < 100 ? comments.length : '+'}
+                     onClick={() => {
+                        setShowingComments(!showingComments);
+                        window.setTimeout(() => stickifier(stickifierData), 1);
+                     }}
+                  />
                </div>
                {canEdit && (
                   <EditThis

@@ -129,6 +129,9 @@ const smallThingCardFields = `
       __typename
       id
       content
+      comments {
+         ${commentFields}
+      }
    }
    summary
    contentOrder
