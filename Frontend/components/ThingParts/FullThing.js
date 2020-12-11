@@ -108,6 +108,8 @@ const FullThing = ({ canEdit, linkedPiece, linkedComment }) => {
 
    const { lowContrastGrey } = useContext(ThemeContext);
 
+   const [isLoading, setIsLoading] = useState(true);
+
    // scroll to a highlighted content block or comment, if there is one
    useEffect(() => {
       const highlightedPiece = document.querySelector(
@@ -119,11 +121,13 @@ const FullThing = ({ canEdit, linkedPiece, linkedComment }) => {
 
       const highlightedElementOffset = highlightedElement.offsetTop;
 
-      const thingPage = document.querySelector('.thingPage');
-      thingPage.scrollTop = highlightedElementOffset;
+      const threeColumns = document.querySelector('.threeColumns');
+      threeColumns.scrollTop = highlightedElementOffset;
       const mainSection = document.querySelector('.mainSection');
       mainSection.scrollTop = highlightedElementOffset;
-   }, []);
+      if (false) console.log(isLoading); // So eslint will keep it as a dependency
+      setIsLoading(false);
+   }, [isLoading]);
 
    let highlightColor = lowContrastGrey;
    if (color != null) {
