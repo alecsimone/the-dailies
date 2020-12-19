@@ -342,12 +342,14 @@ const orderContent = (content, contentOrder) => {
 
    const orderedContent = [];
    contentOrder.forEach(id => {
+      // First we go through the list of IDs in ordered content and add each corresponding content piece to our ordered content list
       const [piece] = content.filter(contentPiece => contentPiece.id === id);
       if (piece != null) {
          orderedContent.push(piece);
       }
    });
    content.forEach(contentPiece => {
+      // Then we check for any leftover content pieces that weren't in the ordered list and add them at the end
       if (contentOrder.includes(contentPiece.id)) {
          return;
       }

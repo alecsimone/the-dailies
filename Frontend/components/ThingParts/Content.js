@@ -24,6 +24,7 @@ const Content = ({ context, canEdit, linkedPiece }) => {
    const {
       content = [],
       contentOrder,
+      copiedInContent,
       id,
       __typename: type = 'Thing'
    } = useContext(context);
@@ -248,7 +249,13 @@ const Content = ({ context, canEdit, linkedPiece }) => {
    let contentElements;
    let orderedContent;
    if (content) {
-      orderedContent = orderContent(content, contentOrder);
+      let fullContent;
+      if (copiedInContent != null && copiedInContent.length > 0) {
+         fullContent = content.concat(copiedInContent);
+      } else {
+         fullContent = content;
+      }
+      orderedContent = orderContent(fullContent, contentOrder);
       contentElements = orderedContent.map(contentPiece => (
          <div
             key={contentPiece.id}
@@ -328,7 +335,7 @@ const Content = ({ context, canEdit, linkedPiece }) => {
       );
    }
 
-   const contentWithSummaries = content.filter(
+   const contentWithSummaries = orderedContent.filter(
       contentObject =>
          contentObject.summary != null && contentObject.summary !== ''
    );
@@ -337,7 +344,7 @@ const Content = ({ context, canEdit, linkedPiece }) => {
       let universalExpansion = 'unset';
       const contentExpansionObjectKeys = Object.keys(contentExpansionObject);
       contentExpansionObjectKeys.forEach(key => {
-         const [thisPiece] = content.filter(piece => piece.id === key);
+         const [thisPiece] = orderedContent.filter(piece => piece.id === key);
          if (thisPiece.summary != null && thisPiece.summary !== '') {
             if (universalExpansion === 'unset') {
                universalExpansion = contentExpansionObject[key]

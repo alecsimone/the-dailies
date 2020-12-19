@@ -4,7 +4,8 @@ type Thing {
   author: Member!
   featuredImage: String
   link: String
-  content: [ContentPiece!] @scalarList(strategy:RELATION)
+  content: [ContentPiece!] @scalarList(strategy:RELATION) @relation(name: "OriginalThingForContentPiece")
+  copiedInContent: [ContentPiece] @relation(name: "ThingsAddedToForContentPiece")
   contentOrder: [String!] @scalarList(strategy:RELATION)
   summary: String
   partOfTags: [Tag]
@@ -27,7 +28,8 @@ type ContentPiece {
    content: String!
    summary: String
    comments: [Comment]
-   onThing: Thing
+   onThing: Thing @relation(name: "OriginalThingForContentPiece")
+   copiedToThings: [Thing] @relation(name: "ThingsAddedToForContentPiece")
    onTag: Tag
 }
 

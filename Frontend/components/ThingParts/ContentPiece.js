@@ -17,7 +17,9 @@ import { SINGLE_THING_QUERY } from '../../pages/thing';
 import { MemberContext } from '../Account/MemberProvider';
 import ReorderIcon from '../Icons/Reorder';
 import ArrowIcon from '../Icons/Arrow';
+import X from '../Icons/X';
 import { stickifier } from '../../lib/ContentHandling';
+import CopyContentInterface from './CopyContentInterface';
 
 const ContentPiece = ({
    id,
@@ -43,6 +45,8 @@ const ContentPiece = ({
    const [editedContent, setEditedContent] = useState(rawContentString);
    const [editedSummary, setEditedSummary] = useState(summary);
    const [commentText, setCommentText] = useState('');
+
+   const [showingAddToBox, setShowingAddToBox] = useState(false);
 
    const [touchStart, setTouchStart] = useState(0);
    const [touchEnd, setTouchEnd] = useState(0);
@@ -334,6 +338,23 @@ const ContentPiece = ({
                      onMouseDown={e => e.stopPropagation()}
                      onClick={() => deleteContentPiece(id)}
                   />
+               )}
+               {editable && (
+                  <div className="addToContainer">
+                     <X
+                        color="mainText"
+                        className={`addTo buttons${
+                           showingAddToBox ? ' open' : ''
+                        }`}
+                        onClick={() => setShowingAddToBox(!showingAddToBox)}
+                     />
+                     {showingAddToBox && (
+                        <CopyContentInterface
+                           id={id}
+                           setShowingAddToBox={setShowingAddToBox}
+                        />
+                     )}
+                  </div>
                )}
                {editable && (
                   <ReorderIcon

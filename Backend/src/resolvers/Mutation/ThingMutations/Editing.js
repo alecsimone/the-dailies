@@ -540,3 +540,31 @@ async function editSummary(parent, {summary, id, type}, ctx, info) {
    return updatedStuff;
 }
 exports.editSummary = editSummary;
+
+async function copyContentPiece(parent, {contentPieceID, newThingID}, ctx, info) {
+   loggedInGate(ctx);
+   fullMemberGate(ctx.req.member);
+   editPermissionGate({}, newThingID, 'Thing', ctx);
+
+   // const oldThing = await ctx.db.query.thing(
+   //    {
+   //       where: {
+   //          id: newThingID
+   //       }
+   //    },
+   //    `{id copiedInContent {id}}`
+   // );
+   // console.log(oldThing);
+
+   const dataObj = {
+      copiedInContent: {
+         connect: {
+            id: contentPieceID
+         }
+      }
+   }
+
+   const updatedStuff = await properUpdateStuff(dataObj, newThingID, 'Thing', ctx);
+   return updatedStuff;
+}
+exports.copyContentPiece = copyContentPiece;

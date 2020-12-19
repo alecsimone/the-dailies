@@ -215,6 +215,7 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
       author,
       privacy,
       content,
+      copiedInContent,
       contentOrder,
       partOfTags: tags,
       votes,
@@ -233,7 +234,13 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
    const { me } = useContext(MemberContext);
 
    // First let's make our array of the orderedContent so we can add comments to it when we need to
-   const contentArray = orderContent(content, contentOrder);
+   let fullContent;
+   if (copiedInContent != null && copiedInContent.length > 0) {
+      fullContent = content.concat(copiedInContent);
+   } else {
+      fullContent = content;
+   }
+   const contentArray = orderContent(fullContent, contentOrder);
    if (summary != null && summary !== '' && !contentArray.includes(summary)) {
       contentArray.unshift(summary);
    }

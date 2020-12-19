@@ -663,6 +663,7 @@ type ContentPiece {
   summary: String
   comments(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Comment!]
   onThing: Thing
+  copiedToThings(where: ThingWhereInput, orderBy: ThingOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Thing!]
   onTag: Tag
 }
 
@@ -678,11 +679,17 @@ input ContentPieceCreateInput {
   summary: String
   comments: CommentCreateManyWithoutOnContentPieceInput
   onThing: ThingCreateOneWithoutContentInput
+  copiedToThings: ThingCreateManyWithoutCopiedInContentInput
   onTag: TagCreateOneWithoutContentInput
 }
 
 input ContentPieceCreateManyInput {
   create: [ContentPieceCreateInput!]
+  connect: [ContentPieceWhereUniqueInput!]
+}
+
+input ContentPieceCreateManyWithoutCopiedToThingsInput {
+  create: [ContentPieceCreateWithoutCopiedToThingsInput!]
   connect: [ContentPieceWhereUniqueInput!]
 }
 
@@ -706,6 +713,16 @@ input ContentPieceCreateWithoutCommentsInput {
   content: String!
   summary: String
   onThing: ThingCreateOneWithoutContentInput
+  copiedToThings: ThingCreateManyWithoutCopiedInContentInput
+  onTag: TagCreateOneWithoutContentInput
+}
+
+input ContentPieceCreateWithoutCopiedToThingsInput {
+  id: ID
+  content: String!
+  summary: String
+  comments: CommentCreateManyWithoutOnContentPieceInput
+  onThing: ThingCreateOneWithoutContentInput
   onTag: TagCreateOneWithoutContentInput
 }
 
@@ -715,6 +732,7 @@ input ContentPieceCreateWithoutOnTagInput {
   summary: String
   comments: CommentCreateManyWithoutOnContentPieceInput
   onThing: ThingCreateOneWithoutContentInput
+  copiedToThings: ThingCreateManyWithoutCopiedInContentInput
 }
 
 input ContentPieceCreateWithoutOnThingInput {
@@ -722,6 +740,7 @@ input ContentPieceCreateWithoutOnThingInput {
   content: String!
   summary: String
   comments: CommentCreateManyWithoutOnContentPieceInput
+  copiedToThings: ThingCreateManyWithoutCopiedInContentInput
   onTag: TagCreateOneWithoutContentInput
 }
 
@@ -816,6 +835,7 @@ input ContentPieceUpdateDataInput {
   summary: String
   comments: CommentUpdateManyWithoutOnContentPieceInput
   onThing: ThingUpdateOneWithoutContentInput
+  copiedToThings: ThingUpdateManyWithoutCopiedInContentInput
   onTag: TagUpdateOneWithoutContentInput
 }
 
@@ -824,6 +844,7 @@ input ContentPieceUpdateInput {
   summary: String
   comments: CommentUpdateManyWithoutOnContentPieceInput
   onThing: ThingUpdateOneWithoutContentInput
+  copiedToThings: ThingUpdateManyWithoutCopiedInContentInput
   onTag: TagUpdateOneWithoutContentInput
 }
 
@@ -847,6 +868,18 @@ input ContentPieceUpdateManyInput {
 input ContentPieceUpdateManyMutationInput {
   content: String
   summary: String
+}
+
+input ContentPieceUpdateManyWithoutCopiedToThingsInput {
+  create: [ContentPieceCreateWithoutCopiedToThingsInput!]
+  delete: [ContentPieceWhereUniqueInput!]
+  connect: [ContentPieceWhereUniqueInput!]
+  set: [ContentPieceWhereUniqueInput!]
+  disconnect: [ContentPieceWhereUniqueInput!]
+  update: [ContentPieceUpdateWithWhereUniqueWithoutCopiedToThingsInput!]
+  upsert: [ContentPieceUpsertWithWhereUniqueWithoutCopiedToThingsInput!]
+  deleteMany: [ContentPieceScalarWhereInput!]
+  updateMany: [ContentPieceUpdateManyWithWhereNestedInput!]
 }
 
 input ContentPieceUpdateManyWithoutOnTagInput {
@@ -891,6 +924,15 @@ input ContentPieceUpdateWithoutCommentsDataInput {
   content: String
   summary: String
   onThing: ThingUpdateOneWithoutContentInput
+  copiedToThings: ThingUpdateManyWithoutCopiedInContentInput
+  onTag: TagUpdateOneWithoutContentInput
+}
+
+input ContentPieceUpdateWithoutCopiedToThingsDataInput {
+  content: String
+  summary: String
+  comments: CommentUpdateManyWithoutOnContentPieceInput
+  onThing: ThingUpdateOneWithoutContentInput
   onTag: TagUpdateOneWithoutContentInput
 }
 
@@ -899,18 +941,25 @@ input ContentPieceUpdateWithoutOnTagDataInput {
   summary: String
   comments: CommentUpdateManyWithoutOnContentPieceInput
   onThing: ThingUpdateOneWithoutContentInput
+  copiedToThings: ThingUpdateManyWithoutCopiedInContentInput
 }
 
 input ContentPieceUpdateWithoutOnThingDataInput {
   content: String
   summary: String
   comments: CommentUpdateManyWithoutOnContentPieceInput
+  copiedToThings: ThingUpdateManyWithoutCopiedInContentInput
   onTag: TagUpdateOneWithoutContentInput
 }
 
 input ContentPieceUpdateWithWhereUniqueNestedInput {
   where: ContentPieceWhereUniqueInput!
   data: ContentPieceUpdateDataInput!
+}
+
+input ContentPieceUpdateWithWhereUniqueWithoutCopiedToThingsInput {
+  where: ContentPieceWhereUniqueInput!
+  data: ContentPieceUpdateWithoutCopiedToThingsDataInput!
 }
 
 input ContentPieceUpdateWithWhereUniqueWithoutOnTagInput {
@@ -932,6 +981,12 @@ input ContentPieceUpsertWithWhereUniqueNestedInput {
   where: ContentPieceWhereUniqueInput!
   update: ContentPieceUpdateDataInput!
   create: ContentPieceCreateInput!
+}
+
+input ContentPieceUpsertWithWhereUniqueWithoutCopiedToThingsInput {
+  where: ContentPieceWhereUniqueInput!
+  update: ContentPieceUpdateWithoutCopiedToThingsDataInput!
+  create: ContentPieceCreateWithoutCopiedToThingsInput!
 }
 
 input ContentPieceUpsertWithWhereUniqueWithoutOnTagInput {
@@ -993,6 +1048,9 @@ input ContentPieceWhereInput {
   comments_some: CommentWhereInput
   comments_none: CommentWhereInput
   onThing: ThingWhereInput
+  copiedToThings_every: ThingWhereInput
+  copiedToThings_some: ThingWhereInput
+  copiedToThings_none: ThingWhereInput
   onTag: TagWhereInput
   AND: [ContentPieceWhereInput!]
   OR: [ContentPieceWhereInput!]
@@ -4154,6 +4212,7 @@ type Thing {
   featuredImage: String
   link: String
   content(where: ContentPieceWhereInput, orderBy: ContentPieceOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ContentPiece!]
+  copiedInContent(where: ContentPieceWhereInput, orderBy: ContentPieceOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ContentPiece!]
   contentOrder: [String!]!
   summary: String
   partOfTags(where: TagWhereInput, orderBy: TagOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Tag!]
@@ -4188,6 +4247,7 @@ input ThingCreateInput {
   featuredImage: String
   link: String
   content: ContentPieceCreateManyWithoutOnThingInput
+  copiedInContent: ContentPieceCreateManyWithoutCopiedToThingsInput
   contentOrder: ThingCreatecontentOrderInput
   summary: String
   partOfTags: TagCreateManyWithoutConnectedThingsInput
@@ -4205,6 +4265,11 @@ input ThingCreateInput {
 
 input ThingCreateManyWithoutAuthorInput {
   create: [ThingCreateWithoutAuthorInput!]
+  connect: [ThingWhereUniqueInput!]
+}
+
+input ThingCreateManyWithoutCopiedInContentInput {
+  create: [ThingCreateWithoutCopiedInContentInput!]
   connect: [ThingWhereUniqueInput!]
 }
 
@@ -4244,6 +4309,7 @@ input ThingCreateWithoutAuthorInput {
   featuredImage: String
   link: String
   content: ContentPieceCreateManyWithoutOnThingInput
+  copiedInContent: ContentPieceCreateManyWithoutCopiedToThingsInput
   contentOrder: ThingCreatecontentOrderInput
   summary: String
   partOfTags: TagCreateManyWithoutConnectedThingsInput
@@ -4266,6 +4332,7 @@ input ThingCreateWithoutCommentsInput {
   featuredImage: String
   link: String
   content: ContentPieceCreateManyWithoutOnThingInput
+  copiedInContent: ContentPieceCreateManyWithoutCopiedToThingsInput
   contentOrder: ThingCreatecontentOrderInput
   summary: String
   partOfTags: TagCreateManyWithoutConnectedThingsInput
@@ -4286,6 +4353,29 @@ input ThingCreateWithoutContentInput {
   author: MemberCreateOneWithoutCreatedThingsInput!
   featuredImage: String
   link: String
+  copiedInContent: ContentPieceCreateManyWithoutCopiedToThingsInput
+  contentOrder: ThingCreatecontentOrderInput
+  summary: String
+  partOfTags: TagCreateManyWithoutConnectedThingsInput
+  partOfStacks: StackCreateManyWithoutConnectedThingsInput
+  color: String
+  votes: VoteCreateManyWithoutOnThingInput
+  passes: PassCreateManyWithoutOnThingInput
+  score: Int
+  winner: DateTime
+  comments: CommentCreateManyWithoutOnThingInput
+  eliminated: Boolean
+  finalistDate: DateTime
+  privacy: PrivacySetting
+}
+
+input ThingCreateWithoutCopiedInContentInput {
+  id: ID
+  title: String
+  author: MemberCreateOneWithoutCreatedThingsInput!
+  featuredImage: String
+  link: String
+  content: ContentPieceCreateManyWithoutOnThingInput
   contentOrder: ThingCreatecontentOrderInput
   summary: String
   partOfTags: TagCreateManyWithoutConnectedThingsInput
@@ -4308,6 +4398,7 @@ input ThingCreateWithoutPartOfStacksInput {
   featuredImage: String
   link: String
   content: ContentPieceCreateManyWithoutOnThingInput
+  copiedInContent: ContentPieceCreateManyWithoutCopiedToThingsInput
   contentOrder: ThingCreatecontentOrderInput
   summary: String
   partOfTags: TagCreateManyWithoutConnectedThingsInput
@@ -4329,6 +4420,7 @@ input ThingCreateWithoutPartOfTagsInput {
   featuredImage: String
   link: String
   content: ContentPieceCreateManyWithoutOnThingInput
+  copiedInContent: ContentPieceCreateManyWithoutCopiedToThingsInput
   contentOrder: ThingCreatecontentOrderInput
   summary: String
   partOfStacks: StackCreateManyWithoutConnectedThingsInput
@@ -4350,6 +4442,7 @@ input ThingCreateWithoutPassesInput {
   featuredImage: String
   link: String
   content: ContentPieceCreateManyWithoutOnThingInput
+  copiedInContent: ContentPieceCreateManyWithoutCopiedToThingsInput
   contentOrder: ThingCreatecontentOrderInput
   summary: String
   partOfTags: TagCreateManyWithoutConnectedThingsInput
@@ -4371,6 +4464,7 @@ input ThingCreateWithoutVotesInput {
   featuredImage: String
   link: String
   content: ContentPieceCreateManyWithoutOnThingInput
+  copiedInContent: ContentPieceCreateManyWithoutCopiedToThingsInput
   contentOrder: ThingCreatecontentOrderInput
   summary: String
   partOfTags: TagCreateManyWithoutConnectedThingsInput
@@ -4600,6 +4694,7 @@ input ThingUpdateInput {
   featuredImage: String
   link: String
   content: ContentPieceUpdateManyWithoutOnThingInput
+  copiedInContent: ContentPieceUpdateManyWithoutCopiedToThingsInput
   contentOrder: ThingUpdatecontentOrderInput
   summary: String
   partOfTags: TagUpdateManyWithoutConnectedThingsInput
@@ -4651,6 +4746,18 @@ input ThingUpdateManyWithoutAuthorInput {
   disconnect: [ThingWhereUniqueInput!]
   update: [ThingUpdateWithWhereUniqueWithoutAuthorInput!]
   upsert: [ThingUpsertWithWhereUniqueWithoutAuthorInput!]
+  deleteMany: [ThingScalarWhereInput!]
+  updateMany: [ThingUpdateManyWithWhereNestedInput!]
+}
+
+input ThingUpdateManyWithoutCopiedInContentInput {
+  create: [ThingCreateWithoutCopiedInContentInput!]
+  delete: [ThingWhereUniqueInput!]
+  connect: [ThingWhereUniqueInput!]
+  set: [ThingWhereUniqueInput!]
+  disconnect: [ThingWhereUniqueInput!]
+  update: [ThingUpdateWithWhereUniqueWithoutCopiedInContentInput!]
+  upsert: [ThingUpsertWithWhereUniqueWithoutCopiedInContentInput!]
   deleteMany: [ThingScalarWhereInput!]
   updateMany: [ThingUpdateManyWithWhereNestedInput!]
 }
@@ -4725,6 +4832,7 @@ input ThingUpdateWithoutAuthorDataInput {
   featuredImage: String
   link: String
   content: ContentPieceUpdateManyWithoutOnThingInput
+  copiedInContent: ContentPieceUpdateManyWithoutCopiedToThingsInput
   contentOrder: ThingUpdatecontentOrderInput
   summary: String
   partOfTags: TagUpdateManyWithoutConnectedThingsInput
@@ -4746,6 +4854,7 @@ input ThingUpdateWithoutCommentsDataInput {
   featuredImage: String
   link: String
   content: ContentPieceUpdateManyWithoutOnThingInput
+  copiedInContent: ContentPieceUpdateManyWithoutCopiedToThingsInput
   contentOrder: ThingUpdatecontentOrderInput
   summary: String
   partOfTags: TagUpdateManyWithoutConnectedThingsInput
@@ -4765,6 +4874,28 @@ input ThingUpdateWithoutContentDataInput {
   author: MemberUpdateOneRequiredWithoutCreatedThingsInput
   featuredImage: String
   link: String
+  copiedInContent: ContentPieceUpdateManyWithoutCopiedToThingsInput
+  contentOrder: ThingUpdatecontentOrderInput
+  summary: String
+  partOfTags: TagUpdateManyWithoutConnectedThingsInput
+  partOfStacks: StackUpdateManyWithoutConnectedThingsInput
+  color: String
+  votes: VoteUpdateManyWithoutOnThingInput
+  passes: PassUpdateManyWithoutOnThingInput
+  score: Int
+  winner: DateTime
+  comments: CommentUpdateManyWithoutOnThingInput
+  eliminated: Boolean
+  finalistDate: DateTime
+  privacy: PrivacySetting
+}
+
+input ThingUpdateWithoutCopiedInContentDataInput {
+  title: String
+  author: MemberUpdateOneRequiredWithoutCreatedThingsInput
+  featuredImage: String
+  link: String
+  content: ContentPieceUpdateManyWithoutOnThingInput
   contentOrder: ThingUpdatecontentOrderInput
   summary: String
   partOfTags: TagUpdateManyWithoutConnectedThingsInput
@@ -4786,6 +4917,7 @@ input ThingUpdateWithoutPartOfStacksDataInput {
   featuredImage: String
   link: String
   content: ContentPieceUpdateManyWithoutOnThingInput
+  copiedInContent: ContentPieceUpdateManyWithoutCopiedToThingsInput
   contentOrder: ThingUpdatecontentOrderInput
   summary: String
   partOfTags: TagUpdateManyWithoutConnectedThingsInput
@@ -4806,6 +4938,7 @@ input ThingUpdateWithoutPartOfTagsDataInput {
   featuredImage: String
   link: String
   content: ContentPieceUpdateManyWithoutOnThingInput
+  copiedInContent: ContentPieceUpdateManyWithoutCopiedToThingsInput
   contentOrder: ThingUpdatecontentOrderInput
   summary: String
   partOfStacks: StackUpdateManyWithoutConnectedThingsInput
@@ -4826,6 +4959,7 @@ input ThingUpdateWithoutPassesDataInput {
   featuredImage: String
   link: String
   content: ContentPieceUpdateManyWithoutOnThingInput
+  copiedInContent: ContentPieceUpdateManyWithoutCopiedToThingsInput
   contentOrder: ThingUpdatecontentOrderInput
   summary: String
   partOfTags: TagUpdateManyWithoutConnectedThingsInput
@@ -4846,6 +4980,7 @@ input ThingUpdateWithoutVotesDataInput {
   featuredImage: String
   link: String
   content: ContentPieceUpdateManyWithoutOnThingInput
+  copiedInContent: ContentPieceUpdateManyWithoutCopiedToThingsInput
   contentOrder: ThingUpdatecontentOrderInput
   summary: String
   partOfTags: TagUpdateManyWithoutConnectedThingsInput
@@ -4863,6 +4998,11 @@ input ThingUpdateWithoutVotesDataInput {
 input ThingUpdateWithWhereUniqueWithoutAuthorInput {
   where: ThingWhereUniqueInput!
   data: ThingUpdateWithoutAuthorDataInput!
+}
+
+input ThingUpdateWithWhereUniqueWithoutCopiedInContentInput {
+  where: ThingWhereUniqueInput!
+  data: ThingUpdateWithoutCopiedInContentDataInput!
 }
 
 input ThingUpdateWithWhereUniqueWithoutPartOfStacksInput {
@@ -4899,6 +5039,12 @@ input ThingUpsertWithWhereUniqueWithoutAuthorInput {
   where: ThingWhereUniqueInput!
   update: ThingUpdateWithoutAuthorDataInput!
   create: ThingCreateWithoutAuthorInput!
+}
+
+input ThingUpsertWithWhereUniqueWithoutCopiedInContentInput {
+  where: ThingWhereUniqueInput!
+  update: ThingUpdateWithoutCopiedInContentDataInput!
+  create: ThingCreateWithoutCopiedInContentInput!
 }
 
 input ThingUpsertWithWhereUniqueWithoutPartOfStacksInput {
@@ -4974,6 +5120,9 @@ input ThingWhereInput {
   content_every: ContentPieceWhereInput
   content_some: ContentPieceWhereInput
   content_none: ContentPieceWhereInput
+  copiedInContent_every: ContentPieceWhereInput
+  copiedInContent_some: ContentPieceWhereInput
+  copiedInContent_none: ContentPieceWhereInput
   summary: String
   summary_not: String
   summary_in: [String!]

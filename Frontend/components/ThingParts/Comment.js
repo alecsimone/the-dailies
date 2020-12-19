@@ -576,7 +576,7 @@ Comment.propTypes = {
       })
    }),
    comments: PropTypes.array.isRequired,
-   type: PropTypes.oneOf(['Tag', 'Thing']).isRequired,
+   type: PropTypes.oneOf(['Tag', 'Thing', 'ContentPiece']).isRequired,
    id: PropTypes.string.isRequired
 };
 

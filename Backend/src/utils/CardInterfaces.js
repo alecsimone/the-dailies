@@ -99,7 +99,13 @@ const contentPieceFields = `
       ${commentFields}
    }
    onThing {
+      __typename
       id
+   }
+   copiedToThings {
+      __typename
+      id
+      title
    }
    summary
 `;
@@ -126,9 +132,10 @@ const smallThingCardFields = `
       rep
    }
    content {
-      __typename
-      id
-      content
+      ${contentPieceFields}
+   }
+   copiedInContent {
+      ${contentPieceFields}
    }
    summary
    contentOrder
@@ -194,6 +201,9 @@ const fullThingFields = `
    featuredImage
    link
    content {
+      ${contentPieceFields}
+   }
+   copiedInContent {
       ${contentPieceFields}
    }
    summary

@@ -159,12 +159,22 @@ const StyledContent = styled.section`
             ${props => props.theme.midScreenBreakpoint} {
                right: 1rem;
             }
+            .addToContainer {
+               position: relative;
+            }
          }
          img.buttons,
          svg.buttons {
             width: 100%;
             &.trashIcon {
                opacity: 0.8;
+            }
+            &.addTo {
+               opacity: 0.4;
+               transform: rotate(45deg);
+               &.open {
+                  transform: rotate(0deg);
+               }
             }
             &.editThis {
                opacity: 0.4;
