@@ -275,7 +275,10 @@ const StyledContent = styled.section`
                ${props => setAlpha(props.theme.lowContrastGrey, 0.6)};
             max-width: 80%;
             margin: auto;
-            padding-top: 1rem;
+            padding: 1rem 0;
+            ${props => props.theme.midScreenBreakpoint} {
+               padding: 1rem 0 0;
+            }
             .basicInfo {
                a {
                   cursor: pointer;
