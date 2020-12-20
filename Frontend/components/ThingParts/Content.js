@@ -256,31 +256,42 @@ const Content = ({ context, canEdit, linkedPiece }) => {
          fullContent = content;
       }
       orderedContent = orderContent(fullContent, contentOrder);
-      contentElements = orderedContent.map(contentPiece => (
-         <div
-            key={contentPiece.id}
-            className={reordering ? 'reordering' : 'locked'}
-         >
-            <ContentPiece
-               id={contentPiece.id}
-               thingID={id}
-               canEdit={canEdit}
-               rawContentString={contentPiece.content}
-               comments={contentPiece.comments}
-               summary={contentPiece.summary}
-               expanded={contentExpansionObject[contentPiece.id]}
-               setExpanded={handleContentExpansion}
-               deleteContentPiece={deletePiece}
-               editContentPiece={editPiece}
-               setReordering={setReordering}
-               reordering={reordering}
-               highlighted={linkedPiece === contentPiece.id}
-               stickifier={stickifier}
-               stickifierData={stickingData}
+      contentElements = orderedContent.map(contentPiece => {
+         console.log(contentPiece);
+         const [originalContentCheck] = content.filter(
+            piece => piece.id === contentPiece.id
+         );
+         const isOriginalContent = originalContentCheck != null;
+         return (
+            <div
                key={contentPiece.id}
-            />
-         </div>
-      ));
+               className={reordering ? 'reordering' : 'locked'}
+            >
+               <ContentPiece
+                  id={contentPiece.id}
+                  thingID={id}
+                  canEdit={canEdit}
+                  rawContentString={contentPiece.content}
+                  comments={contentPiece.comments}
+                  summary={contentPiece.summary}
+                  expanded={contentExpansionObject[contentPiece.id]}
+                  setExpanded={handleContentExpansion}
+                  deleteContentPiece={deletePiece}
+                  editContentPiece={editPiece}
+                  setReordering={setReordering}
+                  reordering={reordering}
+                  highlighted={linkedPiece === contentPiece.id}
+                  stickifier={stickifier}
+                  stickifierData={stickingData}
+                  isCopied={!isOriginalContent}
+                  context={context}
+                  onThing={contentPiece.onThing}
+                  copiedToThings={contentPiece.copiedToThings}
+                  key={contentPiece.id}
+               />
+            </div>
+         );
+      });
    }
 
    if (process.browser && canEdit && reordering) {

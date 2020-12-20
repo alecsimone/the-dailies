@@ -101,6 +101,7 @@ const contentPieceFields = `
    onThing {
       __typename
       id
+      title
    }
    copiedToThings {
       __typename

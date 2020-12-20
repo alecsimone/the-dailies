@@ -214,9 +214,14 @@ const canSeeThing = async (ctx, thingData) => {
    }
    if (
       thingData.privacy === 'FriendsOfFriends' &&
-      !thingData.author.friends.some(friend =>
-         friend.friends.some(friendOfFriend => friendOfFriend.id === memberID)
-      )
+      !thingData.author.friends.some(friend => {
+         if (friend == null || friend.friends == null) {
+            return false;
+         }
+         return friend.friends.some(
+            friendOfFriend => friendOfFriend.id === memberID
+         );
+      })
    ) {
       return false;
    }

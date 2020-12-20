@@ -169,6 +169,9 @@ const StyledContent = styled.section`
             &.trashIcon {
                opacity: 0.8;
             }
+            &.unlink {
+               opacity: 0.6;
+            }
             &.addTo {
                opacity: 0.4;
                transform: rotate(45deg);
@@ -263,6 +266,20 @@ const StyledContent = styled.section`
             }
             .contentSlider svg.arrow {
                margin: 0; /* need this here because I'm not sure how to make the svg.arrow on ThingCards more specific from within them */
+            }
+         }
+         .otherLocations {
+            font-size: ${props => props.theme.miniText};
+            text-align: center;
+            border-top: 1px solid
+               ${props => setAlpha(props.theme.lowContrastGrey, 0.6)};
+            max-width: 80%;
+            margin: auto;
+            padding-top: 1rem;
+            .basicInfo {
+               a {
+                  cursor: pointer;
+               }
             }
          }
       }

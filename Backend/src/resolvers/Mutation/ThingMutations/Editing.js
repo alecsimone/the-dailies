@@ -600,3 +600,21 @@ async function copyContentPiece(parent, {contentPieceID, newThingID}, ctx, info)
    return updatedStuff;
 }
 exports.copyContentPiece = copyContentPiece;
+
+async function unlinkContentPiece(parent, {contentPieceID, thingID}, ctx, info) {
+   loggedInGate(ctx);
+   fullMemberGate(ctx.req.member);
+   editPermissionGate({}, thingID, 'Thing', ctx);
+
+   const dataObj = {
+      copiedInContent: {
+         disconnect: {
+            id: contentPieceID
+         }
+      }
+   }
+
+   const updatedStuff = await properUpdateStuff(dataObj, thingID, 'Thing', ctx);
+   return updatedStuff;
+}
+exports.unlinkContentPiece = unlinkContentPiece;

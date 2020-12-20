@@ -29,7 +29,8 @@ const {
    deleteTax,
    setColor,
    editSummary,
-   copyContentPiece
+   copyContentPiece,
+   unlinkContentPiece
 } = require('./Mutation/ThingMutations/Editing');
 const {
    initiateTwitterLogin,
@@ -73,7 +74,8 @@ const Mutations = {
    vote,
    toggleBroadcastView,
    editSummary,
-   copyContentPiece
+   copyContentPiece,
+   unlinkContentPiece
 };
 
 module.exports = Mutations;

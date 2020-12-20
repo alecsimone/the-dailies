@@ -1,4 +1,6 @@
+import gql from 'graphql-tag';
 import React, { useState, useContext } from 'react';
+import Link from 'next/link';
 import { useMutation } from '@apollo/react-hooks';
 import PropTypes from 'prop-types';
 import { ThemeContext } from 'styled-components';
@@ -20,6 +22,21 @@ import ArrowIcon from '../Icons/Arrow';
 import X from '../Icons/X';
 import { stickifier } from '../../lib/ContentHandling';
 import CopyContentInterface from './CopyContentInterface';
+import { fullThingFields } from '../../lib/CardInterfaces';
+
+const UNLINK_CONTENTPIECE_MUTATION = gql`
+   mutation UNLINK_CONTENTPIECE_MUTATION(
+      $contentPieceID: ID!
+      $thingID: ID!
+   ) {
+      unlinkContentPiece(
+         contentPieceID: $contentPieceID
+         thingID: $thingID
+      ) {
+         ${fullThingFields}
+      }
+   }
+`;
 
 const ContentPiece = ({
    id,
@@ -36,10 +53,15 @@ const ContentPiece = ({
    reordering,
    highlighted,
    stickifier,
+   isCopied,
+   context,
+   onThing,
+   copiedToThings,
    stickifierData
 }) => {
    const { me } = useContext(MemberContext);
    const { midScreenBPWidthRaw } = useContext(ThemeContext);
+   const fullThingData = useContext(context);
 
    const [editable, setEditable] = useState(false);
    const [editedContent, setEditedContent] = useState(rawContentString);
@@ -47,6 +69,7 @@ const ContentPiece = ({
    const [commentText, setCommentText] = useState('');
 
    const [showingAddToBox, setShowingAddToBox] = useState(false);
+   const [showingOtherPlaces, setShowingOtherPlaces] = useState(false);
 
    const [touchStart, setTouchStart] = useState(0);
    const [touchEnd, setTouchEnd] = useState(0);
@@ -65,6 +88,8 @@ const ContentPiece = ({
    };
 
    const [addComment] = useMutation(ADD_COMMENT_MUTATION);
+
+   const [unlinkContentPiece] = useMutation(UNLINK_CONTENTPIECE_MUTATION);
 
    const sendNewComment = async () => {
       const now = new Date();
@@ -251,6 +276,69 @@ const ContentPiece = ({
       contentArea = contentElement;
    }
 
+   let otherLocations = false;
+   let copiedFrom;
+   let alsoFoundIn;
+   if (isCopied && onThing != null && onThing.id !== thingID) {
+      copiedFrom = (
+         <div>
+            Copied from{' '}
+            <Link
+               href={{
+                  pathname: '/thing',
+                  query: { id: onThing.id, piece: id }
+               }}
+            >
+               <a>{onThing.title}</a>
+            </Link>
+         </div>
+      );
+      otherLocations = true;
+   }
+   if (copiedToThings != null && copiedToThings.length > 0) {
+      const otherThingsArray = copiedToThings.filter(
+         thing => thing.id != thingID
+      );
+      if (otherThingsArray.length > 0) {
+         const otherPlaces = otherThingsArray.map(thing => (
+            <div>
+               <Link
+                  href={{
+                     pathname: '/thing',
+                     query: { id: thing.id, piece: id }
+                  }}
+               >
+                  <a>{thing.title}</a>
+               </Link>
+            </div>
+         ));
+         alsoFoundIn = (
+            <div>
+               <div className="basicInfo">
+                  Used in{' '}
+                  <a onClick={() => setShowingOtherPlaces(!showingOtherPlaces)}>
+                     {' '}
+                     {otherThingsArray.length} other thing
+                     {otherThingsArray.length > 1 ? 's' : ''}
+                  </a>
+               </div>
+               {showingOtherPlaces && <div>{otherPlaces}</div>}
+            </div>
+         );
+         otherLocations = true;
+      }
+   }
+   if (otherLocations) {
+      otherLocations = (
+         <div className="otherLocations">
+            {copiedFrom}
+            {alsoFoundIn}
+         </div>
+      );
+   } else {
+      otherLocations = null;
+   }
+
    return (
       <div
          className={highlighted ? 'contentBlock highlighted' : 'contentBlock'}
@@ -332,11 +420,47 @@ const ContentPiece = ({
                      }}
                   />
                )}
-               {editable && (
+               {editable && !isCopied && (
                   <TrashIcon
                      className="delete buttons"
                      onMouseDown={e => e.stopPropagation()}
                      onClick={() => deleteContentPiece(id)}
+                  />
+               )}
+               {editable && isCopied && (
+                  <X
+                     className="delete buttons unlink"
+                     onMouseDown={e => e.stopPropagation()}
+                     onClick={() => {
+                        if (
+                           confirm(
+                              'This content piece was copied from a different thing, so this action will only unlink it from this thing, not delete it. It will still exist in its original location, as well as any other places it might have been copied to.'
+                           )
+                        ) {
+                           const unlinkParameterObject = {
+                              variables: {
+                                 contentPieceID: id,
+                                 thingID
+                              }
+                           };
+                           if (fullThingData.__typename === 'Thing') {
+                              const oldCopiedContent =
+                                 fullThingData.copiedInContent;
+                              const newCopiedContent = oldCopiedContent.filter(
+                                 piece => piece.id !== id
+                              );
+                              const newThingData = {
+                                 ...fullThingData,
+                                 copiedInContent: newCopiedContent
+                              };
+                              unlinkParameterObject.optimisticResponse = {
+                                 __typename: 'Mutation',
+                                 unlinkContentPiece: newThingData
+                              };
+                           }
+                           unlinkContentPiece(unlinkParameterObject);
+                        }
+                     }}
                   />
                )}
                {editable && (
@@ -346,7 +470,20 @@ const ContentPiece = ({
                         className={`addTo buttons${
                            showingAddToBox ? ' open' : ''
                         }`}
-                        onClick={() => setShowingAddToBox(!showingAddToBox)}
+                        onClick={() => {
+                           setShowingAddToBox(!showingAddToBox);
+                           if (!showingAddToBox) {
+                              window.setTimeout(() => {
+                                 const thisAddToInterface = document.querySelector(
+                                    `#addToInterface_${id}`
+                                 );
+                                 const thisInput = thisAddToInterface.querySelector(
+                                    'input.searchBox'
+                                 );
+                                 thisInput.focus();
+                              }, 1);
+                           }
+                        }}
                      />
                      {showingAddToBox && (
                         <CopyContentInterface
@@ -389,6 +526,7 @@ const ContentPiece = ({
                   />
                )}
             </div>
+            {otherLocations}
          </div>
          {showingComments && !isSmallScreen && commentsElement}
       </div>
