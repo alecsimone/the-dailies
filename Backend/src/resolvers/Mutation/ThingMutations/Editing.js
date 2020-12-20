@@ -546,21 +546,53 @@ async function copyContentPiece(parent, {contentPieceID, newThingID}, ctx, info)
    fullMemberGate(ctx.req.member);
    editPermissionGate({}, newThingID, 'Thing', ctx);
 
-   // const oldThing = await ctx.db.query.thing(
-   //    {
-   //       where: {
-   //          id: newThingID
-   //       }
-   //    },
-   //    `{id copiedInContent {id}}`
-   // );
-   // console.log(oldThing);
+   const oldThing = await ctx.db.query.thing(
+      {
+         where: {
+            id: newThingID
+         }
+      },
+      `{id content {id} copiedInContent {id} contentOrder}`
+   );
+
+   // Make a new array containing the content, previous copied in content, and the new copied in content
+   let originalContent = [];
+   if (oldThing.content != null) {
+      originalContent = oldThing.content.map(contentObject => contentObject.id);
+   }
+
+   let oldCopiedContent = [];
+   if (oldThing.copiedInContent != null) {
+      oldCopiedContent = oldThing.copiedInContent.map(contentObject => contentObject.id);
+   }
+
+   const allContentArray = originalContent.concat(oldCopiedContent);
+   allContentArray.push(contentPieceID);
+
+   // Go through old content order, add anything that still exists to a new order array
+   const {contentOrder} = oldThing;
+   let newContentOrder = []
+   if (contentOrder != null) {
+      newContentOrder = contentOrder.filter(
+         contentID => allContentArray.includes(contentID)
+      );
+   }
+
+   // Go through the allContentArray and filter out anything that's already in our content order
+   const filteredContentArray = allContentArray.filter(contentID => !newContentOrder.includes(contentID));
+
+   // Add any content pieces that weren't in the old order array. Because we used concat, originalContent will be first in the allContentArray, followed by old copied in content, followed by the new copied in content, so we can just iterate over that
+   filteredContentArray.forEach(contentID => newContentOrder.push(contentID));
+
 
    const dataObj = {
       copiedInContent: {
          connect: {
             id: contentPieceID
          }
+      },
+      contentOrder: {
+         set: newContentOrder
       }
    }
 
