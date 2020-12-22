@@ -167,9 +167,20 @@ const Styling = props => (
                      .
                   </p>
                   <p>
-                     If you don't provide a valid URL for the link URL inside
-                     the parentheses, we assume it's the ID of a Thing, and
-                     we'll make the link point at a thing with that ID.
+                     <span className="emphasis">
+                        For a shortcut, you can use the hotkey ctrl/cmd + k
+                     </span>
+                     . If you have text selected when you do that, it will
+                     automatically make it the display text for your link and
+                     put your cursor inside the parentheses to add the URL. If
+                     you don't have text selected it will just drop a blank link
+                     tag in and put your cursor inside the square brackets to
+                     add the display text.
+                  </p>
+                  <p>
+                     Also, if you don't provide a valid URL for the link URL
+                     inside the parentheses, we assume it's the ID of a Thing,
+                     and we'll make the link point at a thing with that ID.
                   </p>
                </li>
                <li>

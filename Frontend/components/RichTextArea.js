@@ -168,6 +168,36 @@ const wrapTextWithTag = (e, tag, textRef, setText) => {
    );
 };
 
+const linkifyText = (e, textRef, setText) => {
+   const thisInput = e.target;
+   const { selectionStart, selectionEnd } = e.target;
+
+   const before = textRef.current.substring(0, selectionStart);
+   const selection = textRef.current.substring(selectionStart, selectionEnd);
+   const after = textRef.current.substring(selectionEnd);
+
+   const newText = `${before}[${selection}]()${after}`;
+
+   // We want to put the cursor inside the parentheses
+   let newSelectionStart;
+   let newSelectionEnd;
+   if (selectionStart !== selectionEnd) {
+      newSelectionStart = selectionEnd + 3;
+      newSelectionEnd = selectionEnd + 3;
+   } else {
+      newSelectionStart = selectionStart + 1;
+      newSelectionEnd = selectionStart + 1;
+   }
+
+   setText(newText);
+   textRef.current = newText;
+   // we need to make sure the text has changed before we set the new selection, otherwise it won't be based on the updated text
+   window.setTimeout(
+      () => thisInput.setSelectionRange(newSelectionStart, newSelectionEnd),
+      1
+   );
+};
+
 const encloseSelectedText = (e, textRef, setText) => {
    e.preventDefault();
 
@@ -402,6 +432,10 @@ const RichTextArea = ({
       if (e.key === 'u' && (e.ctrlKey || e.metaKey)) {
          e.preventDefault();
          wrapTextWithTag(e, '__', textRef, setText);
+      }
+      if (e.key === 'k' && (e.ctrlKey || e.metaKey)) {
+         e.preventDefault();
+         linkifyText(e, textRef, setText);
       }
    };
 
