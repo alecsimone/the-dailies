@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/react-hooks';
 import { Router } from 'next/router';
 import { toast } from 'react-toastify';
+import debounce from 'lodash.debounce';
 import { SEARCH_QUERY } from '../SearchResults';
 import { setAlpha } from '../../styles/functions';
 import { fullThingFields } from '../../lib/CardInterfaces';
@@ -66,6 +67,12 @@ const StyledCopyContentInterface = styled.div`
       }
    }
 `;
+
+const debouncedPostSearch = debounce(
+   (postSearch, searchTerm) => postSearch(searchTerm),
+   200,
+   true
+);
 
 const CopyContentInterface = ({ id, thingID, setShowingAddToBox }) => {
    const [searchTerm, setSearchTerm] = useState('');
@@ -191,17 +198,21 @@ const CopyContentInterface = ({ id, thingID, setShowingAddToBox }) => {
    };
    const navigateResultsRef = useRef(navigateResults);
 
-   const handleKeyUp = async e => {
-      if (e.key === 'Escape') closeResults();
-      if (e.key === 'Enter' || e.key === 'Tab') return;
-      if (searchTerm === '') return;
-
+   const postSearch = async searchTerm => {
       const searchResults = await search({
          variables: {
             string: searchTerm,
             isTitleOnly: true
          }
       });
+   };
+
+   const handleKeyUp = async e => {
+      if (e.key === 'Escape') closeResults();
+      if (e.key === 'Enter' || e.key === 'Tab') return;
+      if (searchTerm === '') return;
+
+      debouncedPostSearch(postSearch, searchTerm);
    };
 
    let postSearchResultElements;
