@@ -339,6 +339,12 @@ const ContentPiece = ({
       otherLocations = null;
    }
 
+   const secondMiddleOrRightClickListener = e => {
+      if (e.button === 1 || e.button === 2) {
+         setEditable(true);
+      }
+   };
+
    return (
       <div
          className={highlighted ? 'contentBlock highlighted' : 'contentBlock'}
@@ -364,24 +370,44 @@ const ContentPiece = ({
                className={canEdit ? 'contentPiece editable' : 'contentPiece'}
                key={id}
                onMouseUp={e => {
-                  if (!canEdit || reordering || isSmallScreen) return;
+                  if (!canEdit || reordering || editable) return;
 
-                  // If it's a right click, we don't want to switch to editing
-                  if (e.button !== 0) return;
-
-                  // If they clicked a link, we don't want to switch to editing
-                  if (e.target.closest('a') != null) return;
-                  // same for a thingCard
-                  if (e.target.closest('.thingCard') != null) return;
-                  // or any of the buttons
-                  if (e.target.closest('.buttons') != null) return;
-                  // or the expand/collapse arrow
-                  if (e.target.closest('.arrow') != null) return;
-
-                  const selection = window.getSelection();
-                  if (selection.type === 'Caret' && !editable) {
-                     setEditable(true);
+                  if (e.button === 1 || e.button === 2) {
+                     window.setTimeout(
+                        () =>
+                           window.addEventListener(
+                              'mouseup',
+                              secondMiddleOrRightClickListener
+                           ),
+                        1
+                     );
+                     window.setTimeout(
+                        () =>
+                           window.removeEventListener(
+                              'mouseup',
+                              secondMiddleOrRightClickListener
+                           ),
+                        500
+                     );
                   }
+
+                  // Old code from when we were doing it with single left clicks in certain cases
+                  // // If it's a right click, we don't want to switch to editing
+                  // if (e.button !== 0) return;
+
+                  // // If they clicked a link, we don't want to switch to editing
+                  // if (e.target.closest('a') != null) return;
+                  // // same for a thingCard
+                  // if (e.target.closest('.thingCard') != null) return;
+                  // // or any of the buttons
+                  // if (e.target.closest('.buttons') != null) return;
+                  // // or the expand/collapse arrow
+                  // if (e.target.closest('.arrow') != null) return;
+
+                  // const selection = window.getSelection();
+                  // if (selection.type === 'Caret' && !editable) {
+                  //    setEditable(true);
+                  // }
                }}
             >
                {contentArea}
@@ -488,6 +514,7 @@ const ContentPiece = ({
                      {showingAddToBox && (
                         <CopyContentInterface
                            id={id}
+                           thingID={thingID}
                            setShowingAddToBox={setShowingAddToBox}
                         />
                      )}

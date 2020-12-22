@@ -2,9 +2,12 @@ import gql from 'graphql-tag';
 import styled from 'styled-components';
 import { useState, useRef, useEffect } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/react-hooks';
+import { Router } from 'next/router';
+import { toast } from 'react-toastify';
 import { SEARCH_QUERY } from '../SearchResults';
 import { setAlpha } from '../../styles/functions';
 import { fullThingFields } from '../../lib/CardInterfaces';
+import { home } from '../../config';
 
 const COPY_CONTENTPIECE_MUTATION = gql`
    mutation COPY_CONTENTPIECE_MUTATION(
@@ -44,9 +47,17 @@ const StyledCopyContentInterface = styled.div`
       border-bottom: 2px solid
          ${props => setAlpha(props.theme.lowContrastGrey, 0.4)};
       cursor: pointer;
-      &:last-child {
-         border-bottom: none;
+      &.highlighted {
+         background: ${props => props.theme.majorColor};
       }
+      &:hover {
+         background: ${props => props.theme.majorColor};
+      }
+   }
+   .newThingLine {
+      padding: 0.5rem 1rem;
+      background: ${props => props.theme.lightBlack};
+      cursor: pointer;
       &.highlighted {
          background: ${props => props.theme.majorColor};
       }
@@ -56,7 +67,7 @@ const StyledCopyContentInterface = styled.div`
    }
 `;
 
-const CopyContentInterface = ({ id, setShowingAddToBox }) => {
+const CopyContentInterface = ({ id, thingID, setShowingAddToBox }) => {
    const [searchTerm, setSearchTerm] = useState('');
    const [postSearchResults, setPostSearchResults] = useState([]);
    const [highlightedIndex, setHighlightedIndex] = useState(-1);
@@ -81,6 +92,11 @@ const CopyContentInterface = ({ id, setShowingAddToBox }) => {
          thisBox.style.top = '0';
       }
    });
+
+   useEffect(() => {
+      const thisBox = document.querySelector(`#addToInterface_${id}`);
+      thisBox.addEventListener('keydown', navigateResultsRef.current);
+   }, [id]);
 
    const [search, { loading: searchLoading }] = useLazyQuery(SEARCH_QUERY, {
       onCompleted: data => {
@@ -107,14 +123,37 @@ const CopyContentInterface = ({ id, setShowingAddToBox }) => {
    const chooseResult = selectedIndex => {
       let index = selectedIndex;
       if (selectedIndex == null) {
+         // If we click on a result, we pass the index when we call the function. If we select it with the keyboard, we don't, but we can get it from the highlightedIndexRef
          index = highlightedIndexRef.current;
       }
-      const selectedPost = searchResultsRef.current[index];
-
+      let selectedPost = {};
+      if (searchResultsRef.current[index] == null) {
+         // This is probably because the user selected the new post button, so let's check for that
+         if (
+            searchResultsRef.current.length === 0 ||
+            searchResultsRef.current.length === index
+         ) {
+            selectedPost.id = 'new';
+         } else {
+            // If it wasn't because the user selected the new post button, let's get out of here
+            return;
+         }
+      } else {
+         selectedPost = searchResultsRef.current[index];
+      }
       copyContentPiece({
          variables: {
             contentPieceID: id,
             newThingID: selectedPost.id
+         }
+      }).then(({ data }) => {
+         if (selectedPost.id === 'new' && process.browser) {
+            window.open(`${home}/thing?id=${data.copyContentPiece.id}`);
+         } else {
+            toast('Content has been copied!', {
+               position: 'bottom-center',
+               autoClose: 3000
+            });
          }
       });
 
@@ -127,7 +166,8 @@ const CopyContentInterface = ({ id, setShowingAddToBox }) => {
 
          // If we're at the end, newIndex goes back to the beginning, otherwise it's +1
          const newIndex =
-            highlightedIndexRef.current + 1 < searchResultsRef.current.length
+            highlightedIndexRef.current + 1 <
+            searchResultsRef.current.length + 1 // The +1 on the ref length is to allow for the new post option, which is not part of the search results
                ? highlightedIndexRef.current + 1
                : 0;
          setHighlightedIndex(newIndex);
@@ -138,7 +178,7 @@ const CopyContentInterface = ({ id, setShowingAddToBox }) => {
          // If we're at the beginning, newIndex goes to the end, otherwise it's -1
          const newIndex =
             highlightedIndexRef.current - 1 < 0
-               ? searchResultsRef.current.length - 1
+               ? searchResultsRef.current.length // We don't subtract 1 here to account for zero-based indexing to allow for the new post option, which is not part of the search results
                : highlightedIndexRef.current - 1;
          setHighlightedIndex(newIndex);
          highlightedIndexRef.current = newIndex;
@@ -154,6 +194,7 @@ const CopyContentInterface = ({ id, setShowingAddToBox }) => {
    const handleKeyUp = async e => {
       if (e.key === 'Escape') closeResults();
       if (e.key === 'Enter' || e.key === 'Tab') return;
+      if (searchTerm === '') return;
 
       const searchResults = await search({
          variables: {
@@ -161,9 +202,6 @@ const CopyContentInterface = ({ id, setShowingAddToBox }) => {
             isTitleOnly: true
          }
       });
-
-      const thisBox = document.querySelector(`#addToInterface_${id}`);
-      thisBox.addEventListener('keydown', navigateResultsRef.current);
    };
 
    let postSearchResultElements;
@@ -202,6 +240,16 @@ const CopyContentInterface = ({ id, setShowingAddToBox }) => {
             />
          </div>
          {searchTerm.length > 0 && postSearchResultElements}
+         <div
+            className={
+               highlightedIndex === searchResultsRef.current.length // Because of zero-based indexing, this will actually be one more than the highest index of the search results
+                  ? 'newThingLine highlighted'
+                  : 'newThingLine'
+            }
+            onClick={() => chooseResult(searchResultsRef.current.length)}
+         >
+            + New Thing
+         </div>
       </StyledCopyContentInterface>
    );
 };

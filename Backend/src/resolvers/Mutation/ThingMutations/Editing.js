@@ -544,6 +544,23 @@ exports.editSummary = editSummary;
 async function copyContentPiece(parent, {contentPieceID, newThingID}, ctx, info) {
    loggedInGate(ctx);
    fullMemberGate(ctx.req.member);
+
+   if (newThingID.toLowerCase() === 'new') {
+      const dataObj = {
+         copiedInContent: {
+            connect: {
+               id: contentPieceID
+            }
+         },
+         contentOrder: {
+            set: [contentPieceID]
+         }
+      }
+
+      const updatedStuff = await properUpdateStuff(dataObj, newThingID, 'Thing', ctx);
+      return updatedStuff;
+   }
+
    editPermissionGate({}, newThingID, 'Thing', ctx);
 
    const oldThing = await ctx.db.query.thing(

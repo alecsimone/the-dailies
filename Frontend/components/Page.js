@@ -2,6 +2,8 @@ import styled, { ThemeProvider, createGlobalStyle } from 'styled-components';
 import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.min.css';
 import Meta from './Header/Meta';
 import Header from './Header/Header';
 import BottomBar from './BottomBar';
@@ -360,6 +362,21 @@ const GlobalStyle = createGlobalStyle`
       display: inline-block;
       font-size: ${props => props.theme.tinyText};
    }
+   .Toastify__toast-container.dailiesStyle {
+      .Toastify__toast {
+         background: ${props => props.theme.deepBlack};
+         border: 2px solid
+            ${props => setAlpha(props.theme.lowContrastGrey, 0.5)};
+         border-radius: 3px;
+      }
+      .Toastify__toast-body {
+         color: ${props => props.theme.mainText};
+         padding: 1rem 3rem;
+      }
+      .Toastify__progress-bar {
+         background: ${props => props.theme.majorColor};
+      }
+   }
    .tweetHead {
          display: flex;
          align-items: center;
@@ -636,6 +653,7 @@ const Page = ({ children, pageProps }) => {
                   </>
                   <BottomBar />
                </StyledPage>
+               <ToastContainer className="dailiesStyle" />
             </ModalProvider>
          </ThemeProvider>
       </MemberProvider>

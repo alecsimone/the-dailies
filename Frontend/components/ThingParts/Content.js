@@ -257,7 +257,6 @@ const Content = ({ context, canEdit, linkedPiece }) => {
       }
       orderedContent = orderContent(fullContent, contentOrder);
       contentElements = orderedContent.map(contentPiece => {
-         console.log(contentPiece);
          const [originalContentCheck] = content.filter(
             piece => piece.id === contentPiece.id
          );

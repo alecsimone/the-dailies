@@ -45,6 +45,18 @@ const Styling = props => (
             things you can do:
             <ul>
                <li>
+                  <h4>Start / Cancel Editing</h4>
+                  <p>
+                     First off, you can make any text which you have permission
+                     to edit editable (or stop editing any text you might
+                     already be editing) by{' '}
+                     <span className="emphasis">
+                        either double right clicking or double middle clicking
+                        the text
+                     </span>
+                  </p>
+               </li>
+               <li>
                   <h4>Style Tag</h4>
                   <p>
                      You can enclose any text in a{' '}

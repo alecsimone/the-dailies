@@ -113,7 +113,7 @@ async function editPermissionGate(dataObj, id, type, ctx) {
 exports.editPermissionGate = editPermissionGate;
 
 async function properUpdateStuff(dataObj, id, type, ctx) {
-   if (id === 'new') {
+   if (id.toLowerCase() === 'new') {
       const currentMember = await ctx.db.query.member(
          {
             where: {

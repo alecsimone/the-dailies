@@ -63,7 +63,16 @@ const MyThings = ({ setShowingSidebar, scrollingSelector, borderSide }) => {
          );
       }
       let { myThings } = data;
-      myThings.sort((a, b) => (a.id < b.id ? 1 : -1));
+      myThings.sort((a, b) => {
+         const aDate = new Date(a.updatedAt);
+         const bDate = new Date(b.updatedAt);
+
+         const aTimestamp = aDate.getTime();
+         const bTimestamp = bDate.getTime();
+
+         return bTimestamp - aTimestamp;
+      });
+      // myThings.sort((a, b) => (a.id < b.id ? 1 : -1));
       if (me.broadcastView) {
          myThings = myThings.filter(thing => thing.privacy !== 'Private');
       }

@@ -238,8 +238,8 @@ const RichTextArea = ({
       }
    }, [text]);
 
-   const secondMiddleClickListener = e => {
-      if (e.button === 1) {
+   const secondMiddleOrRightClickListener = e => {
+      if (e.button === 1 || e.button === 2) {
          if (originalText.current !== textRef.current) {
             if (!confirm('Discard changes?')) {
                return;
@@ -529,12 +529,12 @@ const RichTextArea = ({
                   closeResults();
                }}
                onMouseUp={e => {
-                  if (e.button === 1) {
+                  if (e.button === 1 || e.button === 2) {
                      window.setTimeout(
                         () =>
                            window.addEventListener(
                               'mouseup',
-                              secondMiddleClickListener
+                              secondMiddleOrRightClickListener
                            ),
                         1
                      );
@@ -542,7 +542,7 @@ const RichTextArea = ({
                         () =>
                            window.removeEventListener(
                               'mouseup',
-                              secondMiddleClickListener
+                              secondMiddleOrRightClickListener
                            ),
                         500
                      );
