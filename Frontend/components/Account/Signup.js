@@ -60,6 +60,8 @@ const Signup = ({ callBack }) => {
             await signup({
                variables: { email, displayName, password },
                refetchQueries: [{ query: CURRENT_MEMBER_QUERY }]
+            }).catch(err => {
+               alert(err.message);
             });
             Router.push({
                pathname: '/'

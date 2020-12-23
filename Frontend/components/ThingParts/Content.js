@@ -189,6 +189,8 @@ const Content = ({ context, canEdit, linkedPiece }) => {
                });
             }
          }
+      }).catch(err => {
+         alert(err.message);
       });
    };
 
@@ -213,6 +215,8 @@ const Content = ({ context, canEdit, linkedPiece }) => {
                content: newContent
             }
          }
+      }).catch(err => {
+         alert(err.message);
       });
    };
 
@@ -239,6 +243,8 @@ const Content = ({ context, canEdit, linkedPiece }) => {
                summary: newSummary
             }
          }
+      }).catch(err => {
+         alert(err.message);
       });
 
       handleContentExpansion(contentPieceID, true);
@@ -338,6 +344,8 @@ const Content = ({ context, canEdit, linkedPiece }) => {
                         contentOrder: order
                      }
                   }
+               }).catch(err => {
+                  alert(err.message);
                });
             }}
          >

@@ -481,6 +481,8 @@ const RichTextArea = ({
             string: searchTerm,
             isTitleOnly: true
          }
+      }).catch(err => {
+         alert(err.message);
       });
 
       if (toolTip.style.display === 'none') {

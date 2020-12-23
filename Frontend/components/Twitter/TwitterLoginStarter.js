@@ -24,7 +24,9 @@ const TwitterLoginStarter = () => {
    const [initiateTwitterLogin] = useMutation(START_TWITTER_LOGIN);
 
    const startLogin = async () => {
-      const { data } = await initiateTwitterLogin();
+      const { data } = await initiateTwitterLogin().catch(err => {
+         alert(err.message);
+      });
       window.location.replace(data.initiateTwitterLogin.message);
    };
 

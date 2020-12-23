@@ -301,6 +301,8 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
                comments: contentArray[contentSliderPosition].comments
             }
          }
+      }).catch(err => {
+         alert(err.message);
       });
       // TODO: Add the update function a la Comments.js line 192
    };

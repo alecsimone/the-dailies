@@ -52,6 +52,8 @@ const ThingSourceLink = ({ canEdit }) => {
             link: currentLink,
             id
          }
+      }).catch(err => {
+         alert(err.message);
       });
       setEditable(false);
    };

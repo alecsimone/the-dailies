@@ -151,6 +151,8 @@ const NewThingForm = () => {
                   tags: formData.tags,
                   privacy: formData.privacy
                }
+            }).catch(err => {
+               alert(err.message);
             });
             Router.push({
                pathname: '/thing',

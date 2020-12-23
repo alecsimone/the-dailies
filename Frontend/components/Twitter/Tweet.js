@@ -337,6 +337,8 @@ const Tweet = props => {
                      };
                      const newThingData = await saveTweet({
                         variables
+                     }).catch(err => {
+                        alert(err.message);
                      });
                      if (process.browser) {
                         window.open(

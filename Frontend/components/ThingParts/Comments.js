@@ -220,6 +220,8 @@ const Comments = ({ context, linkedComment }) => {
                });
             }
          }
+      }).catch(err => {
+         alert(err.message);
       });
    };
 

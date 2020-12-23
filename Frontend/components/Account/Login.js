@@ -49,6 +49,8 @@ const Login = props => {
                   { query: CURRENT_MEMBER_QUERY },
                   { query: ALL_THINGS_QUERY }
                ]
+            }).catch(err => {
+               alert(err.message);
             });
             if (redirect !== false) {
                Router.push({

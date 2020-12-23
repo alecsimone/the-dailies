@@ -110,6 +110,8 @@ const ColorSelector = ({ initialColor, type, id }) => {
                color
             }
          }
+      }).catch(err => {
+         alert(err.message);
       });
    };
 

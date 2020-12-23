@@ -149,6 +149,8 @@ const TaxBox = ({ canEdit, personal }) => {
             searchTerm,
             personal
          }
+      }).catch(err => {
+         alert(err.message);
       });
    };
 
@@ -238,11 +240,17 @@ const TaxBox = ({ canEdit, personal }) => {
             if (taxInput.includes(',')) {
                const finalCommaLocation = taxInput.lastIndexOf(',');
                const preCommaInput = taxInput.substring(0, finalCommaLocation);
-               await sendNewTax({ title: preCommaInput });
+               await sendNewTax({ title: preCommaInput }).catch(err => {
+                  alert(err.message);
+               });
             }
-            await sendNewTax(filteredResults[highlightedIndex]);
+            await sendNewTax(filteredResults[highlightedIndex]).catch(err => {
+               alert(err.message);
+            });
          } else {
-            await sendNewTax({ title: taxInput });
+            await sendNewTax({ title: taxInput }).catch(err => {
+               alert(err.message);
+            });
          }
       }
    };
@@ -286,6 +294,8 @@ const TaxBox = ({ canEdit, personal }) => {
                partOfStacks: newStacks
             }
          }
+      }).catch(err => {
+         alert(err.message);
       });
       setTaxInput('');
    };

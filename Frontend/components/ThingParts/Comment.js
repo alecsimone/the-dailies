@@ -254,6 +254,8 @@ const Comment = ({
                comments
             }
          }
+      }).catch(err => {
+         alert(err.message);
       });
    };
 
@@ -343,6 +345,8 @@ const Comment = ({
                });
             }
          }
+      }).catch(err => {
+         alert(err.message);
       });
    };
 
@@ -515,9 +519,13 @@ const Comment = ({
                ) : (
                   <LinkIcon
                      onClick={async () => {
-                        await navigator.clipboard.writeText(
-                           `${home}/thing?id=${id}&comment=${comment.id}`
-                        );
+                        await navigator.clipboard
+                           .writeText(
+                              `${home}/thing?id=${id}&comment=${comment.id}`
+                           )
+                           .catch(err => {
+                              alert(err.message);
+                           });
                         setCopied(true);
                         setTimeout(() => setCopied(false), 3000);
                      }}

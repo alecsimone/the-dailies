@@ -156,6 +156,8 @@ const ContentPiece = ({
                });
             }
          }
+      }).catch(err => {
+         alert(err.message);
       });
    };
 
@@ -626,9 +628,11 @@ const ContentPiece = ({
                   <LinkIcon
                      className="directLink buttons"
                      onClick={async () => {
-                        await navigator.clipboard.writeText(
-                           `${home}/thing?id=${thingID}&piece=${id}`
-                        );
+                        await navigator.clipboard
+                           .writeText(`${home}/thing?id=${thingID}&piece=${id}`)
+                           .catch(err => {
+                              alert(err.message);
+                           });
                         setCopied(true);
                         setTimeout(() => setCopied(false), 3000);
                      }}

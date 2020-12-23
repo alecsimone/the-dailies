@@ -204,6 +204,8 @@ const CopyContentInterface = ({ id, thingID, setShowingAddToBox }) => {
             string: searchTerm,
             isTitleOnly: true
          }
+      }).catch(err => {
+         alert(err.message);
       });
    };
 
