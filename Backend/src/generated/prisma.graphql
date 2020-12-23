@@ -665,6 +665,8 @@ type ContentPiece {
   onThing: Thing
   copiedToThings(where: ThingWhereInput, orderBy: ThingOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Thing!]
   onTag: Tag
+  votes(where: VoteWhereInput, orderBy: VoteOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Vote!]
+  score: Int!
 }
 
 type ContentPieceConnection {
@@ -681,6 +683,8 @@ input ContentPieceCreateInput {
   onThing: ThingCreateOneWithoutContentInput
   copiedToThings: ThingCreateManyWithoutCopiedInContentInput
   onTag: TagCreateOneWithoutContentInput
+  votes: VoteCreateManyWithoutOnContentPieceInput
+  score: Int
 }
 
 input ContentPieceCreateManyInput {
@@ -708,6 +712,11 @@ input ContentPieceCreateOneWithoutCommentsInput {
   connect: ContentPieceWhereUniqueInput
 }
 
+input ContentPieceCreateOneWithoutVotesInput {
+  create: ContentPieceCreateWithoutVotesInput
+  connect: ContentPieceWhereUniqueInput
+}
+
 input ContentPieceCreateWithoutCommentsInput {
   id: ID
   content: String!
@@ -715,6 +724,8 @@ input ContentPieceCreateWithoutCommentsInput {
   onThing: ThingCreateOneWithoutContentInput
   copiedToThings: ThingCreateManyWithoutCopiedInContentInput
   onTag: TagCreateOneWithoutContentInput
+  votes: VoteCreateManyWithoutOnContentPieceInput
+  score: Int
 }
 
 input ContentPieceCreateWithoutCopiedToThingsInput {
@@ -724,6 +735,8 @@ input ContentPieceCreateWithoutCopiedToThingsInput {
   comments: CommentCreateManyWithoutOnContentPieceInput
   onThing: ThingCreateOneWithoutContentInput
   onTag: TagCreateOneWithoutContentInput
+  votes: VoteCreateManyWithoutOnContentPieceInput
+  score: Int
 }
 
 input ContentPieceCreateWithoutOnTagInput {
@@ -733,6 +746,8 @@ input ContentPieceCreateWithoutOnTagInput {
   comments: CommentCreateManyWithoutOnContentPieceInput
   onThing: ThingCreateOneWithoutContentInput
   copiedToThings: ThingCreateManyWithoutCopiedInContentInput
+  votes: VoteCreateManyWithoutOnContentPieceInput
+  score: Int
 }
 
 input ContentPieceCreateWithoutOnThingInput {
@@ -742,6 +757,19 @@ input ContentPieceCreateWithoutOnThingInput {
   comments: CommentCreateManyWithoutOnContentPieceInput
   copiedToThings: ThingCreateManyWithoutCopiedInContentInput
   onTag: TagCreateOneWithoutContentInput
+  votes: VoteCreateManyWithoutOnContentPieceInput
+  score: Int
+}
+
+input ContentPieceCreateWithoutVotesInput {
+  id: ID
+  content: String!
+  summary: String
+  comments: CommentCreateManyWithoutOnContentPieceInput
+  onThing: ThingCreateOneWithoutContentInput
+  copiedToThings: ThingCreateManyWithoutCopiedInContentInput
+  onTag: TagCreateOneWithoutContentInput
+  score: Int
 }
 
 type ContentPieceEdge {
@@ -756,12 +784,15 @@ enum ContentPieceOrderByInput {
   content_DESC
   summary_ASC
   summary_DESC
+  score_ASC
+  score_DESC
 }
 
 type ContentPiecePreviousValues {
   id: ID!
   content: String!
   summary: String
+  score: Int!
 }
 
 input ContentPieceScalarWhereInput {
@@ -807,6 +838,14 @@ input ContentPieceScalarWhereInput {
   summary_not_starts_with: String
   summary_ends_with: String
   summary_not_ends_with: String
+  score: Int
+  score_not: Int
+  score_in: [Int!]
+  score_not_in: [Int!]
+  score_lt: Int
+  score_lte: Int
+  score_gt: Int
+  score_gte: Int
   AND: [ContentPieceScalarWhereInput!]
   OR: [ContentPieceScalarWhereInput!]
   NOT: [ContentPieceScalarWhereInput!]
@@ -837,6 +876,8 @@ input ContentPieceUpdateDataInput {
   onThing: ThingUpdateOneWithoutContentInput
   copiedToThings: ThingUpdateManyWithoutCopiedInContentInput
   onTag: TagUpdateOneWithoutContentInput
+  votes: VoteUpdateManyWithoutOnContentPieceInput
+  score: Int
 }
 
 input ContentPieceUpdateInput {
@@ -846,11 +887,14 @@ input ContentPieceUpdateInput {
   onThing: ThingUpdateOneWithoutContentInput
   copiedToThings: ThingUpdateManyWithoutCopiedInContentInput
   onTag: TagUpdateOneWithoutContentInput
+  votes: VoteUpdateManyWithoutOnContentPieceInput
+  score: Int
 }
 
 input ContentPieceUpdateManyDataInput {
   content: String
   summary: String
+  score: Int
 }
 
 input ContentPieceUpdateManyInput {
@@ -868,6 +912,7 @@ input ContentPieceUpdateManyInput {
 input ContentPieceUpdateManyMutationInput {
   content: String
   summary: String
+  score: Int
 }
 
 input ContentPieceUpdateManyWithoutCopiedToThingsInput {
@@ -920,12 +965,23 @@ input ContentPieceUpdateOneWithoutCommentsInput {
   connect: ContentPieceWhereUniqueInput
 }
 
+input ContentPieceUpdateOneWithoutVotesInput {
+  create: ContentPieceCreateWithoutVotesInput
+  update: ContentPieceUpdateWithoutVotesDataInput
+  upsert: ContentPieceUpsertWithoutVotesInput
+  delete: Boolean
+  disconnect: Boolean
+  connect: ContentPieceWhereUniqueInput
+}
+
 input ContentPieceUpdateWithoutCommentsDataInput {
   content: String
   summary: String
   onThing: ThingUpdateOneWithoutContentInput
   copiedToThings: ThingUpdateManyWithoutCopiedInContentInput
   onTag: TagUpdateOneWithoutContentInput
+  votes: VoteUpdateManyWithoutOnContentPieceInput
+  score: Int
 }
 
 input ContentPieceUpdateWithoutCopiedToThingsDataInput {
@@ -934,6 +990,8 @@ input ContentPieceUpdateWithoutCopiedToThingsDataInput {
   comments: CommentUpdateManyWithoutOnContentPieceInput
   onThing: ThingUpdateOneWithoutContentInput
   onTag: TagUpdateOneWithoutContentInput
+  votes: VoteUpdateManyWithoutOnContentPieceInput
+  score: Int
 }
 
 input ContentPieceUpdateWithoutOnTagDataInput {
@@ -942,6 +1000,8 @@ input ContentPieceUpdateWithoutOnTagDataInput {
   comments: CommentUpdateManyWithoutOnContentPieceInput
   onThing: ThingUpdateOneWithoutContentInput
   copiedToThings: ThingUpdateManyWithoutCopiedInContentInput
+  votes: VoteUpdateManyWithoutOnContentPieceInput
+  score: Int
 }
 
 input ContentPieceUpdateWithoutOnThingDataInput {
@@ -950,6 +1010,18 @@ input ContentPieceUpdateWithoutOnThingDataInput {
   comments: CommentUpdateManyWithoutOnContentPieceInput
   copiedToThings: ThingUpdateManyWithoutCopiedInContentInput
   onTag: TagUpdateOneWithoutContentInput
+  votes: VoteUpdateManyWithoutOnContentPieceInput
+  score: Int
+}
+
+input ContentPieceUpdateWithoutVotesDataInput {
+  content: String
+  summary: String
+  comments: CommentUpdateManyWithoutOnContentPieceInput
+  onThing: ThingUpdateOneWithoutContentInput
+  copiedToThings: ThingUpdateManyWithoutCopiedInContentInput
+  onTag: TagUpdateOneWithoutContentInput
+  score: Int
 }
 
 input ContentPieceUpdateWithWhereUniqueNestedInput {
@@ -975,6 +1047,11 @@ input ContentPieceUpdateWithWhereUniqueWithoutOnThingInput {
 input ContentPieceUpsertWithoutCommentsInput {
   update: ContentPieceUpdateWithoutCommentsDataInput!
   create: ContentPieceCreateWithoutCommentsInput!
+}
+
+input ContentPieceUpsertWithoutVotesInput {
+  update: ContentPieceUpdateWithoutVotesDataInput!
+  create: ContentPieceCreateWithoutVotesInput!
 }
 
 input ContentPieceUpsertWithWhereUniqueNestedInput {
@@ -1052,6 +1129,17 @@ input ContentPieceWhereInput {
   copiedToThings_some: ThingWhereInput
   copiedToThings_none: ThingWhereInput
   onTag: TagWhereInput
+  votes_every: VoteWhereInput
+  votes_some: VoteWhereInput
+  votes_none: VoteWhereInput
+  score: Int
+  score_not: Int
+  score_in: [Int!]
+  score_not_in: [Int!]
+  score_lt: Int
+  score_lte: Int
+  score_gt: Int
+  score_gte: Int
   AND: [ContentPieceWhereInput!]
   OR: [ContentPieceWhereInput!]
   NOT: [ContentPieceWhereInput!]
@@ -5331,6 +5419,7 @@ type Vote {
   voter: Member!
   onThing: Thing
   onComment: Comment
+  onContentPiece: ContentPiece
   value: Int!
   createdAt: DateTime!
 }
@@ -5346,11 +5435,17 @@ input VoteCreateInput {
   voter: MemberCreateOneWithoutVotesInput!
   onThing: ThingCreateOneWithoutVotesInput
   onComment: CommentCreateOneWithoutVotesInput
+  onContentPiece: ContentPieceCreateOneWithoutVotesInput
   value: Int!
 }
 
 input VoteCreateManyWithoutOnCommentInput {
   create: [VoteCreateWithoutOnCommentInput!]
+  connect: [VoteWhereUniqueInput!]
+}
+
+input VoteCreateManyWithoutOnContentPieceInput {
+  create: [VoteCreateWithoutOnContentPieceInput!]
   connect: [VoteWhereUniqueInput!]
 }
 
@@ -5368,6 +5463,15 @@ input VoteCreateWithoutOnCommentInput {
   id: ID
   voter: MemberCreateOneWithoutVotesInput!
   onThing: ThingCreateOneWithoutVotesInput
+  onContentPiece: ContentPieceCreateOneWithoutVotesInput
+  value: Int!
+}
+
+input VoteCreateWithoutOnContentPieceInput {
+  id: ID
+  voter: MemberCreateOneWithoutVotesInput!
+  onThing: ThingCreateOneWithoutVotesInput
+  onComment: CommentCreateOneWithoutVotesInput
   value: Int!
 }
 
@@ -5375,6 +5479,7 @@ input VoteCreateWithoutOnThingInput {
   id: ID
   voter: MemberCreateOneWithoutVotesInput!
   onComment: CommentCreateOneWithoutVotesInput
+  onContentPiece: ContentPieceCreateOneWithoutVotesInput
   value: Int!
 }
 
@@ -5382,6 +5487,7 @@ input VoteCreateWithoutVoterInput {
   id: ID
   onThing: ThingCreateOneWithoutVotesInput
   onComment: CommentCreateOneWithoutVotesInput
+  onContentPiece: ContentPieceCreateOneWithoutVotesInput
   value: Int!
 }
 
@@ -5463,6 +5569,7 @@ input VoteUpdateInput {
   voter: MemberUpdateOneRequiredWithoutVotesInput
   onThing: ThingUpdateOneWithoutVotesInput
   onComment: CommentUpdateOneWithoutVotesInput
+  onContentPiece: ContentPieceUpdateOneWithoutVotesInput
   value: Int
 }
 
@@ -5482,6 +5589,18 @@ input VoteUpdateManyWithoutOnCommentInput {
   disconnect: [VoteWhereUniqueInput!]
   update: [VoteUpdateWithWhereUniqueWithoutOnCommentInput!]
   upsert: [VoteUpsertWithWhereUniqueWithoutOnCommentInput!]
+  deleteMany: [VoteScalarWhereInput!]
+  updateMany: [VoteUpdateManyWithWhereNestedInput!]
+}
+
+input VoteUpdateManyWithoutOnContentPieceInput {
+  create: [VoteCreateWithoutOnContentPieceInput!]
+  delete: [VoteWhereUniqueInput!]
+  connect: [VoteWhereUniqueInput!]
+  set: [VoteWhereUniqueInput!]
+  disconnect: [VoteWhereUniqueInput!]
+  update: [VoteUpdateWithWhereUniqueWithoutOnContentPieceInput!]
+  upsert: [VoteUpsertWithWhereUniqueWithoutOnContentPieceInput!]
   deleteMany: [VoteScalarWhereInput!]
   updateMany: [VoteUpdateManyWithWhereNestedInput!]
 }
@@ -5518,24 +5637,39 @@ input VoteUpdateManyWithWhereNestedInput {
 input VoteUpdateWithoutOnCommentDataInput {
   voter: MemberUpdateOneRequiredWithoutVotesInput
   onThing: ThingUpdateOneWithoutVotesInput
+  onContentPiece: ContentPieceUpdateOneWithoutVotesInput
+  value: Int
+}
+
+input VoteUpdateWithoutOnContentPieceDataInput {
+  voter: MemberUpdateOneRequiredWithoutVotesInput
+  onThing: ThingUpdateOneWithoutVotesInput
+  onComment: CommentUpdateOneWithoutVotesInput
   value: Int
 }
 
 input VoteUpdateWithoutOnThingDataInput {
   voter: MemberUpdateOneRequiredWithoutVotesInput
   onComment: CommentUpdateOneWithoutVotesInput
+  onContentPiece: ContentPieceUpdateOneWithoutVotesInput
   value: Int
 }
 
 input VoteUpdateWithoutVoterDataInput {
   onThing: ThingUpdateOneWithoutVotesInput
   onComment: CommentUpdateOneWithoutVotesInput
+  onContentPiece: ContentPieceUpdateOneWithoutVotesInput
   value: Int
 }
 
 input VoteUpdateWithWhereUniqueWithoutOnCommentInput {
   where: VoteWhereUniqueInput!
   data: VoteUpdateWithoutOnCommentDataInput!
+}
+
+input VoteUpdateWithWhereUniqueWithoutOnContentPieceInput {
+  where: VoteWhereUniqueInput!
+  data: VoteUpdateWithoutOnContentPieceDataInput!
 }
 
 input VoteUpdateWithWhereUniqueWithoutOnThingInput {
@@ -5552,6 +5686,12 @@ input VoteUpsertWithWhereUniqueWithoutOnCommentInput {
   where: VoteWhereUniqueInput!
   update: VoteUpdateWithoutOnCommentDataInput!
   create: VoteCreateWithoutOnCommentInput!
+}
+
+input VoteUpsertWithWhereUniqueWithoutOnContentPieceInput {
+  where: VoteWhereUniqueInput!
+  update: VoteUpdateWithoutOnContentPieceDataInput!
+  create: VoteCreateWithoutOnContentPieceInput!
 }
 
 input VoteUpsertWithWhereUniqueWithoutOnThingInput {
@@ -5584,6 +5724,7 @@ input VoteWhereInput {
   voter: MemberWhereInput
   onThing: ThingWhereInput
   onComment: CommentWhereInput
+  onContentPiece: ContentPieceWhereInput
   value: Int
   value_not: Int
   value_in: [Int!]

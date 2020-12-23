@@ -87,13 +87,15 @@ async function editPermissionGate(dataObj, id, type, ctx) {
       return true;
    }
 
-   const lowerCasedType = type.toLowerCase();
-   let fields;
-   if (type === 'Tag') {
-      fields = `{author {id}}`;
-   } else if (type === 'Thing') {
-      fields = ``;
+   if (dataObj.votes) {
+      return true;
    }
+
+   let lowerCasedType = type.toLowerCase();
+   if (lowerCasedType === 'contentpiece') {
+      lowerCasedType = 'contentPiece';
+   }
+
    const oldStuff = await ctx.db.query[lowerCasedType](
       {
          where: {
@@ -102,6 +104,7 @@ async function editPermissionGate(dataObj, id, type, ctx) {
       },
       `{author {id}}`
    );
+   console.log(oldStuff);
 
    if (oldStuff.author.id !== ctx.req.memberId) {
       throw new Error(

@@ -285,6 +285,10 @@ const StyledContent = styled.section`
                }
             }
          }
+         .votebar {
+            margin-right: 4rem;
+            margin-bottom: 1rem;
+         }
       }
    }
    .commentsArea {

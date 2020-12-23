@@ -17,7 +17,12 @@ async function vote(parent, { id, type }, ctx, info) {
       `{rep}`
    );
 
-   const oldStuff = await ctx.db.query[type.toLowerCase()](
+   let lowerCasedType = type.toLowerCase();
+   if (lowerCasedType === 'contentpiece') {
+      lowerCasedType = 'contentPiece';
+   }
+
+   const oldStuff = await ctx.db.query[lowerCasedType](
       {
          where: {
             id

@@ -23,6 +23,8 @@ import X from '../Icons/X';
 import { stickifier } from '../../lib/ContentHandling';
 import CopyContentInterface from './CopyContentInterface';
 import { fullThingFields } from '../../lib/CardInterfaces';
+import VoteBar, { VOTE_MUTATION } from './VoteBar';
+import { ALL_THINGS_QUERY } from '../../pages/index';
 
 const UNLINK_CONTENTPIECE_MUTATION = gql`
    mutation UNLINK_CONTENTPIECE_MUTATION(
@@ -57,6 +59,7 @@ const ContentPiece = ({
    context,
    onThing,
    copiedToThings,
+   votes,
    stickifierData
 }) => {
    const { me } = useContext(MemberContext);
@@ -90,6 +93,14 @@ const ContentPiece = ({
    const [addComment] = useMutation(ADD_COMMENT_MUTATION);
 
    const [unlinkContentPiece] = useMutation(UNLINK_CONTENTPIECE_MUTATION);
+
+   const [vote] = useMutation(VOTE_MUTATION, {
+      variables: {
+         id,
+         type: 'ContentPiece'
+      },
+      refetchQueries: [{ query: ALL_THINGS_QUERY }]
+   });
 
    const sendNewComment = async () => {
       const now = new Date();
@@ -345,6 +356,55 @@ const ContentPiece = ({
       }
    };
 
+   const doubleClickListener = e => {
+      if (e.button === 0) {
+         if (me == null) {
+            alert('you must be logged in to do that');
+            return;
+         }
+
+         let meVoted = false;
+         let computedScore = 0;
+         votes.forEach(({ voter: { id: voterID }, value }) => {
+            if (me && voterID === me.id) {
+               meVoted = true;
+            }
+            computedScore += value;
+         });
+
+         let newVotes;
+         let newScore;
+         if (meVoted) {
+            newVotes = votes.filter(voteData => voteData.voter.id !== me.id);
+            newScore = computedScore - me.rep;
+         } else {
+            newVotes = [
+               ...votes,
+               {
+                  __typename: 'Vote',
+                  id: 'newVote',
+                  value: me.rep,
+                  voter: me
+               }
+            ];
+            newScore = computedScore + me.rep;
+         }
+
+         e.preventDefault();
+         vote({
+            optimisticResponse: {
+               __typename: 'Mutation',
+               vote: {
+                  __typename: 'ContentPiece',
+                  id,
+                  votes: newVotes,
+                  score: newScore
+               }
+            }
+         });
+      }
+   };
+
    return (
       <div
          className={highlighted ? 'contentBlock highlighted' : 'contentBlock'}
@@ -369,14 +429,36 @@ const ContentPiece = ({
             <div
                className={canEdit ? 'contentPiece editable' : 'contentPiece'}
                key={id}
-               onMouseUp={e => {
-                  if (!canEdit || reordering || editable) return;
+               onMouseDown={e => {
+                  if (editable || reordering) return;
+
+                  if (e.button === 0 && me != null) {
+                     window.setTimeout(
+                        () =>
+                           window.addEventListener(
+                              'mousedown',
+                              doubleClickListener
+                           ),
+                        1
+                     );
+
+                     window.setTimeout(
+                        () =>
+                           window.removeEventListener(
+                              'mousedown',
+                              doubleClickListener
+                           ),
+                        500
+                     );
+                  }
+
+                  if (!canEdit) return;
 
                   if (e.button === 1 || e.button === 2) {
                      window.setTimeout(
                         () =>
                            window.addEventListener(
-                              'mouseup',
+                              'mousedown',
                               secondMiddleOrRightClickListener
                            ),
                         1
@@ -384,7 +466,7 @@ const ContentPiece = ({
                      window.setTimeout(
                         () =>
                            window.removeEventListener(
-                              'mouseup',
+                              'mousedown',
                               secondMiddleOrRightClickListener
                            ),
                         500
@@ -553,6 +635,12 @@ const ContentPiece = ({
                   />
                )}
             </div>
+            <VoteBar
+               id={id}
+               votes={votes}
+               key={`votebar-${id}`}
+               type="ContentPiece"
+            />
             {otherLocations}
          </div>
          {showingComments && !isSmallScreen && commentsElement}
@@ -578,6 +666,9 @@ export default React.memo(ContentPiece, (prev, next) => {
       return false;
    }
    if (prev.comments.length !== next.comments.length) {
+      return false;
+   }
+   if (prev.votes.length !== next.votes.length || prev.score !== next.score) {
       return false;
    }
    return true;

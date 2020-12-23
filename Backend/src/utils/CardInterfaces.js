@@ -108,6 +108,18 @@ const contentPieceFields = `
       id
       title
    }
+   votes {
+      __typename
+      id
+      value
+      voter {
+         __typename
+         id
+         displayName
+         rep
+         avatar
+      }
+   }
    summary
 `;
 exports.contentPieceFields = contentPieceFields;

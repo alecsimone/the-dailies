@@ -31,6 +31,8 @@ type ContentPiece {
    onThing: Thing @relation(name: "OriginalThingForContentPiece")
    copiedToThings: [Thing] @relation(name: "ThingsAddedToForContentPiece")
    onTag: Tag
+   votes: [Vote]
+   score: Int! @default(value: 0)
 }
 
 type Tag {
@@ -81,6 +83,7 @@ type Vote {
   voter: Member!
   onThing: Thing
   onComment: Comment
+  onContentPiece: ContentPiece
   value: Int!
   createdAt: DateTime! @createdAt
 }

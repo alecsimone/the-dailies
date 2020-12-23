@@ -286,6 +286,7 @@ const Content = ({ context, canEdit, linkedPiece }) => {
                   context={context}
                   onThing={contentPiece.onThing}
                   copiedToThings={contentPiece.copiedToThings}
+                  votes={contentPiece.votes}
                   key={contentPiece.id}
                />
             </div>

@@ -44,6 +44,22 @@ const VOTE_MUTATION = gql`
                }
             }
          }
+         ... on ContentPiece {
+            __typename
+            id
+            votes {
+               __typename
+               id
+               value
+               voter {
+                  __typename
+                  id
+                  displayName
+                  rep
+                  avatar
+               }
+            }
+         }
       }
    }
 `;
