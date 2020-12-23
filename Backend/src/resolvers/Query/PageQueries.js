@@ -8,7 +8,13 @@ const {
 } = require('../../utils/ThingHandling');
 
 async function searchTaxes(parent, { searchTerm, personal }, ctx, info) {
-   const availableTags = await searchAvailableTaxes(searchTerm, ctx, personal);
+   const availableTags = await searchAvailableTaxes(
+      searchTerm,
+      ctx,
+      personal
+   ).catch(err => {
+      throw new Error(err.message);
+   });
    return availableTags;
 }
 exports.searchTaxes = searchTaxes;
@@ -16,7 +22,11 @@ exports.searchTaxes = searchTaxes;
 async function taxByTitle(parent, { title, personal }, ctx, info) {
    const typeToQuery = personal ? 'stacks' : 'tags';
 
-   const possibleTaxes = await searchAvailableTaxes(title, ctx, personal);
+   const possibleTaxes = await searchAvailableTaxes(title, ctx, personal).catch(
+      err => {
+         throw new Error(err.message);
+      }
+   );
    if (possibleTaxes != null && possibleTaxes.length > 0) {
       const [theActualTax] = possibleTaxes.filter(
          tax => tax.title.toLowerCase().trim() == title.toLowerCase().trim()
@@ -35,7 +45,9 @@ async function taxByTitle(parent, { title, personal }, ctx, info) {
             where
          },
          info
-      );
+      ).catch(err => {
+         throw new Error(err.message);
+      });
 
       if (theTax == null) {
          return null;
@@ -47,7 +59,9 @@ async function taxByTitle(parent, { title, personal }, ctx, info) {
          );
       }
 
-      const searchResults = await searchThings(title, ctx);
+      const searchResults = await searchThings(title, ctx).catch(err => {
+         throw new Error(err.message);
+      });
       searchResults.forEach(result => {
          const preExistingCheck = theTax.connectedThings.filter(
             thing => thing.id !== result.id
@@ -67,40 +81,52 @@ exports.taxByTitle = taxByTitle;
 async function thing(parent, { where }, ctx, info) {
    await canSeeThingGate(where, ctx);
 
-   const thingData = await ctx.db.query.thing(
-      {
-         where
-      },
-      info
-   );
+   const thingData = await ctx.db.query
+      .thing(
+         {
+            where
+         },
+         info
+      )
+      .catch(err => {
+         throw new Error(err.message);
+      });
    return thingData;
 }
 exports.thing = thing;
 
 async function myThings(parent, { orderBy = 'id_DESC' }, ctx, info) {
    if (ctx.req.memberId == null) {
-      const things = await ctx.db.query.things(
+      const things = await ctx.db.query
+         .things(
+            {
+               where: {
+                  privacy: 'Public'
+               },
+               orderBy
+            },
+            info
+         )
+         .catch(err => {
+            throw new Error(err.message);
+         });
+      return things;
+   }
+   const things = await ctx.db.query
+      .things(
          {
             where: {
-               privacy: 'Public'
+               author: {
+                  id: ctx.req.memberId
+               }
             },
             orderBy
          },
          info
-      );
-      return things;
-   }
-   const things = await ctx.db.query.things(
-      {
-         where: {
-            author: {
-               id: ctx.req.memberId
-            }
-         },
-         orderBy
-      },
-      info
-   );
+      )
+      .catch(err => {
+         throw new Error(err.message);
+      });
    return things;
 }
 exports.myThings = myThings;
@@ -109,34 +135,42 @@ async function myFriendsThings(parent, { orderBy = 'id_DESC' }, ctx, info) {
    if (ctx.req.memberId == null) {
       return [];
    }
-   const things = await ctx.db.query.things(
-      {
-         where: {
-            author: {
-               friends_some: {
-                  id: ctx.req.memberId
-               }
+   const things = await ctx.db.query
+      .things(
+         {
+            where: {
+               author: {
+                  friends_some: {
+                     id: ctx.req.memberId
+                  }
+               },
+               privacy_in: ['Public', 'Friends']
             },
-            privacy_in: ['Public', 'Friends']
+            orderBy
          },
-         orderBy
-      },
-      info
-   );
+         info
+      )
+      .catch(err => {
+         throw new Error(err.message);
+      });
    return things;
 }
 exports.myFriendsThings = myFriendsThings;
 
 async function publicThings(parent, { orderBy = 'id_DESC' }, ctx, info) {
-   const things = await ctx.db.query.things(
-      {
-         where: {
-            privacy: 'Public'
+   const things = await ctx.db.query
+      .things(
+         {
+            where: {
+               privacy: 'Public'
+            },
+            orderBy
          },
-         orderBy
-      },
-      info
-   );
+         info
+      )
+      .catch(err => {
+         throw new Error(err.message);
+      });
    return things;
 }
 exports.publicThings = publicThings;
@@ -181,13 +215,17 @@ async function allThings(parent, args, ctx, info) {
       };
    }
 
-   const things = await ctx.db.query.things(
-      {
-         where,
-         orderBy: 'id_DESC'
-      },
-      info
-   );
+   const things = await ctx.db.query
+      .things(
+         {
+            where,
+            orderBy: 'id_DESC'
+         },
+         info
+      )
+      .catch(err => {
+         throw new Error(err.message);
+      });
 
    const thingsWithAVote = things.filter(thing => thing.votes.length > 0);
 
@@ -196,7 +234,11 @@ async function allThings(parent, args, ctx, info) {
 exports.allThings = allThings;
 
 async function searchThings(string, ctx, isTitleOnly = false) {
-   const everyThing = await ctx.db.query.things({}, `{${fullThingFields}}`);
+   const everyThing = await ctx.db.query
+      .things({}, `{${fullThingFields}}`)
+      .catch(err => {
+         throw new Error(err.message);
+      });
 
    const term = string.toLowerCase().trim();
 
@@ -253,7 +295,11 @@ async function searchThings(string, ctx, isTitleOnly = false) {
 exports.searchThings = searchThings;
 
 async function search(parent, { string, isTitleOnly }, ctx, info) {
-   const relevantThings = await searchThings(string, ctx, isTitleOnly);
+   const relevantThings = await searchThings(string, ctx, isTitleOnly).catch(
+      err => {
+         throw new Error(err.message);
+      }
+   );
 
    // const foundThings = await ctx.db.query.things(
    //    {

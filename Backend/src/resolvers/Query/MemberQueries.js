@@ -4,12 +4,16 @@ async function me(parent, args, ctx, info) {
    if (!ctx.req.memberId) {
       return null;
    }
-   const member = await ctx.db.query.member(
-      {
-         where: { id: ctx.req.memberId }
-      },
-      info
-   );
+   const member = await ctx.db.query
+      .member(
+         {
+            where: { id: ctx.req.memberId }
+         },
+         info
+      )
+      .catch(err => {
+         throw new Error(err.message);
+      });
    if (member && member.friends) {
       member.friends.forEach((friend, index) => {
          member.friends[index].createdThings = friend.createdThings.filter(
@@ -32,12 +36,16 @@ async function member(parent, { id, displayName }, ctx, info) {
          displayName
       };
    }
-   const member = await ctx.db.query.member(
-      {
-         where
-      },
-      info
-   );
+   const member = await ctx.db.query
+      .member(
+         {
+            where
+         },
+         info
+      )
+      .catch(err => {
+         throw new Error(err.message);
+      });
 
    if (member && member.createdThings && member.createdThings.length > 0) {
       member.createdThings = member.createdThings.filter(thing =>

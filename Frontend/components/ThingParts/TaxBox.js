@@ -137,20 +137,18 @@ const TaxBox = ({ canEdit, personal }) => {
       { loading: searchLoading, data: searchData }
    ] = useLazyQuery(SEARCH_TAX_QUERY);
 
-   const generateAutocomplete = async inputValue => {
+   const generateAutocomplete = inputValue => {
       const searchTerm = getFinalSearchTerm(inputValue);
 
       if (searchTerm === '') {
          return;
       }
 
-      await searchTaxes({
+      searchTaxes({
          variables: {
             searchTerm,
             personal
          }
-      }).catch(err => {
-         alert(err.message);
       });
    };
 

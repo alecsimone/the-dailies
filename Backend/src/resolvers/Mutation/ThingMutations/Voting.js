@@ -29,7 +29,9 @@ async function vote(parent, { id, type }, ctx, info) {
          }
       },
       `{id score votes {id voter {id} value}}`
-   );
+   ).catch(err => {
+      throw new Error(err.message);
+   });
    if (oldStuff == null) {
       throw new Error(`${type} not found`);
    }
@@ -60,7 +62,11 @@ async function vote(parent, { id, type }, ctx, info) {
       dataObj.score = oldStuff.score - myVote.value;
    }
 
-   const updatedStuff = await properUpdateStuff(dataObj, id, type, ctx);
+   const updatedStuff = await properUpdateStuff(dataObj, id, type, ctx).catch(
+      err => {
+         throw new Error(err.message);
+      }
+   );
    return updatedStuff;
 }
 exports.vote = vote;

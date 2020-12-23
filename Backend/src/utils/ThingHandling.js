@@ -39,16 +39,22 @@ async function updateStuffAndNotifySubs(data, id, type, ctx) {
          data
       },
       `{${fields}}`
-   );
+   ).catch(err => {
+      throw new Error(err.message);
+   });
    if (type === 'ContentPiece') {
-      const updatedThing = await ctx.db.query.thing(
-         {
-            where: {
-               id: updatedStuff.onThing.id
-            }
-         },
-         `{${fullThingFields}}`
-      );
+      const updatedThing = await ctx.db.query
+         .thing(
+            {
+               where: {
+                  id: updatedStuff.onThing.id
+               }
+            },
+            `{${fullThingFields}}`
+         )
+         .catch(err => {
+            throw new Error(err.message);
+         });
       publishStuffUpdate('Thing', updatedThing, ctx);
    } else {
       publishStuffUpdate(type, updatedStuff, ctx);
@@ -73,14 +79,18 @@ async function editPermissionGate(dataObj, id, type, ctx) {
       } else if (dataObj.comments.update) {
          commentID = dataObj.comments.update.where.id;
       }
-      const comment = await ctx.db.query.comment(
-         {
-            where: {
-               id: commentID
-            }
-         },
-         `{author {id}}`
-      );
+      const comment = await ctx.db.query
+         .comment(
+            {
+               where: {
+                  id: commentID
+               }
+            },
+            `{author {id}}`
+         )
+         .catch(err => {
+            throw new Error(err.message);
+         });
       if (comment.author.id !== ctx.req.memberId) {
          throw new Error('You do not have permission to edit that comment');
       }
@@ -103,7 +113,9 @@ async function editPermissionGate(dataObj, id, type, ctx) {
          }
       },
       `{author {id}}`
-   );
+   ).catch(err => {
+      throw new Error(err.message);
+   });
    console.log(oldStuff);
 
    if (oldStuff.author.id !== ctx.req.memberId) {
@@ -117,14 +129,18 @@ exports.editPermissionGate = editPermissionGate;
 
 async function properUpdateStuff(dataObj, id, type, ctx) {
    if (id.toLowerCase() === 'new') {
-      const currentMember = await ctx.db.query.member(
-         {
-            where: {
-               id: ctx.req.memberId
-            }
-         },
-         `{id defaultPrivacy}`
-      );
+      const currentMember = await ctx.db.query
+         .member(
+            {
+               where: {
+                  id: ctx.req.memberId
+               }
+            },
+            `{id defaultPrivacy}`
+         )
+         .catch(err => {
+            throw new Error(err.message);
+         });
       if (!dataObj.privacy) {
          dataObj.privacy = currentMember.defaultPrivacy;
       } else {
@@ -147,19 +163,30 @@ async function properUpdateStuff(dataObj, id, type, ctx) {
       ) {
          dataObj.featuredImage = dataObj.link;
       }
-      const newThing = await ctx.db.mutation.createThing(
-         {
-            data: dataObj
-         },
-         `{${fullThingFields}}`
-      );
+      const newThing = await ctx.db.mutation
+         .createThing(
+            {
+               data: dataObj
+            },
+            `{${fullThingFields}}`
+         )
+         .catch(err => {
+            throw new Error(err.message);
+         });
       publishMeUpdate(ctx);
       return newThing;
    }
 
    editPermissionGate(dataObj, id, type, ctx);
 
-   const updatedStuff = await updateStuffAndNotifySubs(dataObj, id, type, ctx);
+   const updatedStuff = await updateStuffAndNotifySubs(
+      dataObj,
+      id,
+      type,
+      ctx
+   ).catch(err => {
+      throw new Error(err.message);
+   });
    publishMeUpdate(ctx);
    return updatedStuff;
 }
@@ -170,7 +197,9 @@ async function searchAvailableTaxes(searchTerm, ctx, personal) {
    const allTaxes = await ctx.db.query[typeToSearch](
       {},
       `{__typename id title author {id}}`
-   );
+   ).catch(err => {
+      throw new Error(err.message);
+   });
 
    const relevantTaxes = allTaxes.filter(tax =>
       tax.title.toLowerCase().includes(searchTerm.toLowerCase())
@@ -233,18 +262,26 @@ const canSeeThing = async (ctx, thingData) => {
 exports.canSeeThing = canSeeThing;
 
 const canSeeThingGate = async (where, ctx) => {
-   const thingData = await ctx.db.query.thing(
-      {
-         where
-      },
-      `{privacy author {id friends {id friends {id}}}}`
-   );
+   const thingData = await ctx.db.query
+      .thing(
+         {
+            where
+         },
+         `{privacy author {id friends {id friends {id}}}}`
+      )
+      .catch(err => {
+         throw new Error(err.message);
+      });
 
    if (thingData == null) {
       return true;
    }
 
-   if (await canSeeThing(ctx, thingData)) {
+   if (
+      await canSeeThing(ctx, thingData).catch(err => {
+         throw new Error(err.message);
+      })
+   ) {
       return true;
    }
    throw new Error("You don't have permission to see that thing.");

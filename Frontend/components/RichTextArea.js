@@ -476,13 +476,11 @@ const RichTextArea = ({
          selectionPoint
       );
 
-      const searchResults = await search({
+      const searchResults = search({
          variables: {
             string: searchTerm,
             isTitleOnly: true
          }
-      }).catch(err => {
-         alert(err.message);
       });
 
       if (toolTip.style.display === 'none') {

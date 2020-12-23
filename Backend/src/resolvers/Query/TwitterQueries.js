@@ -16,14 +16,18 @@ async function finishTwitterLogin(parent, { token, verifier }, ctx, info) {
       callbackUrl: `${process.env.FRONTEND_URL}/twitter`
    });
 
-   const { twitterTokenSecret } = await ctx.db.query.member(
-      {
-         where: {
-            id: ctx.req.memberId
-         }
-      },
-      `{twitterTokenSecret}`
-   );
+   const { twitterTokenSecret } = await ctx.db.query
+      .member(
+         {
+            where: {
+               id: ctx.req.memberId
+            }
+         },
+         `{twitterTokenSecret}`
+      )
+      .catch(err => {
+         throw new Error(err.message);
+      });
 
    const decryptedTwitterTokenSecret = decipherString(twitterTokenSecret);
 
@@ -41,16 +45,20 @@ async function finishTwitterLogin(parent, { token, verifier }, ctx, info) {
 
          const encryptedTokenSecret = cipherString(user.userTokenSecret);
 
-         await ctx.db.mutation.updateMember({
-            where: { id: ctx.req.memberId },
-            data: {
-               twitterUserName: user.userName,
-               twitterUserID: user.userId,
-               twitterUserToken: user.userToken,
-               twitterUserTokenSecret: encryptedTokenSecret,
-               twitterTokenSecret: null
-            }
-         });
+         await ctx.db.mutation
+            .updateMember({
+               where: { id: ctx.req.memberId },
+               data: {
+                  twitterUserName: user.userName,
+                  twitterUserID: user.userId,
+                  twitterUserToken: user.userToken,
+                  twitterUserTokenSecret: encryptedTokenSecret,
+                  twitterTokenSecret: null
+               }
+            })
+            .catch(err => {
+               throw new Error(err.message);
+            });
       }
    );
 
@@ -66,15 +74,21 @@ async function makeListsObject(twitterListsObject, twitterUserName, ctx) {
    ) {
       listData.lastUpdateTime = Date.now();
       const listDataString = JSON.stringify(listData);
-      await ctx.db.mutation.updateMember({
-         where: {
-            id: ctx.req.memberId
-         },
-         data: {
-            twitterListsObject: listDataString
-         }
+      await ctx.db.mutation
+         .updateMember({
+            where: {
+               id: ctx.req.memberId
+            },
+            data: {
+               twitterListsObject: listDataString
+            }
+         })
+         .catch(err => {
+            throw new Error(err.message);
+         });
+      listData = await getFreshLists(ctx).catch(err => {
+         throw new Error(err.message);
       });
-      listData = await getFreshLists(ctx);
       listData.home = {
          id: 'home',
          name: 'Home',
@@ -87,7 +101,9 @@ async function makeListsObject(twitterListsObject, twitterUserName, ctx) {
 }
 
 async function getTweet(parent, { tweetID }, ctx, info) {
-   const tweet = await fetchTweet(tweetID, ctx);
+   const tweet = await fetchTweet(tweetID, ctx).catch(err => {
+      throw new Error(err.message);
+   });
 
    return { message: JSON.stringify(tweet) };
 }
@@ -97,15 +113,21 @@ async function refreshLists(parent, arts, ctx, info) {
    loggedInGate(ctx);
    fullMemberGate(ctx.req.member);
 
-   const listData = await getFreshLists(ctx);
+   const listData = await getFreshLists(ctx).catch(err => {
+      throw new Error(err.message);
+   });
 
    const listIDs = Object.keys(listData);
    await Promise.all(
       listIDs.map(async id => {
-         const tweets = await fetchListTweets(id, ctx);
+         const tweets = await fetchListTweets(id, ctx).catch(err => {
+            throw new Error(err.message);
+         });
          listData[id].tweets = tweets;
       })
-   );
+   ).catch(err => {
+      throw new Error(err.message);
+   });
 
    const fullListData = JSON.stringify(listData);
 
@@ -123,7 +145,9 @@ async function getTweetsForList(parent, { listID: requestedList }, ctx, info) {
       twitterListsObject,
       twitterUserName,
       ctx
-   );
+   ).catch(err => {
+      throw new Error(err.message);
+   });
    const dirtyListIDs = Object.keys(listsObject);
    const listIDs = dirtyListIDs.filter(id => id !== 'lastUpdateTime');
 
@@ -160,7 +184,9 @@ async function getTweetsForList(parent, { listID: requestedList }, ctx, info) {
       }
    }
 
-   const listTweets = await fetchListTweets(listID, ctx);
+   const listTweets = await fetchListTweets(listID, ctx).catch(err => {
+      throw new Error(err.message);
+   });
 
    const message = JSON.stringify({
       listTweets,

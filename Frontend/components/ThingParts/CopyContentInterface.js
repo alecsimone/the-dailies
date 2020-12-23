@@ -198,23 +198,23 @@ const CopyContentInterface = ({ id, thingID, setShowingAddToBox }) => {
    };
    const navigateResultsRef = useRef(navigateResults);
 
-   const postSearch = async searchTerm => {
-      const searchResults = await search({
+   const postSearch = searchTerm => {
+      const searchResults = search({
          variables: {
             string: searchTerm,
             isTitleOnly: true
          }
-      }).catch(err => {
-         alert(err.message);
       });
    };
 
-   const handleKeyUp = async e => {
+   const handleKeyUp = e => {
       if (e.key === 'Escape') closeResults();
       if (e.key === 'Enter' || e.key === 'Tab') return;
       if (searchTerm === '') return;
 
-      debouncedPostSearch(postSearch, searchTerm);
+      if (search != null) {
+         debouncedPostSearch(postSearch, searchTerm);
+      }
    };
 
    let postSearchResultElements;

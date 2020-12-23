@@ -4,14 +4,18 @@ const { loggedInGate, fullMemberGate } = require('../../utils/Authentication');
 const { fullMemberFields } = require('../../utils/CardInterfaces');
 
 async function publishMeUpdate(ctx) {
-   const newMe = await ctx.db.query.member(
-      {
-         where: {
-            id: ctx.req.memberId
-         }
-      },
-      `{${fullMemberFields}}`
-   );
+   const newMe = await ctx.db.query
+      .member(
+         {
+            where: {
+               id: ctx.req.memberId
+            }
+         },
+         `{${fullMemberFields}}`
+      )
+      .catch(err => {
+         throw new Error(err.message);
+      });
    ctx.pubsub.publish('me', {
       me: {
          node: newMe
@@ -23,21 +27,27 @@ exports.publishMeUpdate = publishMeUpdate;
 
 async function signup(parent, args, ctx, info) {
    args.email = args.email.toLowerCase();
-   const password = await bcrypt.hash(args.password, 10);
+   const password = await bcrypt.hash(args.password, 10).catch(err => {
+      throw new Error(err.message);
+   });
    if (args.displayName.length > 24) {
       args.displayName = args.displayName.substring(0, 24);
    }
-   const member = await ctx.db.mutation.createMember(
-      {
-         data: {
-            ...args,
-            password,
-            role: 'Member',
-            defaultPrivacy: 'Friends'
-         }
-      },
-      info
-   );
+   const member = await ctx.db.mutation
+      .createMember(
+         {
+            data: {
+               ...args,
+               password,
+               role: 'Member',
+               defaultPrivacy: 'Friends'
+            }
+         },
+         info
+      )
+      .catch(err => {
+         throw new Error(err.message);
+      });
    const token = jwt.sign({ memberId: member.id }, process.env.APP_SECRET);
    ctx.res.cookie('token', token, {
       httpOnly: true,
@@ -49,14 +59,20 @@ async function signup(parent, args, ctx, info) {
 exports.signup = signup;
 
 async function login(parent, { email, password }, ctx, info) {
-   const member = await ctx.db.query.member({
-      where: { email: email.toLowerCase() }
-   });
+   const member = await ctx.db.query
+      .member({
+         where: { email: email.toLowerCase() }
+      })
+      .catch(err => {
+         throw new Error(err.message);
+      });
    if (!member) {
       throw new Error("We don't know anyone with that email address");
    }
 
-   const valid = await bcrypt.compare(password, member.password);
+   const valid = await bcrypt.compare(password, member.password).catch(err => {
+      throw new Error(err.message);
+   });
    if (!valid) {
       throw new Error('Wrong Password');
    }
@@ -125,7 +141,9 @@ async function editProfile(
          dataObj.defaultExpansion = false;
       }
    }
-   const newMe = await properEditMe(dataObj, id, ctx);
+   const newMe = await properEditMe(dataObj, id, ctx).catch(err => {
+      throw new Error(err.message);
+   });
    return newMe;
 }
 exports.editProfile = editProfile;
@@ -138,15 +156,19 @@ async function properEditMe(dataObj, id, ctx) {
       throw new Error("You don't have permission to edit that member");
    }
 
-   const updatedMember = await ctx.db.mutation.updateMember(
-      {
-         where: {
-            id
+   const updatedMember = await ctx.db.mutation
+      .updateMember(
+         {
+            where: {
+               id
+            },
+            data: dataObj
          },
-         data: dataObj
-      },
-      `{${fullMemberFields}}`
-   );
+         `{${fullMemberFields}}`
+      )
+      .catch(err => {
+         throw new Error(err.message);
+      });
    publishMeUpdate(ctx);
    return updatedMember;
 }
@@ -163,34 +185,42 @@ async function sendFriendRequest(parent, { id }, ctx, info) {
       ctx
    );
 
-   const newThem = await ctx.db.mutation.updateMember(
-      {
-         where: {
-            id
-         },
-         data: {
-            friendRequests: {
-               connect: {
-                  id: ctx.req.memberId
+   const newThem = await ctx.db.mutation
+      .updateMember(
+         {
+            where: {
+               id
+            },
+            data: {
+               friendRequests: {
+                  connect: {
+                     id: ctx.req.memberId
+                  }
                }
             }
-         }
-      },
-      info
-   );
+         },
+         info
+      )
+      .catch(err => {
+         throw new Error(err.message);
+      });
    return newThem;
 }
 exports.sendFriendRequest = sendFriendRequest;
 
 async function confirmFriendRequest(parent, { id }, ctx, info) {
-   const oldMe = await ctx.db.query.member(
-      {
-         where: {
-            id: ctx.req.memberId
-         }
-      },
-      `{friendRequests {id} ignoredFriendRequests {id}}`
-   );
+   const oldMe = await ctx.db.query
+      .member(
+         {
+            where: {
+               id: ctx.req.memberId
+            }
+         },
+         `{friendRequests {id} ignoredFriendRequests {id}}`
+      )
+      .catch(err => {
+         throw new Error(err.message);
+      });
    const dataObj = {
       friends: {
          connect: {
@@ -225,7 +255,11 @@ async function confirmFriendRequest(parent, { id }, ctx, info) {
          };
       }
    }
-   const newMe = await properEditMe(dataObj, ctx.req.memberId, ctx);
+   const newMe = await properEditMe(dataObj, ctx.req.memberId, ctx).catch(
+      err => {
+         throw new Error(err.message);
+      }
+   );
 
    const theirDataObj = {
       friends: {
@@ -234,14 +268,18 @@ async function confirmFriendRequest(parent, { id }, ctx, info) {
          }
       }
    };
-   const oldThem = await ctx.db.query.member(
-      {
-         where: {
-            id
-         }
-      },
-      `{friendRequests {id} ignoredFriendRequests {id}}`
-   );
+   const oldThem = await ctx.db.query
+      .member(
+         {
+            where: {
+               id
+            }
+         },
+         `{friendRequests {id} ignoredFriendRequests {id}}`
+      )
+      .catch(err => {
+         throw new Error(err.message);
+      });
    if (oldThem.friendRequests && oldThem.friendRequests.length > 0) {
       const existingFriendRequest = oldThem.friendRequests.filter(
          requester => requester.id === ctx.req.memberId
@@ -292,7 +330,11 @@ async function ignoreFriendRequest(parent, { id }, ctx, info) {
          }
       }
    };
-   const newMe = await properEditMe(dataObj, ctx.req.memberId, ctx);
+   const newMe = await properEditMe(dataObj, ctx.req.memberId, ctx).catch(
+      err => {
+         throw new Error(err.message);
+      }
+   );
    return newMe;
 }
 exports.ignoreFriendRequest = ignoreFriendRequest;
@@ -301,14 +343,18 @@ async function readNotifications(parent, { ids }, ctx, info) {
    loggedInGate(ctx);
    fullMemberGate(ctx.req.member);
 
-   await ctx.db.mutation.updateManyNotifications({
-      where: {
-         id_in: ids
-      },
-      data: {
-         unread: false
-      }
-   });
+   await ctx.db.mutation
+      .updateManyNotifications({
+         where: {
+            id_in: ids
+         },
+         data: {
+            unread: false
+         }
+      })
+      .catch(err => {
+         throw new Error(err.message);
+      });
 
    const newMe = publishMeUpdate(ctx);
    return newMe;
@@ -317,31 +363,43 @@ exports.readNotifications = readNotifications;
 
 async function sendNotification(notification, ctx) {
    if (notification.recipient == null) {
-      const theThing = await ctx.db.query.thing(
-         {
-            where: {
-               id: notification.linkQuery
-            }
-         },
-         `{author {id}}`
-      );
-      if (theThing == null) {
-         const theContentPiece = await ctx.db.query.contentPiece(
+      const theThing = await ctx.db.query
+         .thing(
             {
                where: {
                   id: notification.linkQuery
                }
             },
-            `{onThing {id}}`
-         );
-         const theContainingThing = await ctx.db.query.thing(
-            {
-               where: {
-                  id: theContentPiece.onThing.id
-               }
-            },
             `{author {id}}`
-         );
+         )
+         .catch(err => {
+            throw new Error(err.message);
+         });
+      if (theThing == null) {
+         const theContentPiece = await ctx.db.query
+            .contentPiece(
+               {
+                  where: {
+                     id: notification.linkQuery
+                  }
+               },
+               `{onThing {id}}`
+            )
+            .catch(err => {
+               throw new Error(err.message);
+            });
+         const theContainingThing = await ctx.db.query
+            .thing(
+               {
+                  where: {
+                     id: theContentPiece.onThing.id
+                  }
+               },
+               `{author {id}}`
+            )
+            .catch(err => {
+               throw new Error(err.message);
+            });
          notification.recipient = theContainingThing.author.id;
       } else {
          notification.recipient = theThing.author.id;
@@ -380,14 +438,18 @@ async function toggleBroadcastView(parent, { newState }, ctx, info) {
    loggedInGate(ctx);
    fullMemberGate(ctx.req.member);
 
-   await ctx.db.mutation.updateMember({
-      where: {
-         id: ctx.req.memberId
-      },
-      data: {
-         broadcastView: newState
-      }
-   });
+   await ctx.db.mutation
+      .updateMember({
+         where: {
+            id: ctx.req.memberId
+         },
+         data: {
+            broadcastView: newState
+         }
+      })
+      .catch(err => {
+         throw new Error(err.message);
+      });
 
    const newMe = publishMeUpdate(ctx);
    return newMe;

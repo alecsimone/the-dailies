@@ -29,7 +29,9 @@ async function addTaxToThing(taxTitle, thingID, ctx, personal) {
          where
       },
       `{id title author {id}}`
-   );
+   ).catch(err => {
+      throw new Error(err.message);
+   });
 
    const relevantTaxes = allTaxes.filter(tax => tax.title.toLowerCase().trim() == taxTitle.toLowerCase().trim());
 
@@ -56,7 +58,9 @@ async function addTaxToThing(taxTitle, thingID, ctx, personal) {
          }
       };
    }
-   const updatedThing = await properUpdateStuff(dataObj, thingID, 'Thing', ctx);
+   const updatedThing = await properUpdateStuff(dataObj, thingID, 'Thing', ctx).catch(err => {
+      throw new Error(err.message);
+   });
    return updatedThing;
 }
 async function addTaxToThingHandler(parent, { tax, thingID, personal }, ctx, info) {
@@ -71,7 +75,9 @@ async function addTaxToThingHandler(parent, { tax, thingID, personal }, ctx, inf
       addTaxesToThing(taxArray, thingID, ctx, personal);
       return;
    }
-   const updatedThing = await addTaxToThing(tax, thingID, ctx, personal);
+   const updatedThing = await addTaxToThing(tax, thingID, ctx, personal).catch(err => {
+      throw new Error(err.message);
+   });
    return updatedThing;
 }
 exports.addTaxToThingHandler = addTaxToThingHandler;
@@ -119,10 +125,14 @@ async function createThing(parent, args, ctx, info) {
          data: dataObj
       },
       info
-   );
+   ).catch(err => {
+      throw new Error(err.message);
+   });
 
    const tagsArray = tags.split(',');
-   await addTagsToThing(tagsArray, thing.id, ctx);
+   await addTagsToThing(tagsArray, thing.id, ctx).catch(err => {
+      throw new Error(err.message);
+   });
 
    publishMeUpdate(ctx);
 
@@ -150,7 +160,9 @@ async function addContentPiece(parent, { content, summary, id, type }, ctx, info
          }
       },
       `{contentOrder}`
-   );
+   ).catch(err => {
+      throw new Error(err.message);
+   });
 
    const dataObj = {
       content: {
@@ -160,7 +172,9 @@ async function addContentPiece(parent, { content, summary, id, type }, ctx, info
          }
       }
    };
-   const updatedThing = await properUpdateStuff(dataObj, id, type, ctx);
+   const updatedThing = await properUpdateStuff(dataObj, id, type, ctx).catch(err => {
+      throw new Error(err.message);
+   });
    return updatedThing;
 }
 exports.addContentPiece = addContentPiece;
@@ -181,7 +195,9 @@ async function deleteContentPiece(
          }
       },
       `{contentOrder}`
-   );
+   ).catch(err => {
+      throw new Error(err.message);
+   });
 
    const newContentOrder = oldContentOrder.filter(id => id !== contentPieceID);
 
@@ -195,7 +211,9 @@ async function deleteContentPiece(
          set: newContentOrder
       }
    };
-   const updatedThing = await properUpdateStuff(dataObj, id, type, ctx);
+   const updatedThing = await properUpdateStuff(dataObj, id, type, ctx).catch(err => {
+      throw new Error(err.message);
+   });
    return updatedThing;
 }
 exports.deleteContentPiece = deleteContentPiece;
@@ -222,7 +240,9 @@ async function editContentPiece(
          }
       }
    };
-   const updatedThing = await properUpdateStuff(dataObj, id, type, ctx);
+   const updatedThing = await properUpdateStuff(dataObj, id, type, ctx).catch(err => {
+      throw new Error(err.message);
+   });
    return updatedThing;
 }
 exports.editContentPiece = editContentPiece;
@@ -237,7 +257,9 @@ async function reorderContent(parent, {id, type, oldPosition, newPosition}, ctx,
          }
       },
       `{content {id} contentOrder}`
-   );
+   ).catch(err => {
+      throw new Error(err.message);
+   });
 
    let order;
    if (oldContent.contentOrder != null) {
@@ -266,7 +288,9 @@ async function reorderContent(parent, {id, type, oldPosition, newPosition}, ctx,
       }
    }
 
-   const updatedThing = await properUpdateStuff(dataObj, id, type, ctx);
+   const updatedThing = await properUpdateStuff(dataObj, id, type, ctx).catch(err => {
+      throw new Error(err.message);
+   });
    return updatedThing;
 }
 exports.reorderContent = reorderContent;
@@ -278,7 +302,9 @@ async function setThingPrivacy(parent, { privacySetting, thingID }, ctx, info) {
    const dataObj = {
       privacy: privacySetting
    };
-   const updatedThing = await properUpdateStuff(dataObj, thingID, 'Thing', ctx);
+   const updatedThing = await properUpdateStuff(dataObj, thingID, 'Thing', ctx).catch(err => {
+      throw new Error(err.message);
+   });
    return updatedThing;
 }
 exports.setThingPrivacy = setThingPrivacy;
@@ -300,7 +326,9 @@ async function setFeaturedImage(
       featuredImage
    };
 
-   const updatedStuff = await properUpdateStuff(dataObj, id, type, ctx);
+   const updatedStuff = await properUpdateStuff(dataObj, id, type, ctx).catch(err => {
+      throw new Error(err.message);
+   });
    return updatedStuff;
 }
 exports.setFeaturedImage = setFeaturedImage;
@@ -312,7 +340,9 @@ async function setStuffTitle(parent, { title, id, type }, ctx, info) {
    const dataObj = {
       title
    };
-   const updatedThing = await properUpdateStuff(dataObj, id, type, ctx);
+   const updatedThing = await properUpdateStuff(dataObj, id, type, ctx).catch(err => {
+      throw new Error(err.message);
+   });
    return updatedThing;
 }
 exports.setStuffTitle = setStuffTitle;
@@ -324,7 +354,9 @@ async function setPublicity(parent, {public, id, type}, ctx, info) {
    const dataObj = {
       public
    };
-   const updatedStuff = await properUpdateStuff(dataObj, id, type, ctx);
+   const updatedStuff = await properUpdateStuff(dataObj, id, type, ctx).catch(err => {
+      throw new Error(err.message);
+   });
    return updatedStuff;
 }
 exports.setPublicity = setPublicity;
@@ -378,17 +410,25 @@ async function addComment(parent, {comment, id, type, replyToID}, ctx, info) {
                }
             }
          }
-      }, info);
+      }, info).catch(err => {
+         throw new Error(err.message);
+      });
       let lowerCasedType = type.toLowerCase();
       if (type === "ContentPiece") {lowerCasedType = 'contentPiece';}
       const updatedStuff = await ctx.db.query[lowerCasedType]({
          where: {
             id
          }
-      }, info);
+      }, info).catch(err => {
+         throw new Error(err.message);
+      }).catch(err => {
+      throw new Error(err.message);
+   });
       return updatedStuff;
    } else {
-      const updatedStuff = await properUpdateStuff(dataObj, id, type, ctx);
+      const updatedStuff = await properUpdateStuff(dataObj, id, type, ctx).catch(err => {
+      throw new Error(err.message);
+   });
       return updatedStuff;
    }
 }
@@ -411,7 +451,9 @@ async function editComment(parent, { commentID, stuffID, type, newComment}, ctx,
       }
    }
 
-   const updatedStuff = await properUpdateStuff(dataObj, stuffID, type, ctx);
+   const updatedStuff = await properUpdateStuff(dataObj, stuffID, type, ctx).catch(err => {
+      throw new Error(err.message);
+   });
    return updatedStuff;
 }
 exports.editComment = editComment;
@@ -424,7 +466,9 @@ async function deleteComment(parent, { commentID, stuffID, type }, ctx, info) {
       where: {
          id: commentID
       }
-   }, `{replies {id}}`);
+   }, `{replies {id}}`).catch(err => {
+      throw new Error(err.message);
+   });
 
    let dataObj;
    // If the comment has replies, we just want to set its text to [deleted]. Otherwise we can actually delete it.
@@ -457,7 +501,9 @@ async function deleteComment(parent, { commentID, stuffID, type }, ctx, info) {
    }
 
 
-   const updatedStuff = await properUpdateStuff(dataObj, stuffID, type, ctx);
+   const updatedStuff = await properUpdateStuff(dataObj, stuffID, type, ctx).catch(err => {
+      throw new Error(err.message);
+   });
    return updatedStuff;
 }
 exports.deleteComment = deleteComment;
@@ -470,7 +516,9 @@ async function editLink(parent, {link, id}, ctx, info) {
       link
    }
 
-   const updatedStuff = await properUpdateStuff(dataObj, id, "Thing", ctx);
+   const updatedStuff = await properUpdateStuff(dataObj, id, "Thing", ctx).catch(err => {
+      throw new Error(err.message);
+   });
    return updatedStuff;
 
 }
@@ -486,7 +534,9 @@ async function deleteThing(parent, {id}, ctx, info) {
          id
       }
    },
-   info);
+      info).catch(err => {
+         throw new Error(err.message);
+      });
 
    publishMeUpdate(ctx);
    return deletedThing;
@@ -507,7 +557,9 @@ async function deleteTax(parent, {id, personal}, ctx, info) {
          id
       }
    },
-   info);
+      info).catch(err => {
+         throw new Error(err.message);
+      });
 
    return deletedTax;
 }
@@ -522,7 +574,9 @@ async function setColor(parent, { color, id, type}, ctx, info) {
       color
    };
 
-   const updatedStuff = await properUpdateStuff(dataObj, id, type, ctx);
+   const updatedStuff = await properUpdateStuff(dataObj, id, type, ctx).catch(err => {
+      throw new Error(err.message);
+   });
    return updatedStuff;
 }
 exports.setColor = setColor;
@@ -536,7 +590,9 @@ async function editSummary(parent, {summary, id, type}, ctx, info) {
       summary
    };
 
-   const updatedStuff = await properUpdateStuff(dataObj, id, type, ctx);
+   const updatedStuff = await properUpdateStuff(dataObj, id, type, ctx).catch(err => {
+      throw new Error(err.message);
+   });
    return updatedStuff;
 }
 exports.editSummary = editSummary;
@@ -557,7 +613,9 @@ async function copyContentPiece(parent, {contentPieceID, newThingID}, ctx, info)
          }
       }
 
-      const updatedStuff = await properUpdateStuff(dataObj, newThingID, 'Thing', ctx);
+      const updatedStuff = await properUpdateStuff(dataObj, newThingID, 'Thing', ctx).catch(err => {
+         throw new Error(err.message);
+      });
       return updatedStuff;
    }
 
@@ -570,7 +628,9 @@ async function copyContentPiece(parent, {contentPieceID, newThingID}, ctx, info)
          }
       },
       `{id content {id} copiedInContent {id} contentOrder}`
-   );
+   ).catch(err => {
+      throw new Error(err.message);
+   });
 
    // Make a new array containing the content, previous copied in content, and the new copied in content
    let originalContent = [];
@@ -613,7 +673,9 @@ async function copyContentPiece(parent, {contentPieceID, newThingID}, ctx, info)
       }
    }
 
-   const updatedStuff = await properUpdateStuff(dataObj, newThingID, 'Thing', ctx);
+   const updatedStuff = await properUpdateStuff(dataObj, newThingID, 'Thing', ctx).catch(err => {
+      throw new Error(err.message);
+   });
    return updatedStuff;
 }
 exports.copyContentPiece = copyContentPiece;
@@ -631,7 +693,9 @@ async function unlinkContentPiece(parent, {contentPieceID, thingID}, ctx, info) 
       }
    }
 
-   const updatedStuff = await properUpdateStuff(dataObj, thingID, 'Thing', ctx);
+   const updatedStuff = await properUpdateStuff(dataObj, thingID, 'Thing', ctx).catch(err => {
+      throw new Error(err.message);
+   });
    return updatedStuff;
 }
 exports.unlinkContentPiece = unlinkContentPiece;

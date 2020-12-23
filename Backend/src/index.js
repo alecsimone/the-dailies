@@ -30,10 +30,11 @@ app.use((req, res, next) => {
 
 app.use(async (req, res, next) => {
    if (!req.memberId) return next();
-   const member = await db.query.member(
-      { where: { id: req.memberId } },
-      '{id role rep}'
-   );
+   const member = await db.query
+      .member({ where: { id: req.memberId } }, '{id role rep}')
+      .catch(err => {
+         throw new Error(err.message);
+      });
    req.member = member;
    next();
 });

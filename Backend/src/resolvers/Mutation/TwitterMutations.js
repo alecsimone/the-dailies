@@ -25,16 +25,22 @@ async function initiateTwitterLogin(parent, args, ctx, info) {
 
       const encryptedTokenSecret = cipherString(tokenSecret);
 
-      await ctx.db.mutation.updateMember({
-         where: { id: ctx.req.memberId },
-         data: { twitterTokenSecret: encryptedTokenSecret }
-      });
+      await ctx.db.mutation
+         .updateMember({
+            where: { id: ctx.req.memberId },
+            data: { twitterTokenSecret: encryptedTokenSecret }
+         })
+         .catch(err => {
+            throw new Error(err.message);
+         });
       message = url;
    });
    const wait = ms => new Promise((r, j) => setTimeout(r, ms));
    let i = 0;
    while (!message && i < 60) {
-      await wait(500);
+      await wait(500).catch(err => {
+         throw new Error(err.message);
+      });
       i++;
    }
    return { message };
@@ -51,14 +57,18 @@ async function likeTweet(parent, { tweetID, alreadyLiked }, ctx, info) {
 
    const { twitterUserToken, twitterUserTokenSecret } = await getTwitterInfo(
       ctx
-   );
+   ).catch(err => {
+      throw new Error(err.message);
+   });
 
    const newTweetData = await createOrDestroyLike(
       tweetID,
       action,
       twitterUserToken,
       twitterUserTokenSecret
-   );
+   ).catch(err => {
+      throw new Error(err.message);
+   });
    return { message: JSON.stringify(newTweetData) };
 }
 exports.likeTweet = likeTweet;
@@ -72,7 +82,11 @@ async function markTweetsSeen(
    loggedInGate(ctx);
    fullMemberGate(ctx.req.member);
 
-   const { twitterListsObject, twitterSeenIDs } = await getTwitterInfo(ctx);
+   const { twitterListsObject, twitterSeenIDs } = await getTwitterInfo(
+      ctx
+   ).catch(err => {
+      throw new Error(err.message);
+   });
 
    tweetIDs.sort();
    const newestTweetID = tweetIDs[tweetIDs.length - 1];
@@ -112,15 +126,19 @@ async function markTweetsSeen(
    );
    listsObject[listID].seenIDs = newSeenIDs;
 
-   const updatedMember = await ctx.db.mutation.updateMember(
-      {
-         where: { id: ctx.req.memberId },
-         data: {
-            twitterListsObject: JSON.stringify(listsObject)
-         }
-      },
-      info
-   );
+   const updatedMember = await ctx.db.mutation
+      .updateMember(
+         {
+            where: { id: ctx.req.memberId },
+            data: {
+               twitterListsObject: JSON.stringify(listsObject)
+            }
+         },
+         info
+      )
+      .catch(err => {
+         throw new Error(err.message);
+      });
    return updatedMember;
 }
 exports.markTweetsSeen = markTweetsSeen;
@@ -140,7 +158,11 @@ async function saveTweet(parent, { tweetURL, tweeter, tweetText }, ctx, info) {
       titleBody !== '' ? titleBody : 'Saved Tweet'
    }`;
 
-   const newThing = await properUpdateStuff(dataObj, 'new', 'Thing', ctx);
+   const newThing = await properUpdateStuff(dataObj, 'new', 'Thing', ctx).catch(
+      err => {
+         throw new Error(err.message);
+      }
+   );
    return newThing;
 }
 exports.saveTweet = saveTweet;
