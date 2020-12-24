@@ -300,6 +300,7 @@ const Tweet = props => {
             threadEnder ? ' threadEnder' : ''
          }`}
          onClick={e => {
+            e.stopPropagation();
             if (e.button === 0) {
                window.setTimeout(
                   () =>
