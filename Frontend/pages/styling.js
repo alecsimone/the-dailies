@@ -39,12 +39,6 @@ const Styling = props => (
       <Head>
          <title>Style Cheat Sheet - OurDailies</title>
       </Head>
-      <iframe
-         src="https://www.instagram.com/p/CJJkyERFqzu/embed/captioned"
-         frameBorder="0"
-         scrolling="no"
-         allowFullScreen
-      />
       <StyledCheatSheet>
          If you're writing comments or making your own things, here are some
          things you can do:
