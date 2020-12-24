@@ -285,6 +285,13 @@ const Tweet = props => {
       threadEnder = true;
    }
 
+   const doubleClickListener = e => {
+      if (e.button === 0) {
+         e.preventDefault();
+         likeTweetHandler();
+      }
+   };
+
    return (
       <div
          className={`tweet${
@@ -292,6 +299,24 @@ const Tweet = props => {
          }${threadStarter ? ' threadStarter' : ''}${
             threadEnder ? ' threadEnder' : ''
          }`}
+         onClick={e => {
+            if (e.button === 0) {
+               window.setTimeout(
+                  () =>
+                     window.addEventListener('mousedown', doubleClickListener),
+                  1
+               );
+
+               window.setTimeout(
+                  () =>
+                     window.removeEventListener(
+                        'mousedown',
+                        doubleClickListener
+                     ),
+                  500
+               );
+            }
+         }}
       >
          {replyToID && !directReply && (
             <div className="repliedToTweet">
