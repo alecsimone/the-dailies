@@ -165,9 +165,10 @@ const ContentPiece = ({
    if (!editable) {
       contentElement = (
          <div>
-            {(summary == null || summary === '' || expanded) && (
-               <RichText text={rawContentString} key={id} />
-            )}
+            {(summary == null || summary === '' || expanded) &&
+               (console.log('hello') || (
+                  <RichText text={rawContentString} key={id} />
+               ))}
             {(summary != null || summary !== '' || canEdit) && (
                <div
                   className={`contentSummaryBox${
@@ -246,7 +247,8 @@ const ContentPiece = ({
    }
 
    let contentArea;
-   if (isSmallScreen || !process.browser) {
+   // if (isSmallScreen || !process.browser) {
+   if (false) {
       // We need the "|| !process.browser" to keep the server side render from messing everything up on the client side render. Please don't ask me why.
       // If we're on a small screen, we need to put the comments and the content together into an element that can slide from side to side, hiding whatever is overflowing its container
       contentArea = (
@@ -406,6 +408,11 @@ const ContentPiece = ({
          });
       }
    };
+
+   if (!process.browser) {
+      // Server side rendering is great for SEO and allowing social media to get open graph info for its previews, but damn does it fuck up some of my more complicated rendering. So fuck it, the server will just render the raw content string as text until someone can show me a better way to do it.
+      return <div className="contentBlock">{rawContentString}</div>;
+   }
 
    return (
       <div
@@ -672,7 +679,10 @@ export default React.memo(ContentPiece, (prev, next) => {
    if (prev.comments.length !== next.comments.length) {
       return false;
    }
-   if (prev.votes.length !== next.votes.length || prev.score !== next.score) {
+   if (
+      (prev.votes && next.votes && prev.votes.length !== next.votes.length) ||
+      prev.score !== next.score
+   ) {
       return false;
    }
    return true;

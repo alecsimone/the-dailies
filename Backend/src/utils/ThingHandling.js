@@ -116,7 +116,6 @@ async function editPermissionGate(dataObj, id, type, ctx) {
    ).catch(err => {
       throw new Error(err.message);
    });
-   console.log(oldStuff);
 
    if (oldStuff.author.id !== ctx.req.memberId) {
       throw new Error(
@@ -287,6 +286,32 @@ const canSeeThingGate = async (where, ctx) => {
    throw new Error("You don't have permission to see that thing.");
 };
 exports.canSeeThingGate = canSeeThingGate;
+
+const lengthenTikTokURL = async text => {
+   if (!text.includes('vm.tiktok.com')) return text;
+   const tiktokShortlinkRegex = /https:\/\/vm\.tiktok\.com\/[-a-z0-9]+[/]?/gim;
+   const matches = text.match(tiktokShortlinkRegex);
+
+   let newText = text;
+   for (const match of matches) {
+      // const protocoledMatch = `https://${match}`;
+      const fetchedLink = await fetch(match, {
+         method: 'GET'
+      }).catch(err => {
+         throw new Error(err.message);
+      });
+
+      if (fetchedLink.url.includes('https://m.tiktok.com/v/')) {
+         // We're going to get back a url that starts with https://m.tiktok.com/v/ then the video id, then .html? and then a whole bunch of bullshit. We're going to pull out the ID, put it into a fake full tiktok URL, and send back the original text with that url in place of the short url
+         const videoIDEndPos = fetchedLink.url.indexOf('.html');
+         const videoID = fetchedLink.url.substring(23, videoIDEndPos);
+         const fullLink = `https://www.tiktok.com/@ourdailiesplaceholder/video/${videoID}`;
+         newText = newText.replace(match, fullLink);
+      }
+   }
+   return newText;
+};
+exports.lengthenTikTokURL = lengthenTikTokURL;
 
 const disabledCodewords = ['disabled', 'disable', 'false', 'no', 'off', 'x'];
 exports.disabledCodewords = disabledCodewords;

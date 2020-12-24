@@ -3,7 +3,8 @@ const {
    properUpdateStuff,
    isExplodingLink,
    disabledCodewords,
-   editPermissionGate
+   editPermissionGate,
+   lengthenTikTokURL
 } = require('../../../utils/ThingHandling');
 const { publishMeUpdate, sendNotification} = require('../MemberMutations')
 const {
@@ -153,14 +154,7 @@ async function addContentPiece(parent, { content, summary, id, type }, ctx, info
    loggedInGate(ctx);
    fullMemberGate(ctx.req.member);
 
-   const { contentOrder: oldContentOrder } = await ctx.db.query[type.toLowerCase()](
-      {
-         where: {
-            id
-         }
-      },
-      `{contentOrder}`
-   ).catch(err => {
+   content = await lengthenTikTokURL(content).catch(err => {
       throw new Error(err.message);
    });
 
@@ -226,6 +220,10 @@ async function editContentPiece(
 ) {
    loggedInGate(ctx);
    fullMemberGate(ctx.req.member);
+
+   content = await lengthenTikTokURL(content).catch(err => {
+      throw new Error(err.message);
+   });
 
    const dataObj = {
       content: {
@@ -365,6 +363,10 @@ async function addComment(parent, {comment, id, type, replyToID}, ctx, info) {
    loggedInGate(ctx);
    fullMemberGate(ctx.req.member);
 
+   comment = await lengthenTikTokURL(comment).catch(err => {
+      throw new Error(err.message);
+   });
+
    const dataObj = {
       comments: {
          create:{
@@ -437,6 +439,10 @@ exports.addComment = addComment;
 async function editComment(parent, { commentID, stuffID, type, newComment}, ctx, info) {
    loggedInGate(ctx);
    fullMemberGate(ctx.req.member);
+
+   newComment = await lengthenTikTokURL(newComment).catch(err => {
+      throw new Error(err.message);
+   });
 
    const dataObj = {
       comments: {
@@ -585,6 +591,10 @@ async function editSummary(parent, {summary, id, type}, ctx, info) {
    loggedInGate(ctx);
    fullMemberGate(ctx.req.member);
    editPermissionGate({}, id, type, ctx);
+
+   summary = await lengthenTikTokURL(summary).catch(err => {
+      throw new Error(err.message);
+   });
 
    const dataObj = {
       summary

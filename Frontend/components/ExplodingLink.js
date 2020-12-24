@@ -8,6 +8,7 @@ import {
    getYoutubeVideoIdFromLink,
    getGfycatSlugFromLink,
    getTweetIDFromLink,
+   getTikTokIDFromLink,
    urlFinder,
    isImage,
    isVideo
@@ -158,6 +159,7 @@ const ExplodingLink = ({
       lowerCaseURL.includes('youtu.be/')
    ) {
       const slug = getYoutubeVideoIdFromLink(url);
+      // return <div className="test">Does this work?</div>;
       return (
          <div className="embed-container">
             <iframe
@@ -244,6 +246,24 @@ const ExplodingLink = ({
             cardType="small"
             fullQuery={fullQuery}
          />
+      );
+   }
+
+   // TikTok Links
+   if (
+      lowerCaseURL.includes('tiktok.com/') &&
+      lowerCaseURL.includes('/video/')
+   ) {
+      const tiktokID = getTikTokIDFromLink(lowerCaseURL);
+      return (
+         <div className="embed-container tiktok">
+            <iframe
+               src={`https://www.tiktok.com/embed/v2/${tiktokID}?lang=en-US`}
+               frameBorder="0"
+               scrolling="no"
+               allowFullScreen
+            />
+         </div>
       );
    }
 
