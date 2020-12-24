@@ -122,9 +122,20 @@ const StyledVoteBar = styled.section`
       font-size: ${props => props.theme.bigText};
       font-weight: 600;
    }
+   &.mini {
+      border: none;
+      padding: calc(1rem + 1px) 1px;
+      .left {
+         margin-top: 9px;
+      }
+      .middle,
+      .right {
+         display: none;
+      }
+   }
 `;
 
-const VoteBar = ({ votes = [], id, type }) => {
+const VoteBar = ({ votes = [], id, type, mini }) => {
    const { me } = useContext(MemberContext);
    const [vote] = useMutation(VOTE_MUTATION, {
       refetchQueries: [{ query: ALL_THINGS_QUERY }]
@@ -162,7 +173,7 @@ const VoteBar = ({ votes = [], id, type }) => {
    }
 
    return (
-      <StyledVoteBar className="votebar">
+      <StyledVoteBar className={mini ? 'votebar mini' : 'votebar'}>
          <div className="left">
             <img
                src="/logo-small.png"

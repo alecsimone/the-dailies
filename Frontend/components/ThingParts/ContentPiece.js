@@ -650,6 +650,7 @@ const ContentPiece = ({
                votes={votes}
                key={`votebar-${id}`}
                type="ContentPiece"
+               mini={(votes && votes.length === 0) || votes == null}
             />
             {otherLocations}
          </div>

@@ -218,8 +218,8 @@ const Styling = props => (
                <h4>Exploding Links (Images, videos, links to things)</h4>
                <p>
                   If you paste in a plain link to any image or video (including
-                  YouTube videos and GFYcats), the media file will be embedded
-                  directly into your post.
+                  YouTube videos, TikToks, some Instagram posts, and GFYcats),
+                  the media file will be embedded directly into your post.
                </p>
                <p>
                   This also works for links to Things on OurDailies. If you
