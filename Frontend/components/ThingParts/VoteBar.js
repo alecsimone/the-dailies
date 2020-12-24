@@ -124,9 +124,9 @@ const StyledVoteBar = styled.section`
    }
    &.mini {
       border: none;
-      padding: calc(1rem + 1px) 1px;
-      .left {
-         margin-top: 9px;
+      padding: calc(1rem + 6.5px) 1px;
+      ${props => props.theme.bigScreenBreakpoint} {
+         padding: calc(1rem + 9.5px) 1px;
       }
       .middle,
       .right {

@@ -60,7 +60,7 @@ async function addTaxToThing(taxTitle, thingID, ctx, personal) {
       };
    }
    const updatedThing = await properUpdateStuff(dataObj, thingID, 'Thing', ctx).catch(err => {
-      throw new Error(err.message);
+      console.log(err);
    });
    return updatedThing;
 }
@@ -77,7 +77,7 @@ async function addTaxToThingHandler(parent, { tax, thingID, personal }, ctx, inf
       return;
    }
    const updatedThing = await addTaxToThing(tax, thingID, ctx, personal).catch(err => {
-      throw new Error(err.message);
+      console.log(err);
    });
    return updatedThing;
 }
@@ -127,12 +127,12 @@ async function createThing(parent, args, ctx, info) {
       },
       info
    ).catch(err => {
-      throw new Error(err.message);
+      console.log(err);
    });
 
    const tagsArray = tags.split(',');
    await addTagsToThing(tagsArray, thing.id, ctx).catch(err => {
-      throw new Error(err.message);
+      console.log(err);
    });
 
    publishMeUpdate(ctx);
@@ -155,7 +155,7 @@ async function addContentPiece(parent, { content, summary, id, type }, ctx, info
    fullMemberGate(ctx.req.member);
 
    content = await lengthenTikTokURL(content).catch(err => {
-      throw new Error(err.message);
+      console.log(err);
    });
 
    const dataObj = {
@@ -167,7 +167,7 @@ async function addContentPiece(parent, { content, summary, id, type }, ctx, info
       }
    };
    const updatedThing = await properUpdateStuff(dataObj, id, type, ctx).catch(err => {
-      throw new Error(err.message);
+      console.log(err);
    });
    return updatedThing;
 }
@@ -190,7 +190,7 @@ async function deleteContentPiece(
       },
       `{contentOrder}`
    ).catch(err => {
-      throw new Error(err.message);
+      console.log(err);
    });
 
    const newContentOrder = oldContentOrder.filter(id => id !== contentPieceID);
@@ -206,7 +206,7 @@ async function deleteContentPiece(
       }
    };
    const updatedThing = await properUpdateStuff(dataObj, id, type, ctx).catch(err => {
-      throw new Error(err.message);
+      console.log(err);
    });
    return updatedThing;
 }
@@ -222,7 +222,7 @@ async function editContentPiece(
    fullMemberGate(ctx.req.member);
 
    content = await lengthenTikTokURL(content).catch(err => {
-      throw new Error(err.message);
+      console.log(err);
    });
 
    const dataObj = {
@@ -239,7 +239,7 @@ async function editContentPiece(
       }
    };
    const updatedThing = await properUpdateStuff(dataObj, id, type, ctx).catch(err => {
-      throw new Error(err.message);
+      console.log(err);
    });
    return updatedThing;
 }
@@ -256,7 +256,7 @@ async function reorderContent(parent, {id, type, oldPosition, newPosition}, ctx,
       },
       `{content {id} contentOrder}`
    ).catch(err => {
-      throw new Error(err.message);
+      console.log(err);
    });
 
    let order;
@@ -287,7 +287,7 @@ async function reorderContent(parent, {id, type, oldPosition, newPosition}, ctx,
    }
 
    const updatedThing = await properUpdateStuff(dataObj, id, type, ctx).catch(err => {
-      throw new Error(err.message);
+      console.log(err);
    });
    return updatedThing;
 }
@@ -301,7 +301,7 @@ async function setThingPrivacy(parent, { privacySetting, thingID }, ctx, info) {
       privacy: privacySetting
    };
    const updatedThing = await properUpdateStuff(dataObj, thingID, 'Thing', ctx).catch(err => {
-      throw new Error(err.message);
+      console.log(err);
    });
    return updatedThing;
 }
@@ -325,7 +325,7 @@ async function setFeaturedImage(
    };
 
    const updatedStuff = await properUpdateStuff(dataObj, id, type, ctx).catch(err => {
-      throw new Error(err.message);
+      console.log(err);
    });
    return updatedStuff;
 }
@@ -339,7 +339,7 @@ async function setStuffTitle(parent, { title, id, type }, ctx, info) {
       title
    };
    const updatedThing = await properUpdateStuff(dataObj, id, type, ctx).catch(err => {
-      throw new Error(err.message);
+      console.log(err);
    });
    return updatedThing;
 }
@@ -353,7 +353,7 @@ async function setPublicity(parent, {public, id, type}, ctx, info) {
       public
    };
    const updatedStuff = await properUpdateStuff(dataObj, id, type, ctx).catch(err => {
-      throw new Error(err.message);
+      console.log(err);
    });
    return updatedStuff;
 }
@@ -364,7 +364,7 @@ async function addComment(parent, {comment, id, type, replyToID}, ctx, info) {
    fullMemberGate(ctx.req.member);
 
    comment = await lengthenTikTokURL(comment).catch(err => {
-      throw new Error(err.message);
+      console.log(err);
    });
 
    const dataObj = {
@@ -413,7 +413,7 @@ async function addComment(parent, {comment, id, type, replyToID}, ctx, info) {
             }
          }
       }, info).catch(err => {
-         throw new Error(err.message);
+         console.log(err);
       });
       let lowerCasedType = type.toLowerCase();
       if (type === "ContentPiece") {lowerCasedType = 'contentPiece';}
@@ -422,15 +422,13 @@ async function addComment(parent, {comment, id, type, replyToID}, ctx, info) {
             id
          }
       }, info).catch(err => {
-         throw new Error(err.message);
-      }).catch(err => {
-      throw new Error(err.message);
-   });
+         console.log(err);
+      });
       return updatedStuff;
    } else {
       const updatedStuff = await properUpdateStuff(dataObj, id, type, ctx).catch(err => {
-      throw new Error(err.message);
-   });
+         console.log(err);
+      });
       return updatedStuff;
    }
 }
@@ -441,7 +439,7 @@ async function editComment(parent, { commentID, stuffID, type, newComment}, ctx,
    fullMemberGate(ctx.req.member);
 
    newComment = await lengthenTikTokURL(newComment).catch(err => {
-      throw new Error(err.message);
+      console.log(err);
    });
 
    const dataObj = {
@@ -458,7 +456,7 @@ async function editComment(parent, { commentID, stuffID, type, newComment}, ctx,
    }
 
    const updatedStuff = await properUpdateStuff(dataObj, stuffID, type, ctx).catch(err => {
-      throw new Error(err.message);
+      console.log(err);
    });
    return updatedStuff;
 }
@@ -473,7 +471,7 @@ async function deleteComment(parent, { commentID, stuffID, type }, ctx, info) {
          id: commentID
       }
    }, `{replies {id}}`).catch(err => {
-      throw new Error(err.message);
+      console.log(err);
    });
 
    let dataObj;
@@ -508,7 +506,7 @@ async function deleteComment(parent, { commentID, stuffID, type }, ctx, info) {
 
 
    const updatedStuff = await properUpdateStuff(dataObj, stuffID, type, ctx).catch(err => {
-      throw new Error(err.message);
+      console.log(err);
    });
    return updatedStuff;
 }
@@ -523,7 +521,7 @@ async function editLink(parent, {link, id}, ctx, info) {
    }
 
    const updatedStuff = await properUpdateStuff(dataObj, id, "Thing", ctx).catch(err => {
-      throw new Error(err.message);
+      console.log(err);
    });
    return updatedStuff;
 
@@ -541,7 +539,7 @@ async function deleteThing(parent, {id}, ctx, info) {
       }
    },
       info).catch(err => {
-         throw new Error(err.message);
+         console.log(err);
       });
 
    publishMeUpdate(ctx);
@@ -564,7 +562,7 @@ async function deleteTax(parent, {id, personal}, ctx, info) {
       }
    },
       info).catch(err => {
-         throw new Error(err.message);
+         console.log(err);
       });
 
    return deletedTax;
@@ -581,7 +579,7 @@ async function setColor(parent, { color, id, type}, ctx, info) {
    };
 
    const updatedStuff = await properUpdateStuff(dataObj, id, type, ctx).catch(err => {
-      throw new Error(err.message);
+      console.log(err);
    });
    return updatedStuff;
 }
@@ -593,7 +591,7 @@ async function editSummary(parent, {summary, id, type}, ctx, info) {
    editPermissionGate({}, id, type, ctx);
 
    summary = await lengthenTikTokURL(summary).catch(err => {
-      throw new Error(err.message);
+      console.log(err);
    });
 
    const dataObj = {
@@ -601,7 +599,7 @@ async function editSummary(parent, {summary, id, type}, ctx, info) {
    };
 
    const updatedStuff = await properUpdateStuff(dataObj, id, type, ctx).catch(err => {
-      throw new Error(err.message);
+      console.log(err);
    });
    return updatedStuff;
 }
@@ -624,7 +622,7 @@ async function copyContentPiece(parent, {contentPieceID, newThingID}, ctx, info)
       }
 
       const updatedStuff = await properUpdateStuff(dataObj, newThingID, 'Thing', ctx).catch(err => {
-         throw new Error(err.message);
+         console.log(err);
       });
       return updatedStuff;
    }
@@ -639,7 +637,7 @@ async function copyContentPiece(parent, {contentPieceID, newThingID}, ctx, info)
       },
       `{id content {id} copiedInContent {id} contentOrder}`
    ).catch(err => {
-      throw new Error(err.message);
+      console.log(err);
    });
 
    // Make a new array containing the content, previous copied in content, and the new copied in content
@@ -684,7 +682,7 @@ async function copyContentPiece(parent, {contentPieceID, newThingID}, ctx, info)
    }
 
    const updatedStuff = await properUpdateStuff(dataObj, newThingID, 'Thing', ctx).catch(err => {
-      throw new Error(err.message);
+      console.log(err);
    });
    return updatedStuff;
 }
@@ -704,7 +702,7 @@ async function unlinkContentPiece(parent, {contentPieceID, thingID}, ctx, info) 
    }
 
    const updatedStuff = await properUpdateStuff(dataObj, thingID, 'Thing', ctx).catch(err => {
-      throw new Error(err.message);
+      console.log(err);
    });
    return updatedStuff;
 }

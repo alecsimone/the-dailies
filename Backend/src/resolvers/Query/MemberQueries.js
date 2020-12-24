@@ -12,7 +12,7 @@ async function me(parent, args, ctx, info) {
          info
       )
       .catch(err => {
-         throw new Error(err.message);
+         console.log(err);
       });
    if (member && member.friends) {
       member.friends.forEach((friend, index) => {
@@ -44,7 +44,7 @@ async function member(parent, { id, displayName }, ctx, info) {
          info
       )
       .catch(err => {
-         throw new Error(err.message);
+         console.log(err);
       });
 
    if (member && member.createdThings && member.createdThings.length > 0) {

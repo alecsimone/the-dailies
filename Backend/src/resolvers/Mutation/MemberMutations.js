@@ -14,7 +14,7 @@ async function publishMeUpdate(ctx) {
          `{${fullMemberFields}}`
       )
       .catch(err => {
-         throw new Error(err.message);
+         console.log(err);
       });
    ctx.pubsub.publish('me', {
       me: {
@@ -28,7 +28,7 @@ exports.publishMeUpdate = publishMeUpdate;
 async function signup(parent, args, ctx, info) {
    args.email = args.email.toLowerCase();
    const password = await bcrypt.hash(args.password, 10).catch(err => {
-      throw new Error(err.message);
+      console.log(err);
    });
    if (args.displayName.length > 24) {
       args.displayName = args.displayName.substring(0, 24);
@@ -46,7 +46,7 @@ async function signup(parent, args, ctx, info) {
          info
       )
       .catch(err => {
-         throw new Error(err.message);
+         console.log(err);
       });
    const token = jwt.sign({ memberId: member.id }, process.env.APP_SECRET);
    ctx.res.cookie('token', token, {
@@ -64,14 +64,14 @@ async function login(parent, { email, password }, ctx, info) {
          where: { email: email.toLowerCase() }
       })
       .catch(err => {
-         throw new Error(err.message);
+         console.log(err);
       });
    if (!member) {
       throw new Error("We don't know anyone with that email address");
    }
 
    const valid = await bcrypt.compare(password, member.password).catch(err => {
-      throw new Error(err.message);
+      console.log(err);
    });
    if (!valid) {
       throw new Error('Wrong Password');
@@ -142,7 +142,7 @@ async function editProfile(
       }
    }
    const newMe = await properEditMe(dataObj, id, ctx).catch(err => {
-      throw new Error(err.message);
+      console.log(err);
    });
    return newMe;
 }
@@ -167,7 +167,7 @@ async function properEditMe(dataObj, id, ctx) {
          `{${fullMemberFields}}`
       )
       .catch(err => {
-         throw new Error(err.message);
+         console.log(err);
       });
    publishMeUpdate(ctx);
    return updatedMember;
@@ -202,7 +202,7 @@ async function sendFriendRequest(parent, { id }, ctx, info) {
          info
       )
       .catch(err => {
-         throw new Error(err.message);
+         console.log(err);
       });
    return newThem;
 }
@@ -219,7 +219,7 @@ async function confirmFriendRequest(parent, { id }, ctx, info) {
          `{friendRequests {id} ignoredFriendRequests {id}}`
       )
       .catch(err => {
-         throw new Error(err.message);
+         console.log(err);
       });
    const dataObj = {
       friends: {
@@ -257,7 +257,7 @@ async function confirmFriendRequest(parent, { id }, ctx, info) {
    }
    const newMe = await properEditMe(dataObj, ctx.req.memberId, ctx).catch(
       err => {
-         throw new Error(err.message);
+         console.log(err);
       }
    );
 
@@ -278,7 +278,7 @@ async function confirmFriendRequest(parent, { id }, ctx, info) {
          `{friendRequests {id} ignoredFriendRequests {id}}`
       )
       .catch(err => {
-         throw new Error(err.message);
+         console.log(err);
       });
    if (oldThem.friendRequests && oldThem.friendRequests.length > 0) {
       const existingFriendRequest = oldThem.friendRequests.filter(
@@ -332,7 +332,7 @@ async function ignoreFriendRequest(parent, { id }, ctx, info) {
    };
    const newMe = await properEditMe(dataObj, ctx.req.memberId, ctx).catch(
       err => {
-         throw new Error(err.message);
+         console.log(err);
       }
    );
    return newMe;
@@ -353,7 +353,7 @@ async function readNotifications(parent, { ids }, ctx, info) {
          }
       })
       .catch(err => {
-         throw new Error(err.message);
+         console.log(err);
       });
 
    const newMe = publishMeUpdate(ctx);
@@ -373,7 +373,7 @@ async function sendNotification(notification, ctx) {
             `{author {id}}`
          )
          .catch(err => {
-            throw new Error(err.message);
+            console.log(err);
          });
       if (theThing == null) {
          const theContentPiece = await ctx.db.query
@@ -386,7 +386,7 @@ async function sendNotification(notification, ctx) {
                `{onThing {id}}`
             )
             .catch(err => {
-               throw new Error(err.message);
+               console.log(err);
             });
          const theContainingThing = await ctx.db.query
             .thing(
@@ -398,7 +398,7 @@ async function sendNotification(notification, ctx) {
                `{author {id}}`
             )
             .catch(err => {
-               throw new Error(err.message);
+               console.log(err);
             });
          notification.recipient = theContainingThing.author.id;
       } else {
@@ -448,7 +448,7 @@ async function toggleBroadcastView(parent, { newState }, ctx, info) {
          }
       })
       .catch(err => {
-         throw new Error(err.message);
+         console.log(err);
       });
 
    const newMe = publishMeUpdate(ctx);

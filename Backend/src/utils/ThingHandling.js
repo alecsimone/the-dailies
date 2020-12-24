@@ -40,7 +40,7 @@ async function updateStuffAndNotifySubs(data, id, type, ctx) {
       },
       `{${fields}}`
    ).catch(err => {
-      throw new Error(err.message);
+      console.log(err);
    });
    if (type === 'ContentPiece') {
       const updatedThing = await ctx.db.query
@@ -53,7 +53,7 @@ async function updateStuffAndNotifySubs(data, id, type, ctx) {
             `{${fullThingFields}}`
          )
          .catch(err => {
-            throw new Error(err.message);
+            console.log(err);
          });
       publishStuffUpdate('Thing', updatedThing, ctx);
    } else {
@@ -89,7 +89,7 @@ async function editPermissionGate(dataObj, id, type, ctx) {
             `{author {id}}`
          )
          .catch(err => {
-            throw new Error(err.message);
+            console.log(err);
          });
       if (comment.author.id !== ctx.req.memberId) {
          throw new Error('You do not have permission to edit that comment');
@@ -114,7 +114,7 @@ async function editPermissionGate(dataObj, id, type, ctx) {
       },
       `{author {id}}`
    ).catch(err => {
-      throw new Error(err.message);
+      console.log(err);
    });
 
    if (oldStuff.author.id !== ctx.req.memberId) {
@@ -138,7 +138,8 @@ async function properUpdateStuff(dataObj, id, type, ctx) {
             `{id defaultPrivacy}`
          )
          .catch(err => {
-            throw new Error(err.message);
+            console.log(err);
+            console.log(err);
          });
       if (!dataObj.privacy) {
          dataObj.privacy = currentMember.defaultPrivacy;
@@ -170,7 +171,8 @@ async function properUpdateStuff(dataObj, id, type, ctx) {
             `{${fullThingFields}}`
          )
          .catch(err => {
-            throw new Error(err.message);
+            console.log(err);
+            console.log(err);
          });
       publishMeUpdate(ctx);
       return newThing;
@@ -184,7 +186,8 @@ async function properUpdateStuff(dataObj, id, type, ctx) {
       type,
       ctx
    ).catch(err => {
-      throw new Error(err.message);
+      console.log(err);
+      console.log(err);
    });
    publishMeUpdate(ctx);
    return updatedStuff;
@@ -197,7 +200,7 @@ async function searchAvailableTaxes(searchTerm, ctx, personal) {
       {},
       `{__typename id title author {id}}`
    ).catch(err => {
-      throw new Error(err.message);
+      console.log(err);
    });
 
    const relevantTaxes = allTaxes.filter(tax =>
@@ -274,7 +277,7 @@ const canSeeThingGate = async (where, ctx) => {
          `{privacy author {id friends {id friends {id}}}}`
       )
       .catch(err => {
-         throw new Error(err.message);
+         console.log(err);
       });
 
    if (thingData == null) {
@@ -283,7 +286,7 @@ const canSeeThingGate = async (where, ctx) => {
 
    if (
       await canSeeThing(ctx, thingData).catch(err => {
-         throw new Error(err.message);
+         console.log(err);
       })
    ) {
       return true;
@@ -303,7 +306,7 @@ const lengthenTikTokURL = async text => {
       const fetchedLink = await fetch(match, {
          method: 'GET'
       }).catch(err => {
-         throw new Error(err.message);
+         console.log(err);
       });
 
       if (fetchedLink.url.includes('https://m.tiktok.com/v/')) {

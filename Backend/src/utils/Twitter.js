@@ -98,7 +98,7 @@ const getTwitterInfo = async ctx => {
          `{twitterUserID, twitterUserName, twitterListsObject, twitterUserToken, twitterUserTokenSecret, twitterSeenIDs}`
       )
       .catch(err => {
-         throw new Error(err.message);
+         console.log(err);
       });
    twitterInfo.twitterUserTokenSecret = decipherString(
       twitterInfo.twitterUserTokenSecret
@@ -193,7 +193,7 @@ const getFreshLists = async ctx => {
       twitterUserTokenSecret: tokenSecret,
       twitterListsObject
    } = await getTwitterInfo(ctx).catch(err => {
-      throw new Error(err.message);
+      console.log(err);
    });
 
    const baseURL = 'https://api.twitter.com/1.1/lists/list.json';
@@ -219,11 +219,11 @@ const getFreshLists = async ctx => {
          Authorization: headerString
       }
    }).catch(err => {
-      throw new Error(err.message);
+      console.log(err);
    });
 
    const listsJson = await lists.json().catch(err => {
-      throw new Error(err.message);
+      console.log(err);
    });
    if (listsJson.errors && listsJson.errors[0].code == 88) {
       throw new Error("You've exceeded the twitter rate limit for lists");
@@ -272,7 +272,7 @@ const fetchListTweets = async (listID, ctx) => {
       twitterUserToken,
       twitterUserTokenSecret
    } = await getTwitterInfo(ctx).catch(err => {
-      throw new Error(err.message);
+      console.log(err);
    });
 
    let sinceID;
@@ -291,7 +291,7 @@ const fetchListTweets = async (listID, ctx) => {
          twitterUserTokenSecret,
          sinceID
       ).catch(err => {
-         throw new Error(err.message);
+         console.log(err);
       });
 
       return listTweets;
@@ -324,10 +324,10 @@ const fetchListTweets = async (listID, ctx) => {
          Authorization: headerString
       }
    }).catch(err => {
-      throw new Error(err.message);
+      console.log(err);
    });
    const tweetsJson = await tweets.json().catch(err => {
-      throw new Error(err.message);
+      console.log(err);
    });
    return JSON.stringify(tweetsJson);
 };
@@ -360,10 +360,10 @@ const fetchHomeTweets = async (userID, token, tokenSecret, sinceID) => {
          Authorization: headerString
       }
    }).catch(err => {
-      throw new Error(err.message);
+      console.log(err);
    });
    const tweetsJson = await tweets.json().catch(err => {
-      throw new Error(err.message);
+      console.log(err);
    });
    return JSON.stringify(tweetsJson);
 };
@@ -380,7 +380,7 @@ const fetchTweet = async (tweetID, ctx) => {
          `{tweetJson}`
       )
       .catch(err => {
-         throw new Error(err.message);
+         console.log(err);
       });
    if (cachedTweet) {
       return cachedTweet.tweetJson;
@@ -391,7 +391,7 @@ const fetchTweet = async (tweetID, ctx) => {
       ({ twitterUserToken, twitterUserTokenSecret } = await getTwitterInfo(
          ctx
       ).catch(err => {
-         throw new Error(err.message);
+         console.log(err);
       }));
    }
 
@@ -427,10 +427,10 @@ const fetchTweet = async (tweetID, ctx) => {
          Authorization: headerString
       }
    }).catch(err => {
-      throw new Error(err.message);
+      console.log(err);
    });
    const tweetJson = await tweet.json().catch(err => {
-      throw new Error(err.message);
+      console.log(err);
    });
    tweetJson.favorited = false;
    ctx.db.mutation.createTweet({
@@ -467,10 +467,10 @@ const createOrDestroyLike = async (tweetID, action, token, tokenSecret) => {
          Authorization: headerString
       }
    }).catch(err => {
-      throw new Error(err.message);
+      console.log(err);
    });
    const newTweetData = await response.json().catch(err => {
-      throw new Error(err.message);
+      console.log(err);
    });
    return newTweetData;
 };

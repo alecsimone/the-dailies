@@ -31,7 +31,7 @@ async function initiateTwitterLogin(parent, args, ctx, info) {
             data: { twitterTokenSecret: encryptedTokenSecret }
          })
          .catch(err => {
-            throw new Error(err.message);
+            console.log(err);
          });
       message = url;
    });
@@ -39,7 +39,7 @@ async function initiateTwitterLogin(parent, args, ctx, info) {
    let i = 0;
    while (!message && i < 60) {
       await wait(500).catch(err => {
-         throw new Error(err.message);
+         console.log(err);
       });
       i++;
    }
@@ -58,7 +58,7 @@ async function likeTweet(parent, { tweetID, alreadyLiked }, ctx, info) {
    const { twitterUserToken, twitterUserTokenSecret } = await getTwitterInfo(
       ctx
    ).catch(err => {
-      throw new Error(err.message);
+      console.log(err);
    });
 
    const newTweetData = await createOrDestroyLike(
@@ -67,7 +67,7 @@ async function likeTweet(parent, { tweetID, alreadyLiked }, ctx, info) {
       twitterUserToken,
       twitterUserTokenSecret
    ).catch(err => {
-      throw new Error(err.message);
+      console.log(err);
    });
    return { message: JSON.stringify(newTweetData) };
 }
@@ -85,7 +85,7 @@ async function markTweetsSeen(
    const { twitterListsObject, twitterSeenIDs } = await getTwitterInfo(
       ctx
    ).catch(err => {
-      throw new Error(err.message);
+      console.log(err);
    });
 
    tweetIDs.sort();
@@ -137,7 +137,7 @@ async function markTweetsSeen(
          info
       )
       .catch(err => {
-         throw new Error(err.message);
+         console.log(err);
       });
    return updatedMember;
 }
@@ -160,7 +160,7 @@ async function saveTweet(parent, { tweetURL, tweeter, tweetText }, ctx, info) {
 
    const newThing = await properUpdateStuff(dataObj, 'new', 'Thing', ctx).catch(
       err => {
-         throw new Error(err.message);
+         console.log(err);
       }
    );
    return newThing;

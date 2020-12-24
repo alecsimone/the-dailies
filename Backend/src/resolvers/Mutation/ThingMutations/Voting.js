@@ -8,14 +8,19 @@ async function vote(parent, { id, type }, ctx, info) {
    loggedInGate(ctx);
    fullMemberGate(ctx.req.member);
 
-   const myVoterInfo = await ctx.db.query.member(
-      {
-         where: {
-            id: ctx.req.memberId
-         }
-      },
-      `{rep}`
-   );
+   const myVoterInfo = await ctx.db.query
+      .member(
+         {
+            where: {
+               id: ctx.req.memberId
+            }
+         },
+         `{rep}`
+      )
+      .catch(err => {
+         console.log(err);
+         console.log(err);
+      });
 
    let lowerCasedType = type.toLowerCase();
    if (lowerCasedType === 'contentpiece') {
@@ -30,7 +35,8 @@ async function vote(parent, { id, type }, ctx, info) {
       },
       `{id score votes {id voter {id} value}}`
    ).catch(err => {
-      throw new Error(err.message);
+      console.log(err);
+      console.log(err);
    });
    if (oldStuff == null) {
       throw new Error(`${type} not found`);
@@ -64,7 +70,8 @@ async function vote(parent, { id, type }, ctx, info) {
 
    const updatedStuff = await properUpdateStuff(dataObj, id, type, ctx).catch(
       err => {
-         throw new Error(err.message);
+         console.log(err);
+         console.log(err);
       }
    );
    return updatedStuff;

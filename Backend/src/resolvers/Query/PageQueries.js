@@ -13,7 +13,7 @@ async function searchTaxes(parent, { searchTerm, personal }, ctx, info) {
       ctx,
       personal
    ).catch(err => {
-      throw new Error(err.message);
+      console.log(err);
    });
    return availableTags;
 }
@@ -24,7 +24,7 @@ async function taxByTitle(parent, { title, personal }, ctx, info) {
 
    const possibleTaxes = await searchAvailableTaxes(title, ctx, personal).catch(
       err => {
-         throw new Error(err.message);
+         console.log(err);
       }
    );
    if (possibleTaxes != null && possibleTaxes.length > 0) {
@@ -46,7 +46,7 @@ async function taxByTitle(parent, { title, personal }, ctx, info) {
          },
          info
       ).catch(err => {
-         throw new Error(err.message);
+         console.log(err);
       });
 
       if (theTax == null) {
@@ -60,7 +60,7 @@ async function taxByTitle(parent, { title, personal }, ctx, info) {
       }
 
       const searchResults = await searchThings(title, ctx).catch(err => {
-         throw new Error(err.message);
+         console.log(err);
       });
       searchResults.forEach(result => {
          const preExistingCheck = theTax.connectedThings.filter(
@@ -89,7 +89,7 @@ async function thing(parent, { where }, ctx, info) {
          info
       )
       .catch(err => {
-         throw new Error(err.message);
+         console.log(err);
       });
    return thingData;
 }
@@ -108,7 +108,7 @@ async function myThings(parent, { orderBy = 'id_DESC' }, ctx, info) {
             info
          )
          .catch(err => {
-            throw new Error(err.message);
+            console.log(err);
          });
       return things;
    }
@@ -125,7 +125,7 @@ async function myThings(parent, { orderBy = 'id_DESC' }, ctx, info) {
          info
       )
       .catch(err => {
-         throw new Error(err.message);
+         console.log(err);
       });
    return things;
 }
@@ -151,7 +151,7 @@ async function myFriendsThings(parent, { orderBy = 'id_DESC' }, ctx, info) {
          info
       )
       .catch(err => {
-         throw new Error(err.message);
+         console.log(err);
       });
    return things;
 }
@@ -169,7 +169,7 @@ async function publicThings(parent, { orderBy = 'id_DESC' }, ctx, info) {
          info
       )
       .catch(err => {
-         throw new Error(err.message);
+         console.log(err);
       });
    return things;
 }
@@ -224,7 +224,7 @@ async function allThings(parent, args, ctx, info) {
          info
       )
       .catch(err => {
-         throw new Error(err.message);
+         console.log(err);
       });
 
    const thingsWithAVote = things.filter(thing => thing.votes.length > 0);
@@ -237,7 +237,7 @@ async function searchThings(string, ctx, isTitleOnly = false) {
    const everyThing = await ctx.db.query
       .things({}, `{${fullThingFields}}`)
       .catch(err => {
-         throw new Error(err.message);
+         console.log(err);
       });
 
    const term = string.toLowerCase().trim();
@@ -297,7 +297,7 @@ exports.searchThings = searchThings;
 async function search(parent, { string, isTitleOnly }, ctx, info) {
    const relevantThings = await searchThings(string, ctx, isTitleOnly).catch(
       err => {
-         throw new Error(err.message);
+         console.log(err);
       }
    );
 

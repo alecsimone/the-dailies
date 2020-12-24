@@ -33,7 +33,7 @@ app.use(async (req, res, next) => {
    const member = await db.query
       .member({ where: { id: req.memberId } }, '{id role rep}')
       .catch(err => {
-         throw new Error(err.message);
+         console.log(err);
       });
    req.member = member;
    next();
