@@ -229,7 +229,16 @@ const GlobalStyle = createGlobalStyle`
       overflow: hidden;
       max-width: 100%;
       &.tiktok {
-         padding-bottom: 94%;
+         padding-bottom: 240%;
+         ${props => props.theme.mobileBreakpoint} {
+            padding-bottom: 100%;
+         }
+      }
+      &.instagram {
+         padding-bottom: 200%;
+         ${props => props.theme.mobileBreakpoint} {
+            padding-bottom: 150%;
+         }
       }
       iframe {
          position: absolute;

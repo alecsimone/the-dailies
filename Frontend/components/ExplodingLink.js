@@ -9,6 +9,7 @@ import {
    getGfycatSlugFromLink,
    getTweetIDFromLink,
    getTikTokIDFromLink,
+   getInstagramIDFromLink,
    urlFinder,
    isImage,
    isVideo
@@ -260,11 +261,27 @@ const ExplodingLink = ({
             <iframe
                src={`https://www.tiktok.com/embed/v2/${tiktokID}?lang=en-US`}
                frameBorder="0"
-               scrolling="no"
                allowFullScreen
             />
          </div>
       );
+   }
+
+   // Instagram Links
+   if (lowerCaseURL.includes('instagram.com/p/')) {
+      const instagramID = getInstagramIDFromLink(url);
+      if (instagramID.length <= 12) {
+         // For some reason, some instagram posts are not embeddable and also have much longer IDs. So if we get one of those, we'll just render it as a normal link.
+         return (
+            <div className="embed-container instagram">
+               <iframe
+                  src={`https://www.instagram.com/p/${instagramID}/embed/captioned`}
+                  frameBorder="0"
+                  allowFullScreen
+               />
+            </div>
+         );
+      }
    }
 
    // General Links

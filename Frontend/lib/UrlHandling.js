@@ -50,7 +50,9 @@ const isExplodingLink = url => {
       lowerCaseURL.includes(`${homeNoHTTP}/thing?id=`) ||
       (lowerCaseURL.includes('twitter.com/') &&
          lowerCaseURL.includes('/status/')) ||
-      (lowerCaseURL.includes('tiktok.com') && lowerCaseURL.includes('/video/'))
+      (lowerCaseURL.includes('tiktok.com') &&
+         lowerCaseURL.includes('/video/')) ||
+      lowerCaseURL.includes('instagram.com/p/')
    ) {
       return true;
    }
@@ -165,6 +167,17 @@ const getTikTokIDFromLink = url => {
    return url.substring(videoPos);
 };
 export { getTikTokIDFromLink };
+
+const getInstagramIDFromLink = url => {
+   const lowerCaseURL = url.toLowerCase();
+   const pPos = lowerCaseURL.indexOf('/p/') + 3;
+   const nextSlashPos = url.indexOf('/', pPos);
+   if (nextSlashPos > -1) {
+      return url.substring(pPos, nextSlashPos);
+   }
+   return url.substring(pPos);
+};
+export { getInstagramIDFromLink };
 
 const urlAcceptableCharacters = '[-a-z0-9%&?=.,;|$()@_~:<>!*/^+#@]';
 const topLevelDomains =

@@ -214,14 +214,19 @@ const isExplodingLink = url => {
       lowerCaseURL.includes('.jpg') ||
       lowerCaseURL.includes('.png') ||
       lowerCaseURL.includes('.jpeg') ||
+      lowerCaseURL.includes('.webp') ||
       lowerCaseURL.includes('.gif') ||
       lowerCaseURL.includes('.mp4') ||
       lowerCaseURL.includes('.webm') ||
       lowerCaseURL.includes('gfycat.com/') ||
       lowerCaseURL.includes('youtube.com/watch?v=') ||
       lowerCaseURL.includes('youtu.be/') ||
+      lowerCaseURL.includes(`${homeNoHTTP}/thing?id=`) ||
       (lowerCaseURL.includes('twitter.com/') &&
-         lowerCaseURL.includes('/status/'))
+         lowerCaseURL.includes('/status/')) ||
+      (lowerCaseURL.includes('tiktok.com') &&
+         lowerCaseURL.includes('/video/')) ||
+      lowerCaseURL.includes('instagram.com/p/')
    ) {
       return true;
    }

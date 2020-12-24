@@ -165,10 +165,9 @@ const ContentPiece = ({
    if (!editable) {
       contentElement = (
          <div>
-            {(summary == null || summary === '' || expanded) &&
-               (console.log('hello') || (
-                  <RichText text={rawContentString} key={id} />
-               ))}
+            {(summary == null || summary === '' || expanded) && (
+               <RichText text={rawContentString} key={id} />
+            )}
             {(summary != null || summary !== '' || canEdit) && (
                <div
                   className={`contentSummaryBox${
