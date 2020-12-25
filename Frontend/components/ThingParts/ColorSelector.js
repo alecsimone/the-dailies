@@ -44,6 +44,9 @@ const StyledColorSelector = styled.div`
       right: 0;
       bottom: 0;
       cursor: pointer;
+      .arrow rect {
+         fill: ${props => props.theme.lowContrastGrey};
+      }
    }
    svg {
       width: 100%;
