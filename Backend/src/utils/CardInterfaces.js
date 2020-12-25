@@ -275,6 +275,12 @@ const fullThingFields = `
    winner
    finalistDate
    privacy
+   individualViewPermissions {
+      __typename
+      id
+      displayName
+      avatar
+   }
    eliminated
    createdAt
    updatedAt

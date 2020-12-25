@@ -1175,6 +1175,7 @@ type Member {
   createdThings(where: ThingWhereInput, orderBy: ThingOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Thing!]
   ownedTags(where: TagWhereInput, orderBy: TagOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Tag!]
   defaultPrivacy: PrivacySetting
+  individualViewPermissions(where: ThingWhereInput, orderBy: ThingOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Thing!]
   defaultExpansion: Boolean
   broadcastView: Boolean
   comments(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Comment!]
@@ -1220,6 +1221,7 @@ input MemberCreateInput {
   createdThings: ThingCreateManyWithoutAuthorInput
   ownedTags: TagCreateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
+  individualViewPermissions: ThingCreateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
   comments: CommentCreateManyWithoutAuthorInput
@@ -1249,6 +1251,11 @@ input MemberCreateManyWithoutFriendsInput {
 
 input MemberCreateManyWithoutIgnoredFriendRequestsInput {
   create: [MemberCreateWithoutIgnoredFriendRequestsInput!]
+  connect: [MemberWhereUniqueInput!]
+}
+
+input MemberCreateManyWithoutIndividualViewPermissionsInput {
+  create: [MemberCreateWithoutIndividualViewPermissionsInput!]
   connect: [MemberWhereUniqueInput!]
 }
 
@@ -1315,6 +1322,7 @@ input MemberCreateWithoutCommentsInput {
   createdThings: ThingCreateManyWithoutAuthorInput
   ownedTags: TagCreateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
+  individualViewPermissions: ThingCreateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
   password: String!
@@ -1350,6 +1358,7 @@ input MemberCreateWithoutCreatedThingsInput {
   passes: PassCreateManyWithoutPasserInput
   ownedTags: TagCreateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
+  individualViewPermissions: ThingCreateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
   comments: CommentCreateManyWithoutAuthorInput
@@ -1386,6 +1395,7 @@ input MemberCreateWithoutFriendRequestsInput {
   createdThings: ThingCreateManyWithoutAuthorInput
   ownedTags: TagCreateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
+  individualViewPermissions: ThingCreateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
   comments: CommentCreateManyWithoutAuthorInput
@@ -1422,6 +1432,7 @@ input MemberCreateWithoutFriendsInput {
   createdThings: ThingCreateManyWithoutAuthorInput
   ownedTags: TagCreateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
+  individualViewPermissions: ThingCreateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
   comments: CommentCreateManyWithoutAuthorInput
@@ -1450,6 +1461,44 @@ input MemberCreateWithoutIgnoredFriendRequestsInput {
   color: String
   friends: MemberCreateManyWithoutFriendsInput
   friendRequests: MemberCreateManyWithoutFriendRequestsInput
+  notifications: NotificationCreateManyWithoutRecipientInput
+  twitchName: String
+  email: String!
+  votes: VoteCreateManyWithoutVoterInput
+  passes: PassCreateManyWithoutPasserInput
+  createdThings: ThingCreateManyWithoutAuthorInput
+  ownedTags: TagCreateManyWithoutAuthorInput
+  defaultPrivacy: PrivacySetting
+  individualViewPermissions: ThingCreateManyWithoutIndividualViewPermissionsInput
+  defaultExpansion: Boolean
+  broadcastView: Boolean
+  comments: CommentCreateManyWithoutAuthorInput
+  password: String!
+  roles: MemberCreaterolesInput
+  role: Role
+  resetToken: String
+  resetTokenExpiry: Float
+  twitterTokenSecret: String
+  twitterUserName: String
+  twitterUserID: String
+  twitterUserToken: String
+  twitterUserTokenSecret: String
+  twitterListsObject: String
+  twitterSeenIDs: MemberCreatetwitterSeenIDsInput
+}
+
+input MemberCreateWithoutIndividualViewPermissionsInput {
+  id: ID
+  displayName: String!
+  name: String
+  avatar: String
+  rep: Int
+  points: Int
+  giveableRep: Int
+  color: String
+  friends: MemberCreateManyWithoutFriendsInput
+  friendRequests: MemberCreateManyWithoutFriendRequestsInput
+  ignoredFriendRequests: MemberCreateManyWithoutIgnoredFriendRequestsInput
   notifications: NotificationCreateManyWithoutRecipientInput
   twitchName: String
   email: String!
@@ -1494,6 +1543,7 @@ input MemberCreateWithoutNotificationsInput {
   createdThings: ThingCreateManyWithoutAuthorInput
   ownedTags: TagCreateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
+  individualViewPermissions: ThingCreateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
   comments: CommentCreateManyWithoutAuthorInput
@@ -1530,6 +1580,7 @@ input MemberCreateWithoutOwnedTagsInput {
   passes: PassCreateManyWithoutPasserInput
   createdThings: ThingCreateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
+  individualViewPermissions: ThingCreateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
   comments: CommentCreateManyWithoutAuthorInput
@@ -1566,6 +1617,7 @@ input MemberCreateWithoutPassesInput {
   createdThings: ThingCreateManyWithoutAuthorInput
   ownedTags: TagCreateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
+  individualViewPermissions: ThingCreateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
   comments: CommentCreateManyWithoutAuthorInput
@@ -1602,6 +1654,7 @@ input MemberCreateWithoutVotesInput {
   createdThings: ThingCreateManyWithoutAuthorInput
   ownedTags: TagCreateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
+  individualViewPermissions: ThingCreateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
   comments: CommentCreateManyWithoutAuthorInput
@@ -2020,6 +2073,7 @@ input MemberUpdateDataInput {
   createdThings: ThingUpdateManyWithoutAuthorInput
   ownedTags: TagUpdateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
+  individualViewPermissions: ThingUpdateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
   comments: CommentUpdateManyWithoutAuthorInput
@@ -2056,6 +2110,7 @@ input MemberUpdateInput {
   createdThings: ThingUpdateManyWithoutAuthorInput
   ownedTags: TagUpdateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
+  individualViewPermissions: ThingUpdateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
   comments: CommentUpdateManyWithoutAuthorInput
@@ -2163,6 +2218,18 @@ input MemberUpdateManyWithoutIgnoredFriendRequestsInput {
   updateMany: [MemberUpdateManyWithWhereNestedInput!]
 }
 
+input MemberUpdateManyWithoutIndividualViewPermissionsInput {
+  create: [MemberCreateWithoutIndividualViewPermissionsInput!]
+  delete: [MemberWhereUniqueInput!]
+  connect: [MemberWhereUniqueInput!]
+  set: [MemberWhereUniqueInput!]
+  disconnect: [MemberWhereUniqueInput!]
+  update: [MemberUpdateWithWhereUniqueWithoutIndividualViewPermissionsInput!]
+  upsert: [MemberUpsertWithWhereUniqueWithoutIndividualViewPermissionsInput!]
+  deleteMany: [MemberScalarWhereInput!]
+  updateMany: [MemberUpdateManyWithWhereNestedInput!]
+}
+
 input MemberUpdateManyWithWhereNestedInput {
   where: MemberScalarWhereInput!
   data: MemberUpdateManyDataInput!
@@ -2244,6 +2311,7 @@ input MemberUpdateWithoutCommentsDataInput {
   createdThings: ThingUpdateManyWithoutAuthorInput
   ownedTags: TagUpdateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
+  individualViewPermissions: ThingUpdateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
   password: String
@@ -2278,6 +2346,7 @@ input MemberUpdateWithoutCreatedThingsDataInput {
   passes: PassUpdateManyWithoutPasserInput
   ownedTags: TagUpdateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
+  individualViewPermissions: ThingUpdateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
   comments: CommentUpdateManyWithoutAuthorInput
@@ -2313,6 +2382,7 @@ input MemberUpdateWithoutFriendRequestsDataInput {
   createdThings: ThingUpdateManyWithoutAuthorInput
   ownedTags: TagUpdateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
+  individualViewPermissions: ThingUpdateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
   comments: CommentUpdateManyWithoutAuthorInput
@@ -2348,6 +2418,7 @@ input MemberUpdateWithoutFriendsDataInput {
   createdThings: ThingUpdateManyWithoutAuthorInput
   ownedTags: TagUpdateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
+  individualViewPermissions: ThingUpdateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
   comments: CommentUpdateManyWithoutAuthorInput
@@ -2375,6 +2446,43 @@ input MemberUpdateWithoutIgnoredFriendRequestsDataInput {
   color: String
   friends: MemberUpdateManyWithoutFriendsInput
   friendRequests: MemberUpdateManyWithoutFriendRequestsInput
+  notifications: NotificationUpdateManyWithoutRecipientInput
+  twitchName: String
+  email: String
+  votes: VoteUpdateManyWithoutVoterInput
+  passes: PassUpdateManyWithoutPasserInput
+  createdThings: ThingUpdateManyWithoutAuthorInput
+  ownedTags: TagUpdateManyWithoutAuthorInput
+  defaultPrivacy: PrivacySetting
+  individualViewPermissions: ThingUpdateManyWithoutIndividualViewPermissionsInput
+  defaultExpansion: Boolean
+  broadcastView: Boolean
+  comments: CommentUpdateManyWithoutAuthorInput
+  password: String
+  roles: MemberUpdaterolesInput
+  role: Role
+  resetToken: String
+  resetTokenExpiry: Float
+  twitterTokenSecret: String
+  twitterUserName: String
+  twitterUserID: String
+  twitterUserToken: String
+  twitterUserTokenSecret: String
+  twitterListsObject: String
+  twitterSeenIDs: MemberUpdatetwitterSeenIDsInput
+}
+
+input MemberUpdateWithoutIndividualViewPermissionsDataInput {
+  displayName: String
+  name: String
+  avatar: String
+  rep: Int
+  points: Int
+  giveableRep: Int
+  color: String
+  friends: MemberUpdateManyWithoutFriendsInput
+  friendRequests: MemberUpdateManyWithoutFriendRequestsInput
+  ignoredFriendRequests: MemberUpdateManyWithoutIgnoredFriendRequestsInput
   notifications: NotificationUpdateManyWithoutRecipientInput
   twitchName: String
   email: String
@@ -2418,6 +2526,7 @@ input MemberUpdateWithoutNotificationsDataInput {
   createdThings: ThingUpdateManyWithoutAuthorInput
   ownedTags: TagUpdateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
+  individualViewPermissions: ThingUpdateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
   comments: CommentUpdateManyWithoutAuthorInput
@@ -2453,6 +2562,7 @@ input MemberUpdateWithoutOwnedTagsDataInput {
   passes: PassUpdateManyWithoutPasserInput
   createdThings: ThingUpdateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
+  individualViewPermissions: ThingUpdateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
   comments: CommentUpdateManyWithoutAuthorInput
@@ -2488,6 +2598,7 @@ input MemberUpdateWithoutPassesDataInput {
   createdThings: ThingUpdateManyWithoutAuthorInput
   ownedTags: TagUpdateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
+  individualViewPermissions: ThingUpdateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
   comments: CommentUpdateManyWithoutAuthorInput
@@ -2523,6 +2634,7 @@ input MemberUpdateWithoutVotesDataInput {
   createdThings: ThingUpdateManyWithoutAuthorInput
   ownedTags: TagUpdateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
+  individualViewPermissions: ThingUpdateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
   comments: CommentUpdateManyWithoutAuthorInput
@@ -2553,6 +2665,11 @@ input MemberUpdateWithWhereUniqueWithoutFriendsInput {
 input MemberUpdateWithWhereUniqueWithoutIgnoredFriendRequestsInput {
   where: MemberWhereUniqueInput!
   data: MemberUpdateWithoutIgnoredFriendRequestsDataInput!
+}
+
+input MemberUpdateWithWhereUniqueWithoutIndividualViewPermissionsInput {
+  where: MemberWhereUniqueInput!
+  data: MemberUpdateWithoutIndividualViewPermissionsDataInput!
 }
 
 input MemberUpsertNestedInput {
@@ -2606,6 +2723,12 @@ input MemberUpsertWithWhereUniqueWithoutIgnoredFriendRequestsInput {
   where: MemberWhereUniqueInput!
   update: MemberUpdateWithoutIgnoredFriendRequestsDataInput!
   create: MemberCreateWithoutIgnoredFriendRequestsInput!
+}
+
+input MemberUpsertWithWhereUniqueWithoutIndividualViewPermissionsInput {
+  where: MemberWhereUniqueInput!
+  update: MemberUpdateWithoutIndividualViewPermissionsDataInput!
+  create: MemberCreateWithoutIndividualViewPermissionsInput!
 }
 
 input MemberWhereInput {
@@ -2759,6 +2882,9 @@ input MemberWhereInput {
   defaultPrivacy_not: PrivacySetting
   defaultPrivacy_in: [PrivacySetting!]
   defaultPrivacy_not_in: [PrivacySetting!]
+  individualViewPermissions_every: ThingWhereInput
+  individualViewPermissions_some: ThingWhereInput
+  individualViewPermissions_none: ThingWhereInput
   defaultExpansion: Boolean
   defaultExpansion_not: Boolean
   broadcastView: Boolean
@@ -4314,6 +4440,7 @@ type Thing {
   eliminated: Boolean!
   finalistDate: DateTime
   privacy: PrivacySetting
+  individualViewPermissions(where: MemberWhereInput, orderBy: MemberOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Member!]
   createdAt: DateTime!
   updatedAt: DateTime
 }
@@ -4349,6 +4476,7 @@ input ThingCreateInput {
   eliminated: Boolean
   finalistDate: DateTime
   privacy: PrivacySetting
+  individualViewPermissions: MemberCreateManyWithoutIndividualViewPermissionsInput
 }
 
 input ThingCreateManyWithoutAuthorInput {
@@ -4358,6 +4486,11 @@ input ThingCreateManyWithoutAuthorInput {
 
 input ThingCreateManyWithoutCopiedInContentInput {
   create: [ThingCreateWithoutCopiedInContentInput!]
+  connect: [ThingWhereUniqueInput!]
+}
+
+input ThingCreateManyWithoutIndividualViewPermissionsInput {
+  create: [ThingCreateWithoutIndividualViewPermissionsInput!]
   connect: [ThingWhereUniqueInput!]
 }
 
@@ -4411,6 +4544,7 @@ input ThingCreateWithoutAuthorInput {
   eliminated: Boolean
   finalistDate: DateTime
   privacy: PrivacySetting
+  individualViewPermissions: MemberCreateManyWithoutIndividualViewPermissionsInput
 }
 
 input ThingCreateWithoutCommentsInput {
@@ -4433,6 +4567,7 @@ input ThingCreateWithoutCommentsInput {
   eliminated: Boolean
   finalistDate: DateTime
   privacy: PrivacySetting
+  individualViewPermissions: MemberCreateManyWithoutIndividualViewPermissionsInput
 }
 
 input ThingCreateWithoutContentInput {
@@ -4455,6 +4590,7 @@ input ThingCreateWithoutContentInput {
   eliminated: Boolean
   finalistDate: DateTime
   privacy: PrivacySetting
+  individualViewPermissions: MemberCreateManyWithoutIndividualViewPermissionsInput
 }
 
 input ThingCreateWithoutCopiedInContentInput {
@@ -4464,6 +4600,30 @@ input ThingCreateWithoutCopiedInContentInput {
   featuredImage: String
   link: String
   content: ContentPieceCreateManyWithoutOnThingInput
+  contentOrder: ThingCreatecontentOrderInput
+  summary: String
+  partOfTags: TagCreateManyWithoutConnectedThingsInput
+  partOfStacks: StackCreateManyWithoutConnectedThingsInput
+  color: String
+  votes: VoteCreateManyWithoutOnThingInput
+  passes: PassCreateManyWithoutOnThingInput
+  score: Int
+  winner: DateTime
+  comments: CommentCreateManyWithoutOnThingInput
+  eliminated: Boolean
+  finalistDate: DateTime
+  privacy: PrivacySetting
+  individualViewPermissions: MemberCreateManyWithoutIndividualViewPermissionsInput
+}
+
+input ThingCreateWithoutIndividualViewPermissionsInput {
+  id: ID
+  title: String
+  author: MemberCreateOneWithoutCreatedThingsInput!
+  featuredImage: String
+  link: String
+  content: ContentPieceCreateManyWithoutOnThingInput
+  copiedInContent: ContentPieceCreateManyWithoutCopiedToThingsInput
   contentOrder: ThingCreatecontentOrderInput
   summary: String
   partOfTags: TagCreateManyWithoutConnectedThingsInput
@@ -4499,6 +4659,7 @@ input ThingCreateWithoutPartOfStacksInput {
   eliminated: Boolean
   finalistDate: DateTime
   privacy: PrivacySetting
+  individualViewPermissions: MemberCreateManyWithoutIndividualViewPermissionsInput
 }
 
 input ThingCreateWithoutPartOfTagsInput {
@@ -4521,6 +4682,7 @@ input ThingCreateWithoutPartOfTagsInput {
   eliminated: Boolean
   finalistDate: DateTime
   privacy: PrivacySetting
+  individualViewPermissions: MemberCreateManyWithoutIndividualViewPermissionsInput
 }
 
 input ThingCreateWithoutPassesInput {
@@ -4543,6 +4705,7 @@ input ThingCreateWithoutPassesInput {
   eliminated: Boolean
   finalistDate: DateTime
   privacy: PrivacySetting
+  individualViewPermissions: MemberCreateManyWithoutIndividualViewPermissionsInput
 }
 
 input ThingCreateWithoutVotesInput {
@@ -4565,6 +4728,7 @@ input ThingCreateWithoutVotesInput {
   eliminated: Boolean
   finalistDate: DateTime
   privacy: PrivacySetting
+  individualViewPermissions: MemberCreateManyWithoutIndividualViewPermissionsInput
 }
 
 type ThingEdge {
@@ -4796,6 +4960,7 @@ input ThingUpdateInput {
   eliminated: Boolean
   finalistDate: DateTime
   privacy: PrivacySetting
+  individualViewPermissions: MemberUpdateManyWithoutIndividualViewPermissionsInput
 }
 
 input ThingUpdateManyDataInput {
@@ -4846,6 +5011,18 @@ input ThingUpdateManyWithoutCopiedInContentInput {
   disconnect: [ThingWhereUniqueInput!]
   update: [ThingUpdateWithWhereUniqueWithoutCopiedInContentInput!]
   upsert: [ThingUpsertWithWhereUniqueWithoutCopiedInContentInput!]
+  deleteMany: [ThingScalarWhereInput!]
+  updateMany: [ThingUpdateManyWithWhereNestedInput!]
+}
+
+input ThingUpdateManyWithoutIndividualViewPermissionsInput {
+  create: [ThingCreateWithoutIndividualViewPermissionsInput!]
+  delete: [ThingWhereUniqueInput!]
+  connect: [ThingWhereUniqueInput!]
+  set: [ThingWhereUniqueInput!]
+  disconnect: [ThingWhereUniqueInput!]
+  update: [ThingUpdateWithWhereUniqueWithoutIndividualViewPermissionsInput!]
+  upsert: [ThingUpsertWithWhereUniqueWithoutIndividualViewPermissionsInput!]
   deleteMany: [ThingScalarWhereInput!]
   updateMany: [ThingUpdateManyWithWhereNestedInput!]
 }
@@ -4934,6 +5111,7 @@ input ThingUpdateWithoutAuthorDataInput {
   eliminated: Boolean
   finalistDate: DateTime
   privacy: PrivacySetting
+  individualViewPermissions: MemberUpdateManyWithoutIndividualViewPermissionsInput
 }
 
 input ThingUpdateWithoutCommentsDataInput {
@@ -4955,6 +5133,7 @@ input ThingUpdateWithoutCommentsDataInput {
   eliminated: Boolean
   finalistDate: DateTime
   privacy: PrivacySetting
+  individualViewPermissions: MemberUpdateManyWithoutIndividualViewPermissionsInput
 }
 
 input ThingUpdateWithoutContentDataInput {
@@ -4976,6 +5155,7 @@ input ThingUpdateWithoutContentDataInput {
   eliminated: Boolean
   finalistDate: DateTime
   privacy: PrivacySetting
+  individualViewPermissions: MemberUpdateManyWithoutIndividualViewPermissionsInput
 }
 
 input ThingUpdateWithoutCopiedInContentDataInput {
@@ -4984,6 +5164,29 @@ input ThingUpdateWithoutCopiedInContentDataInput {
   featuredImage: String
   link: String
   content: ContentPieceUpdateManyWithoutOnThingInput
+  contentOrder: ThingUpdatecontentOrderInput
+  summary: String
+  partOfTags: TagUpdateManyWithoutConnectedThingsInput
+  partOfStacks: StackUpdateManyWithoutConnectedThingsInput
+  color: String
+  votes: VoteUpdateManyWithoutOnThingInput
+  passes: PassUpdateManyWithoutOnThingInput
+  score: Int
+  winner: DateTime
+  comments: CommentUpdateManyWithoutOnThingInput
+  eliminated: Boolean
+  finalistDate: DateTime
+  privacy: PrivacySetting
+  individualViewPermissions: MemberUpdateManyWithoutIndividualViewPermissionsInput
+}
+
+input ThingUpdateWithoutIndividualViewPermissionsDataInput {
+  title: String
+  author: MemberUpdateOneRequiredWithoutCreatedThingsInput
+  featuredImage: String
+  link: String
+  content: ContentPieceUpdateManyWithoutOnThingInput
+  copiedInContent: ContentPieceUpdateManyWithoutCopiedToThingsInput
   contentOrder: ThingUpdatecontentOrderInput
   summary: String
   partOfTags: TagUpdateManyWithoutConnectedThingsInput
@@ -5018,6 +5221,7 @@ input ThingUpdateWithoutPartOfStacksDataInput {
   eliminated: Boolean
   finalistDate: DateTime
   privacy: PrivacySetting
+  individualViewPermissions: MemberUpdateManyWithoutIndividualViewPermissionsInput
 }
 
 input ThingUpdateWithoutPartOfTagsDataInput {
@@ -5039,6 +5243,7 @@ input ThingUpdateWithoutPartOfTagsDataInput {
   eliminated: Boolean
   finalistDate: DateTime
   privacy: PrivacySetting
+  individualViewPermissions: MemberUpdateManyWithoutIndividualViewPermissionsInput
 }
 
 input ThingUpdateWithoutPassesDataInput {
@@ -5060,6 +5265,7 @@ input ThingUpdateWithoutPassesDataInput {
   eliminated: Boolean
   finalistDate: DateTime
   privacy: PrivacySetting
+  individualViewPermissions: MemberUpdateManyWithoutIndividualViewPermissionsInput
 }
 
 input ThingUpdateWithoutVotesDataInput {
@@ -5081,6 +5287,7 @@ input ThingUpdateWithoutVotesDataInput {
   eliminated: Boolean
   finalistDate: DateTime
   privacy: PrivacySetting
+  individualViewPermissions: MemberUpdateManyWithoutIndividualViewPermissionsInput
 }
 
 input ThingUpdateWithWhereUniqueWithoutAuthorInput {
@@ -5091,6 +5298,11 @@ input ThingUpdateWithWhereUniqueWithoutAuthorInput {
 input ThingUpdateWithWhereUniqueWithoutCopiedInContentInput {
   where: ThingWhereUniqueInput!
   data: ThingUpdateWithoutCopiedInContentDataInput!
+}
+
+input ThingUpdateWithWhereUniqueWithoutIndividualViewPermissionsInput {
+  where: ThingWhereUniqueInput!
+  data: ThingUpdateWithoutIndividualViewPermissionsDataInput!
 }
 
 input ThingUpdateWithWhereUniqueWithoutPartOfStacksInput {
@@ -5133,6 +5345,12 @@ input ThingUpsertWithWhereUniqueWithoutCopiedInContentInput {
   where: ThingWhereUniqueInput!
   update: ThingUpdateWithoutCopiedInContentDataInput!
   create: ThingCreateWithoutCopiedInContentInput!
+}
+
+input ThingUpsertWithWhereUniqueWithoutIndividualViewPermissionsInput {
+  where: ThingWhereUniqueInput!
+  update: ThingUpdateWithoutIndividualViewPermissionsDataInput!
+  create: ThingCreateWithoutIndividualViewPermissionsInput!
 }
 
 input ThingUpsertWithWhereUniqueWithoutPartOfStacksInput {
@@ -5284,6 +5502,9 @@ input ThingWhereInput {
   privacy_not: PrivacySetting
   privacy_in: [PrivacySetting!]
   privacy_not_in: [PrivacySetting!]
+  individualViewPermissions_every: MemberWhereInput
+  individualViewPermissions_some: MemberWhereInput
+  individualViewPermissions_none: MemberWhereInput
   createdAt: DateTime
   createdAt_not: DateTime
   createdAt_in: [DateTime!]

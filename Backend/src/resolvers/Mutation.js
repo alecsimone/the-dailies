@@ -7,7 +7,9 @@ const {
    confirmFriendRequest,
    ignoreFriendRequest,
    readNotifications,
-   toggleBroadcastView
+   toggleBroadcastView,
+   addViewerToThing,
+   removeViewerFromThing
 } = require('./Mutation/MemberMutations');
 const {
    createThing,
@@ -75,7 +77,9 @@ const Mutations = {
    toggleBroadcastView,
    editSummary,
    copyContentPiece,
-   unlinkContentPiece
+   unlinkContentPiece,
+   addViewerToThing,
+   removeViewerFromThing
 };
 
 module.exports = Mutations;

@@ -15,6 +15,7 @@ type Query {
    getTweet(tweetID: String!): SuccessMessage!
    getTweetsForList(listID: String): SuccessMessage!
    search(string: String!, isTitleOnly: Boolean): [Thing]!
+   searchFriends(string: String!): [Member]
 }
 
 type Mutation {
@@ -65,6 +66,8 @@ type Mutation {
   editSummary(summary: String!, id: ID!, type: String!): Thing
   copyContentPiece(contentPieceID: ID!, newThingID: ID!): Thing
   unlinkContentPiece(contentPieceID: ID!, thingID: ID!): Thing
+  addViewerToThing(thingID: ID!, memberID: ID!): Thing
+  removeViewerFromThing(thingID: ID!, memberID: ID!): Thing
 }
 
 union Stuff = Thing | Tag | Stack | Comment | ContentPiece

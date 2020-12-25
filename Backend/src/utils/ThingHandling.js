@@ -172,7 +172,6 @@ async function properUpdateStuff(dataObj, id, type, ctx) {
          )
          .catch(err => {
             console.log(err);
-            console.log(err);
          });
       publishMeUpdate(ctx);
       return newThing;
@@ -186,7 +185,6 @@ async function properUpdateStuff(dataObj, id, type, ctx) {
       type,
       ctx
    ).catch(err => {
-      console.log(err);
       console.log(err);
    });
    publishMeUpdate(ctx);
@@ -243,6 +241,11 @@ const canSeeThing = async (ctx, thingData) => {
       return true;
    }
    if (thingData.privacy === 'Private') {
+      if (thingData.individualViewPermissions != null) {
+         return thingData.individualViewPermissions.some(
+            viewer => viewer.id === memberID
+         );
+      }
       return false;
    }
    if (
@@ -274,7 +277,7 @@ const canSeeThingGate = async (where, ctx) => {
          {
             where
          },
-         `{privacy author {id friends {id friends {id}}}}`
+         `{privacy author {id friends {id friends {id}}} individualViewPermissions {id}}`
       )
       .catch(err => {
          console.log(err);

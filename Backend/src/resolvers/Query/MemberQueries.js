@@ -56,3 +56,25 @@ async function member(parent, { id, displayName }, ctx, info) {
    return member;
 }
 exports.member = member;
+
+async function searchFriends(parent, { string }, ctx, info) {
+   const allFriends = await ctx.db.query
+      .member(
+         {
+            where: {
+               id: ctx.req.memberId
+            }
+         },
+         '{friends {__typename id displayName avatar}}'
+      )
+      .catch(err => {
+         console.log(err);
+      });
+
+   const relevantFriends = allFriends.friends.filter(friend =>
+      friend.displayName.toLowerCase().includes(string.toLowerCase())
+   );
+
+   return relevantFriends;
+}
+exports.searchFriends = searchFriends;

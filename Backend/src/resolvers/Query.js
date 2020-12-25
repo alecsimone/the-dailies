@@ -9,7 +9,7 @@ const {
    search,
    allThings
 } = require('./Query/PageQueries');
-const { me, member } = require('./Query/MemberQueries');
+const { me, member, searchFriends } = require('./Query/MemberQueries');
 const {
    finishTwitterLogin,
    getTweet,
@@ -31,6 +31,7 @@ const Query = {
    refreshLists,
    getTweetsForList,
    search,
+   searchFriends,
    allThings
 };
 

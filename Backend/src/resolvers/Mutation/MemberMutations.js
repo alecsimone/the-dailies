@@ -25,6 +25,8 @@ async function publishMeUpdate(ctx) {
 }
 exports.publishMeUpdate = publishMeUpdate;
 
+const { properUpdateStuff } = require('../../utils/ThingHandling'); // This needs to be below publishMeUpdate, because properUpdateStuff usese publishMeUpdate, so it gets called before it's defined if we put this require above its definition
+
 async function signup(parent, args, ctx, info) {
    args.email = args.email.toLowerCase();
    const password = await bcrypt.hash(args.password, 10).catch(err => {
@@ -455,3 +457,85 @@ async function toggleBroadcastView(parent, { newState }, ctx, info) {
    return newMe;
 }
 exports.toggleBroadcastView = toggleBroadcastView;
+
+async function addViewerToThing(parent, { thingID, memberID }, ctx, info) {
+   loggedInGate(ctx);
+   fullMemberGate(ctx.req.member);
+
+   const thingData = await ctx.db.query
+      .thing(
+         {
+            where: {
+               id: thingID
+            }
+         },
+         '{author {id}}'
+      )
+      .catch(err => {
+         console.log(err);
+      });
+
+   if (thingData.author.id !== ctx.req.memberId) {
+      throw new Error("You don't have permission to edit that thing");
+   }
+
+   const dataObj = {
+      individualViewPermissions: {
+         connect: {
+            id: memberID
+         }
+      }
+   };
+
+   const updatedStuff = await properUpdateStuff(
+      dataObj,
+      thingID,
+      'Thing',
+      ctx
+   ).catch(err => {
+      console.log(err);
+   });
+   return updatedStuff;
+}
+exports.addViewerToThing = addViewerToThing;
+
+async function removeViewerFromThing(parent, { thingID, memberID }, ctx, info) {
+   loggedInGate(ctx);
+   fullMemberGate(ctx.req.member);
+
+   const thingData = await ctx.db.query
+      .thing(
+         {
+            where: {
+               id: thingID
+            }
+         },
+         '{author {id}}'
+      )
+      .catch(err => {
+         console.log(err);
+      });
+
+   if (thingData.author.id !== ctx.req.memberId) {
+      throw new Error("You don't have permission to edit that thing");
+   }
+
+   const dataObj = {
+      individualViewPermissions: {
+         disconnect: {
+            id: memberID
+         }
+      }
+   };
+
+   const updatedStuff = await properUpdateStuff(
+      dataObj,
+      thingID,
+      'Thing',
+      ctx
+   ).catch(err => {
+      console.log(err);
+   });
+   return updatedStuff;
+}
+exports.removeViewerFromThing = removeViewerFromThing;

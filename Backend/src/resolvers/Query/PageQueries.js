@@ -301,42 +301,6 @@ async function search(parent, { string, isTitleOnly }, ctx, info) {
       }
    );
 
-   // const foundThings = await ctx.db.query.things(
-   //    {
-   //       orderBy: 'id_DESC',
-   //       where: {
-   //          OR: [
-   //             {
-   //                title_contains: string
-   //             },
-   //             {
-   //                link_contains: string
-   //             },
-   //             {
-   //                content_some: {
-   //                   content_contains: string
-   //                }
-   //             },
-   //             {
-   //                partOfTags_some: {
-   //                   title_contains: string
-   //                }
-   //             },
-   //             {
-   //                comments_some: {
-   //                   comment_contains: string
-   //                }
-   //             },
-   //             {
-   //                author: {
-   //                   displayName_contains: string
-   //                }
-   //             }
-   //          ]
-   //       }
-   //    },
-   //    info
-   // );
    const safeThings = relevantThings.filter(thing => canSeeThing(ctx, thing));
    return safeThings;
 }
