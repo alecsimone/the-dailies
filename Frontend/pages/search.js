@@ -26,6 +26,9 @@ const StyledSearchPage = styled.div`
          }
       }
    }
+   .thingCard {
+      text-align: left;
+   }
 `;
 
 const search = ({ query: { s: string } }) => {
