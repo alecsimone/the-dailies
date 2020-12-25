@@ -7,6 +7,7 @@ import Router from 'next/router';
 import debounce from 'lodash.debounce';
 import { toast } from 'react-toastify';
 import { ThingContext } from '../../pages/thing';
+import { MemberContext } from '../Account/MemberProvider';
 import { setLightness, setAlpha } from '../../styles/functions';
 import { fullThingFields } from '../../lib/CardInterfaces';
 import AuthorLink from './AuthorLink';
@@ -30,9 +31,9 @@ const DELETE_THING_MUTATION = gql`
    }
 `;
 
-const SEARCH_FRIENDS_QUERY = gql`
-   query SEARCH_FRIENDS_QUERY($string: String!) {
-      searchFriends(string: $string) {
+const SEARCH_MEMBERS_QUERY = gql`
+   query SEARCH_MEMBERS_QUERY($string: String!) {
+      searchMembers(string: $string) {
          __typename
          id
          displayName
@@ -112,7 +113,7 @@ const StyledThingMeta = styled.section`
             border-radius: 3px;
             border: 1px solid ${props => props.theme.lowContrastGrey};
          }
-         .addedFriendsCounter {
+         .addedMembersCounter {
             position: relative;
             cursor: pointer;
             .extraViewersContainer {
@@ -159,10 +160,16 @@ const StyledThingMeta = styled.section`
                ); /* because it's rotated, this roughly makes its height equal to its height had we not rotated it */
                height: auto;
                margin-right: 1rem;
+               transition: transform 0.25s;
+            }
+            &.adding {
+               svg.x {
+                  transform: rotate(0deg);
+               }
             }
             .addPeopleInterface {
                position: absolute;
-               width: 40rem;
+               width: auto;
                height: auto;
                background: ${props => props.theme.lightBlack};
                border: 3px solid
@@ -176,13 +183,16 @@ const StyledThingMeta = styled.section`
                   background: ${props => props.theme.deepBlack};
                   display: flex;
                   cursor: auto;
+                  span.title {
+                     white-space: nowrap;
+                  }
                   input.searchBox {
                      font-size: ${props => props.theme.smallText};
-                     width: 60%;
+                     width: 30rem;
                      margin: 0 1rem;
                   }
                }
-               .friendSearchResult {
+               .memberSearchResult {
                   padding: 0.5rem 1rem;
                   background: ${props => props.theme.lightBlack};
                   border-bottom: 2px solid
@@ -321,13 +331,14 @@ const StyledThingMeta = styled.section`
    }
 `;
 
-const debouncedFriendSearch = debounce(
-   (friendSearch, searchTerm) => friendSearch(searchTerm),
+const debouncedMemberSearch = debounce(
+   (memberSearch, searchTerm) => memberSearch(searchTerm),
    200,
    true
 );
 
 const ThingMeta = ({ canEdit }) => {
+   const { me } = useContext(MemberContext);
    const fullThingData = useContext(ThingContext);
    const {
       id,
@@ -341,13 +352,13 @@ const ThingMeta = ({ canEdit }) => {
    const [editing, setEditing] = useState(false);
    const [addingPeople, setAddingPeople] = useState(false);
    const [peopleSearchTerm, setPeopleSearchTerm] = useState('');
-   const [friendSearchResults, setFriendSearchResults] = useState([]);
+   const [memberSearchResults, setMemberSearchResults] = useState([]);
    const [highlightedIndex, setHighlightedIndex] = useState(-1);
    const [showingExtraViewers, setShowingExtraViewers] = useState(false);
 
-   const searchResultsRef = useRef(friendSearchResults);
+   const searchResultsRef = useRef(memberSearchResults);
    const highlightedIndexRef = useRef(highlightedIndex);
-   const addedFriendRef = useRef('');
+   const addedMemberRef = useRef('');
 
    const [deleteThing, { loading: deleting }] = useMutation(
       DELETE_THING_MUTATION,
@@ -364,21 +375,22 @@ const ThingMeta = ({ canEdit }) => {
       }
    );
 
-   const [searchFriends, { loading: searchLoading }] = useLazyQuery(
-      SEARCH_FRIENDS_QUERY,
+   const [searchMembers, { loading: searchLoading }] = useLazyQuery(
+      SEARCH_MEMBERS_QUERY,
       {
          onCompleted: data => {
-            const filteredData = data.searchFriends.filter(friend => {
+            const filteredData = data.searchMembers.filter(member => {
+               if (member.id === me.id) return false;
                let hasViewPermission = false;
                individualViewPermissions.forEach(individualViewer => {
-                  if (individualViewer.id === friend.id) {
+                  if (individualViewer.id === member.id) {
                      hasViewPermission = true;
                   }
                });
                return !hasViewPermission;
             });
             const trimmedData = filteredData.slice(0, 10);
-            setFriendSearchResults(trimmedData);
+            setMemberSearchResults(trimmedData);
             searchResultsRef.current = trimmedData;
          }
       }
@@ -391,7 +403,7 @@ const ThingMeta = ({ canEdit }) => {
             data.addViewerToThing &&
             data.addViewerToThing.__typename === 'Thing'
          ) {
-            toast(`${addedFriendRef.current} can now view this Thing`, {
+            toast(`${addedMemberRef.current} can now view this Thing`, {
                position: 'bottom-center',
                autoClose: 3000
             });
@@ -400,15 +412,12 @@ const ThingMeta = ({ canEdit }) => {
    });
 
    const [removeViewerFromThing] = useMutation(
-      REMOVE_VIEWER_FROM_THING_MUTATION,
-      {
-         onCompleted: data => console.log(data)
-      }
+      REMOVE_VIEWER_FROM_THING_MUTATION
    );
 
    const closeResults = () => {
       setPeopleSearchTerm('');
-      setFriendSearchResults([]);
+      setMemberSearchResults([]);
       searchResultsRef.current = [];
       setHighlightedIndex(-1);
       highlightedIndexRef.current = -1;
@@ -426,14 +435,14 @@ const ThingMeta = ({ canEdit }) => {
          index = highlightedIndexRef.current;
       }
 
-      const selectedFriend = searchResultsRef.current[index];
+      const selectedMember = searchResultsRef.current[index];
       addViewerToThing({
          variables: {
-            memberID: selectedFriend.id,
+            memberID: selectedMember.id,
             thingID: id
          }
       });
-      addedFriendRef.current = selectedFriend.displayName;
+      addedMemberRef.current = selectedMember.displayName;
       closeResults();
    };
 
@@ -468,8 +477,8 @@ const ThingMeta = ({ canEdit }) => {
    };
    const navigateResultsRef = useRef(navigateResults);
 
-   const friendSearch = searchTerm => {
-      const searchResults = searchFriends({
+   const memberSearch = searchTerm => {
+      const searchResults = searchMembers({
          variables: {
             string: searchTerm
          }
@@ -481,19 +490,19 @@ const ThingMeta = ({ canEdit }) => {
       if (e.key === 'Enter' || e.key === 'Tab') return;
       if (peopleSearchTerm === '') return;
 
-      debouncedFriendSearch(friendSearch, peopleSearchTerm);
+      debouncedMemberSearch(memberSearch, peopleSearchTerm);
    };
 
-   let friendSearchResultElements;
+   let memberSearchResultElements;
    if (searchLoading) {
-      friendSearchResultElements = <div>Searching friends...</div>;
-   } else if (friendSearchResults.length > 0) {
-      friendSearchResultElements = friendSearchResults.map((result, index) => (
+      memberSearchResultElements = <div>Searching members...</div>;
+   } else if (memberSearchResults.length > 0) {
+      memberSearchResultElements = memberSearchResults.map((result, index) => (
          <div
             className={
                index === highlightedIndex
-                  ? 'friendSearchResult highlighted'
-                  : 'friendSearchResult'
+                  ? 'memberSearchResult highlighted'
+                  : 'memberSearchResult'
             }
             key={index}
             onClick={() => chooseResult(index)}
@@ -501,9 +510,9 @@ const ThingMeta = ({ canEdit }) => {
             {result.displayName}
          </div>
       ));
-   } else if (friendSearchResults.length === 0) {
-      friendSearchResultElements = (
-         <div className="friendSearchResult">No friends found</div>
+   } else if (memberSearchResults.length === 0) {
+      memberSearchResultElements = (
+         <div className="memberSearchResult">No members found</div>
       );
    }
 
@@ -605,30 +614,37 @@ const ThingMeta = ({ canEdit }) => {
                ) : (
                   <span className="uneditable">{privacy}</span>
                )}
-               {privacy === 'Private' &&
+               {privacy !== 'Public' &&
                   individualViewPermissions &&
                   individualViewPermissions.length > 0 && (
                      <div
-                        className="addedFriendsCounter"
+                        className="addedMembersCounter"
                         onClick={e => {
                            if (
                               e.target.closest('.extraViewersContainer') == null
                            ) {
                               setShowingExtraViewers(!showingExtraViewers);
+                              if (!showingExtraViewers) {
+                                 setAddingPeople(false);
+                              }
                            }
                         }}
                      >
-                        +{individualViewPermissions.length} Friend
+                        +{individualViewPermissions.length} Other
+                        {individualViewPermissions.length > 1 ? 's' : ''}
                         {showingExtraViewers && extraViewersElements}
                      </div>
                   )}
-               {privacy === 'Private' && (
+               {privacy !== 'Public' && (
                   <div
-                     className="addPeopleContainer"
+                     className={`addPeopleContainer${
+                        addingPeople ? ' adding' : ''
+                     }`}
                      onClick={e => {
                         if (e.target.closest('.addPeopleInterface') == null) {
                            setAddingPeople(!addingPeople);
                            if (!addingPeople) {
+                              setShowingExtraViewers(false);
                               window.setTimeout(() => {
                                  const thisBox = document.querySelector(
                                     '#addPeopleInterface'
@@ -655,7 +671,7 @@ const ThingMeta = ({ canEdit }) => {
                         >
                            <div className="topline">
                               {' '}
-                              <span className="title">Add Friends: </span>
+                              <span className="title">Add Members: </span>
                               <input
                                  className="searchBox"
                                  value={peopleSearchTerm}
@@ -666,7 +682,7 @@ const ThingMeta = ({ canEdit }) => {
                               />
                            </div>
                            {peopleSearchTerm.length > 0 &&
-                              friendSearchResultElements}
+                              memberSearchResultElements}
                         </div>
                      )}
                   </div>
