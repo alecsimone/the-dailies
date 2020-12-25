@@ -54,8 +54,8 @@ const StyledFullThing = styled.article`
       img.featured,
       .tweet {
          margin-top: 3rem;
-         max-height: 70vh;
-         max-height: calc(var(--vh, 1vh) * 70);
+         max-height: 90vh;
+         max-height: calc(var(--vh, 1vh) * 90);
          object-fit: contain;
       }
    }

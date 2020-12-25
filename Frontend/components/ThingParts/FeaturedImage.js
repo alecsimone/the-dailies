@@ -57,9 +57,19 @@ const StyledFeaturedImage = styled.div`
    background: ${props => props.theme.midBlack};
    border-bottom: 1px solid
       ${props => setAlpha(props.theme.lowContrastGrey, 0.4)};
+   .featuredImageWrapper {
+      max-width: calc(100% + 6rem);
+      margin: -3rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      > * {
+         flex-grow: 1;
+      }
+   }
    img,
    video {
-      max-width: 100%;
+      width: 100%;
       object-fit: cover;
       z-index: 0;
    }
@@ -203,11 +213,13 @@ const FeaturedImage = ({ canEdit, context, titleLimit, titleLink }) => {
          {titleBar}
          {featuredImage &&
             !disabledCodewords.includes(featuredImage.toLowerCase()) && (
-               <ExplodingLink
-                  url={featuredImage}
-                  alt="Featured"
-                  className="featured"
-               />
+               <div className="featuredImageWrapper">
+                  <ExplodingLink
+                     url={featuredImage}
+                     alt="Featured"
+                     className="featured"
+                  />
+               </div>
             )}
          {canEdit && showInput && (
             <div className="formWrapper">
