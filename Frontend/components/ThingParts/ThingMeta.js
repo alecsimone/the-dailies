@@ -86,6 +86,9 @@ const StyledThingMeta = styled.section`
          span.uneditable {
             margin-left: 3rem;
          }
+         span.addedViewersCount {
+            margin-left: 1rem;
+         }
          &.editable {
             cursor: pointer;
          }
@@ -601,6 +604,9 @@ const ThingMeta = ({ canEdit }) => {
                   />
                )}
                <span className="uneditable">{privacy}</span>
+               <span className="addedViewersCount">
+                  +{individualViewPermissions.length}
+               </span>
             </div>
          )}
          {editing && (
