@@ -99,7 +99,7 @@ const StyledThingCard = styled.div`
          right: 1rem;
          bottom: 0;
       }
-      .truncCont .arrow {
+      .truncCont .arrow.truncContArrow {
          margin-left: calc(50% - .5rem); /* That .5rem is pretty arbitrary afaik */
       }
       .commentsControls {

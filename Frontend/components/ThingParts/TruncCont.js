@@ -6,7 +6,7 @@ import ArrowIcon from '../Icons/Arrow';
 
 const StyledTruncCont = styled.div`
    white-space: pre-wrap;
-   svg.arrow {
+   svg.arrow.truncContArrow {
       width: ${props => props.theme.smallHead};
       display: block;
       margin: auto;
@@ -46,6 +46,7 @@ const TruncCont = ({ cont: contObj, limit }) => {
             <ArrowIcon
                pointing={expanded ? 'up' : 'down'}
                onClick={() => setExpanded(!expanded)}
+               className="truncContArrow"
             />
          )}
       </StyledTruncCont>

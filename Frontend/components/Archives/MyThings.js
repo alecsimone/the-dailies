@@ -82,7 +82,7 @@ const MyThings = ({ setShowingSidebar, scrollingSelector, borderSide }) => {
       return (
          <div
             onClick={e => {
-               if (e.target.closest('.contentSlider') != null) return; // If they're using the content slider on an expanded thing card, we don't want to close the sidebar
+               if (e.target.closest('.regularThingCard') != null) return; // If they're interacting with an expanded thing card, we don't want to close the sidebar
                if (setShowingSidebar != null) {
                   setShowingSidebar(false);
                }
