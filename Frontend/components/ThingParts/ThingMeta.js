@@ -601,7 +601,6 @@ const ThingMeta = ({ canEdit }) => {
                   />
                )}
                <span className="uneditable">{privacy}</span>
-               {false && editButton}
             </div>
          )}
          {editing && (
@@ -687,7 +686,6 @@ const ThingMeta = ({ canEdit }) => {
                      )}
                   </div>
                )}
-               {false && editButton}
             </div>
          )}
       </StyledThingMeta>

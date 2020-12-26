@@ -8,7 +8,6 @@ import {
    getYoutubeVideoIdFromLink,
    getGfycatSlugFromLink,
    getTweetIDFromLink,
-   getTikTokIDFromLink,
    getInstagramIDFromLink,
    urlFinder,
    isImage,
@@ -20,6 +19,7 @@ import Tweet from './Twitter/Tweet';
 import TweetGetter from './Twitter/TweetGetter';
 import LoadingRing from './LoadingRing';
 import RichText from './RichText';
+import TikTok from './ThingParts/TikTok';
 
 const ExplodingLink = ({
    url,
@@ -255,16 +255,7 @@ const ExplodingLink = ({
       lowerCaseURL.includes('tiktok.com/') &&
       lowerCaseURL.includes('/video/')
    ) {
-      const tiktokID = getTikTokIDFromLink(lowerCaseURL);
-      return (
-         <div className="embed-container tiktok">
-            <iframe
-               src={`https://www.tiktok.com/embed/v2/${tiktokID}?lang=en-US`}
-               frameBorder="0"
-               allowFullScreen
-            />
-         </div>
-      );
+      return <TikTok url={lowerCaseURL} />;
    }
 
    // Instagram Links
