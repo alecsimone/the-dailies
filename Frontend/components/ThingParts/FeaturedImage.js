@@ -59,7 +59,11 @@ const StyledFeaturedImage = styled.div`
       ${props => setAlpha(props.theme.lowContrastGrey, 0.4)};
    .featuredImageWrapper {
       max-width: calc(100% + 6rem);
-      margin: -3rem;
+      margin: 0 -3rem;
+      ${props => props.theme.mobileBreakpoint} {
+         max-width: 100%;
+         margin: 0;
+      }
       display: flex;
       align-items: center;
       justify-content: center;

@@ -26,6 +26,7 @@ const TikTok = ({ url }) => {
 
       const thisIframe = thisTikTok.querySelector('iframe');
       thisIframe.style.height = '100%';
+      thisIframe.style.width = '100%';
       thisIframe.style.borderRadius = '9px';
    }, []);
 

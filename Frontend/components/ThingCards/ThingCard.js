@@ -60,6 +60,10 @@ const StyledThingCard = styled.div`
             text-decoration: underline;
          }
       }
+      .featuredImageWrapper {
+         max-width: 100%;
+         margin: 0;
+      }
       img.featured,
       video {
          width: 100%;
@@ -389,7 +393,6 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
 
    let contentArea;
    if (isSmallScreen || !process.browser) {
-      // We need the "|| !process.browser" to keep the server side render from messing everything up on the client side render. Please don't ask me why.
       // If we're on a small screen, we need to put the content pieces next to each other in an element that can slide from side to side, hiding whatever is overflowing its container
       contentArea = (
          <div

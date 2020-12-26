@@ -222,7 +222,7 @@ const isExplodingLink = url => {
       lowerCaseURL.includes('gfycat.com/') ||
       lowerCaseURL.includes('youtube.com/watch?v=') ||
       lowerCaseURL.includes('youtu.be/') ||
-      lowerCaseURL.includes(`${homeNoHTTP}/thing?id=`) ||
+      lowerCaseURL.includes(`${process.env.FRONTEND_URL_NOHTTP}/thing?id=`) ||
       (lowerCaseURL.includes('twitter.com/') &&
          lowerCaseURL.includes('/status/')) ||
       (lowerCaseURL.includes('tiktok.com') &&

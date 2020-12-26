@@ -24,7 +24,9 @@ const MyThings = ({ setShowingSidebar, scrollingSelector, borderSide }) => {
    const { me } = useContext(MemberContext);
    const { setContent } = useContext(ModalContext);
 
-   const { data, loading, error } = useQuery(MY_THINGS_QUERY, { ssr: false });
+   const { data, loading, error } = useQuery(MY_THINGS_QUERY, {
+      ssr: false
+   });
 
    if (error) {
       return <ErrorMessage error={error} />;
