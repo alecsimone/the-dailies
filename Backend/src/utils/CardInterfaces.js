@@ -120,7 +120,6 @@ const contentPieceFields = `
          avatar
       }
    }
-   summary
 `;
 exports.contentPieceFields = contentPieceFields;
 
