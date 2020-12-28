@@ -41,7 +41,13 @@ const SummarizedText = ({ summarizedText, summaryText }) => {
          : summaryText;
    return (
       <StyledSummarizedText
-         onClick={() => setExpanded(!expanded)}
+         onClick={e => {
+            // If they clicked a link or on some part of an embedded thing card, we don't want to toggle expansion
+            if (e.target.closest('a') != null) return;
+            if (e.target.closest('.thingCard') != null) return;
+
+            setExpanded(!expanded);
+         }}
          className={expanded ? 'expanded' : 'collapsed'}
       >
          <ArrowIcon
