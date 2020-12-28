@@ -18,7 +18,7 @@ const StyledSummarizedText = styled.div`
       display: inline;
       height: calc(
          ${props => props.theme.smallText} * 1.4
-      ); // The 1.4 makes it approximately line up with text of the same font size as its height
+      ); /* The 1.4 makes it approximately line up with text of the same font size as its height */
       width: auto;
       vertical-align: middle;
       position: relative;
