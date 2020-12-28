@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import { ThemeContext } from 'styled-components';
 import ExplodingLink from './ExplodingLink';
+import SummarizedText from './SummarizedText';
 import {
    replaceTwitterMentions,
    replaceEmails,
@@ -35,6 +36,7 @@ const RichText = ({ text, priorText, nextText, matchCount = 0 }) => {
    const elementsArray = [];
    let stoppedAtIndex = 0;
    let stoppedAtIndexOverride = false;
+   let trimEndingText = false;
    const superMatcherSource = `${urlFinder.source}|${
       styleTagSearchString.source
    }`;
@@ -102,6 +104,17 @@ const RichText = ({ text, priorText, nextText, matchCount = 0 }) => {
                );
                elementsArray.push(tagElement);
             }
+         }
+
+         if (tag.groups.summary != null) {
+            const { summarizedText, summaryText } = tag.groups;
+            trimEndingText = true;
+            elementsArray.push(
+               <SummarizedText
+                  summarizedText={summarizedText}
+                  summaryText={summaryText}
+               />
+            );
          }
 
          if (tag.groups.stars != null) {
@@ -196,7 +209,10 @@ const RichText = ({ text, priorText, nextText, matchCount = 0 }) => {
             stoppedAtIndex = match.index + tag.index + tag[0].length;
          }
 
-         const endingText = fixedText.substring(stoppedAtIndex);
+         let endingText = fixedText.substring(stoppedAtIndex);
+         if (trimEndingText === true) {
+            endingText = endingText.trim();
+         }
          if (endingText !== '' && endingText !== ' ') {
             elementsArray.push(
                <RichText
