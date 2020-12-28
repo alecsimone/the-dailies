@@ -90,7 +90,7 @@ const StyledThingCard = styled.div`
       position: relative;
       margin: 0;
       padding: .8rem calc(${props =>
-         props.theme.smallText} + 2.25rem) .8rem 1.25rem;
+         props.theme.smallText} + 2.25rem) .8rem 1.75rem;
       border-radius: 3px;
       background: ${props => props.theme.midBlack};
       border: 1px solid ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
