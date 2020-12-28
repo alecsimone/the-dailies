@@ -563,6 +563,13 @@ const RichTextArea = ({
                   closeResults();
                }}
                onMouseUp={e => {
+                  if (e.button === 0 && (e.ctrlKey || e.metaKey)) {
+                     window.setTimeout(() => {
+                        setEditable(false);
+                     }, 1);
+                     return;
+                  }
+
                   if (e.button === 1 || e.button === 2) {
                      window.setTimeout(
                         () =>

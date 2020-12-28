@@ -461,6 +461,11 @@ const ContentPiece = ({
 
                   if (!canEdit) return;
 
+                  if (e.button === 0 && (e.ctrlKey || e.metaKey)) {
+                     window.setTimeout(() => setEditable(true), 100); // If we set this to anything less than 100, it seems to trigger the opposite function in RichTextArea too
+                     return;
+                  }
+
                   if (e.button === 1 || e.button === 2) {
                      window.setTimeout(
                         () =>
