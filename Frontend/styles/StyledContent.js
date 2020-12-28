@@ -245,11 +245,6 @@ const StyledContent = styled.section`
                   margin-bottom: 0;
                }
             }
-            .contentSummaryBox {
-               &.expanded {
-                  margin-top: 4rem;
-               }
-            }
             svg.arrow {
                width: ${props => props.theme.bigHead};
                cursor: pointer;

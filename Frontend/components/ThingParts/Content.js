@@ -351,68 +351,8 @@ const Content = ({ context, canEdit, linkedPiece }) => {
       );
    }
 
-   const contentWithSummaries = orderedContent.filter(
-      contentObject =>
-         contentObject.summary != null && contentObject.summary !== ''
-   );
-   let contentExpansionToggle;
-   if (contentWithSummaries.length > 0) {
-      let universalExpansion = 'unset';
-      const contentExpansionObjectKeys = Object.keys(contentExpansionObject);
-      contentExpansionObjectKeys.forEach(key => {
-         const [thisPiece] = orderedContent.filter(piece => piece.id === key);
-         if (thisPiece.summary != null && thisPiece.summary !== '') {
-            if (universalExpansion === 'unset') {
-               universalExpansion = contentExpansionObject[key]
-                  ? 'expanded'
-                  : 'collapsed';
-            } else {
-               if (
-                  universalExpansion === 'expanded' &&
-                  contentExpansionObject[key] === false
-               ) {
-                  universalExpansion = false;
-               }
-               if (
-                  universalExpansion === 'collapsed' &&
-                  contentExpansionObject[key] === true
-               ) {
-                  universalExpansion = false;
-               }
-            }
-         }
-      });
-      contentExpansionToggle = (
-         <div className="contentExpansionToggleWrapper">
-            <div className="contentExpansionToggle">
-               <div
-                  className={`toggleOption${
-                     universalExpansion === 'collapsed'
-                        ? ' selected'
-                        : ' unselected'
-                  }`}
-                  onClick={() => setAllExpansion(false)}
-               >
-                  Collapsed
-               </div>
-               <div
-                  className={`toggleOption${
-                     universalExpansion === 'expanded'
-                        ? ' selected'
-                        : ' unselected'
-                  }`}
-                  onClick={() => setAllExpansion(true)}
-               >
-                  Expanded
-               </div>
-            </div>
-         </div>
-      );
-   }
-
    return (
       <StyledContent className="content">
-         {contentExpansionToggle}
          <div className="contentSectionWrapper">
             {contentElements}
             {canEdit && (
