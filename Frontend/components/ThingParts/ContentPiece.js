@@ -6,7 +6,6 @@ import PropTypes from 'prop-types';
 import { ThemeContext } from 'styled-components';
 import RichText from '../RichText';
 import RichTextArea from '../RichTextArea';
-import ContentSummary from './ContentSummary';
 import EditThis from '../Icons/EditThis';
 import CommentIcon from '../Icons/CommentIcon';
 import TrashIcon from '../Icons/Trash';
@@ -18,7 +17,6 @@ import { ADD_COMMENT_MUTATION } from './Comments';
 import { SINGLE_THING_QUERY } from '../../pages/thing';
 import { MemberContext } from '../Account/MemberProvider';
 import ReorderIcon from '../Icons/Reorder';
-import ArrowIcon from '../Icons/Arrow';
 import X from '../Icons/X';
 import { stickifier } from '../../lib/ContentHandling';
 import CopyContentInterface from './CopyContentInterface';
@@ -44,7 +42,6 @@ const ContentPiece = ({
    id,
    thingID,
    rawContentString,
-   summary,
    expanded,
    setExpanded,
    comments,
@@ -68,7 +65,6 @@ const ContentPiece = ({
 
    const [editable, setEditable] = useState(false);
    const [editedContent, setEditedContent] = useState(rawContentString);
-   const [editedSummary, setEditedSummary] = useState(summary);
    const [commentText, setCommentText] = useState('');
 
    const [showingAddToBox, setShowingAddToBox] = useState(false);
@@ -86,7 +82,7 @@ const ContentPiece = ({
    ); // We need that process.browser to prevent the server side rendering from messing up the client side render. Please don't ask me why.
 
    const postContent = () => {
-      editContentPiece(id, editedContent, editedSummary);
+      editContentPiece(id, editedContent);
       setEditable(false);
    };
 
@@ -163,59 +159,19 @@ const ContentPiece = ({
 
    let contentElement;
    if (!editable) {
-      contentElement = (
-         <div>
-            {(summary == null || summary === '' || expanded) && (
-               <RichText text={rawContentString} key={id} />
-            )}
-            {(summary != null || summary !== '' || canEdit) && (
-               <div
-                  className={`contentSummaryBox${
-                     expanded ? ' expanded' : ' collapsed'
-                  }`}
-               >
-                  <ContentSummary
-                     key={id}
-                     summary={editedSummary}
-                     setSummary={setEditedSummary}
-                     postText={postContent}
-                     setEditable={setEditable}
-                     id={id}
-                     thingID={thingID}
-                     editable={editable}
-                  />
-               </div>
-            )}
-         </div>
-      );
+      contentElement = <RichText text={rawContentString} key={id} />;
    } else {
       contentElement = (
-         <div>
-            <RichTextArea
-               text={editedContent}
-               setText={setEditedContent}
-               postText={postContent}
-               setEditable={setEditable}
-               placeholder="Add content"
-               buttonText="save edit"
-               id={id}
-               key={id}
-            />
-            {(summary != null || summary !== '' || canEdit) && (
-               <div className="contentSummaryBox">
-                  <ContentSummary
-                     key={id}
-                     summary={editedSummary}
-                     setSummary={setEditedSummary}
-                     postText={postContent}
-                     setEditable={setEditable}
-                     id={id}
-                     thingID={thingID}
-                     editable={editable}
-                  />
-               </div>
-            )}
-         </div>
+         <RichTextArea
+            text={editedContent}
+            setText={setEditedContent}
+            postText={postContent}
+            setEditable={setEditable}
+            placeholder="Add content"
+            buttonText="save edit"
+            id={id}
+            key={id}
+         />
       );
    }
 
@@ -505,12 +461,6 @@ const ContentPiece = ({
                }}
             >
                {contentArea}
-               {!editable && summary !== null && summary != '' && (
-                  <ArrowIcon
-                     pointing={expanded ? 'up' : 'down'}
-                     onClick={() => setExpanded(id, !expanded)}
-                  />
-               )}
             </div>
             <div className="buttons buttonsContainer">
                <div className="commentButton">
@@ -675,9 +625,6 @@ export default React.memo(ContentPiece, (prev, next) => {
       return false;
    }
    if (prev.expanded !== next.expanded) {
-      return false;
-   }
-   if (prev.summary !== next.summary) {
       return false;
    }
    if (prev.comments.length !== next.comments.length) {

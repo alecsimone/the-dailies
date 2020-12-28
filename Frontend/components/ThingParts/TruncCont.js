@@ -29,9 +29,7 @@ const TruncCont = ({ cont: contObj, limit }) => {
    if (typeof cont !== 'string') return <div />; // If they didn't give us a string in either of those two ways, gtfo
 
    if (!expanded) {
-      if (contObj.summary != null && contObj.summary !== '') {
-         cont = contObj.summary;
-      } else if (cont.length > limit && !expanded) {
+      if (cont.length > limit && !expanded) {
          cont = `${cont.substring(0, limit).trim()}...`;
       }
    }
@@ -39,10 +37,7 @@ const TruncCont = ({ cont: contObj, limit }) => {
    return (
       <StyledTruncCont className="truncCont">
          <RichText text={cont} key={cont} />
-         {(cont.length > limit ||
-            (contObj != null &&
-               contObj.summary != null &&
-               contObj.summary !== '')) && (
+         {cont.length > limit && (
             <ArrowIcon
                pointing={expanded ? 'up' : 'down'}
                onClick={() => setExpanded(!expanded)}

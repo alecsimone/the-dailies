@@ -220,7 +220,7 @@ const Content = ({ context, canEdit, linkedPiece }) => {
       });
    };
 
-   const editPiece = async (contentPieceID, newContent, newSummary) => {
+   const editPiece = async (contentPieceID, newContent) => {
       const indexOfEditedContentPiece = content.findIndex(
          contentPiece => contentPiece.id === contentPieceID
       );
@@ -230,7 +230,6 @@ const Content = ({ context, canEdit, linkedPiece }) => {
          variables: {
             contentPieceID,
             content: newContent,
-            summary: newSummary,
             id,
             type
          },
@@ -239,8 +238,7 @@ const Content = ({ context, canEdit, linkedPiece }) => {
             editContentPiece: {
                __typename: type,
                id,
-               content: newContent,
-               summary: newSummary
+               content: newContent
             }
          }
       }).catch(err => {
@@ -278,7 +276,6 @@ const Content = ({ context, canEdit, linkedPiece }) => {
                   canEdit={canEdit}
                   rawContentString={contentPiece.content}
                   comments={contentPiece.comments}
-                  summary={contentPiece.summary}
                   expanded={contentExpansionObject[contentPiece.id]}
                   setExpanded={handleContentExpansion}
                   deleteContentPiece={deletePiece}
