@@ -3,6 +3,7 @@ import Head from 'next/head';
 import StyledPageWithSidebar from '../styles/StyledPageWithSidebar';
 import { setAlpha } from '../styles/functions';
 import Sidebar from '../components/Sidebar';
+import SummarizedText from '../components/SummarizedText';
 
 const StyledCheatSheet = styled.article`
    padding: 3rem;
@@ -56,33 +57,6 @@ const Styling = props => (
                </p>
             </li>
             <li>
-               <h4>Style Tag</h4>
-               <p>
-                  You can enclose any text in a{' '}
-                  <span className="emphasis">{`<style>`}</span> tag to tag to
-                  apply any styling you'd like to it.
-               </p>
-               <p>
-                  The full syntax would be{' '}
-                  <span className="emphasis">{`<style="YOUR STYLING HERE">Text you want to style</style>`}</span>
-                  , and your styling should follow the syntax of using
-                  JavaScript to style html elements,{' '}
-                  <a
-                     href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Properties_Reference"
-                     target="_blank"
-                     rel="noopener noreferrer"
-                  >
-                     See here for more info
-                  </a>
-                  .
-               </p>
-               <p>
-                  So for example,{' '}
-                  <span className="emphasis">{`<style="fontWeight:bold; color:green">Text you want to style</style>`}</span>{' '}
-                  would produce bold, green text.
-               </p>
-            </li>
-            <li>
                <h4>Pounds</h4>
                <p>
                   Enclosing text in pound signs,{' '}
@@ -115,6 +89,56 @@ const Styling = props => (
                   <span className="emphasis">//like so//</span> italicizes it.
                   You can also add these by pressing ctrl/cmd + i, with or
                   without text selected.
+               </p>
+            </li>
+            <li>
+               <h4>Style Tag</h4>
+               <p>
+                  You can also enclose any text in a{' '}
+                  <span className="emphasis">{`<style>`}</span> tag to tag to
+                  apply any styling you'd like to it.
+               </p>
+               <p>
+                  The full syntax would be{' '}
+                  <span className="emphasis">{`<style="YOUR STYLING HERE">Text you want to style</style>`}</span>
+                  , and your styling should follow the syntax of using
+                  JavaScript to style html elements,{' '}
+                  <a
+                     href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Properties_Reference"
+                     target="_blank"
+                     rel="noopener noreferrer"
+                  >
+                     See here for more info
+                  </a>
+                  .
+               </p>
+               <p>
+                  So for example,{' '}
+                  <span className="emphasis">{`<style="fontWeight:bold; color:green">Text you want to style</style>`}</span>{' '}
+                  would produce bold, green text.
+               </p>
+            </li>
+            <li>
+               <h4>Summaries</h4>
+               <p>
+                  This one's a little tricky, so let's start with an example.
+                  Here's a summary:
+               </p>
+               <SummarizedText
+                  summarizedText="This is a long winded point that you wanted to make, but don't necessarily want everyone to have to read every time. Maybe you went really in depth on a topic, or maybe it's a tangential aside, doesn't really matter. The point is just it's a big block of text that can be summarized quickly."
+                  summaryText="A quick summary of your point. Click the arrow to expand"
+               />
+               <p>
+                  The syntax for summaries is as follows:{' '}
+                  <span className="emphasis">
+                     {'>>Text to be summarized<<(Summary text)'}
+                  </span>{' '}
+                  That is, you take the big complicated aside and wrap it in
+                  backwards double angle brackets (The idea is they're arrows
+                  pointing inwards, like they're crushing it down), and then you
+                  take the text you want to use as the summary and put it inside
+                  parentheses immediately after that (as in, no spaces between
+                  them).
                </p>
             </li>
             <li>
