@@ -24,20 +24,39 @@ const TruncCont = ({ cont: contObj, limit }) => {
       return <div />;
    }
 
-   let cont = contObj.content || contObj; // If contObj.content is undefined, let's assume they gave us a string
+   const cont = contObj.content || contObj; // If contObj.content is undefined, let's assume they gave us a string
 
    if (typeof cont !== 'string') return <div />; // If they didn't give us a string in either of those two ways, gtfo
 
+   let newLimit = limit;
+   if (process.browser) {
+      // If there's a summary in this text, we want to make sure we get the whole summary tag inside our limit so it will show up collapsed instead of getting truncated halfway through and showing up as plain text
+      const summaryRegex = /(?<summary>>>(?<summarizedText>.+)<<(\((?<summaryText>.+)\))?)/gis;
+      const allMatches = cont.matchAll(summaryRegex);
+      let i = 0;
+      for (const match of allMatches) {
+         if (i > 0) return;
+         const summarizedTextPos = cont.indexOf(match.groups.summarizedText);
+         if (summarizedTextPos < limit) {
+            newLimit = summarizedTextPos + match.groups.summary.length - 2; // The -2 is for the 2 characters that start the summary tag
+         }
+         i += 1;
+      }
+   }
+
+   let truncCont = cont;
    if (!expanded) {
-      if (cont.length > limit && !expanded) {
-         cont = `${cont.substring(0, limit).trim()}...`;
+      if (cont.length > newLimit) {
+         truncCont = `${cont.substring(0, newLimit).trim()}${
+            newLimit === limit ? '...' : ''
+         }`;
       }
    }
 
    return (
       <StyledTruncCont className="truncCont">
-         <RichText text={cont} key={cont} />
-         {cont.length > limit && (
+         <RichText text={truncCont} key={truncCont} />
+         {cont.length > newLimit && (
             <ArrowIcon
                pointing={expanded ? 'up' : 'down'}
                onClick={() => setExpanded(!expanded)}

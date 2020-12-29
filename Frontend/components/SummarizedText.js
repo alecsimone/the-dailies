@@ -42,17 +42,19 @@ const SummarizedText = ({ summarizedText, summaryText }) => {
    return (
       <StyledSummarizedText
          onClick={e => {
-            // If they clicked a link or on some part of an embedded thing card, we don't want to toggle expansion
+            // If the summary is collapsed, they can click on any part of it to expand it. But if they're clicking a link, we don't want to do that
+            if (expanded) return;
             if (e.target.closest('a') != null) return;
-            if (e.target.closest('.thingCard') != null) return;
-
-            setExpanded(!expanded);
+            setExpanded(true);
          }}
-         className={expanded ? 'expanded' : 'collapsed'}
+         className={
+            expanded ? 'summarizedText expanded' : 'summarizedText collapsed'
+         }
       >
          <ArrowIcon
             className="expansionArrow"
             pointing={expanded ? 'down' : 'right'}
+            onClick={() => setExpanded(!expanded)}
          />
          <span className="textContent">
             {expanded ? (
