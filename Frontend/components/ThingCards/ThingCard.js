@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import styled, { ThemeContext } from 'styled-components';
 import Link from 'next/link';
@@ -229,6 +229,8 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
    } = data;
 
    const [contentSliderPosition, setContentSliderPosition] = useState(0);
+   const currentContentWrapperRef = useRef(null);
+
    const [showingComments, setShowingComments] = useState(false);
    const [touchStart, setTouchStart] = useState(0);
    const [touchStartY, setTouchStartY] = useState(0);
@@ -264,6 +266,11 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
          ...prevState,
          [pieceID]: newValue
       }));
+   };
+
+   const handleContentScrolling = newIndex => {
+      currentContentWrapperRef.current.scrollTop = 0;
+      setContentSliderPosition(newIndex);
    };
 
    const [addComment] = useMutation(ADD_COMMENT_MUTATION);
@@ -427,11 +434,11 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
                   touchEnd - touchStart < -111 &&
                   contentSliderPosition + 1 < contentArray.length
                ) {
-                  setContentSliderPosition(contentSliderPosition + 1);
+                  handleContentScrolling(contentSliderPosition + 1);
                   setShowingComments(false);
                }
                if (touchEnd - touchStart > 111 && contentSliderPosition > 0) {
-                  setContentSliderPosition(contentSliderPosition - 1);
+                  handleContentScrolling(contentSliderPosition - 1);
                   setShowingComments(false);
                }
                setTouchStart(0);
@@ -466,6 +473,7 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
                               : '0'
                         }rem))`
                      }}
+                     ref={currentContentWrapperRef}
                   >
                      {contentElement}
                   </div>
@@ -502,7 +510,7 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
                <ArrowIcon
                   pointing="left"
                   onClick={() => {
-                     setContentSliderPosition(contentSliderPosition - 1);
+                     handleContentScrolling(contentSliderPosition - 1);
                      setShowingComments(false);
                   }}
                />
@@ -512,7 +520,7 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
                <ArrowIcon
                   pointing="right"
                   onClick={() => {
-                     setContentSliderPosition(contentSliderPosition + 1);
+                     handleContentScrolling(contentSliderPosition + 1);
                      setShowingComments(false);
                   }}
                />
