@@ -2,6 +2,7 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import RichText from './RichText';
 import ArrowIcon from './Icons/Arrow';
+import { setAlpha } from '../styles/functions';
 
 const StyledSummarizedText = styled.div`
    cursor: pointer;
@@ -9,10 +10,10 @@ const StyledSummarizedText = styled.div`
    &.expanded,
    &.collapsed {
       border: 1px solid ${props => props.theme.lowContrastGrey};
-      padding: 1rem;
+      border-radius: 3px;
    }
    &.expanded {
-      background: ${props => props.theme.lightBlack};
+      background: ${props => setAlpha(props.theme.lightBlack, 0.75)};
    }
    svg#ArrowIcon {
       display: inline;
@@ -23,6 +24,13 @@ const StyledSummarizedText = styled.div`
       vertical-align: middle;
       position: relative;
       bottom: 3px;
+   }
+   .topline {
+      border-bottom: 1px solid ${props => props.theme.lowContrastGrey};
+      padding: 1rem;
+   }
+   .summarizedText {
+      padding: 1rem;
    }
 `;
 
@@ -51,18 +59,20 @@ const SummarizedText = ({ summarizedText, summaryText }) => {
             expanded ? 'summarizedText expanded' : 'summarizedText collapsed'
          }
       >
-         <ArrowIcon
-            className="expansionArrow"
-            pointing={expanded ? 'down' : 'right'}
-            onClick={() => setExpanded(!expanded)}
-         />
-         <span className="textContent">
-            {expanded ? (
-               <RichText text={summarizedText} />
-            ) : (
+         <div className="topline" onClick={() => setExpanded(!expanded)}>
+            <ArrowIcon
+               className="expansionArrow"
+               pointing={expanded ? 'down' : 'right'}
+            />
+            <span className="summary">
                <RichText text={summary} />
-            )}
-         </span>
+            </span>
+         </div>
+         {expanded && (
+            <div className="summarizedText">
+               <RichText text={summarizedText} />
+            </div>
+         )}
       </StyledSummarizedText>
    );
 };
