@@ -281,8 +281,7 @@ const StyledContent = styled.section`
             }
          }
          .votebar {
-            margin-right: 4rem;
-            margin-bottom: 1rem;
+            margin: 0 4rem 1rem 0;
          }
       }
    }
