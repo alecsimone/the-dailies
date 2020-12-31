@@ -31,6 +31,9 @@ const StyledHomepage = styled.section`
       ${props => props.theme.scroll};
       .things .thingCard {
          margin: 0 auto 4rem;
+         .thingCard {
+            margin: 2rem 0;
+         }
       }
       ${props => props.theme.desktopBreakpoint} {
          padding: 2rem;

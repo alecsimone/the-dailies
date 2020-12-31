@@ -87,13 +87,8 @@ const StyledThingCard = styled.div`
       }
    }
    .contentArea {
-      position: relative;
       margin: 0;
-      padding: .8rem calc(${props =>
-         props.theme.smallText} + 2.25rem) .8rem 1.75rem;
       border-radius: 3px;
-      background: ${props => props.theme.midBlack};
-      border: 1px solid ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
       .commentsButtonComponentWrapper {
          position: absolute;
          right: 1rem;
@@ -106,6 +101,9 @@ const StyledThingCard = styled.div`
          .arrow {
             margin-left: 3rem /* On this one we're making up for the off-centerness caused by putting padding right to allow space for the comment button */
          }
+      }
+      .thingCard {
+         background: ${props => props.theme.midBlack};
       }
 
    }
@@ -154,8 +152,14 @@ const StyledThingCard = styled.div`
             display: flex;
             .previousContentWrapper, .currentContentWrapper, .nextContentWrapper {
                display: inline-block;
-               width: 34%;
+               background: ${props => props.theme.midBlack};
+               width: 33.3%;
                margin: 3rem 0;
+               padding: .8rem calc(${props =>
+                  props.theme.smallText} + 2.25rem) .8rem 1.75rem;
+               border: 1px solid ${props =>
+                  setAlpha(props.theme.lowContrastGrey, 0.25)};
+               border-radius: 3px;
             }
             .currentContentWrapper {
                margin: 3rem 1.5rem;
@@ -164,6 +168,7 @@ const StyledThingCard = styled.div`
                /* touch-action: none; */
                ${props => props.theme.midScreenBreakpoint} {
                   max-height: 600px;
+                  margin: 1rem
                }
             }
             .givesSize {
@@ -318,9 +323,6 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
       // TODO: Add the update function a la Comments.js line 192
    };
 
-   const isSmallScreen =
-      process.browser && window.outerWidth <= midScreenBPWidthRaw;
-
    let highlightColor = lowContrastGrey;
    if (color != null) {
       highlightColor = color;
@@ -398,109 +400,103 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
       </div>
    );
 
-   let contentArea;
-   if (isSmallScreen || !process.browser) {
-      // If we're on a small screen, we need to put the content pieces next to each other in an element that can slide from side to side, hiding whatever is overflowing its container
-      contentArea = (
-         <div
-            className="cardTouchWatcher"
-            key={id}
-            onTouchStart={e => {
-               e.stopPropagation();
-               setTouchStart(e.touches[0].clientX);
-               setTouchStartY(e.touches[0].clientY);
-               setTouchEnd(e.touches[0].clientX);
-            }}
-            onTouchMove={e => {
-               e.stopPropagation();
+   const contentArea = (
+      <div
+         className="cardTouchWatcher"
+         key={id}
+         onTouchStart={e => {
+            e.stopPropagation();
+            setTouchStart(e.touches[0].clientX);
+            setTouchStartY(e.touches[0].clientY);
+            setTouchEnd(e.touches[0].clientX);
+         }}
+         onTouchMove={e => {
+            e.stopPropagation();
 
-               // Not using this as it loses the native touch scroll function's flick ability, and the native behavior isn't so bad now that I've made this part scroll instead of the whole page
-               // if (translation === 0) {
-               //    const touchWatcher = e.target.closest(
-               //       '.currentContentWrapper'
-               //    );
-               //    const initialScroll = touchWatcher.scrollTop;
-               //    const scrollDistance = touchStartY - e.touches[0].clientY;
-               //    const newScroll = initialScroll + scrollDistance;
-               //    touchWatcher.scrollTop = newScroll;
-               //    setTouchStartY(e.touches[0].clientY);
-               // }
+            // Not using this as it loses the native touch scroll function's flick ability, and the native behavior isn't so bad now that I've made this part scroll instead of the whole page
+            // if (translation === 0) {
+            //    const touchWatcher = e.target.closest(
+            //       '.currentContentWrapper'
+            //    );
+            //    const initialScroll = touchWatcher.scrollTop;
+            //    const scrollDistance = touchStartY - e.touches[0].clientY;
+            //    const newScroll = initialScroll + scrollDistance;
+            //    touchWatcher.scrollTop = newScroll;
+            //    setTouchStartY(e.touches[0].clientY);
+            // }
 
-               setTouchEnd(e.touches[0].clientX);
-            }}
-            onTouchEnd={e => {
-               e.stopPropagation();
-               if (
-                  touchEnd - touchStart < -111 &&
-                  contentSliderPosition + 1 < contentArray.length
-               ) {
-                  handleContentScrolling(contentSliderPosition + 1);
-                  setShowingComments(false);
-               }
-               if (touchEnd - touchStart > 111 && contentSliderPosition > 0) {
-                  handleContentScrolling(contentSliderPosition - 1);
-                  setShowingComments(false);
-               }
-               setTouchStart(0);
-               setTouchEnd(0);
-            }}
-         >
-            <div className="cardOverflowWrapper">
-               <div className="cardPiecesContainer">
-                  {contentSliderPosition > 0 && (
-                     <div
-                        className={`previousContentWrapper${
-                           translation <= 0 ? ' doesNotGiveSize' : ' givesSize'
-                        }`}
-                        style={{
-                           transform: `translateX(calc(${translation}px - 100% - 2rem))`
-                        }}
-                     >
-                        <TruncCont
-                           cont={contentArray[contentSliderPosition - 1]}
-                           limit={280}
-                        />
-                     </div>
-                  )}
+            setTouchEnd(e.touches[0].clientX);
+         }}
+         onTouchEnd={e => {
+            e.stopPropagation();
+            if (
+               touchEnd - touchStart < -111 &&
+               contentSliderPosition + 1 < contentArray.length
+            ) {
+               handleContentScrolling(contentSliderPosition + 1);
+               setShowingComments(false);
+            }
+            if (touchEnd - touchStart > 111 && contentSliderPosition > 0) {
+               handleContentScrolling(contentSliderPosition - 1);
+               setShowingComments(false);
+            }
+            setTouchStart(0);
+            setTouchEnd(0);
+         }}
+      >
+         <div className="cardOverflowWrapper">
+            <div className="cardPiecesContainer">
+               {contentSliderPosition > 0 && (
                   <div
-                     className="currentContentWrapper"
+                     className={`previousContentWrapper${
+                        translation <= 0 ? ' doesNotGiveSize' : ' givesSize'
+                     }`}
+                     style={{
+                        transform: `translateX(calc(${translation}px - 100% - 2rem))`
+                     }}
+                  >
+                     <TruncCont
+                        cont={contentArray[contentSliderPosition - 1]}
+                        limit={280}
+                     />
+                  </div>
+               )}
+               <div
+                  className="currentContentWrapper"
+                  style={{
+                     transform: `translateX(calc(${translation}px - ${
+                        contentSliderPosition > 0 ? '1' : '2'
+                     }rem - ${contentSliderPosition > 0 ? '100' : '0'}% - ${
+                        contentSliderPosition + 1 === contentArray.length
+                           ? '1'
+                           : '0'
+                     }rem))`
+                  }}
+                  ref={currentContentWrapperRef}
+               >
+                  {contentElement}
+               </div>
+               {contentSliderPosition + 1 < contentArray.length && (
+                  <div
+                     className={`nextContentWrapper${
+                        translation >= 0 ? ' doesNotGiveSize' : ' givesSize'
+                     }`}
                      style={{
                         transform: `translateX(calc(${translation}px - ${
-                           contentSliderPosition > 0 ? '1' : '2'
-                        }rem - ${contentSliderPosition > 0 ? '100' : '0'}% - ${
-                           contentSliderPosition + 1 === contentArray.length
-                              ? '1'
-                              : '0'
-                        }rem))`
+                           contentSliderPosition > 0 ? '100' : '0'
+                        }%))`
                      }}
-                     ref={currentContentWrapperRef}
                   >
-                     {contentElement}
+                     <TruncCont
+                        cont={contentArray[contentSliderPosition + 1]}
+                        limit={280}
+                     />
                   </div>
-                  {contentSliderPosition + 1 < contentArray.length && (
-                     <div
-                        className={`nextContentWrapper${
-                           translation >= 0 ? ' doesNotGiveSize' : ' givesSize'
-                        }`}
-                        style={{
-                           transform: `translateX(calc(${translation}px - ${
-                              contentSliderPosition > 0 ? '100' : '0'
-                           }%))`
-                        }}
-                     >
-                        <TruncCont
-                           cont={contentArray[contentSliderPosition + 1]}
-                           limit={280}
-                        />
-                     </div>
-                  )}
-               </div>
+               )}
             </div>
          </div>
-      );
-   } else {
-      contentArea = contentElement;
-   }
+      </div>
+   );
 
    let contentSlider;
    if (contentArray.length > 0) {

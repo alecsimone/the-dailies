@@ -32,7 +32,7 @@ const StyledSmallThingCard = styled.article`
    &:hover {
       opacity: 1;
       background: hsla(0, 0%, 100%, 0.02);
-      .meta {
+      .smallThingCardMeta {
          a,
          a:visited {
             color: ${props => setLightness(props.theme.mainText, 90)};
@@ -44,7 +44,7 @@ const StyledSmallThingCard = styled.article`
       height: 5rem;
       object-fit: cover;
    }
-   .meta {
+   .smallThingCardMeta {
       padding: 0 1.2rem;
       line-height: 1;
       a,
@@ -101,7 +101,7 @@ const SmallThingCard = ({ data, noPic, fullQuery, borderSide }) => {
    if (!data) {
       return (
          <StyledSmallThingCard className="smallThingCard thingCard">
-            <div className="meta">Bad thing input.</div>
+            <div className="smallThingCardMeta">Bad thing input.</div>
          </StyledSmallThingCard>
       );
    }
@@ -152,7 +152,7 @@ const SmallThingCard = ({ data, noPic, fullQuery, borderSide }) => {
                disabledCodewords.includes(featuredImage.toLowerCase()) ||
                isTweet
             ) && <img className="thumb" src={featuredImage} />}
-            <div className="meta">
+            <div className="smallThingCardMeta">
                <a href={queryString}>
                   {title.length > 60
                      ? `${title.substring(0, 60).trim()}...`
