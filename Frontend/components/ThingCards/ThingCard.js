@@ -566,7 +566,7 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
             {contentArray.length > 0 && contentArea}
             {contentArray.length > 1 && contentSlider}
             {tags.length > 0 && <Taxes taxes={tags} personal={false} />}
-            <VoteBar votes={votes} thingID={id} />
+            <VoteBar votes={votes} id={id} type="Thing" />
             {setExpanded != null && (
                <div id="arrowWrapper">
                   <ArrowIcon

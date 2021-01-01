@@ -19,7 +19,6 @@ async function vote(parent, { id, type }, ctx, info) {
       )
       .catch(err => {
          console.log(err);
-         console.log(err);
       });
 
    let lowerCasedType = type.toLowerCase();
@@ -35,7 +34,6 @@ async function vote(parent, { id, type }, ctx, info) {
       },
       `{id score votes {id voter {id} value}}`
    ).catch(err => {
-      console.log(err);
       console.log(err);
    });
    if (oldStuff == null) {
@@ -70,7 +68,6 @@ async function vote(parent, { id, type }, ctx, info) {
 
    const updatedStuff = await properUpdateStuff(dataObj, id, type, ctx).catch(
       err => {
-         console.log(err);
          console.log(err);
       }
    );
