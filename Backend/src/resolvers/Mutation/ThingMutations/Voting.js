@@ -1,3 +1,4 @@
+const { AuthenticationError } = require('apollo-server-express');
 const {
    loggedInGate,
    fullMemberGate
@@ -5,7 +6,9 @@ const {
 const { properUpdateStuff } = require('../../../utils/ThingHandling');
 
 async function vote(parent, { id, type }, ctx, info) {
-   loggedInGate(ctx);
+   await loggedInGate(ctx).catch(() => {
+      throw new AuthenticationError('You must be logged in to do that!');
+   });
    fullMemberGate(ctx.req.member);
 
    const myVoterInfo = await ctx.db.query

@@ -1,7 +1,23 @@
-const loggedInGate = context => {
+const loggedInGate = async context => {
    if (!context.req.memberId) {
-      throw new Error('You must be logged in to do that');
+      // return false;
+      throw new Error();
    }
+   const memberCheck = await context.db.query
+      .member(
+         {
+            where: {
+               id: context.req.memberId
+            }
+         },
+         '{id}'
+      )
+      .catch(err => console.log(err));
+   if (memberCheck == null) {
+      // return false;
+      throw new Error();
+   }
+   return true;
 };
 exports.loggedInGate = loggedInGate;
 

@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { AuthenticationError } = require('apollo-server-express');
 const { loggedInGate, fullMemberGate } = require('../../utils/Authentication');
 const { fullMemberFields } = require('../../utils/CardInterfaces');
 
@@ -110,7 +111,9 @@ async function editProfile(
    ctx,
    info
 ) {
-   loggedInGate(ctx);
+   await loggedInGate(ctx).catch(() => {
+      throw new AuthenticationError('You must be logged in to do that!');
+   });
    fullMemberGate(ctx.req.member);
 
    if (
@@ -176,7 +179,9 @@ async function properEditMe(dataObj, id, ctx) {
 }
 
 async function sendFriendRequest(parent, { id }, ctx, info) {
-   loggedInGate(ctx);
+   await loggedInGate(ctx).catch(() => {
+      throw new AuthenticationError('You must be logged in to do that!');
+   });
    fullMemberGate(ctx.req.member);
 
    sendNotification(
@@ -342,7 +347,9 @@ async function ignoreFriendRequest(parent, { id }, ctx, info) {
 exports.ignoreFriendRequest = ignoreFriendRequest;
 
 async function readNotifications(parent, { ids }, ctx, info) {
-   loggedInGate(ctx);
+   await loggedInGate(ctx).catch(() => {
+      throw new AuthenticationError('You must be logged in to do that!');
+   });
    fullMemberGate(ctx.req.member);
 
    await ctx.db.mutation
@@ -437,7 +444,9 @@ async function sendNotification(notification, ctx) {
 exports.sendNotification = sendNotification;
 
 async function toggleBroadcastView(parent, { newState }, ctx, info) {
-   loggedInGate(ctx);
+   await loggedInGate(ctx).catch(() => {
+      throw new AuthenticationError('You must be logged in to do that!');
+   });
    fullMemberGate(ctx.req.member);
 
    await ctx.db.mutation
@@ -459,7 +468,9 @@ async function toggleBroadcastView(parent, { newState }, ctx, info) {
 exports.toggleBroadcastView = toggleBroadcastView;
 
 async function addViewerToThing(parent, { thingID, memberID }, ctx, info) {
-   loggedInGate(ctx);
+   await loggedInGate(ctx).catch(() => {
+      throw new AuthenticationError('You must be logged in to do that!');
+   });
    fullMemberGate(ctx.req.member);
 
    const thingData = await ctx.db.query
@@ -500,7 +511,9 @@ async function addViewerToThing(parent, { thingID, memberID }, ctx, info) {
 exports.addViewerToThing = addViewerToThing;
 
 async function removeViewerFromThing(parent, { thingID, memberID }, ctx, info) {
-   loggedInGate(ctx);
+   await loggedInGate(ctx).catch(() => {
+      throw new AuthenticationError('You must be logged in to do that!');
+   });
    fullMemberGate(ctx.req.member);
 
    const thingData = await ctx.db.query

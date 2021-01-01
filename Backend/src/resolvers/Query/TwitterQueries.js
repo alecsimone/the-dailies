@@ -1,3 +1,4 @@
+const { AuthenticationError } = require('apollo-server-express');
 const LoginWithTwitter = require('login-with-twitter');
 const {
    cipherString,
@@ -110,7 +111,9 @@ async function getTweet(parent, { tweetID }, ctx, info) {
 exports.getTweet = getTweet;
 
 async function refreshLists(parent, arts, ctx, info) {
-   loggedInGate(ctx);
+   await loggedInGate(ctx).catch(() => {
+      throw new AuthenticationError('You must be logged in to do that!');
+   });
    fullMemberGate(ctx.req.member);
 
    const listData = await getFreshLists(ctx).catch(err => {
@@ -136,7 +139,9 @@ async function refreshLists(parent, arts, ctx, info) {
 exports.refreshLists = refreshLists;
 
 async function getTweetsForList(parent, { listID: requestedList }, ctx, info) {
-   loggedInGate(ctx);
+   await loggedInGate(ctx).catch(() => {
+      throw new AuthenticationError('You must be logged in to do that!');
+   });
    fullMemberGate(ctx.req.member);
 
    // Make an array of the member's listIDs

@@ -1,3 +1,4 @@
+const { AuthenticationError } = require('apollo-server-express');
 const LoginWithTwitter = require('login-with-twitter');
 const {
    cipherString,
@@ -79,7 +80,9 @@ async function markTweetsSeen(
    ctx,
    info
 ) {
-   loggedInGate(ctx);
+   await loggedInGate(ctx).catch(() => {
+      throw new AuthenticationError('You must be logged in to do that!');
+   });
    fullMemberGate(ctx.req.member);
 
    const { twitterListsObject, twitterSeenIDs } = await getTwitterInfo(
@@ -144,7 +147,9 @@ async function markTweetsSeen(
 exports.markTweetsSeen = markTweetsSeen;
 
 async function saveTweet(parent, { tweetURL, tweeter, tweetText }, ctx, info) {
-   loggedInGate(ctx);
+   await loggedInGate(ctx).catch(() => {
+      throw new AuthenticationError('You must be logged in to do that!');
+   });
    fullMemberGate(ctx.req.member);
 
    const dataObj = {

@@ -138,7 +138,8 @@ const StyledVoteBar = styled.section`
 const VoteBar = ({ votes = [], id, type, mini }) => {
    const { me } = useContext(MemberContext);
    const [vote] = useMutation(VOTE_MUTATION, {
-      refetchQueries: [{ query: ALL_THINGS_QUERY }]
+      refetchQueries: [{ query: ALL_THINGS_QUERY }],
+      onError: err => alert(err)
    });
 
    let meVoted = false;
@@ -216,7 +217,7 @@ const VoteBar = ({ votes = [], id, type, mini }) => {
                            score: newScore
                         }
                      }
-                  });
+                  }).catch(err => alert(err));
                }}
             />
          </div>

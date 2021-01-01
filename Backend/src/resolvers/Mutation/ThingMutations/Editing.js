@@ -1,3 +1,4 @@
+const { AuthenticationError } = require('apollo-server-express');
 const {
    properDeleteStuff,
    properUpdateStuff,
@@ -68,7 +69,9 @@ async function addTaxToThingHandler(parent, { tax, thingID, personal }, ctx, inf
    if (tax === '') {
       throw new Error('Tax cannot be empty');
    }
-   loggedInGate(ctx);
+   await loggedInGate(ctx).catch(() => {
+      throw new AuthenticationError('You must be logged in to do that!');
+   });
    fullMemberGate(ctx.req.member);
 
    if (tax.includes(',')) {
@@ -92,7 +95,9 @@ async function addTaxesToThing(taxTitleArray, thingID, ctx, personal) {
 }
 
 async function createThing(parent, args, ctx, info) {
-   loggedInGate(ctx);
+   await loggedInGate(ctx).catch(() => {
+      throw new AuthenticationError('You must be logged in to do that!');
+   });
    fullMemberGate(ctx.req.member);
 
    const { title, link, content, tags, privacy } = args;
@@ -142,7 +147,9 @@ async function createThing(parent, args, ctx, info) {
 exports.createThing = createThing;
 
 async function newBlankThing(parent, args, ctx, info) {
-   loggedInGate(ctx);
+   await loggedInGate(ctx).catch(() => {
+      throw new AuthenticationError('You must be logged in to do that!');
+   });
    fullMemberGate(ctx.req.member);
 
    const newThing = properUpdateStuff({}, 'new', 'Thing', ctx);
@@ -151,7 +158,9 @@ async function newBlankThing(parent, args, ctx, info) {
 exports.newBlankThing = newBlankThing;
 
 async function addContentPiece(parent, { content, id, type }, ctx, info) {
-   loggedInGate(ctx);
+   await loggedInGate(ctx).catch(() => {
+      throw new AuthenticationError('You must be logged in to do that!');
+   });
    fullMemberGate(ctx.req.member);
 
    content = await lengthenTikTokURL(content).catch(err => {
@@ -178,7 +187,9 @@ async function deleteContentPiece(
    ctx,
    info
 ) {
-   loggedInGate(ctx);
+   await loggedInGate(ctx).catch(() => {
+      throw new AuthenticationError('You must be logged in to do that!');
+   });
    fullMemberGate(ctx.req.member);
 
    const {contentOrder: oldContentOrder} = await ctx.db.query[type.toLowerCase()](
@@ -217,7 +228,9 @@ async function editContentPiece(
    ctx,
    info
 ) {
-   loggedInGate(ctx);
+   await loggedInGate(ctx).catch(() => {
+      throw new AuthenticationError('You must be logged in to do that!');
+   });
    fullMemberGate(ctx.req.member);
 
    content = await lengthenTikTokURL(content).catch(err => {
@@ -244,7 +257,9 @@ async function editContentPiece(
 exports.editContentPiece = editContentPiece;
 
 async function reorderContent(parent, {id, type, oldPosition, newPosition}, ctx, info) {
-   loggedInGate(ctx);
+   await loggedInGate(ctx).catch(() => {
+      throw new AuthenticationError('You must be logged in to do that!');
+   });
    fullMemberGate(ctx.req.member);
    const oldContent = await ctx.db.query[type.toLowerCase()](
       {
@@ -292,7 +307,9 @@ async function reorderContent(parent, {id, type, oldPosition, newPosition}, ctx,
 exports.reorderContent = reorderContent;
 
 async function setThingPrivacy(parent, { privacySetting, thingID }, ctx, info) {
-   loggedInGate(ctx);
+   await loggedInGate(ctx).catch(() => {
+      throw new AuthenticationError('You must be logged in to do that!');
+   });
    fullMemberGate(ctx.req.member);
 
    const dataObj = {
@@ -311,7 +328,9 @@ async function setFeaturedImage(
    ctx,
    info
 ) {
-   loggedInGate(ctx);
+   await loggedInGate(ctx).catch(() => {
+      throw new AuthenticationError('You must be logged in to do that!');
+   });
    fullMemberGate(ctx.req.member);
 
    if (!isExplodingLink(featuredImage) && !disabledCodewords.includes(featuredImage)) {
@@ -330,7 +349,9 @@ async function setFeaturedImage(
 exports.setFeaturedImage = setFeaturedImage;
 
 async function setStuffTitle(parent, { title, id, type }, ctx, info) {
-   loggedInGate(ctx);
+   await loggedInGate(ctx).catch(() => {
+      throw new AuthenticationError('You must be logged in to do that!');
+   });
    fullMemberGate(ctx.req.member);
 
    const dataObj = {
@@ -344,7 +365,9 @@ async function setStuffTitle(parent, { title, id, type }, ctx, info) {
 exports.setStuffTitle = setStuffTitle;
 
 async function setPublicity(parent, {public, id, type}, ctx, info) {
-   loggedInGate(ctx);
+   await loggedInGate(ctx).catch(() => {
+      throw new AuthenticationError('You must be logged in to do that!');
+   });
    fullMemberGate(ctx.req.member);
 
    const dataObj = {
@@ -358,7 +381,9 @@ async function setPublicity(parent, {public, id, type}, ctx, info) {
 exports.setPublicity = setPublicity;
 
 async function addComment(parent, {comment, id, type, replyToID}, ctx, info) {
-   loggedInGate(ctx);
+   await loggedInGate(ctx).catch(() => {
+      throw new AuthenticationError('You must be logged in to do that!');
+   });
    fullMemberGate(ctx.req.member);
 
    comment = await lengthenTikTokURL(comment).catch(err => {
@@ -433,7 +458,9 @@ async function addComment(parent, {comment, id, type, replyToID}, ctx, info) {
 exports.addComment = addComment;
 
 async function editComment(parent, { commentID, stuffID, type, newComment}, ctx, info) {
-   loggedInGate(ctx);
+   await loggedInGate(ctx).catch(() => {
+      throw new AuthenticationError('You must be logged in to do that!');
+   });
    fullMemberGate(ctx.req.member);
 
    newComment = await lengthenTikTokURL(newComment).catch(err => {
@@ -461,7 +488,9 @@ async function editComment(parent, { commentID, stuffID, type, newComment}, ctx,
 exports.editComment = editComment;
 
 async function deleteComment(parent, { commentID, stuffID, type }, ctx, info) {
-   loggedInGate(ctx);
+   await loggedInGate(ctx).catch(() => {
+      throw new AuthenticationError('You must be logged in to do that!');
+   });
    fullMemberGate(ctx.req.member);
 
    const oldComment = await ctx.db.query.comment({
@@ -511,7 +540,9 @@ async function deleteComment(parent, { commentID, stuffID, type }, ctx, info) {
 exports.deleteComment = deleteComment;
 
 async function editLink(parent, {link, id}, ctx, info) {
-   loggedInGate(ctx);
+   await loggedInGate(ctx).catch(() => {
+      throw new AuthenticationError('You must be logged in to do that!');
+   });
    fullMemberGate(ctx.req.member);
 
    const dataObj = {
@@ -527,7 +558,9 @@ async function editLink(parent, {link, id}, ctx, info) {
 exports.editLink = editLink;
 
 async function deleteThing(parent, {id}, ctx, info) {
-   loggedInGate(ctx);
+   await loggedInGate(ctx).catch(() => {
+      throw new AuthenticationError('You must be logged in to do that!');
+   });
    fullMemberGate(ctx.req.member);
    editPermissionGate({}, ctx.req.memberId, 'Thing', ctx);
 
@@ -546,7 +579,9 @@ async function deleteThing(parent, {id}, ctx, info) {
 exports.deleteThing = deleteThing;
 
 async function deleteTax(parent, {id, personal}, ctx, info) {
-   loggedInGate(ctx);
+   await loggedInGate(ctx).catch(() => {
+      throw new AuthenticationError('You must be logged in to do that!');
+   });
    fullMemberGate(ctx.req.member);
 
    const type = personal ? 'Stack' : 'Tag'
@@ -568,7 +603,9 @@ async function deleteTax(parent, {id, personal}, ctx, info) {
 exports.deleteTax = deleteTax;
 
 async function setColor(parent, { color, id, type}, ctx, info) {
-   loggedInGate(ctx);
+   await loggedInGate(ctx).catch(() => {
+      throw new AuthenticationError('You must be logged in to do that!');
+   });
    fullMemberGate(ctx.req.member);
    editPermissionGate({}, id, type, ctx);
 
@@ -584,7 +621,9 @@ async function setColor(parent, { color, id, type}, ctx, info) {
 exports.setColor = setColor;
 
 async function editSummary(parent, {summary, id, type}, ctx, info) {
-   loggedInGate(ctx);
+   await loggedInGate(ctx).catch(() => {
+      throw new AuthenticationError('You must be logged in to do that!');
+   });
    fullMemberGate(ctx.req.member);
    editPermissionGate({}, id, type, ctx);
 
@@ -604,7 +643,9 @@ async function editSummary(parent, {summary, id, type}, ctx, info) {
 exports.editSummary = editSummary;
 
 async function copyContentPiece(parent, {contentPieceID, newThingID}, ctx, info) {
-   loggedInGate(ctx);
+   await loggedInGate(ctx).catch(() => {
+      throw new AuthenticationError('You must be logged in to do that!');
+   });
    fullMemberGate(ctx.req.member);
 
    if (newThingID.toLowerCase() === 'new') {
@@ -687,7 +728,9 @@ async function copyContentPiece(parent, {contentPieceID, newThingID}, ctx, info)
 exports.copyContentPiece = copyContentPiece;
 
 async function unlinkContentPiece(parent, {contentPieceID, thingID}, ctx, info) {
-   loggedInGate(ctx);
+   await loggedInGate(ctx).catch(() => {
+      throw new AuthenticationError('You must be logged in to do that!');
+   });
    fullMemberGate(ctx.req.member);
    editPermissionGate({}, thingID, 'Thing', ctx);
 
