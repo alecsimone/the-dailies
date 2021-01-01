@@ -109,7 +109,17 @@ const CopyContentInterface = ({ id, thingID, setShowingAddToBox }) => {
 
    const [search, { loading: searchLoading }] = useLazyQuery(SEARCH_QUERY, {
       onCompleted: data => {
-         const trimmedData = data.search.slice(0, 10);
+         const filteredData = data.search.filter(thing => {
+            if (thing.id === thingID) return false;
+            let alreadyCopied = true;
+            thing.copiedInContent.forEach(copiedInThing => {
+               if (copiedInThing.id === id) {
+                  alreadyCopied = false;
+               }
+            });
+            return alreadyCopied;
+         });
+         const trimmedData = filteredData.slice(0, 10);
          setPostSearchResults(trimmedData);
          searchResultsRef.current = trimmedData;
       }

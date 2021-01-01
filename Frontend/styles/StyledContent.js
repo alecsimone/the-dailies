@@ -89,6 +89,9 @@ const StyledContent = styled.section`
                         .theActualContent {
                            max-width: 900px;
                            width: calc(100% - 4rem);
+                           form {
+                              margin: 0 auto;
+                           }
                         }
                      }
                      .commentsWrapper {
