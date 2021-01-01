@@ -118,6 +118,7 @@ const StyledComment = styled.div`
       display: flex;
       align-items: stretch;
       justify-content: space-between;
+      position: relative;
       .commentLeft {
          display: flex;
          align-items: flex-start;

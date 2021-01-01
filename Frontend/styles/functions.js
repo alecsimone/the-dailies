@@ -76,3 +76,7 @@ const dynamicallyResizeElement = el => {
    mainSection.scrollTop = oldScrollTop;
 };
 export { dynamicallyResizeElement };
+
+const getOneRem = () =>
+   parseFloat(getComputedStyle(document.documentElement).fontSize);
+export { getOneRem };

@@ -82,8 +82,10 @@ const CopyContentInterface = ({ id, thingID, setShowingAddToBox }) => {
    const searchResultsRef = useRef(postSearchResults);
    const highlightedIndexRef = useRef(highlightedIndex);
 
+   const thisInterfaceRef = useRef(null);
+
    useEffect(() => {
-      const thisBox = document.querySelector(`#addToInterface_${id}`);
+      const thisBox = thisInterfaceRef.current;
       const thisBoxRect = thisBox.getBoundingClientRect();
       const thisBoxHeight = thisBoxRect.height;
 
@@ -101,9 +103,9 @@ const CopyContentInterface = ({ id, thingID, setShowingAddToBox }) => {
    });
 
    useEffect(() => {
-      const thisBox = document.querySelector(`#addToInterface_${id}`);
+      const thisBox = thisInterfaceRef.current;
       thisBox.addEventListener('keydown', navigateResultsRef.current);
-   }, [id]);
+   }, []);
 
    const [search, { loading: searchLoading }] = useLazyQuery(SEARCH_QUERY, {
       onCompleted: data => {
@@ -122,7 +124,7 @@ const CopyContentInterface = ({ id, thingID, setShowingAddToBox }) => {
       setHighlightedIndex(-1);
       highlightedIndexRef.current = -1;
 
-      const thisBox = document.querySelector(`#addToInterface_${id}`);
+      const thisBox = thisInterfaceRef.current;
       thisBox.removeEventListener('keydown', navigateResultsRef.current);
       setShowingAddToBox(false);
    };
@@ -242,6 +244,7 @@ const CopyContentInterface = ({ id, thingID, setShowingAddToBox }) => {
       <StyledCopyContentInterface
          className="addToInterface"
          id={`addToInterface_${id}`}
+         ref={thisInterfaceRef}
       >
          <div className="topline">
             Add To:{' '}

@@ -1,9 +1,10 @@
 import gql from 'graphql-tag';
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useRef } from 'react';
 import Link from 'next/link';
 import { useMutation } from '@apollo/react-hooks';
 import PropTypes from 'prop-types';
 import { ThemeContext } from 'styled-components';
+import { useEffect } from 'react/cjs/react.development';
 import RichText from '../RichText';
 import RichTextArea from '../RichTextArea';
 import EditThis from '../Icons/EditThis';
@@ -18,25 +19,11 @@ import { SINGLE_THING_QUERY } from '../../pages/thing';
 import { MemberContext } from '../Account/MemberProvider';
 import ReorderIcon from '../Icons/Reorder';
 import X from '../Icons/X';
-import { stickifier } from '../../lib/ContentHandling';
+import { UNLINK_CONTENTPIECE_MUTATION } from '../../lib/ContentHandling';
+import { getOneRem } from '../../styles/functions';
 import CopyContentInterface from './CopyContentInterface';
-import { fullThingFields } from '../../lib/CardInterfaces';
 import VoteBar, { VOTE_MUTATION } from './VoteBar';
 import { ALL_THINGS_QUERY } from '../../pages/index';
-
-const UNLINK_CONTENTPIECE_MUTATION = gql`
-   mutation UNLINK_CONTENTPIECE_MUTATION(
-      $contentPieceID: ID!
-      $thingID: ID!
-   ) {
-      unlinkContentPiece(
-         contentPieceID: $contentPieceID
-         thingID: $thingID
-      ) {
-         ${fullThingFields}
-      }
-   }
-`;
 
 const ContentPiece = ({
    id,
@@ -74,12 +61,9 @@ const ContentPiece = ({
    const [touchEnd, setTouchEnd] = useState(0);
    const [copied, setCopied] = useState(false);
 
-   const isSmallScreen =
-      process.browser && window.outerWidth <= midScreenBPWidthRaw;
-
-   const [showingComments, setShowingComments] = useState(
-      !isSmallScreen && comments.length > 0 && process.browser
-   ); // We need that process.browser to prevent the server side rendering from messing up the client side render. Please don't ask me why.
+   const [showingComments, setShowingComments] = useState(false);
+   const [hasShownComments, setHasShownComments] = useState(false);
+   const contentWrapperRef = useRef(null);
 
    const postContent = () => {
       editContentPiece(id, editedContent);
@@ -201,49 +185,168 @@ const ContentPiece = ({
       translation = 0;
    }
 
-   let contentArea;
-   if (isSmallScreen || !process.browser) {
-      // We need the "|| !process.browser" to keep the server side render from messing everything up on the client side render. Please don't ask me why.
-      // If we're on a small screen, we need to put the comments and the content together into an element that can slide from side to side, hiding whatever is overflowing its container
-      contentArea = (
-         <div className="overflowWrapper">
-            <div className="contentAndCommentContainer">
-               <div
-                  className={`contentWrapper${
-                     translation === 0 && showingComments
-                        ? ' doesNotGiveSize'
-                        : ' givesSize'
-                  }`}
-                  style={{
-                     transform: `translateX(calc(${translation}px - ${
-                        showingComments ? '100' : '0'
-                     }% - ${showingComments ? '4' : '0'}rem))`
-                     // We need the 4rem to deal with the margin on contentWrapper
-                  }}
-               >
-                  {contentElement}
-               </div>
-               <div
-                  className={`commentsWrapper${
-                     translation === 0 && !showingComments
-                        ? ' doesNotGiveSize'
-                        : ' givesSize'
-                  }`}
-                  style={{
-                     transform: `translateX(calc(${translation}px - ${
-                        showingComments ? '100' : '0'
-                     }% - ${showingComments ? '4' : '0'}rem))`
-                     // We need the 4rem to deal with the margin on contentWrapper
-                  }}
-               >
-                  {commentsElement}
-               </div>
-            </div>
-         </div>
-      );
-   } else {
-      contentArea = contentElement;
+   let finalTranslation = '0';
+   if (
+      process.browser &&
+      window.innerWidth < midScreenBPWidthRaw &&
+      contentWrapperRef != null &&
+      contentWrapperRef.current != null
+   ) {
+      const oneRem = getOneRem();
+
+      const container = contentWrapperRef.current.parentNode;
+      const containerRect = container.getBoundingClientRect();
+      const containerWidth = containerRect.width;
+      const calculatedTranslation = showingComments
+         ? translation - containerWidth / 2 - oneRem + 1
+         : translation;
+      finalTranslation = `${calculatedTranslation}px`;
    }
+
+   const buttons = (
+      <div className="buttons buttonsContainer contentButtons">
+         <div className="commentButton">
+            <CommentsButton
+               count={comments.length < 100 ? comments.length : '+'}
+               onClick={() => {
+                  setHasShownComments(true);
+                  if (
+                     comments.length > 0 &&
+                     process.browser &&
+                     window.innerWidth > midScreenBPWidthRaw &&
+                     !hasShownComments
+                  ) {
+                     // If we're on a big screen and this piece has comments, they're already going to be showing the first time we click this button, but showingComments will be false. So we're just going to setHasShownComments to true, which will make false the condition that shows them by default. showingComments will already be false, so we don't need to change it.
+                     return;
+                  }
+                  setShowingComments(!showingComments);
+                  window.setTimeout(() => stickifier(stickifierData), 1);
+               }}
+            />
+         </div>
+         {canEdit && (
+            <EditThis
+               className="edit buttons"
+               onMouseDown={e => e.stopPropagation()}
+               onClick={() => {
+                  if (!editable) {
+                     setEditable(true);
+                     return;
+                  }
+                  if (rawContentString !== editedContent) {
+                     if (!confirm('Discard changes?')) {
+                        return;
+                     }
+                  }
+                  setEditable(!editable);
+               }}
+            />
+         )}
+         {editable && !isCopied && (
+            <TrashIcon
+               className="delete buttons"
+               onMouseDown={e => e.stopPropagation()}
+               onClick={() => deleteContentPiece(id)}
+            />
+         )}
+         {editable && isCopied && (
+            <X
+               className="delete buttons unlink"
+               onMouseDown={e => e.stopPropagation()}
+               onClick={() => {
+                  if (
+                     confirm(
+                        'This content piece was copied from a different thing, so this action will only unlink it from this thing, not delete it. It will still exist in its original location, as well as any other places it might have been copied to.'
+                     )
+                  ) {
+                     const unlinkParameterObject = {
+                        variables: {
+                           contentPieceID: id,
+                           thingID
+                        }
+                     };
+                     if (fullThingData.__typename === 'Thing') {
+                        const oldCopiedContent = fullThingData.copiedInContent;
+                        const newCopiedContent = oldCopiedContent.filter(
+                           piece => piece.id !== id
+                        );
+                        const newThingData = {
+                           ...fullThingData,
+                           copiedInContent: newCopiedContent
+                        };
+                        unlinkParameterObject.optimisticResponse = {
+                           __typename: 'Mutation',
+                           unlinkContentPiece: newThingData
+                        };
+                     }
+                     unlinkContentPiece(unlinkParameterObject);
+                  }
+               }}
+            />
+         )}
+         {editable && (
+            <div className="addToContainer">
+               <X
+                  color="mainText"
+                  className={`addTo buttons${showingAddToBox ? ' open' : ''}`}
+                  onClick={() => {
+                     setShowingAddToBox(!showingAddToBox);
+                     if (!showingAddToBox) {
+                        window.setTimeout(() => {
+                           const thisAddToInterface = document.querySelector(
+                              `#addToInterface_${id}`
+                           );
+                           const thisInput = thisAddToInterface.querySelector(
+                              'input.searchBox'
+                           );
+                           thisInput.focus();
+                        }, 1);
+                     }
+                  }}
+               />
+               {showingAddToBox && (
+                  <CopyContentInterface
+                     id={id}
+                     thingID={thingID}
+                     setShowingAddToBox={setShowingAddToBox}
+                  />
+               )}
+            </div>
+         )}
+         {editable && (
+            <ReorderIcon
+               className={`reorder buttons${reordering ? ' reordering' : ''}`}
+               onClick={e => {
+                  e.preventDefault();
+                  if (
+                     reordering ||
+                     confirm(
+                        'Are you sure you want to reorder the content? Any unsaved changes will be lost.'
+                     )
+                  ) {
+                     setReordering(!reordering);
+                  }
+               }}
+            />
+         )}
+         {copied ? (
+            'copied'
+         ) : (
+            <LinkIcon
+               className="directLink buttons"
+               onClick={async () => {
+                  await navigator.clipboard
+                     .writeText(`${home}/thing?id=${thingID}&piece=${id}`)
+                     .catch(err => {
+                        alert(err.message);
+                     });
+                  setCopied(true);
+                  setTimeout(() => setCopied(false), 3000);
+               }}
+            />
+         )}
+      </div>
+   );
 
    let otherLocations = false;
    let copiedFrom;
@@ -308,6 +411,95 @@ const ContentPiece = ({
       otherLocations = null;
    }
 
+   const contentArea = (
+      <div className="overflowWrapper">
+         <div className="contentAndCommentContainer">
+            <div
+               className={`contentWrapper${
+                  translation === 0 && showingComments
+                     ? ' doesNotGiveSize'
+                     : ' givesSize'
+               }`}
+               style={{
+                  transform: `translateX(${finalTranslation})`
+               }}
+               ref={contentWrapperRef}
+            >
+               <div className="theActualContent">{contentElement}</div>
+               {buttons}
+               <VoteBar
+                  id={id}
+                  votes={votes}
+                  key={`votebar-${id}`}
+                  type="ContentPiece"
+                  mini={(votes && votes.length === 0) || votes == null}
+               />
+               {otherLocations}
+            </div>
+            <div
+               className={`commentsWrapper${
+                  translation === 0 && !showingComments
+                     ? ' doesNotGiveSize'
+                     : ' givesSize'
+               }${
+                  (comments.length > 0 && !hasShownComments) || showingComments
+                     ? ' withComments'
+                     : ' noComments'
+               }`}
+               style={{
+                  transform: `translateX(${finalTranslation})`
+               }}
+            >
+               {commentsElement}
+               {buttons}
+            </div>
+         </div>
+      </div>
+   );
+
+   const handleMouseDown = e => {
+      if (editable || reordering) return;
+      if (e.target.closest('.buttons') != null) return;
+
+      if (e.button === 0 && me != null) {
+         window.setTimeout(
+            () => window.addEventListener('mousedown', doubleClickListener),
+            1
+         );
+
+         window.setTimeout(
+            () => window.removeEventListener('mousedown', doubleClickListener),
+            500
+         );
+      }
+
+      if (!canEdit) return;
+
+      if (e.button === 0 && (e.ctrlKey || e.metaKey)) {
+         window.setTimeout(() => setEditable(true), 100); // If we set this to anything less than 100, it seems to trigger the opposite function in RichTextArea too
+         return;
+      }
+
+      if (e.button === 1 || e.button === 2) {
+         window.setTimeout(
+            () =>
+               window.addEventListener(
+                  'mousedown',
+                  secondMiddleOrRightClickListener
+               ),
+            1
+         );
+         window.setTimeout(
+            () =>
+               window.removeEventListener(
+                  'mousedown',
+                  secondMiddleOrRightClickListener
+               ),
+            500
+         );
+      }
+   };
+
    const secondMiddleOrRightClickListener = e => {
       if (e.button === 1 || e.button === 2) {
          setEditable(true);
@@ -363,11 +555,6 @@ const ContentPiece = ({
       }
    };
 
-   if (!process.browser) {
-      // Server side rendering is great for SEO and allowing social media to get open graph info for its previews, but damn does it fuck up some of my more complicated rendering. So fuck it, the server will just render the raw content string as text until someone can show me a better way to do it.
-      return <div className="contentBlock">{rawContentString}</div>;
-   }
-
    return (
       <div
          className={highlighted ? 'contentBlock highlighted' : 'contentBlock'}
@@ -380,9 +567,11 @@ const ContentPiece = ({
          onTouchEnd={e => {
             if (touchEnd - touchStart < -100) {
                setShowingComments(true);
+               setHasShownComments(true);
             }
             if (touchEnd - touchStart > 100) {
                setShowingComments(false);
+               setHasShownComments(true);
             }
             setTouchStart(0);
             setTouchEnd(0);
@@ -392,223 +581,11 @@ const ContentPiece = ({
             <div
                className={canEdit ? 'contentPiece editable' : 'contentPiece'}
                key={id}
-               onMouseDown={e => {
-                  if (editable || reordering) return;
-
-                  if (e.button === 0 && me != null) {
-                     window.setTimeout(
-                        () =>
-                           window.addEventListener(
-                              'mousedown',
-                              doubleClickListener
-                           ),
-                        1
-                     );
-
-                     window.setTimeout(
-                        () =>
-                           window.removeEventListener(
-                              'mousedown',
-                              doubleClickListener
-                           ),
-                        500
-                     );
-                  }
-
-                  if (!canEdit) return;
-
-                  if (e.button === 0 && (e.ctrlKey || e.metaKey)) {
-                     window.setTimeout(() => setEditable(true), 100); // If we set this to anything less than 100, it seems to trigger the opposite function in RichTextArea too
-                     return;
-                  }
-
-                  if (e.button === 1 || e.button === 2) {
-                     window.setTimeout(
-                        () =>
-                           window.addEventListener(
-                              'mousedown',
-                              secondMiddleOrRightClickListener
-                           ),
-                        1
-                     );
-                     window.setTimeout(
-                        () =>
-                           window.removeEventListener(
-                              'mousedown',
-                              secondMiddleOrRightClickListener
-                           ),
-                        500
-                     );
-                  }
-
-                  // Old code from when we were doing it with single left clicks in certain cases
-                  // // If it's a right click, we don't want to switch to editing
-                  // if (e.button !== 0) return;
-
-                  // // If they clicked a link, we don't want to switch to editing
-                  // if (e.target.closest('a') != null) return;
-                  // // same for a thingCard
-                  // if (e.target.closest('.thingCard') != null) return;
-                  // // or any of the buttons
-                  // if (e.target.closest('.buttons') != null) return;
-                  // // or the expand/collapse arrow
-                  // if (e.target.closest('.arrow') != null) return;
-
-                  // const selection = window.getSelection();
-                  // if (selection.type === 'Caret' && !editable) {
-                  //    setEditable(true);
-                  // }
-               }}
+               onMouseDown={handleMouseDown}
             >
                {contentArea}
             </div>
-            <div className="buttons buttonsContainer">
-               <div className="commentButton">
-                  <CommentsButton
-                     count={comments.length < 100 ? comments.length : '+'}
-                     onClick={() => {
-                        setShowingComments(!showingComments);
-                        window.setTimeout(() => stickifier(stickifierData), 1);
-                     }}
-                  />
-               </div>
-               {canEdit && (
-                  <EditThis
-                     className="edit buttons"
-                     onMouseDown={e => e.stopPropagation()}
-                     onClick={() => {
-                        if (!editable) {
-                           setEditable(true);
-                           return;
-                        }
-                        if (rawContentString !== editedContent) {
-                           if (!confirm('Discard changes?')) {
-                              return;
-                           }
-                        }
-                        setEditable(!editable);
-                     }}
-                  />
-               )}
-               {editable && !isCopied && (
-                  <TrashIcon
-                     className="delete buttons"
-                     onMouseDown={e => e.stopPropagation()}
-                     onClick={() => deleteContentPiece(id)}
-                  />
-               )}
-               {editable && isCopied && (
-                  <X
-                     className="delete buttons unlink"
-                     onMouseDown={e => e.stopPropagation()}
-                     onClick={() => {
-                        if (
-                           confirm(
-                              'This content piece was copied from a different thing, so this action will only unlink it from this thing, not delete it. It will still exist in its original location, as well as any other places it might have been copied to.'
-                           )
-                        ) {
-                           const unlinkParameterObject = {
-                              variables: {
-                                 contentPieceID: id,
-                                 thingID
-                              }
-                           };
-                           if (fullThingData.__typename === 'Thing') {
-                              const oldCopiedContent =
-                                 fullThingData.copiedInContent;
-                              const newCopiedContent = oldCopiedContent.filter(
-                                 piece => piece.id !== id
-                              );
-                              const newThingData = {
-                                 ...fullThingData,
-                                 copiedInContent: newCopiedContent
-                              };
-                              unlinkParameterObject.optimisticResponse = {
-                                 __typename: 'Mutation',
-                                 unlinkContentPiece: newThingData
-                              };
-                           }
-                           unlinkContentPiece(unlinkParameterObject);
-                        }
-                     }}
-                  />
-               )}
-               {editable && (
-                  <div className="addToContainer">
-                     <X
-                        color="mainText"
-                        className={`addTo buttons${
-                           showingAddToBox ? ' open' : ''
-                        }`}
-                        onClick={() => {
-                           setShowingAddToBox(!showingAddToBox);
-                           if (!showingAddToBox) {
-                              window.setTimeout(() => {
-                                 const thisAddToInterface = document.querySelector(
-                                    `#addToInterface_${id}`
-                                 );
-                                 const thisInput = thisAddToInterface.querySelector(
-                                    'input.searchBox'
-                                 );
-                                 thisInput.focus();
-                              }, 1);
-                           }
-                        }}
-                     />
-                     {showingAddToBox && (
-                        <CopyContentInterface
-                           id={id}
-                           thingID={thingID}
-                           setShowingAddToBox={setShowingAddToBox}
-                        />
-                     )}
-                  </div>
-               )}
-               {editable && (
-                  <ReorderIcon
-                     className={`reorder buttons${
-                        reordering ? ' reordering' : ''
-                     }`}
-                     onClick={e => {
-                        e.preventDefault();
-                        if (
-                           reordering ||
-                           confirm(
-                              'Are you sure you want to reorder the content? Any unsaved changes will be lost.'
-                           )
-                        ) {
-                           setReordering(!reordering);
-                        }
-                     }}
-                  />
-               )}
-               {copied ? (
-                  'copied'
-               ) : (
-                  <LinkIcon
-                     className="directLink buttons"
-                     onClick={async () => {
-                        await navigator.clipboard
-                           .writeText(`${home}/thing?id=${thingID}&piece=${id}`)
-                           .catch(err => {
-                              alert(err.message);
-                           });
-                        setCopied(true);
-                        setTimeout(() => setCopied(false), 3000);
-                     }}
-                  />
-               )}
-            </div>
-            <VoteBar
-               id={id}
-               votes={votes}
-               key={`votebar-${id}`}
-               type="ContentPiece"
-               mini={(votes && votes.length === 0) || votes == null}
-            />
-            {otherLocations}
          </div>
-         {showingComments && !isSmallScreen && commentsElement}
       </div>
    );
 };
