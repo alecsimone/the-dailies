@@ -12,7 +12,12 @@ import ModalProvider from './ModalProvider';
 import Modal from './Modal';
 import NavSidebar from './NavSidebar';
 import MyThings from './Archives/MyThings';
-import { setAlpha, setLightness, setSaturation } from '../styles/functions';
+import {
+   setAlpha,
+   setLightness,
+   setSaturation,
+   midScreenBreakpointPx
+} from '../styles/functions';
 
 const theme = {
    tinyText: '1.25rem',
@@ -43,9 +48,9 @@ const theme = {
    desktopBPWidthRaw: 1100,
    desktopBreakpoint: '@media screen and (min-width: 1100px)',
 
-   midScreenBPWidth: '1440px',
-   midScreenBPWidthRaw: 1440,
-   midScreenBreakpoint: '@media screen and (min-width: 1440px)',
+   midScreenBPWidth: `${midScreenBreakpointPx}px`,
+   midScreenBPWidthRaw: midScreenBreakpointPx,
+   midScreenBreakpoint: `@media screen and (min-width: ${midScreenBreakpointPx}px)`,
 
    bigScreenBPWidth: '1800px',
    bigScreenBPWidthRaw: 1800,

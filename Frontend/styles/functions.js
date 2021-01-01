@@ -80,3 +80,6 @@ export { dynamicallyResizeElement };
 const getOneRem = () =>
    parseFloat(getComputedStyle(document.documentElement).fontSize);
 export { getOneRem };
+
+const midScreenBreakpointPx = 1440;
+export { midScreenBreakpointPx };

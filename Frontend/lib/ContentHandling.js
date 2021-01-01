@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 import { commentFields, fullThingFields } from './CardInterfaces';
-import { getOneRem } from '../styles/functions';
+import { getOneRem, midScreenBreakpointPx } from '../styles/functions';
 
 const ADD_CONTENTPIECE_MUTATION = gql`
    mutation ADD_CONTENTPIECE_MUTATION(
@@ -342,13 +342,10 @@ const stickifier = stickingData => {
 
       // Then we'll deal with the comments
       let comments = block.block.querySelector('.commentsArea');
+      if (window.innerWidth < midScreenBreakpointPx) {
+         comments = false;
+      }
       if (comments != null) {
-         const mobileOnlyWrapper = comments.closest(
-            '.contentAndCommentContainer'
-         );
-         if (mobileOnlyWrapper != null) {
-            comments = false; // If we're on mobile, we don't need the comments to be sticky
-         }
          const contentArea = block.block.querySelector('.contentArea');
          if (comments.offsetHeight >= contentArea.offsetHeight) {
             // If the comments aren't smaller than the parent, we don't want to make them sticky
@@ -357,18 +354,42 @@ const stickifier = stickingData => {
       }
 
       if (comments) {
-         // if the top of the block is above the top of the viewport, and the bottom of the block is below the top of the viewport by MORE than the height of the comments box, fix the comments to the top of the screen
          const commentsRect = comments.getBoundingClientRect();
          if (
             block.blockTop < viewableTop &&
             block.bottom > viewableTop + commentsRect.height
          ) {
+            // if the top of the block is above the top of the viewport, and the bottom of the block is below the top of the viewport by MORE than the height of the comments box, fix the comments to the top of the screen
             comments.style.position = 'fixed';
-            comments.style.left = `${commentsRect.left}px`;
-            comments.style.width = `${commentsRect.width}px`;
-            comments.style.top = `calc(${headerHeight}px + 1rem)`;
+
+            // Unfortunately for us, the comments have an ancestor with a transform applied to it, which means it has its own internal coordinate system and position: 'fixed' doesn't work the way it normally does. So we're going to have to figure out where the top of the screen is relative to the transformed element.
+
+            // First, let's figure out which element is transformed
+            let ancestor = comments.parentNode;
+            while (ancestor.style.transform === '') {
+               ancestor = ancestor.parentNode;
+            }
+
+            // Then, let's figure out the conversion between that element's coordinate system and the viewport coordinate system
+            const ancestorRect = ancestor.getBoundingClientRect();
+
+            // Then we'll figure out what 1rem is equal to in pixels
+            const oneRem = getOneRem();
+
+            const commentsLeftPos = commentsRect.left - ancestorRect.left; // Since the commentsRect is relative to the viewport but we're positioning relative to the ancestor, we need to subtract the ancestor's distance from the left of the viewport
+
+            let commentsTopPos = ancestorRect.top * -1 + headerHeight + oneRem;
+            if (
+               commentsTopPos + commentsRect.height + oneRem >
+               ancestorRect.height
+            ) {
+               commentsTopPos =
+                  ancestorRect.height - commentsRect.height - oneRem;
+            }
+
+            // comments.style.width = `${commentsRect.width}px`;
+            comments.style.top = `${commentsTopPos}px`;
             comments.style.bottom = `initial`;
-            comments.style.right = `initial`;
          } else if (
             block.bottom > viewableTop &&
             block.bottom < viewableTop + commentsRect.height &&
@@ -376,14 +397,10 @@ const stickifier = stickingData => {
          ) {
             // If the bottom of the block is below the top of the viewport by LESS than the height of the comments box, and the bottom of the block is above the bottom of the viewport, absolutely position the comments at the bottom of the block
             comments.style.position = 'absolute';
-            comments.style.left = 'initial';
-            comments.style.right = '1rem';
             comments.style.bottom = '1rem';
             comments.style.top = 'initial';
          } else {
             comments.style.position = 'relative';
-            comments.style.left = 'initial';
-            comments.style.right = 'initial';
             comments.style.bottom = 'initial';
             comments.style.top = 'initial';
          }
