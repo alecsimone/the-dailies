@@ -202,26 +202,29 @@ const VoteBar = ({ votes = [], id, type, mini }) => {
       return [newVotes, newScore];
    };
 
-   const voteHandler = async () => {
-      const [newVotes, newScore] = voteRecalculator();
-      setVoters(newVotes);
-      setComputedScore(newScore);
-      setMeVoted(!meVoted);
-      await vote({
-         variables: {
-            id,
-            type
-         }
-      }).catch(err => alert(err.message));
-   };
-
    const voteDebouncer = async () => {
       if (!isDebouncing) {
-         voteHandler();
+         // If we're not debouncing, we're going to vote and update the state
+         const [newVotes, newScore] = voteRecalculator();
+         setVoters(newVotes);
+         setComputedScore(newScore);
+         setMeVoted(!meVoted);
+         await vote({
+            variables: {
+               id,
+               type
+            }
+         }).catch(err => alert(err.message));
+
+         // And start debouncing
          setIsDebouncing(true);
+
+         // And then set a timeout to run a function at the end of the debounce period
          window.setTimeout(async () => {
+            // If we voted an even number of times during the debounce period, they cancel out and we don't need to tell the server about them.
             const voteOddness = voteCountRef.current % 2;
             if (voteOddness === 1) {
+               // If we voted an odd number, we send one vote to the server. Note that we don't want to update the state because we already did that when we received a vote during the debounce period
                await vote({
                   variables: {
                      id,
@@ -229,10 +232,13 @@ const VoteBar = ({ votes = [], id, type, mini }) => {
                   }
                }).catch(err => alert(err.message));
             }
+
+            // Then we stop debouncing and reset our vote counter
             setIsDebouncing(false);
             voteCountRef.current = 0;
          }, 5000);
       } else {
+         // If we are debouncing, we're just going to track how many times we voted and change state without sending any votes to the server
          voteCountRef.current += 1;
          const [newVotes, newScore] = voteRecalculator();
          setVoters(newVotes);
