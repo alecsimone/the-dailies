@@ -153,7 +153,9 @@ const TwitterReader = ({ list }) => {
       fetchPolicy: 'network-only'
    });
 
-   const [markTweetsSeen] = useMutation(MARK_TWEETS_SEEN);
+   const [markTweetsSeen] = useMutation(MARK_TWEETS_SEEN, {
+      onError: err => alert(err.message)
+   });
 
    const updateLists = () => {
       const el = document.querySelector('svg.refreshLists');

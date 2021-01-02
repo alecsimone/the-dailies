@@ -40,6 +40,9 @@ async function updateStuffAndNotifySubs(data, id, type, ctx) {
       },
       `{${fields}}`
    ).catch(err => {
+      if (err.message.includes('No Node for the model Vote with value')) {
+         throw new Error("You're doing that too much");
+      }
       console.log(err);
    });
    if (type === 'ContentPiece') {
@@ -112,7 +115,7 @@ async function editPermissionGate(dataObj, id, type, ctx) {
             id
          }
       },
-      `{author {id}}`
+      `{author {id} updatedAt}`
    ).catch(err => {
       console.log(err);
    });
@@ -185,7 +188,7 @@ async function properUpdateStuff(dataObj, id, type, ctx) {
       type,
       ctx
    ).catch(err => {
-      console.log(err);
+      throw new Error(err.message);
    });
    publishMeUpdate(ctx);
    return updatedStuff;

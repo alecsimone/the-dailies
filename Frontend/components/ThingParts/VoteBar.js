@@ -2,7 +2,7 @@ import gql from 'graphql-tag';
 import { useMutation } from '@apollo/react-hooks';
 import styled from 'styled-components';
 import Link from 'next/link';
-import { useContext } from 'react';
+import { useContext, useState, useRef } from 'react';
 import { setAlpha } from '../../styles/functions';
 import { ThingContext } from '../../pages/thing';
 import { MemberContext } from '../Account/MemberProvider';
@@ -139,19 +139,20 @@ const VoteBar = ({ votes = [], id, type, mini }) => {
    const { me } = useContext(MemberContext);
    const [vote] = useMutation(VOTE_MUTATION, {
       refetchQueries: [{ query: ALL_THINGS_QUERY }],
-      onError: err => alert(err)
+      onError: err => alert(err.message)
    });
+   const [voters, setVoters] = useState(votes);
 
-   let meVoted = false;
-   const voters = [];
-   let computedScore = 0;
-   if (votes.length > 0) {
-      votes.forEach(
+   let meVotedCheck = false;
+   const voterBubbles = [];
+   let computedScoreCheck = 0;
+   if (voters.length > 0) {
+      voters.forEach(
          ({ voter: { id: voterID, displayName, avatar }, value }) => {
             if (me && voterID === me.id) {
-               meVoted = true;
+               meVotedCheck = true;
             }
-            voters.push(
+            voterBubbles.push(
                <div
                   className="voterBubble"
                   title={`${displayName}: ${value}`}
@@ -168,10 +169,77 @@ const VoteBar = ({ votes = [], id, type, mini }) => {
                   </Link>
                </div>
             );
-            computedScore += value;
+            computedScoreCheck += value;
          }
       );
    }
+
+   const [meVoted, setMeVoted] = useState(meVotedCheck);
+   const [computedScore, setComputedScore] = useState(computedScoreCheck);
+
+   // We're going to roll our own little debounce setup to prevent people from hammering the server with votes
+   const [isDebouncing, setIsDebouncing] = useState(false);
+   const voteCountRef = useRef(0);
+
+   const voteRecalculator = () => {
+      let newVotes;
+      let newScore;
+      if (meVoted) {
+         newVotes = voters.filter(vote => vote.voter.id !== me.id);
+         newScore = computedScore - me.rep;
+      } else {
+         newVotes = [
+            ...voters,
+            {
+               __typename: 'Vote',
+               id: 'newVote',
+               value: me.rep,
+               voter: me
+            }
+         ];
+         newScore = computedScore + me.rep;
+      }
+      return [newVotes, newScore];
+   };
+
+   const voteHandler = async () => {
+      const [newVotes, newScore] = voteRecalculator();
+      setVoters(newVotes);
+      setComputedScore(newScore);
+      setMeVoted(!meVoted);
+      await vote({
+         variables: {
+            id,
+            type
+         }
+      }).catch(err => alert(err.message));
+   };
+
+   const voteDebouncer = async () => {
+      if (!isDebouncing) {
+         voteHandler();
+         setIsDebouncing(true);
+         window.setTimeout(async () => {
+            const voteOddness = voteCountRef.current % 2;
+            if (voteOddness === 1) {
+               await vote({
+                  variables: {
+                     id,
+                     type
+                  }
+               }).catch(err => alert(err.message));
+            }
+            setIsDebouncing(false);
+            voteCountRef.current = 0;
+         }, 5000);
+      } else {
+         voteCountRef.current += 1;
+         const [newVotes, newScore] = voteRecalculator();
+         setVoters(newVotes);
+         setComputedScore(newScore);
+         setMeVoted(!meVoted);
+      }
+   };
 
    return (
       <StyledVoteBar className={mini ? 'votebar mini' : 'votebar'}>
@@ -183,45 +251,14 @@ const VoteBar = ({ votes = [], id, type, mini }) => {
                className={meVoted ? 'voteButton full' : 'voteButton empty'}
                onClick={() => {
                   if (me == null) {
-                     alert('you must be logged in to do that');
+                     alert('You must be logged in to do that!');
                      return;
                   }
-                  let newVotes;
-                  let newScore;
-                  if (meVoted) {
-                     newVotes = votes.filter(vote => vote.voter.id !== me.id);
-                     newScore = computedScore - me.rep;
-                  } else {
-                     newVotes = [
-                        ...votes,
-                        {
-                           __typename: 'Vote',
-                           id: 'newVote',
-                           value: me.rep,
-                           voter: me
-                        }
-                     ];
-                     newScore = computedScore + me.rep;
-                  }
-                  vote({
-                     variables: {
-                        id,
-                        type
-                     },
-                     optimisticResponse: {
-                        __typename: 'Mutation',
-                        vote: {
-                           __typename: type,
-                           id,
-                           votes: newVotes,
-                           score: newScore
-                        }
-                     }
-                  }).catch(err => alert(err));
+                  voteDebouncer();
                }}
             />
          </div>
-         <div className="middle">{voters}</div>
+         <div className="middle">{voterBubbles}</div>
          <div className="right">+{computedScore}</div>
       </StyledVoteBar>
    );

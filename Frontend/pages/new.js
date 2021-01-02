@@ -26,7 +26,8 @@ const NewThing = () => {
             pathname: '/thing',
             query: { id: data.newBlankThing.id }
          });
-      }
+      },
+      onError: err => alert(err.message)
    });
 
    useEffect(() => {

@@ -49,7 +49,8 @@ const TaxMeta = ({ context, canEdit }) => {
          id,
          personal: type === 'Stack'
       },
-      onCompleted: () => Router.push({ pathname: '/' })
+      onCompleted: () => Router.push({ pathname: '/' }),
+      onError: err => alert(err.message)
    });
 
    return (

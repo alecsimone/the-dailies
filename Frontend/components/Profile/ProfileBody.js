@@ -41,7 +41,9 @@ const ProfileBody = ({ member, me, isMe, canEdit, confirmFriendRequest }) => {
    const [editable, setEditable] = useState([]);
    const [editedValues, setEditedValues] = useState(member);
 
-   const [editProfile] = useMutation(EDIT_PROFILE_MUTATION);
+   const [editProfile] = useMutation(EDIT_PROFILE_MUTATION, {
+      onError: err => alert(err.message)
+   });
 
    const makeEditable = fieldName =>
       setEditable(oldEditable => [...oldEditable, fieldName]);

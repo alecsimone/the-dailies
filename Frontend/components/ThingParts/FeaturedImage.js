@@ -147,7 +147,8 @@ const FeaturedImage = ({ canEdit, context, titleLimit, titleLink }) => {
       SET_FEATURED_IMAGE_MUTATION,
       {
          onCompleted: data =>
-            checkForNewThingRedirect(id, 'setFeaturedImage', data)
+            checkForNewThingRedirect(id, 'setFeaturedImage', data),
+         onError: err => alert(err.message)
       }
    );
 

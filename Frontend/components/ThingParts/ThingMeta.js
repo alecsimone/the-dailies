@@ -374,7 +374,8 @@ const ThingMeta = ({ canEdit }) => {
          refetchQueries: [
             { query: ALL_THINGS_QUERY },
             { query: PUBLIC_THINGS_QUERY }
-         ]
+         ],
+         onError: err => alert(err.message)
       }
    );
 
@@ -411,11 +412,15 @@ const ThingMeta = ({ canEdit }) => {
                autoClose: 3000
             });
          }
-      }
+      },
+      onError: err => alert(err.message)
    });
 
    const [removeViewerFromThing] = useMutation(
-      REMOVE_VIEWER_FROM_THING_MUTATION
+      REMOVE_VIEWER_FROM_THING_MUTATION,
+      {
+         onError: err => alert(err.message)
+      }
    );
 
    const closeResults = () => {

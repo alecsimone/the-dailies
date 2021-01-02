@@ -96,8 +96,12 @@ const Tweet = props => {
    const [liked, setLiked] = useState(
       favorited || (retweetedTweet != null && retweetedTweet.favorited)
    );
-   const [likeTweet] = useMutation(LIKE_TWEET);
-   const [saveTweet] = useMutation(SAVE_TWEET);
+   const [likeTweet] = useMutation(LIKE_TWEET, {
+      onError: err => alert(err.message)
+   });
+   const [saveTweet] = useMutation(SAVE_TWEET, {
+      onError: err => alert(err.message)
+   });
 
    useEffect(() => {
       if (process.browser) {
@@ -287,7 +291,6 @@ const Tweet = props => {
 
    const doubleClickListener = e => {
       if (e.button === 0) {
-         e.preventDefault();
          likeTweetHandler();
       }
    };

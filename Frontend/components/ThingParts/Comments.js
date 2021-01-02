@@ -153,7 +153,9 @@ const Comments = ({ context, linkedComment }) => {
       commentElements = <div className="noComments">No Comments Yet</div>;
    }
 
-   const [addComment] = useMutation(ADD_COMMENT_MUTATION);
+   const [addComment] = useMutation(ADD_COMMENT_MUTATION, {
+      onError: err => alert(err.message)
+   });
 
    const sendNewComment = async () => {
       const now = new Date();

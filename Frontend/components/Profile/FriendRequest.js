@@ -61,9 +61,13 @@ const StyledFriendRequest = styled.div`
 const FriendRequest = ({ requester }) => {
    const { me } = useContext(MemberContext);
 
-   const [ignoreFriendRequest] = useMutation(IGNORE_FRIEND_REQUEST_MUTATION);
+   const [ignoreFriendRequest] = useMutation(IGNORE_FRIEND_REQUEST_MUTATION, {
+      onError: err => alert(err.message)
+   });
 
-   const [confirmFriendRequest] = useMutation(CONFIRM_FRIEND_REQUEST_MUTATION);
+   const [confirmFriendRequest] = useMutation(CONFIRM_FRIEND_REQUEST_MUTATION, {
+      onError: err => alert(err.message)
+   });
 
    let alreadyFriends = false;
    if (me.friends.some(friend => friend.id === requester.id)) {

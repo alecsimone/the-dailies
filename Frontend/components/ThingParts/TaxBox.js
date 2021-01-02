@@ -228,7 +228,10 @@ const TaxBox = ({ canEdit, personal }) => {
    }
 
    const [addTaxToThing, { loading: addTaxLoading }] = useMutation(
-      ADD_TAX_MUTATION
+      ADD_TAX_MUTATION,
+      {
+         onError: err => alert(err.message)
+      }
    );
 
    const handleKeyDown = async e => {

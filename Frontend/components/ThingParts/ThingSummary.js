@@ -122,7 +122,9 @@ const ThingSummary = ({ summary: inheritedSummary, thingID, canEdit }) => {
       inheritedSummary == null ? '' : inheritedSummary
    );
 
-   const [editSummary] = useMutation(EDIT_SUMMARY_MUTATION);
+   const [editSummary] = useMutation(EDIT_SUMMARY_MUTATION, {
+      onError: err => alert(err.message)
+   });
 
    if ((inheritedSummary == null || inheritedSummary === '') && !canEdit)
       return;

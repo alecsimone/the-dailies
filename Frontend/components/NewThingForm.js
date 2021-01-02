@@ -84,7 +84,9 @@ const NewThingForm = () => {
    const [
       createThing,
       { data: createData, loading: createLoading, error: createError }
-   ] = useMutation(CREATE_THING_MUTATION);
+   ] = useMutation(CREATE_THING_MUTATION, {
+      onError: err => alert(err.message)
+   });
 
    const { me, loading: memberLoading } = useContext(MemberContext);
 

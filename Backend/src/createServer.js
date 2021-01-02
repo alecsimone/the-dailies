@@ -44,7 +44,11 @@ function createServer() {
          },
          path: '/subscriptions'
       },
-      context: async req => ({ ...req, db, pubsub })
+      context: async req => ({ ...req, db, pubsub }),
+      formatError: err => {
+         console.log(err);
+         return err;
+      }
    });
 }
 

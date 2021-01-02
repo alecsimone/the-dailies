@@ -89,7 +89,8 @@ const BottomBar = () => {
             }
          });
          setInputPlaceholder(false);
-      }
+      },
+      onError: err => alert(err.message)
    });
 
    return (

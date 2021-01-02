@@ -71,7 +71,7 @@ async function vote(parent, { id, type }, ctx, info) {
 
    const updatedStuff = await properUpdateStuff(dataObj, id, type, ctx).catch(
       err => {
-         console.log(err);
+         throw new Error(err.message);
       }
    );
    return updatedStuff;

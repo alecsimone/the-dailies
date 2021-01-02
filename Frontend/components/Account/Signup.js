@@ -46,7 +46,9 @@ const Signup = ({ callBack }) => {
       }
    };
 
-   const [signup, { data, loading, error }] = useMutation(SIGNUP_MUTATION);
+   const [signup, { data, loading, error }] = useMutation(SIGNUP_MUTATION, {
+      onError: err => alert(err.message)
+   });
 
    return (
       <StyledForm

@@ -33,7 +33,8 @@ const ThingSourceLink = ({ canEdit }) => {
    const [editLink, { loading: editLinkLoading }] = useMutation(
       EDIT_LINK_MUTATION,
       {
-         onCompleted: data => checkForNewThingRedirect(id, 'editLink', data)
+         onCompleted: data => checkForNewThingRedirect(id, 'editLink', data),
+         onError: err => alert(err.message)
       }
    );
 

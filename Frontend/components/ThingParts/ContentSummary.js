@@ -1,4 +1,3 @@
-import { useMutation } from 'react';
 import RichTextArea from '../RichTextArea';
 import RichText from '../RichText';
 

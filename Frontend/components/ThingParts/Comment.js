@@ -221,9 +221,15 @@ const Comment = ({
 }) => {
    const { me } = useContext(MemberContext);
 
-   const [addComment] = useMutation(ADD_COMMENT_MUTATION);
-   const [editComment] = useMutation(EDIT_COMMENT_MUTATION);
-   const [deleteComment] = useMutation(DELETE_COMMENT_MUTATION);
+   const [addComment] = useMutation(ADD_COMMENT_MUTATION, {
+      onError: err => alert(err.message)
+   });
+   const [editComment] = useMutation(EDIT_COMMENT_MUTATION, {
+      onError: err => alert(err.message)
+   });
+   const [deleteComment] = useMutation(DELETE_COMMENT_MUTATION, {
+      onError: err => alert(err.message)
+   });
 
    const [editing, setEditing] = useState(false);
    const [editedComment, setEditedComment] = useState(comment.comment);

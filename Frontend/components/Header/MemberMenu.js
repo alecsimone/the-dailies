@@ -104,8 +104,12 @@ const StyledMemberMenu = styled.div`
 `;
 
 const MemberMenu = () => {
-   const [logout, { data, loading, error }] = useMutation(LOGOUT_MUTATION);
-   const [toggleBroadcastView] = useMutation(TOGGLE_BROADCAST_MUTATION);
+   const [logout, { data, loading, error }] = useMutation(LOGOUT_MUTATION, {
+      onError: err => alert(err.message)
+   });
+   const [toggleBroadcastView] = useMutation(TOGGLE_BROADCAST_MUTATION, {
+      onError: err => alert(err.message)
+   });
 
    const {
       me: { broadcastView, id }

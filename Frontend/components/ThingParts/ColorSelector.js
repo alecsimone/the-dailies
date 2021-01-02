@@ -85,7 +85,9 @@ const ColorSelector = ({ initialColor, type, id }) => {
 
    const { majorColor, lowContrastGrey } = useContext(ThemeContext);
 
-   const [setColor] = useMutation(SET_COLOR_MUTATION);
+   const [setColor] = useMutation(SET_COLOR_MUTATION, {
+      onError: err => alert(err.message)
+   });
 
    const sendColorUpdate = async color => {
       const match = color.match(

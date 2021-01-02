@@ -61,7 +61,8 @@ const NavButtons = ({ showSearch, setShowSearch, search }) => {
       refetchQueries: [
          { query: ALL_THINGS_QUERY },
          { query: PUBLIC_THINGS_QUERY }
-      ]
+      ],
+      onError: err => alert(err.message)
    });
    const { lowContrastGrey } = useContext(ThemeContext);
    return (

@@ -278,7 +278,9 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
       setContentSliderPosition(newIndex);
    };
 
-   const [addComment] = useMutation(ADD_COMMENT_MUTATION);
+   const [addComment] = useMutation(ADD_COMMENT_MUTATION, {
+      onError: err => alert(err.message)
+   });
 
    // And finally a function to send new comments to the server
    const postNewComment = async () => {

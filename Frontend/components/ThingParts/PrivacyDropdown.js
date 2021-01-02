@@ -40,7 +40,9 @@ const PrivacyDropdown = props => {
    const { me } = useContext(MemberContext);
 
    const [setThingPrivacy] = useMutation(SET_THING_PRIVACY_MUTATION, {
-      onCompleted: data => checkForNewThingRedirect(id, 'setThingPrivacy', data)
+      onCompleted: data =>
+         checkForNewThingRedirect(id, 'setThingPrivacy', data),
+      onError: err => alert(err.message)
    });
 
    const selectPrivacy = e => {

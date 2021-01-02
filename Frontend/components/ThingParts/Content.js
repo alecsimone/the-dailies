@@ -39,14 +39,22 @@ const Content = ({ context, canEdit, linkedPiece }) => {
 
    // Then we'll set up our mutation hooks
    const [addContentPiece] = useMutation(ADD_CONTENTPIECE_MUTATION, {
-      onCompleted: data => checkForNewThingRedirect(id, 'addContentPiece', data)
+      onCompleted: data =>
+         checkForNewThingRedirect(id, 'addContentPiece', data),
+      onError: err => alert(err.message)
    });
 
-   const [deleteContentPiece] = useMutation(DELETE_CONTENTPIECE_MUTATION);
+   const [deleteContentPiece] = useMutation(DELETE_CONTENTPIECE_MUTATION, {
+      onError: err => alert(err.message)
+   });
 
-   const [editContentPiece] = useMutation(EDIT_CONTENTPIECE_MUTATION);
+   const [editContentPiece] = useMutation(EDIT_CONTENTPIECE_MUTATION, {
+      onError: err => alert(err.message)
+   });
 
-   const [reorderContent] = useMutation(REORDER_CONTENT_MUTATION);
+   const [reorderContent] = useMutation(REORDER_CONTENT_MUTATION, {
+      onError: err => alert(err.message)
+   });
    const [reordering, setReordering] = useState(false);
 
    // We need to make an object whose properties are the ids of all the content pieces on this thing, each of which starts out false

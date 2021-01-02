@@ -25,7 +25,9 @@ const Login = props => {
    const [email, setEmail] = useState('');
    const [password, setPassword] = useState('');
 
-   const [login, { data, loading, error }] = useMutation(LOGIN_MUTATION);
+   const [login, { data, loading, error }] = useMutation(LOGIN_MUTATION, {
+      onError: err => alert(err.message)
+   });
 
    const { setContent } = useContext(ModalContext);
 

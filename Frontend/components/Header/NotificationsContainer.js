@@ -34,7 +34,9 @@ const StyledNotificationsContainer = styled.div`
 `;
 
 const NotificationsContainer = ({ notifications }) => {
-   const [readNotifications] = useMutation(READ_NOTIFICATIONS_MUTATION);
+   const [readNotifications] = useMutation(READ_NOTIFICATIONS_MUTATION, {
+      onError: err => alert(err.message)
+   });
 
    const { me } = useContext(MemberContext);
 

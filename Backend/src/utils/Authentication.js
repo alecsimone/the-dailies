@@ -1,3 +1,5 @@
+const { AuthenticationError } = require('apollo-server-express');
+
 const loggedInGate = async context => {
    if (!context.req.memberId) {
       // return false;
@@ -23,14 +25,14 @@ exports.loggedInGate = loggedInGate;
 
 const modGate = member => {
    if (!['Admin', 'Editor', 'Moderator'].includes(member.role)) {
-      throw new Error("You don't have permission to do that");
+      throw new AuthenticationError("You don't have permission to do that");
    }
 };
 exports.modGate = modGate;
 
 const fullMemberGate = member => {
    if (!['Admin', 'Editor', 'Moderator', 'Member'].includes(member.role)) {
-      throw new Error('Only full members can do that');
+      throw new AuthenticationError('Only full members can do that');
    }
 };
 exports.fullMemberGate = fullMemberGate;

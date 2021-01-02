@@ -22,7 +22,9 @@ const AddFriendButton = ({
    me,
    friendRequests
 }) => {
-   const [sendFriendRequest] = useMutation(SEND_FRIEND_REQUEST_MUTATION);
+   const [sendFriendRequest] = useMutation(SEND_FRIEND_REQUEST_MUTATION, {
+      onError: err => alert(err.message)
+   });
 
    let wereFriends = false;
    let outgoingFriendRequest = false;

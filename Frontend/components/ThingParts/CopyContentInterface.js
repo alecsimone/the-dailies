@@ -125,7 +125,9 @@ const CopyContentInterface = ({ id, thingID, setShowingAddToBox }) => {
       }
    });
 
-   const [copyContentPiece] = useMutation(COPY_CONTENTPIECE_MUTATION);
+   const [copyContentPiece] = useMutation(COPY_CONTENTPIECE_MUTATION, {
+      onError: err => alert(err.message)
+   });
 
    const closeResults = () => {
       setSearchTerm('');

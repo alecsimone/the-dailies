@@ -159,11 +159,14 @@ const NavSidebar = () => {
       refetchQueries: [
          { query: ALL_THINGS_QUERY },
          { query: PUBLIC_THINGS_QUERY }
-      ]
+      ],
+      onError: err => alert(err.message)
    });
    const { navSidebarIsOpen, setNavSidebarIsOpen } = useContext(ModalContext);
 
-   const [logout] = useMutation(LOGOUT_MUTATION);
+   const [logout] = useMutation(LOGOUT_MUTATION, {
+      onError: err => alert(err.message)
+   });
    return (
       <StyledNavSidebar
          className={

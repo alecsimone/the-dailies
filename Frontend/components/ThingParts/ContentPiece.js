@@ -70,16 +70,21 @@ const ContentPiece = ({
       setEditable(false);
    };
 
-   const [addComment] = useMutation(ADD_COMMENT_MUTATION);
+   const [addComment] = useMutation(ADD_COMMENT_MUTATION, {
+      onError: err => alert(err.message)
+   });
 
-   const [unlinkContentPiece] = useMutation(UNLINK_CONTENTPIECE_MUTATION);
+   const [unlinkContentPiece] = useMutation(UNLINK_CONTENTPIECE_MUTATION, {
+      onError: err => alert(err.message)
+   });
 
    const [vote] = useMutation(VOTE_MUTATION, {
       variables: {
          id,
          type: 'ContentPiece'
       },
-      refetchQueries: [{ query: ALL_THINGS_QUERY }]
+      refetchQueries: [{ query: ALL_THINGS_QUERY }],
+      onError: err => alert(err.message)
    });
 
    const sendNewComment = async () => {

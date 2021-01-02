@@ -77,7 +77,8 @@ const TitleBar = ({ context, limit, canEdit = true }) => {
             const as = href;
             Router.replace(href, as, { shallow: true });
          }
-      }
+      },
+      onError: err => alert(err.message)
    });
 
    useEffect(() => {

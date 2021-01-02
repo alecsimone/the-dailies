@@ -21,7 +21,9 @@ const START_TWITTER_LOGIN = gql`
 `;
 
 const TwitterLoginStarter = () => {
-   const [initiateTwitterLogin] = useMutation(START_TWITTER_LOGIN);
+   const [initiateTwitterLogin] = useMutation(START_TWITTER_LOGIN, {
+      onError: err => alert(err.message)
+   });
 
    const startLogin = async () => {
       const { data } = await initiateTwitterLogin().catch(err => {

@@ -139,7 +139,9 @@ const ProfileSidebar = ({ member, canEdit }) => {
 
    const isMe = me && me.id === member.id;
 
-   const [confirmFriendRequest] = useMutation(CONFIRM_FRIEND_REQUEST_MUTATION);
+   const [confirmFriendRequest] = useMutation(CONFIRM_FRIEND_REQUEST_MUTATION, {
+      onError: err => alert(err.message)
+   });
 
    return (
       <StyledProfileSidebar>
