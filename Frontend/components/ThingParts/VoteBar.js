@@ -203,9 +203,7 @@ const VoteBar = ({ votes = [], id, type, mini }) => {
    };
 
    const voteDebouncer = async () => {
-      console.log(isDebouncing);
       if (!isDebouncing) {
-         console.log('Good to go');
          // If we're not debouncing, we're going to vote and update the state. First though, let's start debouncing.
          setIsDebouncing(true);
          const [newVotes, newScore] = voteRecalculator();
@@ -238,7 +236,6 @@ const VoteBar = ({ votes = [], id, type, mini }) => {
             voteCountRef.current = 0;
          }, 5000);
       } else {
-         console.log('hol up a sec');
          // If we are debouncing, we're just going to track how many times we voted and change state without sending any votes to the server
          voteCountRef.current += 1;
          const [newVotes, newScore] = voteRecalculator();
