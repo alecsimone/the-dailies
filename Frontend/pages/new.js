@@ -27,7 +27,10 @@ const NewThing = () => {
             query: { id: data.newBlankThing.id }
          });
       },
-      onError: err => alert(err.message)
+      onError: err => alert(err.message),
+      context: {
+         debounceKey: 'newThing'
+      }
    });
 
    useEffect(() => {

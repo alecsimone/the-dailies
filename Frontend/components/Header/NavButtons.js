@@ -62,7 +62,10 @@ const NavButtons = ({ showSearch, setShowSearch, search }) => {
          { query: ALL_THINGS_QUERY },
          { query: PUBLIC_THINGS_QUERY }
       ],
-      onError: err => alert(err.message)
+      onError: err => alert(err.message),
+      context: {
+         debounceKey: 'newThing'
+      }
    });
    const { lowContrastGrey } = useContext(ThemeContext);
    return (

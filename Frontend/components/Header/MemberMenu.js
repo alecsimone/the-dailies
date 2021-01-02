@@ -108,7 +108,10 @@ const MemberMenu = () => {
       onError: err => alert(err.message)
    });
    const [toggleBroadcastView] = useMutation(TOGGLE_BROADCAST_MUTATION, {
-      onError: err => alert(err.message)
+      onError: err => alert(err.message),
+      context: {
+         debounceKey: 'toggleBroadcast'
+      }
    });
 
    const {
