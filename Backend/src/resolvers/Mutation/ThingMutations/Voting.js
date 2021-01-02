@@ -5,7 +5,7 @@ const {
 } = require('../../../utils/Authentication');
 const { properUpdateStuff } = require('../../../utils/ThingHandling');
 
-async function vote(parent, { id, type }, ctx, info) {
+async function vote(parent, { id, type, isFreshVote }, ctx, info) {
    await loggedInGate(ctx).catch(() => {
       throw new AuthenticationError('You must be logged in to do that!');
    });
@@ -48,7 +48,7 @@ async function vote(parent, { id, type }, ctx, info) {
    );
 
    const dataObj = {};
-   if (myVote == null) {
+   if (myVote == null && isFreshVote) {
       dataObj.votes = {
          create: {
             value: myVoterInfo.rep,
@@ -60,13 +60,15 @@ async function vote(parent, { id, type }, ctx, info) {
          }
       };
       dataObj.score = oldStuff.score + myVoterInfo.rep;
-   } else {
+   } else if (myVote != null && !isFreshVote) {
       dataObj.votes = {
          delete: {
             id: myVote.id
          }
       };
       dataObj.score = oldStuff.score - myVote.value;
+   } else {
+      return null;
    }
 
    const updatedStuff = await properUpdateStuff(dataObj, id, type, ctx).catch(

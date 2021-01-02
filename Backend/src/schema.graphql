@@ -61,7 +61,7 @@ type Mutation {
   newBlankThing: Thing
   deleteTax(id: ID!, personal: Boolean!): Tax
   setColor(color: String!, id: ID!, type: String!): Stuff
-  vote(id: ID!, type: String!): Stuff
+  vote(id: ID!, type: String!, isFreshVote: Boolean!): Stuff
   toggleBroadcastView(newState: Boolean!): Member
   editSummary(summary: String!, id: ID!, type: String!): Thing
   copyContentPiece(contentPieceID: ID!, newThingID: ID!): Thing

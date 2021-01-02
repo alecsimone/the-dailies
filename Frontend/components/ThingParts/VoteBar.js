@@ -2,16 +2,17 @@ import gql from 'graphql-tag';
 import { useMutation } from '@apollo/react-hooks';
 import styled from 'styled-components';
 import Link from 'next/link';
-import { useContext, useState, useRef } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { setAlpha } from '../../styles/functions';
 import { ThingContext } from '../../pages/thing';
 import { MemberContext } from '../Account/MemberProvider';
 import DefaultAvatar from '../Icons/DefaultAvatar';
 import { ALL_THINGS_QUERY } from '../../pages/index';
+import { perPage } from '../../config';
 
 const VOTE_MUTATION = gql`
-   mutation VOTE_MUTATION($id: ID!, $type: String!) {
-      vote(id: $id, type: $type) {
+   mutation VOTE_MUTATION($id: ID!, $type: String!, $isFreshVote: Boolean!) {
+      vote(id: $id, type: $type, isFreshVote: $isFreshVote) {
          ... on Thing {
             __typename
             id
@@ -139,7 +140,10 @@ const VoteBar = ({ votes = [], id, type, mini }) => {
    const { me } = useContext(MemberContext);
    const [vote] = useMutation(VOTE_MUTATION, {
       refetchQueries: [{ query: ALL_THINGS_QUERY }],
-      onError: err => alert(err.message)
+      onError: err => alert(err.message),
+      context: {
+         debounceKey: id
+      }
    });
    const [voters, setVoters] = useState(votes);
 
@@ -177,9 +181,23 @@ const VoteBar = ({ votes = [], id, type, mini }) => {
    const [meVoted, setMeVoted] = useState(meVotedCheck);
    const [computedScore, setComputedScore] = useState(computedScoreCheck);
 
-   // We're going to roll our own little debounce setup to prevent people from hammering the server with votes
-   const [isDebouncing, setIsDebouncing] = useState(false);
-   const voteCountRef = useRef(0);
+   useEffect(() => {
+      let newScore = 0;
+      let myVoteExists = false;
+      votes.forEach(voteData => {
+         if (voteData.voter.id === me.id) {
+            myVoteExists = true;
+         }
+         newScore += voteData.value;
+      });
+      if (myVoteExists) {
+         setMeVoted(true);
+      } else {
+         setMeVoted(false);
+      }
+      setVoters(votes);
+      setComputedScore(newScore);
+   }, [me.id, votes]);
 
    const voteRecalculator = () => {
       let newVotes;
@@ -202,63 +220,41 @@ const VoteBar = ({ votes = [], id, type, mini }) => {
       return [newVotes, newScore];
    };
 
-   const voteDebouncer = async () => {
-      if (!isDebouncing) {
-         // If we're not debouncing, we're going to vote and update the state. First though, let's start debouncing.
-         setIsDebouncing(true);
-         const [newVotes, newScore] = voteRecalculator();
-         setVoters(newVotes);
-         setComputedScore(newScore);
-         setMeVoted(!meVoted);
-         await vote({
-            variables: {
-               id,
-               type
-            }
-         }).catch(err => alert(err.message));
-
-         // And then set a timeout to run a function at the end of the debounce period
-         window.setTimeout(async () => {
-            // If we voted an even number of times during the debounce period, they cancel out and we don't need to tell the server about them.
-            const voteOddness = voteCountRef.current % 2;
-            if (voteOddness === 1) {
-               // If we voted an odd number, we send one vote to the server. Note that we don't want to update the state because we already did that when we received a vote during the debounce period
-               await vote({
-                  variables: {
-                     id,
-                     type
-                  }
-               }).catch(err => alert(err.message));
-            }
-
-            // Then we stop debouncing and reset our vote counter
-            setIsDebouncing(false);
-            voteCountRef.current = 0;
-         }, 5000);
-      } else {
-         // If we are debouncing, we're just going to track how many times we voted and change state without sending any votes to the server
-         voteCountRef.current += 1;
-         const [newVotes, newScore] = voteRecalculator();
-         setVoters(newVotes);
-         setComputedScore(newScore);
-         setMeVoted(!meVoted);
-      }
+   const voteHandler = () => {
+      const [newVotes, newScore] = voteRecalculator();
+      vote({
+         variables: {
+            id,
+            type,
+            isFreshVote: !meVoted
+         }
+      });
+      setVoters(newVotes);
+      setComputedScore(newScore);
+      setMeVoted(!meVoted);
    };
 
    return (
-      <StyledVoteBar className={mini ? 'votebar mini' : 'votebar'}>
+      <StyledVoteBar
+         className={
+            mini && (voters == null || voters.length === 0)
+               ? 'votebar mini'
+               : 'votebar'
+         }
+      >
          <div className="left">
             <img
                src="/logo-small.png"
                alt="Vote Button"
                role="button"
                className={meVoted ? 'voteButton full' : 'voteButton empty'}
-               onClick={() => {
+               onClick={e => {
+                  e.stopPropagation();
                   if (me == null) {
                      alert('You must be logged in to do that!');
                      return;
                   }
-                  voteDebouncer();
+                  voteHandler();
                }}
             />
          </div>

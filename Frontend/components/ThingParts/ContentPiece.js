@@ -78,13 +78,31 @@ const ContentPiece = ({
       onError: err => alert(err.message)
    });
 
+   const [voters, setVoters] = useState(votes || []);
+
+   let meVotedCheck = false;
+   let computedScoreCheck = 0;
+   voters.forEach(({ voter: { id: voterID }, value }) => {
+      if (me && voterID === me.id) {
+         meVotedCheck = true;
+      }
+      computedScoreCheck += value;
+   });
+
+   const [meVoted, setMeVoted] = useState(meVotedCheck);
+   const [computedScore, setComputedScore] = useState(computedScoreCheck);
+
    const [vote] = useMutation(VOTE_MUTATION, {
       variables: {
          id,
-         type: 'ContentPiece'
+         type: 'ContentPiece',
+         isFreshVote: !meVoted
       },
       refetchQueries: [{ query: ALL_THINGS_QUERY }],
-      onError: err => alert(err.message)
+      onError: err => alert(err.message),
+      context: {
+         debounceKey: id
+      }
    });
 
    const sendNewComment = async () => {
@@ -325,6 +343,7 @@ const ContentPiece = ({
                   e.preventDefault();
                   if (
                      reordering ||
+                     rawContentString === editedContent ||
                      confirm(
                         'Are you sure you want to reorder the content? Any unsaved changes will be lost.'
                      )
@@ -434,10 +453,10 @@ const ContentPiece = ({
                {buttons}
                <VoteBar
                   id={id}
-                  votes={votes}
+                  votes={voters}
                   key={`votebar-${id}`}
                   type="ContentPiece"
-                  mini={(votes && votes.length === 0) || votes == null}
+                  mini
                />
                {otherLocations}
             </div>
@@ -465,6 +484,7 @@ const ContentPiece = ({
    const handleMouseDown = e => {
       if (editable || reordering) return;
       if (e.target.closest('.buttons') != null) return;
+      if (e.target.closest('.votebar') != null) return;
 
       if (e.button === 0 && me != null) {
          window.setTimeout(
@@ -518,23 +538,14 @@ const ContentPiece = ({
             return;
          }
 
-         let meVoted = false;
-         let computedScore = 0;
-         votes.forEach(({ voter: { id: voterID }, value }) => {
-            if (me && voterID === me.id) {
-               meVoted = true;
-            }
-            computedScore += value;
-         });
-
          let newVotes;
          let newScore;
          if (meVoted) {
-            newVotes = votes.filter(voteData => voteData.voter.id !== me.id);
+            newVotes = voters.filter(voteData => voteData.voter.id !== me.id);
             newScore = computedScore - me.rep;
          } else {
             newVotes = [
-               ...votes,
+               ...voters,
                {
                   __typename: 'Vote',
                   id: 'newVote',
@@ -545,18 +556,10 @@ const ContentPiece = ({
             newScore = computedScore + me.rep;
          }
 
-         // e.preventDefault();
-         vote({
-            optimisticResponse: {
-               __typename: 'Mutation',
-               vote: {
-                  __typename: 'ContentPiece',
-                  id,
-                  votes: newVotes,
-                  score: newScore
-               }
-            }
-         });
+         vote();
+         setVoters(newVotes);
+         setComputedScore(newScore);
+         setMeVoted(!meVoted);
       }
    };
 
@@ -602,21 +605,22 @@ ContentPiece.propTypes = {
    editContentPiece: PropTypes.func.isRequired
 };
 
-export default React.memo(ContentPiece, (prev, next) => {
-   if (prev.rawContentString !== next.rawContentString) {
-      return false;
-   }
-   if (prev.expanded !== next.expanded) {
-      return false;
-   }
-   if (prev.comments.length !== next.comments.length) {
-      return false;
-   }
-   if (
-      (prev.votes && next.votes && prev.votes.length !== next.votes.length) ||
-      prev.score !== next.score
-   ) {
-      return false;
-   }
-   return true;
-});
+export default ContentPiece;
+// export default React.memo(ContentPiece, (prev, next) => {
+//    if (prev.rawContentString !== next.rawContentString) {
+//       return false;
+//    }
+//    if (prev.expanded !== next.expanded) {
+//       return false;
+//    }
+//    if (prev.comments.length !== next.comments.length) {
+//       return false;
+//    }
+//    if (
+//       (prev.votes && next.votes && prev.votes.length !== next.votes.length) ||
+//       prev.score !== next.score
+//    ) {
+//       return false;
+//    }
+//    return true;
+// });
