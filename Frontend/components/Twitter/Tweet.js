@@ -291,6 +291,7 @@ const Tweet = props => {
 
    const doubleClickListener = e => {
       if (e.button === 0) {
+         e.preventDefault();
          likeTweetHandler();
       }
    };

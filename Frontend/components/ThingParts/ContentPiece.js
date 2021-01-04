@@ -44,7 +44,8 @@ const ContentPiece = ({
    onThing,
    copiedToThings,
    votes,
-   stickifierData
+   stickifierData,
+   zIndex
 }) => {
    const { me } = useContext(MemberContext);
    const { midScreenBPWidthRaw } = useContext(ThemeContext);
@@ -584,6 +585,7 @@ const ContentPiece = ({
             setTouchStart(0);
             setTouchEnd(0);
          }}
+         style={{ zIndex }} // We need to reverse the stacking context order so that each content piece is below the one before it, otherwise the next content piece will cover up the addToInterface, or anything else we might have pop out of the buttons
       >
          <div className="contentArea">
             <div

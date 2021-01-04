@@ -3,7 +3,7 @@ import { useQuery } from '@apollo/react-hooks';
 import styled from 'styled-components';
 import { useContext } from 'react';
 import ErrorMessage from '../components/ErrorMessage';
-import { smallThingCardFields } from '../lib/CardInterfaces';
+import { thingCardFields } from '../lib/CardInterfaces';
 import LoadingRing from '../components/LoadingRing';
 import Things from '../components/Archives/Things';
 import MyThings from '../components/Archives/MyThings';
@@ -12,7 +12,7 @@ import { perPage } from '../config';
 const ALL_THINGS_QUERY = gql`
    query ALL_THINGS_QUERY {
       allThings {
-         ${smallThingCardFields}
+         ${thingCardFields}
       }
    }
 `;

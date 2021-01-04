@@ -1,5 +1,5 @@
 import gql from 'graphql-tag';
-import { commentFields, fullThingFields } from './CardInterfaces';
+import { commentFields } from './CardInterfaces';
 import { getOneRem, midScreenBreakpointPx } from '../styles/functions';
 
 const ADD_CONTENTPIECE_MUTATION = gql`
@@ -181,15 +181,14 @@ const REORDER_CONTENT_MUTATION = gql`
 export { REORDER_CONTENT_MUTATION };
 
 const UNLINK_CONTENTPIECE_MUTATION = gql`
-   mutation UNLINK_CONTENTPIECE_MUTATION(
-      $contentPieceID: ID!
-      $thingID: ID!
-   ) {
-      unlinkContentPiece(
-         contentPieceID: $contentPieceID
-         thingID: $thingID
-      ) {
-         ${fullThingFields}
+   mutation UNLINK_CONTENTPIECE_MUTATION($contentPieceID: ID!, $thingID: ID!) {
+      unlinkContentPiece(contentPieceID: $contentPieceID, thingID: $thingID) {
+         __typename
+         id
+         copiedInContent {
+            __typename
+            id
+         }
       }
    }
 `;

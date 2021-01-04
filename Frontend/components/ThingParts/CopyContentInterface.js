@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 import debounce from 'lodash.debounce';
 import { SEARCH_QUERY } from '../SearchResults';
 import { setAlpha } from '../../styles/functions';
-import { fullThingFields } from '../../lib/CardInterfaces';
+import { contentPieceFields } from '../../lib/CardInterfaces';
 import { home } from '../../config';
 
 const COPY_CONTENTPIECE_MUTATION = gql`
@@ -19,7 +19,11 @@ const COPY_CONTENTPIECE_MUTATION = gql`
          contentPieceID: $contentPieceID
          newThingID: $newThingID
       ) {
-         ${fullThingFields}
+         __typename
+         id
+         content {
+            ${contentPieceFields}
+         }
       }
    }
 `;

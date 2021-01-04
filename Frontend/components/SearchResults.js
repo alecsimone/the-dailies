@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 import { useQuery } from '@apollo/react-hooks';
-import { smallThingCardFields } from '../lib/CardInterfaces';
+import { thingCardFields } from '../lib/CardInterfaces';
 import ErrorMessage from './ErrorMessage';
 import LoadingRing from './LoadingRing';
 import Things from './Archives/Things';
@@ -9,7 +9,7 @@ import { perPage } from '../config';
 const SEARCH_QUERY = gql`
    query SEARCH_QUERY($string: String!, $isTitleOnly: Boolean) {
       search(string: $string, isTitleOnly: $isTitleOnly) {
-         ${smallThingCardFields}
+         ${thingCardFields}
       }
    }
 `;

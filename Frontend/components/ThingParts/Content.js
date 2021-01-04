@@ -269,7 +269,7 @@ const Content = ({ context, canEdit, linkedPiece }) => {
          fullContent = content;
       }
       orderedContent = orderContent(fullContent, contentOrder);
-      contentElements = orderedContent.map(contentPiece => {
+      contentElements = orderedContent.map((contentPiece, index) => {
          const [originalContentCheck] = content.filter(
             piece => piece.id === contentPiece.id
          );
@@ -300,6 +300,7 @@ const Content = ({ context, canEdit, linkedPiece }) => {
                   copiedToThings={contentPiece.copiedToThings}
                   votes={contentPiece.votes}
                   key={contentPiece.id}
+                  zIndex={orderedContent.length - index} // We need to reverse the stacking context order so that each content piece is below the one before it, otherwise the next content piece will cover up the addToInterface, or anything else we might have pop out of the buttons
                />
             </div>
          );

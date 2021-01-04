@@ -9,12 +9,10 @@ import { toast } from 'react-toastify';
 import { ThingContext } from '../../pages/thing';
 import { MemberContext } from '../Account/MemberProvider';
 import { setLightness, setAlpha } from '../../styles/functions';
-import { fullThingFields } from '../../lib/CardInterfaces';
 import AuthorLink from './AuthorLink';
 import ShortLink from './ShortLink';
 import ColorSelector from './ColorSelector';
 import PrivacyDropdown from './PrivacyDropdown';
-import ThingSourceLink from './ThingSourceLink';
 import TrashIcon from '../Icons/Trash';
 import EditThis from '../Icons/EditThis';
 import X from '../Icons/X';
@@ -45,7 +43,14 @@ const SEARCH_MEMBERS_QUERY = gql`
 const ADD_VIEWER_TO_THING_MUTATION = gql`
    mutation ADD_VIEWER_TO_THING_MUTATION($thingID: ID!, $memberID: ID!) {
       addViewerToThing(thingID: $thingID, memberID: $memberID) {
-         ${fullThingFields}
+         __typename
+         id
+         individualViewPermissions {
+            __typename
+            id
+            displayName
+            avatar
+         }
       }
    }
 `;
@@ -53,7 +58,14 @@ const ADD_VIEWER_TO_THING_MUTATION = gql`
 const REMOVE_VIEWER_FROM_THING_MUTATION = gql`
    mutation REMOVE_VIEWER_FROM_THING_MUTATION($thingID: ID!, $memberID: ID!) {
       removeViewerFromThing(thingID: $thingID, memberID: $memberID) {
-         ${fullThingFields}
+         __typename
+         id
+         individualViewPermissions {
+            __typename
+            id
+            displayName
+            avatar
+         }
       }
    }
 `;

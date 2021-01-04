@@ -127,6 +127,25 @@ const smallThingCardFields = `
    __typename
    id
    title
+   author {
+      __typename
+      id
+      displayName
+      rep
+      avatar
+   }
+   featuredImage
+   privacy
+   color
+   updatedAt
+   createdAt
+`;
+export { smallThingCardFields };
+
+const thingCardFields = `
+   __typename
+   id
+   title
    featuredImage
    author {
       __typename
@@ -149,33 +168,15 @@ const smallThingCardFields = `
    copiedInContent {
       ${contentPieceFields}
    }
-   summary
    contentOrder
+   summary
    partOfTags {
       __typename
       id
       title
-      author {
-         __typename
-         id
-         displayName
-         avatar
-         rep
-      }
-   }
-   partOfStacks {
-      __typename
-      id
-      title
-      author {
-         __typename
-         id
-         displayName
-         avatar
-         rep
-      }
    }
    color
+   privacy
    votes {
       __typename
       id
@@ -191,9 +192,8 @@ const smallThingCardFields = `
    score
    createdAt
    updatedAt
-   privacy
 `;
-export { smallThingCardFields };
+export { thingCardFields };
 
 const fullThingFields = `
    __typename
@@ -232,18 +232,6 @@ const fullThingFields = `
          rep
       }
    }
-   partOfStacks {
-      __typename
-      id
-      title
-      author {
-         __typename
-         id
-         displayName
-         avatar
-         rep
-      }
-   }
    color
    comments {
       ${commentFields}
@@ -260,19 +248,7 @@ const fullThingFields = `
          avatar
       }
    }
-   passes {
-      __typename
-      passer {
-         __typename
-         id
-         displayName
-         avatar
-         role
-      }
-   }
    score
-   winner
-   finalistDate
    privacy
    individualViewPermissions {
       __typename
@@ -280,7 +256,6 @@ const fullThingFields = `
       displayName
       avatar
    }
-   eliminated
    createdAt
    updatedAt
 `;
