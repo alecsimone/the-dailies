@@ -95,32 +95,41 @@ async function thing(parent, { where }, ctx, info) {
 }
 exports.thing = thing;
 
-async function myThings(parent, { orderBy = 'id_DESC' }, ctx, info) {
+async function myThings(parent, { orderBy = 'id_DESC', cursor }, ctx, info) {
    if (ctx.req.memberId == null) {
-      const things = await ctx.db.query
-         .things(
-            {
-               where: {
-                  privacy: 'Public'
-               },
-               orderBy
-            },
-            info
-         )
-         .catch(err => {
-            console.log(err);
-         });
-      return things;
+      // const things = await ctx.db.query
+      //    .things(
+      //       {
+      //          where: {
+      //             privacy: 'Public'
+      //          },
+      //          orderBy
+      //       },
+      //       info
+      //    )
+      //    .catch(err => {
+      //       console.log(err);
+      //    });
+      // return things;
+      return null;
    }
+
+   const where = {
+      author: {
+         id: ctx.req.memberId
+      }
+   };
+
+   if (cursor != null) {
+      where.createdAt_lt = cursor;
+   }
+
    const things = await ctx.db.query
       .things(
          {
-            where: {
-               author: {
-                  id: ctx.req.memberId
-               }
-            },
-            orderBy
+            where,
+            orderBy,
+            first: 20
          },
          info
       )
@@ -175,11 +184,14 @@ async function publicThings(parent, { orderBy = 'id_DESC' }, ctx, info) {
 }
 exports.publicThings = publicThings;
 
-async function allThings(parent, args, ctx, info) {
+async function allThings(parent, { cursor }, ctx, info) {
    let where;
    if (ctx.req.memberId == null) {
       where = {
-         privacy: 'Public'
+         privacy: 'Public',
+         votes_some: {
+            id_not: 'poopface' // We only want to return things with votes. Easiest way to do this seems to me to be to get any thing where at least one of the votes doesn't have an ID of poopface.
+         }
       };
    } else {
       where = {
@@ -211,25 +223,30 @@ async function allThings(parent, args, ctx, info) {
                },
                privacy_not: 'Private'
             }
-         ]
+         ],
+         votes_some: {
+            id_not: 'poopface' // We only want to return things with votes. Easiest way to do this seems to me to be to get any thing where at least one of the votes doesn't have an ID of poopface.
+         }
       };
+   }
+   if (cursor != null) {
+      where.createdAt_lt = cursor;
    }
 
    const things = await ctx.db.query
       .things(
          {
             where,
-            orderBy: 'id_DESC'
+            orderBy: 'createdAt_DESC',
+            first: 8
          },
          info
       )
       .catch(err => {
-         console.log(err);
+         throw new Error(err.message);
       });
 
-   const thingsWithAVote = things.filter(thing => thing.votes.length > 0);
-
-   return thingsWithAVote;
+   return things;
 }
 exports.allThings = allThings;
 

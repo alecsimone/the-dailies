@@ -123,6 +123,7 @@ const contentPieceFields = `
 `;
 export { contentPieceFields };
 
+// smallThingCardFields need to have author friend and friend of friend info so we can check if they can be seen. It doesn't show up on the frontend as far as I know, but when we make a request to the backend with it we're going to need it
 const smallThingCardFields = `
    __typename
    id
@@ -133,6 +134,14 @@ const smallThingCardFields = `
       displayName
       rep
       avatar
+      friends {
+         __typename
+         id
+         friends {
+            __typename
+            id
+         }
+      }
    }
    featuredImage
    privacy
@@ -311,6 +320,9 @@ const basicMemberFields = `
          displayName
          avatar
          rep
+         createdThings {
+            ${smallThingCardFields}
+         }
       }
    }
    friendRequests {
@@ -429,7 +441,7 @@ const fullMemberFields = `
       createdAt
    }
    createdThings {
-      ${smallThingCardFields}
+      ${thingCardFields}
    }
    defaultPrivacy
    defaultExpansion

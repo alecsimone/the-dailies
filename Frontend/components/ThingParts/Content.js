@@ -97,7 +97,7 @@ const Content = ({ context, canEdit, linkedPiece }) => {
 
    // Add the stickifier listeners
    useEffect(() => {
-      // mainSection does the scrolling on big screens, threeColumns on mobile, so we'll add a listener to it so we can move the buttons on scroll
+      // mainSection does the scrolling on big screens, threeColumns on mobile, so we'll add listeners to them so we can move the buttons on scroll
       const mainSection = document.querySelector('.mainSection');
       mainSection.addEventListener('scroll', stickifierHandler);
 

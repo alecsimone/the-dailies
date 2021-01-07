@@ -1,6 +1,7 @@
 const { canSeeThing } = require('../../utils/ThingHandling');
 
 async function me(parent, args, ctx, info) {
+   const start = Date.now();
    if (!ctx.req.memberId) {
       return null;
    }

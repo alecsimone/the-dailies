@@ -7,7 +7,7 @@ import Error from '../ErrorMessage.js';
 import StyledForm from '../../styles/StyledForm';
 import { CURRENT_MEMBER_QUERY } from './MemberProvider';
 import { ModalContext } from '../ModalProvider';
-import { ALL_THINGS_QUERY } from '../../pages/index';
+import { ALL_THINGS_QUERY } from '../../lib/ThingHandling';
 
 const LOGIN_MUTATION = gql`
    mutation LOGIN_MUTATION($email: String!, $password: String!) {

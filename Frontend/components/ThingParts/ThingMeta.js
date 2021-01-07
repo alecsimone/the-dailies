@@ -17,7 +17,7 @@ import TrashIcon from '../Icons/Trash';
 import EditThis from '../Icons/EditThis';
 import X from '../Icons/X';
 import TimeAgo from '../TimeAgo';
-import { ALL_THINGS_QUERY } from '../../pages/index';
+import { ALL_THINGS_QUERY } from '../../lib/ThingHandling';
 import { PUBLIC_THINGS_QUERY } from '../Archives/PublicThings';
 
 const DELETE_THING_MUTATION = gql`

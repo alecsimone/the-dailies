@@ -8,7 +8,7 @@ import { disabledCodewords } from '../../lib/ThingHandling';
 import { stringToObject } from '../../lib/TextHandling';
 import AuthorLink from '../ThingParts/AuthorLink';
 import TimeAgo from '../TimeAgo';
-import ThingCard from './ThingCard';
+import CardGenerator from './CardGenerator';
 import ArrowIcon from '../Icons/Arrow';
 
 const StyledSmallThingCard = styled.article`
@@ -109,11 +109,7 @@ const SmallThingCard = ({ data, noPic, fullQuery, borderSide }) => {
 
    if (expanded) {
       return (
-         <ThingCard
-            data={data}
-            setExpanded={setExpanded}
-            borderSide={borderSide}
-         />
+         <CardGenerator id={id} cardType="regular" setExpanded={setExpanded} />
       );
    }
 

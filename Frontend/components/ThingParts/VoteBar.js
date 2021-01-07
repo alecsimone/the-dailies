@@ -4,11 +4,9 @@ import styled from 'styled-components';
 import Link from 'next/link';
 import { useContext, useState, useEffect } from 'react';
 import { setAlpha } from '../../styles/functions';
-import { ThingContext } from '../../pages/thing';
 import { MemberContext } from '../Account/MemberProvider';
 import DefaultAvatar from '../Icons/DefaultAvatar';
-import { ALL_THINGS_QUERY } from '../../pages/index';
-import { perPage } from '../../config';
+import { ALL_THINGS_QUERY } from '../../lib/ThingHandling';
 
 const VOTE_MUTATION = gql`
    mutation VOTE_MUTATION($id: ID!, $type: String!, $isFreshVote: Boolean!) {
@@ -181,11 +179,13 @@ const VoteBar = ({ votes = [], id, type, mini }) => {
    const [meVoted, setMeVoted] = useState(meVotedCheck);
    const [computedScore, setComputedScore] = useState(computedScoreCheck);
 
+   /* eslint-disable */
+   // If we hav eslint on, it's going to force us to include me.id in the useEffect dependencies. This isn't actually necessary because the user ID isn't going to change. But it does break the app because sometimes me is null, but we can't check for that first in a dependency array
    useEffect(() => {
       let newScore = 0;
       let myVoteExists = false;
       votes.forEach(voteData => {
-         if (voteData.voter.id === me.id) {
+         if (me != null && voteData.voter.id === me.id) {
             myVoteExists = true;
          }
          newScore += voteData.value;
@@ -197,7 +197,8 @@ const VoteBar = ({ votes = [], id, type, mini }) => {
       }
       setVoters(votes);
       setComputedScore(newScore);
-   }, [me.id, votes]);
+   }, [votes]);
+   /* eslint-enable */
 
    const voteRecalculator = () => {
       let newVotes;

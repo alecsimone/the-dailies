@@ -39,7 +39,7 @@ const MemberProvider = ({ children, isHome }) => {
       memberData.me = 'error';
    }
 
-   if (data && data.me != null) {
+   if (data != null) {
       if (data.me == null) {
          memberData.me = null;
       } else {

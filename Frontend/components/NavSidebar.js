@@ -12,7 +12,7 @@ import Search from './Icons/Search';
 import X from './Icons/X';
 import DefaultAvatar from './Icons/DefaultAvatar';
 import { ModalContext } from './ModalProvider';
-import { ALL_THINGS_QUERY } from '../pages/index';
+import { ALL_THINGS_QUERY } from '../lib/ThingHandling';
 import { PUBLIC_THINGS_QUERY } from './Archives/PublicThings';
 import { CURRENT_MEMBER_QUERY } from './Account/MemberProvider';
 

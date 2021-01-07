@@ -5,7 +5,7 @@ import Link from 'next/link';
 import PropTypes from 'prop-types';
 import { useState, useContext } from 'react';
 import { CURRENT_MEMBER_QUERY, MemberContext } from '../Account/MemberProvider';
-import { ALL_THINGS_QUERY } from '../../pages/index';
+import { ALL_THINGS_QUERY } from '../../lib/ThingHandling';
 import { setAlpha, setLightness } from '../../styles/functions';
 
 const LOGOUT_MUTATION = gql`

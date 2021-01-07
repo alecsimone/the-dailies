@@ -1,4 +1,5 @@
 import gql from 'graphql-tag';
+import styled from 'styled-components';
 import { useQuery } from '@apollo/react-hooks';
 import { useContext } from 'react';
 import Link from 'next/link';
@@ -11,22 +12,51 @@ import Login from '../Account/Login';
 import Signup from '../Account/Signup';
 import { sidebarPerPage } from '../../config';
 import { smallThingCardFields } from '../../lib/CardInterfaces';
+import LoadMoreButton from '../LoadMoreButton';
+import { useInfiniteScroll } from '../../lib/ThingHandling';
+
+const StyledMyThings = styled.div`
+   button.loadMore {
+      display: block;
+      padding: 1rem;
+      font-size: ${props => props.theme.smallText};
+      margin: 2rem auto;
+   }
+   div.loadMore {
+      font-size: ${props => props.theme.bigText};
+      text-align: center;
+      margin: 1rem 0;
+      font-weight: bold;
+   }
+`;
 
 const MY_THINGS_QUERY = gql`
-   query MY_THINGS_QUERY {
-      myThings {
+   query MY_THINGS_QUERY($cursor: String) {
+      myThings(cursor: $cursor) {
          ${smallThingCardFields}
       }
    }
 `;
 
 const MyThings = ({ setShowingSidebar, scrollingSelector, borderSide }) => {
-   const { me } = useContext(MemberContext);
+   const { me, loading: loadingMe } = useContext(MemberContext);
    const { setContent } = useContext(ModalContext);
 
-   const { data, loading, error } = useQuery(MY_THINGS_QUERY, {
+   const { data, loading, error, fetchMore } = useQuery(MY_THINGS_QUERY, {
       ssr: false
    });
+
+   const {
+      scrollerRef,
+      cursorRef,
+      isFetchingMore,
+      noMoreToFetchRef,
+      fetchMoreHandler
+   } = useInfiniteScroll(fetchMore, '.things', 'myThings');
+
+   if (process.browser) {
+      scrollerRef.current = document.querySelector(scrollingSelector);
+   }
 
    if (error) {
       return <ErrorMessage error={error} />;
@@ -36,7 +66,7 @@ const MyThings = ({ setShowingSidebar, scrollingSelector, borderSide }) => {
       if (data.myThings == null || data.myThings.length === 0) {
          return <p className="emptyThings">You haven't made any things yet.</p>;
       }
-      if (me == null) {
+      if (me == null && !loadingMe) {
          return (
             <p className="emptyThings">
                <Link href={{ pathname: '/login' }}>
@@ -64,44 +94,52 @@ const MyThings = ({ setShowingSidebar, scrollingSelector, borderSide }) => {
             </p>
          );
       }
-      let { myThings } = data;
-      myThings.sort((a, b) => {
-         const aDate = new Date(a.updatedAt);
-         const bDate = new Date(b.updatedAt);
+      if (me != null) {
+         let { myThings } = data;
+         myThings.sort((a, b) => {
+            const aDate = new Date(a.updatedAt);
+            const bDate = new Date(b.updatedAt);
 
-         const aTimestamp = aDate.getTime();
-         const bTimestamp = bDate.getTime();
+            const aTimestamp = aDate.getTime();
+            const bTimestamp = bDate.getTime();
 
-         return bTimestamp - aTimestamp;
-      });
-      // myThings.sort((a, b) => (a.id < b.id ? 1 : -1));
-      if (me.broadcastView) {
-         myThings = myThings.filter(thing => thing.privacy !== 'Private');
+            return bTimestamp - aTimestamp;
+         });
+         const lastThing = myThings[myThings.length - 1];
+         cursorRef.current = lastThing.createdAt;
+         if (me.broadcastView) {
+            myThings = myThings.filter(thing => thing.privacy !== 'Private');
+         }
+
+         return (
+            <StyledMyThings
+               onClick={e => {
+                  if (e.target.closest('.regularThingCard') != null) return; // If they're interacting with an expanded thing card, we don't want to close the sidebar
+                  if (setShowingSidebar != null) {
+                     setShowingSidebar(false);
+                  }
+               }}
+            >
+               <Things
+                  things={myThings}
+                  displayType="list"
+                  cardSize="small"
+                  noPic
+                  scrollingParentSelector={scrollingSelector}
+                  perPage={sidebarPerPage}
+                  borderSide={borderSide}
+               />
+               <LoadMoreButton
+                  loading={loading || isFetchingMore}
+                  noMore={noMoreToFetchRef.current}
+                  fetchMore={fetchMoreHandler}
+               />
+            </StyledMyThings>
+         );
       }
-
-      return (
-         <div
-            onClick={e => {
-               if (e.target.closest('.regularThingCard') != null) return; // If they're interacting with an expanded thing card, we don't want to close the sidebar
-               if (setShowingSidebar != null) {
-                  setShowingSidebar(false);
-               }
-            }}
-         >
-            <Things
-               things={myThings}
-               displayType="list"
-               cardSize="small"
-               noPic
-               scrollingParentSelector={scrollingSelector}
-               perPage={sidebarPerPage}
-               borderSide={borderSide}
-            />
-         </div>
-      );
    }
 
-   if (loading) {
+   if (loading || loadingMe) {
       return <LoadingRing />;
    }
 };

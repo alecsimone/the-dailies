@@ -5,9 +5,10 @@ import PropTypes from 'prop-types';
 import Router from 'next/router';
 import { MemberContext } from '../Account/MemberProvider';
 import MetaOption from './MetaOption';
-import { checkForNewThingRedirect } from '../../lib/ThingHandling';
-// import { setFullThingToLoading } from './FullThing';
-import { ALL_THINGS_QUERY } from '../../pages/index';
+import {
+   checkForNewThingRedirect,
+   ALL_THINGS_QUERY
+} from '../../lib/ThingHandling';
 
 const GET_PRIVACY_OPTIONS_QUERY = gql`
    query enumValuesOfPrivacySetting {

@@ -4,10 +4,10 @@ type Query {
    me: Member
    member(id: ID, displayName: String): Member
    thing(where: ThingWhereUniqueInput!): Thing
-   myThings(orderBy: ThingOrderByInput): [Thing]!
+   myThings(orderBy: ThingOrderByInput, cursor: String): [Thing]!
    myFriendsThings(orderBy: ThingOrderByInput): [Thing]!
    publicThings(orderBy: ThingOrderByInput): [Thing]!
-   allThings: [Thing]!
+   allThings(cursor: String): [Thing]!
    searchTaxes(searchTerm: String, personal: Boolean!): [Tax]!
    taxByTitle(title: String!, personal: Boolean!): Tax
    finishTwitterLogin(token: String!, verifier: String!): SuccessMessage

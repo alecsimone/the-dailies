@@ -23,7 +23,7 @@ import { UNLINK_CONTENTPIECE_MUTATION } from '../../lib/ContentHandling';
 import { getOneRem } from '../../styles/functions';
 import CopyContentInterface from './CopyContentInterface';
 import VoteBar, { VOTE_MUTATION } from './VoteBar';
-import { ALL_THINGS_QUERY } from '../../pages/index';
+import { ALL_THINGS_QUERY } from '../../lib/ThingHandling';
 
 const ContentPiece = ({
    id,

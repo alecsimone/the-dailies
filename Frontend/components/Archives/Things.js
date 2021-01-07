@@ -43,15 +43,7 @@ const StyledThings = styled.div`
    }
 `;
 
-const Things = ({
-   things,
-   displayType,
-   cardSize,
-   noPic,
-   scrollingParentSelector,
-   perPage,
-   borderSide
-}) => {
+const Things = ({ things, displayType, cardSize, noPic, borderSide }) => {
    const {
       mobileBPWidthRaw,
       desktopBPWidthRaw,
@@ -59,43 +51,7 @@ const Things = ({
       massiveScreenBPWidthRaw
    } = useContext(ThemeContext);
 
-   const [visibleThingCount, setVisibleThingCount] = useState(
-      perPage != null ? perPage : things.length
-   );
-
-   const scrollHandler = e => {
-      const scroller = e.target;
-      const maxScroll = scroller.scrollHeight - scroller.offsetHeight;
-      if (
-         scroller.scrollTop > maxScroll - 500 &&
-         visibleThingCount < things.length
-      ) {
-         setVisibleThingCount(visibleThingCount + perPage);
-      }
-   };
-
-   useEffect(() => {
-      const scroller = document.querySelector(scrollingParentSelector);
-      if (scroller == null) return;
-      scroller.addEventListener('scroll', scrollHandler);
-
-      // On mobile, the element that scrolls is the whole page, which has the class styledPageWithSidebar
-      const page = document.querySelector('.styledPageWithSidebar');
-      if (page != null) {
-         page.addEventListener('scroll', scrollHandler);
-      }
-
-      return () => {
-         scroller.removeEventListener('scroll', scrollHandler);
-         if (page != null) {
-            page.removeEventListener('scroll', scrollHandler);
-         }
-      };
-   }, [scrollHandler, scrollingParentSelector]);
-
-   const truncatedThingList = things.slice(0, visibleThingCount);
-
-   const thingCards = truncatedThingList.map(thing => {
+   const thingCards = things.map(thing => {
       if (cardSize === 'regular') {
          return (
             <ThingCard data={thing} key={thing.id} borderSide={borderSide} />
@@ -138,8 +94,7 @@ Things.propTypes = {
    things: PropTypes.array.isRequired,
    displayType: PropTypes.oneOf(['list', 'grid']),
    cardSize: PropTypes.oneOf(['regular', 'small']),
-   noPic: PropTypes.bool,
-   perPage: PropTypes.number
+   noPic: PropTypes.bool
 };
 
 export default Things;

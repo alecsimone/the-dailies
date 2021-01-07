@@ -8,7 +8,7 @@ import SearchBar from '../SearchBar';
 import { NEW_BLANK_THING } from '../../pages/new';
 import { setAlpha, setLightness, setSaturation } from '../../styles/functions';
 import X from '../Icons/X';
-import { ALL_THINGS_QUERY } from '../../pages/index';
+import { ALL_THINGS_QUERY } from '../../lib/ThingHandling';
 import { PUBLIC_THINGS_QUERY } from '../Archives/PublicThings';
 
 const StyledNav = styled.nav`

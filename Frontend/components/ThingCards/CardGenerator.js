@@ -4,8 +4,9 @@ import { SINGLE_THING_QUERY } from '../../pages/thing';
 import SmallThingCard from './SmallThingCard';
 import Error from '../ErrorMessage';
 import LoadingRing from '../LoadingRing';
+import ThingCard from './ThingCard';
 
-const CardGenerator = ({ id, cardType, fullQuery }) => {
+const CardGenerator = ({ id, cardType, fullQuery, setExpanded }) => {
    const { data, loading, error } = useQuery(SINGLE_THING_QUERY, {
       variables: {
          id
@@ -14,6 +15,15 @@ const CardGenerator = ({ id, cardType, fullQuery }) => {
    if (data) {
       if (data.thing == null) {
          return <Error error={{ message: `No thing found for id: ${id}` }} />;
+      }
+      if (cardType === 'regular') {
+         return (
+            <ThingCard
+               data={data.thing}
+               borderSide="left"
+               setExpanded={setExpanded}
+            />
+         );
       }
       return (
          <SmallThingCard data={data.thing} key={id} fullQuery={fullQuery} />
