@@ -50,21 +50,20 @@ const StyledHomepage = styled.section`
 `;
 
 const Home = () => {
-   const { data, loading, error, fetchMore } = useQuery(ALL_THINGS_QUERY, {
-      ssr: false,
-      onCompleted: data => {
-         dataRef.current = dataRef.current.concat(data.allThings);
+   const { data, loading, error, fetchMore, client } = useQuery(
+      ALL_THINGS_QUERY,
+      {
+         ssr: false
       }
-   });
+   );
 
    const {
       scrollerRef,
       cursorRef,
       isFetchingMore,
       noMoreToFetchRef,
-      fetchMoreHandler,
-      dataRef
-   } = useInfiniteScroll(fetchMore, '.things', 'allThings');
+      fetchMoreHandler
+   } = useInfiniteScroll(fetchMore, '.things', 'allThings', client);
 
    let content;
    if (error) {
