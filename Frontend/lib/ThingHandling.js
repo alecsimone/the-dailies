@@ -42,12 +42,13 @@ const useInfiniteScroll = (fetchMore, scrollingChild, queryName) => {
 
       setIsFetchingMore(true);
       isFetchingMoreRef.current = true;
-      console.log(cursorRef.current);
       fetchMore({
          variables: {
             cursor: cursorRef.current
          },
          updateQuery: (prev, { fetchMoreResult }) => {
+            console.log(prev);
+            console.log(fetchMoreResult);
             isFetchingMoreRef.current = false;
             setIsFetchingMore(false);
 
@@ -87,7 +88,6 @@ const useInfiniteScroll = (fetchMore, scrollingChild, queryName) => {
                   [queryName]: dataRef.current
                };
             }
-            console.log(dataRef.current);
             return {
                [queryName]: [...prev[queryName], ...fetchMoreResult[queryName]]
             };
