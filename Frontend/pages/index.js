@@ -52,11 +52,7 @@ const StyledHomepage = styled.section`
 const Home = () => {
    const { data, loading, error, fetchMore } = useQuery(ALL_THINGS_QUERY, {
       ssr: false,
-      onCompleted: data => {
-         if (dataRef != null) {
-            dataRef.current = dataRef.current.concat(data.allThings);
-         }
-      }
+      onCompleted: data => console.log(data)
    });
 
    const {
@@ -64,8 +60,7 @@ const Home = () => {
       cursorRef,
       isFetchingMore,
       noMoreToFetchRef,
-      fetchMoreHandler,
-      dataRef
+      fetchMoreHandler
    } = useInfiniteScroll(fetchMore, '.things', 'allThings');
 
    let content;
