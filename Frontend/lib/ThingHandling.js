@@ -45,7 +45,12 @@ const useInfiniteScroll = (fetchMore, scrollingChild, queryName) => {
          variables: {
             cursor: cursorRef.current
          },
-         updateQuery: (prev, { fetchMoreResult }) => {
+         updateQuery: (prev, b, c, d) => {
+            console.log(b);
+            console.log(c);
+            console.log(d);
+            const { fetchMoreResult } = b;
+
             isFetchingMoreRef.current = false;
             setIsFetchingMore(false);
 
