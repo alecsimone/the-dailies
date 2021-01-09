@@ -93,7 +93,8 @@ const Home = () => {
             )}
          </div>
          <div className="sidebar">
-            <MyThings scrollingSelector=".sidebar" borderSide="left" />
+            {/* {<MyThings scrollingSelector=".sidebar" borderSide="left" />} */}
+            This is where my things goes
          </div>
       </StyledHomepage>
    );
