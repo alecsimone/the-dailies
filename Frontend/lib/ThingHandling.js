@@ -76,6 +76,7 @@ const useInfiniteScroll = (fetchMore, scrollingChild, queryName) => {
                   }
                };
             }
+            console.log(prev[queryName]);
             console.log(fetchMoreResult[queryName]);
             return {
                [queryName]: [...prev[queryName], ...fetchMoreResult[queryName]]
