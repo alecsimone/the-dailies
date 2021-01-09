@@ -25,7 +25,7 @@ const ALL_THINGS_QUERY = gql`
 `;
 export { ALL_THINGS_QUERY };
 
-const useInfiniteScroll = (fetchMore, scrollingChild, queryName, client) => {
+const useInfiniteScroll = (fetchMore, scrollingChild, queryName) => {
    const scrollerRef = useRef(null);
 
    const cursorRef = useRef('');
@@ -76,11 +76,8 @@ const useInfiniteScroll = (fetchMore, scrollingChild, queryName, client) => {
                   }
                };
             }
-            console.log(client);
             if (prev == null) {
-               return {
-                  [queryName]: fetchMoreResult[queryName]
-               };
+               return null;
             }
 
             return {

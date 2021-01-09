@@ -50,12 +50,9 @@ const StyledHomepage = styled.section`
 `;
 
 const Home = () => {
-   const { data, loading, error, fetchMore, client } = useQuery(
-      ALL_THINGS_QUERY,
-      {
-         ssr: false
-      }
-   );
+   const { data, loading, error, fetchMore } = useQuery(ALL_THINGS_QUERY, {
+      ssr: false
+   });
 
    const {
       scrollerRef,
@@ -63,7 +60,7 @@ const Home = () => {
       isFetchingMore,
       noMoreToFetchRef,
       fetchMoreHandler
-   } = useInfiniteScroll(fetchMore, '.things', 'allThings', client);
+   } = useInfiniteScroll(fetchMore, '.things', 'allThings');
 
    let content;
    if (error) {
