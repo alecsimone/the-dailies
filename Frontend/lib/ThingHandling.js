@@ -86,9 +86,9 @@ const useInfiniteScroll = (fetchMore, scrollingChild, queryName) => {
             const newThings = prev[queryName].concat(
                fetchMoreResult[queryName]
             );
-            return {
+            return Object.assign({}, prev, {
                [queryName]: newThings
-            };
+            });
          }
       });
    };
