@@ -11,20 +11,7 @@ import { getMainDefinition } from 'apollo-utilities';
 import { endpoint, endpointNoHTTP } from '../config';
 
 function createClient({ headers, initialState }) {
-   const cache = new InMemoryCache({
-      typePolicies: {
-         Query: {
-            fields: {
-               allThings: {
-                  keyArgs: false,
-                  merge(existing, incoming) {
-                     return existing ? [...existing, ...incoming] : incoming;
-                  }
-               }
-            }
-         }
-      }
-   }).restore(initialState);
+   const cache = new InMemoryCache().restore(initialState);
    cache.writeData({
       data: {}
    });

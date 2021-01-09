@@ -83,12 +83,10 @@ const useInfiniteScroll = (fetchMore, scrollingChild, queryName) => {
                   [queryName]: fetchMoreResult[queryName]
                };
             }
-            const newThings = prev[queryName].concat(
-               fetchMoreResult[queryName]
-            );
-            return Object.assign({}, prev, {
-               [queryName]: newThings
-            });
+            console.log('does this fire the first time?');
+            return {
+               [queryName]: [...prev[queryName], ...fetchMoreResult[queryName]]
+            };
          }
       });
    };
