@@ -318,16 +318,7 @@ const basicMemberFields = `
       createdThings {
          ${smallThingCardFields}
       }
-      friends {
-         __typename
-         id
-         displayName
-         avatar
-         rep
-         createdThings {
-            ${smallThingCardFields}
-         }
-      }
+
    }
    friendRequests {
       __typename
