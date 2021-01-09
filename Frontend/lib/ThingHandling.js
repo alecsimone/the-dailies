@@ -79,6 +79,8 @@ const useInfiniteScroll = (fetchMore, scrollingChild, queryName) => {
             }
             console.log(prev);
             if (prev == null) {
+               console.log('prev is undefined though');
+               console.log(prev);
                return {
                   [queryName]: fetchMoreResult[queryName]
                };
