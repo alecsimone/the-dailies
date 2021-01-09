@@ -204,6 +204,8 @@ async function searchAvailableTaxes(searchTerm, ctx, personal) {
       console.log(err);
    });
 
+   // We do it this way because prisma is case sensitive. So we just grab everything and do our own search
+
    const relevantTaxes = allTaxes.filter(tax =>
       tax.title.toLowerCase().includes(searchTerm.toLowerCase())
    );
@@ -329,3 +331,122 @@ exports.lengthenTikTokURL = lengthenTikTokURL;
 
 const disabledCodewords = ['disabled', 'disable', 'false', 'no', 'off', 'x'];
 exports.disabledCodewords = disabledCodewords;
+
+const calculateRelevancyScore = (thing, string) => {
+   let score = 1;
+   let words = false;
+   if (string != null && string.includes(' ')) {
+      words = string.split(' ');
+   }
+
+   thing.partOfTags.forEach(tag => {
+      if (tag.title != null && tag.title.includes(string)) {
+         score += 3 * string.length;
+      }
+      if (words) {
+         words.forEach(word => {
+            if (tag.title != null && tag.title.includes(word)) {
+               score += 1;
+            }
+         });
+      }
+   });
+
+   thing.comments.forEach(comment => {
+      if (comment.content != null && comment.content.includes(string)) {
+         score += 3 * string.length;
+      }
+      if (words) {
+         words.forEach(word => {
+            if (comment.content != null && comment.content.includes(word)) {
+               score += 1;
+            }
+         });
+      }
+   });
+
+   if (thing.summary != null && thing.summary.includes(string)) {
+      score += 6 * string.length;
+   }
+   if (words) {
+      words.forEach(word => {
+         if (thing.summary != null && thing.summary.includes(word)) {
+            score += 3;
+         }
+      });
+   }
+
+   thing.content.forEach(content => {
+      if (content.content != null && content.content.includes(string)) {
+         score += 6 * string.length;
+      }
+      if (words) {
+         words.forEach(word => {
+            if (content.content != null && content.content.includes(word)) {
+               score += 2;
+            }
+         });
+      }
+      if (content.comments != null) {
+         content.comments.forEach(comment => {
+            if (comment.comment != null && comment.comment.includes(string)) {
+               score += 3 * string.length;
+            }
+            if (words) {
+               words.forEach(word => {
+                  if (
+                     comment.comment != null &&
+                     comment.comment.includes(word)
+                  ) {
+                     score += 2;
+                  }
+               });
+            }
+         });
+      }
+   });
+
+   thing.copiedInContent.forEach(content => {
+      if (content.content != null && content.content.includes(string)) {
+         score += 6 * string.length;
+      }
+      if (words) {
+         words.forEach(word => {
+            if (content.content != null && content.content.includes(word)) {
+               score += 2;
+            }
+         });
+      }
+      if (content.comments != null) {
+         content.comments.forEach(comment => {
+            if (comment.comment != null && comment.comment.includes(string)) {
+               score += 3 * string.length;
+            }
+            if (words) {
+               words.forEach(word => {
+                  if (
+                     comment.comment != null &&
+                     comment.comment.includes(word)
+                  ) {
+                     score += 2;
+                  }
+               });
+            }
+         });
+      }
+   });
+
+   if (thing.title != null && thing.title.includes(string)) {
+      score *= 10;
+   }
+   if (words) {
+      words.forEach(word => {
+         if (thing.title != null && thing.title.includes(word)) {
+            score *= 2;
+         }
+      });
+   }
+
+   return score;
+};
+exports.calculateRelevancyScore = calculateRelevancyScore;

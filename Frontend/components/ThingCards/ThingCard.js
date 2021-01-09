@@ -17,6 +17,7 @@ import ArrowIcon from '../Icons/Arrow';
 import CommentsButton from '../ThingParts/CommentsButton';
 import { MemberContext } from '../Account/MemberProvider';
 import { ADD_COMMENT_MUTATION } from '../ThingParts/Comments';
+import CardGenerator from './CardGenerator';
 
 const StyledThingCard = styled.div`
    position: relative;
@@ -244,6 +245,10 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
    const { lowContrastGrey, midScreenBPWidthRaw } = useContext(ThemeContext);
    const { me } = useContext(MemberContext);
 
+   if (data == null || content == null) {
+      return <CardGenerator id={id} cardType="regular" />;
+   }
+
    // First let's make our array of the orderedContent so we can add comments to it when we need to
    let fullContent;
    if (copiedInContent != null && copiedInContent.length > 0) {
@@ -469,7 +474,8 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
                      transform: `translateX(calc(${translation}px - ${
                         contentSliderPosition > 0 ? '1' : '2'
                      }rem - ${contentSliderPosition > 0 ? '100' : '0'}% - ${
-                        contentSliderPosition + 1 === contentArray.length
+                        contentSliderPosition + 1 === contentArray.length &&
+                        contentArray.length > 1
                            ? '1'
                            : '0'
                      }rem))`

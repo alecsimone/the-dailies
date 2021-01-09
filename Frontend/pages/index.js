@@ -6,6 +6,7 @@ import Things from '../components/Archives/Things';
 import MyThings from '../components/Archives/MyThings';
 import LoadMoreButton from '../components/LoadMoreButton';
 import { useInfiniteScroll, ALL_THINGS_QUERY } from '../lib/ThingHandling';
+import { fullSizedLoadMoreButton } from '../styles/styleFragments';
 
 const StyledHomepage = styled.section`
    display: flex;
@@ -27,18 +28,7 @@ const StyledHomepage = styled.section`
       ${props => props.theme.desktopBreakpoint} {
          padding: 2rem;
       }
-      button.loadMore {
-         display: block;
-         padding: 1rem;
-         font-size: ${props => props.theme.bigText};
-         margin: 2rem auto;
-      }
-      div.loadMore {
-         font-size: ${props => props.theme.smallHead};
-         text-align: center;
-         margin: 1rem 0 4rem;
-         font-weight: bold;
-      }
+      ${fullSizedLoadMoreButton}
    }
    .sidebar {
       width: 25%;

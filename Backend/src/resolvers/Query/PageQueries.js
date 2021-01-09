@@ -4,7 +4,8 @@ const {
    searchAvailableTaxes,
    canSeeThingGate,
    canSeeThing,
-   properUpdateStuff
+   properUpdateStuff,
+   calculateRelevancyScore
 } = require('../../utils/ThingHandling');
 
 async function searchTaxes(parent, { searchTerm, personal }, ctx, info) {
@@ -19,7 +20,7 @@ async function searchTaxes(parent, { searchTerm, personal }, ctx, info) {
 }
 exports.searchTaxes = searchTaxes;
 
-async function taxByTitle(parent, { title, personal }, ctx, info) {
+async function taxByTitle(parent, { title, personal, cursor }, ctx, info) {
    const typeToQuery = personal ? 'stacks' : 'tags';
 
    const possibleTaxes = await searchAvailableTaxes(title, ctx, personal).catch(
@@ -54,22 +55,38 @@ async function taxByTitle(parent, { title, personal }, ctx, info) {
       }
 
       if (theTax.connectedThings && theTax.connectedThings.length > 0) {
-         theTax.connectedThings = theTax.connectedThings.filter(thing =>
+         const allowedThings = theTax.connectedThings.filter(thing =>
             canSeeThing(ctx, thing)
          );
+         let cursoredThings = allowedThings;
+         if (cursor != null) {
+            console.log(cursor);
+            console.log(allowedThings.length);
+            cursoredThings = allowedThings.filter(thing => {
+               console.log(Date.parse(thing.createdAt));
+               console.log(Date.parse(cursor));
+               return Date.parse(thing.createdAt) < Date.parse(cursor);
+            });
+            console.log(cursoredThings.length);
+         }
+         cursoredThings.sort(
+            (a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt)
+         );
+         const trimmedThings = cursoredThings.slice(0, 6);
+         theTax.connectedThings = trimmedThings;
       }
 
-      const searchResults = await searchThings(title, ctx).catch(err => {
-         console.log(err);
-      });
-      searchResults.forEach(result => {
-         const preExistingCheck = theTax.connectedThings.filter(
-            thing => thing.id !== result.id
-         );
-         if (preExistingCheck != null && preExistingCheck.length > 0) {
-            theTax.connectedThings.push(result);
-         }
-      });
+      // const searchResults = await searchThings(title, ctx).catch(err => {
+      //    console.log(err);
+      // });
+      // searchResults.forEach(result => {
+      //    const preExistingCheck = theTax.connectedThings.filter(
+      //       thing => thing.id !== result.id
+      //    );
+      //    if (preExistingCheck != null && preExistingCheck.length > 0) {
+      //       theTax.connectedThings.push(result);
+      //    }
+      // });
 
       return theTax;
    }
@@ -251,67 +268,81 @@ async function allThings(parent, { cursor }, ctx, info) {
 exports.allThings = allThings;
 
 async function searchThings(string, ctx, isTitleOnly = false) {
-   const everyThing = await ctx.db.query
-      .things({}, `{${fullThingFields}}`)
-      .catch(err => {
-         console.log(err);
-      });
+   let where;
+   if (isTitleOnly) {
+      where = {
+         title_contains: string
+      };
+   } else {
+      where = {
+         OR: [
+            {
+               title_contains: string
+            },
+            {
+               author: {
+                  displayName_contains: string
+               }
+            },
+            {
+               content_some: {
+                  OR: [
+                     {
+                        content_contains: string
+                     },
+                     {
+                        comments_some: {
+                           comment_contains: string
+                        }
+                     }
+                  ]
+               }
+            },
+            {
+               copiedInContent_some: {
+                  OR: [
+                     {
+                        content_contains: string
+                     },
+                     {
+                        comments_some: {
+                           comment_contains: string
+                        }
+                     }
+                  ]
+               }
+            },
+            {
+               partOfTags_some: {
+                  title_contains: string
+               }
+            },
+            {
+               comments_some: {
+                  comment_contains: string
+               }
+            },
+            {
+               summary_contains: string
+            }
+         ]
+      };
+   }
 
-   const term = string.toLowerCase().trim();
+   const foundThings = await ctx.db.query
+      .things(
+         {
+            where
+         },
+         `{${fullThingFields}}`
+      )
+      .catch(err => console.log(err));
 
-   const relevantThings = everyThing.filter(thing => {
-      if (
-         thing.title &&
-         thing.title
-            .toLowerCase()
-            .trim()
-            .includes(term)
-      ) {
-         return true;
-      }
-      if (isTitleOnly) return false;
-
-      if (
-         (thing.link &&
-            thing.link
-               .toLowerCase()
-               .trim()
-               .includes(term)) ||
-         (thing.author.displayName &&
-            thing.author.displayName
-               .toLowerCase()
-               .trim()
-               .includes(term))
-      ) {
-         return true;
-      }
-      const contentCheck = thing.content.filter(contentPiece =>
-         contentPiece.content.includes(term)
-      );
-      if (contentCheck != null && contentCheck.length > 0) {
-         return true;
-      }
-
-      const tagCheck = thing.partOfTags.filter(tag => tag.title.includes(term));
-      if (tagCheck != null && tagCheck.length > 0) {
-         return true;
-      }
-
-      const commentCheck = thing.comments.filter(comment =>
-         comment.comment.includes(term)
-      );
-      if (commentCheck != null && commentCheck.length > 0) {
-         return true;
-      }
-
-      return false;
-   });
-
-   return relevantThings;
+   return foundThings;
 }
 exports.searchThings = searchThings;
 
-async function search(parent, { string, isTitleOnly }, ctx, info) {
+async function search(parent, { string, isTitleOnly, cursor }, ctx, info) {
    const relevantThings = await searchThings(string, ctx, isTitleOnly).catch(
       err => {
          console.log(err);
@@ -319,6 +350,29 @@ async function search(parent, { string, isTitleOnly }, ctx, info) {
    );
 
    const safeThings = relevantThings.filter(thing => canSeeThing(ctx, thing));
-   return safeThings;
+
+   safeThings.sort(
+      (a, b) =>
+         calculateRelevancyScore(b, string) - calculateRelevancyScore(a, string)
+   );
+   let cursorScore;
+   let cursorID;
+   if (cursor != null) {
+      const cursorDivider = cursor.indexOf('_ID_'); // Our cursor is a string that combines the relevancy score
+      cursorScore = cursor.substring(0, cursorDivider);
+      cursorID = cursor.substring(cursorDivider + 4);
+   }
+   const cursoredThings = safeThings.filter(thing => {
+      if (cursor == null) return true;
+      const thingScore = calculateRelevancyScore(thing, string);
+      if (thing.id === cursorID) return false; // If this thing has the ID we pulled out of the cursor, then it's already been sent and we skip it
+      if (thingScore < cursorScore) return true; // If this thing has a lower relevancy than the score we pulled out of the cursor, then we haven't sent it yet
+      if (thingScore === cursorScore && thing.id > cursorID) return true; // If this thing has the same score as the score we pulled out of the cursor but a higher ID, then we probably haven't sent it yet
+      return false; // Otherwise, we should have sent this thing so we skip it
+   });
+
+   const trimmedThings = cursoredThings.slice(0, 12);
+
+   return trimmedThings;
 }
 exports.search = search;

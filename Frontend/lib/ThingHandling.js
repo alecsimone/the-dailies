@@ -57,6 +57,25 @@ const useInfiniteScroll = (fetchMore, scrollingChild, queryName) => {
                noMoreToFetchRef.current = true;
                setNoMoreToFetch(true);
             }
+            if (queryName === 'taxByTitle') {
+               if (
+                  fetchMoreResult[queryName] &&
+                  fetchMoreResult[queryName].connectedThings.length === 0
+               ) {
+                  noMoreToFetchRef.current = true;
+                  setNoMoreToFetch(true);
+               }
+
+               const connectedThings = prev[queryName].connectedThings.concat(
+                  fetchMoreResult[queryName].connectedThings
+               );
+               return {
+                  [queryName]: {
+                     ...prev[queryName],
+                     connectedThings
+                  }
+               };
+            }
             return {
                [queryName]: [...prev[queryName], ...fetchMoreResult[queryName]]
             };

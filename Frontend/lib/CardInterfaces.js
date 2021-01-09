@@ -216,6 +216,10 @@ const fullThingFields = `
       friends {
          __typename
          id
+         friends {
+            __typename
+            id
+         }
       }
       rep
    }
@@ -289,7 +293,7 @@ const taxFields = `
    }
    contentOrder
    connectedThings {
-      ${smallThingCardFields}
+      ${thingCardFields}
    }
    comments {
       ${commentFields}

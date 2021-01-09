@@ -7,6 +7,7 @@ import LoadingRing from '../LoadingRing';
 import ErrorMessage from '../ErrorMessage';
 import { sidebarPerPage } from '../../config';
 import { smallThingCardFields } from '../../lib/CardInterfaces';
+import { useInfiniteScroll } from '../../lib/ThingHandling';
 
 const MY_FRIENDS_THINGS_QUERY = gql`
    query MY_FRIENDS_THINGS_QUERY {
@@ -18,9 +19,20 @@ const MY_FRIENDS_THINGS_QUERY = gql`
 
 const MyFriendsThings = () => {
    const { me } = useContext(MemberContext);
-   const { data, loading, error } = useQuery(MY_FRIENDS_THINGS_QUERY, {
-      ssr: false
-   });
+   const { data, loading, error, fetchMore } = useQuery(
+      MY_FRIENDS_THINGS_QUERY,
+      {
+         ssr: false
+      }
+   );
+
+   const {
+      scrollerRef,
+      cursorRef,
+      isFetchingMore,
+      noMoreToFetchRef,
+      fetchMoreHandler
+   } = useInfiniteScroll(fetchMore, '.things', 'myFriendsThings');
 
    if (error) {
       return <ErrorMessage error={error} />;
@@ -40,13 +52,7 @@ const MyFriendsThings = () => {
       friendsThings.sort((a, b) => (a.id < b.id ? 1 : -1));
 
       return (
-         <Things
-            things={friendsThings}
-            displayType="list"
-            cardSize="small"
-            scrollingParentSelector=".sidebar"
-            perPage={sidebarPerPage}
-         />
+         <Things things={friendsThings} displayType="list" cardSize="small" />
       );
    }
 
