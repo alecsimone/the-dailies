@@ -49,6 +49,7 @@ const useInfiniteScroll = (fetchMore, scrollingChild, queryName) => {
             setIsFetchingMore(false);
 
             if (!fetchMoreResult) return prev;
+            if (prev == null) return null;
 
             if (
                fetchMoreResult[queryName] &&
@@ -76,8 +77,6 @@ const useInfiniteScroll = (fetchMore, scrollingChild, queryName) => {
                   }
                };
             }
-            console.log(prev[queryName]);
-            console.log(fetchMoreResult[queryName]);
             return {
                [queryName]: [...prev[queryName], ...fetchMoreResult[queryName]]
             };

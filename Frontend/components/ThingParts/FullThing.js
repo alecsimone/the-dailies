@@ -57,6 +57,7 @@ const StyledFullThing = styled.article`
          max-height: 90vh;
          max-height: calc(var(--vh, 1vh) * 90);
          object-fit: contain;
+         ${props => props.theme.scroll};
       }
    }
    .tweet {
