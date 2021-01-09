@@ -83,10 +83,13 @@ const useInfiniteScroll = (fetchMore, scrollingChild, queryName) => {
                   [queryName]: fetchMoreResult[queryName]
                };
             }
-            console.log('does this fire the first time?');
-            return {
+
+            const newDataObj = {
                [queryName]: [...prev[queryName], ...fetchMoreResult[queryName]]
             };
+            console.log(newDataObj);
+
+            return newDataObj;
          }
       });
    };
