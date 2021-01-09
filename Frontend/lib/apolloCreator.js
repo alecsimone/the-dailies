@@ -16,7 +16,10 @@ function createClient({ headers, initialState }) {
          Query: {
             fields: {
                allThings: {
-                  keyArgs: false
+                  keyArgs: false,
+                  merge(existing, incoming) {
+                     return existing ? [...existing, ...incoming] : incoming;
+                  }
                }
             }
          }
