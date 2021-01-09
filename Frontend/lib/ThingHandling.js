@@ -35,6 +35,8 @@ const useInfiniteScroll = (fetchMore, scrollingChild, queryName) => {
    const noMoreToFetchRef = useRef(false); // We need the ref to be able to pass updated data to the fetchMoreHandler
    const [noMoreToFetch, setNoMoreToFetch] = useState(false); // But we need the state to trigger a re-render, even though we don't actually use the state anywhere
 
+   const dataRef = useRef([]);
+
    const fetchMoreHandler = () => {
       if (noMoreToFetchRef.current) return;
 
@@ -45,12 +47,13 @@ const useInfiniteScroll = (fetchMore, scrollingChild, queryName) => {
             cursor: cursorRef.current
          },
          updateQuery: (prev, { fetchMoreResult }) => {
-            console.log(prev);
-            console.log(fetchMoreResult);
             isFetchingMoreRef.current = false;
             setIsFetchingMore(false);
 
             if (!fetchMoreResult) return prev;
+            dataRef.current = dataRef.current.concat(
+               fetchMoreResult[queryName]
+            );
 
             if (
                fetchMoreResult[queryName] &&
@@ -79,17 +82,15 @@ const useInfiniteScroll = (fetchMore, scrollingChild, queryName) => {
                };
             }
             if (prev == null) {
+               console.log(dataRef.current);
                return {
-                  [queryName]: fetchMoreResult[queryName]
+                  [queryName]: dataRef.current
                };
             }
 
-            const newDataObj = {
+            return {
                [queryName]: [...prev[queryName], ...fetchMoreResult[queryName]]
             };
-            console.log(newDataObj);
-
-            return newDataObj;
          }
       });
    };
@@ -127,7 +128,8 @@ const useInfiniteScroll = (fetchMore, scrollingChild, queryName) => {
       isFetchingMoreRef,
       isFetchingMore,
       noMoreToFetchRef,
-      fetchMoreHandler
+      fetchMoreHandler,
+      dataRef
    };
 };
 export { useInfiniteScroll };
