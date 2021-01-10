@@ -39,6 +39,7 @@ const MY_THINGS_QUERY = gql`
 `;
 
 const MyThings = ({ setShowingSidebar, scrollingSelector, borderSide }) => {
+   console.log('my things is still rendering somewhere');
    const { me, loading: loadingMe } = useContext(MemberContext);
    const { setContent } = useContext(ModalContext);
 

@@ -667,11 +667,13 @@ const Page = ({ children, pageProps }) => {
                                  : 'myThingsBar hidden'
                            }
                         >
-                           <MyThings
-                              setShowingSidebar={setThingsSidebarIsOpen}
-                              scrollingSelector=".myThingsBar"
-                              borderSide="left"
-                           />
+                           {false && (
+                              <MyThings
+                                 setShowingSidebar={setThingsSidebarIsOpen}
+                                 scrollingSelector=".myThingsBar"
+                                 borderSide="left"
+                              />
+                           )}
                         </div>
                      </section>
                      <Modal />
