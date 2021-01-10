@@ -233,7 +233,6 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
       score,
       createdAt
    } = data;
-   return <div>Thing card for {id}!</div>;
 
    const [contentSliderPosition, setContentSliderPosition] = useState(0);
    const currentContentWrapperRef = useRef(null);
