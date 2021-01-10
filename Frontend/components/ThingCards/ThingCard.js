@@ -218,6 +218,7 @@ const StyledThingCard = styled.div`
 const ThingCardContext = React.createContext();
 
 const ThingCard = ({ data, setExpanded, borderSide }) => {
+   return <div>Thing card!</div>;
    const {
       id,
       featuredImage,

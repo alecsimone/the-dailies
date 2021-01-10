@@ -643,6 +643,29 @@ const Page = ({ children, pageProps }) => {
    }, [adjustViewport]);
 
    return (
+      <ThemeProvider theme={theme}>
+         <StyledPage id="page">
+            <Meta />
+            <>
+               <GlobalStyle />
+               <section className="threeColumns">
+                  <div className="mainSection">{children}</div>
+                  <div
+                     className={
+                        thingsSidebarIsOpen
+                           ? 'myThingsBar visible'
+                           : 'myThingsBar hidden'
+                     }
+                  />
+               </section>
+            </>
+            <BottomBar />
+         </StyledPage>
+         <ToastContainer className="dailiesStyle" />
+      </ThemeProvider>
+   );
+
+   return (
       <MemberProvider isHome={isHome}>
          <ThemeProvider theme={theme}>
             <ModalProvider
