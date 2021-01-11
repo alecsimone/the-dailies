@@ -534,7 +534,7 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
       );
    }
 
-   return <div>Thing card {title}</div>;
+   return <div>{title}</div>;
 
    return (
       <ThingCardContext.Provider value={data}>
