@@ -250,17 +250,17 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
       return <CardGenerator id={id} cardType="regular" />;
    }
 
-   // // First let's make our array of the orderedContent so we can add comments to it when we need to
-   // let fullContent;
-   // if (copiedInContent != null && copiedInContent.length > 0) {
-   //    fullContent = content.concat(copiedInContent);
-   // } else {
-   //    fullContent = content;
-   // }
-   // const contentArray = orderContent(fullContent, contentOrder);
-   // if (summary != null && summary !== '' && !contentArray.includes(summary)) {
-   //    contentArray.unshift(summary);
-   // }
+   // First let's make our array of the orderedContent so we can add comments to it when we need to
+   let fullContent;
+   if (copiedInContent != null && copiedInContent.length > 0) {
+      fullContent = content.concat(copiedInContent);
+   } else {
+      fullContent = content;
+   }
+   const contentArray = orderContent(fullContent, contentOrder);
+   if (summary != null && summary !== '' && !contentArray.includes(summary)) {
+      contentArray.unshift(summary);
+   }
 
    // // We need an object whose properties are the ids of all the content pieces on this thing, each of which starts out with an empty string, and put that in state for the comment text
    // const contentCommentsObject = {};
