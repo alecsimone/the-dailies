@@ -235,16 +235,16 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
       createdAt
    } = data;
 
-   // const [contentSliderPosition, setContentSliderPosition] = useState(0);
-   // const currentContentWrapperRef = useRef(null);
+   const [contentSliderPosition, setContentSliderPosition] = useState(0);
+   const currentContentWrapperRef = useRef(null);
 
-   // const [showingComments, setShowingComments] = useState(false);
-   // const [touchStart, setTouchStart] = useState(0);
-   // const [touchStartY, setTouchStartY] = useState(0);
-   // const [touchEnd, setTouchEnd] = useState(0);
+   const [showingComments, setShowingComments] = useState(false);
+   const [touchStart, setTouchStart] = useState(0);
+   const [touchStartY, setTouchStartY] = useState(0);
+   const [touchEnd, setTouchEnd] = useState(0);
 
-   // const { lowContrastGrey, midScreenBPWidthRaw } = useContext(ThemeContext);
-   // const { me } = useContext(MemberContext);
+   const { lowContrastGrey, midScreenBPWidthRaw } = useContext(ThemeContext);
+   const { me } = useContext(MemberContext);
 
    if (data == null || content == null) {
       return <div>This thing has no data</div>;
