@@ -257,7 +257,7 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
    } else {
       fullContent = content;
    }
-   // const contentArray = orderContent(fullContent, contentOrder);
+   const contentArray = orderContent(fullContent, contentOrder);
    // if (summary != null && summary !== '' && !contentArray.includes(summary)) {
    //    contentArray.unshift(summary);
    // }
