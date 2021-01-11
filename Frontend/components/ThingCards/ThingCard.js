@@ -534,8 +534,6 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
       );
    }
 
-   return <div>{title}</div>;
-
    return (
       <ThingCardContext.Provider value={data}>
          <StyledThingCard
