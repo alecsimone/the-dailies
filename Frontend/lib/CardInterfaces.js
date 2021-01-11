@@ -302,7 +302,7 @@ const taxFields = `
 `;
 export { taxFields };
 
-const fieldsMeNeeds = `
+const basicMemberFields = `
    __typename
    id
    displayName
@@ -328,75 +328,6 @@ const fieldsMeNeeds = `
    }
    defaultExpansion
    defaultPrivacy
-   role
-   twitterUserName
-`;
-export { fieldsMeNeeds };
-
-const basicMemberFields = `
-   __typename
-   id
-   displayName
-   avatar
-   rep
-   friends {
-      __typename
-      id
-      displayName
-      avatar
-      rep
-      role
-      createdThings {
-         ${smallThingCardFields}
-      }
-      friends {
-         __typename
-         id
-         displayName
-         avatar
-         rep
-         createdThings {
-            ${smallThingCardFields}
-         }
-      }
-   }
-   friendRequests {
-      __typename
-      id
-      avatar
-      rep
-      displayName
-      role
-      friends {
-         __typename
-         id
-      }
-   }
-   ignoredFriendRequests {
-      __typename
-      id
-   }
-   notifications {
-      __typename
-      id
-      kind
-      initiator {
-         __typename
-         id
-         avatar
-         rep
-         displayName
-         role
-         friends {
-            __typename
-            id
-         }
-      }
-      unread
-      linkQuery
-   }
-   broadcastView
-   defaultExpansion
    role
    twitterUserName
 `;
