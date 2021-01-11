@@ -247,7 +247,6 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
    const { me } = useContext(MemberContext);
 
    if (data == null || content == null) {
-      return <div>This thing has no data</div>;
       return <CardGenerator id={id} cardType="regular" />;
    }
 
