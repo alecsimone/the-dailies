@@ -259,6 +259,7 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
    }
    const contentArray = orderContent(fullContent, contentOrder);
    if (summary != null && summary !== '' && !contentArray.includes(summary)) {
+      contentArray.push(summary);
       // contentArray.unshift(summary);
    }
 
