@@ -409,6 +409,7 @@ const stickifier = stickingData => {
 export { stickifier };
 
 const orderContent = (content, contentOrder) => {
+   return content;
    if (contentOrder == null || contentOrder.length === 0) return content; // If we don't get a contentOrder array, we just give back the content
 
    const orderedContent = [];
