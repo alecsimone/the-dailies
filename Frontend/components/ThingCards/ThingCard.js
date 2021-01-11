@@ -220,6 +220,7 @@ const ThingCardContext = React.createContext();
 const ThingCard = ({ data, setExpanded, borderSide }) => {
    const {
       id,
+      title,
       featuredImage,
       color,
       author,
@@ -246,7 +247,6 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
    const { me } = useContext(MemberContext);
 
    if (data == null || content == null) {
-      return <div>This thing has no data</div>;
       return <CardGenerator id={id} cardType="regular" />;
    }
 
@@ -533,6 +533,8 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
          </div>
       );
    }
+
+   return <div>Thing card {title}</div>;
 
    return (
       <ThingCardContext.Provider value={data}>
