@@ -258,8 +258,13 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
       fullContent = content;
    }
    const contentArray = orderContent(fullContent, contentOrder);
-   if (summary != null && summary !== '' && !contentArray.includes(summary)) {
-      // contentArray.unshift(summary);
+   const contentPossiblyWithSummaryArray = [...contentArray];
+   if (
+      summary != null &&
+      summary !== '' &&
+      !contentPossiblyWithSummaryArray.includes(summary)
+   ) {
+      contentPossiblyWithSummaryArray.unshift(summary);
    }
 
    // We need an object whose properties are the ids of all the content pieces on this thing, each of which starts out with an empty string, and put that in state for the comment text
@@ -345,7 +350,7 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
       translation = 0;
    }
    if (
-      contentSliderPosition + 1 === contentArray.length &&
+      contentSliderPosition + 1 === contentPossiblyWithSummaryArray.length &&
       translation < minimumTranslationDistance
    ) {
       translation = 0;
@@ -360,8 +365,9 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
    const commentsElement = (
       <ContentPieceComments
          comments={
-            contentArray[contentSliderPosition]?.comments != null
-               ? contentArray[contentSliderPosition].comments
+            contentPossiblyWithSummaryArray[contentSliderPosition]?.comments !=
+            null
+               ? contentPossiblyWithSummaryArray[contentSliderPosition].comments
                : []
          }
          id={id}
@@ -369,11 +375,14 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
          input={
             <RichTextArea
                text={
-                  commentTextObject[(contentArray[contentSliderPosition]?.id)]
+                  commentTextObject[
+                     (contentPossiblyWithSummaryArray[contentSliderPosition]
+                        ?.id)
+                  ]
                }
                setText={newValue =>
                   handleCommentChanges(
-                     contentArray[contentSliderPosition]?.id,
+                     contentPossiblyWithSummaryArray[contentSliderPosition]?.id,
                      newValue
                   )
                }
@@ -391,7 +400,10 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
          {showingComments ? (
             commentsElement
          ) : (
-            <TruncCont cont={contentArray[contentSliderPosition]} limit={280} />
+            <TruncCont
+               cont={contentPossiblyWithSummaryArray[contentSliderPosition]}
+               limit={280}
+            />
          )}
          {(contentSliderPosition > 0 || summary == null || summary === '') && (
             <div className="commentsButtonComponentWrapper">
@@ -439,7 +451,8 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
             e.stopPropagation();
             if (
                touchEnd - touchStart < -111 &&
-               contentSliderPosition + 1 < contentArray.length
+               contentSliderPosition + 1 <
+                  contentPossiblyWithSummaryArray.length
             ) {
                handleContentScrolling(contentSliderPosition + 1);
                setShowingComments(false);
@@ -464,7 +477,11 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
                      }}
                   >
                      <TruncCont
-                        cont={contentArray[contentSliderPosition - 1]}
+                        cont={
+                           contentPossiblyWithSummaryArray[
+                              contentSliderPosition - 1
+                           ]
+                        }
                         limit={280}
                      />
                   </div>
@@ -475,8 +492,9 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
                      transform: `translateX(calc(${translation}px - ${
                         contentSliderPosition > 0 ? '1' : '2'
                      }rem - ${contentSliderPosition > 0 ? '100' : '0'}% - ${
-                        contentSliderPosition + 1 === contentArray.length &&
-                        contentArray.length > 1
+                        contentSliderPosition + 1 ===
+                           contentPossiblyWithSummaryArray.length &&
+                        contentPossiblyWithSummaryArray.length > 1
                            ? '1'
                            : '0'
                      }rem))`
@@ -485,7 +503,8 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
                >
                   {contentElement}
                </div>
-               {contentSliderPosition + 1 < contentArray.length && (
+               {contentSliderPosition + 1 <
+                  contentPossiblyWithSummaryArray.length && (
                   <div
                      className={`nextContentWrapper${
                         translation >= 0 ? ' doesNotGiveSize' : ' givesSize'
@@ -497,7 +516,11 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
                      }}
                   >
                      <TruncCont
-                        cont={contentArray[contentSliderPosition + 1]}
+                        cont={
+                           contentPossiblyWithSummaryArray[
+                              contentSliderPosition + 1
+                           ]
+                        }
                         limit={280}
                      />
                   </div>
@@ -508,7 +531,7 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
    );
 
    let contentSlider;
-   if (contentArray.length > 0) {
+   if (contentPossiblyWithSummaryArray.length > 0) {
       contentSlider = (
          <div className="contentSlider">
             {contentSliderPosition > 0 && (
@@ -520,8 +543,10 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
                   }}
                />
             )}
-            {contentSliderPosition + 1} / {contentArray.length}
-            {contentSliderPosition + 1 < contentArray.length && (
+            {contentSliderPosition + 1} /{' '}
+            {contentPossiblyWithSummaryArray.length}
+            {contentSliderPosition + 1 <
+               contentPossiblyWithSummaryArray.length && (
                <ArrowIcon
                   pointing="right"
                   onClick={() => {
@@ -572,8 +597,8 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
                </div>
                <div className="meta-right">{privacy}</div>
             </div>
-            {contentArray.length > 0 && contentArea}
-            {contentArray.length > 1 && contentSlider}
+            {contentPossiblyWithSummaryArray.length > 0 && contentArea}
+            {contentPossiblyWithSummaryArray.length > 1 && contentSlider}
             {tags.length > 0 && <Taxes taxes={tags} personal={false} />}
             <VoteBar votes={votes} id={id} type="Thing" />
             {setExpanded != null && (
