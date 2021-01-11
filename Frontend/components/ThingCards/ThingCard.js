@@ -262,277 +262,277 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
    //    contentArray.unshift(summary);
    // }
 
-   // // We need an object whose properties are the ids of all the content pieces on this thing, each of which starts out with an empty string, and put that in state for the comment text
-   // const contentCommentsObject = {};
-   // content.forEach(piece => {
-   //    contentCommentsObject[piece.id] = '';
-   // });
-   // const [commentTextObject, setCommentTextObject] = useState(
-   //    contentCommentsObject
-   // );
+   // We need an object whose properties are the ids of all the content pieces on this thing, each of which starts out with an empty string, and put that in state for the comment text
+   const contentCommentsObject = {};
+   content.forEach(piece => {
+      contentCommentsObject[piece.id] = '';
+   });
+   const [commentTextObject, setCommentTextObject] = useState(
+      contentCommentsObject
+   );
 
-   // // Then we need a function to switch an individual value in that object
-   // const handleCommentChanges = (pieceID, newValue) => {
-   //    setCommentTextObject(prevState => ({
-   //       ...prevState,
-   //       [pieceID]: newValue
-   //    }));
-   // };
+   // Then we need a function to switch an individual value in that object
+   const handleCommentChanges = (pieceID, newValue) => {
+      setCommentTextObject(prevState => ({
+         ...prevState,
+         [pieceID]: newValue
+      }));
+   };
 
-   // const handleContentScrolling = newIndex => {
-   //    currentContentWrapperRef.current.scrollTop = 0;
-   //    setContentSliderPosition(newIndex);
-   // };
+   const handleContentScrolling = newIndex => {
+      currentContentWrapperRef.current.scrollTop = 0;
+      setContentSliderPosition(newIndex);
+   };
 
-   // const [addComment] = useMutation(ADD_COMMENT_MUTATION, {
-   //    onError: err => alert(err.message)
-   // });
+   const [addComment] = useMutation(ADD_COMMENT_MUTATION, {
+      onError: err => alert(err.message)
+   });
 
-   // // And finally a function to send new comments to the server
-   // const postNewComment = async () => {
-   //    const pieceID = contentArray[contentSliderPosition].id;
-   //    const now = new Date();
-   //    const newComment = {
-   //       __typename: 'Comment',
-   //       author: {
-   //          __typename: 'Member',
-   //          avatar: me.avatar,
-   //          displayName: me.displayName,
-   //          id: me.id,
-   //          rep: me.rep
-   //       },
-   //       comment: commentTextObject[pieceID],
-   //       createdAt: now.toISOString(),
-   //       id: 'temporaryID',
-   //       votes: [],
-   //       updatedAt: now.toISOString()
-   //    };
+   // And finally a function to send new comments to the server
+   const postNewComment = async () => {
+      const pieceID = contentArray[contentSliderPosition].id;
+      const now = new Date();
+      const newComment = {
+         __typename: 'Comment',
+         author: {
+            __typename: 'Member',
+            avatar: me.avatar,
+            displayName: me.displayName,
+            id: me.id,
+            rep: me.rep
+         },
+         comment: commentTextObject[pieceID],
+         createdAt: now.toISOString(),
+         id: 'temporaryID',
+         votes: [],
+         updatedAt: now.toISOString()
+      };
 
-   //    contentArray[contentSliderPosition].comments.push(newComment);
+      contentArray[contentSliderPosition].comments.push(newComment);
 
-   //    handleCommentChanges(pieceID, '');
-   //    await addComment({
-   //       variables: {
-   //          comment: commentTextObject[pieceID],
-   //          id: pieceID,
-   //          type: 'ContentPiece'
-   //       },
-   //       optimisticResponse: {
-   //          __typename: 'Mutation',
-   //          addComment: {
-   //             __typename: 'ContentPiece',
-   //             id: pieceID,
-   //             comments: contentArray[contentSliderPosition].comments
-   //          }
-   //       }
-   //    }).catch(err => {
-   //       alert(err.message);
-   //    });
-   //    // TODO: Add the update function a la Comments.js line 192
-   // };
+      handleCommentChanges(pieceID, '');
+      await addComment({
+         variables: {
+            comment: commentTextObject[pieceID],
+            id: pieceID,
+            type: 'ContentPiece'
+         },
+         optimisticResponse: {
+            __typename: 'Mutation',
+            addComment: {
+               __typename: 'ContentPiece',
+               id: pieceID,
+               comments: contentArray[contentSliderPosition].comments
+            }
+         }
+      }).catch(err => {
+         alert(err.message);
+      });
+      // TODO: Add the update function a la Comments.js line 192
+   };
 
-   // let highlightColor = lowContrastGrey;
-   // if (color != null) {
-   //    highlightColor = color;
-   // }
+   let highlightColor = lowContrastGrey;
+   if (color != null) {
+      highlightColor = color;
+   }
 
-   // let translation = touchEnd - touchStart;
-   // const minimumTranslationDistance = 30;
-   // if (
-   //    contentSliderPosition === 0 &&
-   //    translation > minimumTranslationDistance * -1
-   // ) {
-   //    translation = 0;
-   // }
-   // if (
-   //    contentSliderPosition + 1 === contentArray.length &&
-   //    translation < minimumTranslationDistance
-   // ) {
-   //    translation = 0;
-   // }
-   // if (
-   //    translation > minimumTranslationDistance * -1 &&
-   //    translation < minimumTranslationDistance
-   // ) {
-   //    translation = 0;
-   // }
+   let translation = touchEnd - touchStart;
+   const minimumTranslationDistance = 30;
+   if (
+      contentSliderPosition === 0 &&
+      translation > minimumTranslationDistance * -1
+   ) {
+      translation = 0;
+   }
+   if (
+      contentSliderPosition + 1 === contentArray.length &&
+      translation < minimumTranslationDistance
+   ) {
+      translation = 0;
+   }
+   if (
+      translation > minimumTranslationDistance * -1 &&
+      translation < minimumTranslationDistance
+   ) {
+      translation = 0;
+   }
 
-   // const commentsElement = (
-   //    <ContentPieceComments
-   //       comments={
-   //          contentArray[contentSliderPosition]?.comments != null
-   //             ? contentArray[contentSliderPosition].comments
-   //             : []
-   //       }
-   //       id={id}
-   //       key={id}
-   //       input={
-   //          <RichTextArea
-   //             text={
-   //                commentTextObject[(contentArray[contentSliderPosition]?.id)]
-   //             }
-   //             setText={newValue =>
-   //                handleCommentChanges(
-   //                   contentArray[contentSliderPosition]?.id,
-   //                   newValue
-   //                )
-   //             }
-   //             postText={postNewComment}
-   //             placeholder="Add comment"
-   //             buttonText="comment"
-   //             id={id}
-   //          />
-   //       }
-   //    />
-   // );
+   const commentsElement = (
+      <ContentPieceComments
+         comments={
+            contentArray[contentSliderPosition]?.comments != null
+               ? contentArray[contentSliderPosition].comments
+               : []
+         }
+         id={id}
+         key={id}
+         input={
+            <RichTextArea
+               text={
+                  commentTextObject[(contentArray[contentSliderPosition]?.id)]
+               }
+               setText={newValue =>
+                  handleCommentChanges(
+                     contentArray[contentSliderPosition]?.id,
+                     newValue
+                  )
+               }
+               postText={postNewComment}
+               placeholder="Add comment"
+               buttonText="comment"
+               id={id}
+            />
+         }
+      />
+   );
 
-   // const contentElement = (
-   //    <div className="contentArea">
-   //       {showingComments ? (
-   //          commentsElement
-   //       ) : (
-   //          <TruncCont cont={contentArray[contentSliderPosition]} limit={280} />
-   //       )}
-   //       {(contentSliderPosition > 0 || summary == null || summary === '') && (
-   //          <div className="commentsButtonComponentWrapper">
-   //             <CommentsButton
-   //                onClick={() => setShowingComments(!showingComments)}
-   //                count={
-   //                   content[contentSliderPosition]?.comments?.length != null
-   //                      ? content[contentSliderPosition]?.comments?.length
-   //                      : 0
-   //                }
-   //             />
-   //          </div>
-   //       )}
-   //    </div>
-   // );
+   const contentElement = (
+      <div className="contentArea">
+         {showingComments ? (
+            commentsElement
+         ) : (
+            <TruncCont cont={contentArray[contentSliderPosition]} limit={280} />
+         )}
+         {(contentSliderPosition > 0 || summary == null || summary === '') && (
+            <div className="commentsButtonComponentWrapper">
+               <CommentsButton
+                  onClick={() => setShowingComments(!showingComments)}
+                  count={
+                     content[contentSliderPosition]?.comments?.length != null
+                        ? content[contentSliderPosition]?.comments?.length
+                        : 0
+                  }
+               />
+            </div>
+         )}
+      </div>
+   );
 
-   // const contentArea = (
-   //    <div
-   //       className="cardTouchWatcher"
-   //       key={id}
-   //       onTouchStart={e => {
-   //          e.stopPropagation();
-   //          setTouchStart(e.touches[0].clientX);
-   //          setTouchStartY(e.touches[0].clientY);
-   //          setTouchEnd(e.touches[0].clientX);
-   //       }}
-   //       onTouchMove={e => {
-   //          e.stopPropagation();
+   const contentArea = (
+      <div
+         className="cardTouchWatcher"
+         key={id}
+         onTouchStart={e => {
+            e.stopPropagation();
+            setTouchStart(e.touches[0].clientX);
+            setTouchStartY(e.touches[0].clientY);
+            setTouchEnd(e.touches[0].clientX);
+         }}
+         onTouchMove={e => {
+            e.stopPropagation();
 
-   //          // Not using this as it loses the native touch scroll function's flick ability, and the native behavior isn't so bad now that I've made this part scroll instead of the whole page
-   //          // if (translation === 0) {
-   //          //    const touchWatcher = e.target.closest(
-   //          //       '.currentContentWrapper'
-   //          //    );
-   //          //    const initialScroll = touchWatcher.scrollTop;
-   //          //    const scrollDistance = touchStartY - e.touches[0].clientY;
-   //          //    const newScroll = initialScroll + scrollDistance;
-   //          //    touchWatcher.scrollTop = newScroll;
-   //          //    setTouchStartY(e.touches[0].clientY);
-   //          // }
+            // Not using this as it loses the native touch scroll function's flick ability, and the native behavior isn't so bad now that I've made this part scroll instead of the whole page
+            // if (translation === 0) {
+            //    const touchWatcher = e.target.closest(
+            //       '.currentContentWrapper'
+            //    );
+            //    const initialScroll = touchWatcher.scrollTop;
+            //    const scrollDistance = touchStartY - e.touches[0].clientY;
+            //    const newScroll = initialScroll + scrollDistance;
+            //    touchWatcher.scrollTop = newScroll;
+            //    setTouchStartY(e.touches[0].clientY);
+            // }
 
-   //          setTouchEnd(e.touches[0].clientX);
-   //       }}
-   //       onTouchEnd={e => {
-   //          e.stopPropagation();
-   //          if (
-   //             touchEnd - touchStart < -111 &&
-   //             contentSliderPosition + 1 < contentArray.length
-   //          ) {
-   //             handleContentScrolling(contentSliderPosition + 1);
-   //             setShowingComments(false);
-   //          }
-   //          if (touchEnd - touchStart > 111 && contentSliderPosition > 0) {
-   //             handleContentScrolling(contentSliderPosition - 1);
-   //             setShowingComments(false);
-   //          }
-   //          setTouchStart(0);
-   //          setTouchEnd(0);
-   //       }}
-   //    >
-   //       <div className="cardOverflowWrapper">
-   //          <div className="cardPiecesContainer">
-   //             {contentSliderPosition > 0 && (
-   //                <div
-   //                   className={`previousContentWrapper${
-   //                      translation <= 0 ? ' doesNotGiveSize' : ' givesSize'
-   //                   }`}
-   //                   style={{
-   //                      transform: `translateX(calc(${translation}px - 100% - 2rem))`
-   //                   }}
-   //                >
-   //                   <TruncCont
-   //                      cont={contentArray[contentSliderPosition - 1]}
-   //                      limit={280}
-   //                   />
-   //                </div>
-   //             )}
-   //             <div
-   //                className="currentContentWrapper"
-   //                style={{
-   //                   transform: `translateX(calc(${translation}px - ${
-   //                      contentSliderPosition > 0 ? '1' : '2'
-   //                   }rem - ${contentSliderPosition > 0 ? '100' : '0'}% - ${
-   //                      contentSliderPosition + 1 === contentArray.length &&
-   //                      contentArray.length > 1
-   //                         ? '1'
-   //                         : '0'
-   //                   }rem))`
-   //                }}
-   //                ref={currentContentWrapperRef}
-   //             >
-   //                {contentElement}
-   //             </div>
-   //             {contentSliderPosition + 1 < contentArray.length && (
-   //                <div
-   //                   className={`nextContentWrapper${
-   //                      translation >= 0 ? ' doesNotGiveSize' : ' givesSize'
-   //                   }`}
-   //                   style={{
-   //                      transform: `translateX(calc(${translation}px - ${
-   //                         contentSliderPosition > 0 ? '100' : '0'
-   //                      }%))`
-   //                   }}
-   //                >
-   //                   <TruncCont
-   //                      cont={contentArray[contentSliderPosition + 1]}
-   //                      limit={280}
-   //                   />
-   //                </div>
-   //             )}
-   //          </div>
-   //       </div>
-   //    </div>
-   // );
+            setTouchEnd(e.touches[0].clientX);
+         }}
+         onTouchEnd={e => {
+            e.stopPropagation();
+            if (
+               touchEnd - touchStart < -111 &&
+               contentSliderPosition + 1 < contentArray.length
+            ) {
+               handleContentScrolling(contentSliderPosition + 1);
+               setShowingComments(false);
+            }
+            if (touchEnd - touchStart > 111 && contentSliderPosition > 0) {
+               handleContentScrolling(contentSliderPosition - 1);
+               setShowingComments(false);
+            }
+            setTouchStart(0);
+            setTouchEnd(0);
+         }}
+      >
+         <div className="cardOverflowWrapper">
+            <div className="cardPiecesContainer">
+               {contentSliderPosition > 0 && (
+                  <div
+                     className={`previousContentWrapper${
+                        translation <= 0 ? ' doesNotGiveSize' : ' givesSize'
+                     }`}
+                     style={{
+                        transform: `translateX(calc(${translation}px - 100% - 2rem))`
+                     }}
+                  >
+                     <TruncCont
+                        cont={contentArray[contentSliderPosition - 1]}
+                        limit={280}
+                     />
+                  </div>
+               )}
+               <div
+                  className="currentContentWrapper"
+                  style={{
+                     transform: `translateX(calc(${translation}px - ${
+                        contentSliderPosition > 0 ? '1' : '2'
+                     }rem - ${contentSliderPosition > 0 ? '100' : '0'}% - ${
+                        contentSliderPosition + 1 === contentArray.length &&
+                        contentArray.length > 1
+                           ? '1'
+                           : '0'
+                     }rem))`
+                  }}
+                  ref={currentContentWrapperRef}
+               >
+                  {contentElement}
+               </div>
+               {contentSliderPosition + 1 < contentArray.length && (
+                  <div
+                     className={`nextContentWrapper${
+                        translation >= 0 ? ' doesNotGiveSize' : ' givesSize'
+                     }`}
+                     style={{
+                        transform: `translateX(calc(${translation}px - ${
+                           contentSliderPosition > 0 ? '100' : '0'
+                        }%))`
+                     }}
+                  >
+                     <TruncCont
+                        cont={contentArray[contentSliderPosition + 1]}
+                        limit={280}
+                     />
+                  </div>
+               )}
+            </div>
+         </div>
+      </div>
+   );
 
-   // let contentSlider;
-   // if (contentArray.length > 0) {
-   //    contentSlider = (
-   //       <div className="contentSlider">
-   //          {contentSliderPosition > 0 && (
-   //             <ArrowIcon
-   //                pointing="left"
-   //                onClick={() => {
-   //                   handleContentScrolling(contentSliderPosition - 1);
-   //                   setShowingComments(false);
-   //                }}
-   //             />
-   //          )}
-   //          {contentSliderPosition + 1} / {contentArray.length}
-   //          {contentSliderPosition + 1 < contentArray.length && (
-   //             <ArrowIcon
-   //                pointing="right"
-   //                onClick={() => {
-   //                   handleContentScrolling(contentSliderPosition + 1);
-   //                   setShowingComments(false);
-   //                }}
-   //             />
-   //          )}
-   //       </div>
-   //    );
-   // }
+   let contentSlider;
+   if (contentArray.length > 0) {
+      contentSlider = (
+         <div className="contentSlider">
+            {contentSliderPosition > 0 && (
+               <ArrowIcon
+                  pointing="left"
+                  onClick={() => {
+                     handleContentScrolling(contentSliderPosition - 1);
+                     setShowingComments(false);
+                  }}
+               />
+            )}
+            {contentSliderPosition + 1} / {contentArray.length}
+            {contentSliderPosition + 1 < contentArray.length && (
+               <ArrowIcon
+                  pointing="right"
+                  onClick={() => {
+                     handleContentScrolling(contentSliderPosition + 1);
+                     setShowingComments(false);
+                  }}
+               />
+            )}
+         </div>
+      );
+   }
 
    return <div>{title}</div>;
 
