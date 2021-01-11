@@ -220,7 +220,6 @@ const ThingCardContext = React.createContext();
 const ThingCard = ({ data, setExpanded, borderSide }) => {
    const {
       id,
-      title,
       featuredImage,
       color,
       author,
@@ -231,7 +230,6 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
       partOfTags: tags,
       votes,
       summary,
-      score,
       createdAt
    } = data;
 
@@ -295,7 +293,7 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
 
    // And finally a function to send new comments to the server
    const postNewComment = async () => {
-      const pieceID = contentArray[contentSliderPosition].id;
+      const pieceID = contentPossiblyWithSummaryArray[contentSliderPosition].id;
       const now = new Date();
       const newComment = {
          __typename: 'Comment',
@@ -313,7 +311,9 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
          updatedAt: now.toISOString()
       };
 
-      contentArray[contentSliderPosition].comments.push(newComment);
+      contentPossiblyWithSummaryArray[contentSliderPosition].comments.push(
+         newComment
+      );
 
       handleCommentChanges(pieceID, '');
       await addComment({
@@ -327,7 +327,9 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
             addComment: {
                __typename: 'ContentPiece',
                id: pieceID,
-               comments: contentArray[contentSliderPosition].comments
+               comments:
+                  contentPossiblyWithSummaryArray[contentSliderPosition]
+                     .comments
             }
          }
       }).catch(err => {
