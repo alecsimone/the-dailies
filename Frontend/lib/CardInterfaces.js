@@ -302,6 +302,37 @@ const taxFields = `
 `;
 export { taxFields };
 
+const fieldsMeNeeds = `
+   __typename
+   id
+   displayName
+   avatar
+   rep
+   friends {
+      __typename
+      id
+   }
+   broadcastView
+   notifications {
+      __typename
+      id
+      unread
+   }
+   friendRequests {
+      __typename
+      id
+   }
+   ignoredFriendRequests {
+      __typename
+      id
+   }
+   defaultExpansion
+   defaultPrivacy
+   role
+   twitterUserName
+`;
+export { fieldsMeNeeds };
+
 const basicMemberFields = `
    __typename
    id

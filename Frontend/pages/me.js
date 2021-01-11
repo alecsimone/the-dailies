@@ -4,7 +4,6 @@ import { useQuery } from '@apollo/react-hooks';
 import { useContext } from 'react';
 import Head from 'next/head';
 import PropTypes from 'prop-types';
-import { MemberContext } from '../components/Account/MemberProvider';
 import ErrorMessage from '../components/ErrorMessage';
 import LoadingRing from '../components/LoadingRing';
 import ProfileSidebar from '../components/Profile/ProfileSidebar';

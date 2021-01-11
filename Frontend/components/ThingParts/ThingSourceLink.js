@@ -3,7 +3,6 @@ import { useContext, useState } from 'react';
 import { useMutation } from '@apollo/react-hooks';
 import PropTypes from 'prop-types';
 import { ThingContext } from '../../pages/thing';
-import { MemberContext } from '../Account/MemberProvider';
 import ShortLink from './ShortLink';
 // import { setFullThingToLoading } from './FullThing';
 import {
@@ -25,7 +24,6 @@ const EDIT_LINK_MUTATION = gql`
 
 const ThingSourceLink = ({ canEdit }) => {
    const { id, author, link } = useContext(ThingContext);
-   const { me } = useContext(MemberContext);
 
    const [editable, setEditable] = useState(false);
    const [currentLink, setCurrentLink] = useState(link);

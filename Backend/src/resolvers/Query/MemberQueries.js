@@ -15,13 +15,13 @@ async function me(parent, args, ctx, info) {
       .catch(err => {
          console.log(err);
       });
-   if (member && member.friends) {
-      member.friends.forEach((friend, index) => {
-         member.friends[index].createdThings = friend.createdThings.filter(
-            thing => canSeeThing(ctx, thing)
-         );
-      });
-   }
+   // if (member && member.friends) {
+   //    member.friends.forEach((friend, index) => {
+   //       member.friends[index].createdThings = friend.createdThings.filter(
+   //          thing => canSeeThing(ctx, thing)
+   //       );
+   //    });
+   // }
    return member;
 }
 exports.me = me;

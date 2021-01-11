@@ -67,9 +67,12 @@ const TruncCont = ({ cont: contObj, limit }) => {
    );
 };
 TruncCont.propTypes = {
-   cont: PropTypes.shape({
-      content: PropTypes.string.isRequired
-   }),
+   cont: PropTypes.oneOfType([
+      PropTypes.shape({
+         content: PropTypes.string.isRequired
+      }),
+      PropTypes.string
+   ]),
    limit: PropTypes.number.isRequired
 };
 

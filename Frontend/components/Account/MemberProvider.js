@@ -2,12 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import gql from 'graphql-tag';
 import { useQuery, useSubscription } from '@apollo/react-hooks';
-import { basicMemberFields, fullMemberFields } from '../../lib/CardInterfaces';
+import { fieldsMeNeeds } from '../../lib/CardInterfaces';
 
 const CURRENT_MEMBER_QUERY = gql`
    {
       me {
-         ${basicMemberFields}
+         ${fieldsMeNeeds}
       }
    }
 `;
@@ -15,7 +15,7 @@ const ME_SUBSCRIPTION = gql`
    subscription ME_SUBSCRIPTION {
       me {
          node {
-            ${basicMemberFields}
+            ${fieldsMeNeeds}
          }
       }
    }

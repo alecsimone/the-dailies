@@ -1,7 +1,6 @@
 import { useContext } from 'react';
 import PropTypes from 'prop-types';
 import Link from 'next/link';
-import { MemberContext } from './Account/MemberProvider';
 import CardGenerator from './ThingCards/CardGenerator';
 import {
    getThingQueryFromLink,
@@ -31,8 +30,6 @@ const ExplodingLink = ({
 }) => {
    if (url == null) return null;
    const lowerCaseURL = url.toLowerCase();
-
-   const { me } = useContext(MemberContext);
 
    // Bracket Links
    const bracketCheck = /\[(?<text>.+)\]\((?<href>.+)\)/gi;
