@@ -257,10 +257,10 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
    } else {
       fullContent = content;
    }
-   const contentArray = orderContent(fullContent, contentOrder);
-   if (summary != null && summary !== '' && !contentArray.includes(summary)) {
-      contentArray.unshift(summary);
-   }
+   // const contentArray = orderContent(fullContent, contentOrder);
+   // if (summary != null && summary !== '' && !contentArray.includes(summary)) {
+   //    contentArray.unshift(summary);
+   // }
 
    // // We need an object whose properties are the ids of all the content pieces on this thing, each of which starts out with an empty string, and put that in state for the comment text
    // const contentCommentsObject = {};
