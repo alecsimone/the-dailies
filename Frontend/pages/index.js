@@ -50,7 +50,9 @@ const StyledHomepage = styled.section`
 `;
 
 const Home = () => {
-   const { data, loading, error, fetchMore } = useQuery(ALL_THINGS_QUERY);
+   const { data, loading, error, fetchMore } = useQuery(ALL_THINGS_QUERY, {
+      ssr: false
+   });
 
    const {
       scrollerRef,
