@@ -91,9 +91,7 @@ const Home = () => {
             )}
          </div>
          <div className="sidebar">
-            {false && (
-               <MyThings scrollingSelector=".sidebar" borderSide="left" />
-            )}
+            <MyThings scrollingSelector=".sidebar" borderSide="left" />
          </div>
       </StyledHomepage>
    );
