@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 import { useMutation } from '@apollo/react-hooks';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 import TweetGetter from './TweetGetter';
 import RichText from '../RichText';
@@ -8,6 +8,7 @@ import TimeAgo from '../TimeAgo';
 import { home } from '../../config';
 import HeartIcon from '../Icons/Heart';
 import RetweetIcon from '../Icons/Retweet';
+import { ModalContext } from '../ModalProvider';
 
 const LIKE_TWEET = gql`
    mutation LIKE_TWEET($tweetID: String!, $alreadyLiked: String!) {
@@ -102,6 +103,8 @@ const Tweet = props => {
    const [saveTweet] = useMutation(SAVE_TWEET, {
       onError: err => alert(err.message)
    });
+
+   const { setHeartPosition, setFullHeart } = useContext(ModalContext);
 
    useEffect(() => {
       if (process.browser) {
@@ -292,6 +295,10 @@ const Tweet = props => {
    const doubleClickListener = e => {
       if (e.button === 0) {
          e.preventDefault();
+
+         setHeartPosition([e.clientX, e.clientY]);
+         setFullHeart(!liked);
+
          likeTweetHandler();
       }
    };

@@ -10,6 +10,7 @@ import BottomBar from './BottomBar';
 import MemberProvider from './Account/MemberProvider';
 import ModalProvider from './ModalProvider';
 import Modal from './Modal';
+import HeartPopUp from './HeartPopUp';
 import NavSidebar from './NavSidebar';
 import MyThings from './Archives/MyThings';
 import {
@@ -675,6 +676,7 @@ const Page = ({ children, pageProps }) => {
                         </div>
                      </section>
                      <Modal />
+                     <HeartPopUp />
                   </>
                   <BottomBar />
                </StyledPage>

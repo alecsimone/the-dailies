@@ -12,9 +12,16 @@ const ModalProvider = ({
 }) => {
    const [content, setContent] = useState(false);
 
+   const [heartPosition, setHeartPosition] = useState(false);
+   const [fullHeart, setFullHeart] = useState(true);
+
    const modalData = {
       content,
       setContent,
+      heartPosition,
+      setHeartPosition,
+      fullHeart,
+      setFullHeart,
       thingsSidebarIsOpen,
       setThingsSidebarIsOpen,
       navSidebarIsOpen,

@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { useMutation } from '@apollo/react-hooks';
 import PropTypes from 'prop-types';
 import { ThemeContext } from 'styled-components';
-import { useEffect } from 'react/cjs/react.development';
 import RichText from '../RichText';
 import RichTextArea from '../RichTextArea';
 import EditThis from '../Icons/EditThis';
@@ -24,6 +23,7 @@ import { getOneRem } from '../../styles/functions';
 import CopyContentInterface from './CopyContentInterface';
 import VoteBar, { VOTE_MUTATION } from './VoteBar';
 import { ALL_THINGS_QUERY } from '../../lib/ThingHandling';
+import { ModalContext } from '../ModalProvider';
 
 const ContentPiece = ({
    id,
@@ -65,6 +65,8 @@ const ContentPiece = ({
    const [showingComments, setShowingComments] = useState(false);
    const [hasShownComments, setHasShownComments] = useState(false);
    const contentWrapperRef = useRef(null);
+
+   const { setHeartPosition, setFullHeart } = useContext(ModalContext);
 
    const postContent = () => {
       editContentPiece(id, editedContent);
@@ -535,9 +537,11 @@ const ContentPiece = ({
    const doubleClickListener = e => {
       if (e.button === 0) {
          if (me == null) {
-            alert('you must be logged in to do that');
+            alert('you must be logged in to vote');
             return;
          }
+
+         e.preventDefault();
 
          let newVotes;
          let newScore;
@@ -556,6 +560,9 @@ const ContentPiece = ({
             ];
             newScore = computedScore + me.rep;
          }
+
+         setHeartPosition([e.clientX, e.clientY]);
+         setFullHeart(!meVoted);
 
          vote();
          setVoters(newVotes);
