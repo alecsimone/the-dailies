@@ -317,11 +317,13 @@ const GlobalStyle = createGlobalStyle`
             position: relative;
             top: 0;
             height: 100%;
-            min-width: 320px;
             max-width: 400px;
             max-height: 100%;
             &.visible, &.hidden {
                transform: none;
+            }
+            ${props => props.theme.midScreenBreakpoint} {
+               min-width: 320px;
             }
          }
          .mainSection {

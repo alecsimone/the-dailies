@@ -24,6 +24,7 @@ import CopyContentInterface from './CopyContentInterface';
 import VoteBar, { VOTE_MUTATION } from './VoteBar';
 import { ALL_THINGS_QUERY } from '../../lib/ThingHandling';
 import { ModalContext } from '../ModalProvider';
+import Login from '../Account/Login';
 
 const ContentPiece = ({
    id,
@@ -66,7 +67,9 @@ const ContentPiece = ({
    const [hasShownComments, setHasShownComments] = useState(false);
    const contentWrapperRef = useRef(null);
 
-   const { setHeartPosition, setFullHeart } = useContext(ModalContext);
+   const { setHeartPosition, setFullHeart, setContent } = useContext(
+      ModalContext
+   );
 
    const postContent = () => {
       editContentPiece(id, editedContent);
@@ -537,7 +540,8 @@ const ContentPiece = ({
    const doubleClickListener = e => {
       if (e.button === 0) {
          if (me == null) {
-            alert('you must be logged in to vote');
+            console.log('poop');
+            setContent(<Login />);
             return;
          }
 

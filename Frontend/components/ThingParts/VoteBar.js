@@ -7,6 +7,8 @@ import { setAlpha } from '../../styles/functions';
 import { MemberContext } from '../Account/MemberProvider';
 import Avatar from '../Avatar';
 import { ALL_THINGS_QUERY } from '../../lib/ThingHandling';
+import { ModalContext } from '../ModalProvider';
+import Login from '../Account/Login';
 
 const VOTE_MUTATION = gql`
    mutation VOTE_MUTATION($id: ID!, $type: String!, $isFreshVote: Boolean!) {
@@ -145,6 +147,8 @@ const VoteBar = ({ votes = [], id, type, mini }) => {
    });
    const [voters, setVoters] = useState(votes);
 
+   const { setContent } = useContext(ModalContext);
+
    let meVotedCheck = false;
    const voterBubbles = [];
    let computedScoreCheck = 0;
@@ -249,7 +253,7 @@ const VoteBar = ({ votes = [], id, type, mini }) => {
                onClick={e => {
                   e.stopPropagation();
                   if (me == null) {
-                     alert('You must be logged in to do that!');
+                     setContent(<Login />);
                      return;
                   }
                   voteHandler();
