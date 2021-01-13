@@ -540,7 +540,6 @@ const ContentPiece = ({
    const doubleClickListener = e => {
       if (e.button === 0) {
          if (me == null) {
-            console.log('poop');
             setContent(<Login />);
             return;
          }

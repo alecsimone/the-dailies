@@ -46,7 +46,6 @@ const MyThings = ({ setShowingSidebar, scrollingSelector, borderSide }) => {
       ssr: false,
       skip: me == null && !loadingMe
    });
-   console.log(data);
 
    const {
       scrollerRef,

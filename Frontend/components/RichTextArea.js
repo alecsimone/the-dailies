@@ -352,7 +352,6 @@ const RichTextArea = ({
    };
 
    const navigateResults = e => {
-      console.log('navigating results');
       if (e.key === 'ArrowDown') {
          e.preventDefault();
 
