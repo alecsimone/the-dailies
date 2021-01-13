@@ -4,7 +4,7 @@ import { useState } from 'react';
 import FriendRequest from '../Profile/FriendRequest';
 import X from '../Icons/X';
 import { setAlpha, setLightness } from '../../styles/functions';
-import DefaultAvatar from '../Icons/DefaultAvatar';
+import Avatar from '../Avatar';
 
 const StyledNotificationCard = styled.div`
    background: ${props => props.theme.deepBlack};
@@ -102,11 +102,11 @@ const NotificationCard = ({ notification }) => {
             className={`notificationCard ${startedUnread ? 'unread' : 'read'}`}
          >
             <div className="cardLeft">
-               {initiator.avatar != null ? (
-                  <img src={initiator.avatar} />
-               ) : (
-                  <DefaultAvatar />
-               )}
+               <Avatar
+                  avatar={initiator.avatar}
+                  displayName={initiator.displayname}
+                  id={initiator.id}
+               />
             </div>
             <div className="cardMiddle">{message}</div>
          </StyledNotificationCard>

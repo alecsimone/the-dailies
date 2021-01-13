@@ -592,6 +592,9 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
                   titleLink={{ pathname: '/thing', query: { id } }}
                />
             )}
+
+            {contentPossiblyWithSummaryArray.length > 0 && contentArea}
+            {contentPossiblyWithSummaryArray.length > 1 && contentSlider}
             <div className="meta">
                <div className="meta-left">
                   <AuthorLink author={author} />{' '}
@@ -599,8 +602,6 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
                </div>
                <div className="meta-right">{privacy}</div>
             </div>
-            {contentPossiblyWithSummaryArray.length > 0 && contentArea}
-            {contentPossiblyWithSummaryArray.length > 1 && contentSlider}
             {tags.length > 0 && <Taxes taxes={tags} personal={false} />}
             <VoteBar votes={votes} id={id} type="Thing" />
             {setExpanded != null && (

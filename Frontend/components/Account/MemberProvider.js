@@ -49,26 +49,6 @@ const MemberProvider = ({ children, isHome }) => {
       };
    }
 
-   // const memberData = {
-   //    me: {
-   //       __typename: 'Member',
-   //       id: 'ck68ae27l0vmf079555gghsue',
-   //       displayName: 'Alec',
-   //       avatar:
-   //          'https://pbs.twimg.com/profile_images/917202644740956160/lMFbGZ-e_400x400.jpg',
-   //       rep: 10,
-   //       friends: [],
-   //       broadcastView: false,
-   //       notifications: [],
-   //       friendRequests: [],
-   //       ignoredFriendRequests: [],
-   //       defaultExpansion: true,
-   //       defaultPrivacy: 'Friends',
-   //       role: 'Member',
-   //       twitterUserName: 'alecsimone'
-   //    }
-   // };
-
    return (
       <MemberContext.Provider value={memberData}>
          {children}

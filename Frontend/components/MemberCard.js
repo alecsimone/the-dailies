@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useContext } from 'react';
 import { setLightness, setAlpha } from '../styles/functions';
 import { MemberContext } from './Account/MemberProvider';
-import DefaultAvatar from './Icons/DefaultAvatar';
+import Avatar from './Avatar';
 
 const StyledMemberCard = styled.article`
    background: ${props => props.theme.midBlack};
@@ -69,11 +69,13 @@ const MemberCard = props => {
    return (
       <StyledMemberCard>
          <div className="cardLeft">
-            {member.avatar ? (
-               <img src={member.avatar} className="avatar" alt="avatar" />
-            ) : (
-               <DefaultAvatar className="avatar" />
-            )}
+            <Avatar
+               id={member.id}
+               avatar={member.avatar}
+               displayName={member.displayName}
+               alt="avatar"
+               className="avatar"
+            />
          </div>
          <div className="cardRight">
             <div className="name">

@@ -13,7 +13,7 @@ import { SINGLE_TAX_QUERY } from '../../pages/tag';
 import { setAlpha, setLightness } from '../../styles/functions';
 import EditThis from '../Icons/EditThis';
 import X from '../Icons/X';
-import DefaultAvatar from '../Icons/DefaultAvatar';
+import Avatar from '../Avatar';
 import TimeAgo from '../TimeAgo';
 import TrashIcon from '../Icons/Trash';
 import LinkIcon from '../Icons/Link';
@@ -403,7 +403,7 @@ const Comment = ({
    };
    countReplies(comment, comments);
 
-   let authorAvatar = <DefaultAvatar className="avatar" />;
+   let authorAvatar;
    let authorLink = (
       <Link
          href={{
@@ -426,7 +426,11 @@ const Comment = ({
       authorLink = null;
    } else if (comment.author.avatar != null) {
       authorAvatar = (
-         <img className="avatar" src={comment.author.avatar} alt="avatar" />
+         <Avatar
+            className="avatar"
+            avatar={comment.author.avatar}
+            alt="avatar"
+         />
       );
    }
 

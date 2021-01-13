@@ -2,7 +2,6 @@ import styled from 'styled-components';
 import Head from 'next/head';
 import StyledPageWithSidebar from '../styles/StyledPageWithSidebar';
 import { setAlpha } from '../styles/functions';
-import Sidebar from '../components/Sidebar';
 import SummarizedText from '../components/SummarizedText';
 
 const StyledCheatSheet = styled.article`

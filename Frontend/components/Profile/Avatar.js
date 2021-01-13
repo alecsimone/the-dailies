@@ -1,6 +1,6 @@
 import EditThis from '../Icons/EditThis';
 import X from '../Icons/X';
-import DefaultAvatar from '../Icons/DefaultAvatar';
+import AvatarComponent from '../Avatar';
 
 const Avatar = ({
    canEdit,
@@ -13,11 +13,12 @@ const Avatar = ({
    makeEditable
 }) => (
    <div className="avatarWrapper field">
-      {avatar != null ? (
-         <img src={avatar} alt="avatar" className="avatar" />
-      ) : (
-         <DefaultAvatar className="avatar" />
-      )}
+      <AvatarComponent
+         doesNotLink
+         avatar={avatar}
+         alt="avatar"
+         className="avatar"
+      />
       {canEdit && (
          <div
             className={`avatarCover${

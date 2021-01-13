@@ -3,13 +3,11 @@ import { useQuery, useSubscription } from '@apollo/react-hooks';
 import styled from 'styled-components';
 import React, { useEffect, useContext } from 'react';
 import Head from 'next/head';
-import StyledPageWithSidebar from '../styles/StyledPageWithSidebar';
 import { MemberContext } from '../components/Account/MemberProvider';
 import Error from '../components/ErrorMessage';
 import LoadingRing from '../components/LoadingRing';
 import { fullThingFields } from '../lib/CardInterfaces';
 import FullThing from '../components/ThingParts/FullThing';
-import Sidebar from '../components/Sidebar';
 import BroadcastThing from '../components/ThingCards/BroadcastThing';
 import { home } from '../config';
 

@@ -8,6 +8,7 @@ import MemberMenu from './MemberMenu';
 import Login from '../Account/Login';
 import Signup from '../Account/Signup';
 import { setAlpha } from '../../styles/functions';
+import Avatar from '../Avatar';
 import DefaultAvatar from '../Icons/DefaultAvatar';
 
 const StyledMemberBox = styled.div`
@@ -99,23 +100,15 @@ const MemberBox = () => {
                   [{me.rep}] {me.displayName}
                </a>
             </Link>
-            {me.avatar != null ? (
-               <img
-                  src={me.avatar}
-                  alt="avatar"
-                  id="avatar"
-                  onClick={e => {
-                     toggleThingsSidebar(e);
-                  }}
-               />
-            ) : (
-               <DefaultAvatar
-                  id="avatar"
-                  onClick={e => {
-                     toggleThingsSidebar(e);
-                  }}
-               />
-            )}
+            <Avatar
+               id={me.id}
+               avatar={me.avatar}
+               displayName={me.displayName}
+               alt="avatar"
+               htmlid="avatar"
+               onClick={e => toggleThingsSidebar(e)}
+               doesNotLink
+            />
             {memberMenuOpen && <MemberMenu />}
          </>
       );

@@ -7,7 +7,6 @@ import LoadingRing from '../components/LoadingRing';
 import TwitterReader from '../components/Twitter/TwitterReader';
 import TwitterLoginStarter from '../components/Twitter/TwitterLoginStarter';
 import TwitterLoginFinisher from '../components/Twitter/TwitterLoginFinisher';
-import Sidebar from '../components/Sidebar';
 
 const twitter = ({ query: { oauth_token, oauth_verifier, listname } }) => {
    const { me, loading } = useContext(MemberContext);
@@ -15,13 +14,10 @@ const twitter = ({ query: { oauth_token, oauth_verifier, listname } }) => {
    // This page is the gateway. If you're not logged in, it bounces you. If you're logged in but haven't connected twitter, it does that. If you are logged in, it becomes the TwitterReader, which contains its own sidebar.
 
    let content;
-   let sidebar;
    if (loading) {
       content = <LoadingRing />;
-      sidebar = <Sidebar />;
    } else if (me == null) {
       content = <p>Members only.</p>;
-      sidebar = <Sidebar />;
    } else if (oauth_token && oauth_verifier) {
       content = (
          <TwitterLoginFinisher
@@ -29,7 +25,6 @@ const twitter = ({ query: { oauth_token, oauth_verifier, listname } }) => {
             oauth_verifier={oauth_verifier}
          />
       );
-      sidebar = <Sidebar />;
    } else if (me.twitterUserName) {
       return <TwitterReader list={listname} />;
    } else {
@@ -38,7 +33,6 @@ const twitter = ({ query: { oauth_token, oauth_verifier, listname } }) => {
 
    return (
       <StyledPageWithSidebar>
-         {sidebar}
          <div className="mainSection">{content}</div>
          <Head>
             <title>Twitter Reader - OurDailies</title>

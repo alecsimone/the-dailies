@@ -5,7 +5,6 @@ import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import styled, { ThemeContext } from 'styled-components';
 import StyledPageWithSidebar from '../styles/StyledPageWithSidebar';
-import Sidebar from '../components/Sidebar';
 import Error from '../components/ErrorMessage';
 import LoadingRing from '../components/LoadingRing';
 import TaxSidebar from '../components/TaxSidebar';

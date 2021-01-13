@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useContext, useState, useEffect } from 'react';
 import { setAlpha } from '../../styles/functions';
 import { MemberContext } from '../Account/MemberProvider';
-import DefaultAvatar from '../Icons/DefaultAvatar';
+import Avatar from '../Avatar';
 import { ALL_THINGS_QUERY } from '../../lib/ThingHandling';
 
 const VOTE_MUTATION = gql`
@@ -160,15 +160,12 @@ const VoteBar = ({ votes = [], id, type, mini }) => {
                   title={`${displayName}: ${value}`}
                   key={voterID}
                >
-                  <Link href={{ pathname: '/member', query: { id: voterID } }}>
-                     <a>
-                        {avatar != null ? (
-                           <img src={avatar} alt={`${displayName} vote`} />
-                        ) : (
-                           <DefaultAvatar />
-                        )}
-                     </a>
-                  </Link>
+                  <Avatar
+                     id={voterID}
+                     avatar={avatar}
+                     displayName={displayName}
+                     alt={`${displayName} vote`}
+                  />
                </div>
             );
             computedScoreCheck += value;

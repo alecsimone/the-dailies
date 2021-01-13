@@ -5,7 +5,6 @@ import Head from 'next/head';
 import PropTypes from 'prop-types';
 import { StyledProfilePage } from './me';
 import { MemberContext } from '../components/Account/MemberProvider';
-import Sidebar from '../components/Sidebar';
 import Error from '../components/ErrorMessage';
 import LoadingRing from '../components/LoadingRing';
 import ProfileSidebar from '../components/Profile/ProfileSidebar';
@@ -47,13 +46,7 @@ const member = ({ query }) => {
    if (loading) {
       pageTitle = 'Loading Member';
       content = <LoadingRing />;
-      sidebar = (
-         <Sidebar
-            extraColumnContent={<p>Loading Member...</p>}
-            extraColumnTitle="Member"
-            key="loading"
-         />
-      );
+      sidebar = <LoadingRing />;
    } else if (data) {
       if (data.member != null) {
          pageTitle = data.member.displayName;

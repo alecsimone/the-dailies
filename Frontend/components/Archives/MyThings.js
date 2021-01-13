@@ -43,8 +43,10 @@ const MyThings = ({ setShowingSidebar, scrollingSelector, borderSide }) => {
    const { setContent } = useContext(ModalContext);
 
    const { data, loading, error, fetchMore } = useQuery(MY_THINGS_QUERY, {
-      ssr: false
+      ssr: false,
+      skip: me == null && !loadingMe
    });
+   console.log(data);
 
    const {
       scrollerRef,
@@ -65,34 +67,6 @@ const MyThings = ({ setShowingSidebar, scrollingSelector, borderSide }) => {
    if (data) {
       if (data.myThings == null || data.myThings.length === 0) {
          return <p className="emptyThings">You haven't made any things yet.</p>;
-      }
-      if (me == null && !loadingMe) {
-         return (
-            <p className="emptyThings">
-               <Link href={{ pathname: '/login' }}>
-                  <a
-                     onClick={e => {
-                        e.preventDefault();
-                        setContent(<Login redirect={false} />);
-                     }}
-                  >
-                     Log in
-                  </a>
-               </Link>{' '}
-               or{' '}
-               <Link href={{ pathname: '/signup' }}>
-                  <a
-                     onClick={e => {
-                        e.preventDefault();
-                        setContent(<Signup />);
-                     }}
-                  >
-                     sign up
-                  </a>
-               </Link>{' '}
-               to start making things!
-            </p>
-         );
       }
       if (me != null) {
          let { myThings } = data;
@@ -137,6 +111,35 @@ const MyThings = ({ setShowingSidebar, scrollingSelector, borderSide }) => {
             </StyledMyThings>
          );
       }
+   }
+
+   if (me == null && !loadingMe) {
+      return (
+         <p className="emptyThings">
+            <Link href={{ pathname: '/login' }}>
+               <a
+                  onClick={e => {
+                     e.preventDefault();
+                     setContent(<Login redirect={false} />);
+                  }}
+               >
+                  Log in
+               </a>
+            </Link>{' '}
+            or{' '}
+            <Link href={{ pathname: '/signup' }}>
+               <a
+                  onClick={e => {
+                     e.preventDefault();
+                     setContent(<Signup />);
+                  }}
+               >
+                  sign up
+               </a>
+            </Link>{' '}
+            to start making things!
+         </p>
+      );
    }
 
    if (loading || loadingMe) {

@@ -66,7 +66,7 @@ const LogoBox = () => {
             </a>
          </Link>
          <Link href="/">
-            <a className="name">OurDailies</a>
+            <a className="name">Ouryou</a>
          </Link>
       </StyledLogoBox>
    );
