@@ -8,12 +8,20 @@ const AuthorLink = ({ author, noPic }) => {
    }
    return (
       <Link href={{ pathname: '/member', query: { id: author.id } }}>
-         <div className="authorBlock">
-            {!noPic && <Avatar className="authorImg" avatar={author.avatar} />}
-            <a className="authorLink">
-               {author.rep != null && `[${author.rep}]`} {author.displayName}
-            </a>
-         </div>
+         <a>
+            <div className="authorBlock">
+               {!noPic && (
+                  <Avatar
+                     className="authorImg"
+                     avatar={author.avatar}
+                     doesNotLink
+                  />
+               )}
+               <a className="authorLink">
+                  {author.rep != null && `[${author.rep}]`} {author.displayName}
+               </a>
+            </div>
+         </a>
       </Link>
    );
 };

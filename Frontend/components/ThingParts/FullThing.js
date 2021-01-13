@@ -74,22 +74,10 @@ const StyledFullThing = styled.article`
          margin: 5rem 0 0;
       }
    }
-   .taxBoxes {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
+   .tags {
       margin: 0;
       ${props => props.theme.mobileBreakpoint} {
-         margin: 0;
-         flex-wrap: nowrap;
-      }
-      > * {
-         flex-basis: 100%;
-         margin: 3rem 0;
-         ${props => props.theme.mobileBreakpoint} {
-            margin: 2rem 0;
-            flex-basis: 50%;
-         }
+         margin: 2rem 0;
       }
    }
 `;

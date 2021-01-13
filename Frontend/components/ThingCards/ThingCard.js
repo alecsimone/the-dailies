@@ -112,12 +112,24 @@ const StyledThingCard = styled.div`
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
+      align-items: center;
       font-size: ${props => props.theme.miniText};
       color: ${props => props.theme.lowContrastGrey};
       margin-top: 1.5rem;
       .meta-left {
          display: inline-flex;
          align-items: center;
+         margin-right: 2rem;
+         a,
+         a:visited {
+            color: ${props =>
+               setAlpha(setLightness(props.theme.majorColor, 80), 0.7)};
+            line-height: 0;
+            &:hover {
+               color: ${props => setLightness(props.theme.majorColor, 50)};
+               text-decoration: none;
+            }
+         }
          .authorBlock {
             display: inline-flex;
             align-items: center;
@@ -133,14 +145,19 @@ const StyledThingCard = styled.div`
                margin-right: 1rem;
             }
          }
+         span.privacy {
+            margin-left: 1rem;
+         }
       }
-      a,
-      a:visited {
-         color: ${props =>
-            setAlpha(setLightness(props.theme.majorColor, 80), 0.7)};
-         &:hover {
-            color: ${props => setLightness(props.theme.majorColor, 50)};
-            text-decoration: none;
+      .meta-right {
+         display: inline-block;
+         .tags {
+            color: ${props => props.theme.mainText};
+            a, a:visited {
+               &:hover {
+                  text-decoration: underline;
+               }
+            }
          }
       }
    }
@@ -198,9 +215,6 @@ const StyledThingCard = styled.div`
             }
          }
       }
-   }
-   .tags {
-      margin-top: 2rem;
    }
    .votebar {
       width: calc(100% + 3rem);
@@ -599,10 +613,12 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
                <div className="meta-left">
                   <AuthorLink author={author} />{' '}
                   <TimeAgo time={createdAt} toggleable />
+                  <span className="privacy">{privacy}</span>
                </div>
-               <div className="meta-right">{privacy}</div>
+               <div className="meta-right">
+                  {tags.length > 0 && <Taxes taxes={tags} personal={false} />}
+               </div>
             </div>
-            {tags.length > 0 && <Taxes taxes={tags} personal={false} />}
             <VoteBar votes={votes} id={id} type="Thing" />
             {setExpanded != null && (
                <div id="arrowWrapper">
