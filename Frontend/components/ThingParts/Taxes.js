@@ -1,10 +1,58 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import Link from 'next/link';
 import styled from 'styled-components';
+import gql from 'graphql-tag';
+import { useMutation } from '@apollo/react-hooks';
+import X from '../Icons/X';
+import EditThis from '../Icons/EditThis';
+
+const REMOVE_TAX_MUTATION = gql`
+   mutation REMOVE_TAX_MUTATION(
+      $tax: String!
+      $thingID: ID!
+      $personal: Boolean!
+   ) {
+      removeTaxFromThing(tax: $tax, thingID: $thingID, personal: $personal) {
+         __typename
+         id
+         partOfTags {
+            __typename
+            id
+            title
+            author {
+               __typename
+               id
+               displayName
+            }
+         }
+         partOfStacks {
+            __typename
+            id
+            title
+            author {
+               __typename
+               id
+               displayName
+            }
+         }
+      }
+   }
+`;
 
 const StyledTaxes = styled.div`
    display: inline-block;
+   svg.editThis {
+      width: ${props => props.theme.smallText};
+      height: ${props => props.theme.smallText};
+      margin-right: 1rem;
+      opacity: 0.75;
+      position: relative;
+      top: 0.25rem;
+      ${props => props.theme.mobileBreakpoint} {
+         display: none;
+      }
+   }
    h5 {
       display: inline-block;
       font-weight: 500;
@@ -13,45 +61,109 @@ const StyledTaxes = styled.div`
       margin: 0.3rem 0rem;
       margin-left: 0;
    }
-   a,
-   a:visited {
-      display: inline-block;
-      margin: 0.3rem 0;
-      font-size: ${props => props.theme.smallText};
-      font-weight: 300;
-      color: ${props => props.theme.mainText};
+   .taxWrapper {
+      display: inline-flex;
+      align-items: center;
+      margin-right: 0.75rem;
+      a,
+      a:visited {
+         display: inline-block;
+         margin: 0.3rem 0;
+         font-size: ${props => props.theme.smallText};
+         font-weight: 300;
+         color: ${props => props.theme.mainText};
+      }
       &.final {
          margin-right: 1.25rem;
+      }
+      svg.x {
+         display: none;
+         width: ${props => props.theme.miniText};
+         height: ${props => props.theme.miniText};
+         margin-left: 1rem;
+         cursor: pointer;
+         &.showing {
+            display: block;
+         }
+      }
+      &:hover {
+         svg.x {
+            display: block;
+            opacity: 0.8;
+         }
       }
    }
 `;
 
-const Taxes = ({ taxes, personal }) => {
+const Taxes = ({ tags = [], stacks = [], personal, thingID }) => {
+   const [removeTaxFromThing] = useMutation(REMOVE_TAX_MUTATION);
+
+   const [showingXs, setShowingXs] = useState(false);
+
+   const taxes = personal ? stacks : tags;
+
    let taxElements;
    if (taxes) {
       const cleanTaxes = taxes.filter(tax => tax.title != '');
       taxElements = cleanTaxes.map((tax, index) => (
-         <React.Fragment key={tax.id}>
+         <div
+            className={
+               index < cleanTaxes.length - 1
+                  ? 'taxWrapper bulk'
+                  : 'taxWrapper final'
+            }
+         >
             <Link
                href={{
                   pathname: personal ? '/stack' : '/tag',
                   query: { title: tax.title }
                }}
             >
-               <a
-                  key={tax.id}
-                  className={index < cleanTaxes.length - 1 ? 'bulk' : 'final'}
-               >
-                  {tax.title}
-               </a>
+               <a key={tax.id}>{tax.title}</a>
             </Link>
+            <X
+               className={showingXs ? 'showing' : 'hidden'}
+               color="mainText"
+               onClick={() => {
+                  const taxToRemove = tax.title;
+
+                  let newTags = [...tags];
+                  let newStacks = [...stacks];
+
+                  if (personal) {
+                     newStacks = newStacks.filter(
+                        stack => stack.title !== taxToRemove
+                     );
+                  } else {
+                     newTags = newTags.filter(tag => tag.title !== taxToRemove);
+                  }
+
+                  removeTaxFromThing({
+                     variables: {
+                        tax: taxToRemove,
+                        thingID,
+                        personal
+                     },
+                     optimisticResponse: {
+                        __typename: 'Mutation',
+                        removeTaxFromThing: {
+                           __typename: 'Thing',
+                           id: thingID,
+                           partOfTags: newTags,
+                           partOfStacks: newStacks
+                        }
+                     }
+                  });
+               }}
+            />
             {index < cleanTaxes.length - 1 && ', '}
-         </React.Fragment>
+         </div>
       ));
    }
 
    return (
       <StyledTaxes className="tags">
+         <EditThis onClick={() => setShowingXs(!showingXs)} />
          <h5
             title={
                personal
@@ -74,9 +186,4 @@ Taxes.propTypes = {
    )
 };
 
-export default React.memo(Taxes, (prev, next) => {
-   if (prev.taxes && next.taxes && prev.taxes.length !== next.taxes.length) {
-      return false;
-   }
-   return true;
-});
+export default Taxes;

@@ -29,16 +29,6 @@ const ADD_TAX_MUTATION = gql`
                displayName
             }
          }
-         partOfStacks {
-            __typename
-            id
-            title
-            author {
-               __typename
-               id
-               displayName
-            }
-         }
       }
    }
 `;
@@ -73,15 +63,13 @@ const StyledTaxBox = styled.section`
       display: inline-block;
       position: relative;
       margin-top: 0.8rem;
+      z-index: 9;
       input {
          width: 30rem;
          position: relative;
          font-size: ${props => props.theme.smallText};
          line-height: 1;
          border-radius: 0;
-         &.loading {
-            background: ${props => setAlpha(props.theme.lowContrastGrey, 0.4)};
-         }
       }
       .resultsContainer {
          position: absolute;
@@ -126,19 +114,21 @@ const getFinalSearchTerm = inputValue => {
 };
 
 const TaxBox = ({ canEdit, personal }) => {
+   // First we pull our tags out of context. A quick note here, for the other kind of context: Originally, I had two kinds of taxonomies: tags and stacks.
+   // Tags were public, and anyone could add to them, stacks were personal and only you could add to them. So this component was designed to be generic to work for either kind. I've since gotten rid of stacks, so that's why that genericness seems unnecessary. But I always feel like I might add them back, or some other kind of taxonomy, so I'm not refactoring this component to not be generic.
    const { id, partOfTags: tags, partOfStacks: stacks } = useContext(
       ThingContext
    );
    const { me } = useContext(MemberContext);
-   const [taxInput, setTaxInput] = useState('');
 
+   const [taxInput, setTaxInput] = useState(''); // Controls the input for the add tax box
    const [
       searchTaxes,
       { loading: searchLoading, data: searchData }
    ] = useLazyQuery(SEARCH_TAX_QUERY);
 
    const generateAutocomplete = inputValue => {
-      const searchTerm = getFinalSearchTerm(inputValue);
+      const searchTerm = getFinalSearchTerm(inputValue); // We can separate taxes with commas, so this function gets the text after the last comma and we'll search only for that
 
       if (searchTerm === '') {
          return;
@@ -153,10 +143,12 @@ const TaxBox = ({ canEdit, personal }) => {
    };
 
    const handleTaxInput = async inputValue => {
+      // Our onChange handler. Updates the value of the input and generates the search results (the auto complete), which is debounced
       setTaxInput(inputValue);
       debouncedAutocomplete(generateAutocomplete, inputValue);
    };
 
+   // We need to filter out the taxes that are already on this thing, so we make a list of them
    let alreadyUsedTaxes = [];
    if (tags && !personal) {
       alreadyUsedTaxes = tags.map(tagObj => tagObj.title);
@@ -184,7 +176,7 @@ const TaxBox = ({ canEdit, personal }) => {
    /*
    A couple notes, because this downshift implementation was not as clean as I'd like.
 
-   When the user types into the add tag box, it calls the onInputValueChange function in the useCombobox options, which in turn calls the handleTagInput function.
+   When the user types into the add tax box, it calls the onInputValueChange function in the useCombobox options, which in turn calls the handleTagInput function.
 
    That function updates state with the input value, which is necessary because the displayed text on the input reads from state. It then calls debouncedAutocomplete (which has to be declared outside of this functional component so it doesn't regenerate with each state output, breaking the debounce)
 
@@ -197,7 +189,7 @@ const TaxBox = ({ canEdit, personal }) => {
    text input -> searchTags -> update searchData
    searchData -> display search results
 
-   To actually add a tag, we use the onKeyDown prop on the input. This calls handleKeyDown, which checks if the key was enter. If it was, it either adds the highlighted tag from downshift, or if nothing is highlighted, the text in the input.
+   To actually add a tag, we use the onKeyDown and onClick props on the input, which either add the highlighted/clicked tag from downshift, or if nothing is highlighted/clicked, the text in the input.
    */
 
    let searchResults;
@@ -214,12 +206,16 @@ const TaxBox = ({ canEdit, personal }) => {
          );
       } else {
          searchResults = filteredResults.map((result, index) => (
+            // These are the individual result elements, which we give the itemProps from downshift's useCombobox hook
             <div
                className={`searchResult${
                   highlightedIndex === index ? ' highlighted' : ''
                }`}
                key={index}
-               {...getItemProps({ result, index })}
+               {...getItemProps({
+                  result,
+                  index
+               })}
             >
                {result.title}
             </div>
@@ -237,18 +233,22 @@ const TaxBox = ({ canEdit, personal }) => {
    const handleKeyDown = async e => {
       if (e.key === 'Enter') {
          if (highlightedIndex > -1) {
+            // If we've navigated to one of the results in our list
             const filteredResults = filterResults(searchData.searchTaxes);
             if (taxInput.includes(',')) {
+               // If we entered multiple tags (commas separate tags, so if there's a comma that means there's multiple tags) we have to make sure to send the ones before the comma as well as whichever result we've selected
                const finalCommaLocation = taxInput.lastIndexOf(',');
                const preCommaInput = taxInput.substring(0, finalCommaLocation);
                await sendNewTax({ title: preCommaInput }).catch(err => {
                   alert(err.message);
                });
             }
+            // Whether there are multiple tags or not, we send the tag that was chosen from the list
             await sendNewTax(filteredResults[highlightedIndex]).catch(err => {
                alert(err.message);
             });
          } else {
+            // Otherwise we just send what's in the input
             await sendNewTax({ title: taxInput }).catch(err => {
                alert(err.message);
             });
@@ -280,6 +280,7 @@ const TaxBox = ({ canEdit, personal }) => {
          newTags = tags.concat([newTaxObj]);
       }
 
+      window.setTimeout(() => setTaxInput(''), 1); // We need this setTaxInput to hit after the handleTaxInput hits, so we set a timeout
       await addTaxToThing({
          variables: {
             tax: title,
@@ -298,12 +299,11 @@ const TaxBox = ({ canEdit, personal }) => {
       }).catch(err => {
          alert(err.message);
       });
-      setTaxInput('');
    };
 
    return (
       <StyledTaxBox className={personal ? 'stacks' : 'tags'}>
-         <Taxes taxes={personal ? stacks : tags} personal={personal} />
+         <Taxes tags={tags} stacks={stacks} personal={personal} thingID={id} />
          {canEdit && (
             <div className="taxboxContainer">
                <form {...getComboboxProps()}>
@@ -314,10 +314,7 @@ const TaxBox = ({ canEdit, personal }) => {
                         name: personal ? 'addStack' : 'addTag',
                         placeholder: personal ? '+ Add Stack' : '+ Add Tag',
                         value: taxInput,
-                        disabled: addTaxLoading,
-                        className: `addTax ${
-                           addTaxLoading ? 'loading' : 'ready'
-                        }`,
+                        className: `addTax`,
                         onKeyDown: e => {
                            e.persist();
                            handleKeyDown(e);
@@ -327,7 +324,7 @@ const TaxBox = ({ canEdit, personal }) => {
                </form>
                {(searchData || searchLoading) &&
                   taxInput !== '' &&
-                  taxInput.length > 1 &&
+                  taxInput.length > 0 &&
                   isOpen && (
                      <div className="resultsContainer">{searchResults}</div>
                   )}

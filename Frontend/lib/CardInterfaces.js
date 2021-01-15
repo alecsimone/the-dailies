@@ -290,6 +290,9 @@ const taxFields = `
       __typename
       id
       content
+      comments {
+         ${commentFields}
+      }
    }
    contentOrder
    connectedThings {

@@ -616,7 +616,7 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
                   <span className="privacy">{privacy}</span>
                </div>
                <div className="meta-right">
-                  {tags.length > 0 && <Taxes taxes={tags} personal={false} />}
+                  {tags.length > 0 && <Taxes tags={tags} personal={false} />}
                </div>
             </div>
             <VoteBar votes={votes} id={id} type="Thing" />

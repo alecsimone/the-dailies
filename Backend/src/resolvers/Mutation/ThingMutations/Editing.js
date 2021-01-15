@@ -94,6 +94,43 @@ async function addTaxesToThing(taxTitleArray, thingID, ctx, personal) {
    });
 }
 
+async function removeTaxFromThing(parent, {tax, thingID, personal}, ctx, info) {
+   await loggedInGate(ctx).catch(() => {
+      throw new AuthenticationError('You must be logged in to do that!');
+   });
+   fullMemberGate(ctx.req.member);
+
+   const mutationName = personal ? 'partOfStacks' : 'partOfTags'
+
+   const oldThing = await ctx.db.query.thing({where: {id: thingID}}, `{id partOfTags {title} partOfStacks {title}}`);
+
+   if (personal) {
+      const [existingStack] = oldThing.partOfStacks.filter(stack => stack.title === tax);
+      if (existingStack == null) {
+         throw new Error("This thing isn't a part of that stack");
+      }
+   } else {
+      const [existingTag] = oldThing.partOfTags.filter(tag => tag.title === tax);
+      if (existingTag == null) {
+         throw new Error("That tag isn't on this thing");
+      }
+   }
+
+   const dataObj = {
+      [mutationName]: {
+         disconnect: {
+            title: tax
+         }
+      }
+   }
+
+   const updatedThing = await properUpdateStuff(dataObj, thingID, 'Thing', ctx).catch(err => {
+      console.log(err);
+   });
+   return updatedThing;
+}
+exports.removeTaxFromThing = removeTaxFromThing;
+
 async function createThing(parent, args, ctx, info) {
    await loggedInGate(ctx).catch(() => {
       throw new AuthenticationError('You must be logged in to do that!');

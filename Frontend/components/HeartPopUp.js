@@ -38,27 +38,27 @@ const HeartPopUp = () => {
    const exitMotion = fullHeart ? -40 : 40;
 
    return (
-      <StyledHeart
-         style={{
-            left: heartPosition[0] - 2 * oneRem,
-            top: heartPosition[1] - 2 * oneRem
-         }}
-         className={fullHeart ? 'full' : 'empty'}
-      >
-         <AnimatePresence>
-            {heartPosition !== false && (
+      <AnimatePresence>
+         {heartPosition !== false && (
+            <StyledHeart
+               style={{
+                  left: heartPosition[0] - 2 * oneRem,
+                  top: heartPosition[1] - 2 * oneRem
+               }}
+               className={fullHeart ? 'full' : 'empty'}
+            >
                <motion.div
                   key="heart"
                   initial={{ scale: 3 }}
                   animate={{ scale: 1 }}
                   transition={{ duration: 0.2 }}
-                  exit={{ opacity: 0, y: exitMotion, scale: 2, duration: 0.4 }}
+                  exit={{ opacity: 0, y: exitMotion, scale: 2, duration: 0.3 }}
                >
                   <HeartIcon />
                </motion.div>
-            )}
-         </AnimatePresence>
-      </StyledHeart>
+            </StyledHeart>
+         )}
+      </AnimatePresence>
    );
 };
 

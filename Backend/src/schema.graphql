@@ -41,6 +41,7 @@ type Mutation {
   reorderContent(id: ID!, type: String!, oldPosition: Int!, newPosition: Int!): Stuff
   setThingPrivacy(privacySetting: PrivacySetting!, thingID: ID!): Thing
   addTaxToThing(tax: String!, thingID: ID!, personal: Boolean): Thing
+  removeTaxFromThing(tax: String!, thingID: ID!, personal: Boolean): Thing
   setFeaturedImage(featuredImage: String!, id: ID!, type: String!): Stuff
   setStuffTitle(title: String!, id: ID!, type: String!): Stuff,
   setPublicity(public: Boolean!, id: ID!, type: String!): Stuff

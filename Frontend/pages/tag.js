@@ -159,7 +159,7 @@ const tag = ({ query: { id, title } }) => {
                <h2>Tag: {title}</h2>
                <Things
                   things={sortedThings}
-                  displayType="grid"
+                  displayType="list"
                   cardSize="regular"
                   scrollingParentSelector=".mainSection"
                   perPage={perPage}
