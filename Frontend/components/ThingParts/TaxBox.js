@@ -303,7 +303,13 @@ const TaxBox = ({ canEdit, personal }) => {
 
    return (
       <StyledTaxBox className={personal ? 'stacks' : 'tags'}>
-         <Taxes tags={tags} stacks={stacks} personal={personal} thingID={id} />
+         <Taxes
+            tags={tags}
+            stacks={stacks}
+            personal={personal}
+            thingID={id}
+            canEdit={canEdit}
+         />
          {canEdit && (
             <div className="taxboxContainer">
                <form {...getComboboxProps()}>

@@ -95,7 +95,13 @@ const StyledTaxes = styled.div`
    }
 `;
 
-const Taxes = ({ tags = [], stacks = [], personal, thingID }) => {
+const Taxes = ({
+   tags = [],
+   stacks = [],
+   personal,
+   thingID,
+   canEdit = false
+}) => {
    const [removeTaxFromThing] = useMutation(REMOVE_TAX_MUTATION);
 
    const [showingXs, setShowingXs] = useState(false);
@@ -103,8 +109,8 @@ const Taxes = ({ tags = [], stacks = [], personal, thingID }) => {
    const taxes = personal ? stacks : tags;
 
    let taxElements;
+   const cleanTaxes = taxes.filter(tax => tax.title != '');
    if (taxes) {
-      const cleanTaxes = taxes.filter(tax => tax.title != '');
       taxElements = cleanTaxes.map((tax, index) => (
          <div
             className={
@@ -121,41 +127,45 @@ const Taxes = ({ tags = [], stacks = [], personal, thingID }) => {
             >
                <a key={tax.id}>{tax.title}</a>
             </Link>
-            <X
-               className={showingXs ? 'showing' : 'hidden'}
-               color="mainText"
-               onClick={() => {
-                  const taxToRemove = tax.title;
+            {canEdit && (
+               <X
+                  className={showingXs ? 'showing' : 'hidden'}
+                  color="mainText"
+                  onClick={() => {
+                     const taxToRemove = tax.title;
 
-                  let newTags = [...tags];
-                  let newStacks = [...stacks];
+                     let newTags = [...tags];
+                     let newStacks = [...stacks];
 
-                  if (personal) {
-                     newStacks = newStacks.filter(
-                        stack => stack.title !== taxToRemove
-                     );
-                  } else {
-                     newTags = newTags.filter(tag => tag.title !== taxToRemove);
-                  }
-
-                  removeTaxFromThing({
-                     variables: {
-                        tax: taxToRemove,
-                        thingID,
-                        personal
-                     },
-                     optimisticResponse: {
-                        __typename: 'Mutation',
-                        removeTaxFromThing: {
-                           __typename: 'Thing',
-                           id: thingID,
-                           partOfTags: newTags,
-                           partOfStacks: newStacks
-                        }
+                     if (personal) {
+                        newStacks = newStacks.filter(
+                           stack => stack.title !== taxToRemove
+                        );
+                     } else {
+                        newTags = newTags.filter(
+                           tag => tag.title !== taxToRemove
+                        );
                      }
-                  });
-               }}
-            />
+
+                     removeTaxFromThing({
+                        variables: {
+                           tax: taxToRemove,
+                           thingID,
+                           personal
+                        },
+                        optimisticResponse: {
+                           __typename: 'Mutation',
+                           removeTaxFromThing: {
+                              __typename: 'Thing',
+                              id: thingID,
+                              partOfTags: newTags,
+                              partOfStacks: newStacks
+                           }
+                        }
+                     });
+                  }}
+               />
+            )}
             {index < cleanTaxes.length - 1 && ', '}
          </div>
       ));
@@ -163,7 +173,9 @@ const Taxes = ({ tags = [], stacks = [], personal, thingID }) => {
 
    return (
       <StyledTaxes className="tags">
-         <EditThis onClick={() => setShowingXs(!showingXs)} />
+         {canEdit && cleanTaxes && cleanTaxes.length > 0 && (
+            <EditThis onClick={() => setShowingXs(!showingXs)} />
+         )}
          <h5
             title={
                personal

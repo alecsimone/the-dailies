@@ -127,7 +127,7 @@ const ThingSummary = ({ summary: inheritedSummary, thingID, canEdit }) => {
    });
 
    if ((inheritedSummary == null || inheritedSummary === '') && !canEdit)
-      return;
+      return null;
 
    const updateSummary = () => {
       editSummary({
@@ -197,16 +197,19 @@ const ThingSummary = ({ summary: inheritedSummary, thingID, canEdit }) => {
    return (
       <StyledSummary className="summaryBox">
          {summaryElement}
-         {canEdit &&
-            !(
-               (inheritedSummary == null || inheritedSummary == '') &&
-               editing
-            ) && (
-               <div className="editButtonContainer">
+         {canEdit && (
+            <div className="editButtonContainer">
+               {(editing ||
+                  !(inheritedSummary == null || inheritedSummary == '')) && (
                   <EditThis onClick={() => setEditing(!editing)} />
-                  {editing && <X onClick={() => clearSummary()} />}
-               </div>
-            )}
+               )}
+               {editing &&
+                  !(
+                     (inheritedSummary == null || inheritedSummary == '') &&
+                     editing
+                  ) && <X onClick={() => clearSummary()} />}
+            </div>
+         )}
       </StyledSummary>
    );
 };
