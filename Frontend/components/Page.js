@@ -637,7 +637,8 @@ const Page = ({ children, pageProps }) => {
    const [viewportHeight, setViewportHeight] = useState(0);
 
    const adjustViewport = () => {
-      console.log('adjusting the viewport');
+      console.log(`screen.height: ${window.screen.height}`);
+      console.log(`outerHeight: ${window.outerHeight}`);
       const vh = window.innerHeight * 0.01;
       if (vh !== viewportHeight) {
          document.documentElement.style.setProperty('--vh', `${vh}px`);
