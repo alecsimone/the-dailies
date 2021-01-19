@@ -623,10 +623,10 @@ const StyledPage = styled.div`
    position: relative;
    display: grid;
    grid-template-rows: auto 1fr auto;
-   min-height: 100%;
-   height: 100%;
-   /* height: 100vh; */
-   /* height: calc(var(--vh, 1vh) * 100); */
+   /* min-height: 100%; */
+   /* height: 100%; */
+   height: 100vh;
+   height: calc(var(--vh, 1vh) * 100);
 `;
 
 const Page = ({ children, pageProps }) => {
@@ -637,6 +637,7 @@ const Page = ({ children, pageProps }) => {
    const [viewportHeight, setViewportHeight] = useState(0);
 
    const adjustViewport = () => {
+      console.log('adjusting the viewport');
       const vh = window.innerHeight * 0.01;
       if (vh !== viewportHeight) {
          document.documentElement.style.setProperty('--vh', `${vh}px`);
