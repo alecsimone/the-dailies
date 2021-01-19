@@ -109,6 +109,7 @@ const GlobalStyle = createGlobalStyle`
       box-sizing: inherit;
    }
    body {
+      min-height: 100%;
       height: 100%;
       padding: 0;
       margin: 0;
@@ -117,6 +118,7 @@ const GlobalStyle = createGlobalStyle`
       font-weight: 300;
    }
    #__next {
+      min-height: 100%;
       height: 100%;
    }
    *::-webkit-scrollbar {
@@ -621,6 +623,7 @@ const StyledPage = styled.div`
    position: relative;
    display: grid;
    grid-template-rows: auto 1fr auto;
+   min-height: 100%;
    height: 100%;
    /* height: 100vh; */
    /* height: calc(var(--vh, 1vh) * 100); */
