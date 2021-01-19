@@ -109,7 +109,6 @@ const StyledContent = styled.section`
                               width: 100%;
                            }
                            &.collapsed {
-                              opacity: 0.75;
                               transition: opacity 0.25s ease-out;
                               &:hover {
                                  opacity: 1;

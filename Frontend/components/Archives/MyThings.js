@@ -79,7 +79,7 @@ const MyThings = ({ setShowingSidebar, scrollingSelector, borderSide }) => {
             return bTimestamp - aTimestamp;
          });
          const lastThing = myThings[myThings.length - 1];
-         cursorRef.current = lastThing.createdAt;
+         cursorRef.current = lastThing.updatedAt;
          if (me.broadcastView) {
             myThings = myThings.filter(thing => thing.privacy !== 'Private');
          }

@@ -60,14 +60,11 @@ async function taxByTitle(parent, { title, personal, cursor }, ctx, info) {
          );
          let cursoredThings = allowedThings;
          if (cursor != null) {
-            console.log(cursor);
-            console.log(allowedThings.length);
             cursoredThings = allowedThings.filter(thing => {
                console.log(Date.parse(thing.createdAt));
                console.log(Date.parse(cursor));
                return Date.parse(thing.createdAt) < Date.parse(cursor);
             });
-            console.log(cursoredThings.length);
          }
          cursoredThings.sort(
             (a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt)
@@ -112,22 +109,13 @@ async function thing(parent, { where }, ctx, info) {
 }
 exports.thing = thing;
 
-async function myThings(parent, { orderBy = 'id_DESC', cursor }, ctx, info) {
+async function myThings(
+   parent,
+   { orderBy = 'updatedAt_DESC', cursor },
+   ctx,
+   info
+) {
    if (ctx.req.memberId == null) {
-      // const things = await ctx.db.query
-      //    .things(
-      //       {
-      //          where: {
-      //             privacy: 'Public'
-      //          },
-      //          orderBy
-      //       },
-      //       info
-      //    )
-      //    .catch(err => {
-      //       console.log(err);
-      //    });
-      // return things;
       return null;
    }
 
@@ -138,7 +126,7 @@ async function myThings(parent, { orderBy = 'id_DESC', cursor }, ctx, info) {
    };
 
    if (cursor != null) {
-      where.createdAt_lt = cursor;
+      where.updatedAt_lt = cursor;
    }
 
    const things = await ctx.db.query
