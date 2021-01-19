@@ -10,10 +10,13 @@ import SearchIcon from './Icons/Search';
 import X from './Icons/X';
 
 const StyledBottomBar = styled.section`
+   position: fixed;
+   bottom: 0;
+   left: 0;
+   right: 0;
    width: 100%;
    border-top: 2px solid ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
    display: flex;
-   position: relative;
    justify-content: stretch;
    ${props => props.theme.mobileBreakpoint} {
       display: none;

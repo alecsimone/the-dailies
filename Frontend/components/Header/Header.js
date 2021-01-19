@@ -42,7 +42,10 @@ Router.events.on('routeChangeComplete', () => NProgress.done());
 Router.events.on('routeChangeError', () => NProgress.done());
 
 const StyledHeader = styled.div`
-   grid-column: -1 / 1;
+   position: fixed;
+   top: 0;
+   left: 0;
+   right: 0;
    border-bottom: 3px solid
       ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
    background: ${props => props.theme.midBlack};
