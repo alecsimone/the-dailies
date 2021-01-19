@@ -103,16 +103,21 @@ const GlobalStyle = createGlobalStyle`
       ${props => props.theme.massiveScreenBreakpoint} {
          font-size: 12px;
       }
+      height: 100%;
    }
    *, *:before, *:after {
       box-sizing: inherit;
    }
    body {
+      height: 100%;
       padding: 0;
       margin: 0;
       font-size: ${theme.smallText};
       line-height: 1.6;
       font-weight: 300;
+   }
+   #__next {
+      height: 100%;
    }
    *::-webkit-scrollbar {
       width: .5rem;
@@ -289,7 +294,7 @@ const GlobalStyle = createGlobalStyle`
          width: 100%;
          height: calc(100% - 13.5rem - 3px); /* 6.75rem is the height of each of the header and bottom bar. The header has a 1px border, the bottom bar 2px */
          top: calc(6.75rem + 1px);
-         z-index: 9;
+         z-index: 10;
          ${props => props.theme.scroll};
          transition: transform .25s;
          &.visible {
@@ -616,8 +621,9 @@ const StyledPage = styled.div`
    position: relative;
    display: grid;
    grid-template-rows: auto 1fr auto;
-   height: 100vh;
-   height: calc(var(--vh, 1vh) * 100);
+   height: 100%;
+   /* height: 100vh; */
+   /* height: calc(var(--vh, 1vh) * 100); */
 `;
 
 const Page = ({ children, pageProps }) => {
