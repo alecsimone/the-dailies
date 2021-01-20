@@ -56,8 +56,10 @@ const StyledTaxBox = styled.section`
    position: relative;
    max-width: 100%;
    padding: 0 1rem;
+   margin: 2rem 0 3rem;
    ${props => props.theme.mobileBreakpoint} {
       padding: 0;
+      margin: 0;
    }
    .taxboxContainer {
       display: inline-block;
@@ -302,7 +304,7 @@ const TaxBox = ({ canEdit, personal }) => {
    };
 
    return (
-      <StyledTaxBox className={personal ? 'stacks' : 'tags'}>
+      <StyledTaxBox>
          <Taxes
             tags={tags}
             stacks={stacks}

@@ -644,20 +644,10 @@ const Page = ({ children, pageProps }) => {
    const [viewportHeight, setViewportHeight] = useState(0);
 
    const adjustViewport = () => {
-      let vh;
-
-      const bottomBar = document.querySelector('.bottomBar');
-      const bottomBarRect = bottomBar.getBoundingClientRect();
-
-      if (bottomBarRect.height !== 0) {
-         vh = bottomBarRect.bottom * 0.01; // We made bottom bar fixed to the bottom of the window, which means that as the address bar hides it will stick to the bottom of the window even though window.innerHeight doesn't change until the address bar is completely hidden. Thus I'm thinking this will be a slightly less janky way to calculate vh on mobile.
-      } else {
-         vh = window.innerHeight * 0.01;
-      }
-
+      const vh = window.innerHeight * 0.01;
       if (vh !== viewportHeight) {
          document.documentElement.style.setProperty('--vh', `${vh}px`);
-         // setViewportHeight(vh);
+         setViewportHeight(vh);
       }
    };
 

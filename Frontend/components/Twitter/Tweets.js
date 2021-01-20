@@ -11,6 +11,7 @@ import ResetIcon from '../Icons/Reset';
 const StyledTweets = styled.section`
    position: absolute;
    top: 0;
+   bottom: 0;
    left: 0%;
    width: 100%;
    ${props => props.theme.mobileBreakpoint} {
@@ -19,7 +20,17 @@ const StyledTweets = styled.section`
    }
    padding: 0;
    .tweets {
+      height: 100%;
+      ${props => props.theme.mobileBreakpoint} {
+         height: calc(
+            100% - 1.5rem
+         ); /* we need to take off 2rem for the margin on .remainingCounters, which pushes .tweets down */
+      }
       .tweeters {
+         height: 100%;
+         ${props => props.theme.mobileBreakpoint} {
+            display: grid;
+         }
          .remainingCounters {
             width: 100%;
             margin: 0;
@@ -41,7 +52,7 @@ const StyledTweets = styled.section`
                svg {
                   width: ${props => props.theme.smallText};
                   margin-left: 1rem;
-                  opacity: .8;
+                  opacity: 0.8;
                   cursor: pointer;
                   &:hover {
                      opacity: 1;
@@ -79,10 +90,8 @@ const StyledTweets = styled.section`
             overflow-x: auto;
             max-width: 100%;
             ${props => props.theme.scroll};
-            min-height: calc(100vh - 14rem + 2px);
-            min-height: calc(var(--vh, 1vh) * 100 - 14rem + 2px);
-            height: calc(100vh - 14rem + 2px);
-            height: calc(var(--vh, 1vh) * 100 - 14rem + 2px);
+            min-height: 100%; // We need a min-height on mobile because it looks weird if it doesn't fill up the screen
+            height: 100%;
             ${props => props.theme.mobileBreakpoint} {
                min-height: initial;
                align-items: baseline;
@@ -94,7 +103,6 @@ const StyledTweets = styled.section`
             ${props => props.theme.desktopBreakpoint} {
                margin: 0 2rem;
             }
-            /* background: ${props => setLightness(props.theme.midBlack, 1)}; */
             background: ${props => props.theme.lightBlack};
             border-radius: 3px;
             position: relative;
@@ -114,13 +122,20 @@ const StyledTweets = styled.section`
                   display: block;
                }
             }
-            /* &.column2 {
-               display: none;
-               ${props => props.theme.bigScreenBreakpoint} {
-                  display: block;
-               }
-            } */
+            --tweeter-header-height: calc(
+               7.5625rem + 2px
+            ); /* On mobile, tweeterHeader has a padding of 1rem on either side and a border of 2px on the bottom. It gets its height from the (currently unnamed) div containing the handle and name, which have font sizes of 2.75rem and 1.7rem respectively and line heights of 1.25, for a total of 4.45 * 1.25 or 5.5625rem. Thus we get 7.5625rem + 2px */
+            ${props => props.theme.mobileBreakpoint} {
+               --tweeter-header-height: calc(
+                  8.4rem + 2px
+               ); /* On desktop, tweeterHeader has a padding of 1rem on either side and a border of 2px on the bottom. It gets its height from the (currently unnamed) div containing the handle and name, which have font sizes of 2.75rem and 1.25rem respectively and line heights of 1.6, for a total of 4 * 1.6 or 6.4rem. Thus we get 8.4rem + 2px   */
+            }
             h3.tweeterHeader {
+               font-size: ${props => props.theme.bigText};
+               line-height: 1.25;
+               ${props => props.theme.mobileBreakpoint} {
+                  line-height: 1.6;
+               }
                position: relative;
                top: 0;
                left: 0;
@@ -138,11 +153,15 @@ const StyledTweets = styled.section`
                &:hover {
                   opacity: 1;
                }
-               a, a:visited {
+               a,
+               a:visited {
                   color: ${props => props.theme.mainText};
                }
                .bottom {
-                  font-size: ${props => props.theme.tinyText};
+                  font-size: ${props => props.theme.miniText};
+                  ${props => props.theme.mobileBreakpoint} {
+                     font-size: ${props => props.theme.tinyText};
+                  }
                   font-weight: 300;
                   opacity: 0.4;
                }
@@ -168,12 +187,9 @@ const StyledTweets = styled.section`
             }
             .tweetsContainer {
                ${props => props.theme.scroll};
-               max-height: calc(100vh - 22rem);
-               max-height: calc(var(--vh, 1vh) * 100 - 22rem);
+               max-height: calc(100% - var(--tweeter-header-height));
                padding: 0;
                ${props => props.theme.mobileBreakpoint} {
-                  max-height: calc(100vh - 23rem);
-                  max-height: calc(var(--vh, 1vh) * 100 - 23rem);
                   padding: 0 1rem;
                }
             }
