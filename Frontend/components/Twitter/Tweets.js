@@ -30,6 +30,8 @@ const StyledTweets = styled.section`
          height: 100%;
          ${props => props.theme.mobileBreakpoint} {
             display: grid;
+            grid-template-rows: auto 1fr;
+            align-items: start;
          }
          .remainingCounters {
             width: 100%;
@@ -195,13 +197,14 @@ const StyledTweets = styled.section`
             }
          }
          &.empty {
-            margin-top: 4rem;
             text-align: center;
             h3 {
                font-size: ${props => props.theme.bigHead};
                font-weight: 700;
                width: 100%;
                text-align: center;
+               margin-top: 0;
+               padding-top: 6rem;
             }
             button {
                padding: 1rem;

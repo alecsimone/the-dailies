@@ -630,8 +630,6 @@ const GlobalStyle = createGlobalStyle`
 
 const StyledPage = styled.div`
    position: relative;
-   /* height: 100vh;
-   height: calc(var(--vh, 1vh) * 100); */
    height: 100%;
    min-height: 100%;
 `;
