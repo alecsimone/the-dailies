@@ -97,7 +97,6 @@ const StyledTweets = styled.section`
             ${props => props.theme.mobileBreakpoint} {
                min-height: initial;
                align-items: baseline;
-               height: auto;
             }
          }
          .tweeterColumn {

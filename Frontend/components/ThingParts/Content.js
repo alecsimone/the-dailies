@@ -2,7 +2,6 @@ import { useMutation } from '@apollo/react-hooks';
 import { useContext, useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import Reorder from 'react-reorder';
-// import StyledContent from '../../styles/StyledContent';
 import StyledContent from '../../styles/StyledContent';
 import ContentPiece from './ContentPiece';
 import RichTextArea from '../RichTextArea';
@@ -17,7 +16,6 @@ import {
 } from '../../lib/ContentHandling';
 import { SINGLE_THING_QUERY } from '../../pages/thing';
 import { SINGLE_TAX_QUERY } from '../../pages/tag';
-// import { setFullThingToLoading } from './FullThing';
 import { MemberContext } from '../Account/MemberProvider';
 
 const Content = ({ context, canEdit, linkedPiece }) => {

@@ -103,6 +103,11 @@ const contentPieceFields = `
       id
       title
    }
+   onTag {
+      __typename
+      id
+      title
+   }
    copiedToThings {
       __typename
       id

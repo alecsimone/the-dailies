@@ -1,4 +1,5 @@
 import { css } from 'styled-components';
+import { setAlpha, setLightness } from './functions';
 
 const fullSizedLoadMoreButton = css`
    button.loadMore {

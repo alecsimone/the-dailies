@@ -45,20 +45,23 @@ async function updateStuffAndNotifySubs(data, id, type, ctx) {
       }
       console.log(err);
    });
+   console.log(updatedStuff);
    if (type === 'ContentPiece') {
-      const updatedThing = await ctx.db.query
-         .thing(
-            {
-               where: {
-                  id: updatedStuff.onThing.id
-               }
-            },
-            `{${fullThingFields}}`
-         )
-         .catch(err => {
-            console.log(err);
-         });
-      publishStuffUpdate('Thing', updatedThing, ctx);
+      if (updatedStuff.onThing != null) {
+         const updatedThing = await ctx.db.query
+            .thing(
+               {
+                  where: {
+                     id: updatedStuff.onThing.id
+                  }
+               },
+               `{${fullThingFields}}`
+            )
+            .catch(err => {
+               console.log(err);
+            });
+         publishStuffUpdate('Thing', updatedThing, ctx);
+      }
    } else {
       publishStuffUpdate(type, updatedStuff, ctx);
    }
@@ -129,54 +132,59 @@ async function editPermissionGate(dataObj, id, type, ctx) {
 }
 exports.editPermissionGate = editPermissionGate;
 
-async function properUpdateStuff(dataObj, id, type, ctx) {
-   if (id.toLowerCase() === 'new') {
-      const currentMember = await ctx.db.query
-         .member(
-            {
-               where: {
-                  id: ctx.req.memberId
-               }
-            },
-            `{id defaultPrivacy}`
-         )
-         .catch(err => {
-            console.log(err);
-            console.log(err);
-         });
-      if (!dataObj.privacy) {
-         dataObj.privacy = currentMember.defaultPrivacy;
-      } else {
-         dataObj.title = `New ${dataObj.privacy} Thing`;
-      }
-      if (!dataObj.author) {
-         dataObj.author = {
-            connect: {
+async function makeNewThing(dataObj, ctx) {
+   const currentMember = await ctx.db.query
+      .member(
+         {
+            where: {
                id: ctx.req.memberId
             }
-         };
-      }
-      if (dataObj.title == null) {
-         dataObj.title = 'Untitled Thing';
-      }
-      if (
-         dataObj.featuredImage == null &&
-         dataObj.link &&
-         isExplodingLink(dataObj.link)
-      ) {
-         dataObj.featuredImage = dataObj.link;
-      }
-      const newThing = await ctx.db.mutation
-         .createThing(
-            {
-               data: dataObj
-            },
-            `{${fullThingFields}}`
-         )
-         .catch(err => {
-            console.log(err);
-         });
-      publishMeUpdate(ctx);
+         },
+         `{id defaultPrivacy}`
+      )
+      .catch(err => {
+         console.log(err);
+         console.log(err);
+      });
+   if (!dataObj.privacy) {
+      dataObj.privacy = currentMember.defaultPrivacy;
+   } else {
+      dataObj.title = `New ${dataObj.privacy} Thing`;
+   }
+   if (!dataObj.author) {
+      dataObj.author = {
+         connect: {
+            id: ctx.req.memberId
+         }
+      };
+   }
+   if (dataObj.title == null) {
+      dataObj.title = 'Untitled Thing';
+   }
+   if (
+      dataObj.featuredImage == null &&
+      dataObj.link &&
+      isExplodingLink(dataObj.link)
+   ) {
+      dataObj.featuredImage = dataObj.link;
+   }
+   const newThing = await ctx.db.mutation
+      .createThing(
+         {
+            data: dataObj
+         },
+         `{${fullThingFields}}`
+      )
+      .catch(err => {
+         console.log(err);
+      });
+   publishMeUpdate(ctx);
+   return newThing;
+}
+
+async function properUpdateStuff(dataObj, id, type, ctx) {
+   if (id.toLowerCase() === 'new') {
+      const newThing = await makeNewThing(dataObj, ctx);
       return newThing;
    }
 

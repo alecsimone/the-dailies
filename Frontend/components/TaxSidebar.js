@@ -8,6 +8,37 @@ import Comments from './ThingParts/Comments';
 
 const StyledTaxSidebar = styled.div`
    padding: 2rem;
+   ${props => props.theme.midScreenBreakpoint} {
+      .contentSectionWrapper {
+         .contentBlock {
+            padding: 1rem 1.5rem;
+            .contentArea
+               .contentPiece
+               .overflowWrapper
+               .contentAndCommentContainer {
+               .contentWrapper {
+                  max-width: 100%;
+                  min-width: 100%;
+                  border-right: none;
+                  &.doesNotGiveSize {
+                     max-width: 0;
+                     min-width: 0;
+                     .theActualContent,
+                     .votebar {
+                        display: none;
+                     }
+                  }
+               }
+               .commentsWrapper {
+                  width: 100%;
+                  .commentsArea {
+                     padding: 0;
+                  }
+               }
+            }
+         }
+      }
+   }
 `;
 
 const TaxSidebar = props => {

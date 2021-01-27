@@ -103,6 +103,11 @@ const contentPieceFields = `
       id
       title
    }
+   onTag {
+      __typename
+      id
+      title
+   }
    copiedToThings {
       __typename
       id
@@ -287,12 +292,7 @@ const taxFields = `
    }
    color
    content {
-      __typename
-      id
-      content
-      comments {
-         ${commentFields}
-      }
+      ${contentPieceFields}
    }
    contentOrder
    connectedThings {
