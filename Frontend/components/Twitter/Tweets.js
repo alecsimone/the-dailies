@@ -130,6 +130,8 @@ const StyledTweets = styled.section`
                --tweeter-header-height: calc(
                   8.4rem + 2px
                ); /* On desktop, tweeterHeader has a padding of 1rem on either side and a border of 2px on the bottom. It gets its height from the (currently unnamed) div containing the handle and name, which have font sizes of 2.75rem and 1.25rem respectively and line heights of 1.6, for a total of 4 * 1.6 or 6.4rem. Thus we get 8.4rem + 2px   */
+               height: auto;
+               max-height: 100%;
             }
             h3.tweeterHeader {
                font-size: ${props => props.theme.bigText};
@@ -186,12 +188,17 @@ const StyledTweets = styled.section`
                   }
                }
             }
-            .tweetsContainer {
+            .tweetsScrollWrapper {
                ${props => props.theme.scroll};
-               max-height: calc(100% - var(--tweeter-header-height));
-               padding: 0;
-               ${props => props.theme.mobileBreakpoint} {
-                  padding: 0 1rem;
+               max-height: calc(
+                  100vh - var(--tweeter-header-height) - var(--header-height) -
+                     2.25rem * 1.6 - 3.75rem - 1rem
+               ); /* the 2.25rem * 1.6 is for the list info bar, which has a font size of 2.25rem and a line height of 1.6. I can't currently explain the extra 3.75rem we had to take off */
+               .tweetsContainer {
+                  padding: 0;
+                  ${props => props.theme.mobileBreakpoint} {
+                     padding: 0 1rem;
+                  }
                }
             }
          }
@@ -500,7 +507,9 @@ const Tweets = ({
                      }}
                   />
                </h3>
-               <div className="tweetsContainer">{thisTweetersTweets}</div>
+               <div className="tweetsScrollWrapper">
+                  <div className="tweetsContainer">{thisTweetersTweets}</div>
+               </div>
             </div>
          );
 
