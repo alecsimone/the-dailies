@@ -13,6 +13,7 @@ const StyledHomepage = styled.section`
    position: relative;
    height: 100%;
    .content {
+      position: relative;
       width: 75%;
       max-height: 100%;
       flex-grow: 1;

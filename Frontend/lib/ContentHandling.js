@@ -1,4 +1,5 @@
 import gql from 'graphql-tag';
+import { useRef } from 'react';
 import { commentFields } from './CardInterfaces';
 import { getOneRem, midScreenBreakpointPx } from '../styles/functions';
 
@@ -430,3 +431,27 @@ const orderContent = (content, contentOrder) => {
    return orderedContent;
 };
 export { orderContent };
+
+const changeContentButKeepInFrame = (
+   contentContainer,
+   scrollingContainer,
+   changeFunction
+) => {
+   const contentRect = contentContainer.getBoundingClientRect();
+   console.log(scrollingContainer);
+   let parent = contentContainer.offsetParent;
+   console.log(parent);
+   let totalOffset = contentContainer.offsetTop;
+   while (!scrollingContainer.isSameNode(parent) && parent != null) {
+      totalOffset += parent.offsetTop;
+      parent = parent.offsetParent;
+      console.log(parent);
+   }
+
+   changeFunction();
+
+   if (contentRect.top < 0) {
+      scrollingContainer.scrollTop = totalOffset;
+   }
+};
+export { changeContentButKeepInFrame };

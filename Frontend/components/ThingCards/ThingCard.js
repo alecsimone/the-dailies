@@ -9,7 +9,10 @@ import ContentPieceComments from '../ThingParts/ContentPieceComments';
 import RichTextArea from '../RichTextArea';
 import Taxes from '../ThingParts/Taxes';
 import { setAlpha, setLightness } from '../../styles/functions';
-import { orderContent } from '../../lib/ContentHandling';
+import {
+   orderContent,
+   changeContentButKeepInFrame
+} from '../../lib/ContentHandling';
 import AuthorLink from '../ThingParts/AuthorLink';
 import VoteBar from '../ThingParts/VoteBar';
 import TimeAgo from '../TimeAgo';
@@ -298,7 +301,25 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
 
    const handleContentScrolling = newIndex => {
       currentContentWrapperRef.current.scrollTop = 0;
-      setContentSliderPosition(newIndex);
+
+      const contentDiv = document.querySelector('.content');
+      const threeColumns = document.querySelector('.threeColumns');
+
+      let scrollingContainer;
+      const contentStyles = getComputedStyle(contentDiv);
+      if (contentStyles.overflowY === 'auto') {
+         // On the homepage (and I think search and tag pages, but I haven't confirmed that yet), the scrolling element is content styles, but if we're looking at a thing card embedded within a thing, then the scrolling element is contentDiv. Here we're basically checking if the content node scrolls, and if it does we're assuming that's the one we want.
+         scrollingContainer = contentDiv;
+      } else {
+         // Note we're still not handling looking at a thing within the my things sidebar. Will have to add that later.
+         scrollingContainer = threeColumns;
+      }
+
+      changeContentButKeepInFrame(
+         currentContentWrapperRef.current,
+         scrollingContainer,
+         () => setContentSliderPosition(newIndex)
+      );
    };
 
    const [addComment] = useMutation(ADD_COMMENT_MUTATION, {

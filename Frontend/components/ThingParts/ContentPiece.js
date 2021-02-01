@@ -18,7 +18,11 @@ import { SINGLE_THING_QUERY } from '../../pages/thing';
 import { MemberContext } from '../Account/MemberProvider';
 import ReorderIcon from '../Icons/Reorder';
 import X from '../Icons/X';
-import { UNLINK_CONTENTPIECE_MUTATION } from '../../lib/ContentHandling';
+import {
+   UNLINK_CONTENTPIECE_MUTATION,
+   useScrollFixer,
+   changeContentButKeepInFrame
+} from '../../lib/ContentHandling';
 import { getOneRem } from '../../styles/functions';
 import CopyContentInterface from './CopyContentInterface';
 import VoteBar, { VOTE_MUTATION } from './VoteBar';
@@ -70,6 +74,8 @@ const ContentPiece = ({
    const { setHeartPosition, setFullHeart, setContent } = useContext(
       ModalContext
    );
+
+   const contentContainerRef = useRef(null);
 
    const postContent = () => {
       editContentPiece(id, editedContent);
@@ -585,17 +591,34 @@ const ContentPiece = ({
          onTouchMove={e => setTouchEnd(e.touches[0].clientX)}
          onTouchEnd={e => {
             if (touchEnd - touchStart < -100) {
-               setShowingComments(true);
+               const scrollingContainer = document.querySelector(
+                  '.threeColumns'
+               );
+               changeContentButKeepInFrame(
+                  contentContainerRef.current,
+                  scrollingContainer,
+                  () => setShowingComments(true)
+               );
+               // setShowingComments(true);
                setHasShownComments(true);
             }
             if (touchEnd - touchStart > 100) {
-               setShowingComments(false);
+               const scrollingContainer = document.querySelector(
+                  '.threeColumns'
+               );
+               changeContentButKeepInFrame(
+                  contentContainerRef.current,
+                  scrollingContainer,
+                  () => setShowingComments(false)
+               );
+               // setShowingComments(false);
                setHasShownComments(true);
             }
             setTouchStart(0);
             setTouchEnd(0);
          }}
          style={{ zIndex }} // We need to reverse the stacking context order so that each content piece is below the one before it, otherwise the next content piece will cover up the addToInterface, or anything else we might have pop out of the buttons
+         ref={contentContainerRef}
       >
          <div className="contentArea">
             <div
