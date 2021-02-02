@@ -76,7 +76,7 @@ const member = ({ query }) => {
    return (
       <StyledProfilePage>
          <Head>
-            <title>{pageTitle} - OurDailies</title>
+            <title>{pageTitle} - Ouryou</title>
          </Head>
          <section className="content">{content}</section>
          <section className="sidebar">{sidebar}</section>

@@ -37,7 +37,7 @@ const StyledCheatSheet = styled.article`
 const Styling = props => (
    <section>
       <Head>
-         <title>Style Cheat Sheet - OurDailies</title>
+         <title>Style Cheat Sheet - Ouryou</title>
       </Head>
       <StyledCheatSheet>
          If you're writing comments or making your own things, here are some
@@ -177,7 +177,7 @@ const Styling = props => (
                </p>
                <p>
                   So if you put [display text](link URL) into a comment or post
-                  on OurDailies, it will show up like this:{' '}
+                  on Ouryou, it will show up like this:{' '}
                   <a href="link URL" target="_blank" rel="noopener noreferrer">
                      display text
                   </a>
@@ -203,13 +203,12 @@ const Styling = props => (
             <li>
                <h4>Thing Search</h4>
                <p>
-                  You can search all the things on OurDailies and generate a
-                  link to them in many of the inputs on the site. As you're
-                  writing, if you type{' '}
-                  <span className="emphasis">[t:"SEARCH TEXT</span> a little
-                  results box will pop up showing Things matching your search
-                  text. If you select one, your search will be completed with a
-                  link to that thing.
+                  You can search all the things on Ouryou and generate a link to
+                  them in many of the inputs on the site. As you're writing, if
+                  you type <span className="emphasis">[t:"SEARCH TEXT</span> a
+                  little results box will pop up showing Things matching your
+                  search text. If you select one, your search will be completed
+                  with a link to that thing.
                </p>
                <p>
                   Just to be extra clear: Once you type [t:" whatever you type
@@ -245,9 +244,9 @@ const Styling = props => (
                   the media file will be embedded directly into your post.
                </p>
                <p>
-                  This also works for links to Things on OurDailies. If you
-                  paste in a plain link to one of them, it will be replaced with
-                  a little card for the thing you're linking to.
+                  This also works for links to Things on Ouryou. If you paste in
+                  a plain link to one of them, it will be replaced with a little
+                  card for the thing you're linking to.
                </p>
             </li>
             <li>

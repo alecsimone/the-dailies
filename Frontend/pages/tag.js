@@ -177,7 +177,7 @@ const tag = ({ query: { id, title } }) => {
       <TagContext.Provider value={loading || error || data.taxByTitle}>
          <StyledTagPage className="styledTagPage">
             <Head>
-               <title>{pageTitle} - OurDailies</title>
+               <title>{pageTitle} - Ouryou</title>
             </Head>
             <div className="tagContent">
                {content}

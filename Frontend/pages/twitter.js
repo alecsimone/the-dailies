@@ -35,7 +35,7 @@ const twitter = ({ query: { oauth_token, oauth_verifier, listname } }) => {
       <StyledPageWithSidebar>
          <div className="mainSection">{content}</div>
          <Head>
-            <title>Twitter Reader - OurDailies</title>
+            <title>Twitter Reader - Ouryou</title>
          </Head>
       </StyledPageWithSidebar>
    );

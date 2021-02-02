@@ -139,7 +139,7 @@ const SingleThing = ({ query }) => {
       <ThingContext.Provider value={dataForContext}>
          <StyledSingleThing className="thingPage">
             <Head>
-               <title>{pageTitle} - OurDailies</title>
+               <title>{pageTitle} - Ouryou</title>
                <meta property="og:type" content="article" key="ogType" />
                <meta
                   property="og:url"
@@ -152,7 +152,7 @@ const SingleThing = ({ query }) => {
                />
                <meta
                   property="og:title"
-                  content={data ? data.thing.title : 'Our Dailies'}
+                  content={data ? data.thing.title : 'Ouryou'}
                />
             </Head>
             {content}

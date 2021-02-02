@@ -227,7 +227,7 @@ const TwitterReader = ({ list }) => {
    return (
       <StyledTwitterReader>
          <Head>
-            <title>Twitter Reader - OurDailies</title>
+            <title>Twitter Reader - Ouryou</title>
          </Head>
          <div className="content">{content}</div>
          <div
