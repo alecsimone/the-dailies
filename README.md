@@ -1,4 +1,6 @@
-# Ouryou
+<img src="https://ourdailies.org/logo.png" align="left">
+
+#  Ouryou 
 > A social note-taking app to help you organize and share your thoughts and to keep up with what your friends are learning
 
 Welcome to the Ouryou github repo, thanks for checking it out! The documentation is still extremely sparse because I've been putting it off till the end, but I hope you'll find what little there is helpful.
