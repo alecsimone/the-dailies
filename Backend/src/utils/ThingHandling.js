@@ -240,6 +240,7 @@ const isExplodingLink = url => {
          lowerCaseURL.includes('/status/')) ||
       (lowerCaseURL.includes('tiktok.com') &&
          lowerCaseURL.includes('/video/')) ||
+      lowerCaseURL.includes('vm.tiktok.com/') ||
       lowerCaseURL.includes('instagram.com/p/')
    ) {
       return true;

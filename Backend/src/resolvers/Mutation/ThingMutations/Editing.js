@@ -370,6 +370,10 @@ async function setFeaturedImage(
    });
    fullMemberGate(ctx.req.member);
 
+   featuredImage = await lengthenTikTokURL(featuredImage).catch(err => {
+      console.log(err);
+   });
+
    if (!isExplodingLink(featuredImage) && !disabledCodewords.includes(featuredImage)) {
       throw new Error("That's not a valid featured image");
    }
