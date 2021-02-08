@@ -2,6 +2,7 @@ import { useContext } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import FeaturedImage from './ThingParts/FeaturedImage';
+import StuffSummary from './ThingParts/StuffSummary';
 import Content from './ThingParts/Content';
 import TaxMeta from './TaxMeta';
 import Comments from './ThingParts/Comments';
@@ -41,9 +42,8 @@ const StyledTaxSidebar = styled.div`
    }
 `;
 
-const TaxSidebar = props => {
-   const { context, canEdit } = props;
-   const { title } = useContext(context);
+const TaxSidebar = ({ context, canEdit }) => {
+   const { title, id, summary } = useContext(context);
 
    return (
       <StyledTaxSidebar>
@@ -53,6 +53,13 @@ const TaxSidebar = props => {
             canEdit={canEdit}
          />
          <TaxMeta context={context} key={`${title}-Meta`} canEdit={canEdit} />
+         <StuffSummary
+            summary={summary}
+            stuffID={id}
+            key={`${id}-Summary`}
+            canEdit={canEdit}
+            type="Tag"
+         />
          <Content
             context={context}
             key={`${title}-Content`}

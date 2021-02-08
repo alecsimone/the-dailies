@@ -295,6 +295,7 @@ const taxFields = `
       ${contentPieceFields}
    }
    contentOrder
+   summary
    connectedThings {
       ${thingCardFields}
    }

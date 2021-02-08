@@ -224,30 +224,46 @@ const stickifier = stickingData => {
    }
    stickingData.current.blocksArray = blockPositionsArray;
 
-   // The scrolling element on big screens is mainSection, on little screens it's threeColumns
+   // The scrolling element on big screens is mainSection, on little screens it's threeColumns. But sometimes we're within a sidebar, and then we need to use that
    const mainSection = document.querySelector('.mainSection');
    const threeColumns = document.querySelector('.threeColumns');
-
-   let viewableTop;
-   let viewableBottom;
+   const sidebar = stickingData.current.blocksArray[0].block.closest(
+      '.sidebar'
+   );
 
    const bottomBar = document.querySelector('.bottomBar');
    const bottomBarDisplay = window.getComputedStyle(bottomBar).display;
+
+   let scroller;
+   if (bottomBarDisplay === 'none') {
+      // If the bottom bar is hidden, we're on a big screen and the scrolling element is mainSection
+      scroller = mainSection;
+   } else {
+      // Otherwise we're on mobile, and the scrolling element is threeColumns
+      scroller = threeColumns;
+   }
+   if (sidebar != null) {
+      // But, if the blocks are within a sidebar, we want to use that instead.
+      scroller = sidebar;
+   }
+
+   let viewableTop;
+   let viewableBottom;
+   let buttonsRightPosition;
+
    const header = document.getElementById('header');
    const headerHeight = header.offsetHeight;
 
-   let buttonsRightPosition;
-
    // bottomBar only shows on small screens
    if (bottomBarDisplay === 'none') {
-      viewableTop = mainSection.scrollTop;
+      viewableTop = scroller.scrollTop;
 
       // On big screens, the viewable bottom is the height of the window minus the height of the header, and the buttons are 1rem from the right
       viewableBottom = viewableTop + window.innerHeight - headerHeight;
       buttonsRightPosition = '1rem';
    } else {
       const bottomBarHeight = bottomBar.offsetHeight;
-      viewableTop = threeColumns.scrollTop;
+      viewableTop = scroller.scrollTop;
 
       // On small screens, the viewable bottom is the height of the window minus the height of the header and the bottomBar, and the buttons are 0px from the right
       viewableBottom =

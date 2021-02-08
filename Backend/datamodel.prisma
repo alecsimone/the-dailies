@@ -43,6 +43,7 @@ type Tag {
   featuredImage: String
   content: [ContentPiece!] @scalarList(strategy:RELATION)
   contentOrder: [String!] @scalarList(strategy:RELATION)
+  summary: String
   connectedThings: [Thing]
   color: String
   comments: [Comment]

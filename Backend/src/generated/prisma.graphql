@@ -3959,6 +3959,7 @@ type Tag {
   featuredImage: String
   content(where: ContentPieceWhereInput, orderBy: ContentPieceOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ContentPiece!]
   contentOrder: [String!]!
+  summary: String
   connectedThings(where: ThingWhereInput, orderBy: ThingOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Thing!]
   color: String
   comments(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Comment!]
@@ -3983,6 +3984,7 @@ input TagCreateInput {
   featuredImage: String
   content: ContentPieceCreateManyWithoutOnTagInput
   contentOrder: TagCreatecontentOrderInput
+  summary: String
   connectedThings: ThingCreateManyWithoutPartOfTagsInput
   color: String
   comments: CommentCreateManyWithoutOnTagInput
@@ -4014,6 +4016,7 @@ input TagCreateWithoutAuthorInput {
   featuredImage: String
   content: ContentPieceCreateManyWithoutOnTagInput
   contentOrder: TagCreatecontentOrderInput
+  summary: String
   connectedThings: ThingCreateManyWithoutPartOfTagsInput
   color: String
   comments: CommentCreateManyWithoutOnTagInput
@@ -4026,6 +4029,7 @@ input TagCreateWithoutCommentsInput {
   featuredImage: String
   content: ContentPieceCreateManyWithoutOnTagInput
   contentOrder: TagCreatecontentOrderInput
+  summary: String
   connectedThings: ThingCreateManyWithoutPartOfTagsInput
   color: String
 }
@@ -4037,6 +4041,7 @@ input TagCreateWithoutConnectedThingsInput {
   featuredImage: String
   content: ContentPieceCreateManyWithoutOnTagInput
   contentOrder: TagCreatecontentOrderInput
+  summary: String
   color: String
   comments: CommentCreateManyWithoutOnTagInput
 }
@@ -4047,6 +4052,7 @@ input TagCreateWithoutContentInput {
   author: MemberCreateOneWithoutOwnedTagsInput!
   featuredImage: String
   contentOrder: TagCreatecontentOrderInput
+  summary: String
   connectedThings: ThingCreateManyWithoutPartOfTagsInput
   color: String
   comments: CommentCreateManyWithoutOnTagInput
@@ -4064,6 +4070,8 @@ enum TagOrderByInput {
   title_DESC
   featuredImage_ASC
   featuredImage_DESC
+  summary_ASC
+  summary_DESC
   color_ASC
   color_DESC
   createdAt_ASC
@@ -4077,6 +4085,7 @@ type TagPreviousValues {
   title: String!
   featuredImage: String
   contentOrder: [String!]!
+  summary: String
   color: String
   createdAt: DateTime!
   updatedAt: DateTime
@@ -4125,6 +4134,20 @@ input TagScalarWhereInput {
   featuredImage_not_starts_with: String
   featuredImage_ends_with: String
   featuredImage_not_ends_with: String
+  summary: String
+  summary_not: String
+  summary_in: [String!]
+  summary_not_in: [String!]
+  summary_lt: String
+  summary_lte: String
+  summary_gt: String
+  summary_gte: String
+  summary_contains: String
+  summary_not_contains: String
+  summary_starts_with: String
+  summary_not_starts_with: String
+  summary_ends_with: String
+  summary_not_ends_with: String
   color: String
   color_not: String
   color_in: [String!]
@@ -4188,6 +4211,7 @@ input TagUpdateInput {
   featuredImage: String
   content: ContentPieceUpdateManyWithoutOnTagInput
   contentOrder: TagUpdatecontentOrderInput
+  summary: String
   connectedThings: ThingUpdateManyWithoutPartOfTagsInput
   color: String
   comments: CommentUpdateManyWithoutOnTagInput
@@ -4197,6 +4221,7 @@ input TagUpdateManyDataInput {
   title: String
   featuredImage: String
   contentOrder: TagUpdatecontentOrderInput
+  summary: String
   color: String
 }
 
@@ -4204,6 +4229,7 @@ input TagUpdateManyMutationInput {
   title: String
   featuredImage: String
   contentOrder: TagUpdatecontentOrderInput
+  summary: String
   color: String
 }
 
@@ -4259,6 +4285,7 @@ input TagUpdateWithoutAuthorDataInput {
   featuredImage: String
   content: ContentPieceUpdateManyWithoutOnTagInput
   contentOrder: TagUpdatecontentOrderInput
+  summary: String
   connectedThings: ThingUpdateManyWithoutPartOfTagsInput
   color: String
   comments: CommentUpdateManyWithoutOnTagInput
@@ -4270,6 +4297,7 @@ input TagUpdateWithoutCommentsDataInput {
   featuredImage: String
   content: ContentPieceUpdateManyWithoutOnTagInput
   contentOrder: TagUpdatecontentOrderInput
+  summary: String
   connectedThings: ThingUpdateManyWithoutPartOfTagsInput
   color: String
 }
@@ -4280,6 +4308,7 @@ input TagUpdateWithoutConnectedThingsDataInput {
   featuredImage: String
   content: ContentPieceUpdateManyWithoutOnTagInput
   contentOrder: TagUpdatecontentOrderInput
+  summary: String
   color: String
   comments: CommentUpdateManyWithoutOnTagInput
 }
@@ -4289,6 +4318,7 @@ input TagUpdateWithoutContentDataInput {
   author: MemberUpdateOneRequiredWithoutOwnedTagsInput
   featuredImage: String
   contentOrder: TagUpdatecontentOrderInput
+  summary: String
   connectedThings: ThingUpdateManyWithoutPartOfTagsInput
   color: String
   comments: CommentUpdateManyWithoutOnTagInput
@@ -4373,6 +4403,20 @@ input TagWhereInput {
   content_every: ContentPieceWhereInput
   content_some: ContentPieceWhereInput
   content_none: ContentPieceWhereInput
+  summary: String
+  summary_not: String
+  summary_in: [String!]
+  summary_not_in: [String!]
+  summary_lt: String
+  summary_lte: String
+  summary_gt: String
+  summary_gte: String
+  summary_contains: String
+  summary_not_contains: String
+  summary_starts_with: String
+  summary_not_starts_with: String
+  summary_ends_with: String
+  summary_not_ends_with: String
   connectedThings_every: ThingWhereInput
   connectedThings_some: ThingWhereInput
   connectedThings_none: ThingWhereInput

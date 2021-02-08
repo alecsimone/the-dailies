@@ -2,7 +2,7 @@ import styled, { ThemeContext } from 'styled-components';
 import { useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { ThingContext } from '../../pages/thing';
-import ThingSummary from './ThingSummary';
+import StuffSummary from './StuffSummary';
 import Content from './Content';
 import TaxBox from './TaxBox';
 import ThingMeta from './ThingMeta';
@@ -141,11 +141,12 @@ const FullThing = ({ canEdit, linkedPiece, linkedComment }) => {
             <TaxBox key={`${id}-TagBox`} canEdit={canEdit} personal={false} />
          </div>
          {(summary != null || canEdit) && (
-            <ThingSummary
+            <StuffSummary
                summary={summary}
-               thingID={id}
+               stuffID={id}
                key={`${id}-Summary`}
                canEdit={canEdit}
+               type="Thing"
             />
          )}
          {((content != null && content.length > 0) || canEdit) && (

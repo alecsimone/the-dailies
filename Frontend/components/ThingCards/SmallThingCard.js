@@ -146,8 +146,9 @@ const SmallThingCard = ({ data, noPic, fullQuery, borderSide }) => {
                featuredImage == null ||
                isVideo(featuredImage) ||
                disabledCodewords.includes(featuredImage.toLowerCase()) ||
-               isTweet
-            ) && <img className="thumb" src={featuredImage} />}
+               isTweet ||
+               featuredImage.includes('instagram.com/p/')
+            ) && <img className="thumb" src={featuredImage} alt="thumbnail" />}
             <div className="smallThingCardMeta">
                <a href={queryString}>
                   {title.length > 60

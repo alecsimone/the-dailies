@@ -108,6 +108,11 @@ const Content = ({ context, canEdit, linkedPiece }) => {
 
       const firstBlock = blocks[0];
 
+      const sidebar = firstBlock.closest('.sidebar');
+      if (sidebar != null) {
+         sidebar.addEventListener('scroll', stickifierHandler);
+      }
+
       // Get the raw number of pixels of padding on the content block, and store it in stickingData. We'll have to cut the "px" off the end of the value we get back from getComputedStyle
       const blockPaddingString = window.getComputedStyle(firstBlock).paddingTop;
       const blockPaddingRaw = blockPaddingString.substring(

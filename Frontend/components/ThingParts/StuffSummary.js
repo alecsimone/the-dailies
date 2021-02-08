@@ -12,11 +12,21 @@ import { contentPieceFields } from '../../lib/CardInterfaces';
 const EDIT_SUMMARY_MUTATION = gql`
    mutation EDIT_SUMMARY_MUTATION($summary: String!, $id: ID!, $type: String!) {
       editSummary(summary: $summary, id: $id, type: $type) {
-         __typename
-         id
-         summary
-         content {
-            ${contentPieceFields}
+         ... on Thing {
+            __typename
+            id
+            summary
+            content {
+               ${contentPieceFields}
+            }
+         }
+         ... on Tag {
+            __typename
+            id
+            summary
+            content {
+               ${contentPieceFields}
+            }
          }
       }
    }
@@ -116,7 +126,12 @@ const StyledSummary = styled.section`
    }
 `;
 
-const ThingSummary = ({ summary: inheritedSummary, thingID, canEdit }) => {
+const StuffSummary = ({
+   summary: inheritedSummary,
+   stuffID,
+   canEdit,
+   type
+}) => {
    const [editing, setEditing] = useState(false);
    const [summary, setSummary] = useState(
       inheritedSummary == null ? '' : inheritedSummary
@@ -126,6 +141,7 @@ const ThingSummary = ({ summary: inheritedSummary, thingID, canEdit }) => {
       onError: err => alert(err.message)
    });
 
+   // If there's no summary and the user can't edit this summary, we don't show anything
    if ((inheritedSummary == null || inheritedSummary === '') && !canEdit)
       return null;
 
@@ -133,15 +149,15 @@ const ThingSummary = ({ summary: inheritedSummary, thingID, canEdit }) => {
       editSummary({
          variables: {
             summary,
-            id: thingID,
-            type: 'Thing'
+            id: stuffID,
+            type
          },
          optimisticResponse: {
             __typename: 'Mutation',
             editSummary: {
                summary,
-               __typename: 'Thing',
-               id: thingID
+               __typename: type,
+               id: stuffID
             }
          }
       });
@@ -152,15 +168,15 @@ const ThingSummary = ({ summary: inheritedSummary, thingID, canEdit }) => {
       editSummary({
          variables: {
             summary: '',
-            id: thingID,
-            type: 'Thing'
+            id: stuffID,
+            type
          },
          optimisticResponse: {
             __typename: 'Mutation',
             editSummary: {
                summary: '',
-               __typename: 'Thing',
-               id: thingID
+               __typename: type,
+               id: stuffID
             }
          }
       });
@@ -184,7 +200,7 @@ const ThingSummary = ({ summary: inheritedSummary, thingID, canEdit }) => {
             setEditable={setEditing}
             placeholder="Add summary"
             buttonText={summary == null || summary == '' ? 'add' : 'edit'}
-            id={thingID}
+            id={stuffID}
          />
       );
    } else {
@@ -214,4 +230,4 @@ const ThingSummary = ({ summary: inheritedSummary, thingID, canEdit }) => {
    );
 };
 
-export default ThingSummary;
+export default StuffSummary;

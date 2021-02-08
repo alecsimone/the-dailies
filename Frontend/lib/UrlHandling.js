@@ -9,7 +9,10 @@ const isVideo = url => {
       lowerCasedURL.includes('.webm') ||
       lowerCasedURL.includes('gfycat.com/') ||
       lowerCasedURL.includes('youtube.com/watch?v=') ||
-      lowerCasedURL.includes('youtu.be/')
+      lowerCasedURL.includes('youtu.be/') ||
+      (lowerCasedURL.includes('tiktok.com') &&
+         lowerCasedURL.includes('/video/')) ||
+      lowerCasedURL.includes('vm.tiktok.com/')
    ) {
       return true;
    }

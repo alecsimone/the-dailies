@@ -23,9 +23,6 @@ const SINGLE_TAX_QUERY = gql`
          ... on Tag {
             ${taxFields}
          }
-         ... on Stack {
-            ${taxFields}
-         }
       }
    }
 `;

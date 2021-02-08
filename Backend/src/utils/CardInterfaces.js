@@ -304,11 +304,10 @@ const tagFields = `
    }
    color
    content {
-      __typename
-      id
-      content
+      ${contentPieceFields}
    }
    contentOrder
+   summary
    connectedThings {
       ${smallThingCardFields}
    }
