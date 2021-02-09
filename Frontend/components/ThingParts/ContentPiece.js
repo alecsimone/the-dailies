@@ -249,6 +249,7 @@ const ContentPiece = ({
                      comments.length > 0 &&
                      process.browser &&
                      window.innerWidth > midScreenBPWidthRaw &&
+                     fullThingData.__typename !== 'Tag' &&
                      !hasShownComments
                   ) {
                      // If we're on a big screen and this piece has comments, they're already going to be showing the first time we click this button, but showingComments will be false. So we're just going to setHasShownComments to true, which will make false the condition that shows them by default. showingComments will already be false, so we don't need to change it.
@@ -478,7 +479,10 @@ const ContentPiece = ({
                      ? ' doesNotGiveSize'
                      : ' givesSize'
                }${
-                  (comments.length > 0 && !hasShownComments) || showingComments
+                  (comments.length > 0 &&
+                     !hasShownComments &&
+                     fullThingData.__typename !== 'Tag') ||
+                  showingComments
                      ? ' withComments'
                      : ' noComments'
                }`}
