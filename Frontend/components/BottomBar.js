@@ -124,6 +124,7 @@ const BottomBar = () => {
             >
                <input
                   type="text"
+                  id="bottomBarInput"
                   placeholder={inputPlaceholder || ''}
                   value={inputContent}
                   onChange={e => setInputContent(e.target.value)}
@@ -144,6 +145,8 @@ const BottomBar = () => {
                      ? false
                      : searchPlaceholder
                );
+               const bottomBarInput = document.querySelector('#bottomBarInput');
+               bottomBarInput.focus();
             }}
          >
             <SearchIcon color="mainText" />
@@ -165,6 +168,8 @@ const BottomBar = () => {
                setInputPlaceholder(
                   inputPlaceholder === plusPlaceholder ? false : plusPlaceholder
                );
+               const bottomBarInput = document.querySelector('#bottomBarInput');
+               bottomBarInput.focus();
             }}
          >
             <X color="mainText" rotation={45} />
