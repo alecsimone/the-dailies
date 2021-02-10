@@ -405,7 +405,7 @@ const fullMemberFields = `
       __typename
       id
       onThing {
-         ${smallThingCardFields}
+         ${thingCardFields}
       }
       value
       createdAt
