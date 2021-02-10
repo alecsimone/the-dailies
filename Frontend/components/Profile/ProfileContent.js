@@ -112,7 +112,12 @@ const ProfileContent = ({ member, isMe, defaultTab }) => {
    } else if (selectedTab === 'Likes') {
       if (member.votes != null && member.votes.length > 0) {
          const allVotes = member.votes.map(vote => vote.onThing);
-         const likedThings = allVotes.filter(vote => vote != null);
+         let likedThings = allVotes.filter(vote => vote != null);
+         likedThings = likedThings.sort((a, b) => {
+            const aDate = new Date(a.createdAt);
+            const bDate = new Date(b.createdAt);
+            return bDate - aDate;
+         });
          selection = (
             <Things
                things={likedThings}
