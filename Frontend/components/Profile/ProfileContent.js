@@ -97,7 +97,6 @@ const ProfileContent = ({ member, isMe, defaultTab }) => {
          });
       }
       if (sortedThings.length > 0) {
-         console.log(sortedTHings);
          selection = (
             <Things
                things={sortedThings}
@@ -111,11 +110,9 @@ const ProfileContent = ({ member, isMe, defaultTab }) => {
          selection = <p>{`${isMe ? 'You' : 'They'} have no things.`}</p>;
       }
    } else if (selectedTab === 'Likes') {
-      console.log(member.votes);
       if (member.votes != null && member.votes.length > 0) {
          const allVotes = member.votes.map(vote => vote.onThing);
          const likedThings = allVotes.filter(vote => vote != null);
-         console.log(likedThings);
          selection = (
             <Things
                things={likedThings}
