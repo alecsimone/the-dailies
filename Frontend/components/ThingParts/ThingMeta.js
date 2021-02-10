@@ -269,15 +269,19 @@ const StyledThingMeta = styled.section`
          margin-right: 1rem;
          flex-grow: 0;
          cursor: pointer;
-         .authorLink {
-            margin-bottom: 2px;
-         }
          .authorImg {
             width: 3rem;
             height: 3rem;
             border-radius: 100%;
             margin-right: 1rem;
+            ${props => props.theme.midScreenBreakpoint} {
+               margin-top: 6px;
+            }
          }
+      }
+      a,
+      a:visited {
+         line-height: 1;
       }
       a.authorLink,
       a.authorLink:visited {
