@@ -454,14 +454,11 @@ const changeContentButKeepInFrame = (
    changeFunction
 ) => {
    const contentRect = contentContainer.getBoundingClientRect();
-   console.log(scrollingContainer);
    let parent = contentContainer.offsetParent;
-   console.log(parent);
    let totalOffset = contentContainer.offsetTop;
    while (!scrollingContainer.isSameNode(parent) && parent != null) {
       totalOffset += parent.offsetTop;
       parent = parent.offsetParent;
-      console.log(parent);
    }
 
    changeFunction();
@@ -471,3 +468,46 @@ const changeContentButKeepInFrame = (
    }
 };
 export { changeContentButKeepInFrame };
+
+const findScrollingAncestor = el => {
+   let scroller = el.parentNode;
+   let scrollerStyles = getComputedStyle(scroller);
+   while (!scrollerStyles.overflow.includes('auto') && scroller != null) {
+      scroller = scroller.parentNode;
+      if (scroller == null) continue;
+      scrollerStyles = getComputedStyle(scroller);
+   }
+   return scroller;
+};
+
+const editContentButKeepInFrame = (setEditable, value, wrapper) => {
+   const scroller = findScrollingAncestor(wrapper);
+
+   const wrapperRect = wrapper.getBoundingClientRect();
+
+   let parent = wrapper.offsetParent;
+   let totalOffset = wrapper.offsetTop;
+   while (parent != null) {
+      totalOffset += parent.offsetTop;
+      console.log(parent, parent.offsetTop);
+      parent = parent.offsetParent;
+   }
+
+   /* I'm trying to write this function to work without needing to pass the scrolling ancestor as a param. This makes things complicated though because the scrolling ancestor might be a fixed element (eg if it's .mainSection), so offsetParent won't land on it.
+
+   (This isn't a problem with the similar function above, changeContentButKeepInFrame, because that only happens on mobile, where the scrolling parent is never position: fixed, as far as I know)
+
+   However, as far as I know and for the moment, editable content only shows up in two places: tag sidebars and full things, and in both of these cases the scrolling ancestor is separated from the top of the page by the header
+
+   So what we're going to do is get the distance of this content piece from the top of the page and then subtract the height of the header to get the proper scroll distance */
+
+   const header = document.getElementById('header');
+   const headerHeight = header.offsetHeight;
+
+   if (wrapperRect.top < 0) {
+      scroller.scrollTop = totalOffset - headerHeight;
+   }
+
+   setEditable(value);
+};
+export { editContentButKeepInFrame };

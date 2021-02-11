@@ -21,7 +21,8 @@ import X from '../Icons/X';
 import {
    UNLINK_CONTENTPIECE_MUTATION,
    useScrollFixer,
-   changeContentButKeepInFrame
+   changeContentButKeepInFrame,
+   editContentButKeepInFrame
 } from '../../lib/ContentHandling';
 import { getOneRem } from '../../styles/functions';
 import CopyContentInterface from './CopyContentInterface';
@@ -70,6 +71,9 @@ const ContentPiece = ({
    const [showingComments, setShowingComments] = useState(false);
    const [hasShownComments, setHasShownComments] = useState(false);
    const contentWrapperRef = useRef(null);
+   const setEditableHandler = value => {
+      editContentButKeepInFrame(setEditable, value, contentWrapperRef.current);
+   };
 
    const { setHeartPosition, setFullHeart, setContent } = useContext(
       ModalContext
@@ -79,7 +83,7 @@ const ContentPiece = ({
 
    const postContent = () => {
       editContentPiece(id, editedContent);
-      setEditable(false);
+      setEditableHandler(false);
    };
 
    const [addComment] = useMutation(ADD_COMMENT_MUTATION, {
@@ -185,7 +189,7 @@ const ContentPiece = ({
             text={editedContent}
             setText={setEditedContent}
             postText={postContent}
-            setEditable={setEditable}
+            setEditable={setEditableHandler}
             placeholder="Add content"
             buttonText="save edit"
             id={id}
@@ -266,7 +270,7 @@ const ContentPiece = ({
                onMouseDown={e => e.stopPropagation()}
                onClick={() => {
                   if (!editable) {
-                     setEditable(true);
+                     setEditableHandler(true);
                      return;
                   }
                   if (rawContentString !== editedContent) {
@@ -274,7 +278,7 @@ const ContentPiece = ({
                         return;
                      }
                   }
-                  setEditable(!editable);
+                  setEditableHandler(!editable);
                }}
             />
          )}
@@ -517,7 +521,7 @@ const ContentPiece = ({
       if (!canEdit) return;
 
       if (e.button === 0 && (e.ctrlKey || e.metaKey)) {
-         window.setTimeout(() => setEditable(true), 100); // If we set this to anything less than 100, it seems to trigger the opposite function in RichTextArea too
+         window.setTimeout(() => setEditableHandler(true), 100); // If we set this to anything less than 100, it seems to trigger the opposite function in RichTextArea too
          return;
       }
 
@@ -543,7 +547,7 @@ const ContentPiece = ({
 
    const secondMiddleOrRightClickListener = e => {
       if (e.button === 1 || e.button === 2) {
-         setEditable(true);
+         setEditableHandler(true);
       }
    };
 
