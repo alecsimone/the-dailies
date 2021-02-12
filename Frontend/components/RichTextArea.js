@@ -84,7 +84,7 @@ const autoCloseBracketLink = (e, textRef, setText) => {
    e.preventDefault();
 
    const startingText = textRef.current.substring(0, selectionStart);
-   const bracketCheck = startingText.matchAll(/\[.+\]/gim);
+   const bracketCheck = startingText.matchAll(/\[.*\]/gim);
    for (const match of bracketCheck) {
       // Make sure this is the bracketed text immediately preceding the open paren
       if (match.index + match[0].length === selectionStart) {
