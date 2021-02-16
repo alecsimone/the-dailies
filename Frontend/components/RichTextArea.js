@@ -551,13 +551,13 @@ const RichTextArea = ({
                type="textarea"
                id={id}
                className="richTextInput"
-               // value={text}
-               // onChange={e => {
-               //    textRef.current = e.target.value;
-               //    setText(e.target.value);
-               // }}
-               // onKeyDown={e => handleKeyDown(e)}
-               // onKeyUp={e => handleKeyUp(e)}
+               value={text}
+               onChange={e => {
+                  textRef.current = e.target.value;
+                  setText(e.target.value);
+               }}
+               onKeyDown={e => handleKeyDown(e)}
+               onKeyUp={e => handleKeyUp(e)}
                onBlur={e => {
                   closeResults();
                }}
