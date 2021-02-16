@@ -648,22 +648,25 @@ ContentPiece.propTypes = {
    editContentPiece: PropTypes.func.isRequired
 };
 
-export default ContentPiece;
-// export default React.memo(ContentPiece, (prev, next) => {
-//    if (prev.rawContentString !== next.rawContentString) {
-//       return false;
-//    }
-//    if (prev.expanded !== next.expanded) {
-//       return false;
-//    }
-//    if (prev.comments.length !== next.comments.length) {
-//       return false;
-//    }
-//    if (
-//       (prev.votes && next.votes && prev.votes.length !== next.votes.length) ||
-//       prev.score !== next.score
-//    ) {
-//       return false;
-//    }
-//    return true;
-// });
+// export default ContentPiece;
+export default React.memo(ContentPiece, (prev, next) => {
+   if (prev.rawContentString !== next.rawContentString) {
+      return false;
+   }
+   if (prev.expanded !== next.expanded) {
+      return false;
+   }
+   if (prev.comments.length !== next.comments.length) {
+      return false;
+   }
+   if (JSON.stringify(prev.comments) !== JSON.stringify(next.comments)) {
+      return false;
+   }
+   if (
+      (prev.votes && next.votes && prev.votes.length !== next.votes.length) ||
+      prev.score !== next.score
+   ) {
+      return false;
+   }
+   return true;
+});
