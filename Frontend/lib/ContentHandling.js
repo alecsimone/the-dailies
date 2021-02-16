@@ -489,7 +489,6 @@ const editContentButKeepInFrame = (setEditable, value, wrapper) => {
    let totalOffset = wrapper.offsetTop;
    while (parent != null) {
       totalOffset += parent.offsetTop;
-      console.log(parent, parent.offsetTop);
       parent = parent.offsetParent;
    }
 
