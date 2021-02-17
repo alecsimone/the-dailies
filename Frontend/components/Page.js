@@ -298,6 +298,9 @@ const GlobalStyle = createGlobalStyle`
       margin-top: var(--header-height);
       margin-bottom: var(--bottombar-height);
       ${props => props.theme.mobileBreakpoint} {
+         position: fixed;
+         width: 100%;
+         top: var(--header-height);
          height: calc(var(--vh, 1vh) * 100 - var(--header-height));
          margin-top: 0;
          margin-bottom: 0;
