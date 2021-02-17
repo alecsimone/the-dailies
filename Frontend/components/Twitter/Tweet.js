@@ -311,8 +311,11 @@ const Tweet = props => {
             threadEnder ? ' threadEnder' : ''
          }`}
          onClick={e => {
+            console.log('you clicked');
+            console.log(e);
             e.stopPropagation();
             if (e.button === 0) {
+               console.log('and you clicked correctly too');
                window.setTimeout(
                   () =>
                      window.addEventListener('mousedown', doubleClickListener),
