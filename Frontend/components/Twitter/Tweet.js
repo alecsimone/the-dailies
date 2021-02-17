@@ -293,6 +293,8 @@ const Tweet = props => {
    }
 
    const doubleClickListener = e => {
+      console.log('we got to the doubleClickListener');
+      console.log(e);
       if (e.button === 0) {
          e.preventDefault();
 
@@ -316,11 +318,7 @@ const Tweet = props => {
             e.stopPropagation();
             if (e.button === 0) {
                console.log('and you clicked correctly too');
-               window.setTimeout(
-                  () =>
-                     window.addEventListener('mousedown', doubleClickListener),
-                  1
-               );
+               window.addEventListener('mousedown', doubleClickListener);
 
                window.setTimeout(
                   () =>
