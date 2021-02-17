@@ -58,8 +58,9 @@ const ContentPiece = ({
    const fullThingData = useContext(context);
 
    const [editable, setEditable] = useState(false);
-   const [editedContent, setEditedContent] = useState(rawContentString);
-   const [commentText, setCommentText] = useState('');
+   const editContentInputRef = useRef(null); // This ref will be passed down to the RichTextArea that allows us to edit the content piece, and we'll use it to get the value for our editContentPiece mutation
+
+   const commentInputRef = useRef(null); // This ref will be passed down to the RichTextArea that allows us to comment on the content piece, and we'll use it to get the value for our editContentPiece mutation
 
    const [showingAddToBox, setShowingAddToBox] = useState(false);
    const [showingOtherPlaces, setShowingOtherPlaces] = useState(false);
@@ -82,6 +83,16 @@ const ContentPiece = ({
    const contentContainerRef = useRef(null);
 
    const postContent = () => {
+      const inputRef = editContentInputRef.current;
+      const editedContent = inputRef.value;
+
+      if (editedContent.trim() === '') {
+         alert(
+            "You can't make a content piece blank. Please delete it if you want to get rid of it."
+         );
+         return;
+      }
+
       editContentPiece(id, editedContent);
       setEditableHandler(false);
    };
@@ -122,6 +133,14 @@ const ContentPiece = ({
    });
 
    const sendNewComment = async () => {
+      const inputElement = commentInputRef.current;
+      const commentText = inputElement.value;
+
+      if (commentText.trim() === '') {
+         alert("You can't post a blank comment, please write something first.");
+         return;
+      }
+
       const now = new Date();
       const newComment = {
          __typename: 'Comment',
@@ -140,7 +159,7 @@ const ContentPiece = ({
       };
       comments.push(newComment);
 
-      setCommentText('');
+      inputElement.value = '';
       await addComment({
          variables: {
             comment: commentText,
@@ -186,14 +205,14 @@ const ContentPiece = ({
    } else {
       contentElement = (
          <RichTextArea
-            text={editedContent}
-            setText={setEditedContent}
+            text={rawContentString}
             postText={postContent}
             setEditable={setEditableHandler}
             placeholder="Add content"
             buttonText="save edit"
             id={id}
             key={id}
+            inputRef={editContentInputRef}
          />
       );
    }
@@ -205,12 +224,12 @@ const ContentPiece = ({
          key={id}
          input={
             <RichTextArea
-               text={commentText}
-               setText={setCommentText}
+               text=""
                postText={sendNewComment}
                placeholder="Add comment"
                buttonText="comment"
                id={id}
+               inputRef={commentInputRef}
             />
          }
       />

@@ -10,7 +10,6 @@ import { ThingContext } from '../../pages/thing';
 import { MemberContext } from '../Account/MemberProvider';
 import { setLightness, setAlpha } from '../../styles/functions';
 import AuthorLink from './AuthorLink';
-import ShortLink from './ShortLink';
 import ColorSelector from './ColorSelector';
 import PrivacyDropdown from './PrivacyDropdown';
 import TrashIcon from '../Icons/Trash';
@@ -18,6 +17,7 @@ import EditThis from '../Icons/EditThis';
 import X from '../Icons/X';
 import TimeAgo from '../TimeAgo';
 import { ALL_THINGS_QUERY } from '../../lib/ThingHandling';
+import { useSearchResultsSelector } from '../../lib/RichTextHandling';
 import { PUBLIC_THINGS_QUERY } from '../Archives/PublicThings';
 
 const DELETE_THING_MUTATION = gql`
@@ -371,13 +371,20 @@ const ThingMeta = ({ canEdit }) => {
    const [editing, setEditing] = useState(false);
    const [addingPeople, setAddingPeople] = useState(false);
    const [peopleSearchTerm, setPeopleSearchTerm] = useState('');
-   const [memberSearchResults, setMemberSearchResults] = useState([]);
-   const [highlightedIndex, setHighlightedIndex] = useState(-1);
+
    const [showingExtraViewers, setShowingExtraViewers] = useState(false);
 
-   const searchResultsRef = useRef(memberSearchResults);
-   const highlightedIndexRef = useRef(highlightedIndex);
    const addedMemberRef = useRef('');
+
+   const {
+      postSearchResults: memberSearchResults,
+      setPostSearchResults: setMemberSearchResults,
+      highlightedIndex,
+      setHighlightedIndex,
+      searchResultsRef,
+      highlightedIndexRef,
+      resetResultsSelector
+   } = useSearchResultsSelector();
 
    const [deleteThing, { loading: deleting }] = useMutation(
       DELETE_THING_MUTATION,
@@ -441,10 +448,8 @@ const ThingMeta = ({ canEdit }) => {
 
    const closeResults = () => {
       setPeopleSearchTerm('');
-      setMemberSearchResults([]);
-      searchResultsRef.current = [];
-      setHighlightedIndex(-1);
-      highlightedIndexRef.current = -1;
+
+      resetResultsSelector();
 
       // const thisBox = document.querySelector(`#addToInterface_${id}`);
       // thisBox.removeEventListener('keydown', navigateResultsRef.current);

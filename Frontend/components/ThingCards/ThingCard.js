@@ -261,10 +261,6 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
    const { lowContrastGrey, midScreenBPWidthRaw } = useContext(ThemeContext);
    const { me } = useContext(MemberContext);
 
-   if (data == null || content == null) {
-      return <CardGenerator id={id} cardType="regular" />;
-   }
-
    // First let's make our array of the orderedContent so we can add comments to it when we need to
    let fullContent;
    if (copiedInContent != null && copiedInContent.length > 0) {
@@ -291,6 +287,9 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
       contentCommentsObject
    );
 
+   // This ref will be passed down to the RichTextArea that will be in the comments section for content pieces, and we'll use it to get the value of that textarea for our postNewComment mutation
+   const commentInputRef = useRef(null);
+
    // Then we need a function to switch an individual value in that object
    const handleCommentChanges = (pieceID, newValue) => {
       setCommentTextObject(prevState => ({
@@ -298,6 +297,14 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
          [pieceID]: newValue
       }));
    };
+
+   const [addComment] = useMutation(ADD_COMMENT_MUTATION, {
+      onError: err => alert(err.message)
+   });
+
+   if (data == null || content == null) {
+      return <CardGenerator id={id} cardType="regular" />;
+   }
 
    const handleContentScrolling = newIndex => {
       currentContentWrapperRef.current.scrollTop = 0;
@@ -322,14 +329,16 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
       );
    };
 
-   const [addComment] = useMutation(ADD_COMMENT_MUTATION, {
-      onError: err => alert(err.message)
-   });
-
    // And finally a function to send new comments to the server
    const postNewComment = async () => {
       const pieceID = contentPossiblyWithSummaryArray[contentSliderPosition].id;
       const now = new Date();
+      const inputElement = commentInputRef.current;
+      const newCommentText = inputElement.value;
+      if (newCommentText.trim() === '') {
+         alert("You can't add a blank comment. Please write something first.");
+      }
+
       const newComment = {
          __typename: 'Comment',
          author: {
@@ -339,7 +348,7 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
             id: me.id,
             rep: me.rep
          },
-         comment: commentTextObject[pieceID],
+         comment: newCommentText,
          createdAt: now.toISOString(),
          id: 'temporaryID',
          votes: [],
@@ -353,7 +362,7 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
       handleCommentChanges(pieceID, '');
       await addComment({
          variables: {
-            comment: commentTextObject[pieceID],
+            comment: newCommentText,
             id: pieceID,
             type: 'ContentPiece'
          },
@@ -417,16 +426,11 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
                         ?.id)
                   ]
                }
-               setText={newValue =>
-                  handleCommentChanges(
-                     contentPossiblyWithSummaryArray[contentSliderPosition]?.id,
-                     newValue
-                  )
-               }
                postText={postNewComment}
                placeholder="Add comment"
                buttonText="comment"
                id={id}
+               inputRef={commentInputRef}
             />
          }
       />
@@ -447,8 +451,10 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
                <CommentsButton
                   onClick={() => setShowingComments(!showingComments)}
                   count={
-                     content[contentSliderPosition]?.comments?.length != null
-                        ? content[contentSliderPosition]?.comments?.length
+                     contentPossiblyWithSummaryArray[contentSliderPosition]
+                        ?.comments?.length != null
+                        ? contentPossiblyWithSummaryArray[contentSliderPosition]
+                             ?.comments?.length
                         : 0
                   }
                />

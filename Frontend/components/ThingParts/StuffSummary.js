@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 import styled from 'styled-components';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useMutation } from '@apollo/react-hooks';
 import { setAlpha } from '../../styles/functions';
 import RichText from '../RichText';
@@ -133,9 +133,8 @@ const StuffSummary = ({
    type
 }) => {
    const [editing, setEditing] = useState(false);
-   const [summary, setSummary] = useState(
-      inheritedSummary == null ? '' : inheritedSummary
-   );
+
+   const summaryInputRef = useRef(null);
 
    const [editSummary] = useMutation(EDIT_SUMMARY_MUTATION, {
       onError: err => alert(err.message)
@@ -146,6 +145,14 @@ const StuffSummary = ({
       return null;
 
    const updateSummary = () => {
+      const inputElement = summaryInputRef.current;
+      const summary = inputElement.value;
+
+      if (summary.trim() === '') {
+         alert("You can't have a blank summary, please write something first.");
+         return;
+      }
+
       editSummary({
          variables: {
             summary,
@@ -180,7 +187,9 @@ const StuffSummary = ({
             }
          }
       });
-      setSummary('');
+
+      const inputElement = summaryInputRef.current;
+      inputElement.value = '';
    };
 
    let summaryElement;
@@ -194,13 +203,17 @@ const StuffSummary = ({
    } else if (editing) {
       summaryElement = (
          <RichTextArea
-            text={summary}
-            setText={setSummary}
+            text={inheritedSummary == null ? '' : inheritedSummary}
             postText={updateSummary}
             setEditable={setEditing}
             placeholder="Add summary"
-            buttonText={summary == null || summary == '' ? 'add' : 'edit'}
+            buttonText={
+               inheritedSummary == null || inheritedSummary == ''
+                  ? 'add'
+                  : 'edit'
+            }
             id={stuffID}
+            inputRef={summaryInputRef}
          />
       );
    } else {

@@ -2,7 +2,7 @@ import gql from 'graphql-tag';
 import styled from 'styled-components';
 import { useMutation } from '@apollo/react-hooks';
 import Link from 'next/link';
-import { useContext, useState } from 'react';
+import { useContext, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { MemberContext } from '../Account/MemberProvider';
 import RichText from '../RichText';
@@ -231,15 +231,25 @@ const Comment = ({
       onError: err => alert(err.message)
    });
 
-   const [editing, setEditing] = useState(false);
-   const [editedComment, setEditedComment] = useState(comment.comment);
+   const [editing, setEditing] = useState(false); // Controls whether we're editing or displaying the comment
+   const editCommentInputRef = useRef(null); // This ref will be passed down to the RichTextArea that allows us to edit the comment, and we'll use it to get the value for our sendCommentUpdate mutation
 
-   const [replying, setReplying] = useState(false);
-   const [reply, setReply] = useState('');
+   const [replying, setReplying] = useState(false); // Controls whether we're showing the add reply interface
+   const replyInputRef = useRef(null); // This ref will be passed down to the RichTextArea that allows us to reply to the comment, and we'll use it to get the value for our postReply mutation
 
    const [copied, setCopied] = useState(false);
 
    const sendCommentUpdate = async () => {
+      const inputElement = editCommentInputRef.current;
+      const editedComment = inputElement.value;
+
+      if (editedComment.trim() === '') {
+         alert(
+            "You can't make a comment blank. Please delete it if you want to get rid of it."
+         );
+         return;
+      }
+
       const indexOfEditedComment = comments.findIndex(
          currentComment => currentComment.id === comment.id
       );
@@ -267,6 +277,14 @@ const Comment = ({
    };
 
    const postReply = async () => {
+      const inputElement = replyInputRef.current;
+      const reply = inputElement.value;
+
+      if (reply.trim() === '') {
+         alert("You can't post a blank reply. Please write something first.");
+         return;
+      }
+
       const now = new Date();
       const newComment = {
          __typename: 'Comment',
@@ -301,7 +319,7 @@ const Comment = ({
       ) {
          comments[originalCommentIndex].replies.push(newComment);
       }
-      setReply('');
+      inputElement.value = '';
       setReplying(false);
       await addComment({
          variables: {
@@ -458,13 +476,13 @@ const Comment = ({
                      <RichText text={comment.comment} key={comment.id} />
                   ) : (
                      <RichTextArea
-                        text={editedComment}
-                        setText={setEditedComment}
+                        text={comment.comment}
                         postText={sendCommentUpdate}
                         setEditable={setEditing}
                         placeholder="Add comment"
                         buttonText="comment"
                         id={comment.id}
+                        inputRef={editCommentInputRef}
                      />
                   )}
                </div>
@@ -563,13 +581,13 @@ const Comment = ({
          {replying && (
             <div className="replyInputWrapper">
                <RichTextArea
-                  text={reply}
-                  setText={setReply}
+                  text=""
                   postText={postReply}
                   setEditable={setReplying}
                   placeholder="Add reply"
                   buttonText="reply"
                   id={`${comment.id}-reply`}
+                  inputRef={replyInputRef}
                />
             </div>
          )}

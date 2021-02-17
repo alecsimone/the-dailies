@@ -12,10 +12,10 @@ const ContentSummary = ({
 }) => {
    let summaryElement;
    if (editable) {
+      // Note, I'm not updating this RichTextArea to have an uncontrolled input because we don't use this component anymore. However, if you're here because you're thinking about putting it in somewhere, you'll need to add an inputRef prop and use that input ref to get the value of the text for the postText function
       summaryElement = (
          <RichTextArea
             text={summary}
-            setText={setSummary}
             postText={postText}
             setEditable={setEditable}
             key={`${id}-summary`}

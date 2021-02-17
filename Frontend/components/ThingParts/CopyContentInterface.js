@@ -9,6 +9,7 @@ import { SEARCH_QUERY } from '../SearchResults';
 import { setAlpha } from '../../styles/functions';
 import { contentPieceFields } from '../../lib/CardInterfaces';
 import { home } from '../../config';
+import { useSearchResultsSelector } from '../../lib/RichTextHandling';
 
 const COPY_CONTENTPIECE_MUTATION = gql`
    mutation COPY_CONTENTPIECE_MUTATION(
@@ -80,11 +81,15 @@ const debouncedPostSearch = debounce(
 
 const CopyContentInterface = ({ id, thingID, setShowingAddToBox }) => {
    const [searchTerm, setSearchTerm] = useState('');
-   const [postSearchResults, setPostSearchResults] = useState([]);
-   const [highlightedIndex, setHighlightedIndex] = useState(-1);
-
-   const searchResultsRef = useRef(postSearchResults);
-   const highlightedIndexRef = useRef(highlightedIndex);
+   const {
+      postSearchResults,
+      setPostSearchResults,
+      highlightedIndex,
+      setHighlightedIndex,
+      searchResultsRef,
+      highlightedIndexRef,
+      resetResultsSelector
+   } = useSearchResultsSelector();
 
    const thisInterfaceRef = useRef(null);
 
@@ -135,10 +140,8 @@ const CopyContentInterface = ({ id, thingID, setShowingAddToBox }) => {
 
    const closeResults = () => {
       setSearchTerm('');
-      setPostSearchResults([]);
-      searchResultsRef.current = [];
-      setHighlightedIndex(-1);
-      highlightedIndexRef.current = -1;
+
+      resetResultsSelector();
 
       const thisBox = thisInterfaceRef.current;
       thisBox.removeEventListener('keydown', navigateResultsRef.current);

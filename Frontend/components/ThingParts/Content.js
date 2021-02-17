@@ -80,8 +80,8 @@ const Content = ({ context, canEdit, linkedPiece }) => {
       setContentExpansionObject(newContentExpansionObject);
    };
 
-   // This state holds the input for the add new content input at the bottom of the content section
-   const [newContentPiece, setNewContentPiece] = useState('');
+   // This ref will be passed down to the RichTextArea that sits at the bottom of content and allows members to add a new content piece, and we'll use it to get the value for our sendNewContentPiece mutation
+   const inputRef = useRef(null);
 
    // This ref is going to hold all the data we need for making the edit buttons sticky. Things that don't change are populated in an effect that runs on the first render only, and everything else is populated in the stickifier function, which will be attached to a scroll listener by that same effect.
    const stickingData = useRef({
@@ -147,7 +147,15 @@ const Content = ({ context, canEdit, linkedPiece }) => {
    }, [stickifierHandler]);
 
    const sendNewContentPiece = async () => {
-      setNewContentPiece('');
+      const inputElement = inputRef.current;
+      const newContentPiece = inputElement.value;
+      if (newContentPiece.trim() === '') {
+         alert(
+            "You can't add a blank content piece. Please write something first."
+         );
+         return;
+      }
+      inputElement.value = '';
       content.push({
          __typename: 'ContentPiece',
          content: newContentPiece,
@@ -370,12 +378,12 @@ const Content = ({ context, canEdit, linkedPiece }) => {
             {contentElements}
             {canEdit && (
                <RichTextArea
-                  text={newContentPiece}
-                  setText={setNewContentPiece}
+                  text=""
                   postText={sendNewContentPiece}
                   placeholder="Add content"
                   buttonText="add"
                   id={`${id}-content`}
+                  inputRef={inputRef}
                />
             )}
             {canEdit && (

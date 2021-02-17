@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 import styled from 'styled-components';
-import { useContext, useState } from 'react';
+import { useContext, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useMutation } from '@apollo/react-hooks';
 import { MemberContext } from '../Account/MemberProvider';
@@ -129,8 +129,8 @@ const Comments = ({ context, linkedComment }) => {
 
    const { me } = useContext(MemberContext);
 
-   // This refers only to the input to add a new top-level comment. Replies are handled in their parent comment.
-   const [currentComment, setCurrentComment] = useState('');
+   // This ref will be passed down to the RichTextArea that allows us to comment on the thing, and we'll use it to get the value for our sendNewComment mutation
+   const commentInputRef = useRef(null);
 
    let commentElements;
 
@@ -158,6 +158,9 @@ const Comments = ({ context, linkedComment }) => {
    });
 
    const sendNewComment = async () => {
+      const inputElement = commentInputRef.current;
+      const commentText = inputElement.value;
+
       const now = new Date();
       const newComment = {
          __typename: 'Comment',
@@ -168,7 +171,7 @@ const Comments = ({ context, linkedComment }) => {
             id: me.id,
             rep: me.rep
          },
-         comment: currentComment,
+         comment: commentText,
          createdAt: now.toISOString(),
          id: 'temporaryID',
          votes: [],
@@ -176,10 +179,10 @@ const Comments = ({ context, linkedComment }) => {
       };
       comments.push(newComment);
 
-      setCurrentComment('');
+      inputElement.value = '';
       await addComment({
          variables: {
-            comment: currentComment,
+            comment: commentText,
             id,
             type
          },
@@ -233,12 +236,12 @@ const Comments = ({ context, linkedComment }) => {
          {commentElements}
          {me && (
             <RichTextArea
-               text={currentComment}
-               setText={setCurrentComment}
+               text=""
                postText={sendNewComment}
                placeholder="Add comment"
                buttonText="comment"
                id={`${id}-comment`}
+               inputRef={commentInputRef}
             />
          )}
       </StyledComments>
