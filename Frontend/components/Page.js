@@ -293,8 +293,8 @@ const GlobalStyle = createGlobalStyle`
       /* position: fixed;
       inset: var(--header-height) 0; */
       position: relative;
-      height: calc(var(--vh) * 100 - var(--header-height));
-      margin-top: var(--header-height);
+      height: calc(var(--vh) * 100 - 2 * var(--header-height));
+      margin: var(--header-height) 0;
       ${props => props.theme.mobileBreakpoint} {
          margin-top: 0;
       }

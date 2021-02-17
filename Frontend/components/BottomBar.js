@@ -21,6 +21,7 @@ const StyledBottomBar = styled.section`
    ${props => props.theme.mobileBreakpoint} {
       display: none;
    }
+   z-index: 99;
    .inputWrapper {
       width: 100%;
       position: absolute;
