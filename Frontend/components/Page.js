@@ -294,6 +294,7 @@ const GlobalStyle = createGlobalStyle`
       inset: var(--header-height) 0; */
       position: relative;
       height: calc(var(--vh) * 100 - var(--header-height));
+      margin-top: var(--header-height);
       ${props => props.theme.mobileBreakpoint} {
          top: var(--header-height);
          bottom: 0;
