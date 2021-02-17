@@ -69,18 +69,18 @@ const RichTextArea = ({
       resetResultsSelector
    } = useSearchResultsSelector();
 
-   useEffect(() => {
-      const inputs = document.querySelectorAll(`.richTextInput`);
-      if (inputs.length > 0) {
-         inputs.forEach(input => {
-            dynamicallyResizeElement(input);
-         });
-      }
-      if (false) {
-         // forcing eslint to include text in the dependencies
-         console.log(text);
-      }
-   }, [text]);
+   // useEffect(() => {
+   //    const inputs = document.querySelectorAll(`.richTextInput`);
+   //    if (inputs.length > 0) {
+   //       inputs.forEach(input => {
+   //          dynamicallyResizeElement(input);
+   //       });
+   //    }
+   //    if (false) {
+   //       // forcing eslint to include text in the dependencies
+   //       console.log(text);
+   //    }
+   // }, [text]);
 
    const secondMiddleOrRightClickListener = e => {
       if (e.button === 1 || e.button === 2) {
@@ -392,6 +392,7 @@ const RichTextArea = ({
                className="richTextInput"
                onChange={e => {
                   textRef.current = e.target.value;
+                  dynamicallyResizeElement(inputRef.current);
                }}
                onKeyDown={e => handleKeyDown(e)}
                onKeyUp={e => handleKeyUp(e)}
