@@ -105,6 +105,7 @@ const GlobalStyle = createGlobalStyle`
       }
       height: 100%;
       --header-height: calc(6.6rem + 3px); // On mobile, the header has a .5rem padding on both top and bottom and a 3px border. It gets its height from the MemberBox, which has a height of 2.25rem * 1.6 (2.25rem font size at 1.6 line height), and a 1rem margin on either side. So that's 2.25 * 1.6 + 1 * 2 + 0.5 * 2 = 6.6 rem, + 3px for the border
+      --bottombar-height: calc(6.25rem + 6px); // The bottom bar has 1.75rem of padding on the top and bottom around icons that have a height of 2.75rem, and a 2px border on top. Even though the line height is 1 everywhere, the svgs within the bottom bar are getting an extra 4px added onto them, so we added that too.
       ${props => props.theme.mobileBreakpoint} {
          --header-height: calc(7rem + 3px); // On bigger screens, the header's padding and border are still 0.5rem * 2 and 3px respectively, but it gets its height from the search box, which has a height of 4 rem and a margin of 1rem on either side. Thus the contents are 6rem, the margin is 1 rem, and the border is 3px for a total of 7rem + 3px;
       }
@@ -293,8 +294,9 @@ const GlobalStyle = createGlobalStyle`
       /* position: fixed;
       inset: var(--header-height) 0; */
       position: relative;
-      height: calc(var(--vh) * 100 - 2 * var(--header-height));
-      margin: var(--header-height) 0;
+      height: calc(var(--vh) * 100 - var(--header-height) - var(--bottombar-height));
+      margin-top: var(--header-height);
+      margin-bottom: var(--bottombar-height);
       ${props => props.theme.mobileBreakpoint} {
          margin-top: 0;
       }
