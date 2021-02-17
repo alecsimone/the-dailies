@@ -49,6 +49,14 @@ const MemberProvider = ({ children, isHome }) => {
       };
    }
 
+   if (memberData?.me?.displayName === 'Alec') {
+      if (process.browser) {
+         window.visualViewport.addEventListener('resize', () =>
+            alert('You resized the visualViewport')
+         );
+      }
+   }
+
    return (
       <MemberContext.Provider value={memberData}>
          {children}
