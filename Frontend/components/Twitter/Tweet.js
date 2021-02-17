@@ -294,7 +294,6 @@ const Tweet = props => {
 
    const doubleClickListener = e => {
       console.log('we got to the doubleClickListener');
-      console.log(e);
       if (e.button === 0) {
          e.preventDefault();
 
@@ -313,21 +312,14 @@ const Tweet = props => {
             threadEnder ? ' threadEnder' : ''
          }`}
          onClick={e => {
-            console.log('you clicked');
-            console.log(e);
             e.stopPropagation();
             if (e.button === 0) {
-               console.log('and you clicked correctly too');
                window.addEventListener('mousedown', doubleClickListener);
 
-               window.setTimeout(
-                  () =>
-                     window.removeEventListener(
-                        'mousedown',
-                        doubleClickListener
-                     ),
-                  500
-               );
+               window.setTimeout(() => {
+                  console.log('remove the event listener');
+                  window.removeEventListener('mousedown', doubleClickListener);
+               }, 500);
             }
          }}
       >
