@@ -298,7 +298,9 @@ const GlobalStyle = createGlobalStyle`
       margin-top: var(--header-height);
       margin-bottom: var(--bottombar-height);
       ${props => props.theme.mobileBreakpoint} {
+         height: calc(var(--vh, 1vh) * 100 - var(--header-height));
          margin-top: 0;
+         margin-bottom: 0;
       }
       overflow-x: hidden;
       .navSidebar {
