@@ -291,19 +291,13 @@ const GlobalStyle = createGlobalStyle`
       }
    }
    section.threeColumns {
-      /* position: fixed;
-      inset: var(--header-height) 0; */
-      position: relative;
-      height: calc(var(--vh) * 100 - var(--header-height) - var(--bottombar-height));
-      margin-top: var(--header-height);
-      margin-bottom: var(--bottombar-height);
+      position: fixed;
+      top: var(--header-height);
+      bottom: var(--bottombar-height);
+      left: 0;
+      right: 0;
       ${props => props.theme.mobileBreakpoint} {
-         position: fixed;
-         width: 100%;
-         top: var(--header-height);
-         height: calc(var(--vh, 1vh) * 100 - var(--header-height));
-         margin-top: 0;
-         margin-bottom: 0;
+         bottom: 0;
       }
       overflow-x: hidden;
       .navSidebar {

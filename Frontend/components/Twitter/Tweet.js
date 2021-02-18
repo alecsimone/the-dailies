@@ -301,6 +301,7 @@ const Tweet = props => {
          setFullHeart(!liked);
 
          likeTweetHandler();
+         window.removeEventListener('mousedown', doubleClickListener);
       }
    };
 
