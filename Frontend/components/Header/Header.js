@@ -47,7 +47,7 @@ const StyledHeader = styled.div`
    left: 0;
    right: 0;
    border-bottom: 3px solid
-      ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
+      ${props => setLightness(props.theme.lowContrastGrey, 10)};
    background: ${props => props.theme.midBlack};
    padding: 0.5rem 0;
    .headerContents {

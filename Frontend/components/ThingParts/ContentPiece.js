@@ -292,7 +292,7 @@ const ContentPiece = ({
                      setEditableHandler(true);
                      return;
                   }
-                  if (rawContentString !== editedContent) {
+                  if (rawContentString !== editContentInputRef.current.value) {
                      if (!confirm('Discard changes?')) {
                         return;
                      }

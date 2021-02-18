@@ -506,16 +506,38 @@ const Comment = ({
                               comment.replies != null &&
                               comment.replies.length > 0
                            ) {
+                              // If a comment has replies, we don't delete it, we just change its text to [deleted] and its author to the special deleted user
                               const commentIndex = comments.findIndex(
                                  comm => comm.id === comment.id
                               );
-                              newComments = [...comments];
+                              // Because comments is an array of objects, we need to do a deep copy
+                              newComments = [];
+                              comments.forEach(comment => {
+                                 // We're just going to create a copy of each object and then push it into our newComments array
+                                 const commentCopy = {
+                                    ...comment
+                                 };
+                                 newComments.push(commentCopy);
+                              });
                               newComments[commentIndex].comment =
                                  '//[deleted]//';
                               newComments[commentIndex].author = {
+                                 __typename: 'Member',
                                  displayName: 'Deleted',
                                  id: 'deleted',
-                                 avatar: null
+                                 avatar: null,
+                                 rep: 0,
+                                 friends: []
+                              };
+                              // I can't get the optimistic response to work, so we're doing it the hacky way here also and just changing the props
+                              comments[commentIndex].comment = '//[deleted]//';
+                              comments[commentIndex].author = {
+                                 __typename: 'Member',
+                                 displayName: 'Deleted',
+                                 id: 'deleted',
+                                 avatar: null,
+                                 rep: 0,
+                                 friends: []
                               };
                               setEditing(false);
                            } else {

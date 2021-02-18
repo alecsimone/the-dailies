@@ -15,7 +15,8 @@ const StyledBottomBar = styled.section`
    left: 0;
    right: 0;
    width: 100%;
-   border-top: 2px solid ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
+   border-top: 2px solid
+      ${props => setLightness(props.theme.lowContrastGrey, 10)};
    display: flex;
    justify-content: stretch;
    ${props => props.theme.mobileBreakpoint} {

@@ -416,8 +416,8 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
                ? contentPossiblyWithSummaryArray[contentSliderPosition].comments
                : []
          }
-         id={id}
-         key={id}
+         id={contentPossiblyWithSummaryArray[contentSliderPosition]?.id}
+         key={contentPossiblyWithSummaryArray[contentSliderPosition]?.id}
          input={
             <RichTextArea
                text={

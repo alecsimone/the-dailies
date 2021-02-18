@@ -151,7 +151,7 @@ const RichTextArea = ({
             selectedTitle}"](${selectedID})${afterText}`;
       }
 
-      inputRef.value = newText;
+      inputRef.current.value = newText;
       textRef.current = newText;
 
       const newCursorPos =

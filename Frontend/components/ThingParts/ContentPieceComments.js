@@ -16,6 +16,9 @@ const StyledContentPieceComment = styled.div`
          max-height: 40rem;
          overflow: hidden;
          ${props => props.theme.scroll};
+         .comment .votebar {
+            width: calc(100% - 2rem);
+         }
       }
    }
    .commentsContainer {
@@ -95,13 +98,19 @@ const StyledContentPieceComment = styled.div`
                   display: none;
                }
             }
+            .buttons {
+               display: none;
+            }
             &:hover {
                background: ${props => props.theme.lightBlack};
             }
          }
          .newCommentArea {
-            textarea {
-               min-height: 5.75rem;
+            form.richTextArea {
+               margin: 2rem 0 0;
+               textarea {
+                  min-height: 5.75rem;
+               }
             }
          }
       }
@@ -214,18 +223,23 @@ const ContentPieceComment = ({ comments, id, input }) => {
       const [selectedCommentData] = comments.filter(
          comment => comment.id === selectedComment
       );
-      commentElements = (
-         <div className="commentWrapper">
-            <Comment
-               comment={selectedCommentData}
-               comments={comments}
-               key={selectedCommentData.id}
-               type="ContentPiece"
-               id={id}
-               selectComment={setSelectedComment}
-            />
-         </div>
-      );
+      if (selectedCommentData != null) {
+         commentElements = (
+            <div className="commentWrapper">
+               <Comment
+                  comment={selectedCommentData}
+                  comments={comments}
+                  key={selectedCommentData.id}
+                  type="ContentPiece"
+                  id={id}
+                  selectComment={setSelectedComment}
+               />
+            </div>
+         );
+      } else {
+         setCommentView('collapsed');
+         return null;
+      }
 
       let siblingComments;
       if (selectedCommentData.replyTo == null) {

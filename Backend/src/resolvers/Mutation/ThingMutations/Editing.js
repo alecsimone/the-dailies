@@ -541,6 +541,7 @@ async function deleteComment(parent, { commentID, stuffID, type }, ctx, info) {
    }, `{replies {id}}`).catch(err => {
       console.log(err);
    });
+   console.log(oldComment);
 
    let dataObj;
    // If the comment has replies, we just want to set its text to [deleted]. Otherwise we can actually delete it.
