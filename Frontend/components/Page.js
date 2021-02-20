@@ -308,7 +308,7 @@ const GlobalStyle = createGlobalStyle`
          width: 100%;
          height: calc(100% - 13.5rem - 3px); /* 6.75rem is the height of each of the header and bottom bar. The header has a 1px border, the bottom bar 2px */
          top: calc(6.75rem + 1px);
-         z-index: 10;
+         z-index: 99;
          ${props => props.theme.scroll};
          transition: transform .25s;
          &.visible {
@@ -326,6 +326,7 @@ const GlobalStyle = createGlobalStyle`
       }
       .mainSection {
          height: 100%;
+         z-index: 1;
       }
       ${props => props.theme.desktopBreakpoint} {
          display: flex;
@@ -362,7 +363,7 @@ const GlobalStyle = createGlobalStyle`
          height: calc(100% - 13.5rem - 3px); /* 6.75rem is the height of each of the header and bottom bar. The header has a 1px border, the bottom bar 2px */
          top: calc(6.75rem + 1px);
          right: 0;
-         z-index: 9;
+         z-index: 99;
          ${props => props.theme.scroll};
          background: ${props => props.theme.midBlack};
          transition: all .25s;
