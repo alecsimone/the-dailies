@@ -69,18 +69,9 @@ const RichTextArea = ({
       resetResultsSelector
    } = useSearchResultsSelector();
 
-   // useEffect(() => {
-   //    const inputs = document.querySelectorAll(`.richTextInput`);
-   //    if (inputs.length > 0) {
-   //       inputs.forEach(input => {
-   //          dynamicallyResizeElement(input);
-   //       });
-   //    }
-   //    if (false) {
-   //       // forcing eslint to include text in the dependencies
-   //       console.log(text);
-   //    }
-   // }, [text]);
+   useEffect(() => {
+      dynamicallyResizeElement(inputRef.current);
+   }, [inputRef]);
 
    const secondMiddleOrRightClickListener = e => {
       if (e.button === 1 || e.button === 2) {
