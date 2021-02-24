@@ -148,7 +148,11 @@ const BottomBar = () => {
                      : searchPlaceholder
                );
                const bottomBarInput = document.querySelector('#bottomBarInput');
-               bottomBarInput.focus();
+               if (inputPlaceholder === searchPlaceholder) {
+                  bottomBarInput.blur();
+               } else {
+                  bottomBarInput.focus();
+               }
             }}
          >
             <SearchIcon color="mainText" />
@@ -166,12 +170,17 @@ const BottomBar = () => {
                   inputPlaceholder !== false
                ) {
                   setInputContent('');
+               } else {
                }
                setInputPlaceholder(
                   inputPlaceholder === plusPlaceholder ? false : plusPlaceholder
                );
                const bottomBarInput = document.querySelector('#bottomBarInput');
-               bottomBarInput.focus();
+               if (inputPlaceholder === plusPlaceholder) {
+                  bottomBarInput.blur();
+               } else {
+                  bottomBarInput.focus();
+               }
             }}
          >
             <X color="mainText" rotation={45} />
