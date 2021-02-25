@@ -36,6 +36,10 @@ const StyledColorSelector = styled.div`
       font-size: ${props => props.theme.smallText};
       color: ${props => setLightness(props.theme.lowContrastGrey, 40)};
       border-radius: 0;
+      width: 100%;
+      ${props => props.theme.mobileBreakpoint} {
+         width: auto;
+      }
    }
    .arrowPadding {
       width: 3rem;
@@ -201,11 +205,6 @@ const ColorSelector = ({ initialColor, type, id }) => {
          <input
             type="text"
             name="color"
-            size={
-               initialColor == null
-                  ? defaultColor.length * 0.75
-                  : initialColor.length * 0.75
-            }
             maxLength={25}
             className="colorInput"
             value={currentColor == null ? defaultColor : currentColor}

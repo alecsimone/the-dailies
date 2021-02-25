@@ -34,17 +34,21 @@ const StyledCopyContentInterface = styled.div`
    position: absolute;
    width: var(--boxwidth);
    height: auto;
-   left: calc(-1rem - var(--boxwidth) - 2px)
-      /*2px for the border, another rem for a margin */;
+   left: calc(-3px - var(--boxwidth) - 1rem);
+   /* This is how far to the left of the parent (right now, the button) the left of the box should start. So we have 3px for the border, another rem for a margin, and the width of the box. */
    top: 0;
    background: ${props => props.theme.lightBlack};
    border: 3px solid ${props => setAlpha(props.theme.highContrastGrey, 0.8)};
    z-index: 2;
+   max-width: calc(100vw - 6px - 2rem);
    .topline {
+      display: flex;
       padding: 1rem;
       background: ${props => props.theme.deepBlack};
       input.searchBox {
          font-size: ${props => props.theme.smallText};
+         width: 0;
+         flex-grow: 1;
       }
    }
    .postSearchResult {

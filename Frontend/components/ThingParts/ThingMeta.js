@@ -76,7 +76,7 @@ const StyledThingMeta = styled.section`
    justify-content: space-between;
    align-items: center;
    flex-wrap: wrap;
-   padding: 0 1rem;
+   padding: 2rem 1rem 0;
    margin-top: 0rem;
    color: ${props => setLightness(props.theme.lowContrastGrey, 40)};
    ${props => props.theme.mobileBreakpoint} {
@@ -110,7 +110,6 @@ const StyledThingMeta = styled.section`
             cursor: pointer;
          }
          > * {
-            margin: 2rem 0;
             ${props => props.theme.mobileBreakpoint} {
                margin: 0;
             }
@@ -124,6 +123,10 @@ const StyledThingMeta = styled.section`
                }
                &.smallScreen {
                   margin: auto;
+                  display: block;
+                  ${props => props.theme.mobileBreakpoint} {
+                     display: none;
+                  }
                }
                &.bigScreen {
                   display: none;
@@ -136,12 +139,19 @@ const StyledThingMeta = styled.section`
                width: 100%;
                margin: 2rem 0;
                ${props => props.theme.mobileBreakpoint} {
+                  width: auto;
                   margin: 0;
                   margin-left: 2rem;
                }
             }
             .colorSelector {
                margin-left: 0;
+            }
+            .privacySelectorWrapper {
+               position: relative;
+               display: flex;
+               align-items: center;
+               justify-content: space-between;
             }
          }
          .colorDisplay {
@@ -190,7 +200,6 @@ const StyledThingMeta = styled.section`
             }
          }
          .addPeopleContainer {
-            position: relative;
             cursor: pointer;
             margin-left: 1rem;
             svg.x {
@@ -209,7 +218,7 @@ const StyledThingMeta = styled.section`
             }
             .addPeopleInterface {
                position: absolute;
-               width: auto;
+               width: 100%;
                height: auto;
                background: ${props => props.theme.lightBlack};
                border: 3px solid
@@ -228,7 +237,8 @@ const StyledThingMeta = styled.section`
                   }
                   input.searchBox {
                      font-size: ${props => props.theme.smallText};
-                     width: 30rem;
+                     width: 0;
+                     flex-grow: 1;
                      margin: 0 1rem;
                   }
                }
@@ -281,6 +291,9 @@ const StyledThingMeta = styled.section`
       appearance: none;
       padding-right: 30px;
       cursor: pointer;
+      flex-grow: 1;
+      margin-left: 0;
+      margin-right: 3rem;
    }
    .info {
       font-size: ${props => props.theme.smallText};
@@ -672,84 +685,89 @@ const ThingMeta = ({ canEdit }) => {
                {canEdit && (
                   <ColorSelector initialColor={color} type="Thing" id={id} />
                )}
-               {canEdit ? (
-                  <PrivacyDropdown initialPrivacy={privacy} id={id} />
-               ) : (
-                  <span className="uneditable">{privacy}</span>
-               )}
-               {privacy !== 'Public' &&
-                  individualViewPermissions &&
-                  individualViewPermissions.length > 0 && (
+               <div className="privacySelectorWrapper">
+                  {canEdit ? (
+                     <PrivacyDropdown initialPrivacy={privacy} id={id} />
+                  ) : (
+                     <span className="uneditable">{privacy}</span>
+                  )}
+                  {privacy !== 'Public' &&
+                     individualViewPermissions &&
+                     individualViewPermissions.length > 0 && (
+                        <div
+                           className="addedMembersCounter"
+                           onClick={e => {
+                              if (
+                                 e.target.closest('.extraViewersContainer') ==
+                                 null
+                              ) {
+                                 setShowingExtraViewers(!showingExtraViewers);
+                                 if (!showingExtraViewers) {
+                                    setAddingPeople(false);
+                                 }
+                              }
+                           }}
+                        >
+                           +{individualViewPermissions.length} Other
+                           {individualViewPermissions.length > 1 ? 's' : ''}
+                           {showingExtraViewers && extraViewersElements}
+                        </div>
+                     )}
+                  {privacy !== 'Public' && (
                      <div
-                        className="addedMembersCounter"
+                        className={`addPeopleContainer${
+                           addingPeople ? ' adding' : ''
+                        }`}
                         onClick={e => {
                            if (
-                              e.target.closest('.extraViewersContainer') == null
+                              e.target.closest('.addPeopleInterface') == null
                            ) {
-                              setShowingExtraViewers(!showingExtraViewers);
-                              if (!showingExtraViewers) {
-                                 setAddingPeople(false);
+                              setAddingPeople(!addingPeople);
+                              if (!addingPeople) {
+                                 setShowingExtraViewers(false);
+                                 window.setTimeout(() => {
+                                    const thisBox = document.querySelector(
+                                       '#addPeopleInterface'
+                                    );
+                                    thisBox.addEventListener(
+                                       'keydown',
+                                       navigateResultsRef.current
+                                    );
+
+                                    const thisInput = thisBox.querySelector(
+                                       'input.searchBox'
+                                    );
+                                    thisInput.focus();
+                                 }, 1);
                               }
                            }
                         }}
                      >
-                        +{individualViewPermissions.length} Other
-                        {individualViewPermissions.length > 1 ? 's' : ''}
-                        {showingExtraViewers && extraViewersElements}
+                        <X color="lowContrastGrey" rotation={45} />
+                        {addingPeople && (
+                           <div
+                              className="addPeopleInterface"
+                              id="addPeopleInterface"
+                           >
+                              <div className="topline">
+                                 {' '}
+                                 <span className="title">Add Members: </span>
+                                 <input
+                                    className="searchBox"
+                                    value={peopleSearchTerm}
+                                    onChange={e =>
+                                       setPeopleSearchTerm(e.target.value)
+                                    }
+                                    onKeyUp={e => handleKeyUp(e)}
+                                 />
+                              </div>
+                              {peopleSearchTerm.length > 0 &&
+                                 memberSearchResultElements}
+                           </div>
+                        )}
                      </div>
                   )}
-               {privacy !== 'Public' && (
-                  <div
-                     className={`addPeopleContainer${
-                        addingPeople ? ' adding' : ''
-                     }`}
-                     onClick={e => {
-                        if (e.target.closest('.addPeopleInterface') == null) {
-                           setAddingPeople(!addingPeople);
-                           if (!addingPeople) {
-                              setShowingExtraViewers(false);
-                              window.setTimeout(() => {
-                                 const thisBox = document.querySelector(
-                                    '#addPeopleInterface'
-                                 );
-                                 thisBox.addEventListener(
-                                    'keydown',
-                                    navigateResultsRef.current
-                                 );
-
-                                 const thisInput = thisBox.querySelector(
-                                    'input.searchBox'
-                                 );
-                                 thisInput.focus();
-                              }, 1);
-                           }
-                        }
-                     }}
-                  >
-                     <X color="lowContrastGrey" rotation={45} />
-                     {addingPeople && (
-                        <div
-                           className="addPeopleInterface"
-                           id="addPeopleInterface"
-                        >
-                           <div className="topline">
-                              {' '}
-                              <span className="title">Add Members: </span>
-                              <input
-                                 className="searchBox"
-                                 value={peopleSearchTerm}
-                                 onChange={e =>
-                                    setPeopleSearchTerm(e.target.value)
-                                 }
-                                 onKeyUp={e => handleKeyUp(e)}
-                              />
-                           </div>
-                           {peopleSearchTerm.length > 0 &&
-                              memberSearchResultElements}
-                        </div>
-                     )}
-                  </div>
-               )}
+               </div>
                <ArrowIcon
                   pointing="up"
                   className="collapseButton smallScreen"
