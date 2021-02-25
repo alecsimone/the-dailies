@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 import { useMutation } from '@apollo/react-hooks';
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import PropTypes from 'prop-types';
 import TweetGetter from './TweetGetter';
 import RichText from '../RichText';
@@ -117,6 +117,8 @@ const Tweet = props => {
          }
       }
    }, [id]);
+
+   const thisTweetRef = useRef(null);
 
    const likeTweetHandler = () => {
       const tweetID = retweetedTweet ? retweetedTweet.id_str : id;
@@ -301,7 +303,10 @@ const Tweet = props => {
          setFullHeart(!liked);
 
          likeTweetHandler();
-         window.removeEventListener('mousedown', doubleClickListener);
+         thisTweetRef.current.removeEventListener(
+            'mousedown',
+            doubleClickListener
+         );
       }
    };
 
@@ -315,14 +320,21 @@ const Tweet = props => {
          onClick={e => {
             e.stopPropagation();
             if (e.button === 0) {
-               window.addEventListener('mousedown', doubleClickListener);
+               thisTweetRef.current.addEventListener(
+                  'mousedown',
+                  doubleClickListener
+               );
 
                window.setTimeout(() => {
                   console.log('remove the event listener');
-                  window.removeEventListener('mousedown', doubleClickListener);
+                  thisTweetRef.current.removeEventListener(
+                     'mousedown',
+                     doubleClickListener
+                  );
                }, 500);
             }
          }}
+         ref={thisTweetRef}
       >
          {replyToID && !directReply && (
             <div className="repliedToTweet">

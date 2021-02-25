@@ -527,12 +527,20 @@ const ContentPiece = ({
 
       if (e.button === 0 && me != null) {
          window.setTimeout(
-            () => window.addEventListener('mousedown', doubleClickListener),
+            () =>
+               contentContainerRef.current.addEventListener(
+                  'mousedown',
+                  doubleClickListener
+               ),
             1
          );
 
          window.setTimeout(
-            () => window.removeEventListener('mousedown', doubleClickListener),
+            () =>
+               contentContainerRef.current.removeEventListener(
+                  'mousedown',
+                  doubleClickListener
+               ),
             500
          );
       }
@@ -547,7 +555,7 @@ const ContentPiece = ({
       if (e.button === 1 || e.button === 2) {
          window.setTimeout(
             () =>
-               window.addEventListener(
+               contentContainerRef.current.addEventListener(
                   'mousedown',
                   secondMiddleOrRightClickListener
                ),
@@ -555,7 +563,7 @@ const ContentPiece = ({
          );
          window.setTimeout(
             () =>
-               window.removeEventListener(
+               contentContainerRef.current.removeEventListener(
                   'mousedown',
                   secondMiddleOrRightClickListener
                ),
