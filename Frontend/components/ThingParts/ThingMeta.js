@@ -19,6 +19,7 @@ import TimeAgo from '../TimeAgo';
 import { ALL_THINGS_QUERY } from '../../lib/ThingHandling';
 import { useSearchResultsSelector } from '../../lib/RichTextHandling';
 import { PUBLIC_THINGS_QUERY } from '../Archives/PublicThings';
+import ArrowIcon from '../Icons/Arrow';
 
 const DELETE_THING_MUTATION = gql`
    mutation DELETE_THING_MUTATION($id: ID!) {
@@ -92,6 +93,10 @@ const StyledThingMeta = styled.section`
          display: flex;
          flex-wrap: wrap;
          justify-content: space-between;
+         ${props => props.theme.mobileBreakpoint} {
+            justify-content: center;
+         }
+         align-items: center;
          flex-grow: 0;
          max-width: 100%;
          position: relative;
@@ -111,12 +116,32 @@ const StyledThingMeta = styled.section`
             }
          }
          &.editing {
+            svg.collapseButton {
+               width: ${props => props.theme.smallHead};
+               height: ${props => props.theme.smallHead};
+               rect {
+                  fill: ${props => props.theme.lowContrastGrey};
+               }
+               &.smallScreen {
+                  margin: auto;
+               }
+               &.bigScreen {
+                  display: none;
+                  ${props => props.theme.mobileBreakpoint} {
+                     display: block;
+                  }
+               }
+            }
             > * {
+               width: 100%;
                margin: 2rem 0;
                ${props => props.theme.mobileBreakpoint} {
                   margin: 0;
                   margin-left: 2rem;
                }
+            }
+            .colorSelector {
+               margin-left: 0;
             }
          }
          .colorDisplay {
@@ -639,6 +664,11 @@ const ThingMeta = ({ canEdit }) => {
          )}
          {editing && (
             <div className="selections metaPiece editing">
+               <ArrowIcon
+                  pointing="right"
+                  className="collapseButton bigScreen"
+                  onClick={() => setEditing(false)}
+               />
                {canEdit && (
                   <ColorSelector initialColor={color} type="Thing" id={id} />
                )}
@@ -720,6 +750,11 @@ const ThingMeta = ({ canEdit }) => {
                      )}
                   </div>
                )}
+               <ArrowIcon
+                  pointing="up"
+                  className="collapseButton smallScreen"
+                  onClick={() => setEditing(false)}
+               />
             </div>
          )}
       </StyledThingMeta>
