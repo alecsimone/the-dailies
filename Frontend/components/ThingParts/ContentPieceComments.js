@@ -193,6 +193,7 @@ const StyledContentPieceComment = styled.div`
 const ContentPieceComment = ({ comments, id, input }) => {
    const [commentView, setCommentView] = useState('collapsed'); // We have 3 view states: collapsed, expanded, and full. Collapsed is supposed to be the default.
    const [selectedComment, setSelectedComment] = useState(false);
+   const containerRef = useRef(null);
 
    const topLevelComments = comments.filter(comment => comment.replyTo == null);
 
@@ -206,6 +207,7 @@ const ContentPieceComment = ({ comments, id, input }) => {
             key={comment.id}
             onClick={() => {
                setCommentView('full');
+               containerRef.current.scrollTop = 0;
                setSelectedComment(comment.id);
             }}
          >
@@ -238,6 +240,7 @@ const ContentPieceComment = ({ comments, id, input }) => {
          );
       } else {
          setCommentView('collapsed');
+         containerRef.current.scrollTop = 0;
          return null;
       }
 
@@ -303,7 +306,7 @@ const ContentPieceComment = ({ comments, id, input }) => {
 
    return (
       <StyledContentPieceComment className={`commentsArea ${commentView}`}>
-         <div className={`commentsContainer ${commentView}`}>
+         <div className={`commentsContainer ${commentView}`} ref={containerRef}>
             {commentElements}
             {commentView === 'collapsed' && topLevelComments.length > 3 && (
                <div
@@ -331,10 +334,13 @@ const ContentPieceComment = ({ comments, id, input }) => {
                   onClick={() => {
                      if (commentView === 'collapsed') {
                         setCommentView('expanded');
+                        containerRef.current.scrollTop = 0;
                      } else if (commentView === 'expanded') {
                         setCommentView('collapsed');
+                        containerRef.current.scrollTop = 0;
                      } else if (commentView === 'full') {
                         setCommentView('expanded');
+                        containerRef.current.scrollTop = 0;
                         setSelectedComment(false);
                      }
                   }}
