@@ -17,6 +17,7 @@ import {
 import { SINGLE_THING_QUERY } from '../../pages/thing';
 import { SINGLE_TAX_QUERY } from '../../pages/tag';
 import { MemberContext } from '../Account/MemberProvider';
+import { dynamicallyResizeElement } from '../../styles/functions';
 
 const Content = ({ context, canEdit, linkedPiece }) => {
    // First we'll pull in all our data from context
@@ -163,6 +164,7 @@ const Content = ({ context, canEdit, linkedPiece }) => {
          comments: []
       });
       // setFullThingToLoading(id);
+      dynamicallyResizeElement(inputRef.current);
       await addContentPiece({
          variables: {
             content: newContentPiece,
