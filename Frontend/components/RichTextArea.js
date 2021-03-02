@@ -9,6 +9,7 @@ import {
    autoCloseBracketLink,
    wrapTextWithTag,
    linkifyText,
+   addSummaryTagsToText,
    encloseSelectedText,
    useSearchResultsSelector
 } from '../lib/RichTextHandling';
@@ -189,6 +190,7 @@ const RichTextArea = ({
          postText();
          return;
       }
+
       // Quit editing on escape
       if (e.key === 'Escape' && setEditable) {
          if (originalText.current !== textRef.current) {
@@ -199,6 +201,7 @@ const RichTextArea = ({
          setEditable(false);
          return;
       }
+
       // If they type an open paren after a close bracket, close that paren for them
       if (
          e.key === '(' &&
@@ -212,6 +215,7 @@ const RichTextArea = ({
          );
          return;
       }
+
       // If they have text highlighted and type any of these characters, enclose the text in that kind of character
       if (
          (e.key === '(' ||
@@ -221,7 +225,8 @@ const RichTextArea = ({
             e.key === '<' ||
             e.key === '`' ||
             e.key === "'") &&
-         e.target.selectionStart !== e.target.selectionEnd
+         e.target.selectionStart !== e.target.selectionEnd &&
+         !(e.ctrlKey || e.metaKey)
       ) {
          encloseSelectedText(
             e,
@@ -230,6 +235,8 @@ const RichTextArea = ({
          );
          return;
       }
+
+      // ctrl+b adds tags for bold text
       if (e.key === 'b' && (e.ctrlKey || e.metaKey)) {
          e.preventDefault();
          wrapTextWithTag(
@@ -239,6 +246,8 @@ const RichTextArea = ({
             newText => (inputRef.current.value = newText)
          );
       }
+
+      // ctrl+i adds tags for italicized text
       if (e.key === 'i' && (e.ctrlKey || e.metaKey)) {
          e.preventDefault();
          wrapTextWithTag(
@@ -248,6 +257,8 @@ const RichTextArea = ({
             newText => (inputRef.current.value = newText)
          );
       }
+
+      // ctrl+u adds tags for underlined text
       if (e.key === 'u' && (e.ctrlKey || e.metaKey)) {
          e.preventDefault();
          wrapTextWithTag(
@@ -257,9 +268,42 @@ const RichTextArea = ({
             newText => (inputRef.current.value = newText)
          );
       }
+
+      if ((e.key === '3' || e.key === '#') && (e.ctrlKey || e.metaKey)) {
+         e.preventDefault();
+         wrapTextWithTag(
+            e,
+            '##',
+            textRef,
+            newText => (inputRef.current.value = newText)
+         );
+      }
+
+      // ctrl+' adds tags for block quote
+      if ((e.key === "'" || e.key === '"') && (e.ctrlKey || e.metaKey)) {
+         e.preventDefault();
+         wrapTextWithTag(
+            e,
+            '<"',
+            textRef,
+            newText => (inputRef.current.value = newText)
+         );
+      }
+
+      // ctrl+k adds bracket link
       if (e.key === 'k' && (e.ctrlKey || e.metaKey)) {
          e.preventDefault();
          linkifyText(e, textRef, newText => (inputRef.current.value = newText));
+      }
+
+      // ctrl + > adds summary tags
+      if ((e.key === '.' || e.key === '>') && (e.ctrlKey || e.metaKey)) {
+         e.preventDefault();
+         addSummaryTagsToText(
+            e,
+            textRef,
+            newText => (inputRef.current.value = newText)
+         );
       }
    };
 
@@ -295,9 +339,11 @@ const RichTextArea = ({
             previousFiveCharacters.toLowerCase() !== 'see: ') ||
          selectionPoint === mostRecentQuoteIndex + 1
       ) {
+         console.log('we ded');
          closeResults();
          return;
       }
+      console.log('we still alive');
 
       const searchTerm = currentText.substring(
          mostRecentQuoteIndex + 1,

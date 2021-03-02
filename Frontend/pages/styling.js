@@ -60,7 +60,8 @@ const Styling = props => (
                <p>
                   Enclosing text in pound signs,{' '}
                   <span className="emphasis">##like so##</span> turns it into a
-                  big ol' header.
+                  big ol' header. You can also add these by pressing ctrl/cmd +
+                  # (or just ctrl/cmd + 3), with or without text selected.
                </p>
             </li>
             <li>
@@ -139,6 +140,10 @@ const Styling = props => (
                   parentheses immediately after that (as in, no spaces between
                   them).
                </p>
+               <p>
+                  If you hit ctrl/cmd + >, we'll add the tag for you. (Note: >
+                  is the shift version of the . key, and either will work)
+               </p>
             </li>
             <li>
                <h4>Blockquotes</h4>
@@ -147,12 +152,16 @@ const Styling = props => (
                   <span className="emphasis">
                      {`<"`}like so{`">`}
                   </span>{' '}
-                  will put it in blockquote formatting. If you want to apply
-                  styling to the whole quote (say, for instance, pounds or
-                  stars), do it OUTSIDE the angle brackets. You can also apply
-                  styling to any text within the block quote, but to style the
-                  whole thing, including the quotation marks, you have to
-                  enclose the angle brackets in that other style notation.
+                  will put it in blockquote formatting. If you hit ctrl/cmd + "
+                  (or just '), we'll add the tag for you.
+               </p>
+               <p>
+                  If you want to apply styling to the whole quote (say, for
+                  instance, pounds or stars), do it OUTSIDE the angle brackets.
+                  You can also apply styling to any text within the block quote,
+                  but to style the whole thing, including the quotation marks,
+                  you have to enclose the angle brackets in that other style
+                  notation.
                </p>
             </li>
             <li>

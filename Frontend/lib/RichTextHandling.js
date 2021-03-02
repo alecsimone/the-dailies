@@ -93,8 +93,11 @@ const wrapTextWithTag = (e, tag, textRef, setText) => {
    let newSelectionStart;
    let newSelectionEnd;
    if (
-      fourCharactersSurroundingStart.includes(tag) &&
-      fourCharactersSurroundingEnd.includes(tag)
+      (fourCharactersSurroundingStart.includes(tag) &&
+         fourCharactersSurroundingEnd.includes(tag)) ||
+      (tag === '<"' &&
+         (fourCharactersSurroundingStart.includes(tag) ||
+            fourCharactersSurroundingEnd.includes(tag)))
    ) {
       // So what we're gonna do here is take the text up to two characters before the selection, the selection minus the two characters on either end, and the text starting two characters after the end of the selection. This will leave us with a four character gap on either side of the selection, which will be filled in by our de-tagged fourCharacters from earlier
       const before = textRef.current.substring(0, selectionStart - 2);
@@ -108,10 +111,12 @@ const wrapTextWithTag = (e, tag, textRef, setText) => {
          tag,
          ''
       );
-      const detaggedEndCharacters = fourCharactersSurroundingEnd.replace(
-         tag,
-         ''
-      );
+      let detaggedEndCharacters;
+      if (tag === '<"') {
+         detaggedEndCharacters = fourCharactersSurroundingEnd.replace('">', '');
+      } else {
+         detaggedEndCharacters = fourCharactersSurroundingEnd.replace(tag, '');
+      }
 
       newText = `${before}${detaggedStartCharacters}${selectionMinusFour}${detaggedEndCharacters}${after}`;
 
@@ -121,7 +126,11 @@ const wrapTextWithTag = (e, tag, textRef, setText) => {
       const before = textRef.current.substring(0, selectionStart);
       const selection = textRef.current.substring(selectionStart, selectionEnd);
       const after = textRef.current.substring(selectionEnd);
-      newText = `${before}${tag}${selection}${tag}${after}`;
+      if (tag === '<"') {
+         newText = `${before}${tag}${selection}">${after}`;
+      } else {
+         newText = `${before}${tag}${selection}${tag}${after}`;
+      }
 
       newSelectionStart = selectionStart + tag.length;
       newSelectionEnd = selectionEnd + tag.length;
@@ -147,26 +156,51 @@ const linkifyText = (e, textRef, setText) => {
 
    const newText = `${before}[${selection}]()${after}`;
 
-   // We want to put the cursor inside the parentheses
-   let newSelectionStart;
-   let newSelectionEnd;
+   // If we have text selected, we want to put the cursor inside the parentheses. If we don't, we want to put it inside the brackets.
+   let newCursorPos;
    if (selectionStart !== selectionEnd) {
-      newSelectionStart = selectionEnd + 3;
-      newSelectionEnd = selectionEnd + 3;
+      newCursorPos = selectionEnd + 3;
    } else {
-      newSelectionStart = selectionStart + 1;
-      newSelectionEnd = selectionStart + 1;
+      newCursorPos = selectionStart + 1;
    }
 
    setText(newText);
    textRef.current = newText;
    // we need to make sure the text has changed before we set the new selection, otherwise it won't be based on the updated text
    window.setTimeout(
-      () => thisInput.setSelectionRange(newSelectionStart, newSelectionEnd),
+      () => thisInput.setSelectionRange(newCursorPos, newCursorPos),
       1
    );
 };
 export { linkifyText };
+
+const addSummaryTagsToText = (e, textRef, setText) => {
+   const thisInput = e.target;
+   const { selectionStart, selectionEnd } = e.target;
+
+   const before = textRef.current.substring(0, selectionStart);
+   const selection = textRef.current.substring(selectionStart, selectionEnd);
+   const after = textRef.current.substring(selectionEnd);
+
+   const newText = `${before}>>${selection}<<()${after}`;
+
+   // If we have text selected, we want to put the cursor inside the parentheses. If we don't, we want to put it inside the arrows.
+   let newCursorPos;
+   if (selectionStart !== selectionEnd) {
+      newCursorPos = selectionEnd + 5;
+   } else {
+      newCursorPos = selectionStart + 2;
+   }
+
+   setText(newText);
+   textRef.current = newText;
+   // we need to make sure the text has changed before we set the new selection, otherwise it won't be based on the updated text
+   window.setTimeout(
+      () => thisInput.setSelectionRange(newCursorPos, newCursorPos),
+      1
+   );
+};
+export { addSummaryTagsToText };
 
 const encloseSelectedText = (e, textRef, setText) => {
    e.preventDefault();
