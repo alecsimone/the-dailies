@@ -75,9 +75,8 @@ const autoCloseBracketLink = (e, textRef, setText) => {
 };
 export { autoCloseBracketLink };
 
-const wrapTextWithTag = (e, tag, textRef, setText) => {
-   const thisInput = e.target;
-   const { selectionStart, selectionEnd } = e.target;
+const wrapTextWithTag = (target, tag, textRef, setText) => {
+   const { selectionStart, selectionEnd } = target;
 
    // Check if the text is already wrapped with the tag, and if so, remove it
    const fourCharactersSurroundingStart = textRef.current.substring(
@@ -140,15 +139,14 @@ const wrapTextWithTag = (e, tag, textRef, setText) => {
    textRef.current = newText;
    // we need to make sure the text has changed before we set the new selection, otherwise it won't be based on the updated text
    window.setTimeout(
-      () => thisInput.setSelectionRange(newSelectionStart, newSelectionEnd),
+      () => target.setSelectionRange(newSelectionStart, newSelectionEnd),
       1
    );
 };
 export { wrapTextWithTag };
 
-const linkifyText = (e, textRef, setText) => {
-   const thisInput = e.target;
-   const { selectionStart, selectionEnd } = e.target;
+const linkifyText = (target, textRef, setText) => {
+   const { selectionStart, selectionEnd } = target;
 
    const before = textRef.current.substring(0, selectionStart);
    const selection = textRef.current.substring(selectionStart, selectionEnd);
@@ -168,15 +166,14 @@ const linkifyText = (e, textRef, setText) => {
    textRef.current = newText;
    // we need to make sure the text has changed before we set the new selection, otherwise it won't be based on the updated text
    window.setTimeout(
-      () => thisInput.setSelectionRange(newCursorPos, newCursorPos),
+      () => target.setSelectionRange(newCursorPos, newCursorPos),
       1
    );
 };
 export { linkifyText };
 
-const addSummaryTagsToText = (e, textRef, setText) => {
-   const thisInput = e.target;
-   const { selectionStart, selectionEnd } = e.target;
+const addSummaryTagsToText = (target, textRef, setText) => {
+   const { selectionStart, selectionEnd } = target;
 
    const before = textRef.current.substring(0, selectionStart);
    const selection = textRef.current.substring(selectionStart, selectionEnd);
@@ -196,7 +193,7 @@ const addSummaryTagsToText = (e, textRef, setText) => {
    textRef.current = newText;
    // we need to make sure the text has changed before we set the new selection, otherwise it won't be based on the updated text
    window.setTimeout(
-      () => thisInput.setSelectionRange(newCursorPos, newCursorPos),
+      () => target.setSelectionRange(newCursorPos, newCursorPos),
       1
    );
 };

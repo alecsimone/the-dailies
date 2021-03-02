@@ -17,6 +17,37 @@ import {
 const StyledWrapper = styled.div`
    width: 100%;
    max-width: 900px;
+   .stylingButtonsBar {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+      button.stylingButton {
+         flex-grow: 1;
+         margin: 0 0.5rem;
+         font-weight: 300;
+         border: 1px solid
+            ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
+         &.bold {
+            font-weight: 700;
+         }
+         &.italic {
+            font-style: italic;
+         }
+         &.underline {
+            text-decoration: underline;
+         }
+         &.header {
+            font-weight: bold;
+            color: white;
+         }
+         &:first-of-type {
+            margin: 0 0.5rem 0 0;
+         }
+         &:last-of-type {
+            margin: 0 0 0 0.5rem;
+         }
+      }
+   }
    .postSearchTooltip {
       background: ${props => props.theme.lightBlack};
       border: 3px solid ${props => setAlpha(props.theme.highContrastGrey, 0.8)};
@@ -240,7 +271,7 @@ const RichTextArea = ({
       if (e.key === 'b' && (e.ctrlKey || e.metaKey)) {
          e.preventDefault();
          wrapTextWithTag(
-            e,
+            e.target,
             '**',
             textRef,
             newText => (inputRef.current.value = newText)
@@ -251,7 +282,7 @@ const RichTextArea = ({
       if (e.key === 'i' && (e.ctrlKey || e.metaKey)) {
          e.preventDefault();
          wrapTextWithTag(
-            e,
+            e.target,
             '//',
             textRef,
             newText => (inputRef.current.value = newText)
@@ -262,7 +293,7 @@ const RichTextArea = ({
       if (e.key === 'u' && (e.ctrlKey || e.metaKey)) {
          e.preventDefault();
          wrapTextWithTag(
-            e,
+            e.target,
             '__',
             textRef,
             newText => (inputRef.current.value = newText)
@@ -272,7 +303,7 @@ const RichTextArea = ({
       if ((e.key === '3' || e.key === '#') && (e.ctrlKey || e.metaKey)) {
          e.preventDefault();
          wrapTextWithTag(
-            e,
+            e.target,
             '##',
             textRef,
             newText => (inputRef.current.value = newText)
@@ -283,7 +314,7 @@ const RichTextArea = ({
       if ((e.key === "'" || e.key === '"') && (e.ctrlKey || e.metaKey)) {
          e.preventDefault();
          wrapTextWithTag(
-            e,
+            e.target,
             '<"',
             textRef,
             newText => (inputRef.current.value = newText)
@@ -293,14 +324,18 @@ const RichTextArea = ({
       // ctrl+k adds bracket link
       if (e.key === 'k' && (e.ctrlKey || e.metaKey)) {
          e.preventDefault();
-         linkifyText(e, textRef, newText => (inputRef.current.value = newText));
+         linkifyText(
+            e.target,
+            textRef,
+            newText => (inputRef.current.value = newText)
+         );
       }
 
       // ctrl + > adds summary tags
       if ((e.key === '.' || e.key === '>') && (e.ctrlKey || e.metaKey)) {
          e.preventDefault();
          addSummaryTagsToText(
-            e,
+            e.target,
             textRef,
             newText => (inputRef.current.value = newText)
          );
@@ -422,6 +457,111 @@ const RichTextArea = ({
          }}
       >
          <StyledWrapper>
+            <div className="stylingButtonsBar">
+               <button
+                  type="button"
+                  className="stylingButton bold"
+                  onMouseDown={e => {
+                     e.preventDefault();
+                     wrapTextWithTag(
+                        inputRef.current,
+                        '**',
+                        textRef,
+                        newText => (inputRef.current.value = newText)
+                     );
+                  }}
+               >
+                  B
+               </button>
+               <button
+                  type="button"
+                  className="stylingButton italic"
+                  onMouseDown={e => {
+                     e.preventDefault();
+                     wrapTextWithTag(
+                        inputRef.current,
+                        '//',
+                        textRef,
+                        newText => (inputRef.current.value = newText)
+                     );
+                  }}
+               >
+                  I
+               </button>
+               <button
+                  type="button"
+                  className="stylingButton underline"
+                  onMouseDown={e => {
+                     e.preventDefault();
+                     wrapTextWithTag(
+                        inputRef.current,
+                        '__',
+                        textRef,
+                        newText => (inputRef.current.value = newText)
+                     );
+                  }}
+               >
+                  U
+               </button>
+               <button
+                  type="button"
+                  className="stylingButton header"
+                  onMouseDown={e => {
+                     e.preventDefault();
+                     wrapTextWithTag(
+                        inputRef.current,
+                        '##',
+                        textRef,
+                        newText => (inputRef.current.value = newText)
+                     );
+                  }}
+               >
+                  #
+               </button>
+               <button
+                  type="button"
+                  className="stylingButton summary"
+                  onMouseDown={e => {
+                     e.preventDefault();
+                     addSummaryTagsToText(
+                        inputRef.current,
+                        textRef,
+                        newText => (inputRef.current.value = newText)
+                     );
+                  }}
+               >
+                  {'><'}
+               </button>
+               <button
+                  type="button"
+                  className="stylingButton blockQuote"
+                  onMouseDown={e => {
+                     e.preventDefault();
+                     wrapTextWithTag(
+                        inputRef.current,
+                        '<"',
+                        textRef,
+                        newText => (inputRef.current.value = newText)
+                     );
+                  }}
+               >
+                  "
+               </button>
+               <button
+                  type="button"
+                  className="stylingButton link"
+                  onMouseDown={e => {
+                     e.preventDefault();
+                     linkifyText(
+                        inputRef.current,
+                        textRef,
+                        newText => (inputRef.current.value = newText)
+                     );
+                  }}
+               >
+                  link
+               </button>
+            </div>
             <textarea
                type="textarea"
                id={id}
