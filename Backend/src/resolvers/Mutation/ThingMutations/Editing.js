@@ -374,7 +374,7 @@ async function setFeaturedImage(
       console.log(err);
    });
 
-   if (!isExplodingLink(featuredImage) && !disabledCodewords.includes(featuredImage)) {
+   if (!isExplodingLink(featuredImage) && !disabledCodewords.includes(featuredImage.toLowerCase())) {
       throw new Error("That's not a valid featured image");
    }
 
