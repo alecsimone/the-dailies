@@ -260,7 +260,11 @@ const ContentPiece = ({
    }
 
    const buttons = (
-      <div className="buttons buttonsContainer contentButtons">
+      <div
+         className={`buttons buttonsContainer contentButtons ${
+            editable ? 'allButtons' : 'someButtons'
+         }`}
+      >
          <div className="commentButton">
             <CommentsButton
                count={comments.length < 100 ? comments.length : '+'}

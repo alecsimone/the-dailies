@@ -25,7 +25,6 @@ const StyledContent = styled.section`
       .contentBlock {
          position: relative;
          padding: 0;
-         min-height: 15rem;
          margin: 0.6rem 0;
          border-bottom: 1px solid
             ${props => setAlpha(props.theme.lowContrastGrey, 0.2)};
@@ -71,6 +70,7 @@ const StyledContent = styled.section`
                      .commentsWrapper {
                         display: inline-block;
                         width: 50%;
+                        min-height: 15rem;
                      }
                      .contentWrapper {
                         margin-right: 2rem;
@@ -183,11 +183,29 @@ const StyledContent = styled.section`
                position: absolute;
                bottom: 1rem;
                right: 0;
+               display: flex;
+               flex-direction: column;
+               justify-content: space-between;
+               &.allButtons {
+                  min-height: 200px;
+                  max-height: 240px;
+               }
+               &.someButtons {
+                  min-height: 80px;
+                  max-height: 140px;
+               }
                ${props => props.theme.midScreenBreakpoint} {
                   right: 1rem;
                }
+               .commentButtonWrapper {
+                  margin-bottom: 0;
+               }
                .addToContainer {
                   position: relative;
+                  line-height: 0;
+                  .addToInterface {
+                     line-height: 1.6;
+                  }
                }
                svg.buttons {
                   width: 100%;
@@ -247,6 +265,9 @@ const StyledContent = styled.section`
                width: calc(100% - 4rem);
                margin: 0 0 1rem 0;
                max-width: 900px;
+               &.mini {
+                  margin: 0;
+               }
             }
          }
       }
