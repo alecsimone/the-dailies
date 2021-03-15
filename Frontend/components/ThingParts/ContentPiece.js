@@ -72,6 +72,7 @@ const ContentPiece = ({
    const contentWrapperRef = useRef(null);
    const setEditableHandler = value => {
       editContentButKeepInFrame(setEditable, value, contentWrapperRef.current);
+      window.setTimeout(() => stickifier(stickifierData), 1);
    };
 
    const { setHeartPosition, setFullHeart, setContent } = useContext(
