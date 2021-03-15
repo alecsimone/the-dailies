@@ -584,7 +584,7 @@ const ContentPiece = ({
    const doubleClickListener = e => {
       if (e.button === 0) {
          if (me == null) {
-            setContent(<Login />);
+            setContent(<Login redirect={false} />);
             return;
          }
 

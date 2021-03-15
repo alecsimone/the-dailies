@@ -253,7 +253,7 @@ const VoteBar = ({ votes = [], id, type, mini }) => {
                onClick={e => {
                   e.stopPropagation();
                   if (me == null) {
-                     setContent(<Login />);
+                     setContent(<Login redirect={false} />);
                      return;
                   }
                   voteHandler();
