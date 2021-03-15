@@ -35,8 +35,6 @@ const ContentPiece = ({
    id,
    thingID,
    rawContentString,
-   expanded,
-   setExpanded,
    comments,
    deleteContentPiece,
    editContentPiece,
@@ -694,6 +692,18 @@ export default React.memo(ContentPiece, (prev, next) => {
       prev.score !== next.score
    ) {
       return false;
+   }
+   if (prev.copiedToThings || next.copiedToThings) {
+      if (prev.copiedToThings !== next.copiedToThings) {
+         return false;
+      }
+      if (
+         prev.copiedToThings &&
+         next.copiedToThings &&
+         prev.copiedToThings.length !== next.copiedToThings.length
+      ) {
+         return false;
+      }
    }
    return true;
 });
