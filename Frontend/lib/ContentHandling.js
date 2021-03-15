@@ -339,7 +339,7 @@ const stickifier = stickingData => {
             buttons.style.bottom = `${buttonBottomPos}px`;
             buttons.style.height = `${viewableBottom -
                block.blockTop -
-               2 * oneRem}px`;
+               1 * oneRem}px`;
 
             // The bottom bar only displays on small screens, and when it does we have to adjust what we consider the "bottom" of the screen to be. We also need to adjust if they have the bottom bar's text input showing, which has the class inputWrapper. At some point we should probably run this function when that toggles, because currently that last adjustment is only made when scrolling
             // if (bottomBarDisplay === 'none') {
