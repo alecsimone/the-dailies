@@ -21,6 +21,7 @@ import CommentsButton from '../ThingParts/CommentsButton';
 import { MemberContext } from '../Account/MemberProvider';
 import { ADD_COMMENT_MUTATION } from '../ThingParts/Comments';
 import CardGenerator from './CardGenerator';
+import { minimumTranslationDistance } from '../../config';
 
 const StyledThingCard = styled.div`
    position: relative;
@@ -388,7 +389,6 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
    }
 
    let translation = touchEnd - touchStart;
-   const minimumTranslationDistance = 30;
    if (
       contentSliderPosition === 0 &&
       translation > minimumTranslationDistance * -1

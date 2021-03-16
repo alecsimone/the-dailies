@@ -12,7 +12,7 @@ import TrashIcon from '../Icons/Trash';
 import LinkIcon from '../Icons/Link';
 import ContentPieceComments from './ContentPieceComments';
 import CommentsButton from './CommentsButton';
-import { home } from '../../config';
+import { home, minimumTranslationDistance } from '../../config';
 import { ADD_COMMENT_MUTATION } from './Comments';
 import { SINGLE_THING_QUERY } from '../../pages/thing';
 import { MemberContext } from '../Account/MemberProvider';
@@ -235,10 +235,10 @@ const ContentPiece = ({
    );
 
    let translation = touchEnd - touchStart;
-   if (!showingComments && translation > -25) {
+   if (!showingComments && translation > minimumTranslationDistance * -1) {
       translation = 0;
    }
-   if (showingComments && translation < 25) {
+   if (showingComments && translation < minimumTranslationDistance) {
       translation = 0;
    }
 

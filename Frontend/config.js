@@ -14,3 +14,4 @@ export const homeNoHTTP =
    process.env.NODE_ENV === 'development' ? 'localhost:6969' : 'ourdailies.org';
 export const sidebarPerPage = 14;
 export const perPage = 8;
+export const minimumTranslationDistance = 40;
