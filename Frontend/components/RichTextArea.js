@@ -469,6 +469,7 @@ const RichTextArea = ({
                         textRef,
                         newText => (inputRef.current.value = newText)
                      );
+                     inputRef.current.focus();
                   }}
                >
                   B
@@ -484,6 +485,7 @@ const RichTextArea = ({
                         textRef,
                         newText => (inputRef.current.value = newText)
                      );
+                     inputRef.current.focus();
                   }}
                >
                   I
@@ -499,6 +501,7 @@ const RichTextArea = ({
                         textRef,
                         newText => (inputRef.current.value = newText)
                      );
+                     inputRef.current.focus();
                   }}
                >
                   U
@@ -514,6 +517,7 @@ const RichTextArea = ({
                         textRef,
                         newText => (inputRef.current.value = newText)
                      );
+                     inputRef.current.focus();
                   }}
                >
                   #
@@ -528,6 +532,7 @@ const RichTextArea = ({
                         textRef,
                         newText => (inputRef.current.value = newText)
                      );
+                     inputRef.current.focus();
                   }}
                >
                   {'><'}
@@ -543,6 +548,7 @@ const RichTextArea = ({
                         textRef,
                         newText => (inputRef.current.value = newText)
                      );
+                     inputRef.current.focus();
                   }}
                >
                   "
@@ -557,6 +563,7 @@ const RichTextArea = ({
                         textRef,
                         newText => (inputRef.current.value = newText)
                      );
+                     inputRef.current.focus();
                   }}
                >
                   link
