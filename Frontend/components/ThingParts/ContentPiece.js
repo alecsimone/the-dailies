@@ -72,7 +72,7 @@ const ContentPiece = ({
    const contentWrapperRef = useRef(null);
    const setEditableHandler = value => {
       editContentButKeepInFrame(setEditable, value, contentWrapperRef.current);
-      window.setTimeout(() => stickifier(stickifierData), 1);
+      // window.setTimeout(() => stickifier(stickifierData), 1);
    };
 
    const { setHeartPosition, setFullHeart, setContent } = useContext(
@@ -266,55 +266,67 @@ const ContentPiece = ({
             editable ? 'allButtons' : 'someButtons'
          }`}
       >
-         <div className="commentButton">
-            <CommentsButton
-               count={comments.length < 100 ? comments.length : '+'}
-               onClick={() => {
-                  setHasShownComments(true);
-                  if (
-                     comments.length > 0 &&
-                     process.browser &&
-                     window.innerWidth > midScreenBPWidthRaw &&
-                     fullThingData.__typename !== 'Tag' &&
-                     !hasShownComments
-                  ) {
-                     // If we're on a big screen and this piece has comments, they're already going to be showing the first time we click this button, but showingComments will be false. So we're just going to setHasShownComments to true, which will make false the condition that shows them by default. showingComments will already be false, so we don't need to change it.
-                     return;
-                  }
-                  setShowingComments(!showingComments);
-                  window.setTimeout(() => stickifier(stickifierData), 1);
-               }}
+         <div
+            className="buttonWrapper"
+            onClick={async () => {
+               await navigator.clipboard
+                  .writeText(`${home}/thing?id=${thingID}&piece=${id}`)
+                  .catch(err => {
+                     alert(err.message);
+                  });
+               setCopied(true);
+               setTimeout(() => setCopied(false), 3000);
+            }}
+         >
+            {copied ? 'copied' : <LinkIcon className="directLink buttons" />}
+         </div>
+         <div
+            className="buttonWrapper"
+            onClick={() => {
+               setHasShownComments(true);
+               if (
+                  comments.length > 0 &&
+                  process.browser &&
+                  window.innerWidth > midScreenBPWidthRaw &&
+                  fullThingData.__typename !== 'Tag' &&
+                  !hasShownComments
+               ) {
+                  // If we're on a big screen and this piece has comments, they're already going to be showing the first time we click this button, but showingComments will be false. So we're just going to setHasShownComments to true, which will make false the condition that shows them by default. showingComments will already be false, so we don't need to change it.
+                  return;
+               }
+               setShowingComments(!showingComments);
+               // window.setTimeout(() => stickifier(stickifierData), 1);
+            }}
+         >
+            <div className="commentButton">
+               <CommentsButton
+                  count={comments.length < 100 ? comments.length : '+'}
+               />
+            </div>
+         </div>
+         <div className="buttonWrapper votebarWrapper">
+            <VoteBar
+               id={id}
+               votes={voters}
+               key={`votebar-${id}`}
+               type="ContentPiece"
+               mini
             />
          </div>
-         {canEdit && (
-            <EditThis
-               className="edit buttons"
-               onMouseDown={e => e.stopPropagation()}
-               onClick={() => {
-                  if (!editable) {
-                     setEditableHandler(true);
-                     return;
-                  }
-                  if (rawContentString !== editContentInputRef.current.value) {
-                     if (!confirm('Discard changes?')) {
-                        return;
-                     }
-                  }
-                  setEditableHandler(!editable);
-               }}
-            />
-         )}
          {editable && !isCopied && (
-            <TrashIcon
-               className="delete buttons"
-               onMouseDown={e => e.stopPropagation()}
+            <div
+               className="buttonWrapper"
                onClick={() => deleteContentPiece(id)}
-            />
+            >
+               <TrashIcon
+                  className="delete buttons"
+                  onMouseDown={e => e.stopPropagation()}
+               />
+            </div>
          )}
          {editable && isCopied && (
-            <X
-               className="delete buttons unlink"
-               onMouseDown={e => e.stopPropagation()}
+            <div
+               className="buttonWrapper"
                onClick={() => {
                   if (
                      confirm(
@@ -344,40 +356,51 @@ const ContentPiece = ({
                      unlinkContentPiece(unlinkParameterObject);
                   }
                }}
-            />
-         )}
-         {editable && (
-            <div className="addToContainer">
+            >
                <X
-                  color="mainText"
-                  className={`addTo buttons${showingAddToBox ? ' open' : ''}`}
-                  onClick={() => {
-                     setShowingAddToBox(!showingAddToBox);
-                     if (!showingAddToBox) {
-                        window.setTimeout(() => {
-                           const thisAddToInterface = document.querySelector(
-                              `#addToInterface_${id}`
-                           );
-                           const thisInput = thisAddToInterface.querySelector(
-                              'input.searchBox'
-                           );
-                           thisInput.focus();
-                        }, 1);
-                     }
-                  }}
+                  className="delete buttons unlink"
+                  onMouseDown={e => e.stopPropagation()}
                />
-               {showingAddToBox && (
-                  <CopyContentInterface
-                     id={id}
-                     thingID={thingID}
-                     setShowingAddToBox={setShowingAddToBox}
-                  />
-               )}
             </div>
          )}
          {editable && (
-            <ReorderIcon
-               className={`reorder buttons${reordering ? ' reordering' : ''}`}
+            <div
+               className="buttonWrapper"
+               onClick={() => {
+                  setShowingAddToBox(!showingAddToBox);
+                  if (!showingAddToBox) {
+                     window.setTimeout(() => {
+                        const thisAddToInterface = document.querySelector(
+                           `#addToInterface_${id}`
+                        );
+                        const thisInput = thisAddToInterface.querySelector(
+                           'input.searchBox'
+                        );
+                        thisInput.focus();
+                     }, 1);
+                  }
+               }}
+            >
+               <div className="addToContainer">
+                  <X
+                     color="mainText"
+                     className={`addTo buttons${
+                        showingAddToBox ? ' open' : ''
+                     }`}
+                  />
+                  {showingAddToBox && (
+                     <CopyContentInterface
+                        id={id}
+                        thingID={thingID}
+                        setShowingAddToBox={setShowingAddToBox}
+                     />
+                  )}
+               </div>
+            </div>
+         )}
+         {editable && (
+            <div
+               className="buttonWrapper"
                onClick={e => {
                   e.preventDefault();
                   if (
@@ -390,23 +413,35 @@ const ContentPiece = ({
                      setReordering(!reordering);
                   }
                }}
-            />
+            >
+               <ReorderIcon
+                  className={`reorder buttons${
+                     reordering ? ' reordering' : ''
+                  }`}
+               />
+            </div>
          )}
-         {copied ? (
-            'copied'
-         ) : (
-            <LinkIcon
-               className="directLink buttons"
-               onClick={async () => {
-                  await navigator.clipboard
-                     .writeText(`${home}/thing?id=${thingID}&piece=${id}`)
-                     .catch(err => {
-                        alert(err.message);
-                     });
-                  setCopied(true);
-                  setTimeout(() => setCopied(false), 3000);
+         {canEdit && (
+            <div
+               className="buttonWrapper"
+               onClick={() => {
+                  if (!editable) {
+                     setEditableHandler(true);
+                     return;
+                  }
+                  if (rawContentString !== editContentInputRef.current.value) {
+                     if (!confirm('Discard changes?')) {
+                        return;
+                     }
+                  }
+                  setEditableHandler(!editable);
                }}
-            />
+            >
+               <EditThis
+                  className="edit buttons"
+                  onMouseDown={e => e.stopPropagation()}
+               />
+            </div>
          )}
       </div>
    );
@@ -489,14 +524,6 @@ const ContentPiece = ({
                ref={contentWrapperRef}
             >
                <div className="theActualContent">{contentElement}</div>
-               {buttons}
-               <VoteBar
-                  id={id}
-                  votes={voters}
-                  key={`votebar-${id}`}
-                  type="ContentPiece"
-                  mini
-               />
                {otherLocations}
             </div>
             <div
@@ -517,7 +544,6 @@ const ContentPiece = ({
                }}
             >
                {commentsElement}
-               {buttons}
             </div>
          </div>
       </div>
@@ -666,6 +692,13 @@ const ContentPiece = ({
             >
                {contentArea}
             </div>
+         </div>
+         <div
+            className={`newcontentButtons ${
+               votes.length > 0 ? 'withVoters' : 'noVoters'
+            }`}
+         >
+            {buttons}
          </div>
       </div>
    );

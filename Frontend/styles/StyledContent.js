@@ -25,7 +25,7 @@ const StyledContent = styled.section`
       .contentBlock {
          position: relative;
          padding: 0;
-         margin: 0.6rem 0;
+         margin: 0;
          border-bottom: 1px solid
             ${props => setAlpha(props.theme.lowContrastGrey, 0.2)};
          ${props => props.theme.mobileBreakpoint} {
@@ -34,13 +34,18 @@ const StyledContent = styled.section`
          ${props => props.theme.desktopBreakpoint} {
             display: flex;
             align-items: flex-start;
-            padding: 2rem 3rem;
+            flex-wrap: wrap;
+            padding: 0 3rem;
          }
          &.highlighted {
             background: ${props => setAlpha(props.theme.lowContrastGrey, 0.2)};
          }
          .contentArea {
             width: 100%;
+            padding-bottom: 1rem;
+            ${props => props.theme.midScreenBreakpoint} {
+               padding-bottom: 0;
+            }
             .contentPiece {
                margin: 0rem 0;
                flex-grow: 1;
@@ -57,7 +62,9 @@ const StyledContent = styled.section`
                .overflowWrapper {
                   width: 100%;
                   overflow: hidden;
+                  margin: 1rem 0;
                   ${props => props.theme.midScreenBreakpoint} {
+                     margin: 0;
                      overflow: visible;
                   }
                   .contentAndCommentContainer {
@@ -70,7 +77,7 @@ const StyledContent = styled.section`
                      .commentsWrapper {
                         display: inline-block;
                         width: 50%;
-                        min-height: 15rem;
+                        /* min-height: 15rem; */
                      }
                      .contentWrapper {
                         margin-right: 2rem;
@@ -88,9 +95,12 @@ const StyledContent = styled.section`
                         }
                         .theActualContent {
                            max-width: 900px;
-                           width: calc(100% - 4rem);
+                           width: 100%;
                            form {
                               margin: 0 auto;
+                           }
+                           ${props => props.theme.midScreenBreakpoint} {
+                              padding: 3rem 0;
                            }
                         }
                      }
@@ -267,6 +277,167 @@ const StyledContent = styled.section`
                max-width: 900px;
                &.mini {
                   margin: 0;
+               }
+            }
+         }
+         .newcontentButtons {
+            ${props => props.theme.midScreenBreakpoint} {
+               width: calc(60% + 3rem);
+               margin-left: -3rem;
+            }
+            position: relative;
+            --votersHeight: 4rem;
+            ${props => props.theme.midScreenBreakpoint} {
+               --votersHeight: 5rem;
+            }
+            &.withVoters {
+               margin-top: var(--votersHeight, 4rem);
+            }
+            .buttonsContainer {
+               display: flex;
+               justify-content: space-between;
+               align-items: stretch;
+               border-top: 1px solid
+                  ${props => setAlpha(props.theme.lowContrastGrey, 0.2)};
+               ${props => props.theme.midScreenBreakpoint} {
+                  width: 100%;
+               }
+               .buttonWrapper {
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  padding: 1rem 0;
+                  flex-grow: 1;
+                  text-align: center;
+                  border-right: 1px solid
+                     ${props => setAlpha(props.theme.lowContrastGrey, 0.2)};
+                  &:first-child {
+                     border-left: 1px solid
+                        ${props => setAlpha(props.theme.lowContrastGrey, 0.2)};
+                     ${props => props.theme.midScreenBreakpoint} {
+                        border-left: none;
+                     }
+                  }
+                  cursor: pointer;
+                  &:hover {
+                     background: ${props =>
+                        setAlpha(props.theme.lowContrastGrey, 0.25)};
+                  }
+                  &.votebarWrapper:hover {
+                     background: none;
+                  }
+               }
+               svg.buttons {
+                  width: 100%;
+                  max-width: ${props => props.theme.bigText};
+                  height: auto;
+                  &.trashIcon {
+                     opacity: 0.8;
+                  }
+                  &.unlink {
+                     opacity: 0.6;
+                  }
+                  &.addTo {
+                     opacity: 0.4;
+                     transform: rotate(45deg);
+                     &.open {
+                        transform: rotate(0deg);
+                     }
+                  }
+                  &.editThis {
+                     opacity: 0.4;
+                     cursor: pointer;
+                  }
+                  &.reorder {
+                     opacity: 0.4;
+                     &.reordering {
+                        opacity: 1;
+                        &:hover {
+                           opacity: 0.4;
+                        }
+                     }
+                  }
+                  &.directLink {
+                     opacity: 0.4;
+                  }
+                  &:hover {
+                     cursor: pointer;
+                     opacity: 1;
+                  }
+               }
+               .commentButtonWrapper {
+                  margin: auto;
+                  margin-bottom: 0;
+                  width: ${props => props.theme.bigText};
+                  height: ${props => props.theme.bigText};
+                  span.commentCount {
+                     margin-bottom: 0.5rem;
+                  }
+               }
+               .votebar {
+                  margin: 0;
+                  padding: 0;
+                  justify-content: center;
+                  border: none;
+                  background: none;
+                  --scoreWidth: 6rem;
+                  ${props => props.theme.midScreenBreakpoint} {
+                     --scoreWidth: 10rem;
+                  }
+                  &.mini {
+                     .middle,
+                     .right {
+                        display: none;
+                     }
+                  }
+                  .left {
+                     padding: 0;
+                     width: 100%;
+                     img.voteButton {
+                        max-width: ${props => props.theme.bigText};
+                        height: auto;
+                     }
+                  }
+                  .middle {
+                     position: absolute;
+                     display: flex;
+                     align-items: center;
+                     bottom: 100%;
+                     padding: 0 0 0 1rem;
+                     left: var(--scoreWidth, 6rem);
+                     width: calc(100% - var(--scoreWidth, 6rem));
+                     height: var(--votersHeight, 4rem);
+                     border-top: 1px solid
+                        ${props => setAlpha(props.theme.lowContrastGrey, 0.2)};
+                     border-left: none;
+                     border-right: 1px solid
+                        ${props => setAlpha(props.theme.lowContrastGrey, 0.2)};
+                     text-align: left;
+                  }
+                  .right {
+                     position: absolute;
+                     display: flex;
+                     align-items: center;
+                     justify-content: center;
+                     bottom: 100%;
+                     left: 0;
+                     width: var(--scoreWidth, 6rem);
+                     padding: 0;
+                     line-height: 1;
+                     height: var(--votersHeight, 4rem);
+                     border: 1px solid
+                        ${props => setAlpha(props.theme.lowContrastGrey, 0.2)};
+                     border-bottom: none;
+                     ${props => props.theme.midScreenBreakpoint} {
+                        border-left: none;
+                     }
+                  }
+               }
+               .addToContainer {
+                  line-height: 0;
+                  .addToInterface {
+                     line-height: 1.6;
+                  }
                }
             }
          }

@@ -32,11 +32,10 @@ const COPY_CONTENTPIECE_MUTATION = gql`
 const StyledCopyContentInterface = styled.div`
    --boxwidth: 40rem;
    position: absolute;
-   width: var(--boxwidth);
+   width: 100%;
    height: auto;
-   left: calc(-3px - var(--boxwidth) - 1rem);
-   /* This is how far to the left of the parent (right now, the button) the left of the box should start. So we have 3px for the border, another rem for a margin, and the width of the box. */
-   top: 0;
+   left: 0;
+   top: 100%;
    background: ${props => props.theme.lightBlack};
    border: 3px solid ${props => setAlpha(props.theme.highContrastGrey, 0.8)};
    z-index: 2;
@@ -96,24 +95,6 @@ const CopyContentInterface = ({ id, thingID, setShowingAddToBox }) => {
    } = useSearchResultsSelector();
 
    const thisInterfaceRef = useRef(null);
-
-   useEffect(() => {
-      const thisBox = thisInterfaceRef.current;
-      const thisBoxRect = thisBox.getBoundingClientRect();
-      const thisBoxHeight = thisBoxRect.height;
-
-      const thisContainer = thisBox.closest('.addToContainer');
-      const thisContainerRect = thisContainer.getBoundingClientRect();
-      const thisContainerDistanceFromBottomOfWindow =
-         window.innerHeight - thisContainerRect.y;
-
-      if (thisBoxHeight > thisContainerDistanceFromBottomOfWindow) {
-         thisBox.style.top = `calc(${thisContainerDistanceFromBottomOfWindow -
-            thisBoxHeight}px - 1rem)`; // The extra 1rem is for a little margin with the bottom of the screen
-      } else {
-         thisBox.style.top = '0';
-      }
-   });
 
    useEffect(() => {
       const thisBox = thisInterfaceRef.current;
