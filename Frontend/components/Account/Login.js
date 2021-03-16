@@ -88,6 +88,13 @@ const Login = props => {
 
             <button type="submit">Log In</button>
          </fieldset>
+         <div className="cookieWarning">
+            When you sign up or log in, we'll put a cookie on your computer. All
+            it contains is a hashed representation of your member ID, so we can
+            recognize you. It doesn't track you or anything like that, it's
+            literally just a string with a property name. By signing up or
+            logging in, you're agreeing to let us put that cookie there. Thanks!
+         </div>
       </StyledForm>
    );
 };
