@@ -72,7 +72,7 @@ const ContentPiece = ({
    const contentWrapperRef = useRef(null);
    const setEditableHandler = value => {
       editContentButKeepInFrame(setEditable, value, contentWrapperRef.current);
-      // window.setTimeout(() => stickifier(stickifierData), 1);
+      window.setTimeout(() => stickifier(stickifierData), 1);
    };
 
    const { setHeartPosition, setFullHeart, setContent } = useContext(
@@ -295,7 +295,7 @@ const ContentPiece = ({
                   return;
                }
                setShowingComments(!showingComments);
-               // window.setTimeout(() => stickifier(stickifierData), 1);
+               window.setTimeout(() => stickifier(stickifierData), 1);
             }}
          >
             <div className="commentButton">
@@ -637,7 +637,16 @@ const ContentPiece = ({
          setHeartPosition([e.clientX, e.clientY]);
          setFullHeart(!meVoted);
 
-         vote();
+         vote({
+            optimisticResponse: {
+               __typename: 'Mutation',
+               vote: {
+                  __typename: 'ContentPiece',
+                  id,
+                  votes: newVotes
+               }
+            }
+         });
          setVoters(newVotes);
          setComputedScore(newScore);
          setMeVoted(!meVoted);
@@ -693,9 +702,10 @@ const ContentPiece = ({
                {contentArea}
             </div>
          </div>
+         <div className="buttonsPlaceholder" />
          <div
             className={`newcontentButtons ${
-               votes.length > 0 ? 'withVoters' : 'noVoters'
+               votes != null && votes.length > 0 ? 'withVoters' : 'noVoters'
             }`}
          >
             {buttons}

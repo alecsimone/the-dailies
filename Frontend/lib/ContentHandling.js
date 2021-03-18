@@ -195,6 +195,29 @@ const UNLINK_CONTENTPIECE_MUTATION = gql`
 `;
 export { UNLINK_CONTENTPIECE_MUTATION };
 
+const getButtonsHeight = buttons => {
+   let buttonsHeight = buttons.offsetHeight;
+   const buttonStyle = window.getComputedStyle(buttons);
+   if (buttonStyle.marginTop.includes('px')) {
+      const buttonMarginString = buttonStyle.marginTop.substring(
+         0,
+         buttonStyle.marginTop.length - 2
+      );
+      const buttonMargin = parseInt(buttonMarginString);
+      buttonsHeight += buttonMargin;
+   }
+   if (buttonStyle.marginTop.includes('rem')) {
+      const buttonMarginString = buttonStyle.marginTop.substring(
+         0,
+         buttonStyle.marginTop.length - 3
+      );
+      const buttonMarginRem = parseInt(buttonMarginString);
+      const buttonMargin = buttonMarginRem * getOneRem();
+      buttonsHeight += buttonMargin;
+   }
+   return buttonsHeight;
+};
+
 const stickifier = stickingData => {
    // We're going to make an array of the tops and bottoms of each contentBlock so that we can check it against the current scroll position and see if we need to reposition its sticky buttons
    const blockPositionsArray = [];
@@ -206,12 +229,12 @@ const stickifier = stickingData => {
 
       const buttons = block.querySelector('.buttonsContainer');
       if (buttons == null) continue;
-      const buttonsHeight = buttons.offsetHeight;
+      const buttonsHeight = getButtonsHeight(buttons);
 
       // The "top" we use for determining when to start sticking things is slightly different from the actual top of the element. I'm defining that top first so I can base the "top" off it as well as the bottom, which is the actual bottom. This "top" is basically the position of the bottom of the buttonsContainer when it's at the top of its scroll area.
       const blockTop =
          blockOffset +
-         stickingData.current.blockPadding +
+         stickingData.current.blockPaddingTop +
          stickingData.current.fullThingOffset;
       const top = blockTop + stickingData.current.piecePadding + buttonsHeight;
       const bottom = blockTop + blockHeight;
@@ -250,7 +273,6 @@ const stickifier = stickingData => {
 
    let viewableTop;
    let viewableBottom;
-   let buttonsRightPosition;
 
    const header = document.getElementById('header');
    const headerHeight = header.offsetHeight;
@@ -258,113 +280,77 @@ const stickifier = stickingData => {
    if (isBigScreen) {
       viewableTop = scroller.scrollTop;
 
-      // On big screens, the viewable bottom is the height of the window minus the height of the header, and the buttons are 1rem from the right
+      // On big screens, the viewable bottom is the height of the window minus the height of the header
       viewableBottom = viewableTop + window.innerHeight - headerHeight;
-      buttonsRightPosition = '1rem';
    } else {
       const bottomBarHeight = bottomBar.offsetHeight;
       viewableTop = scroller.scrollTop;
 
-      // On small screens, the viewable bottom is the height of the window minus the height of the header and the bottomBar, and the buttons are 0px from the right
+      // On small screens, the viewable bottom is the height of the window minus the height of the header and the bottomBar
       viewableBottom =
          viewableTop + window.innerHeight - bottomBarHeight - headerHeight;
-      buttonsRightPosition = '0';
    }
 
    // Now we go through each block and see where it is relative to the screen
    stickingData.current.blocksArray.forEach(block => {
       // First we'll deal with the buttons
-      const buttonsArray = block.block.querySelectorAll('.buttonsContainer');
+      const buttonsArray = block.block.querySelectorAll('.newcontentButtons');
       for (const buttons of buttonsArray) {
-         const buttonsHeight = buttons.offsetHeight;
+         const buttonsHeight = getButtonsHeight(buttons);
+
+         const buttonsPlaceholder = block.block.querySelector(
+            '.buttonsPlaceholder'
+         );
+
+         // If the top of the element is onscreen by less than the height of the buttons (which is already included in it when it's originally calculated) plus a 6rem buffer, and the bottom of the element is not on screen, put them 8rem from the top of the element
          if (
-            block.top - buttonsHeight < viewableBottom &&
-            block.top > viewableBottom &&
-            block.bottom > viewableBottom
-         ) {
-            // If the top of the element is onscreen by less than the height of the buttons (which is already included in it when it's originally calculated), and the bottom of the element is not on screen, we want to absolutely position the buttons at the top right of the content block
-            buttons.style.position = 'absolute';
-            buttons.style.left = 'initial';
-            buttons.style.right = buttonsRightPosition;
-            buttons.style.bottom = 'initial';
-            buttons.style.top = '1rem';
-            buttons.style.height = 'initial';
-         } else if (
             block.top < viewableBottom &&
+            block.top + buttonsHeight + 6 * getOneRem() > viewableBottom &&
             block.bottom > viewableBottom
          ) {
-            // If the top of the element is onscreen but the bottom isn't, we want to fix the edit buttons in place at the bottom of the screen
-            buttons.style.position = 'fixed';
-            // Unfortunately for us, the buttons have an ancestor with a transform applied to it, which means it has its own internal coordinate system and position: 'fixed' doesn't work the way it normally does. So we're going to have to figure out where the bottom of the screen is relative to the transformed element.
+            buttons.style.position = 'absolute';
+            buttons.style.left = `${stickingData.current.blockPaddingLeft}px`;
+            buttons.style.width = isBigScreen ? 'calc(60% - 0.6rem)' : '100%'; // Not sure where the 1rem (which here we're taking 60% of) comes from
+            buttons.style.bottom = 'initial';
+            buttons.style.top = `10rem`; // I don't know where the extra 4rem comes from either, but it needs to be 4rem more than the buffer
 
-            // First, let's figure out which element is transformed;
-            let ancestor = buttons.parentNode;
-            while (ancestor.style.transform === '') {
-               ancestor = ancestor.parentNode;
-            }
+            // Then we need to make the placeholder the height of the buttons
+            buttonsPlaceholder.style.height = `${buttonsHeight}px`;
+         } else if (
+            block.top + buttonsHeight + 6 * getOneRem() <= viewableBottom &&
+            block.bottom > viewableBottom
+         ) {
+            // If the top of the element is onscreen by more than the height of the buttons and a 6rem buffer, and the bottom of the element is not onscreen, we want to fix the buttons to the bottom of the screen
 
-            // Then, let's figure out the conversion between that element's coordinate system and the viewport coordinate system
-            // First let's get the boundingClientRects
-            const ancestorRect = ancestor.getBoundingClientRect();
-            const buttonRect = buttons.getBoundingClientRect();
-
-            // Then we'll figure out what 1rem is equal to in pixels
-            const oneRem = getOneRem();
-
-            const buttonLeftPos = buttonRect.left - ancestorRect.left; // Since the buttonRect is relative to the viewport but we're positioning relative to the ancestor, we need to subtract the ancestor's distance from the left of the viewport
-
-            let buttonBottomPos;
-            if (isBigScreen) {
-               buttonBottomPos = ancestorRect.bottom - window.innerHeight; // The bottom position is going to be the ancestorRect bottom minus the height of the screen, because that's how far above the bottom of the ancestor the bottom of the screen is
-            } else {
-               const bottomBarRect = bottomBar.getBoundingClientRect();
-               buttonBottomPos =
-                  ancestorRect.bottom -
-                  window.innerHeight +
-                  bottomBarRect.height;
-            }
-            if (buttonBottomPos < oneRem) {
-               buttonBottomPos = oneRem; // However, we always want to have at least 1rem of buffer between the bottom of the ancestor and the bottom of the buttons
-            }
-            if (
-               buttonBottomPos + buttonRect.height >
-               ancestorRect.height - oneRem
-            ) {
-               buttonBottomPos = ancestorRect.height - buttonRect.height; // And 1rem of buffer between the top of the ancestor and the top of the buttons
-            }
-
-            buttons.style.left = `${buttonLeftPos}px`;
-            buttons.style.right = 'initial';
-            buttons.style.top = 'initial';
-            buttons.style.bottom = `${buttonBottomPos}px`;
-            buttons.style.height = `${viewableBottom -
-               block.blockTop -
-               1 * oneRem}px`;
-
-            // The bottom bar only displays on small screens, and when it does we have to adjust what we consider the "bottom" of the screen to be. We also need to adjust if they have the bottom bar's text input showing, which has the class inputWrapper. At some point we should probably run this function when that toggles, because currently that last adjustment is only made when scrolling
-            // if (bottomBarDisplay === 'none') {
-            //    buttons.style.bottom = '2rem';
-            // } else {
-            //    const inputWrapper = bottomBar.querySelector('.inputWrapper');
-            //    buttons.style.bottom = `calc(${bottomBar.offsetHeight +
-            //       inputWrapper.offsetHeight}px + 1rem)`;
-            // }
-         } else {
-            // Otherwise we want to put them back in place at the bottom right of the content block
-            const oneRem = getOneRem();
+            // First we need to figure out where the content block is on the screen
             const blockRect = block.block.getBoundingClientRect();
 
-            let theseButtonsHeight = block.bottom - viewableTop - 2 * oneRem;
-            if (theseButtonsHeight > blockRect.height - 4 * oneRem) {
-               theseButtonsHeight = blockRect.height - 4 * oneRem;
-            }
+            // We also need the height of the bottom bar so we can put the buttons above it on mobile
+            const bottomBarHeight = bottomBar.offsetHeight;
 
-            buttons.style.position = 'absolute';
-            buttons.style.left = 'initial';
-            buttons.style.right = buttonsRightPosition;
-            buttons.style.bottom = '0';
+            // Then we fix the buttons to the bottom of the screen
+            buttons.style.position = 'fixed';
+            buttons.style.left = isBigScreen
+               ? `${blockRect.left + stickingData.current.blockPaddingLeft}px`
+               : `${blockRect.left}px`;
+            buttons.style.width = isBigScreen
+               ? `${(blockRect.width - getOneRem()) * 0.6}px`
+               : `${blockRect.width}px`; // I don't know where that extra rem is coming from on big screens, sorry.
+            buttons.style.bottom = isBigScreen ? 0 : `${bottomBarHeight}px`;
             buttons.style.top = 'initial';
-            buttons.style.height = `${theseButtonsHeight}px`;
+
+            // Then we make the buttonsPlaceholder the height of the buttons
+            buttonsPlaceholder.style.height = `${buttonsHeight}px`;
+         } else {
+            // Otherwise, we want to put the buttons back at the bottom of the content block
+            buttons.style.position = 'relative';
+            buttons.style.left = 'initial';
+            buttons.style.width = isBigScreen ? 'calc(60% + 3rem)' : '100%';
+            buttons.style.bottom = 'initial';
+            buttons.style.top = 'initial';
+
+            // And make the placeholder 0px tall again
+            buttonsPlaceholder.style.height = 0;
          }
       }
 

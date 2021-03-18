@@ -139,11 +139,7 @@ const StyledVoteBar = styled.section`
 const VoteBar = ({ votes = [], id, type, mini }) => {
    const { me } = useContext(MemberContext);
    const [vote] = useMutation(VOTE_MUTATION, {
-      refetchQueries: [{ query: ALL_THINGS_QUERY }],
-      onError: err => alert(err.message),
-      context: {
-         debounceKey: id
-      }
+      refetchQueries: [{ query: ALL_THINGS_QUERY }]
    });
    const [voters, setVoters] = useState(votes);
 
@@ -229,6 +225,17 @@ const VoteBar = ({ votes = [], id, type, mini }) => {
             id,
             type,
             isFreshVote: !meVoted
+         },
+         optimisticResponse: {
+            __typename: 'Mutation',
+            vote: {
+               __typename: type,
+               id,
+               votes: newVotes
+            }
+         },
+         context: {
+            debounceKey: id
          }
       });
       setVoters(newVotes);

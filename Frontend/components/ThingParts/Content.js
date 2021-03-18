@@ -98,10 +98,10 @@ const Content = ({ context, canEdit, linkedPiece }) => {
    useEffect(() => {
       // mainSection does the scrolling on big screens, threeColumns on mobile, so we'll add listeners to them so we can move the buttons on scroll
       const mainSection = document.querySelector('.mainSection');
-      // mainSection.addEventListener('scroll', stickifierHandler);
+      mainSection.addEventListener('scroll', stickifierHandler);
 
       const threeColumns = document.querySelector('.threeColumns');
-      // threeColumns.addEventListener('scroll', stickifierHandler);
+      threeColumns.addEventListener('scroll', stickifierHandler);
 
       // get all the content blocks. If there aren't any, no need for sticky buttons, so we return.
       const blocks = document.querySelectorAll('.contentBlock');
@@ -111,17 +111,27 @@ const Content = ({ context, canEdit, linkedPiece }) => {
 
       const sidebar = firstBlock.closest('.sidebar');
       if (sidebar != null) {
-         // sidebar.addEventListener('scroll', stickifierHandler);
+         sidebar.addEventListener('scroll', stickifierHandler);
       }
 
       // Get the raw number of pixels of padding on the content block, and store it in stickingData. We'll have to cut the "px" off the end of the value we get back from getComputedStyle
-      const blockPaddingString = window.getComputedStyle(firstBlock).paddingTop;
-      const blockPaddingRaw = blockPaddingString.substring(
+      const blockPaddingTopString = window.getComputedStyle(firstBlock)
+         .paddingTop;
+      const blockPaddingTopRaw = blockPaddingTopString.substring(
          0,
-         blockPaddingString.length - 2
+         blockPaddingTopString.length - 2
       );
-      const blockPadding = parseInt(blockPaddingRaw);
-      stickingData.current.blockPadding = blockPadding;
+      const blockPaddingTop = parseInt(blockPaddingTopRaw);
+      stickingData.current.blockPaddingTop = blockPaddingTop;
+
+      const blockPaddingLeftString = window.getComputedStyle(firstBlock)
+         .paddingLeft;
+      const blockPaddingLeftRaw = blockPaddingLeftString.substring(
+         0,
+         blockPaddingLeftString.length - 2
+      );
+      const blockPaddingLeft = parseInt(blockPaddingLeftRaw);
+      stickingData.current.blockPaddingLeft = blockPaddingLeft;
 
       // Do the same for the contentPiece
       const piece = firstBlock.querySelector('.contentPiece');
@@ -139,7 +149,7 @@ const Content = ({ context, canEdit, linkedPiece }) => {
       stickingData.current.fullThingOffset = fullThingOffset;
 
       // Need to run it once here so that the edit buttons will be properly placed before the first scroll
-      // stickifier(stickingData);
+      stickifier(stickingData);
 
       return () => {
          mainSection.removeEventListener('scroll', stickifierHandler);

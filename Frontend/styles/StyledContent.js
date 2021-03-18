@@ -280,13 +280,20 @@ const StyledContent = styled.section`
                }
             }
          }
+         .buttonsPlaceholder {
+            position: relative;
+            width: 100%;
+            height: 0px;
+         }
          .newcontentButtons {
             ${props => props.theme.midScreenBreakpoint} {
                width: calc(60% + 3rem);
                margin-left: -3rem;
             }
             position: relative;
+            background: ${props => props.theme.midBlack};
             --votersHeight: 4rem;
+            z-index: 2;
             ${props => props.theme.midScreenBreakpoint} {
                --votersHeight: 5rem;
             }
@@ -323,8 +330,11 @@ const StyledContent = styled.section`
                      background: ${props =>
                         setAlpha(props.theme.lowContrastGrey, 0.25)};
                   }
-                  &.votebarWrapper:hover {
-                     background: none;
+                  &.votebarWrapper {
+                     cursor: default;
+                     &:hover {
+                        background: none;
+                     }
                   }
                }
                svg.buttons {
@@ -399,11 +409,15 @@ const StyledContent = styled.section`
                      }
                   }
                   .middle {
+                     background: ${props => props.theme.midBlack};
                      position: absolute;
                      display: flex;
                      align-items: center;
                      bottom: 100%;
                      padding: 0 0 0 1rem;
+                     ${props => props.theme.midScreenBreakpoint} {
+                        padding-left: 2rem;
+                     }
                      left: var(--scoreWidth, 6rem);
                      width: calc(100% - var(--scoreWidth, 6rem));
                      height: var(--votersHeight, 4rem);
@@ -415,6 +429,7 @@ const StyledContent = styled.section`
                      text-align: left;
                   }
                   .right {
+                     background: ${props => props.theme.midBlack};
                      position: absolute;
                      display: flex;
                      align-items: center;
