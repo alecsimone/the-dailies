@@ -75,7 +75,7 @@ const StyledBottomBar = styled.section`
 `;
 
 const BottomBar = () => {
-   const plusPlaceholder = 'Post Title';
+   const plusPlaceholder = 'Thing Title';
    const searchPlaceholder = 'Search';
    const [inputPlaceholder, setInputPlaceholder] = useState(false);
    const [inputContent, setInputContent] = useState('');
