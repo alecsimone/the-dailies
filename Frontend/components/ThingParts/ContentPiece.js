@@ -405,7 +405,7 @@ const ContentPiece = ({
                   e.preventDefault();
                   if (
                      reordering ||
-                     rawContentString === editedContent ||
+                     rawContentString === editContentInputRef.current.value ||
                      confirm(
                         'Are you sure you want to reorder the content? Any unsaved changes will be lost.'
                      )
