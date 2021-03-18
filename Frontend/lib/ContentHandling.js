@@ -312,7 +312,7 @@ const stickifier = stickingData => {
             buttons.style.left = `${stickingData.current.blockPaddingLeft}px`;
             buttons.style.width = isBigScreen ? 'calc(60% - 0.6rem)' : '100%'; // Not sure where the 1rem (which here we're taking 60% of) comes from
             buttons.style.bottom = 'initial';
-            buttons.style.top = `10rem`; // I don't know where the extra 4rem comes from either, but it needs to be 4rem more than the buffer
+            buttons.style.top = isBigScreen ? `10rem` : '11rem'; // I don't know where the extra 4rem comes from either, but it needs to be 4rem more than the buffer
 
             // Then we need to make the placeholder the height of the buttons
             buttonsPlaceholder.style.height = `${buttonsHeight}px`;
