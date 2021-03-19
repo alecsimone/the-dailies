@@ -98,7 +98,7 @@ async function startSignup(parent, args, ctx, info) {
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24 * 365 * 4,
       domain: process.env.DOMAIN,
-      sameSite: 'strict'
+      sameSite: 'lax'
    });
    return member;
 }
@@ -128,7 +128,7 @@ async function login(parent, { email, password }, ctx, info) {
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24 * 365 * 4,
       domain: process.env.DOMAIN,
-      sameSite: 'strict'
+      sameSite: 'lax'
    });
 
    return member;
