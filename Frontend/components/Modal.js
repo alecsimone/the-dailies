@@ -33,6 +33,10 @@ const StyledModal = styled.section`
       align-items: center;
       justify-content: center;
       font-size: ${props => props.theme.smallText};
+      padding: 2rem;
+      ${props => props.theme.midScreenBreakpoint} {
+         padding: 3rem;
+      }
    }
 `;
 
