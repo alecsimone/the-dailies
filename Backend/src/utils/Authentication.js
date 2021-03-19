@@ -32,6 +32,11 @@ exports.modGate = modGate;
 
 const fullMemberGate = member => {
    if (!['Admin', 'Editor', 'Moderator', 'Member'].includes(member.role)) {
+      if (member.role === 'Unverified') {
+         throw new AuthenticationError(
+            'You have to verify your email before you can do that!'
+         );
+      }
       throw new AuthenticationError('Only full members can do that');
    }
 };

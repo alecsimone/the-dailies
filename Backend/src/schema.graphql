@@ -1,6 +1,8 @@
 # import * from './generated/prisma.graphql'
 
 type Query {
+   finishSignup(id: String!, code: String!): Member!
+   finishReset(id: String!, code: String!): Member
    me: Member
    member(id: ID, displayName: String): Member
    thing(where: ThingWhereUniqueInput!): Thing
@@ -19,7 +21,7 @@ type Query {
 }
 
 type Mutation {
-   signup(
+   startSignup(
     email: String!
     password: String!
     displayName: String!
@@ -28,6 +30,8 @@ type Mutation {
   ): Member!
   login(email: String!, password: String!): Member!
   logout: SuccessMessage
+  requestReset(email: String!): Member
+  changePassword(id: String!, code: String!, password: String!): Member!
   createThing(
       title: String!
       link: String

@@ -12,7 +12,7 @@ const StyledModal = styled.section`
    height: 100vh;
    z-index: 9;
    .modalContainer {
-      svg.x {
+      svg.x.close {
          position: absolute;
          top: 1rem;
          right: 1rem;
@@ -40,7 +40,11 @@ const Modal = () => {
    const { content, setContent } = useContext(ModalContext);
 
    const clickOutsideDetector = e => {
-      if (e.target.closest('.modalContainer') == null) {
+      if (
+         e.target.closest('.modalContainer') == null &&
+         !e.target.classList.contains('forgotPasswordLink') // We need this so the forgot password link doesn't trigger this. I think because changing the content of the modal destroys the DOM chain that closest relies on?
+      ) {
+         console.log('this happened');
          setContent(false);
          window.removeEventListener('click', clickOutsideDetector);
       }
@@ -57,7 +61,11 @@ const Modal = () => {
    return (
       <StyledModal>
          <div className="modalContainer">
-            <X color="darkGrey" onClick={() => setContent(false)} />
+            <X
+               className="close"
+               color="darkGrey"
+               onClick={() => setContent(false)}
+            />
             {content}
          </div>
       </StyledModal>

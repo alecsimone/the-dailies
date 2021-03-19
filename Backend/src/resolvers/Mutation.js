@@ -1,7 +1,9 @@
 const {
-   signup,
+   startSignup,
    login,
    logout,
+   requestReset,
+   changePassword,
    editProfile,
    sendFriendRequest,
    confirmFriendRequest,
@@ -44,9 +46,11 @@ const {
 const { vote } = require('./Mutation/ThingMutations/Voting');
 
 const Mutations = {
-   signup,
+   startSignup,
    login,
    logout,
+   requestReset,
+   changePassword,
    createThing,
    addContentPiece,
    deleteContentPiece,

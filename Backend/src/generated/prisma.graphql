@@ -1182,6 +1182,8 @@ type Member {
   password: String!
   roles: [Role!]!
   role: Role
+  verificationToken: String
+  verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
   twitterTokenSecret: String
@@ -1228,6 +1230,8 @@ input MemberCreateInput {
   password: String!
   roles: MemberCreaterolesInput
   role: Role
+  verificationToken: String
+  verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
   twitterTokenSecret: String
@@ -1328,6 +1332,8 @@ input MemberCreateWithoutCommentsInput {
   password: String!
   roles: MemberCreaterolesInput
   role: Role
+  verificationToken: String
+  verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
   twitterTokenSecret: String
@@ -1365,6 +1371,8 @@ input MemberCreateWithoutCreatedThingsInput {
   password: String!
   roles: MemberCreaterolesInput
   role: Role
+  verificationToken: String
+  verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
   twitterTokenSecret: String
@@ -1402,6 +1410,8 @@ input MemberCreateWithoutFriendRequestsInput {
   password: String!
   roles: MemberCreaterolesInput
   role: Role
+  verificationToken: String
+  verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
   twitterTokenSecret: String
@@ -1439,6 +1449,8 @@ input MemberCreateWithoutFriendsInput {
   password: String!
   roles: MemberCreaterolesInput
   role: Role
+  verificationToken: String
+  verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
   twitterTokenSecret: String
@@ -1476,6 +1488,8 @@ input MemberCreateWithoutIgnoredFriendRequestsInput {
   password: String!
   roles: MemberCreaterolesInput
   role: Role
+  verificationToken: String
+  verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
   twitterTokenSecret: String
@@ -1513,6 +1527,8 @@ input MemberCreateWithoutIndividualViewPermissionsInput {
   password: String!
   roles: MemberCreaterolesInput
   role: Role
+  verificationToken: String
+  verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
   twitterTokenSecret: String
@@ -1550,6 +1566,8 @@ input MemberCreateWithoutNotificationsInput {
   password: String!
   roles: MemberCreaterolesInput
   role: Role
+  verificationToken: String
+  verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
   twitterTokenSecret: String
@@ -1587,6 +1605,8 @@ input MemberCreateWithoutOwnedTagsInput {
   password: String!
   roles: MemberCreaterolesInput
   role: Role
+  verificationToken: String
+  verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
   twitterTokenSecret: String
@@ -1624,6 +1644,8 @@ input MemberCreateWithoutPassesInput {
   password: String!
   roles: MemberCreaterolesInput
   role: Role
+  verificationToken: String
+  verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
   twitterTokenSecret: String
@@ -1661,6 +1683,8 @@ input MemberCreateWithoutVotesInput {
   password: String!
   roles: MemberCreaterolesInput
   role: Role
+  verificationToken: String
+  verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
   twitterTokenSecret: String
@@ -1708,6 +1732,10 @@ enum MemberOrderByInput {
   password_DESC
   role_ASC
   role_DESC
+  verificationToken_ASC
+  verificationToken_DESC
+  verificationTokenExpiry_ASC
+  verificationTokenExpiry_DESC
   resetToken_ASC
   resetToken_DESC
   resetTokenExpiry_ASC
@@ -1747,6 +1775,8 @@ type MemberPreviousValues {
   password: String!
   roles: [Role!]!
   role: Role
+  verificationToken: String
+  verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
   twitterTokenSecret: String
@@ -1909,6 +1939,28 @@ input MemberScalarWhereInput {
   role_not: Role
   role_in: [Role!]
   role_not_in: [Role!]
+  verificationToken: String
+  verificationToken_not: String
+  verificationToken_in: [String!]
+  verificationToken_not_in: [String!]
+  verificationToken_lt: String
+  verificationToken_lte: String
+  verificationToken_gt: String
+  verificationToken_gte: String
+  verificationToken_contains: String
+  verificationToken_not_contains: String
+  verificationToken_starts_with: String
+  verificationToken_not_starts_with: String
+  verificationToken_ends_with: String
+  verificationToken_not_ends_with: String
+  verificationTokenExpiry: Float
+  verificationTokenExpiry_not: Float
+  verificationTokenExpiry_in: [Float!]
+  verificationTokenExpiry_not_in: [Float!]
+  verificationTokenExpiry_lt: Float
+  verificationTokenExpiry_lte: Float
+  verificationTokenExpiry_gt: Float
+  verificationTokenExpiry_gte: Float
   resetToken: String
   resetToken_not: String
   resetToken_in: [String!]
@@ -2080,6 +2132,8 @@ input MemberUpdateDataInput {
   password: String
   roles: MemberUpdaterolesInput
   role: Role
+  verificationToken: String
+  verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
   twitterTokenSecret: String
@@ -2117,6 +2171,8 @@ input MemberUpdateInput {
   password: String
   roles: MemberUpdaterolesInput
   role: Role
+  verificationToken: String
+  verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
   twitterTokenSecret: String
@@ -2144,6 +2200,8 @@ input MemberUpdateManyDataInput {
   password: String
   roles: MemberUpdaterolesInput
   role: Role
+  verificationToken: String
+  verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
   twitterTokenSecret: String
@@ -2171,6 +2229,8 @@ input MemberUpdateManyMutationInput {
   password: String
   roles: MemberUpdaterolesInput
   role: Role
+  verificationToken: String
+  verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
   twitterTokenSecret: String
@@ -2317,6 +2377,8 @@ input MemberUpdateWithoutCommentsDataInput {
   password: String
   roles: MemberUpdaterolesInput
   role: Role
+  verificationToken: String
+  verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
   twitterTokenSecret: String
@@ -2353,6 +2415,8 @@ input MemberUpdateWithoutCreatedThingsDataInput {
   password: String
   roles: MemberUpdaterolesInput
   role: Role
+  verificationToken: String
+  verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
   twitterTokenSecret: String
@@ -2389,6 +2453,8 @@ input MemberUpdateWithoutFriendRequestsDataInput {
   password: String
   roles: MemberUpdaterolesInput
   role: Role
+  verificationToken: String
+  verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
   twitterTokenSecret: String
@@ -2425,6 +2491,8 @@ input MemberUpdateWithoutFriendsDataInput {
   password: String
   roles: MemberUpdaterolesInput
   role: Role
+  verificationToken: String
+  verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
   twitterTokenSecret: String
@@ -2461,6 +2529,8 @@ input MemberUpdateWithoutIgnoredFriendRequestsDataInput {
   password: String
   roles: MemberUpdaterolesInput
   role: Role
+  verificationToken: String
+  verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
   twitterTokenSecret: String
@@ -2497,6 +2567,8 @@ input MemberUpdateWithoutIndividualViewPermissionsDataInput {
   password: String
   roles: MemberUpdaterolesInput
   role: Role
+  verificationToken: String
+  verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
   twitterTokenSecret: String
@@ -2533,6 +2605,8 @@ input MemberUpdateWithoutNotificationsDataInput {
   password: String
   roles: MemberUpdaterolesInput
   role: Role
+  verificationToken: String
+  verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
   twitterTokenSecret: String
@@ -2569,6 +2643,8 @@ input MemberUpdateWithoutOwnedTagsDataInput {
   password: String
   roles: MemberUpdaterolesInput
   role: Role
+  verificationToken: String
+  verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
   twitterTokenSecret: String
@@ -2605,6 +2681,8 @@ input MemberUpdateWithoutPassesDataInput {
   password: String
   roles: MemberUpdaterolesInput
   role: Role
+  verificationToken: String
+  verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
   twitterTokenSecret: String
@@ -2641,6 +2719,8 @@ input MemberUpdateWithoutVotesDataInput {
   password: String
   roles: MemberUpdaterolesInput
   role: Role
+  verificationToken: String
+  verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
   twitterTokenSecret: String
@@ -2910,6 +2990,28 @@ input MemberWhereInput {
   role_not: Role
   role_in: [Role!]
   role_not_in: [Role!]
+  verificationToken: String
+  verificationToken_not: String
+  verificationToken_in: [String!]
+  verificationToken_not_in: [String!]
+  verificationToken_lt: String
+  verificationToken_lte: String
+  verificationToken_gt: String
+  verificationToken_gte: String
+  verificationToken_contains: String
+  verificationToken_not_contains: String
+  verificationToken_starts_with: String
+  verificationToken_not_starts_with: String
+  verificationToken_ends_with: String
+  verificationToken_not_ends_with: String
+  verificationTokenExpiry: Float
+  verificationTokenExpiry_not: Float
+  verificationTokenExpiry_in: [Float!]
+  verificationTokenExpiry_not_in: [Float!]
+  verificationTokenExpiry_lt: Float
+  verificationTokenExpiry_lte: Float
+  verificationTokenExpiry_gt: Float
+  verificationTokenExpiry_gte: Float
   resetToken: String
   resetToken_not: String
   resetToken_in: [String!]
@@ -3600,6 +3702,7 @@ enum Role {
   Moderator
   Member
   LiteMember
+  Unverified
 }
 
 type Stack {

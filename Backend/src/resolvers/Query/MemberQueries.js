@@ -1,4 +1,92 @@
+const jwt = require('jsonwebtoken');
 const { canSeeThing } = require('../../utils/ThingHandling');
+
+async function finishSignup(parent, { id, code }, ctx, info) {
+   const existingMember = await ctx.db.query
+      .member(
+         {
+            where: {
+               id
+            }
+         },
+         `{id, verificationToken, verificationTokenExpiry}`
+      )
+      .catch(err => {
+         console.log(err);
+      });
+
+   if (existingMember == null) {
+      throw new Error(
+         'Something has gone in the registration process, sorry. Please try again.'
+      );
+   }
+
+   if (existingMember.verificationToken !== code) {
+      throw new Error(
+         'Your verification code is not correct, sorry. Please try again or reach out for some help.'
+      );
+   }
+
+   if (existingMember.verificationTokenExpiry < Date.now()) {
+      throw new Error(
+         "That verification code has expired, sorry. You're going to have to start again."
+      );
+   }
+
+   const updatedMember = await ctx.db.mutation
+      .updateMember(
+         {
+            where: {
+               id
+            },
+            data: {
+               role: 'Member'
+            }
+         },
+         info
+      )
+      .catch(err => {
+         console.log(err);
+      });
+   return updatedMember;
+}
+exports.finishSignup = finishSignup;
+
+async function finishReset(parent, { id, code }, ctx, info) {
+   const existingMember = await ctx.db.query
+      .member(
+         {
+            where: {
+               id
+            }
+         },
+         `{id email displayName rep avatar resetToken resetTokenExpiry}`
+      )
+      .catch(err => {
+         console.log(err);
+      });
+
+   if (existingMember == null) {
+      throw new Error(
+         "There's no member with that ID, so something went wrong somewhere, sorry. Please try to reset your password again or reach out for some help."
+      );
+   }
+
+   if (existingMember.resetToken !== code) {
+      throw new Error(
+         'Your reset code is not correct, sorry. Please try again or reach out for some help.'
+      );
+   }
+
+   if (existingMember.resetTokenExpiry < Date.now()) {
+      throw new Error(
+         "That reset code has expired, sorry. You're going to have to start again."
+      );
+   }
+
+   return existingMember;
+}
+exports.finishReset = finishReset;
 
 async function me(parent, args, ctx, info) {
    const start = Date.now();

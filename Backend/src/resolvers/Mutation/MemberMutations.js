@@ -1,8 +1,11 @@
 const bcrypt = require('bcryptjs');
+const { randomBytes } = require('crypto');
+const { promisify } = require('util');
 const jwt = require('jsonwebtoken');
 const { AuthenticationError } = require('apollo-server-express');
 const { loggedInGate, fullMemberGate } = require('../../utils/Authentication');
 const { fullMemberFields } = require('../../utils/CardInterfaces');
+const SibApiV3Sdk = require('sib-api-v3-sdk');
 
 async function publishMeUpdate(ctx) {
    const newMe = await ctx.db.query
@@ -28,7 +31,7 @@ exports.publishMeUpdate = publishMeUpdate;
 
 const { properUpdateStuff } = require('../../utils/ThingHandling'); // This needs to be below publishMeUpdate, because properUpdateStuff usese publishMeUpdate, so it gets called before it's defined if we put this require above its definition
 
-async function signup(parent, args, ctx, info) {
+async function startSignup(parent, args, ctx, info) {
    args.email = args.email.toLowerCase();
    const password = await bcrypt.hash(args.password, 10).catch(err => {
       console.log(err);
@@ -36,30 +39,70 @@ async function signup(parent, args, ctx, info) {
    if (args.displayName.length > 24) {
       args.displayName = args.displayName.substring(0, 24);
    }
+
+   const verificationToken = (await promisify(randomBytes)(20)).toString('hex');
+   const verificationTokenExpiry = Date.now() + 1000 * 60 * 60 * 8; // 8 hours to verify yourself
+
    const member = await ctx.db.mutation
       .createMember(
          {
             data: {
                ...args,
                password,
-               role: 'Member',
-               defaultPrivacy: 'Friends'
+               role: 'Unverified',
+               defaultPrivacy: 'Friends',
+               verificationToken,
+               verificationTokenExpiry
             }
          },
          info
       )
       .catch(err => {
          console.log(err);
+         throw new Error(err);
       });
+
+   const defaultClient = SibApiV3Sdk.ApiClient.instance;
+   const apiKey = defaultClient.authentications['api-key'];
+   apiKey.apiKey = process.env.MAIL_API_KEY;
+
+   const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
+   let sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
+
+   sendSmtpEmail = {
+      to: [
+         {
+            email: args.email,
+            name: args.displayName
+         }
+      ],
+      templateId: 1,
+      params: {
+         domain: process.env.FRONTEND_URL,
+         memberId: member.id,
+         verificationToken
+      }
+   };
+
+   apiInstance.sendTransacEmail(sendSmtpEmail).then(
+      function(data) {
+         console.log(`API called successfully. Returned data: ${data}`);
+      },
+      function(error) {
+         console.error(error);
+      }
+   );
+
    const token = jwt.sign({ memberId: member.id }, process.env.APP_SECRET);
    ctx.res.cookie('token', token, {
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24 * 365 * 4,
-      domain: process.env.DOMAIN
+      domain: process.env.DOMAIN,
+      sameSite: 'strict'
    });
    return member;
 }
-exports.signup = signup;
+exports.startSignup = startSignup;
 
 async function login(parent, { email, password }, ctx, info) {
    const member = await ctx.db.query
@@ -84,7 +127,8 @@ async function login(parent, { email, password }, ctx, info) {
    ctx.res.cookie('token', token, {
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24 * 365 * 4,
-      domain: process.env.DOMAIN
+      domain: process.env.DOMAIN,
+      sameSite: 'strict'
    });
 
    return member;
@@ -96,6 +140,116 @@ function logout(parent, args, ctx, info) {
    return { message: 'Successfully logged out' };
 }
 exports.logout = logout;
+
+async function requestReset(parent, { email }, ctx, info) {
+   email = email.toLowerCase();
+
+   const existingMember = await ctx.db.query.member(
+      {
+         where: {
+            email
+         }
+      },
+      `{id email displayName}`
+   );
+
+   if (existingMember == null) {
+      return null;
+   }
+
+   const resetToken = (await promisify(randomBytes)(20)).toString('hex');
+   const resetTokenExpiry = Date.now() + 1000 * 60 * 30; // 30 minutes to verify yourself
+
+   const member = await ctx.db.mutation
+      .updateMember(
+         {
+            where: { email },
+            data: {
+               resetToken,
+               resetTokenExpiry
+            }
+         },
+         info
+      )
+      .catch(err => {
+         console.log(err);
+         throw new Error(err);
+      });
+
+   const defaultClient = SibApiV3Sdk.ApiClient.instance;
+   const apiKey = defaultClient.authentications['api-key'];
+   apiKey.apiKey = process.env.MAIL_API_KEY;
+
+   const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
+   let sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
+
+   sendSmtpEmail = {
+      to: [
+         {
+            email,
+            name: existingMember.displayName
+         }
+      ],
+      templateId: 2,
+      params: {
+         domain: process.env.FRONTEND_URL,
+         memberId: existingMember.id,
+         resetToken
+      }
+   };
+
+   apiInstance.sendTransacEmail(sendSmtpEmail).then(
+      function(data) {
+         console.log(`API called successfully. Returned data: ${data}`);
+      },
+      function(error) {
+         console.error(error);
+      }
+   );
+   return null;
+}
+exports.requestReset = requestReset;
+
+async function changePassword(parent, { id, code, password }, ctx, info) {
+   const existingMember = await ctx.db.query.member(
+      {
+         where: {
+            id
+         }
+      },
+      `{id resetToken}`
+   );
+
+   if (existingMember == null || code !== existingMember.resetToken) {
+      throw new Error(
+         "Something has gone wrong in the reset process, sorry. You're going to have to start again."
+      );
+   }
+
+   const hashedPassword = await bcrypt.hash(password, 10).catch(err => {
+      console.log(err);
+   });
+
+   const updatedMember = await ctx.db.mutation
+      .updateMember(
+         {
+            where: {
+               id
+            },
+            data: {
+               password: hashedPassword,
+               resetToken: null,
+               resetTokenExpiry: null
+            }
+         },
+         info
+      )
+      .catch(err => {
+         console.log(err);
+      });
+   return updatedMember;
+}
+exports.changePassword = changePassword;
 
 async function editProfile(
    parent,

@@ -2,19 +2,22 @@ import { useMutation } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 import { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
-import Router from 'next/router';
 import Error from '../ErrorMessage.js';
 import StyledForm from '../../styles/StyledForm';
 import { CURRENT_MEMBER_QUERY } from './MemberProvider';
 import { ModalContext } from '../ModalProvider';
 
-const SIGNUP_MUTATION = gql`
-   mutation SIGNUP_MUTATION(
+const START_SIGNUP_MUTATION = gql`
+   mutation START_SIGNUP_MUTATION(
       $email: String!
       $displayName: String!
       $password: String!
    ) {
-      signup(email: $email, displayName: $displayName, password: $password) {
+      startSignup(
+         email: $email
+         displayName: $displayName
+         password: $password
+      ) {
          id
          email
          displayName
@@ -29,6 +32,8 @@ const Signup = ({ callBack }) => {
    const [password, setPassword] = useState('');
    const [confirmedPassword, setConfirmedPassword] = useState('');
    const [email, setEmail] = useState('');
+   const [registrationStarted, setRegistrationStarted] = useState(false);
+   const [error, setError] = useState(null);
    const { setContent } = useContext(ModalContext);
 
    const saveToState = function(e) {
@@ -46,9 +51,32 @@ const Signup = ({ callBack }) => {
       }
    };
 
-   const [signup, { data, loading, error }] = useMutation(SIGNUP_MUTATION, {
-      onError: err => alert(err.message)
+   const [startSignup, { loading }] = useMutation(START_SIGNUP_MUTATION, {
+      onError: err => {
+         if (err.message.includes('unique')) {
+            setError({
+               message: 'A user already exists with that email address'
+            });
+         } else {
+            setError(err);
+         }
+      },
+      onCompleted: data => {
+         setRegistrationStarted(true);
+         if (callBack) {
+            callBack();
+         }
+      }
    });
+
+   if (registrationStarted === true) {
+      return (
+         <div>
+            Registration initiated. Please check your email and click the
+            verification link to complete it
+         </div>
+      );
+   }
 
    return (
       <StyledForm
@@ -59,19 +87,12 @@ const Signup = ({ callBack }) => {
                alert("Yo, your passwords don't match");
                return;
             }
-            await signup({
+            await startSignup({
                variables: { email, displayName, password },
                refetchQueries: [{ query: CURRENT_MEMBER_QUERY }]
             }).catch(err => {
-               alert(err.message);
+               console.log(err.message);
             });
-            Router.push({
-               pathname: '/'
-            });
-            setContent(false);
-            if (callBack) {
-               callBack();
-            }
          }}
       >
          <fieldset disabled={loading} aria-busy={loading}>

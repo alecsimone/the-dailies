@@ -124,6 +124,8 @@ type Member {
   password: String!
   roles: [Role!] @scalarList(strategy: RELATION)
   role: Role
+  verificationToken: String
+  verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
   twitterTokenSecret: String
@@ -158,6 +160,7 @@ enum Role {
   Moderator
   Member
   LiteMember
+  Unverified
 }
 
 enum PrivacySetting {
