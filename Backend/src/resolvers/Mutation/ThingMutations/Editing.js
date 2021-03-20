@@ -189,7 +189,8 @@ async function newBlankThing(parent, args, ctx, info) {
    });
    fullMemberGate(ctx.req.member);
 
-   const newThing = properUpdateStuff({}, 'new', 'Thing', ctx);
+   const newThing = await properUpdateStuff({}, 'new', 'Thing', ctx);
+   publishMeUpdate(ctx);
    return newThing;
 }
 exports.newBlankThing = newBlankThing;
@@ -541,7 +542,6 @@ async function deleteComment(parent, { commentID, stuffID, type }, ctx, info) {
    }, `{replies {id}}`).catch(err => {
       console.log(err);
    });
-   console.log(oldComment);
 
    let dataObj;
    // If the comment has replies, we just want to set its text to [deleted]. Otherwise we can actually delete it.

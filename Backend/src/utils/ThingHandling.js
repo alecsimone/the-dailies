@@ -45,7 +45,6 @@ async function updateStuffAndNotifySubs(data, id, type, ctx) {
       }
       console.log(err);
    });
-   console.log(updatedStuff);
    if (type === 'ContentPiece') {
       if (updatedStuff.onThing != null) {
          const updatedThing = await ctx.db.query

@@ -37,6 +37,7 @@ const MY_THINGS_QUERY = gql`
       }
    }
 `;
+export { MY_THINGS_QUERY };
 
 const MyThings = ({ setShowingSidebar, scrollingSelector, borderSide }) => {
    const { me, loading: loadingMe } = useContext(MemberContext);

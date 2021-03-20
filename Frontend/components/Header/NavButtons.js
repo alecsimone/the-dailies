@@ -62,7 +62,11 @@ const NavButtons = ({ showSearch, setShowSearch, search }) => {
          { query: ALL_THINGS_QUERY },
          { query: PUBLIC_THINGS_QUERY }
       ],
-      onError: err => alert(err.message),
+      onError: err => {
+         const newPostButton = document.querySelector('.newPost');
+         newPostButton.classList.remove('loading');
+         alert(err.message);
+      },
       context: {
          debounceKey: 'newThing'
       }

@@ -253,16 +253,23 @@ const Content = ({ context, canEdit, linkedPiece }) => {
    };
 
    const editPiece = async (contentPieceID, newContent) => {
-      const indexOfEditedContentPiece = content.findIndex(
+      const indexOfEditedContentPiece = fullContent.findIndex(
          contentPiece => contentPiece.id === contentPieceID
       );
-      content[indexOfEditedContentPiece].content = newContent;
+
+      if (fullContent[indexOfEditedContentPiece] == null) {
+         console.log('Something has gone terribly wrong. Please try again.');
+      }
+
+      const thisPiece = fullContent[indexOfEditedContentPiece];
+
+      fullContent[indexOfEditedContentPiece].content = newContent;
 
       await editContentPiece({
          variables: {
             contentPieceID,
             content: newContent,
-            id,
+            id: thisPiece.onThing.id, // The piece might be copied from another thing, so we can't assume it has the id of the thing we're viewing,
             type
          },
          optimisticResponse: {
@@ -284,8 +291,8 @@ const Content = ({ context, canEdit, linkedPiece }) => {
 
    let contentElements;
    let orderedContent;
+   let fullContent;
    if (content) {
-      let fullContent;
       if (copiedInContent != null && copiedInContent.length > 0) {
          fullContent = content.concat(copiedInContent);
       } else {

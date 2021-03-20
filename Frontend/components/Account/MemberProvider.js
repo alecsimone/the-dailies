@@ -2,12 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import gql from 'graphql-tag';
 import { useQuery, useSubscription } from '@apollo/react-hooks';
-import { basicMemberFields } from '../../lib/CardInterfaces';
+import { basicMemberFields, fullMemberFields } from '../../lib/CardInterfaces';
+import { MY_THINGS_QUERY } from '../Archives/MyThings';
 
 const CURRENT_MEMBER_QUERY = gql`
    {
       me {
-         ${basicMemberFields}
+         ${fullMemberFields}
       }
    }
 `;
@@ -15,7 +16,7 @@ const ME_SUBSCRIPTION = gql`
    subscription ME_SUBSCRIPTION {
       me {
          node {
-            ${basicMemberFields}
+            ${fullMemberFields}
          }
       }
    }
@@ -26,10 +27,22 @@ const MemberContext = React.createContext();
 const MemberProvider = ({ children, isHome }) => {
    const { loading, error, data, client } = useQuery(CURRENT_MEMBER_QUERY);
 
-   // const {
-   //    data: subscriptionData,
-   //    loading: subscriptionLoading
-   // } = useSubscription(ME_SUBSCRIPTION);
+   const {
+      data: subscriptionDataOne,
+      loading: subscriptionLoading
+   } = useSubscription(ME_SUBSCRIPTION, {
+      onSubscriptionData: ({ client, subscriptionData }) => {
+         console.log(subscriptionData);
+         const cachedThings = client.writeQuery({
+            query: MY_THINGS_QUERY,
+            data: {
+               __typename: 'query',
+               myThings: subscriptionData.data.me.node.createdThings
+            }
+         });
+         console.log(cachedThings);
+      }
+   });
 
    let memberData = {};
    if (error) {

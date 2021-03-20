@@ -46,6 +46,7 @@ const StyledHeader = styled.div`
    top: 0;
    left: 0;
    right: 0;
+   z-index: 9;
    border-bottom: 3px solid
       ${props => setLightness(props.theme.lowContrastGrey, 10)};
    background: ${props => props.theme.midBlack};

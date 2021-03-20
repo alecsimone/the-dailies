@@ -320,7 +320,21 @@ const basicMemberFields = `
    notifications {
       __typename
       id
+      kind
+      initiator {
+         __typename
+         id
+         avatar
+         rep
+         displayName
+         role
+         friends {
+            __typename
+            id
+         }
+      }
       unread
+      linkQuery
    }
    friendRequests {
       __typename
