@@ -25,22 +25,20 @@ const ME_SUBSCRIPTION = gql`
 const MemberContext = React.createContext();
 
 const MemberProvider = ({ children, isHome }) => {
-   const { loading, error, data, client } = useQuery(CURRENT_MEMBER_QUERY);
+   const { loading, error, data } = useQuery(CURRENT_MEMBER_QUERY);
 
    const {
       data: subscriptionDataOne,
       loading: subscriptionLoading
    } = useSubscription(ME_SUBSCRIPTION, {
       onSubscriptionData: ({ client, subscriptionData }) => {
-         console.log(subscriptionData);
-         const cachedThings = client.writeQuery({
+         client.writeQuery({
             query: MY_THINGS_QUERY,
             data: {
                __typename: 'query',
                myThings: subscriptionData.data.me.node.createdThings
             }
          });
-         console.log(cachedThings);
       }
    });
 
