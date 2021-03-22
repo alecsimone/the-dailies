@@ -284,6 +284,7 @@ const ContentPiece = ({
             className="buttonWrapper"
             onClick={() => {
                setHasShownComments(true);
+               let scrollingContainer;
                if (
                   comments.length > 0 &&
                   process.browser &&
@@ -291,10 +292,21 @@ const ContentPiece = ({
                   fullThingData.__typename !== 'Tag' &&
                   !hasShownComments
                ) {
-                  // If we're on a big screen and this piece has comments, they're already going to be showing the first time we click this button, but showingComments will be false. So we're just going to setHasShownComments to true, which will make false the condition that shows them by default. showingComments will already be false, so we don't need to change it.
-                  return;
+                  if (!hasShownComments) {
+                     // If we're on a big screen and this piece has comments, they're already going to be showing the first time we click this button, but showingComments will be false. So we're just going to setHasShownComments to true, which will make false the condition that shows them by default. showingComments will already be false, so we don't need to change it.
+                     return;
+                  }
+                  // On big screens, the scrollingContainer is .content
+                  scrollingContainer = document.querySelector('.content');
+               } else {
+                  // On small screens, the scrollingContainer is .threeColumns
+                  scrollingContainer = document.querySelector('.threeColumns');
                }
-               setShowingComments(!showingComments);
+               changeContentButKeepInFrame(
+                  contentContainerRef.current,
+                  scrollingContainer,
+                  () => setShowingComments(!showingComments)
+               );
                window.setTimeout(() => stickifier(stickifierData), 1);
             }}
          >
