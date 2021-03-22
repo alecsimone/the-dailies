@@ -190,7 +190,12 @@ async function newBlankThing(parent, args, ctx, info) {
    fullMemberGate(ctx.req.member);
 
    const newThing = await properUpdateStuff({}, 'new', 'Thing', ctx);
-   publishMeUpdate(ctx);
+   ctx.pubsub.publish('myThings', {
+      myThings: {
+         node: newThing,
+         updatedFields: ['create']
+      }
+   });
    return newThing;
 }
 exports.newBlankThing = newBlankThing;
@@ -615,7 +620,13 @@ async function deleteThing(parent, {id}, ctx, info) {
          console.log(err);
       });
 
-   publishMeUpdate(ctx);
+   console.log(deletedThing);
+   ctx.pubsub.publish('myThings', {
+      myThings: {
+         node: deletedThing,
+         updatedFields: ['delete']
+      }
+   });
    return deletedThing;
 }
 exports.deleteThing = deleteThing;

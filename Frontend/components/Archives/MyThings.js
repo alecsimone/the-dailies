@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 import styled from 'styled-components';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery, useSubscription } from '@apollo/react-hooks';
 import { useContext } from 'react';
 import Link from 'next/link';
 import Things from './Things';
@@ -39,6 +39,17 @@ const MY_THINGS_QUERY = gql`
 `;
 export { MY_THINGS_QUERY };
 
+const MY_THINGS_SUBSCRIPTION = gql`
+   subscription MY_THINGS_SUBSCRIPTION {
+      myThings {
+         node {
+            ${smallThingCardFields}
+         }
+         updatedFields
+      }
+   }
+`;
+
 const MyThings = ({ setShowingSidebar, scrollingSelector, borderSide }) => {
    const { me, loading: loadingMe } = useContext(MemberContext);
    const { setContent } = useContext(ModalContext);
@@ -46,6 +57,65 @@ const MyThings = ({ setShowingSidebar, scrollingSelector, borderSide }) => {
    const { data, loading, error, fetchMore } = useQuery(MY_THINGS_QUERY, {
       ssr: false,
       skip: me == null && !loadingMe
+   });
+
+   useSubscription(MY_THINGS_SUBSCRIPTION, {
+      ssr: false,
+      skip: me == null && !loadingMe,
+      onSubscriptionData: ({ client, subscriptionData }) => {
+         // Get the current results for the myThings query
+         const oldThings = client.readQuery({
+            query: MY_THINGS_QUERY
+         });
+
+         // Check if the new thing already exists in myThings
+         const [existingThing] = oldThings.myThings.filter(
+            thing => thing.id === subscriptionData.data.myThings.node.id
+         );
+
+         console.log(subscriptionData.data.myThings);
+
+         let newThings;
+         if (existingThing != null) {
+            // If it does, check if we're being told to delete it
+            if (
+               subscriptionData.data.myThings.updatedFields.includes('delete')
+            ) {
+               newThings = oldThings.myThings.filter(
+                  thing => thing.id !== subscriptionData.data.myThings.node.id
+               );
+            }
+
+            // Or edit it
+            if (subscriptionData.data.myThings.updatedFields.includes('edit')) {
+               newThings = oldThings.myThings;
+               const editedThingIndex = newThings.findIndex(
+                  thing => thing.id === subscriptionData.data.myThings.node.id
+               );
+               newThings[editedThingIndex] =
+                  subscriptionData.data.myThings.node;
+            }
+
+            // If we're not, return
+         } else if (
+            subscriptionData.data.myThings.updatedFields.includes('create')
+         ) {
+            // If it doesn't exist already, add it
+            newThings = [
+               ...oldThings.myThings,
+               subscriptionData.data.myThings.node
+            ];
+         } else {
+            return;
+         }
+         client.writeQuery({
+            query: MY_THINGS_QUERY,
+            data: {
+               __typename: 'query',
+               myThings: newThings
+            }
+         });
+      }
    });
 
    const {

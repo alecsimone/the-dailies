@@ -20,12 +20,12 @@ import { ALL_THINGS_QUERY } from '../../lib/ThingHandling';
 import { useSearchResultsSelector } from '../../lib/RichTextHandling';
 import { PUBLIC_THINGS_QUERY } from '../Archives/PublicThings';
 import ArrowIcon from '../Icons/Arrow';
+import { smallThingCardFields } from '../../lib/CardInterfaces';
 
 const DELETE_THING_MUTATION = gql`
    mutation DELETE_THING_MUTATION($id: ID!) {
       deleteThing(id: $id) {
-         __typename
-         id
+         ${smallThingCardFields}
       }
    }
 `;

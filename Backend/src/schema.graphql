@@ -83,6 +83,7 @@ type Subscription {
    tag: TagSubscriptionPayload
    stack: StackSubscriptionPayload
    me: MemberSubscriptionPayload
+   myThings: ThingSubscriptionPayload
 }
 
 type SuccessMessage {

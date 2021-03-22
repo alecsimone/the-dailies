@@ -192,7 +192,8 @@ export default React.memo(SmallThingCard, (prev, next) => {
    if (
       prev.data.title !== next.data.title ||
       prev.data.featuredImage !== next.data.featuredImage ||
-      prev.data.privacy !== next.data.privacy
+      prev.data.privacy !== next.data.privacy ||
+      prev.data.color !== next.data.color
    ) {
       return false;
    }

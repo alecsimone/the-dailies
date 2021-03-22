@@ -197,7 +197,14 @@ async function properUpdateStuff(dataObj, id, type, ctx) {
    ).catch(err => {
       throw new Error(err.message);
    });
-   publishMeUpdate(ctx);
+   if (type === 'Thing') {
+      ctx.pubsub.publish('myThings', {
+         myThings: {
+            node: updatedStuff,
+            updatedFields: ['edit']
+         }
+      });
+   }
    return updatedStuff;
 }
 exports.properUpdateStuff = properUpdateStuff;

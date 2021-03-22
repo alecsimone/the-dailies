@@ -19,6 +19,13 @@ const Subscription = {
          (payload, variables, ctx, info) =>
             ctx.connection.context.memberId === payload.me.node.id
       )
+   },
+   myThings: {
+      subscribe: withFilter(
+         (parent, args, ctx, info) => ctx.pubsub.asyncIterator('myThings'),
+         (payload, variables, ctx, info) =>
+            ctx.connection.context.memberId === payload.myThings.node.author.id
+      )
    }
 };
 
