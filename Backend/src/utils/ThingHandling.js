@@ -122,7 +122,7 @@ async function editPermissionGate(dataObj, id, type, ctx) {
       console.log(err);
    });
 
-   if (oldStuff.author.id !== ctx.req.memberId) {
+   if (oldStuff != null && oldStuff.author.id !== ctx.req.memberId) {
       throw new Error(
          `You do not have permission to edit that ${lowerCasedType}`
       );

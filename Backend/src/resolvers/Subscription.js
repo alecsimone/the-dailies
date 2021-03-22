@@ -24,6 +24,7 @@ const Subscription = {
       subscribe: withFilter(
          (parent, args, ctx, info) => ctx.pubsub.asyncIterator('myThings'),
          (payload, variables, ctx, info) =>
+            payload.myThings.node != null &&
             ctx.connection.context.memberId === payload.myThings.node.author.id
       )
    }

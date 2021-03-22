@@ -73,8 +73,6 @@ const MyThings = ({ setShowingSidebar, scrollingSelector, borderSide }) => {
             thing => thing.id === subscriptionData.data.myThings.node.id
          );
 
-         console.log(subscriptionData.data.myThings);
-
          let newThings;
          if (existingThing != null) {
             // If it does, check if we're being told to delete it
@@ -95,18 +93,17 @@ const MyThings = ({ setShowingSidebar, scrollingSelector, borderSide }) => {
                newThings[editedThingIndex] =
                   subscriptionData.data.myThings.node;
             }
-
-            // If we're not, return
          } else if (
-            subscriptionData.data.myThings.updatedFields.includes('create')
+            subscriptionData.data.myThings.updatedFields.includes('delete')
          ) {
+            // If it doesn't exist and we're deleting it, our work here is done
+            return;
+         } else {
             // If it doesn't exist already, add it
             newThings = [
                ...oldThings.myThings,
                subscriptionData.data.myThings.node
             ];
-         } else {
-            return;
          }
          client.writeQuery({
             query: MY_THINGS_QUERY,
