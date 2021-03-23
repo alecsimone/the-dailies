@@ -224,6 +224,7 @@ const Content = ({ context, canEdit, linkedPiece }) => {
       }).catch(err => {
          alert(err.message);
       });
+      inputElement.value = ''; // We need to clear the input after adding it
    };
 
    const deletePiece = async contentPieceID => {

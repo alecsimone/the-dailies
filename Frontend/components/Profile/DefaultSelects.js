@@ -38,11 +38,6 @@ const DefaultSelects = ({
          }
       };
 
-      if (e.target.name === 'defaultExpansion') {
-         optimisticResponse.editProfile.defaultExpansion =
-            e.target.value === 'Expanded';
-      } // We pass a value of either Expanded or Collapsed, but they need to be converted to True or False respectively
-
       editProfile({
          variables: {
             id,
@@ -76,17 +71,6 @@ const DefaultSelects = ({
                onChange={handleSelect}
             >
                {privacyOptions}
-            </select>
-         </div>
-         <div className="privacySelectWrapper selectWrapper">
-            Default Expansion:
-            <select
-               name="defaultExpansion"
-               value={initialExpansion ? 'Expanded' : 'Collapsed'}
-               onChange={handleSelect}
-            >
-               <MetaOption name="Expanded" />
-               <MetaOption name="Collapsed" />
             </select>
          </div>
       </StyledSelectsWrapper>

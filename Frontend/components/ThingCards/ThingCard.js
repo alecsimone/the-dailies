@@ -380,6 +380,7 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
       }).catch(err => {
          alert(err.message);
       });
+      inputElement.value = ''; // We need to clear the input after commenting
       // TODO: Add the update function a la Comments.js line 192
    };
 
