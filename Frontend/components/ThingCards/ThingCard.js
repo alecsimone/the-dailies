@@ -28,7 +28,7 @@ const StyledThingCard = styled.div`
    display: block;
    width: 100%;
    max-width: 1200px;
-   padding: 0 1.5rem 1.5rem;
+   padding: 0 1.5rem;
    background: ${props => props.theme.lightBlack};
    box-shadow: 0 2px 4px
       ${props => setAlpha(props.theme.deepBlack, 0.4)};
@@ -50,7 +50,7 @@ const StyledThingCard = styled.div`
    .featuredImage {
       width: calc(100% + 3rem);
       margin: 0 -1.5rem;
-      padding: 1rem 1.5rem;
+      padding: 2rem 1.5rem;
       ${props => props.theme.mobileBreakpoint} {
          width: calc(100% + 5rem);
          margin: 0 -2.5rem;
@@ -124,6 +124,7 @@ const StyledThingCard = styled.div`
          display: inline-flex;
          align-items: center;
          margin-right: 2rem;
+         margin-bottom: 1rem;
          a,
          a:visited {
             color: ${props =>

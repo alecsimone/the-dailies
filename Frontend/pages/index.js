@@ -21,7 +21,10 @@ const StyledHomepage = styled.section`
       overflow: hidden;
       ${props => props.theme.scroll};
       .things .thingCard {
-         margin: 0 auto 4rem;
+         margin: 0 auto 2rem;
+         ${props => props.theme.mobileBreakpoint} {
+            margin-bottom: 4rem;
+         }
          .thingCard {
             margin: 2rem 0;
          }
