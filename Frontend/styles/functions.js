@@ -65,6 +65,10 @@ function replaceNthValue(string, replacementValue, n) {
    return `${startingString} ${replacementValue}%${endingString}`;
 }
 
+const getOneRem = () =>
+   parseFloat(getComputedStyle(document.documentElement).fontSize);
+export { getOneRem };
+
 const dynamicallyResizeElement = el => {
    if (el == null) {
       return;
@@ -72,14 +76,11 @@ const dynamicallyResizeElement = el => {
    const mainSection = document.querySelector('.mainSection');
    const oldScrollTop = mainSection.scrollTop;
    el.style.height = '0';
-   el.style.height = `${el.scrollHeight + 2}px`;
+   const oneRem = getOneRem();
+   el.style.height = `${el.scrollHeight + oneRem}px`;
    mainSection.scrollTop = oldScrollTop;
 };
 export { dynamicallyResizeElement };
-
-const getOneRem = () =>
-   parseFloat(getComputedStyle(document.documentElement).fontSize);
-export { getOneRem };
 
 const midScreenBreakpointPx = 1440;
 export { midScreenBreakpointPx };

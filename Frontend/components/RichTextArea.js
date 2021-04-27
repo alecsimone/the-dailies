@@ -580,6 +580,9 @@ const RichTextArea = ({
                }}
                onKeyDown={e => handleKeyDown(e)}
                onKeyUp={e => handleKeyUp(e)}
+               onFocus={() => {
+                  dynamicallyResizeElement(inputRef.current);
+               }}
                onBlur={e => {
                   closeResults();
                }}
