@@ -124,7 +124,6 @@ const StyledThingCard = styled.div`
          display: inline-flex;
          align-items: center;
          margin-right: 2rem;
-         margin-bottom: 1rem;
          a,
          a:visited {
             color: ${props =>
@@ -164,6 +163,9 @@ const StyledThingCard = styled.div`
                }
             }
          }
+      }
+      .meta-left, .meta-right {
+         margin-bottom: 1rem;
       }
    }
    .cardTouchWatcher {
