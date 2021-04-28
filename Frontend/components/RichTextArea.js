@@ -273,7 +273,6 @@ const RichTextArea = ({
          wrapTextWithTag(
             e.target,
             '**',
-            textRef,
             newText => (inputRef.current.value = newText)
          );
       }
@@ -284,7 +283,6 @@ const RichTextArea = ({
          wrapTextWithTag(
             e.target,
             '//',
-            textRef,
             newText => (inputRef.current.value = newText)
          );
       }
@@ -295,7 +293,6 @@ const RichTextArea = ({
          wrapTextWithTag(
             e.target,
             '__',
-            textRef,
             newText => (inputRef.current.value = newText)
          );
       }
@@ -305,7 +302,6 @@ const RichTextArea = ({
          wrapTextWithTag(
             e.target,
             '##',
-            textRef,
             newText => (inputRef.current.value = newText)
          );
       }
@@ -316,7 +312,6 @@ const RichTextArea = ({
          wrapTextWithTag(
             e.target,
             '<"',
-            textRef,
             newText => (inputRef.current.value = newText)
          );
       }
@@ -324,11 +319,7 @@ const RichTextArea = ({
       // ctrl+k adds bracket link
       if (e.key === 'k' && (e.ctrlKey || e.metaKey)) {
          e.preventDefault();
-         linkifyText(
-            e.target,
-            textRef,
-            newText => (inputRef.current.value = newText)
-         );
+         linkifyText(e.target, newText => (inputRef.current.value = newText));
       }
 
       // ctrl + > adds summary tags
@@ -336,7 +327,6 @@ const RichTextArea = ({
          e.preventDefault();
          addSummaryTagsToText(
             e.target,
-            textRef,
             newText => (inputRef.current.value = newText)
          );
       }
@@ -466,7 +456,6 @@ const RichTextArea = ({
                      wrapTextWithTag(
                         inputRef.current,
                         '**',
-                        textRef,
                         newText => (inputRef.current.value = newText)
                      );
                      inputRef.current.focus();
@@ -482,7 +471,6 @@ const RichTextArea = ({
                      wrapTextWithTag(
                         inputRef.current,
                         '//',
-                        textRef,
                         newText => (inputRef.current.value = newText)
                      );
                      inputRef.current.focus();
@@ -498,7 +486,6 @@ const RichTextArea = ({
                      wrapTextWithTag(
                         inputRef.current,
                         '__',
-                        textRef,
                         newText => (inputRef.current.value = newText)
                      );
                      inputRef.current.focus();
@@ -514,7 +501,6 @@ const RichTextArea = ({
                      wrapTextWithTag(
                         inputRef.current,
                         '##',
-                        textRef,
                         newText => (inputRef.current.value = newText)
                      );
                      inputRef.current.focus();
@@ -529,7 +515,6 @@ const RichTextArea = ({
                      e.preventDefault();
                      addSummaryTagsToText(
                         inputRef.current,
-                        textRef,
                         newText => (inputRef.current.value = newText)
                      );
                      inputRef.current.focus();
@@ -545,7 +530,6 @@ const RichTextArea = ({
                      wrapTextWithTag(
                         inputRef.current,
                         '<"',
-                        textRef,
                         newText => (inputRef.current.value = newText)
                      );
                      inputRef.current.focus();
@@ -560,7 +544,6 @@ const RichTextArea = ({
                      e.preventDefault();
                      linkifyText(
                         inputRef.current,
-                        textRef,
                         newText => (inputRef.current.value = newText)
                      );
                      inputRef.current.focus();

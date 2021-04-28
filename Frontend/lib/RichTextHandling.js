@@ -75,15 +75,16 @@ const autoCloseBracketLink = (e, textRef, setText) => {
 };
 export { autoCloseBracketLink };
 
-const wrapTextWithTag = (target, tag, textRef, setText) => {
+const wrapTextWithTag = (target, tag, setText) => {
    const { selectionStart, selectionEnd } = target;
+   const initialText = target.value;
 
    // Check if the text is already wrapped with the tag, and if so, remove it
-   const fourCharactersSurroundingStart = textRef.current.substring(
+   const fourCharactersSurroundingStart = initialText.substring(
       selectionStart - 2,
       selectionStart + 2
    );
-   const fourCharactersSurroundingEnd = textRef.current.substring(
+   const fourCharactersSurroundingEnd = initialText.substring(
       selectionEnd - 2,
       selectionEnd + 2
    );
@@ -99,12 +100,12 @@ const wrapTextWithTag = (target, tag, textRef, setText) => {
             fourCharactersSurroundingEnd.includes(tag)))
    ) {
       // So what we're gonna do here is take the text up to two characters before the selection, the selection minus the two characters on either end, and the text starting two characters after the end of the selection. This will leave us with a four character gap on either side of the selection, which will be filled in by our de-tagged fourCharacters from earlier
-      const before = textRef.current.substring(0, selectionStart - 2);
-      const selectionMinusFour = textRef.current.substring(
+      const before = initialText.substring(0, selectionStart - 2);
+      const selectionMinusFour = initialText.substring(
          selectionStart + 2,
          selectionEnd - 2
       );
-      const after = textRef.current.substring(selectionEnd + 2);
+      const after = initialText.substring(selectionEnd + 2);
 
       const detaggedStartCharacters = fourCharactersSurroundingStart.replace(
          tag,
@@ -122,9 +123,9 @@ const wrapTextWithTag = (target, tag, textRef, setText) => {
       newSelectionStart = selectionStart - tag.length;
       newSelectionEnd = selectionEnd - tag.length;
    } else {
-      const before = textRef.current.substring(0, selectionStart);
-      const selection = textRef.current.substring(selectionStart, selectionEnd);
-      const after = textRef.current.substring(selectionEnd);
+      const before = initialText.substring(0, selectionStart);
+      const selection = initialText.substring(selectionStart, selectionEnd);
+      const after = initialText.substring(selectionEnd);
       if (tag === '<"') {
          newText = `${before}${tag}${selection}">${after}`;
       } else {
@@ -136,7 +137,6 @@ const wrapTextWithTag = (target, tag, textRef, setText) => {
    }
 
    setText(newText);
-   textRef.current = newText;
    // we need to make sure the text has changed before we set the new selection, otherwise it won't be based on the updated text
    window.setTimeout(
       () => target.setSelectionRange(newSelectionStart, newSelectionEnd),
@@ -145,12 +145,13 @@ const wrapTextWithTag = (target, tag, textRef, setText) => {
 };
 export { wrapTextWithTag };
 
-const linkifyText = (target, textRef, setText) => {
+const linkifyText = (target, setText) => {
    const { selectionStart, selectionEnd } = target;
+   const initialText = target.value;
 
-   const before = textRef.current.substring(0, selectionStart);
-   const selection = textRef.current.substring(selectionStart, selectionEnd);
-   const after = textRef.current.substring(selectionEnd);
+   const before = initialText.substring(0, selectionStart);
+   const selection = initialText.substring(selectionStart, selectionEnd);
+   const after = initialText.substring(selectionEnd);
 
    const newText = `${before}[${selection}]()${after}`;
 
@@ -163,7 +164,6 @@ const linkifyText = (target, textRef, setText) => {
    }
 
    setText(newText);
-   textRef.current = newText;
    // we need to make sure the text has changed before we set the new selection, otherwise it won't be based on the updated text
    window.setTimeout(
       () => target.setSelectionRange(newCursorPos, newCursorPos),
@@ -172,12 +172,13 @@ const linkifyText = (target, textRef, setText) => {
 };
 export { linkifyText };
 
-const addSummaryTagsToText = (target, textRef, setText) => {
+const addSummaryTagsToText = (target, setText) => {
    const { selectionStart, selectionEnd } = target;
+   const initialText = target.value;
 
-   const before = textRef.current.substring(0, selectionStart);
-   const selection = textRef.current.substring(selectionStart, selectionEnd);
-   const after = textRef.current.substring(selectionEnd);
+   const before = initialText.substring(0, selectionStart);
+   const selection = initialText.substring(selectionStart, selectionEnd);
+   const after = initialText.substring(selectionEnd);
 
    const newText = `${before}>>${selection}<<()${after}`;
 
@@ -190,7 +191,6 @@ const addSummaryTagsToText = (target, textRef, setText) => {
    }
 
    setText(newText);
-   textRef.current = newText;
    // we need to make sure the text has changed before we set the new selection, otherwise it won't be based on the updated text
    window.setTimeout(
       () => target.setSelectionRange(newCursorPos, newCursorPos),
