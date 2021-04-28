@@ -44,23 +44,22 @@ const getCursorXY = (input, selectionPoint) => {
 };
 export { getCursorXY };
 
-const autoCloseBracketLink = (e, textRef, setText) => {
+const autoCloseBracketLink = (e, setText) => {
    const thisInput = e.target;
-   const { selectionStart, selectionEnd } = e.target;
+   const { selectionStart, selectionEnd, value: initialText } = e.target;
 
-   e.preventDefault();
-
-   const startingText = textRef.current.substring(0, selectionStart);
+   const startingText = initialText.substring(0, selectionStart);
    const bracketCheck = startingText.matchAll(/\[.*\]/gim);
+   console.log(bracketCheck);
    for (const match of bracketCheck) {
+      e.preventDefault(); // Need this inside the for loop so that it only fires if we get a match. Otherwise it just breaks typing
       // Make sure this is the bracketed text immediately preceding the open paren
       if (match.index + match[0].length === selectionStart) {
          // If they had any text after this, make sure to tack it on the end of our new text
-         const endingText = textRef.current.substring(selectionEnd);
+         const endingText = initialText.substring(selectionEnd);
          const newText = `${startingText}()${endingText}`;
 
          setText(newText);
-         textRef.current = newText;
          // we need to make sure the text has changed before we set the new selection, otherwise it won't be based on the updated text
          window.setTimeout(
             () =>
@@ -199,11 +198,11 @@ const addSummaryTagsToText = (target, setText) => {
 };
 export { addSummaryTagsToText };
 
-const encloseSelectedText = (e, textRef, setText) => {
+const encloseSelectedText = (e, setText) => {
    e.preventDefault();
 
    const thisInput = e.target;
-   const { selectionStart, selectionEnd } = e.target;
+   const { selectionStart, selectionEnd, value: initialText } = e.target;
 
    let closer;
    if (e.key === '(') {
@@ -222,13 +221,12 @@ const encloseSelectedText = (e, textRef, setText) => {
       closer = '`';
    }
 
-   const before = textRef.current.substring(0, selectionStart);
-   const selection = textRef.current.substring(selectionStart, selectionEnd);
-   const after = textRef.current.substring(selectionEnd);
+   const before = initialText.substring(0, selectionStart);
+   const selection = initialText.substring(selectionStart, selectionEnd);
+   const after = initialText.substring(selectionEnd);
    const newText = `${before}${e.key}${selection}${closer}${after}`;
 
    setText(newText);
-   textRef.current = newText;
    // we need to make sure the text has changed before we set the new selection, otherwise it won't be based on the updated text
    window.setTimeout(
       () => thisInput.setSelectionRange(selectionStart + 1, selectionEnd + 1),

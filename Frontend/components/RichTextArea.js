@@ -87,8 +87,6 @@ const RichTextArea = ({
 }) => {
    const originalText = useRef(text); // We use this to check if there have been any changes to the text, because if there haven't been, we don't need to ask for confirmation before cancelling editing.
 
-   const textRef = useRef(text);
-
    const { mobileBPWidthRaw } = useContext(ThemeContext);
 
    const {
@@ -107,7 +105,7 @@ const RichTextArea = ({
 
    const secondMiddleOrRightClickListener = e => {
       if (e.button === 1 || e.button === 2) {
-         if (originalText.current !== textRef.current) {
+         if (originalText.current !== inputRef.current.value) {
             if (!confirm('Discard changes?')) {
                return;
             }
@@ -141,21 +139,21 @@ const RichTextArea = ({
 
       // A search can be triggered by a few different key phrases (see:, [p:", etc). So we need to get the letters before the cursor to know what it was, as it changes how we close the link we will ultimately generate. They all are kicked off by a quote though, so we'll get the most recent quote and work back from there
       const selectionPoint = thisInput.selectionStart;
-      const mostRecentQuoteIndex = textRef.current.lastIndexOf(
+      const mostRecentQuoteIndex = inputRef.current.value.lastIndexOf(
          '"',
          selectionPoint - 1
       );
 
-      const keyLetters = textRef.current.substring(
+      const keyLetters = inputRef.current.value.substring(
          mostRecentQuoteIndex - 5,
          mostRecentQuoteIndex
       );
 
-      const previousText = textRef.current.substring(
+      const previousText = inputRef.current.value.substring(
          0,
          mostRecentQuoteIndex + 1
       );
-      const afterText = textRef.current.substring(selectionPoint);
+      const afterText = inputRef.current.value.substring(selectionPoint);
 
       const selectedTitle =
          searchResultsRef?.current[highlightedIndexRef.current]?.title;
@@ -164,7 +162,7 @@ const RichTextArea = ({
 
       let newText;
       if (keyLetters.toLowerCase() === 'see: ') {
-         const newPreviousText = textRef.current.substring(
+         const newPreviousText = inputRef.current.value.substring(
             0,
             mostRecentQuoteIndex
          );
@@ -175,7 +173,6 @@ const RichTextArea = ({
       }
 
       inputRef.current.value = newText;
-      textRef.current = newText;
 
       const newCursorPos =
          mostRecentQuoteIndex + selectedTitle.length + selectedID.length + 6;
@@ -183,6 +180,9 @@ const RichTextArea = ({
       thisInput.setSelectionRange(newCursorPos, newCursorPos);
 
       closeResults();
+      window.setTimeout(() => {
+         dynamicallyResizeElement(inputRef.current);
+      }, 1);
    };
 
    const navigateResults = e => {
@@ -224,7 +224,7 @@ const RichTextArea = ({
 
       // Quit editing on escape
       if (e.key === 'Escape' && setEditable) {
-         if (originalText.current !== textRef.current) {
+         if (originalText.current !== inputRef.current.value) {
             if (!confirm('Discard changes?')) {
                return;
             }
@@ -236,14 +236,10 @@ const RichTextArea = ({
       // If they type an open paren after a close bracket, close that paren for them
       if (
          e.key === '(' &&
-         textRef.current[e.target.selectionStart - 1] === ']' &&
+         inputRef.current.value[e.target.selectionStart - 1] === ']' &&
          e.target.selectionStart === e.target.selectionEnd
       ) {
-         autoCloseBracketLink(
-            e,
-            textRef,
-            newText => (inputRef.current.value = newText)
-         );
+         autoCloseBracketLink(e, newText => (inputRef.current.value = newText));
          return;
       }
 
@@ -259,11 +255,7 @@ const RichTextArea = ({
          e.target.selectionStart !== e.target.selectionEnd &&
          !(e.ctrlKey || e.metaKey)
       ) {
-         encloseSelectedText(
-            e,
-            textRef,
-            newText => (inputRef.current.value = newText)
-         );
+         encloseSelectedText(e, newText => (inputRef.current.value = newText));
          return;
       }
 
@@ -364,11 +356,9 @@ const RichTextArea = ({
             previousFiveCharacters.toLowerCase() !== 'see: ') ||
          selectionPoint === mostRecentQuoteIndex + 1
       ) {
-         console.log('we ded');
          closeResults();
          return;
       }
-      console.log('we still alive');
 
       const searchTerm = currentText.substring(
          mostRecentQuoteIndex + 1,
@@ -558,7 +548,6 @@ const RichTextArea = ({
                ref={inputRef}
                className="richTextInput"
                onChange={e => {
-                  textRef.current = e.target.value;
                   dynamicallyResizeElement(inputRef.current);
                }}
                onKeyDown={e => handleKeyDown(e)}
