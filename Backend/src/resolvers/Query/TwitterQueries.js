@@ -104,6 +104,7 @@ async function makeListsObject(twitterListsObject, twitterUserName, ctx) {
 async function getTweet(parent, { tweetID }, ctx, info) {
    const tweet = await fetchTweet(tweetID, ctx).catch(err => {
       console.log(err);
+      throw new Error(err);
    });
 
    return { message: JSON.stringify(tweet) };

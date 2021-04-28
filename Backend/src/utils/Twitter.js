@@ -405,7 +405,7 @@ const fetchTweet = async (tweetID, ctx) => {
    const baseURL = 'https://api.twitter.com/1.1/statuses/show.json';
 
    const parameters = {
-      id: tweetID,
+      id: tweetID.replace(/[\u200B-\u200D\uFEFF]/g, ''), // This will eliminate any Zero Width Spaces that may have been picked up either from my code (I add them sometimes to delineate the end of a link) or from user input, as they'll break fetch if they're included in the request URL
       tweet_mode: 'extended'
    };
 
@@ -428,10 +428,14 @@ const fetchTweet = async (tweetID, ctx) => {
       }
    }).catch(err => {
       console.log(err);
+      throw new Error(err);
    });
    const tweetJson = await tweet.json().catch(err => {
       console.log(err);
    });
+   if (tweetJson.errors) {
+      throw new Error(tweetJson.errors[0].message);
+   }
    tweetJson.favorited = false;
    ctx.db.mutation.createTweet({
       data: {
