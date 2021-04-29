@@ -24,7 +24,7 @@ import {
    changeContentButKeepInFrame,
    editContentButKeepInFrame
 } from '../../lib/ContentHandling';
-import { getOneRem } from '../../styles/functions';
+import { dynamicallyResizeElement, getOneRem } from '../../styles/functions';
 import CopyContentInterface from './CopyContentInterface';
 import VoteBar, { VOTE_MUTATION } from './VoteBar';
 import { ALL_THINGS_QUERY } from '../../lib/ThingHandling';
@@ -196,6 +196,8 @@ const ContentPiece = ({
       }).catch(err => {
          alert(err.message);
       });
+
+      window.setTimeout(() => dynamicallyResizeElement(inputElement), 1);
    };
 
    let contentElement;

@@ -369,6 +369,22 @@ const stickifier = stickingData => {
 
       if (comments) {
          const commentsRect = comments.getBoundingClientRect();
+
+         // If we're on a big screen and the comments are taller than the contentWrapper, don't stickify them
+         const combinedContainer = comments.closest(
+            '.contentAndCommentContainer'
+         );
+         const theActualContent = combinedContainer.querySelector(
+            '.theActualContent'
+         );
+         const theActualContentRect = theActualContent.getBoundingClientRect();
+
+         if (
+            window.innerWidth >= midScreenBreakpointPx &&
+            commentsRect.height >= theActualContentRect.height
+         ) {
+            return;
+         }
          if (
             block.blockTop < viewableTop &&
             block.bottom > viewableTop + commentsRect.height
