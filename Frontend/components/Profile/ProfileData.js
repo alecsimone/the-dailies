@@ -44,17 +44,19 @@ const ProfileData = ({
          <div className="field">Rep: {rep}</div>
          <div className="field">Points: {points}</div>
          <div className="field">Giveable Rep: {giveableRep}</div>
-         <PotentiallyEditableField
-            label="Email"
-            name="email"
-            value={editedValues.email}
-            propValue={email}
-            editable={editable}
-            toggleEditability={toggleEditability}
-            canEdit={canEdit}
-            handleEditing={handleEditing}
-            handleKeyDown={handleKeyDown}
-         />
+         {canEdit && (
+            <PotentiallyEditableField
+               label="Email"
+               name="email"
+               value={editedValues.email}
+               propValue={email}
+               editable={editable}
+               toggleEditability={toggleEditability}
+               canEdit={canEdit}
+               handleEditing={handleEditing}
+               handleKeyDown={handleKeyDown}
+            />
+         )}
          <PotentiallyEditableField
             label="Twitch Name"
             name="twitchName"

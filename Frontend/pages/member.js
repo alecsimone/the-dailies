@@ -55,18 +55,24 @@ const member = ({ query }) => {
             isMe = true;
          }
          let canEdit = isMe;
+         console.log(me.role);
          if (me && ['Admin', 'Editor'].includes(me.role)) {
             canEdit = true;
          }
 
+         const safeMemberData = { ...data.member };
+         if (!isMe) {
+            delete safeMemberData.email;
+         }
+
          content = (
             <ProfileContent
-               member={data.member}
+               member={safeMemberData}
                isMe={isMe}
                defaultTab={query.stuff}
             />
          );
-         sidebar = <ProfileSidebar member={data.member} canEdit={canEdit} />;
+         sidebar = <ProfileSidebar member={safeMemberData} canEdit={canEdit} />;
       } else {
          pageTitle = "Couldn't find member";
          content = <p>Member not found.</p>;

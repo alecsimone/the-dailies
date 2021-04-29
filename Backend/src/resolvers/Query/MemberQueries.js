@@ -142,6 +142,10 @@ async function member(parent, { id, displayName }, ctx, info) {
       );
    }
 
+   if (ctx.req.memberId !== id) {
+      member.email = '[PRIVATE]';
+   }
+
    return member;
 }
 exports.member = member;

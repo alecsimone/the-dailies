@@ -27,11 +27,12 @@ const PotentiallyEditableField = ({
       ) : (
          propValue || 'Not Set'
       )}{' '}
-      {canEdit && editable.includes(name) ? (
-         <X className="cancel" onClick={() => toggleEditability(name)} />
-      ) : (
-         <EditThis onClick={() => toggleEditability(name)} />
-      )}
+      {canEdit &&
+         (editable.includes(name) ? (
+            <X className="cancel" onClick={() => toggleEditability(name)} />
+         ) : (
+            <EditThis onClick={() => toggleEditability(name)} />
+         ))}
    </div>
 );
 
