@@ -134,48 +134,71 @@ const RichTextArea = ({
    };
 
    const chooseResult = () => {
-      const thisInput = document.querySelector(`#${id}`);
+      const thisInput = inputRef.current;
       if (thisInput == null) return;
 
-      // A search can be triggered by a few different key phrases (see:, [p:", etc). So we need to get the letters before the cursor to know what it was, as it changes how we close the link we will ultimately generate. They all are kicked off by a quote though, so we'll get the most recent quote and work back from there
-      const selectionPoint = thisInput.selectionStart;
-      const mostRecentQuoteIndex = inputRef.current.value.lastIndexOf(
-         '"',
+      // First we get the text that's currently in our input and figure out where our cursor is in that text
+      const { value: currentText, selectionStart: selectionPoint } = thisInput;
+
+      // A search is triggered by a double open square brackets, so we need to find the most recent one of those to figure out where our search starts
+      const mostRecentDoubleOpenBracketsIndex = currentText.lastIndexOf(
+         '[[',
          selectionPoint - 1
       );
 
-      const keyLetters = inputRef.current.value.substring(
-         mostRecentQuoteIndex - 5,
-         mostRecentQuoteIndex
+      // And we'll also look for closing double square brackets
+      const nextClosingBracketsIndex = currentText.indexOf(
+         ']]',
+         mostRecentDoubleOpenBracketsIndex
+      );
+      // And for any other double open square brackets between here and there
+      const textBetweenBrackets = currentText.substring(
+         mostRecentDoubleOpenBracketsIndex + 2,
+         nextClosingBracketsIndex
+      );
+      const interruptingDoubleOpenBracketsIndex = textBetweenBrackets.indexOf(
+         '[['
       );
 
-      const previousText = inputRef.current.value.substring(
+      // Then we're going to find the first space that comes after the character before our cursor (ie, the first space after our cursor or one character before it)
+      const nextSpaceIndex = currentText.indexOf(' ', selectionPoint - 1);
+
+      // Then we'll figure out where to end our search string
+      let terminationPoint;
+      if (
+         nextClosingBracketsIndex !== -1 &&
+         interruptingDoubleOpenBracketsIndex === -1
+      ) {
+         // If we have closing brackets with no other open brackets between here and there, the closing brackets are the termination point
+         terminationPoint = nextClosingBracketsIndex;
+      } else if (nextSpaceIndex !== -1) {
+         // Otherwise, if we have a space after our cursor or one character before it, we terminate there
+         terminationPoint = nextSpaceIndex;
+      } else {
+         // If we don't have either of those, we close at the end of the text
+         terminationPoint = currentText.length;
+      }
+
+      const previousText = currentText.substring(
          0,
-         mostRecentQuoteIndex + 1
+         mostRecentDoubleOpenBracketsIndex
       );
-      const afterText = inputRef.current.value.substring(selectionPoint);
+      const afterText = currentText.substring(terminationPoint);
 
       const selectedTitle =
          searchResultsRef?.current[highlightedIndexRef.current]?.title;
       const selectedID =
          searchResultsRef?.current[highlightedIndexRef.current]?.id;
 
-      let newText;
-      if (keyLetters.toLowerCase() === 'see: ') {
-         const newPreviousText = inputRef.current.value.substring(
-            0,
-            mostRecentQuoteIndex
-         );
-         newText = `${`${newPreviousText}[${selectedTitle}`}](${selectedID})${afterText}`;
-      } else {
-         newText = `${previousText +
-            selectedTitle}"](${selectedID})${afterText}`;
-      }
+      const newText = `${previousText}[${selectedTitle}](${selectedID})${afterText}`;
 
       inputRef.current.value = newText;
 
       const newCursorPos =
-         mostRecentQuoteIndex + selectedTitle.length + selectedID.length + 6;
+         mostRecentDoubleOpenBracketsIndex +
+         selectedTitle.length +
+         selectedID.length +
+         4;
 
       thisInput.setSelectionRange(newCursorPos, newCursorPos);
 
@@ -327,44 +350,72 @@ const RichTextArea = ({
    const handleKeyUp = async e => {
       if (e.key === 'Escape' || e.key === 'Enter' || e.key === 'Tab') return;
 
+      // First we get the text that's currently in our input and figure out where our cursor is in that text
       const input = e.target;
-      const currentText = input.value;
-      const selectionPoint = e.target.selectionStart;
-      const mostRecentQuoteIndex = currentText.lastIndexOf(
-         '"',
+      const { value: currentText, selectionStart: selectionPoint } = input;
+
+      // Then we're going to find the most recent double open square brackets before our cursor
+      const mostRecentBracketsIndex = currentText.lastIndexOf(
+         '[[',
          selectionPoint - 1
       );
-      if (mostRecentQuoteIndex < 3) return; // Cant be a search string then, needs more text before the quote
 
-      const previousThreeCharacters = currentText.substring(
-         mostRecentQuoteIndex - 3,
-         mostRecentQuoteIndex
+      // If there's no double brackets, nevermind
+      if (mostRecentBracketsIndex < 0) return;
+
+      // And we'll also look for closing double square brackets
+      const nextClosingBracketsIndex = currentText.indexOf(
+         ']]',
+         mostRecentBracketsIndex
       );
-      const previousFiveCharacters = currentText.substring(
-         mostRecentQuoteIndex - 5,
-         mostRecentQuoteIndex
-      );
 
-      const parent = input.closest('form');
-      const toolTip = parent.querySelector('.postSearchTooltip');
-
-      // If it's not a search, let's get out of here
+      // If those closing brackets come before our cursor, we're not in a search anymore, so let's close the results if they're open and then return
       if (
-         (previousThreeCharacters.toLowerCase() !== '[p:' &&
-            previousThreeCharacters.toLowerCase() !== '[t:' &&
-            previousThreeCharacters.toLowerCase() !== '[c:' &&
-            previousFiveCharacters.toLowerCase() !== 'see: ') ||
-         selectionPoint === mostRecentQuoteIndex + 1
+         nextClosingBracketsIndex !== -1 &&
+         nextClosingBracketsIndex < selectionPoint
       ) {
          closeResults();
          return;
       }
 
-      const searchTerm = currentText.substring(
-         mostRecentQuoteIndex + 1,
-         selectionPoint
+      // And for any other double open square brackets between here and there
+      const textBetweenBrackets = currentText.substring(
+         mostRecentBracketsIndex + 2,
+         nextClosingBracketsIndex
+      );
+      const interruptingDoubleOpenBracketsIndex = textBetweenBrackets.indexOf(
+         '[['
       );
 
+      // Then we're going to find the first space that comes after the character before our cursor (ie, the first space after our cursor or one character before it)
+      const nextSpaceIndex = currentText.indexOf(' ', selectionPoint - 1);
+
+      // Then we'll figure out where to end our search string
+      let terminationPoint;
+      if (
+         nextClosingBracketsIndex !== -1 &&
+         interruptingDoubleOpenBracketsIndex === -1
+      ) {
+         // If we have closing brackets with no other open brackets between here and there, the closing brackets are the termination point
+         terminationPoint = nextClosingBracketsIndex;
+      } else if (nextSpaceIndex !== -1) {
+         // Otherwise, if we have a space after our cursor or one character before it, we terminate there
+         terminationPoint = nextSpaceIndex;
+      } else {
+         // If we don't have either of those, we close at the end of the text
+         terminationPoint = currentText.length;
+      }
+
+      // We'll get our search term by taking the characters between the double open square brackets and our termination point
+      const searchTerm = currentText.substring(
+         mostRecentBracketsIndex + 2,
+         terminationPoint
+      );
+
+      // And if the search term is an empty string, we're not ready yet
+      if (searchTerm === '') return;
+
+      // Then we'll do a search for that string
       const searchResults = search({
          variables: {
             string: searchTerm,
@@ -372,21 +423,29 @@ const RichTextArea = ({
          }
       });
 
+      const parent = input.closest('form');
+      const toolTip = parent.querySelector('.postSearchTooltip');
+
       if (toolTip.style.display === 'none') {
-         const cursorXY = getCursorXY(input, mostRecentQuoteIndex);
+         // If the search results are not displaying, we should display them. First we have to find where on the page (as opposed to within the text box) the cursor is
+         const cursorXY = getCursorXY(input, mostRecentBracketsIndex);
 
          const inputStyle = window.getComputedStyle(input);
          const inputLineHeight = inputStyle.getPropertyValue('line-height');
 
          let left;
          if (window.innerWidth < mobileBPWidthRaw) {
+            // If we're on mobile, the search results should take up the whole width of the screen
             left = 0;
          } else if (window.innerWidth - 500 < cursorXY.x) {
+            // If the cursor is less than 500px from the right edge of the screen, we'll make the left edge 500px from the right edge of the screen
             left = window.innerWidth - 500;
          } else {
+            // Otherwise we'll put the left edge where the cursor is
             left = cursorXY.x;
          }
 
+         // Then we'll turn on the search results display, which we'll put one line below the cursor, aligned as we decided it should be in the previous step
          toolTip.setAttribute(
             'style',
             `display: block; top: calc(${
@@ -394,6 +453,7 @@ const RichTextArea = ({
             }px + ${inputLineHeight}); left: ${left}px`
          );
 
+         // And finally, we'll start the listner that allows us to navigate the search results
          window.addEventListener('keydown', navigateResultsRef.current);
       }
    };

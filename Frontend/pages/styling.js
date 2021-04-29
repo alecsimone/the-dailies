@@ -214,35 +214,19 @@ const Styling = props => (
                <p>
                   You can search all the things on Ouryou and generate a link to
                   them in many of the inputs on the site. As you're writing, if
-                  you type <span className="emphasis">[t:"SEARCH TEXT</span> a
+                  you type <span className="emphasis">[[SEARCH TEXT</span> a
                   little results box will pop up showing Things matching your
                   search text. If you select one, your search will be completed
                   with a link to that thing.
                </p>
                <p>
-                  Just to be extra clear: Once you type [t:" whatever you type
-                  after the first quote and before any closing quote will start
-                  a search of all the Things on this site. You can then choose
-                  one and it will automatically make a link to that thing.
-               </p>
-               <p>
-                  The "t" is not case sensitive, and it can be a "p" (or a "P")
-                  also. (T for "thing" and p for "post")
-               </p>
-               <p>
-                  Using P or T will create a bracket link where the link text is
-                  the post title (more precisely, the link text is the text
-                  between the quotes following the p: or t:, which is
-                  auto-filled with the post title). However, if you'd like to
-                  generate a little card for the thing you're linking to that
-                  breaks up your paragraph, you can use "c:" to search instead
-                  (or just replace the P or T with a C, for "Card").
-               </p>
-               <p>
-                  Also, as an added bonus, you can trigger a thing search by
-                  typing <span className="emphasis">see: "SEARCH TEXT</span>{' '}
-                  (case insensitive). So if you want to reference another post,
-                  you can just type see: "Title", and we'll sort it out for you.
+                  Just to be extra clear, you can start a search for a thing by
+                  doing a double open square bracket ( [[ ) and then we'll
+                  search for anything after those brackets (stopping when we get
+                  either to closing brackets or a space after or immediately
+                  before your cursor), and when you choose the post you want to
+                  link to, we'll replace your search text with a link to that
+                  post.
                </p>
             </li>
             <li>
