@@ -83,7 +83,7 @@ const StyledThingCard = styled.div`
          object-fit: contain;
       }
       .tweet {
-         max-height: 50rem;
+         /* max-height: 50rem; */
          margin-top: 2.5rem;
          ${props => props.theme.scroll};
          .tweet {
@@ -188,11 +188,11 @@ const StyledThingCard = styled.div`
             }
             .currentContentWrapper {
                margin: 3rem 1.5rem;
-               max-height: 400px;
+               /* max-height: 400px; */
                ${props => props.theme.scroll};
                /* touch-action: none; */
                ${props => props.theme.midScreenBreakpoint} {
-                  max-height: 600px;
+                  /* max-height: 600px; */
                   margin: 1rem
                }
             }
