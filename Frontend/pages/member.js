@@ -55,13 +55,12 @@ const member = ({ query }) => {
             isMe = true;
          }
          let canEdit = isMe;
-         console.log(me.role);
          if (me && ['Admin', 'Editor'].includes(me.role)) {
             canEdit = true;
          }
 
          const safeMemberData = { ...data.member };
-         if (!isMe) {
+         if (!canEdit) {
             delete safeMemberData.email;
          }
 

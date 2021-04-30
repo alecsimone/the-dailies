@@ -143,7 +143,23 @@ async function member(parent, { id, displayName }, ctx, info) {
    }
 
    if (ctx.req.memberId !== id) {
-      member.email = '[PRIVATE]';
+      if (ctx.req.memberId != null) {
+         const viewer = await ctx.db.query
+            .member(
+               {
+                  where: {
+                     id: ctx.req.memberId
+                  }
+               },
+               `{role}`
+            )
+            .catch(err => console.log(err));
+         if (!['Admin', 'Editor', 'Moderator'].includes(viewer.role)) {
+            member.email = '[PRIVATE]';
+         }
+      } else {
+         member.email = '[PRIVATE]';
+      }
    }
 
    return member;
