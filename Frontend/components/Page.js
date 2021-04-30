@@ -292,12 +292,17 @@ const GlobalStyle = createGlobalStyle`
    }
    section.threeColumns {
       position: fixed;
-      top: var(--header-height);
-      bottom: var(--bottombar-height);
+      /* top: var(--header-height);
+      bottom: var(--bottombar-height); */
+      padding-top: var(--header-height);
+      padding-bottom: var(--bottombar-height);
       left: 0;
       right: 0;
+      top: 0;
+      bottom: 0;
       ${props => props.theme.mobileBreakpoint} {
-         bottom: 0;
+         /* bottom: 0; */
+         padding-bottom: 0;
       }
       overflow-x: hidden;
       .navSidebar {
@@ -327,6 +332,7 @@ const GlobalStyle = createGlobalStyle`
       .mainSection {
          height: 100%;
          z-index: 1;
+         ${props => props.theme.scroll};
       }
       ${props => props.theme.desktopBreakpoint} {
          display: flex;
