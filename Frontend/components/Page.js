@@ -104,6 +104,8 @@ const GlobalStyle = createGlobalStyle`
          font-size: 12px;
       }
       height: 100%;
+      height: -moz-available;
+      height: -webkit-fill-available;
       --header-height: calc(6.6rem + 3px); // On mobile, the header has a .5rem padding on both top and bottom and a 3px border. It gets its height from the MemberBox, which has a height of 2.25rem * 1.6 (2.25rem font size at 1.6 line height), and a 1rem margin on either side. So that's 2.25 * 1.6 + 1 * 2 + 0.5 * 2 = 6.6 rem, + 3px for the border
       --bottombar-height: calc(6.25rem + 6px); // The bottom bar has 1.75rem of padding on the top and bottom around icons that have a height of 2.75rem, and a 2px border on top. Even though the line height is 1 everywhere, the svgs within the bottom bar are getting an extra 4px added onto them, so we added that too.
       ${props => props.theme.mobileBreakpoint} {
