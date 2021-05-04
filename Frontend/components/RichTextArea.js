@@ -13,6 +13,7 @@ import {
    encloseSelectedText,
    useSearchResultsSelector
 } from '../lib/RichTextHandling';
+import LinkIcon from './Icons/Link';
 
 const StyledWrapper = styled.div`
    width: 100%;
@@ -39,6 +40,16 @@ const StyledWrapper = styled.div`
          &.header {
             font-weight: bold;
             color: white;
+         }
+         &.link {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            svg {
+               height: ${props => props.theme.smallText};
+               width: auto;
+               opacity: 0.8;
+            }
          }
          &:first-of-type {
             margin: 0 0.5rem 0 0;
@@ -599,7 +610,7 @@ const RichTextArea = ({
                      inputRef.current.focus();
                   }}
                >
-                  link
+                  <LinkIcon />
                </button>
             </div>
             <textarea
