@@ -295,6 +295,7 @@ async function editContentPiece(
    const updatedThing = await properUpdateStuff(dataObj, id, type, ctx).catch(err => {
       console.log(err);
    });
+   console.log(updatedThing);
    return updatedThing;
 }
 exports.editContentPiece = editContentPiece;

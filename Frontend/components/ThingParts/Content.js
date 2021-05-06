@@ -278,7 +278,7 @@ const Content = ({ context, canEdit, linkedPiece }) => {
             editContentPiece: {
                __typename: type,
                id,
-               content: newContent
+               content: fullContent
             }
          }
       }).catch(err => {
