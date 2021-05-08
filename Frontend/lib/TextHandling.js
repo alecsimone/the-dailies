@@ -107,7 +107,6 @@ const pxToInt = pxString => {
 export { pxToInt };
 
 const getListType = (listTypeCheckChar, prevTypeCheckChar) => {
-   console.log([listTypeCheckChar, prevTypeCheckChar]);
    if (listTypeCheckChar.match(/[icvxlm]/) != null) {
       // If there's no item before, we're going to assume this is roman numerals
       if (prevTypeCheckChar == null) return 'i';

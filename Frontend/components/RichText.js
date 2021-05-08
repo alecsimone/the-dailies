@@ -269,7 +269,15 @@ const RichText = ({ text, priorText, nextText, matchCount = 0 }) => {
                   ) {
                      definitelyAList = false;
                   }
-               } else {
+                  if (
+                     theWholeList.length === 1 &&
+                     (testChar == 'i' || testChar == 'a')
+                  ) {
+                     // If there's only one thing in the list, and it starts with A or I, let's assume it's a sentence
+                     definitelyAList = false;
+                  }
+               } else if (index === 1) {
+                  // we only need to check two items to be sure it's a list
                   const trimmedPreviousItem = theWholeList[index - 1].trim();
                   const lastItemTestChar = trimmedPreviousItem[0].toLowerCase();
                   if (
@@ -277,10 +285,6 @@ const RichText = ({ text, priorText, nextText, matchCount = 0 }) => {
                         lastItemTestChar.charCodeAt(0) + 1 &&
                      !['1', 'i', 'a', '-'].includes(testChar)
                   ) {
-                     console.log([
-                        testChar.charCodeAt(0),
-                        lastItemTestChar.charCodeAt(0)
-                     ]);
                      definitelyAList = false;
                   }
                }
