@@ -76,7 +76,7 @@ const decodeHTML = text => {
 };
 export { decodeHTML };
 
-const styleTagSearchString = /(?:(?<style><style="(?<styleObjectRaw>.+)">(?<styleTextContent>.+)<\/style>)|(?<stars>\*\*(?<starsTextContent>[^*]*(?:\*[^*]+)*)\*\*)|(?<bars>__(?<barsTextContent>[^_]*(?:\_[^_]+)*)__)|(?<pounds>##(?<poundsTextContent>[^#]*(?:#[^#]+)*)##)|(?<slashes>\/\/(?<slashesTextContent>[^/]*(?:\/[^/]+)*)\/\/)|(?<quote><(?<quoteTextContent>".+")>)|(?<summary>>>(?<summarizedText>.+)<<(\((?<summaryText>.+)\))?))/gis;
+const styleTagSearchString = /(?:(?<style><style="(?<styleObjectRaw>.+)">(?<styleTextContent>.+)<\/style>)|(?<stars>\*\*(?<starsTextContent>[^*]*(?:\*[^*]+)*)\*\*)|(?<bars>__(?<barsTextContent>[^_]*(?:\_[^_]+)*)__)|(?<pounds>##(?<poundsTextContent>[^#]*(?:#[^#]+)*)##)|(?<slashes>\/\/(?<slashesTextContent>[^/]*(?:\/[^/]+)*)\/\/)|(?<quote><(?<quoteTextContent>".+")>)|(?<summary>>>(?<summarizedText>.+)<<(\((?<summaryText>.+)\))?)|(?<list>[\r\n]{0,1}[ ]*(?:[ixvIXV]+[ \.]+|[0-9]+[ \.]+|[a-z]+[\.]+|[a-z]{1}[ ]+|-)[^\r\n]*))/gis;
 export { styleTagSearchString };
 
 const stringToObject = (string, splitSearch) => {
@@ -105,3 +105,92 @@ const pxToInt = pxString => {
    return parseInt(newString);
 };
 export { pxToInt };
+
+const getListType = (listTypeCheckChar, prevTypeCheckChar) => {
+   console.log([listTypeCheckChar, prevTypeCheckChar]);
+   if (listTypeCheckChar.match(/[icvxlm]/) != null) {
+      // If there's no item before, we're going to assume this is roman numerals
+      if (prevTypeCheckChar == null) return 'i';
+      // If there is an item before, and it's the letter before this in the alphabet, we assume this is an alphabetic list
+      if (
+         listTypeCheckChar.charCodeAt(0) ===
+         prevTypeCheckChar.charCodeAt(0) + 1
+      )
+         return 'a';
+      // Otherwise, we assume this is roman numerals
+      return 'i';
+   }
+   if (listTypeCheckChar.match(/[ICVXLM]/) != null) {
+      // If there's no item before, we're going to assume this is roman numerals
+      if (prevTypeCheckChar == null) return 'I';
+      // If there is an item before, and it's the letter before this in the alphabet, we assume this is an alphabetic list
+      if (
+         listTypeCheckChar.charCodeAt(0) ===
+         prevTypeCheckChar.charCodeAt(0) + 1
+      )
+         return 'A';
+      // Otherwise, we assume this is roman numerals
+      return 'I';
+   }
+   if (listTypeCheckChar.match(/[a-z]/) != null) {
+      return 'a';
+   }
+   if (listTypeCheckChar.match(/[A-Z]/) != null) {
+      return 'A';
+   }
+   if (listTypeCheckChar.match(/[0-9]/) != null) {
+      return '1';
+   }
+   if (listTypeCheckChar.match(/-/) != null) {
+      return 'dash';
+   }
+};
+export { getListType };
+
+const properlyNestListItem = item => {
+   if (Array.isArray(item)) {
+      // If the item is an array, the first item should be a string and the second item should be an array with a list to nest within the first item
+      const sublistItems = item[1].map(sublistItem =>
+         properlyNestListItem(sublistItem)
+      );
+
+      return (
+         <li>
+            {item[0]}
+            <ul>{sublistItems}</ul>
+         </li>
+      );
+   }
+   return <li>{item}</li>;
+};
+export { properlyNestListItem };
+
+const foldUpNestedListArrayToTypeIndex = (nestedListTypesArray, typeIndex) => {
+   const currentTypeCount = nestedListTypesArray.length;
+
+   for (let i = currentTypeCount - 1; i > typeIndex; i--) {
+      // First we collect the items we're going to nest in there by taking the items from the type at index i
+      const itemsToNest = nestedListTypesArray[i].items;
+
+      // Then we're going to get the last item of type i - 1 so we can combine it with the items we're going to nest into an array duple
+      const lastItemOfPreviousType =
+         nestedListTypesArray[i - 1].items[
+            nestedListTypesArray[i - 1].items.length - 1
+         ];
+
+      // Then we make our nested duple
+      const nestedDuple = [lastItemOfPreviousType, itemsToNest];
+
+      // And replace the final item of type i - 1 with it
+      nestedListTypesArray[i - 1].items[
+         nestedListTypesArray[i - 1].items.length - 1
+      ] = nestedDuple;
+
+      // And then we get rid of the type at index i, which will be the last item in the array
+      nestedListTypesArray.pop();
+   }
+
+   return nestedListTypesArray;
+};
+
+export { foldUpNestedListArrayToTypeIndex };

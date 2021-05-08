@@ -389,8 +389,8 @@ const GlobalStyle = createGlobalStyle`
          ${props => props.theme.desktopBreakpoint} {
             position: absolute;
             width: 25%;
-            top: 0;
-            height: 100%;
+            top: var(--header-height);
+            height: calc(100% - var(--header-height));
             max-width: 512px;
             max-height: 100%;
             &.visible, &.default {

@@ -250,7 +250,7 @@ const stickifier = stickingData => {
    // The scrolling element on big screens is mainSection, on little screens it's threeColumns. But sometimes we're within a sidebar, and then we need to use that
    const mainSection = document.querySelector('.mainSection');
    const threeColumns = document.querySelector('.threeColumns');
-   const sidebar = stickingData.current.blocksArray[0].block.closest(
+   const sidebar = stickingData?.current?.blocksArray[0]?.block?.closest(
       '.sidebar'
    );
 

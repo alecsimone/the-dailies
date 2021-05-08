@@ -9,7 +9,10 @@ import {
    replaceReddit,
    decodeHTML,
    styleTagSearchString,
-   stringToObject
+   stringToObject,
+   getListType,
+   properlyNestListItem,
+   foldUpNestedListArrayToTypeIndex
 } from '../lib/TextHandling';
 import { urlFinder } from '../lib/UrlHandling';
 
@@ -53,6 +56,7 @@ const RichText = ({ text, priorText, nextText, matchCount = 0 }) => {
          // But we're only interested in the first match of all matches
          if (tag[0] !== match[0]) continue;
          // We break off any text before the match and put it in a RichText at the start of our elements array
+
          const startingText = fixedText.substring(
             stoppedAtIndex,
             match.index + tag.index
@@ -200,6 +204,177 @@ const RichText = ({ text, priorText, nextText, matchCount = 0 }) => {
                      />
                   </blockquote>
                );
+            }
+         }
+
+         if (tag.groups.list != null) {
+            // First we need to get the whole list. So we'll check the line after this to see if it matches as well
+            const listItem = tag.groups.list;
+            const theWholeList = [listItem];
+
+            const listSearchString = new RegExp(
+               `([\r\n]{1,2}[ ]*(?:[ixvIXV]+[ \.]|[0-9]+[ \.]+|[a-z]+[\.]+|[a-z]{1}[ ]+|-)[^\r\n]*)`,
+               'gi'
+            );
+
+            // We start by figuring out where we are in the whole content piece
+            const startingPoint = match.index;
+
+            // Then we'll figure out where our current match ends, so we can get the line after it
+            let endingPoint = startingPoint + listItem.length;
+
+            // Now we'll go through each line until we either get to a line that's not in the list or we get to the end of the content piece
+            let nextLineMightBeInThisList = true;
+            while (nextLineMightBeInThisList === true) {
+               // First we'll make a new string with the rest of the content piece in it after our ending point
+               const restOfText = fixedText.substring(endingPoint);
+               // And search for the next line
+               const nextLineMatch = restOfText.match(/[\r\n].*[\r\n]{0,1}/);
+               if (nextLineMatch == null) {
+                  // if there is no next line, then we're done
+                  nextLineMightBeInThisList = false;
+               } else {
+                  const nextLine = nextLineMatch[0];
+                  if (nextLine == '\n\n' || nextLine == '\r\r') {
+                     // If the next line is blank, then the list is over
+                     nextLineMightBeInThisList = false;
+                  } else if (nextLine.match(listSearchString) != null) {
+                     theWholeList.push(nextLine);
+
+                     // To figure out where to set the endpoint, we need to know if nextLine ends in a line break or not
+                     const hasTrailingNewLine =
+                        nextLine[nextLine.length - 1] === '\n' ||
+                        nextLine === '\r';
+
+                     // If it does, we want to take one off the end so we start *before* the new line that is matched at the end of the regex
+                     endingPoint += hasTrailingNewLine
+                        ? nextLine.length - 1
+                        : nextLine.length;
+                  } else {
+                     nextLineMightBeInThisList = false;
+                  }
+               }
+            }
+            // If every item in the list starts with a letter and then a space, and those letters are not moving through the alphabet, they're probably just writing sentences.
+            let definitelyAList = true;
+            theWholeList.forEach((item, index) => {
+               const trimmedItem = item.trim();
+               const testChar = trimmedItem[0].toLowerCase();
+               if (index === 0) {
+                  if (
+                     testChar != 'i' &&
+                     testChar != 'a' &&
+                     testChar != '1' &&
+                     testChar != '-'
+                  ) {
+                     definitelyAList = false;
+                  }
+               } else {
+                  const trimmedPreviousItem = theWholeList[index - 1].trim();
+                  const lastItemTestChar = trimmedPreviousItem[0].toLowerCase();
+                  if (
+                     testChar.charCodeAt(0) !=
+                        lastItemTestChar.charCodeAt(0) + 1 &&
+                     !['1', 'i', 'a', '-'].includes(testChar)
+                  ) {
+                     console.log([
+                        testChar.charCodeAt(0),
+                        lastItemTestChar.charCodeAt(0)
+                     ]);
+                     definitelyAList = false;
+                  }
+               }
+            });
+            if (!definitelyAList) {
+               elementsArray.push(theWholeList[0]);
+            } else {
+               // Then we'll put the whole list into an appropriate HTML list element
+               let nestedListTypesArray = [];
+
+               // Ok, so this process is SHOCKINGLY intricate and complex. The rough breakdown is:
+               // We go through each item figuring out what kind of list it is a part of. We're going to keep track of all our list types and each item inside them in our nestedListTypes array. Each type will be an object with two properties: name and items. Some of the items might be array duples with an item and then an array of items. When that happens, that means the array of items is a sublist nested within the item.
+               // If an item is part of a new type, we'll push a new object into our nestedListTypesArray
+               // If an item is part of a type we've seen before, first we roll up any types we saw AFTER that type and nest them inside the last item on that type, then we push the new item onto the end of the items array for its type
+               // When we're done going through theWholeList, we'll roll up any types that are left (because we might have ended on a sublist) and build the final nested list
+               theWholeList.forEach((item, index) => {
+                  const trimmedItem = item.trim();
+                  // We'll use the first character of the item to check what kind of list it's on
+                  const listTypeCheckChar = trimmedItem[0];
+                  let listType;
+                  if (index > 0) {
+                     // If this isn't the first thing, we need to check the item before to know what kind of list it is (because of ambiguity between roman numeral and alphabetical ordering)
+                     const trimmedPrevItem = theWholeList[index - 1].trim();
+                     const prevTypeCheckChar = trimmedPrevItem[0];
+                     listType = getListType(
+                        listTypeCheckChar,
+                        prevTypeCheckChar
+                     );
+
+                     // Then we see if that list type already exists in our nestedListTypesArray
+                     const typeIndex = nestedListTypesArray.findIndex(
+                        type => type.name === listType
+                     );
+
+                     if (typeIndex === -1) {
+                        // If it doesn't exist in the array already, we add it
+                        nestedListTypesArray.push({
+                           name: listType,
+                           items: [trimmedItem]
+                        });
+                     } else {
+                        // If it does exist, we need to check if it's the last item in the array
+                        const currentTypeCount = nestedListTypesArray.length;
+
+                        if (typeIndex === currentTypeCount - 1) {
+                           // If it is, we can just add this item to the end of that list
+                           nestedListTypesArray[typeIndex].items.push(
+                              trimmedItem
+                           );
+                        } else {
+                           // If it isn't, we have to fold up all the types after it and nest them inside the last item of this type
+                           nestedListTypesArray = foldUpNestedListArrayToTypeIndex(
+                              nestedListTypesArray,
+                              typeIndex
+                           );
+
+                           // And then we can push this item onto the end of its type's list
+                           nestedListTypesArray[typeIndex].items.push(
+                              trimmedItem
+                           );
+                        }
+                     }
+                  } else {
+                     // For the first thing, we can just use its typeCheckChar to determine list type
+                     listType = getListType(listTypeCheckChar);
+                     // And we know it's not in the types array already, so we can just add it
+                     nestedListTypesArray.push({
+                        name: listType,
+                        items: [trimmedItem]
+                     });
+                  }
+               });
+               // Now we need to construct our list element from our nestedListTypesArray. First though, we need to check if we've properly nested every level, which we haven't if the list ended on a sublist
+               if (nestedListTypesArray.length > 0) {
+                  nestedListTypesArray = foldUpNestedListArrayToTypeIndex(
+                     nestedListTypesArray,
+                     0
+                  );
+               }
+
+               const listItems = nestedListTypesArray[0].items;
+
+               // We can then map each of those items to an appropriate element
+               const listItemsElements = listItems.map(item =>
+                  properlyNestListItem(item)
+               );
+
+               const listElement = <ul>{listItemsElements}</ul>;
+
+               // Push that element into the elementsArray
+               elementsArray.push(listElement);
+
+               // And then set the stoppedAtIndexOverride accordingly
+               stoppedAtIndexOverride = endingPoint - match.index;
             }
          }
 
