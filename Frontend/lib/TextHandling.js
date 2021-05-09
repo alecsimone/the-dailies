@@ -1,4 +1,5 @@
 import { urlFinder, topLevelDomains } from './UrlHandling';
+import RichText from '../components/RichText';
 
 const replaceTwitterMentions = rawText => {
    const mentionSearchString = new RegExp(
@@ -76,7 +77,7 @@ const decodeHTML = text => {
 };
 export { decodeHTML };
 
-const styleTagSearchString = /(?:(?<style><style="(?<styleObjectRaw>.+)">(?<styleTextContent>.+)<\/style>)|(?<stars>\*\*(?<starsTextContent>[^*]*(?:\*[^*]+)*)\*\*)|(?<bars>__(?<barsTextContent>[^_]*(?:\_[^_]+)*)__)|(?<pounds>##(?<poundsTextContent>[^#]*(?:#[^#]+)*)##)|(?<slashes>\/\/(?<slashesTextContent>[^/]*(?:\/[^/]+)*)\/\/)|(?<quote><(?<quoteTextContent>".+")>)|(?<summary>>>(?<summarizedText>.+)<<(\((?<summaryText>.+)\))?)|(?<list>(?:[\r\n]{1}|^)[ ]*(?:[ixvIXV]+[ \.]+|[0-9]+[ \.]+|[a-z]+[\.]+|[a-z]{1}[ ]+|-)[^\r\n]*))/gis;
+const styleTagSearchString = /(?:(?<style><style="(?<styleObjectRaw>.+)">(?<styleTextContent>.+)<\/style>)|(?<stars>\*\*(?<starsTextContent>[^*]*(?:\*[^*]+)*)\*\*)|(?<bars>__(?<barsTextContent>[^_]*(?:\_[^_]+)*)__)|(?<pounds>##(?<poundsTextContent>[^#]*(?:#[^#]+)*)##)|(?<slashes>\/\/(?<slashesTextContent>[^/]*(?:\/[^/]+)*)\/\/)|(?<quote><(?<quoteTextContent>".+")>)|(?<summary>>>(?<summarizedText>.+)<<(\((?<summaryText>.+)\))?)|(?<list>(?:[\r\n]{1}|^)[ ]*(?:[ixvIXV]+[ \.]+|[0-9]+[ \.]+|[a-z]+[\.]+|[a-z]{1}[ ]+|[-]+)[^\r\n]*))/gis;
 export { styleTagSearchString };
 
 const stringToObject = (string, splitSearch) => {
@@ -153,14 +154,31 @@ const properlyNestListItem = item => {
          properlyNestListItem(sublistItem)
       );
 
+      const splitUpItem = item[0].matchAll(
+         /(?<ordinal>[ixvIXV]+[ \.]+|[0-9]+[ \.]+|[a-z]+[\.]+|[a-z]{1}[ ]+|-)(?<text>.*)/gi
+      );
+
+      for (const match of splitUpItem) {
+         return (
+            <li>
+               {item[0]}
+               <ul>{sublistItems}</ul>
+            </li>
+         );
+      }
+   }
+   const splitUpItem = item.matchAll(
+      /(?<ordinal>[ixvIXV]+[ \.]+|[0-9]+[ \.]+|[a-z]+[\.]+|[a-z]{1}[ ]+|[-]+)(?<text>.*)/gi
+   );
+
+   for (const match of splitUpItem) {
       return (
          <li>
-            {item[0]}
-            <ul>{sublistItems}</ul>
+            {match.groups.ordinal}
+            <RichText text={match.groups.text} />
          </li>
       );
    }
-   return <li>{item}</li>;
 };
 export { properlyNestListItem };
 
