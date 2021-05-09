@@ -12,7 +12,8 @@ import {
    stringToObject,
    getListType,
    properlyNestListItem,
-   foldUpNestedListArrayToTypeIndex
+   foldUpNestedListArrayToTypeIndex,
+   listItemPartMatch
 } from '../lib/TextHandling';
 import { urlFinder } from '../lib/UrlHandling';
 
@@ -255,13 +256,27 @@ const RichText = ({ text, priorText, nextText, matchCount = 0 }) => {
                   }
                }
             }
-            // If every item in the list starts with a letter and then a space, and those letters are not moving through the alphabet, they're probably just writing sentences.
+
+            // Now we need to skip some things that look like lists, but aren't
             let definitelyAList = true;
             theWholeList.forEach((item, index) => {
+               // If we've already determined this isn't a list, we're done here
+               if (definitelyAList === false) return;
                const trimmedItem = item.trim();
                const testChar = trimmedItem[0].toLowerCase();
+
+               if (
+                  theWholeList.length === 1 &&
+                  testChar != '-' &&
+                  trimmedItem[1] != '.'
+               ) {
+                  // If there's only one thing and the ordinal isn't a dash and the second character isn't a period, it's not a list
+                  definitelyAList = false;
+               }
+
                if (index === 0) {
                   if (
+                     // If the list doesn't start where any of our list types do, it's not a list
                      testChar != 'i' &&
                      testChar != 'a' &&
                      testChar != '1' &&
@@ -276,21 +291,54 @@ const RichText = ({ text, priorText, nextText, matchCount = 0 }) => {
                      // If there's only one thing in the list, and it starts with A or I, let's assume it's a sentence
                      definitelyAList = false;
                   }
-               } else if (index === 1) {
-                  // we only need to check two items to be sure it's a list
+               } else {
                   const trimmedPreviousItem = theWholeList[index - 1].trim();
                   const lastItemTestChar = trimmedPreviousItem[0].toLowerCase();
+                  // If the test characters aren't in sequence, the test character isn't a roman numeral, and the second test character isn't the start of a new list or a dash, it's not a list
                   if (
                      testChar.charCodeAt(0) !=
                         lastItemTestChar.charCodeAt(0) + 1 &&
-                     !['1', 'i', 'a', '-'].includes(testChar)
+                     !['i', 'v', 'x', 'c', 'l', 'm'].includes(testChar) &&
+                     !['i', 'a', '1', '-'].includes(testChar)
                   ) {
+                     definitelyAList = false;
+                  }
+                  if (
+                     trimmedItem[0] === trimmedPreviousItem[0] &&
+                     testChar != '-' &&
+                     testChar != 'i'
+                  ) {
+                     // If the test character for this item is exactly the same as the test character for the last item, and it's not a dash or an i (because roman numerals can start with the same letter, like i and ii), it's not a list
+                     definitelyAList = false;
+                  }
+                  if (
+                     testChar == 'i' &&
+                     lastItemTestChar == 'i' &&
+                     !['i', 'v', 'x', 'l', 'c', 'm'].includes(
+                        trimmedItem[1].toLowerCase()
+                     ) &&
+                     !['i', 'v', 'x', 'l', 'c', 'm'].includes(
+                        trimmedPreviousItem[1].toLowerCase()
+                     )
+                  ) {
+                     // If both items start with I, and one of them isn't followed by another roman numeral, it's not a list
+                     console.log(trimmedItem);
+                     console.log(trimmedPreviousItem);
                      definitelyAList = false;
                   }
                }
             });
             if (!definitelyAList) {
-               elementsArray.push(theWholeList[0]);
+               const thisItem = theWholeList[0];
+               const thisItemMatch = thisItem.matchAll(listItemPartMatch);
+               for (const itemPartMatch of thisItemMatch) {
+                  elementsArray.push(
+                     <>
+                        <RichText text={itemPartMatch.groups.ordinal} />
+                        <RichText text={itemPartMatch.groups.text} />
+                     </>
+                  );
+               }
             } else {
                // Then we'll put the whole list into an appropriate HTML list element
                let nestedListTypesArray = [];
@@ -405,7 +453,6 @@ const RichText = ({ text, priorText, nextText, matchCount = 0 }) => {
       }
 
       // If it wasn't a style tag, we check if it's some kind of link
-      console.log('code still running');
       const urls = match[0].matchAll(urlFinder);
       for (const url of urls) {
          if (url[0] !== match[0]) continue;
