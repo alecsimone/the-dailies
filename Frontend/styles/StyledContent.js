@@ -99,10 +99,6 @@ const StyledContent = styled.section`
                            form {
                               margin: 0 auto;
                            }
-                           ul {
-                              list-style: none;
-                              margin: 1rem 0;
-                           }
                            ${props => props.theme.midScreenBreakpoint} {
                               padding: 3rem 0;
                            }

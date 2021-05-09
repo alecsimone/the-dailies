@@ -234,6 +234,10 @@ const GlobalStyle = createGlobalStyle`
       border: 2px solid ${setAlpha(theme.lowContrastGrey, 0.2)};
       border-left: 0.4rem solid ${setSaturation(theme.majorColor, 40)};
    }
+   ul {
+      list-style: none;
+      margin: 1rem 0;
+   }
    svg.resetIcon {
       transition: transform 0.25s ease-in-out;
       &:hover {

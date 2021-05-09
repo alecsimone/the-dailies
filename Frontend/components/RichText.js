@@ -405,6 +405,7 @@ const RichText = ({ text, priorText, nextText, matchCount = 0 }) => {
       }
 
       // If it wasn't a style tag, we check if it's some kind of link
+      console.log('code still running');
       const urls = match[0].matchAll(urlFinder);
       for (const url of urls) {
          if (url[0] !== match[0]) continue;
