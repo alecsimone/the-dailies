@@ -13,7 +13,9 @@ import {
    getListType,
    properlyNestListItem,
    foldUpNestedListArrayToTypeIndex,
-   listItemPartMatch
+   listItemPartMatch,
+   isLowerCase,
+   isUpperCase
 } from '../lib/TextHandling';
 import { urlFinder } from '../lib/UrlHandling';
 
@@ -274,6 +276,42 @@ const RichText = ({ text, priorText, nextText, matchCount = 0 }) => {
                   definitelyAList = false;
                }
 
+               // If all the letters in the ordinal are not the same case, it's not a list
+               let itemCase = false;
+
+               // First we need to get just the ordinal out of the list item
+               const splitUpItem = item.matchAll(listItemPartMatch);
+               for (const splitItem of splitUpItem) {
+                  const { ordinal } = splitItem.groups;
+
+                  // We only want to do this with letter ordinals
+                  if (ordinal.match(/[a-z]/gi) != null) {
+                     // Then we go through the ordinal character by character
+                     for (let i = 0; i < ordinal.length; i++) {
+                        const char = ordinal[i];
+
+                        // If this character isn't a letter (maybe it's a space or a period), skip it
+                        if (char.match(/[a-z]/gi) == null) continue;
+
+                        if (i === 0) {
+                           if (isLowerCase(char) && !isUpperCase(char)) {
+                              itemCase = 'lower';
+                           } else {
+                              itemCase = 'upper';
+                           }
+                        } else if (isLowerCase(char) && !isUpperCase(char)) {
+                           if (itemCase === 'upper') {
+                              // If this character is lower case but we've previously established the case is upper, it's not a list
+                              definitelyAList = false;
+                           }
+                        } else if (itemCase === 'lower') {
+                           // If this character is upper case but we've previously established the case is lower, it's not a list
+                           definitelyAList = false;
+                        }
+                     }
+                  }
+               }
+
                if (index === 0) {
                   if (
                      // If the list doesn't start where any of our list types do, it's not a list
@@ -294,7 +332,7 @@ const RichText = ({ text, priorText, nextText, matchCount = 0 }) => {
                   if (
                      testChar === '1' &&
                      trimmedItem[1] !== ' ' &&
-                     trimmedItem !== '.'
+                     trimmedItem[1] !== '.'
                   ) {
                      // If the first item starts with 1, but the second character isn't a space or a period, it's not a list
                      definitelyAList = false;
@@ -302,10 +340,20 @@ const RichText = ({ text, priorText, nextText, matchCount = 0 }) => {
                } else {
                   const trimmedPreviousItem = theWholeList[index - 1].trim();
                   const lastItemTestChar = trimmedPreviousItem[0].toLowerCase();
-                  // If the test characters aren't in sequence, the test character isn't a roman numeral, and the second test character isn't the start of a new list or a dash, it's not a list
+                  // If the test characters isn't in sequence from a previous list item, the test character isn't a roman numeral, and the second test character isn't the start of a new list or a dash, it's not a list
+                  let isInSequence = false;
+                  const testCharCode = trimmedItem.charCodeAt(0);
+                  for (let i = 0; i < index; i++) {
+                     const currentTestCharCode = theWholeList[i]
+                        .trim()
+                        .charCodeAt(0);
+                     if (currentTestCharCode + 1 === testCharCode) {
+                        isInSequence = true;
+                     }
+                  }
+
                   if (
-                     testChar.charCodeAt(0) !=
-                        lastItemTestChar.charCodeAt(0) + 1 &&
+                     !isInSequence &&
                      !['i', 'v', 'x', 'c', 'l', 'm'].includes(testChar) &&
                      !['i', 'a', '1', '-'].includes(testChar)
                   ) {
@@ -320,33 +368,33 @@ const RichText = ({ text, priorText, nextText, matchCount = 0 }) => {
                      definitelyAList = false;
                   }
                   if (
-                     testChar == 'i' &&
-                     lastItemTestChar == 'i' &&
+                     trimmedItem[0] === trimmedPreviousItem[0] &&
                      !['i', 'v', 'x', 'l', 'c', 'm'].includes(
                         trimmedItem[1].toLowerCase()
                      ) &&
                      !['i', 'v', 'x', 'l', 'c', 'm'].includes(
                         trimmedPreviousItem[1].toLowerCase()
-                     )
+                     ) &&
+                     trimmedItem[0] !== '-'
                   ) {
                      // If both items start with I, and one of them isn't followed by another roman numeral, it's not a list
-                     console.log(trimmedItem);
-                     console.log(trimmedPreviousItem);
                      definitelyAList = false;
                   }
                }
             });
             if (!definitelyAList) {
-               const thisItem = theWholeList[0];
-               const thisItemMatch = thisItem.matchAll(listItemPartMatch);
-               for (const itemPartMatch of thisItemMatch) {
-                  elementsArray.push(
-                     <>
-                        <RichText text={itemPartMatch.groups.ordinal} />
-                        <RichText text={itemPartMatch.groups.text} />
-                     </>
-                  );
-               }
+               // If it's not a list, we want to split it up so that it won't get recognized as one again and then put each piece into new RichText elements
+               theWholeList.forEach(thisItem => {
+                  const thisItemMatch = thisItem.matchAll(listItemPartMatch);
+                  for (const itemPartMatch of thisItemMatch) {
+                     elementsArray.push(
+                        <>
+                           <RichText text={itemPartMatch.groups.ordinal} />
+                           <RichText text={itemPartMatch.groups.text} />
+                        </>
+                     );
+                  }
+               });
             } else {
                // Then we'll put the whole list into an appropriate HTML list element
                let nestedListTypesArray = [];
@@ -432,10 +480,9 @@ const RichText = ({ text, priorText, nextText, matchCount = 0 }) => {
 
                // Push that element into the elementsArray
                elementsArray.push(listElement);
-
-               // And then set the stoppedAtIndexOverride accordingly
-               stoppedAtIndexOverride = endingPoint - match.index;
             }
+            // And then set the stoppedAtIndexOverride accordingly
+            stoppedAtIndexOverride = endingPoint - match.index;
          }
 
          if (stoppedAtIndexOverride !== false) {

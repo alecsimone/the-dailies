@@ -77,7 +77,7 @@ const decodeHTML = text => {
 };
 export { decodeHTML };
 
-const styleTagSearchString = /(?:(?<style><style="(?<styleObjectRaw>.+)">(?<styleTextContent>.+)<\/style>)|(?<stars>\*\*(?<starsTextContent>[^*]*(?:\*[^*]+)*)\*\*)|(?<bars>__(?<barsTextContent>[^_]*(?:\_[^_]+)*)__)|(?<pounds>##(?<poundsTextContent>[^#]*(?:#[^#]+)*)##)|(?<slashes>\/\/(?<slashesTextContent>[^/]*(?:\/[^/]+)*)\/\/)|(?<quote><(?<quoteTextContent>".+")>)|(?<summary>>>(?<summarizedText>.+)<<(\((?<summaryText>.+)\))?)|(?<list>(?:[\r\n]{1}|^)[ ]*(?<ordinal>[ixvIXV]+[ \.]+|[0-9]+[ \.]+|[a-z]+[\.]+|[a-z]{1}[ ]+|[-]+)[ ]*(?<listTextContent>[\w]+[^\r\n]+)))/gis;
+const styleTagSearchString = /(?:(?<style><style="(?<styleObjectRaw>.+)">(?<styleTextContent>.+)<\/style>)|(?<stars>\*\*(?<starsTextContent>[^*]*(?:\*[^*]+)*)\*\*)|(?<bars>__(?<barsTextContent>[^_]*(?:\_[^_]+)*)__)|(?<pounds>##(?<poundsTextContent>[^#]*(?:#[^#]+)*)##)|(?<slashes>\/\/(?<slashesTextContent>[^/]*(?:\/[^/]+)*)\/\/)|(?<quote><(?<quoteTextContent>".+")>)|(?<summary>>>(?<summarizedText>.+)<<(\((?<summaryText>.+)\))?)|(?<list>(?:[\r\n]{1}|^)[ ]*(?<ordinal>[ixvclm]+[ \.]+|[0-9]+[ \.]+|[a-z]+[\.]+|[a-z]{1}[ ]+|[-]+)[ ]*(?<listTextContent>[\w]+[^\r\n]+)))/gis;
 export { styleTagSearchString };
 
 const stringToObject = (string, splitSearch) => {
@@ -147,7 +147,7 @@ const getListType = (listTypeCheckChar, prevTypeCheckChar) => {
 };
 export { getListType };
 
-const listItemPartMatch = /(?<ordinal>(?:[\r\n]{1}|^)(?:[ixvIXV]+[ \.]+|[0-9]+[ \.]+|[a-z]+[\.]+|[a-z]{1}[ ]+|-))(?<text>.*)/gi;
+const listItemPartMatch = /(?<ordinal>(?:[\r\n]{1}|^)[ ]*(?:[ixvclm]+[ \.]+|[0-9]+[ \.]+|[a-z]+[\.]+|[a-z]{1}[ ]+|[-]+))(?<text>[ ]*[\w]+[^\r\n]+)/gi;
 export { listItemPartMatch };
 
 const properlyNestListItem = item => {
@@ -210,3 +210,11 @@ const foldUpNestedListArrayToTypeIndex = (nestedListTypesArray, typeIndex) => {
 };
 
 export { foldUpNestedListArrayToTypeIndex };
+
+const isLowerCase = string =>
+   string.toLowerCase() === string && string.toUpperCase() !== string;
+export { isLowerCase };
+
+const isUpperCase = string =>
+   string.toUpperCase() === string && string.toLowerCase() !== string;
+export { isUpperCase };
