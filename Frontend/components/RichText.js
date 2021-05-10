@@ -291,6 +291,14 @@ const RichText = ({ text, priorText, nextText, matchCount = 0 }) => {
                      // If there's only one thing in the list, and it starts with A or I, let's assume it's a sentence
                      definitelyAList = false;
                   }
+                  if (
+                     testChar === '1' &&
+                     trimmedItem[1] !== ' ' &&
+                     trimmedItem !== '.'
+                  ) {
+                     // If the first item starts with 1, but the second character isn't a space or a period, it's not a list
+                     definitelyAList = false;
+                  }
                } else {
                   const trimmedPreviousItem = theWholeList[index - 1].trim();
                   const lastItemTestChar = trimmedPreviousItem[0].toLowerCase();
