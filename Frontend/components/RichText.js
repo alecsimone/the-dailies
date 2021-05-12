@@ -49,20 +49,20 @@ const RichText = ({ text, priorText, nextText, matchCount = 0 }) => {
    // First we do a big matchAll with a giant superstring of all the things we might be looking for.
    const allMatches = fixedText.matchAll(superMatcher);
    for (const match of allMatches) {
-      // First We break off any text before the match and put it in a RichText at the start of our elements array
-      const startingTextElement = getStartingTextElement(
-         stoppedAtIndex,
-         match.index,
-         fixedText,
-         matchCount
-      );
-      elementsArray.push(startingTextElement);
-
       // So now we take just the style tags and use a proper regex search with named capture groups to parse them.
       const tags = match[0].matchAll(styleTagSearchString);
       for (const tag of tags) {
          // But we're only interested in the first match of all matches. It might not be a style tag, and if it isn't we'd be skipping ahead and mixing things up.
          if (tag[0] === match[0]) {
+            // First We break off any text before the match and put it in a RichText at the start of our elements array. We have to do this inside each individual for loop because we need the index of the specific match as well.
+            const startingTextElement = getStartingTextElement(
+               stoppedAtIndex,
+               match.index + tag.index,
+               fixedText,
+               matchCount
+            );
+            elementsArray.push(startingTextElement);
+
             // Now we go through each of the style tags and when we get a hit, we make an element that applies that style around a new RichText, and then push that element into our elements array
 
             // First, the general <style> tag
@@ -154,7 +154,16 @@ const RichText = ({ text, priorText, nextText, matchCount = 0 }) => {
       const urls = match[0].matchAll(urlFinder);
       for (const url of urls) {
          // But we're only interested in the first match of all matches. It might not be a link, and if it isn't we'd be skipping ahead and mixing things up.
-         if (url[0] === match[0]) {
+         if (url[0].trim() === match[0].trim()) {
+            // First We break off any text before the match and put it in a RichText at the start of our elements array. We have to do this inside each individual for loop because we need the index of the specific match as well.
+            const startingTextElement = getStartingTextElement(
+               stoppedAtIndex,
+               match.index + url.index,
+               fixedText,
+               matchCount
+            );
+            elementsArray.push(startingTextElement);
+
             let fullUrl = url[0];
 
             // Quick kludge until I find a cleaner way to not match this pattern that happens surprisingly often
@@ -166,12 +175,9 @@ const RichText = ({ text, priorText, nextText, matchCount = 0 }) => {
                   fullUrl = `https://${fullUrl}`;
                }
 
-               stoppedAtIndex = match.index + url[0].length;
+               stoppedAtIndex = match.index + url.index + url[0].length;
 
-               let endingText = fixedText.substring(stoppedAtIndex);
-               if (trimEndingText === true) {
-                  endingText = endingText.trim();
-               }
+               const endingText = fixedText.substring(stoppedAtIndex);
 
                // ExplodingLink will handle presenting the link itself, now that we've stripped out any leading or trailing text
                const link = (
@@ -203,25 +209,36 @@ const RichText = ({ text, priorText, nextText, matchCount = 0 }) => {
       for (const list of lists) {
          // But we're only interested in the first match of all matches. It might not be a list, and if it isn't we'd be skipping ahead and mixing things up.
          if (list[0] === match[0]) {
-            // First we need to get the whole list. So we'll check the line after this to see if it matches as well
-            const listItem = list[0];
-            const [listElement, endingPoint] = getListElement(
-               listItem,
+            // First We break off any text before the match and put it in a RichText at the start of our elements array. We have to do this inside each individual for loop because we need the index of the specific match as well.
+            const startingTextElement = getStartingTextElement(
+               stoppedAtIndex,
+               match.index + list.index,
                fixedText,
-               match
-            );
-
-            elementsArray.push(listElement);
-
-            const endingTextElement = getEndingTextElement(
-               endingPoint,
-               fixedText,
-               trimEndingText,
                matchCount
             );
-            elementsArray.push(endingTextElement);
+            elementsArray.push(startingTextElement);
 
-            return elementsArray;
+            // First we need to get the whole list. So we'll check the line after this to see if it matches as well
+            const listItem = list[0];
+            if (!listItem.includes('www.')) {
+               const [listElement, endingPoint] = getListElement(
+                  listItem,
+                  fixedText,
+                  match
+               );
+
+               elementsArray.push(listElement);
+
+               const endingTextElement = getEndingTextElement(
+                  endingPoint,
+                  fixedText,
+                  trimEndingText,
+                  matchCount
+               );
+               elementsArray.push(endingTextElement);
+
+               return elementsArray;
+            }
          }
       }
    }
