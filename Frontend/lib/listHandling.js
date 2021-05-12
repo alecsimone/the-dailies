@@ -204,7 +204,16 @@ const getListElement = (listItem, fixedText, match) => {
             testChar != '1' &&
             testChar != '-'
          ) {
-            definitelyAList = false;
+            for (const splitItem of splitUpItem) {
+               const { ordinal } = splitItem.groups;
+               if (
+                  ordinal.match(/(?:[0-9]{1,2}[\.,]{1}|[a-z]{1}[\.]{1})/gi) !=
+                  null
+               ) {
+                  // However, if it's a one or two digit number immediately followed by a period or comma, or a single letter immediately followed by a period, we'll make an exception because that's so obviously a list. Sometimes lists get broken up with multiple line breaks, and when it's this obvious that it's a list, we'll allow it
+                  definitelyAList = false;
+               }
+            }
          }
          if (
             theWholeList.length === 1 &&
