@@ -77,8 +77,11 @@ const decodeHTML = text => {
 };
 export { decodeHTML };
 
-const styleTagSearchString = /(?:(?<style><style="(?<styleObjectRaw>.+)">(?<styleTextContent>.+)<\/style>)|(?<stars>\*\*(?<starsTextContent>[^*]*(?:\*[^*]+)*)\*\*)|(?<bars>__(?<barsTextContent>[^_]*(?:\_[^_]+)*)__)|(?<pounds>##(?<poundsTextContent>[^#]*(?:#[^#]+)*)##)|(?<slashes>\/\/(?<slashesTextContent>[^/]*(?:\/[^/]+)*)\/\/)|(?<quote><(?<quoteTextContent>".+")>)|(?<summary>>>(?<summarizedText>.+)<<(\((?<summaryText>.+)\))?)|(?<list>(?:[\r\n]{1}|^)[ ]*(?<ordinal>[ixvclm]+[ \.]+|[0-9]+[ \.]+|[a-z]+[\.]+|[a-z]{1}[ ]+|[-]+)[ ]*(?<listTextContent>[\w]+[^\r\n]+)))/gis;
+const styleTagSearchString = /(?:(?<style><style="(?<styleObjectRaw>.+)">(?<styleTextContent>.+)<\/style>)|(?<stars>\*\*(?<starsTextContent>[^*]*(?:\*[^*]+)*)\*\*)|(?<bars>__(?<barsTextContent>[^_]*(?:\_[^_]+)*)__)|(?<pounds>##(?<poundsTextContent>[^#]*(?:#[^#]+)*)##)|(?<slashes>\/\/(?<slashesTextContent>[^/]*(?:\/[^/]+)*)\/\/)|(?<quote><(?<quoteTextContent>".+")>)|(?<summary>>>(?<summarizedText>.+)<<(\((?<summaryText>.+)\))?))/gis;
 export { styleTagSearchString };
+
+const listSearchString = /(?<ordinal>(?:[\r\n]{1}|^)[ ]*(?:[ixvclm]+[ \.]+|[0-9]+[ \.]+|[a-z]+[\.]+|[a-z]{1}[ ]+|[-]+))(?<listTextContent>[ ]*[\w]+[^\r\n]+)/gi;
+export { listSearchString };
 
 const stringToObject = (string, splitSearch) => {
    const splitRegex = new RegExp(`[${splitSearch}]`, 'gi');
@@ -107,110 +110,6 @@ const pxToInt = pxString => {
 };
 export { pxToInt };
 
-const getListType = (listTypeCheckChar, prevTypeCheckChar) => {
-   if (listTypeCheckChar.match(/[icvxlm]/) != null) {
-      // If there's no item before, we're going to assume this is roman numerals
-      if (prevTypeCheckChar == null) return 'i';
-      // If there is an item before, and it's the letter before this in the alphabet, we assume this is an alphabetic list
-      if (
-         listTypeCheckChar.charCodeAt(0) ===
-         prevTypeCheckChar.charCodeAt(0) + 1
-      )
-         return 'a';
-      // Otherwise, we assume this is roman numerals
-      return 'i';
-   }
-   if (listTypeCheckChar.match(/[ICVXLM]/) != null) {
-      // If there's no item before, we're going to assume this is roman numerals
-      if (prevTypeCheckChar == null) return 'I';
-      // If there is an item before, and it's the letter before this in the alphabet, we assume this is an alphabetic list
-      if (
-         listTypeCheckChar.charCodeAt(0) ===
-         prevTypeCheckChar.charCodeAt(0) + 1
-      )
-         return 'A';
-      // Otherwise, we assume this is roman numerals
-      return 'I';
-   }
-   if (listTypeCheckChar.match(/[a-z]/) != null) {
-      return 'a';
-   }
-   if (listTypeCheckChar.match(/[A-Z]/) != null) {
-      return 'A';
-   }
-   if (listTypeCheckChar.match(/[0-9]/) != null) {
-      return '1';
-   }
-   if (listTypeCheckChar.match(/-/) != null) {
-      return 'dash';
-   }
-};
-export { getListType };
-
-const listItemPartMatch = /(?<ordinal>(?:[\r\n]{1}|^)[ ]*(?:[ixvclm]+[ \.]+|[0-9]+[ \.]+|[a-z]+[\.]+|[a-z]{1}[ ]+|[-]+))(?<text>[ ]*[\w]+[^\r\n]+)/gi;
-export { listItemPartMatch };
-
-const properlyNestListItem = item => {
-   if (Array.isArray(item)) {
-      // If the item is an array, the first item should be a string and the second item should be an array with a list to nest within the first item
-      const sublistItems = item[1].map(sublistItem =>
-         properlyNestListItem(sublistItem)
-      );
-
-      const splitUpItem = item[0].matchAll(listItemPartMatch);
-
-      for (const match of splitUpItem) {
-         return (
-            <li>
-               {item[0]}
-               <ul>{sublistItems}</ul>
-            </li>
-         );
-      }
-   }
-   const splitUpItem = item.matchAll(listItemPartMatch);
-
-   for (const match of splitUpItem) {
-      return (
-         <li>
-            {match.groups.ordinal}
-            <RichText text={match.groups.text} />
-         </li>
-      );
-   }
-};
-export { properlyNestListItem };
-
-const foldUpNestedListArrayToTypeIndex = (nestedListTypesArray, typeIndex) => {
-   const currentTypeCount = nestedListTypesArray.length;
-
-   for (let i = currentTypeCount - 1; i > typeIndex; i--) {
-      // First we collect the items we're going to nest in there by taking the items from the type at index i
-      const itemsToNest = nestedListTypesArray[i].items;
-
-      // Then we're going to get the last item of type i - 1 so we can combine it with the items we're going to nest into an array duple
-      const lastItemOfPreviousType =
-         nestedListTypesArray[i - 1].items[
-            nestedListTypesArray[i - 1].items.length - 1
-         ];
-
-      // Then we make our nested duple
-      const nestedDuple = [lastItemOfPreviousType, itemsToNest];
-
-      // And replace the final item of type i - 1 with it
-      nestedListTypesArray[i - 1].items[
-         nestedListTypesArray[i - 1].items.length - 1
-      ] = nestedDuple;
-
-      // And then we get rid of the type at index i, which will be the last item in the array
-      nestedListTypesArray.pop();
-   }
-
-   return nestedListTypesArray;
-};
-
-export { foldUpNestedListArrayToTypeIndex };
-
 const isLowerCase = string =>
    string.toLowerCase() === string && string.toUpperCase() !== string;
 export { isLowerCase };
@@ -218,3 +117,120 @@ export { isLowerCase };
 const isUpperCase = string =>
    string.toUpperCase() === string && string.toLowerCase() !== string;
 export { isUpperCase };
+
+const getStartingTextElement = (startpoint, endpoint, text, matchCount) => {
+   const startingText = text.substring(startpoint, endpoint);
+   if (startingText !== '' && startingText !== ' ') {
+      return (
+         <RichText
+            text={startingText}
+            key={startingText}
+            matchCount={matchCount + 1}
+         />
+      );
+   }
+   return null;
+};
+export { getStartingTextElement };
+
+const getStyleTagElement = (tag, matchCount, stoppedAtIndex) => {
+   if (tag.groups.styleObjectRaw.includes('</style>')) {
+      // I couldn't work out the regex to match only those style tags that didn't include style tags themselves, so we're dealing with it here.
+      const allTags = tag.groups.style;
+      const firstClosingIndex = allTags.indexOf('</style>');
+
+      const firstTagText = allTags.substring(0, firstClosingIndex + 8);
+      const firstTag = (
+         <RichText
+            text={firstTagText}
+            key={firstTagText}
+            matchCount={matchCount + 1}
+         />
+      );
+      // The +8 on that substring is because we need to include the </style> that was our indexOf search
+      const stoppedAtIndexOverride = firstClosingIndex + 8;
+      return [firstTag, stoppedAtIndexOverride];
+   }
+   const styleObject = stringToObject(tag.groups.styleObjectRaw, ':;');
+
+   const tagElement = (
+      <span style={styleObject} key={stoppedAtIndex}>
+         <RichText
+            text={tag.groups.styleTextContent}
+            key={tag.groups.styleTextContent}
+            matchCount={matchCount + 1}
+         />
+      </span>
+   );
+   return [tagElement, null];
+};
+export { getStyleTagElement };
+
+const getStyledSpan = (style, text, matchCount) => (
+   <span style={style}>
+      <RichText text={text} key={text} matchCount={matchCount + 1} />
+   </span>
+);
+export { getStyledSpan };
+
+const getQuoteTagElement = (tag, matchCount) => {
+   if (tag.groups.quoteTextContent.includes('">')) {
+      // I couldn't work out the regex to match only those <""> tags that didn't include <""> tags themselves, so we're dealing with it here.
+      const allQuotes = tag.groups.quoteTextContent;
+      const firstClosingIndex = allQuotes.indexOf('">');
+
+      const firstQuoteText = allQuotes.substring(
+         0,
+         firstClosingIndex + 1 // The +1 is because we need to include the " that was the start of our indexOf search
+      );
+
+      const firstQuote = (
+         <blockquote>
+            <RichText
+               text={firstQuoteText}
+               key={firstQuoteText}
+               matchCount={matchCount + 1}
+            />
+         </blockquote>
+      );
+      const stoppedAtIndexOverride = firstClosingIndex + 3;
+      return [firstQuote, stoppedAtIndexOverride];
+   }
+   return [
+      <blockquote>
+         <RichText
+            text={tag.groups.quoteTextContent.substring(
+               1,
+               tag.groups.quoteTextContent.length - 1
+            )}
+            key={tag.groups.quoteTextContent}
+            matchCount={matchCount + 1}
+         />
+      </blockquote>,
+      null
+   ];
+};
+export { getQuoteTagElement };
+
+const getEndingTextElement = (
+   startPoint,
+   fixedText,
+   trimEndingText,
+   matchCount
+) => {
+   let endingText = fixedText.substring(startPoint);
+   if (trimEndingText === true) {
+      endingText = endingText.trim();
+   }
+   if (endingText !== '' && endingText !== ' ') {
+      return (
+         <RichText
+            text={endingText}
+            key={endingText}
+            matchCount={matchCount + 1}
+         />
+      );
+   }
+   return null;
+};
+export { getEndingTextElement };
