@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react';
+import { dynamicallyResizeElement } from '../styles/functions';
 
 const getCursorXY = (input, selectionPoint) => {
    // stole this from https://medium.com/@jh3y/how-to-where-s-the-caret-getting-the-xy-position-of-the-caret-a24ba372990a
@@ -310,10 +311,10 @@ const tabTheText = (target, setText) => {
       newSelectionEnd = selectionEnd + spacesToNextTab;
    }
    setText(newText);
-   window.setTimeout(
-      () => target.setSelectionRange(newSelectionStart, newSelectionEnd),
-      1
-   );
+   window.setTimeout(() => {
+      target.setSelectionRange(newSelectionStart, newSelectionEnd);
+      dynamicallyResizeElement(target);
+   }, 1);
 };
 export { tabTheText };
 
@@ -349,13 +350,41 @@ const unTabTheText = (target, setText) => {
 
    // And update the text
    setText(newText);
-   window.setTimeout(
-      () =>
-         target.setSelectionRange(
-            selectionStart - spacesCount,
-            selectionEnd - spacesCount
-         ),
-      1
-   );
+   window.setTimeout(() => {
+      target.setSelectionRange(
+         selectionStart - spacesCount,
+         selectionEnd - spacesCount
+      );
+      dynamicallyResizeElement(target);
+   }, 1);
 };
 export { unTabTheText };
+
+const insertLineAbove = (target, setText) => {
+   // First we get the text up to the cursor
+   const { selectionStart, selectionEnd, value: initialText } = target;
+   const textBeforeCursor = initialText.substring(0, selectionStart);
+
+   // Then we look for the last new line within that text
+   const lastNewLineIndex = textBeforeCursor.lastIndexOf('\n');
+
+   let newText;
+   let newCursorPos;
+   // If we find one, then we add another right before it and put the cursor right after it
+   if (lastNewLineIndex > -1) {
+      const startingText = initialText.substring(0, lastNewLineIndex + 1);
+      const endingText = initialText.substring(lastNewLineIndex + 1);
+      newText = `${startingText}\n${endingText}`;
+      newCursorPos = startingText.length;
+   } else {
+      // If we don't find a new line, we put a new line at the beginning of the string and then put the cursor there too
+      newText = `\n${initialText}`;
+      newCursorPos = 0;
+   }
+   setText(newText);
+   window.setTimeout(() => {
+      target.setSelectionRange(newCursorPos, newCursorPos);
+      dynamicallyResizeElement(target);
+   }, 1);
+};
+export { insertLineAbove };

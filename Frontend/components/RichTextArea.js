@@ -13,7 +13,8 @@ import {
    encloseSelectedText,
    useSearchResultsSelector,
    tabTheText,
-   unTabTheText
+   unTabTheText,
+   insertLineAbove
 } from '../lib/RichTextHandling';
 import LinkIcon from './Icons/Link';
 
@@ -253,9 +254,17 @@ const RichTextArea = ({
 
    const handleKeyDown = async e => {
       // Post the changes on ctrl or cmd + enter
-      if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+      if (e.key === 'Enter' && (e.ctrlKey || e.metaKey) && !e.shiftKey) {
          postText();
          return;
+      }
+
+      if (e.key === 'Enter' && (e.ctrlKey || e.metaKey) && e.shiftKey) {
+         e.preventDefault();
+         insertLineAbove(
+            e.target,
+            newText => (inputRef.current.value = newText)
+         );
       }
 
       // Quit editing on escape
@@ -303,6 +312,7 @@ const RichTextArea = ({
             '**',
             newText => (inputRef.current.value = newText)
          );
+         return;
       }
 
       // ctrl+i adds tags for italicized text
@@ -313,6 +323,7 @@ const RichTextArea = ({
             '//',
             newText => (inputRef.current.value = newText)
          );
+         return;
       }
 
       // ctrl+u adds tags for underlined text
@@ -323,6 +334,7 @@ const RichTextArea = ({
             '__',
             newText => (inputRef.current.value = newText)
          );
+         return;
       }
 
       if ((e.key === '3' || e.key === '#') && (e.ctrlKey || e.metaKey)) {
@@ -332,6 +344,7 @@ const RichTextArea = ({
             '##',
             newText => (inputRef.current.value = newText)
          );
+         return;
       }
 
       // ctrl+' adds tags for block quote
@@ -342,12 +355,14 @@ const RichTextArea = ({
             '<"',
             newText => (inputRef.current.value = newText)
          );
+         return;
       }
 
       // ctrl+k adds bracket link
       if (e.key === 'k' && (e.ctrlKey || e.metaKey)) {
          e.preventDefault();
          linkifyText(e.target, newText => (inputRef.current.value = newText));
+         return;
       }
 
       // ctrl + > adds summary tags
@@ -357,11 +372,13 @@ const RichTextArea = ({
             e.target,
             newText => (inputRef.current.value = newText)
          );
+         return;
       }
 
       if (e.key === 'Tab' && !e.shiftKey) {
          e.preventDefault();
          tabTheText(e.target, newText => (inputRef.current.value = newText));
+         return;
       }
 
       if (e.key === 'Tab' && e.shiftKey) {
