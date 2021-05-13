@@ -316,3 +316,46 @@ const tabTheText = (target, setText) => {
    );
 };
 export { tabTheText };
+
+const unTabTheText = (target, setText) => {
+   // First we get the text up to the cursor
+   const { selectionStart, selectionEnd, value: initialText } = target;
+   const textBeforeCursor = initialText.substring(0, selectionStart);
+
+   // Then we look for the last new line within that text
+   const lastNewLineIndex = textBeforeCursor.lastIndexOf('\n');
+
+   let textToUntab;
+   let startingText;
+   let endingText;
+   // if we find one, we split up the text into the text before and after that new line
+   if (lastNewLineIndex > -1) {
+      startingText = initialText.substring(0, lastNewLineIndex + 1);
+      endingText = initialText.substring(lastNewLineIndex + 1);
+   } else {
+      // If we don't, we're just going to use the whole string as the ending text
+      startingText = '';
+      endingText = initialText;
+   }
+
+   // Then we replace up to 8 spaces at the beginning of the string with nothing
+   const spaceMatcher = /^[ ]{2,8}/;
+   const spacesMatch = endingText.match(spaceMatcher);
+   const spacesCount = spacesMatch[0].length;
+   endingText = endingText.replace(spaceMatcher, '');
+
+   // Put the pieces back together
+   const newText = `${startingText}${endingText}`;
+
+   // And update the text
+   setText(newText);
+   window.setTimeout(
+      () =>
+         target.setSelectionRange(
+            selectionStart - spacesCount,
+            selectionEnd - spacesCount
+         ),
+      1
+   );
+};
+export { unTabTheText };

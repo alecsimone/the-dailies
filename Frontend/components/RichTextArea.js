@@ -12,7 +12,8 @@ import {
    addSummaryTagsToText,
    encloseSelectedText,
    useSearchResultsSelector,
-   tabTheText
+   tabTheText,
+   unTabTheText
 } from '../lib/RichTextHandling';
 import LinkIcon from './Icons/Link';
 
@@ -361,6 +362,11 @@ const RichTextArea = ({
       if (e.key === 'Tab' && !e.shiftKey) {
          e.preventDefault();
          tabTheText(e.target, newText => (inputRef.current.value = newText));
+      }
+
+      if (e.key === 'Tab' && e.shiftKey) {
+         e.preventDefault();
+         unTabTheText(e.target, newText => (inputRef.current.value = newText));
       }
    };
 
