@@ -80,9 +80,6 @@ export { decodeHTML };
 const styleTagSearchString = /(?:(?<style><style="(?<styleObjectRaw>.+)">(?<styleTextContent>.+)<\/style>)|(?<stars>\*\*(?<starsTextContent>[^*]*(?:\*[^*]+)*)\*\*)|(?<bars>__(?<barsTextContent>[^_]*(?:\_[^_]+)*)__)|(?<pounds>##(?<poundsTextContent>[^#]*(?:#[^#]+)*)##)|(?<slashes>\/\/(?<slashesTextContent>[^/]*(?:\/[^/]+)*)\/\/)|(?<quote><(?<quoteTextContent>".+")>)|(?<summary>>>(?<summarizedText>.+)<<(\((?<summaryText>.+)\))?))/gis;
 export { styleTagSearchString };
 
-const listSearchString = /(?<ordinal>(?:[\r\n]{1}|^)[ ]*(?:[ixvclm]+[ \.]+|[0-9]+[ \.]+|[a-z]+[\.]+|[a-z]{1}[ ]+|[-]+))(?<listTextContent>[ ]*[\w]+[^\r\n]+)/gi;
-export { listSearchString };
-
 const stringToObject = (string, splitSearch) => {
    const splitRegex = new RegExp(`[${splitSearch}]`, 'gi');
    const splitString = string.split(splitRegex);

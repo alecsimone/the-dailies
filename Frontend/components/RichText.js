@@ -8,14 +8,13 @@ import {
    replaceReddit,
    decodeHTML,
    styleTagSearchString,
-   listSearchString,
    getStartingTextElement,
    getStyleTagElement,
    getQuoteTagElement,
    getEndingTextElement,
    getStyledSpan
 } from '../lib/TextHandling';
-import { getListElement } from '../lib/listHandling';
+import { listSearchString, getListElement } from '../lib/listHandling';
 import { urlFinder } from '../lib/UrlHandling';
 
 const RichText = ({ text, priorText, nextText, matchCount = 0 }) => {
