@@ -11,7 +11,8 @@ import {
    linkifyText,
    addSummaryTagsToText,
    encloseSelectedText,
-   useSearchResultsSelector
+   useSearchResultsSelector,
+   tabTheText
 } from '../lib/RichTextHandling';
 import LinkIcon from './Icons/Link';
 
@@ -355,6 +356,11 @@ const RichTextArea = ({
             e.target,
             newText => (inputRef.current.value = newText)
          );
+      }
+
+      if (e.key === 'Tab' && !e.shiftKey) {
+         e.preventDefault();
+         tabTheText(e.target, newText => (inputRef.current.value = newText));
       }
    };
 

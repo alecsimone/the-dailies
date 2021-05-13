@@ -260,3 +260,59 @@ const useSearchResultsSelector = () => {
    };
 };
 export { useSearchResultsSelector };
+
+const tabTheText = (target, setText) => {
+   const { selectionStart, selectionEnd, value: initialText } = target;
+
+   // First we get all the text before the cursor and all the text after
+   const textBeforeCursor = initialText.substring(0, selectionStart);
+   const textAfterCursor = initialText.substring(selectionStart);
+
+   // Then we find the last new line before the cursor
+   const lastNewLineIndex = textBeforeCursor.lastIndexOf('\n');
+
+   let newText;
+   let newSelectionStart;
+   let newSelectionEnd;
+   if (selectionStart !== selectionEnd) {
+      // If text is selected, add a tab at the beginning of the line
+      if (lastNewLineIndex === -1) {
+         // If there are no new lines, we start at the beginning of the string
+         newText = `        ${textBeforeCursor}${textAfterCursor}`;
+      } else {
+         const textBeforeLastLine = initialText.substring(
+            0,
+            lastNewLineIndex + 1
+         );
+         const textAfterLastLine = initialText.substring(lastNewLineIndex + 1);
+         newText = `${textBeforeLastLine}        ${textAfterLastLine}`;
+      }
+      newSelectionStart = selectionStart + 8;
+      newSelectionEnd = selectionEnd + 8;
+   } else {
+      // If no text is selected, add spaces till the next tab stop and put the cursor there
+      let spacesPastLastTab;
+      if (lastNewLineIndex === -1) {
+         // If there is no new line before the cursor, we start counting characters at the beginning of the string
+         spacesPastLastTab = selectionStart % 8;
+      } else {
+         // If there is a new line, we start counting characters there
+         const charactersSinceNewLine = selectionStart - lastNewLineIndex;
+         spacesPastLastTab = charactersSinceNewLine % 8;
+      }
+      const spacesToNextTab = 8 - spacesPastLastTab;
+      let spacesToAdd = '';
+      for (let i = 0; i < spacesToNextTab; i += 1) {
+         spacesToAdd += ' ';
+      }
+      newText = `${textBeforeCursor}${spacesToAdd}${textAfterCursor}`;
+      newSelectionStart = selectionStart + spacesToNextTab;
+      newSelectionEnd = selectionEnd + spacesToNextTab;
+   }
+   setText(newText);
+   window.setTimeout(
+      () => target.setSelectionRange(newSelectionStart, newSelectionEnd),
+      1
+   );
+};
+export { tabTheText };
