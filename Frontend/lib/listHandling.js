@@ -83,10 +83,20 @@ const properlyNestListItem = item => {
    const splitUpItem = item.matchAll(listSearchString);
 
    for (const match of splitUpItem) {
+      // If the text content of the list item matches the list search string (for instance if it starts with a number with a decimal like 1.64), we'll have to shove a zero width space in front of it so that it doesn't get turned into a list itself. We know it is not supposed to be one, because it's on the same line as the original list item, but once we put it into its own RichText element, that element will not know that it's on its own line and will think it's a list.
+      const itemListMatchCheck = match.groups.listTextContent.match(
+         listSearchString
+      );
       return (
          <li>
             {match.groups.ordinal}
-            <RichText text={match.groups.listTextContent} />
+            <RichText
+               text={
+                  itemListMatchCheck != null
+                     ? `\u200B${match.groups.listTextContent}`
+                     : match.groups.listTextContent
+               }
+            />
          </li>
       );
    }

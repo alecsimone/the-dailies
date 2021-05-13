@@ -219,7 +219,7 @@ const RichText = ({ text, priorText, nextText, matchCount = 0 }) => {
 
             // First we need to get the whole list. So we'll check the line after this to see if it matches as well
             const listItem = list[0];
-            if (!listItem.includes('www.')) {
+            if (!list.groups.ordinal.includes('www.')) {
                const [listElement, endingPoint] = getListElement(
                   listItem,
                   fixedText,
