@@ -241,14 +241,20 @@ const TaxBox = ({ canEdit, personal }) => {
                // If we entered multiple tags (commas separate tags, so if there's a comma that means there's multiple tags) we have to make sure to send the ones before the comma as well as whichever result we've selected
                const finalCommaLocation = taxInput.lastIndexOf(',');
                const preCommaInput = taxInput.substring(0, finalCommaLocation);
-               await sendNewTax({ title: preCommaInput }).catch(err => {
+               await sendNewTax([
+                  { title: preCommaInput },
+                  filteredResults[highlightedIndex]
+               ]).catch(err => {
                   alert(err.message);
                });
+            } else {
+               // Whether there are multiple tags or not, we send the tag that was chosen from the list
+               await sendNewTax(filteredResults[highlightedIndex]).catch(
+                  err => {
+                     alert(err.message);
+                  }
+               );
             }
-            // Whether there are multiple tags or not, we send the tag that was chosen from the list
-            await sendNewTax(filteredResults[highlightedIndex]).catch(err => {
-               alert(err.message);
-            });
          } else {
             // Otherwise we just send what's in the input
             await sendNewTax({ title: taxInput }).catch(err => {
@@ -259,45 +265,66 @@ const TaxBox = ({ canEdit, personal }) => {
    };
 
    const sendNewTax = async newTaxObj => {
+      console.log(newTaxObj);
       if (newTaxObj == null) {
          setTaxInput('');
          return;
       }
-      const { title } = newTaxObj;
 
-      newTaxObj.__typename = personal ? 'Stack' : 'Tag';
-      if (newTaxObj.id == null) {
-         newTaxObj.id = 'unknownID';
+      let title;
+      if (Array.isArray(newTaxObj)) {
+         title = '';
+         newTaxObj.forEach((taxObj, index) => {
+            if (index === newTaxObj.length + 1) {
+               title += taxObj.title;
+            }
+            title += `${taxObj.title}, `;
+         });
+      } else {
+         title = newTaxObj.title;
       }
-      // Optimistic response breaks if we don't provide an author for the tag we're creating
-      if (newTaxObj.author == null) {
-         newTaxObj.author = me;
-      }
+
       let newTags = tags;
       let newStacks = stacks;
-
-      if (personal) {
-         newStacks = stacks.concat([newTaxObj]);
+      // If the title has a comma in it, we have multiple tags here. That doesn't matter for the actual mutation because it'll get parsed properly on the backend, but it will affect our optimistic response
+      if (title.includes(',')) {
+         const titleArray = title.split(',');
+         titleArray.forEach(thisTitle => {
+            const objectToAdd = { ...newTaxObj };
+            objectToAdd.title = thisTitle.trim();
+            objectToAdd.__typename = personal ? 'Stack' : 'Tag';
+            objectToAdd.id = newTaxObj.id == null ? 'unknownID' : newTaxObj.id;
+            objectToAdd.author =
+               newTaxObj.author == null ? me : newTaxObj.author;
+            if (personal) {
+               newStacks.push(objectToAdd);
+            } else {
+               newTags.push(objectToAdd);
+            }
+         });
       } else {
-         newTags = tags.concat([newTaxObj]);
-      }
+         newTaxObj.__typename = personal ? 'Stack' : 'Tag';
+         if (newTaxObj.id == null) {
+            newTaxObj.id = 'unknownID';
+         }
+         // Optimistic response breaks if we don't provide an author for the tag we're creating
+         if (newTaxObj.author == null) {
+            newTaxObj.author = me;
+         }
 
+         if (personal) {
+            newStacks = stacks.push(newTaxObj);
+         } else {
+            newTags = tags.push(newTaxObj);
+         }
+      }
       window.setTimeout(() => setTaxInput(''), 1); // We need this setTaxInput to hit after the handleTaxInput hits, so we set a timeout
       await addTaxToThing({
          variables: {
             tax: title,
             thingID: id,
             personal
-         },
-         optimisticResponse: {
-            __typename: 'Mutation',
-            addTaxToThing: {
-               __typename: 'Thing',
-               id,
-               partOfTags: newTags,
-               partOfStacks: newStacks
-            }
-         }
+         } // We're not doing an optimistic response here because pushing the new tags into the stacks and tags array accomplishes the same thing
       }).catch(err => {
          alert(err.message);
       });
