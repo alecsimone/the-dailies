@@ -224,7 +224,7 @@ const GlobalStyle = createGlobalStyle`
       }
    }
    blockquote {
-      margin: 0;
+      margin: 2rem 0;
       display: block;
       font-style: italic;
       opacity: 0.9;

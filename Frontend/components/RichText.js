@@ -129,6 +129,7 @@ const RichText = ({ text, priorText, nextText, matchCount = 0 }) => {
                   tag,
                   matchCount
                );
+               trimEndingText = true;
                elementsArray.push(quoteElement);
                if (newStoppedAtIndex != null) {
                   stoppedAtIndexOverride = newStoppedAtIndex;
