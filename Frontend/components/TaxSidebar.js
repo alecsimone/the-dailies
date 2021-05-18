@@ -6,9 +6,26 @@ import StuffSummary from './ThingParts/StuffSummary';
 import Content from './ThingParts/Content';
 import TaxMeta from './TaxMeta';
 import Comments from './ThingParts/Comments';
+import { setAlpha } from '../styles/functions';
 
 const StyledTaxSidebar = styled.div`
    padding: 2rem;
+   .content .contentSectionWrapper .contentBlock {
+      padding: 1rem 0 0 0;
+      .contentArea {
+         padding: 0 1.5rem;
+      }
+      .newcontentButtons {
+         margin-left: 0;
+         .buttonsContainer {
+            .buttonWrapper {
+               &:last-child {
+                  border-right: none;
+               }
+            }
+         }
+      }
+   }
    ${props => props.theme.midScreenBreakpoint} {
       .contentSectionWrapper {
          .contentBlock {
@@ -36,6 +53,9 @@ const StyledTaxSidebar = styled.div`
                      padding: 0;
                   }
                }
+            }
+            .newContentButtons {
+               margin-left: 0;
             }
          }
       }

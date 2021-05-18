@@ -257,6 +257,7 @@ const stickifier = stickingData => {
    const bottomBar = document.querySelector('.bottomBar');
    const bottomBarDisplay = window.getComputedStyle(bottomBar).display;
    const isBigScreen = bottomBarDisplay === 'none';
+   const isSidebar = sidebar != null;
 
    let scroller;
    if (isBigScreen) {
@@ -310,7 +311,8 @@ const stickifier = stickingData => {
          ) {
             buttons.style.position = 'absolute';
             buttons.style.left = `${stickingData.current.blockPaddingLeft}px`;
-            buttons.style.width = isBigScreen ? 'calc(60% - 0.6rem)' : '100%'; // Not sure where the 1rem (which here we're taking 60% of) comes from
+            buttons.style.width =
+               isBigScreen && !isSidebar ? 'calc(60% - 0.6rem)' : '100%'; // Not sure where the 1rem (which here we're taking 60% of) comes from
             buttons.style.bottom = 'initial';
             buttons.style.top = isBigScreen ? `10rem` : '11.5rem'; // I don't know where the extra 4rem comes from either, but it needs to be 4rem more than the buffer on big screens, and 5.5 more on little screens
 
@@ -333,9 +335,10 @@ const stickifier = stickingData => {
             buttons.style.left = isBigScreen
                ? `${blockRect.left + stickingData.current.blockPaddingLeft}px`
                : `${blockRect.left}px`;
-            buttons.style.width = isBigScreen
-               ? `${(blockRect.width - getOneRem()) * 0.6}px`
-               : `${blockRect.width}px`; // I don't know where that extra rem is coming from on big screens, sorry.
+            buttons.style.width =
+               isBigScreen && !isSidebar
+                  ? `${(blockRect.width - getOneRem()) * 0.6}px`
+                  : `${blockRect.width}px`; // I don't know where that extra rem is coming from on big screens, sorry.
             buttons.style.bottom = isBigScreen ? 0 : `${bottomBarHeight}px`;
             buttons.style.top = 'initial';
 
@@ -345,7 +348,8 @@ const stickifier = stickingData => {
             // Otherwise, we want to put the buttons back at the bottom of the content block
             buttons.style.position = 'relative';
             buttons.style.left = 'initial';
-            buttons.style.width = isBigScreen ? 'calc(60% + 3rem)' : '100%';
+            buttons.style.width =
+               isBigScreen && !isSidebar ? 'calc(60% + 3rem)' : '100%';
             buttons.style.bottom = 'initial';
             buttons.style.top = 'initial';
 
