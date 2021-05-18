@@ -251,20 +251,22 @@ const VoteBar = ({ votes = [], id, type, mini }) => {
                : 'votebar'
          }
       >
-         <div className="left">
+         <div
+            className="left"
+            onClick={e => {
+               e.stopPropagation();
+               if (me == null) {
+                  setContent(<Login redirect={false} />);
+                  return;
+               }
+               voteHandler();
+            }}
+         >
             <img
                src="/logo-small.png"
                alt="Vote Button"
                role="button"
                className={meVoted ? 'voteButton full' : 'voteButton empty'}
-               onClick={e => {
-                  e.stopPropagation();
-                  if (me == null) {
-                     setContent(<Login redirect={false} />);
-                     return;
-                  }
-                  voteHandler();
-               }}
             />
          </div>
          <div className="middle">{voterBubbles}</div>

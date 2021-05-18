@@ -331,9 +331,9 @@ const StyledContent = styled.section`
                         setAlpha(props.theme.lowContrastGrey, 0.25)};
                   }
                   &.votebarWrapper {
-                     cursor: default;
-                     &:hover {
-                        background: none;
+                     justify-content: stretch;
+                     .votebar {
+                        width: 100%;
                      }
                   }
                }
