@@ -439,6 +439,68 @@ const stickifier = stickingData => {
             comments.style.top = 'initial';
          }
       }
+      // Then we'll deal with the style buttons
+      const styleButtons = block.block.querySelector(
+         '.contentWrapper .stylingButtonsBar'
+      );
+      if (styleButtons) {
+         // First we get the height of the styleButtons
+         const styleButtonsHeight = getButtonsHeight(styleButtons);
+
+         // Then we'll get the placeholder styleButtons for this block
+         const styleButtonsPlaceholder = block.block.querySelector(
+            '.stylingButtonsPlaceholder'
+         );
+
+         // The content has some padding that we have to take into account, so we'll get that number next
+         const theActualContent = block.block.querySelector(
+            '.theActualContent'
+         );
+         const actualContentStyle = window.getComputedStyle(theActualContent);
+         const contentPadding = parseInt(actualContentStyle.paddingTop);
+
+         // Then we need to find the bottom of the textarea, so we can base the bottom boundary on that
+         const textArea = block.block.querySelector('textarea');
+         const textAreaRect = textArea.getBoundingClientRect();
+         // If the top of the element is not on screen, but the bottom of the text area is by more than 8rem, put the buttons 8rem from the bottom of the textarea
+         if (
+            block.blockTop + contentPadding < viewableTop &&
+            textAreaRect.bottom - 8 * getOneRem() - styleButtonsHeight >
+               headerHeight
+         ) {
+            console.log(1);
+            styleButtons.style.position = 'absolute';
+            styleButtonsPlaceholder.style.height = `${styleButtonsHeight}px`;
+            styleButtonsPlaceholder.style.marginBottom = '1rem';
+
+            styleButtons.style.top = `${textAreaRect.top * -1 +
+               headerHeight +
+               2 * styleButtonsHeight}px`;
+            styleButtons.style.width = `${textAreaRect.width}px`;
+         } else if (
+            block.blockTop + contentPadding < viewableTop &&
+            textAreaRect.bottom - 8 * getOneRem() > headerHeight
+         ) {
+            console.log(2);
+            styleButtons.style.position = 'absolute';
+            styleButtonsPlaceholder.style.height = `${styleButtonsHeight}px`;
+            styleButtonsPlaceholder.style.marginBottom = '1rem';
+
+            styleButtons.style.top = `${textAreaRect.height -
+               8 * getOneRem() +
+               styleButtonsHeight}px`;
+            styleButtons.style.width = `${textAreaRect.width}px`;
+         } else {
+            // Otherwise, put them back where you found them
+            console.log(3);
+            styleButtons.style.position = 'relative';
+            styleButtonsPlaceholder.style.height = '0';
+            styleButtonsPlaceholder.style.marginBottom = '0';
+
+            styleButtons.style.top = 'initial';
+            styleButtons.style.width = 'initial';
+         }
+      }
    });
 };
 export { stickifier };

@@ -495,6 +495,12 @@ const GlobalStyle = createGlobalStyle`
          overflow-wrap: break-word;
          word-wrap: break-word;
       }
+      ul {
+         padding-left: 0;
+         ul {
+            padding-left: 3.25rem;
+         }
+      }
       &.retweet {
          .retweeter {
             margin: 0 -1.5rem 1rem -1.5rem;

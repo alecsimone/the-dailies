@@ -21,10 +21,17 @@ import LinkIcon from './Icons/Link';
 const StyledWrapper = styled.div`
    width: 100%;
    max-width: 900px;
+   ..stylingButtonsPlaceholder {
+      position: relative;
+      width: 100%;
+      height: 0px;
+   }
    .stylingButtonsBar {
       display: flex;
       justify-content: space-between;
       margin-bottom: 1rem;
+      background: ${props => props.theme.midBlack};
+      z-index: 2;
       button.stylingButton {
          flex-grow: 1;
          margin: 0 0.5rem;
@@ -537,11 +544,12 @@ const RichTextArea = ({
          }}
       >
          <StyledWrapper>
+            <div className="stylingButtonsPlaceholder" />
             <div className="stylingButtonsBar">
                <button
                   type="button"
                   className="stylingButton bold"
-                  onMouseDown={e => {
+                  onClick={e => {
                      e.preventDefault();
                      wrapTextWithTag(
                         inputRef.current,
@@ -556,7 +564,7 @@ const RichTextArea = ({
                <button
                   type="button"
                   className="stylingButton italic"
-                  onMouseDown={e => {
+                  onClick={e => {
                      e.preventDefault();
                      wrapTextWithTag(
                         inputRef.current,
@@ -571,7 +579,7 @@ const RichTextArea = ({
                <button
                   type="button"
                   className="stylingButton underline"
-                  onMouseDown={e => {
+                  onClick={e => {
                      e.preventDefault();
                      wrapTextWithTag(
                         inputRef.current,
@@ -586,7 +594,7 @@ const RichTextArea = ({
                <button
                   type="button"
                   className="stylingButton header"
-                  onMouseDown={e => {
+                  onClick={e => {
                      e.preventDefault();
                      wrapTextWithTag(
                         inputRef.current,
@@ -601,7 +609,7 @@ const RichTextArea = ({
                <button
                   type="button"
                   className="stylingButton summary"
-                  onMouseDown={e => {
+                  onClick={e => {
                      e.preventDefault();
                      addSummaryTagsToText(
                         inputRef.current,
@@ -615,7 +623,7 @@ const RichTextArea = ({
                <button
                   type="button"
                   className="stylingButton blockQuote"
-                  onMouseDown={e => {
+                  onClick={e => {
                      e.preventDefault();
                      wrapTextWithTag(
                         inputRef.current,
@@ -630,7 +638,7 @@ const RichTextArea = ({
                <button
                   type="button"
                   className="stylingButton link"
-                  onMouseDown={e => {
+                  onClick={e => {
                      e.preventDefault();
                      linkifyText(
                         inputRef.current,
