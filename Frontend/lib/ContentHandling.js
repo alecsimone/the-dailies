@@ -501,6 +501,69 @@ const stickifier = stickingData => {
          }
       }
    });
+   // Now we just need to position the style buttons for the top level rich text area, the one that adds new content pieces (as opposed to the other ones, which edit them)
+   const topLevelRichTextArea = document.querySelector(
+      '.contentSectionWrapper > form.richTextArea'
+   );
+   if (topLevelRichTextArea) {
+      // First we get the style buttons and placeholder buttons for the TLRTA (Top Level Rich Text Area)
+      const styleButtons = topLevelRichTextArea.querySelector(
+         '.stylingButtonsBar'
+      );
+      const styleButtonsPlaceholder = topLevelRichTextArea.querySelector(
+         '.stylingButtonsPlaceholder'
+      );
+
+      // Then we get the height of the style buttons
+      const styleButtonsHeight = getButtonsHeight(styleButtons);
+
+      // Then we get the margin-top for the TLRTA
+      const tlrtaStyle = window.getComputedStyle(topLevelRichTextArea);
+      const tlrtaMargin = parseInt(tlrtaStyle.marginTop);
+
+      // Then we need to find the bottom of the textarea, so we can base the bottom boundary on that
+      const textArea = topLevelRichTextArea.querySelector('textarea');
+      const textAreaRect = textArea.getBoundingClientRect();
+
+      // Then we need to find the top of the TLRTA so we can base the top boundary on that
+      const tlrtaTop =
+         topLevelRichTextArea.offsetTop + stickingData.current.fullThingOffset;
+
+      // If the top of the element is not on screen, but the bottom of the text area is by more than 8rem, put the buttons 8rem from the bottom of the textarea
+      if (
+         tlrtaTop < viewableTop &&
+         textAreaRect.bottom - 8 * getOneRem() - styleButtonsHeight >
+            headerHeight
+      ) {
+         styleButtons.style.position = 'fixed';
+         styleButtonsPlaceholder.style.height = `${styleButtonsHeight}px`;
+         styleButtonsPlaceholder.style.marginBottom = '1rem';
+         styleButtons.style.top = `${headerHeight}px`;
+         styleButtons.style.width = `${textAreaRect.width}px`;
+      } else if (
+         textAreaRect.bottom - 8 * getOneRem() - styleButtonsHeight <
+            headerHeight &&
+         textAreaRect.bottom - 8 * getOneRem() - styleButtonsHeight > 0
+      ) {
+         // If the bottom of the textarea is on screen by less than 8 rem stick the buttons 8 rem above the bottom of the textarea
+         styleButtons.style.position = 'absolute';
+         styleButtonsPlaceholder.style.height = `${styleButtonsHeight}px`;
+         styleButtonsPlaceholder.style.marginBottom = '1rem';
+
+         styleButtons.style.top = `${topLevelRichTextArea.offsetTop +
+            textAreaRect.height +
+            getOneRem() -
+            8 * getOneRem()}px`; // We're sticking the buttons 8 rem above the bottom of the text area. So we get the height of the text area, plus the one rem margin on the style buttons, and then subtract 8 rem
+         styleButtons.style.width = `${textAreaRect.width}px`;
+      } else {
+         // Otherwise, put them back where you found them
+         styleButtons.style.position = 'relative';
+         styleButtonsPlaceholder.style.height = '0';
+         styleButtonsPlaceholder.style.marginBottom = '0';
+         styleButtons.style.top = 'initial';
+         styleButtons.style.width = 'initial';
+      }
+   }
 };
 export { stickifier };
 
