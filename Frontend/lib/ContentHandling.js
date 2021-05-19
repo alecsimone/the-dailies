@@ -222,6 +222,10 @@ const stickifier = stickingData => {
    // We're going to make an array of the tops and bottoms of each contentBlock so that we can check it against the current scroll position and see if we need to reposition its sticky buttons
    const blockPositionsArray = [];
 
+   const bottomBar = document.querySelector('.bottomBar');
+   const bottomBarDisplay = window.getComputedStyle(bottomBar).display;
+   const isBigScreen = bottomBarDisplay === 'none';
+
    const blocks = document.querySelectorAll('.contentBlock');
    for (const block of blocks) {
       const blockOffset = block.offsetTop;
@@ -232,10 +236,13 @@ const stickifier = stickingData => {
       const buttonsHeight = getButtonsHeight(buttons);
 
       // The "top" we use for determining when to start sticking things is slightly different from the actual top of the element. I'm defining that top first so I can base the "top" off it as well as the bottom, which is the actual bottom. This "top" is basically the position of the bottom of the buttonsContainer when it's at the top of its scroll area.
-      const blockTop =
+      let blockTop =
          blockOffset +
          stickingData.current.blockPaddingTop +
          stickingData.current.fullThingOffset;
+      if (!isBigScreen) {
+         blockTop += 1.5 * getOneRem(); // On mobile, contentPiece has a .5rem padding and overflowWrapper has a 1 rem margin
+      }
       const top = blockTop + stickingData.current.piecePadding + buttonsHeight;
       const bottom = blockTop + blockHeight;
       blockPositionsArray.push({
@@ -247,28 +254,17 @@ const stickifier = stickingData => {
    }
    stickingData.current.blocksArray = blockPositionsArray;
 
-   // The scrolling element on big screens is mainSection, on little screens it's threeColumns. But sometimes we're within a sidebar, and then we need to use that
+   // The scrolling element for content is usually mainSection, but sometimes we're within a sidebar, and then we need to use that
    const mainSection = document.querySelector('.mainSection');
-   const threeColumns = document.querySelector('.threeColumns');
    const sidebar = stickingData?.current?.blocksArray[0]?.block?.closest(
       '.sidebar'
    );
 
-   const bottomBar = document.querySelector('.bottomBar');
-   const bottomBarDisplay = window.getComputedStyle(bottomBar).display;
-   const isBigScreen = bottomBarDisplay === 'none';
    const isSidebar = sidebar != null;
 
-   let scroller;
-   if (isBigScreen) {
-      // If we're on a big screen, the scrolling element is mainSection
-      scroller = mainSection;
-   } else {
-      // If we're on mobile, the scrolling element is threeColumns
-      scroller = threeColumns;
-   }
+   let scroller = mainSection;
    if (sidebar != null) {
-      // But, if the blocks are within a sidebar, we want to use that instead.
+      // If the blocks are within a sidebar, we want to use that instead.
       scroller = sidebar;
    }
 
@@ -285,7 +281,7 @@ const stickifier = stickingData => {
       viewableBottom = viewableTop + window.innerHeight - headerHeight;
    } else {
       const bottomBarHeight = bottomBar.offsetHeight;
-      viewableTop = scroller.scrollTop;
+      viewableTop = scroller.scrollTop + headerHeight;
 
       // On small screens, the viewable bottom is the height of the window minus the height of the header and the bottomBar
       viewableBottom =
@@ -295,8 +291,8 @@ const stickifier = stickingData => {
    // Now we go through each block and see where it is relative to the screen
    stickingData.current.blocksArray.forEach(block => {
       // First we'll deal with the buttons
-      const buttonsArray = block.block.querySelectorAll('.newcontentButtons');
-      for (const buttons of buttonsArray) {
+      const buttons = block.block.querySelector('.newcontentButtons');
+      if (buttons != null) {
          const buttonsHeight = getButtonsHeight(buttons);
 
          const buttonsPlaceholder = block.block.querySelector(
@@ -439,6 +435,7 @@ const stickifier = stickingData => {
             comments.style.top = 'initial';
          }
       }
+
       // Then we'll deal with the style buttons
       const styleButtons = block.block.querySelector(
          '.contentWrapper .stylingButtonsBar'
@@ -468,31 +465,33 @@ const stickifier = stickingData => {
             textAreaRect.bottom - 8 * getOneRem() - styleButtonsHeight >
                headerHeight
          ) {
-            console.log(1);
             styleButtons.style.position = 'absolute';
             styleButtonsPlaceholder.style.height = `${styleButtonsHeight}px`;
             styleButtonsPlaceholder.style.marginBottom = '1rem';
 
             styleButtons.style.top = `${textAreaRect.top * -1 +
                headerHeight +
-               2 * styleButtonsHeight}px`;
+               styleButtonsHeight +
+               getOneRem() +
+               contentPadding}px`; // The text area is below the top of the parent element (against which this element is positioned) by the height of the style buttons with a one rem margin and some padding on top (contentPadding). textAreaRect.top gives us the distance from the top of the textarea to the top of the viewport, so we add headerHeight to make that the distance to the top of the visible area, and then the styleButtonsHeight, contentPadding, and one rem to make that the distance from the top of the parent element to the top of the visible area
             styleButtons.style.width = `${textAreaRect.width}px`;
          } else if (
-            block.blockTop + contentPadding < viewableTop &&
-            textAreaRect.bottom - 8 * getOneRem() > headerHeight
+            textAreaRect.bottom - 8 * getOneRem() - styleButtonsHeight <
+               headerHeight &&
+            textAreaRect.bottom - 8 * getOneRem() - styleButtonsHeight > 0
          ) {
-            console.log(2);
+            // If the bottom of the textarea is on screen by less than 8 rem stick the buttons 8 rem above the bottom of the textarea
             styleButtons.style.position = 'absolute';
             styleButtonsPlaceholder.style.height = `${styleButtonsHeight}px`;
             styleButtonsPlaceholder.style.marginBottom = '1rem';
 
-            styleButtons.style.top = `${textAreaRect.height -
-               8 * getOneRem() +
-               styleButtonsHeight}px`;
+            styleButtons.style.top = `${textAreaRect.height +
+               contentPadding +
+               getOneRem() -
+               8 * getOneRem()}px`; // We're sticking the buttons 8 rem above the bottom of the text area. So we get the height of the text area, plus the content padding and one rem that separate it from the top of the element, and then subtract 8 rem
             styleButtons.style.width = `${textAreaRect.width}px`;
          } else {
             // Otherwise, put them back where you found them
-            console.log(3);
             styleButtons.style.position = 'relative';
             styleButtonsPlaceholder.style.height = '0';
             styleButtonsPlaceholder.style.marginBottom = '0';

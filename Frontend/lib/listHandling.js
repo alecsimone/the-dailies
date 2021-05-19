@@ -190,7 +190,7 @@ const getListElement = (listItem, fixedText, match) => {
          trimmedItem[1] != ','
       ) {
          // If there's only one thing and the ordinal isn't a dash and the second character isn't a period or comma, it's not a list
-         console.log('failed test 1');
+         // console.log('failed test 1');
          definitelyAList = false;
       }
 
@@ -203,7 +203,7 @@ const getListElement = (listItem, fixedText, match) => {
             // If the ordinal is an asterisk and the text content also has an asterisk following a space, we're going to assume it's not a list.
             // In our main regex, we only allow asterisks to be ordinals if they're followed by a space, because otherwise people might be enclosing text in asterisks for emphasis, and we don't want to catch those as lists. We're using the same logic here.
             // But also, they might be using an asterisk to denote a footnote or something like that within a list item with an asterisk ordinal. So there might be times where someone uses an asterisk within a list item, and we don't want to catch those.
-            console.log('failed test 1.1');
+            // console.log('failed test 1.1');
             definitelyAList = false;
          }
       }
@@ -233,12 +233,12 @@ const getListElement = (listItem, fixedText, match) => {
                } else if (isLowerCase(char) && !isUpperCase(char)) {
                   if (itemCase === 'upper') {
                      // If this character is lower case but we've previously established the case is upper, it's not a list
-                     console.log('failed test 2');
+                     // console.log('failed test 2');
                      definitelyAList = false;
                   }
                } else if (itemCase === 'lower') {
                   // If this character is upper case but we've previously established the case is lower, it's not a list
-                  console.log('failed test 3');
+                  // console.log('failed test 3');
                   definitelyAList = false;
                }
             }
@@ -260,7 +260,7 @@ const getListElement = (listItem, fixedText, match) => {
                   null
                ) {
                   // However, if it's a one or two digit number immediately followed by a period or comma, or a single letter immediately followed by a period, we'll make an exception because that's so obviously a list. Sometimes lists get broken up with multiple line breaks, and when it's this obvious that it's a list, we'll allow it
-                  console.log('failed test 4');
+                  // console.log('failed test 4');
                   definitelyAList = false;
                }
             }
@@ -271,7 +271,7 @@ const getListElement = (listItem, fixedText, match) => {
             trimmedItem[1] !== '.'
          ) {
             // If there's only one thing in the list, and it starts with A or I and the second character isn't a period, let's assume it's a sentence
-            console.log('failed test 5');
+            // console.log('failed test 5');
             definitelyAList = false;
          }
          if (
@@ -282,7 +282,7 @@ const getListElement = (listItem, fixedText, match) => {
             trimmedItem[1] !== ')'
          ) {
             // If the first item starts with 1, but the second character isn't a space, period, closing parentheses, or comma it's not a list
-            console.log('failed test 6');
+            // console.log('failed test 6');
             definitelyAList = false;
          }
       } else {
@@ -304,7 +304,7 @@ const getListElement = (listItem, fixedText, match) => {
             testChar.match(/[-*\u2022,\u2023,\u25E6,\u2043,\u2219ia1]/gi) ==
                null
          ) {
-            console.log('failed test 7');
+            // console.log('failed test 7');
             definitelyAList = false;
          }
          if (
@@ -314,7 +314,7 @@ const getListElement = (listItem, fixedText, match) => {
             testChar != 'i'
          ) {
             // If the test character for this item is exactly the same as the test character for the last item, and it's not a dash, bullet, asterisk, or an i (because roman numerals can start with the same letter, like i and ii), it's not a list
-            console.log('failed test 8');
+            // console.log('failed test 8');
             definitelyAList = false;
          }
          if (
@@ -329,7 +329,7 @@ const getListElement = (listItem, fixedText, match) => {
                null
          ) {
             // If both items start with the same character, and one of them isn't followed by another roman numeral and the character isn't a bullet, dash, or asterisk, it's not a list
-            console.log('failed test 9');
+            // console.log('failed test 9');
             definitelyAList = false;
          }
       }
