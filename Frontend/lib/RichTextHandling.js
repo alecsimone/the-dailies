@@ -1,6 +1,12 @@
 import { useState, useRef } from 'react';
 import { dynamicallyResizeElement } from '../styles/functions';
 
+const undoableEditText = (text, input) => {
+   input.value = '';
+   window.setTimeout(() => document.execCommand('insertText', false, text), 1);
+};
+export { undoableEditText };
+
 const getCursorXY = (input, selectionPoint) => {
    // stole this from https://medium.com/@jh3y/how-to-where-s-the-caret-getting-the-xy-position-of-the-caret-a24ba372990a
    const { offsetLeft: inputX, offsetTop: inputY } = input;
@@ -75,7 +81,8 @@ const autoCloseBracketLink = (e, setText) => {
 };
 export { autoCloseBracketLink };
 
-const wrapTextWithTag = (target, tag, setText) => {
+const wrapTextWithTag = (target, tag) => {
+   target.focus();
    const { selectionStart, selectionEnd } = target;
    const initialText = target.value;
 
@@ -89,7 +96,6 @@ const wrapTextWithTag = (target, tag, setText) => {
       selectionEnd + 2
    );
 
-   let newText;
    let newSelectionStart;
    let newSelectionEnd;
    if (
@@ -97,46 +103,52 @@ const wrapTextWithTag = (target, tag, setText) => {
          fourCharactersSurroundingEnd.includes(tag)) ||
       (tag === '<"' &&
          (fourCharactersSurroundingStart.includes(tag) ||
-            fourCharactersSurroundingEnd.includes(tag)))
+            fourCharactersSurroundingEnd.includes('">')))
    ) {
+      // If the text is already surrounded by the tag, we need to remove it
       // So what we're gonna do here is take the text up to two characters before the selection, the selection minus the two characters on either end, and the text starting two characters after the end of the selection. This will leave us with a four character gap on either side of the selection, which will be filled in by our de-tagged fourCharacters from earlier
-      const before = initialText.substring(0, selectionStart - 2);
-      const selectionMinusFour = initialText.substring(
-         selectionStart + 2,
-         selectionEnd - 2
+
+      const indexOfStartTag = fourCharactersSurroundingStart.indexOf(tag);
+      const startAdjustment = indexOfStartTag - 2;
+      const properSelectionStart = selectionStart + startAdjustment;
+
+      target.setSelectionRange(
+         properSelectionStart,
+         properSelectionStart + tag.length
       );
-      const after = initialText.substring(selectionEnd + 2);
+      document.execCommand('delete', false);
 
-      const detaggedStartCharacters = fourCharactersSurroundingStart.replace(
-         tag,
-         ''
+      const indexOfEndTag = fourCharactersSurroundingEnd.indexOf(
+         tag === '<"' ? '">' : tag
       );
-      let detaggedEndCharacters;
-      if (tag === '<"') {
-         detaggedEndCharacters = fourCharactersSurroundingEnd.replace('">', '');
-      } else {
-         detaggedEndCharacters = fourCharactersSurroundingEnd.replace(tag, '');
-      }
+      const endAdjustment = indexOfEndTag - 2;
+      const properSelectionEnd = selectionEnd + endAdjustment - tag.length; // we subtract tag.length to account for the tag deleted from the start
 
-      newText = `${before}${detaggedStartCharacters}${selectionMinusFour}${detaggedEndCharacters}${after}`;
+      target.setSelectionRange(
+         properSelectionEnd,
+         properSelectionEnd + tag.length
+      );
+      document.execCommand('delete', false);
 
-      newSelectionStart = selectionStart - tag.length;
-      newSelectionEnd = selectionEnd - tag.length;
+      newSelectionStart = properSelectionStart;
+      newSelectionEnd = properSelectionEnd;
    } else {
-      const before = initialText.substring(0, selectionStart);
-      const selection = initialText.substring(selectionStart, selectionEnd);
-      const after = initialText.substring(selectionEnd);
+      target.setSelectionRange(selectionStart, selectionStart);
+      document.execCommand('insertText', false, tag);
+      target.setSelectionRange(
+         selectionEnd + tag.length,
+         selectionEnd + tag.length
+      );
       if (tag === '<"') {
-         newText = `${before}${tag}${selection}">${after}`;
+         document.execCommand('insertText', false, '">');
       } else {
-         newText = `${before}${tag}${selection}${tag}${after}`;
+         document.execCommand('insertText', false, tag);
       }
 
       newSelectionStart = selectionStart + tag.length;
       newSelectionEnd = selectionEnd + tag.length;
    }
 
-   setText(newText);
    // we need to make sure the text has changed before we set the new selection, otherwise it won't be based on the updated text
    window.setTimeout(
       () => target.setSelectionRange(newSelectionStart, newSelectionEnd),

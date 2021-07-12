@@ -14,7 +14,8 @@ import {
    useSearchResultsSelector,
    tabTheText,
    unTabTheText,
-   insertLineAbove
+   insertLineAbove,
+   undoableEditText
 } from '../lib/RichTextHandling';
 import LinkIcon from './Icons/Link';
 
@@ -268,10 +269,7 @@ const RichTextArea = ({
 
       if (e.key === 'Enter' && (e.ctrlKey || e.metaKey) && e.shiftKey) {
          e.preventDefault();
-         insertLineAbove(
-            e.target,
-            newText => (inputRef.current.value = newText)
-         );
+         insertLineAbove(e.target, newText => undoableEditText(newText));
       }
 
       // Quit editing on escape
@@ -291,7 +289,7 @@ const RichTextArea = ({
          inputRef.current.value[e.target.selectionStart - 1] === ']' &&
          e.target.selectionStart === e.target.selectionEnd
       ) {
-         autoCloseBracketLink(e, newText => (inputRef.current.value = newText));
+         autoCloseBracketLink(e, newText => undoableEditText(newText));
          return;
       }
 
@@ -307,90 +305,67 @@ const RichTextArea = ({
          e.target.selectionStart !== e.target.selectionEnd &&
          !(e.ctrlKey || e.metaKey)
       ) {
-         encloseSelectedText(e, newText => (inputRef.current.value = newText));
+         encloseSelectedText(e, newText => undoableEditText(newText));
          return;
       }
 
       // ctrl+b adds tags for bold text
       if (e.key === 'b' && (e.ctrlKey || e.metaKey)) {
          e.preventDefault();
-         wrapTextWithTag(
-            e.target,
-            '**',
-            newText => (inputRef.current.value = newText)
-         );
+         wrapTextWithTag(e.target, '**');
          return;
       }
 
       // ctrl+i adds tags for italicized text
       if (e.key === 'i' && (e.ctrlKey || e.metaKey)) {
          e.preventDefault();
-         wrapTextWithTag(
-            e.target,
-            '//',
-            newText => (inputRef.current.value = newText)
-         );
+         wrapTextWithTag(e.target, '//');
          return;
       }
 
       // ctrl+u adds tags for underlined text
       if (e.key === 'u' && (e.ctrlKey || e.metaKey)) {
          e.preventDefault();
-         wrapTextWithTag(
-            e.target,
-            '__',
-            newText => (inputRef.current.value = newText)
-         );
+         wrapTextWithTag(e.target, '__');
          return;
       }
 
       if ((e.key === '3' || e.key === '#') && (e.ctrlKey || e.metaKey)) {
          e.preventDefault();
-         wrapTextWithTag(
-            e.target,
-            '##',
-            newText => (inputRef.current.value = newText)
-         );
+         wrapTextWithTag(e.target, '##');
          return;
       }
 
       // ctrl+' adds tags for block quote
       if ((e.key === "'" || e.key === '"') && (e.ctrlKey || e.metaKey)) {
          e.preventDefault();
-         wrapTextWithTag(
-            e.target,
-            '<"',
-            newText => (inputRef.current.value = newText)
-         );
+         wrapTextWithTag(e.target, '<"');
          return;
       }
 
       // ctrl+k adds bracket link
       if (e.key === 'k' && (e.ctrlKey || e.metaKey)) {
          e.preventDefault();
-         linkifyText(e.target, newText => (inputRef.current.value = newText));
+         linkifyText(e.target, newText => undoableEditText(newText));
          return;
       }
 
       // ctrl + > adds summary tags
       if ((e.key === '.' || e.key === '>') && (e.ctrlKey || e.metaKey)) {
          e.preventDefault();
-         addSummaryTagsToText(
-            e.target,
-            newText => (inputRef.current.value = newText)
-         );
+         addSummaryTagsToText(e.target, newText => undoableEditText(newText));
          return;
       }
 
       if (e.key === 'Tab' && !e.shiftKey) {
          e.preventDefault();
-         tabTheText(e.target, newText => (inputRef.current.value = newText));
+         tabTheText(e.target, newText => undoableEditText(newText));
          return;
       }
 
       if (e.key === 'Tab' && e.shiftKey) {
          e.preventDefault();
-         unTabTheText(e.target, newText => (inputRef.current.value = newText));
+         unTabTheText(e.target, newText => undoableEditText(newText));
       }
    };
 
@@ -551,11 +526,7 @@ const RichTextArea = ({
                   className="stylingButton bold"
                   onClick={e => {
                      e.preventDefault();
-                     wrapTextWithTag(
-                        inputRef.current,
-                        '**',
-                        newText => (inputRef.current.value = newText)
-                     );
+                     wrapTextWithTag(inputRef.current, '**');
                      inputRef.current.focus();
                   }}
                >
@@ -566,11 +537,7 @@ const RichTextArea = ({
                   className="stylingButton italic"
                   onClick={e => {
                      e.preventDefault();
-                     wrapTextWithTag(
-                        inputRef.current,
-                        '//',
-                        newText => (inputRef.current.value = newText)
-                     );
+                     wrapTextWithTag(inputRef.current, '//');
                      inputRef.current.focus();
                   }}
                >
@@ -581,11 +548,7 @@ const RichTextArea = ({
                   className="stylingButton underline"
                   onClick={e => {
                      e.preventDefault();
-                     wrapTextWithTag(
-                        inputRef.current,
-                        '__',
-                        newText => (inputRef.current.value = newText)
-                     );
+                     wrapTextWithTag(inputRef.current, '__');
                      inputRef.current.focus();
                   }}
                >
@@ -596,11 +559,7 @@ const RichTextArea = ({
                   className="stylingButton header"
                   onClick={e => {
                      e.preventDefault();
-                     wrapTextWithTag(
-                        inputRef.current,
-                        '##',
-                        newText => (inputRef.current.value = newText)
-                     );
+                     wrapTextWithTag(inputRef.current, '##');
                      inputRef.current.focus();
                   }}
                >
@@ -611,9 +570,8 @@ const RichTextArea = ({
                   className="stylingButton summary"
                   onClick={e => {
                      e.preventDefault();
-                     addSummaryTagsToText(
-                        inputRef.current,
-                        newText => (inputRef.current.value = newText)
+                     addSummaryTagsToText(inputRef.current, newText =>
+                        undoableEditText(newText)
                      );
                      inputRef.current.focus();
                   }}
@@ -625,11 +583,7 @@ const RichTextArea = ({
                   className="stylingButton blockQuote"
                   onClick={e => {
                      e.preventDefault();
-                     wrapTextWithTag(
-                        inputRef.current,
-                        '<"',
-                        newText => (inputRef.current.value = newText)
-                     );
+                     wrapTextWithTag(inputRef.current, '<"');
                      inputRef.current.focus();
                   }}
                >
