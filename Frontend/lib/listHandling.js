@@ -195,6 +195,7 @@ const getListElement = (listItem, fixedText, match) => {
       }
 
       const splitUpItem = item.matchAll(listSearchString);
+
       for (const splitItem of splitUpItem) {
          if (
             testChar === '*' &&
@@ -206,16 +207,14 @@ const getListElement = (listItem, fixedText, match) => {
             // console.log('failed test 1.1');
             definitelyAList = false;
          }
-      }
 
-      // If all the letters in the ordinal are not the same case, it's not a list
-      let itemCase = false;
-
-      // First we need to get just the ordinal out of the list item
-      for (const splitItem of splitUpItem) {
+         // If all the letters in the ordinal are not the same case, it's not a list
+         let itemCase = false;
+         // First we need to get just the ordinal out of the list item
          const { ordinal } = splitItem.groups;
 
          // We only want to do this with letter ordinals
+         console.log('we out here?');
          if (ordinal.match(/[a-z]/gi) != null) {
             // Then we go through the ordinal character by character
             for (let i = 0; i < ordinal.length; i++) {
