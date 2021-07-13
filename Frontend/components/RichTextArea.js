@@ -14,8 +14,7 @@ import {
    useSearchResultsSelector,
    tabTheText,
    unTabTheText,
-   insertLineAbove,
-   undoableEditText
+   insertLineAbove
 } from '../lib/RichTextHandling';
 import LinkIcon from './Icons/Link';
 

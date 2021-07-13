@@ -1,12 +1,6 @@
 import { useState, useRef } from 'react';
 import { dynamicallyResizeElement } from '../styles/functions';
 
-const undoableEditText = (text, input) => {
-   input.value = '';
-   window.setTimeout(() => document.execCommand('insertText', false, text), 1);
-};
-export { undoableEditText };
-
 const getCursorXY = (input, selectionPoint) => {
    // stole this from https://medium.com/@jh3y/how-to-where-s-the-caret-getting-the-xy-position-of-the-caret-a24ba372990a
    const { offsetLeft: inputX, offsetTop: inputY } = input;
