@@ -40,8 +40,11 @@ type Mutation {
       privacy: String
   ): Thing
   addContentPiece(content: String, id: ID!, type: String!): Stuff
+  storeUnsavedThingChanges(id: ID!, unsavedContent: String!): Stuff
   deleteContentPiece(contentPieceID: ID!, id: ID!, type: String!): Stuff
   editContentPiece(contentPieceID: ID!, content: String!, id: ID!, type: String!): Stuff
+  storeUnsavedContentPieceChanges(pieceId: ID!, thingId: ID!, unsavedContent: String!): Stuff
+  clearUnsavedContentPieceChanges(pieceId: ID!, thingId: ID!): Stuff
   reorderContent(id: ID!, type: String!, oldPosition: Int!, newPosition: Int!): Stuff
   setThingPrivacy(privacySetting: PrivacySetting!, thingID: ID!): Thing
   addTaxToThing(tax: String!, thingID: ID!, personal: Boolean): Thing

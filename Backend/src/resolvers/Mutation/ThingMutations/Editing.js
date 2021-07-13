@@ -215,7 +215,8 @@ async function addContentPiece(parent, { content, id, type }, ctx, info) {
          create: {
             content
          }
-      }
+      },
+      unsavedNewContent: null
    };
    const updatedThing = await properUpdateStuff(dataObj, id, type, ctx).catch(err => {
       console.log(err);
@@ -223,6 +224,27 @@ async function addContentPiece(parent, { content, id, type }, ctx, info) {
    return updatedThing;
 }
 exports.addContentPiece = addContentPiece;
+
+async function storeUnsavedThingChanges(parent, {id, unsavedContent}, ctx, info) {
+   await loggedInGate(ctx).catch(() => {
+      throw new AuthenticationError('You must be logged in to do that!');
+   });
+   fullMemberGate(ctx.req.member);
+
+   unsavedContent = await lengthenTikTokURL(unsavedContent).catch(err => {
+      console.log(err);
+   });
+
+   const dataObj = {
+      unsavedNewContent: unsavedContent
+   }
+
+   const updatedThing = await properUpdateStuff(dataObj, id, 'Thing', ctx).catch(err => {
+      console.log(err);
+   });
+   return updatedThing;
+}
+exports.storeUnsavedThingChanges = storeUnsavedThingChanges;
 
 async function deleteContentPiece(
    parent,
@@ -287,7 +309,8 @@ async function editContentPiece(
                id: contentPieceID
             },
             data: {
-               content
+               content,
+               unsavedNewContent: null
             }
          }
       }
@@ -295,10 +318,63 @@ async function editContentPiece(
    const updatedThing = await properUpdateStuff(dataObj, id, type, ctx).catch(err => {
       console.log(err);
    });
-   console.log(updatedThing);
    return updatedThing;
 }
 exports.editContentPiece = editContentPiece;
+
+async function storeUnsavedContentPieceChanges(parent, {pieceId, thingId, unsavedContent}, ctx, info) {
+   await loggedInGate(ctx).catch(() => {
+      throw new AuthenticationError('You must be logged in to do that!');
+   });
+   fullMemberGate(ctx.req.member);
+
+   unsavedContent = await lengthenTikTokURL(unsavedContent).catch(err => {
+      console.log(err);
+   });
+
+   const dataObj = {
+      content: {
+         update: {
+            where: {
+               id: pieceId
+            },
+            data: {
+               unsavedNewContent: unsavedContent
+            }
+         }
+      }
+   };
+   const updatedThing = await properUpdateStuff(dataObj, thingId, 'Thing', ctx).catch(err => {
+      console.log(err);
+   });
+   return updatedThing;
+}
+exports.storeUnsavedContentPieceChanges = storeUnsavedContentPieceChanges;
+
+async function clearUnsavedContentPieceChanges(parent, {pieceId, thingId}, ctx, info) {
+   await loggedInGate(ctx).catch(() => {
+      throw new AuthenticationError('You must be logged in to do that!');
+   });
+   fullMemberGate(ctx.req.member);
+
+   const dataObj = {
+      content: {
+         update: {
+            where: {
+               id: pieceId
+            },
+            data: {
+               unsavedNewContent: null
+            }
+         }
+      }
+   };
+   const updatedThing = await properUpdateStuff(dataObj, thingId, 'Thing', ctx).catch(err => {
+      console.log(err);
+   });
+   return updatedThing;
+}
+exports.clearUnsavedContentPieceChanges = clearUnsavedContentPieceChanges;
 
 async function reorderContent(parent, {id, type, oldPosition, newPosition}, ctx, info) {
    await loggedInGate(ctx).catch(() => {
@@ -621,7 +697,6 @@ async function deleteThing(parent, {id}, ctx, info) {
          console.log(err);
       });
 
-   console.log(deletedThing);
    ctx.pubsub.publish('myThings', {
       myThings: {
          node: deletedThing,

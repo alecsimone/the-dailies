@@ -20,6 +20,8 @@ import ReorderIcon from '../Icons/Reorder';
 import X from '../Icons/X';
 import {
    UNLINK_CONTENTPIECE_MUTATION,
+   STORE_UNSAVED_CONTENT_PIECE_MUTATION,
+   CLEAR_UNSAVED_CONTENT_PIECE_MUTATION,
    useScrollFixer,
    changeContentButKeepInFrame,
    editContentButKeepInFrame
@@ -35,6 +37,7 @@ const ContentPiece = ({
    id,
    thingID,
    rawContentString,
+   unsavedContent,
    comments,
    deleteContentPiece,
    editContentPiece,
@@ -67,6 +70,8 @@ const ContentPiece = ({
    const [touchEnd, setTouchEnd] = useState(0);
    const [copied, setCopied] = useState(false);
 
+   const [unsavedNewContent, setUnsavedNewContent] = useState(unsavedContent);
+
    const [showingComments, setShowingComments] = useState(false);
    const [hasShownComments, setHasShownComments] = useState(false);
    const contentWrapperRef = useRef(null);
@@ -95,6 +100,25 @@ const ContentPiece = ({
       editContentPiece(id, editedContent);
       setEditableHandler(false);
    };
+
+   const [storeUnsavedContentPieceChanges] = useMutation(
+      STORE_UNSAVED_CONTENT_PIECE_MUTATION,
+      {
+         onError: err => alert(err.message)
+      }
+   );
+
+   const [clearUnsavedContentPieceChanges] = useMutation(
+      CLEAR_UNSAVED_CONTENT_PIECE_MUTATION,
+      {
+         variables: {
+            pieceId: id,
+            thingId: thingID
+         },
+         onCompleted: data => console.log(data),
+         onError: err => alert(err.message)
+      }
+   );
 
    const [addComment] = useMutation(ADD_COMMENT_MUTATION, {
       onError: err => alert(err.message)
@@ -200,6 +224,18 @@ const ContentPiece = ({
       window.setTimeout(() => dynamicallyResizeElement(inputElement), 1);
    };
 
+   const unsavedChangesHandler = async e => {
+      await storeUnsavedContentPieceChanges({
+         variables: {
+            thingId: thingID,
+            pieceId: id,
+            unsavedContent: e.target.value
+         }
+      }).catch(err => {
+         alert(err.message);
+      });
+   };
+
    let contentElement;
    if (!editable) {
       contentElement = <RichText text={rawContentString} key={id} />;
@@ -217,6 +253,7 @@ const ContentPiece = ({
             id={id}
             key={id}
             inputRef={editContentInputRef}
+            unsavedChangesHandler={unsavedChangesHandler}
          />
       );
    }
@@ -451,6 +488,8 @@ const ContentPiece = ({
                         return;
                      }
                   }
+                  clearUnsavedContentPieceChanges();
+                  setUnsavedNewContent(null);
                   setEditableHandler(!editable);
                }}
             >
@@ -540,7 +579,30 @@ const ContentPiece = ({
                }}
                ref={contentWrapperRef}
             >
-               <div className="theActualContent">{contentElement}</div>
+               <div className="theActualContent">
+                  {contentElement}
+                  {canEdit &&
+                     unsavedNewContent != null &&
+                     unsavedNewContent !== '' && (
+                        <div className="unsavedContent">
+                           <h4>Unsaved Changes</h4>
+                           <div className="visibilityInfo">
+                              (visible only to you)
+                           </div>
+                           {unsavedNewContent}
+                           <button
+                              onClick={() => {
+                                 if (!confirm('Discard these unsaved changes?'))
+                                    return;
+                                 clearUnsavedContentPieceChanges();
+                                 setUnsavedNewContent(null);
+                              }}
+                           >
+                              discard
+                           </button>
+                        </div>
+                     )}
+               </div>
                {otherLocations}
             </div>
             <div

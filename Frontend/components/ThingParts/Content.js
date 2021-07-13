@@ -8,6 +8,7 @@ import RichTextArea from '../RichTextArea';
 import { checkForNewThingRedirect } from '../../lib/ThingHandling';
 import {
    ADD_CONTENTPIECE_MUTATION,
+   STORE_UNSAVED_CONTENT_MUTATION,
    DELETE_CONTENTPIECE_MUTATION,
    EDIT_CONTENTPIECE_MUTATION,
    REORDER_CONTENT_MUTATION,
@@ -26,6 +27,7 @@ const Content = ({ context, canEdit, linkedPiece }) => {
       contentOrder,
       copiedInContent,
       id,
+      unsavedNewContent,
       __typename: type = 'Thing'
    } = useContext(context);
 
@@ -37,6 +39,13 @@ const Content = ({ context, canEdit, linkedPiece }) => {
    }
 
    // Then we'll set up our mutation hooks
+   const [storeUnsavedThingChanges] = useMutation(
+      STORE_UNSAVED_CONTENT_MUTATION,
+      {
+         onError: err => alert(err.message)
+      }
+   );
+
    const [addContentPiece] = useMutation(ADD_CONTENTPIECE_MUTATION, {
       onCompleted: data =>
          checkForNewThingRedirect(id, 'addContentPiece', data),
@@ -296,6 +305,17 @@ const Content = ({ context, canEdit, linkedPiece }) => {
       handleContentExpansion(contentPieceID, true);
    };
 
+   const unsavedChangesHandler = async e => {
+      await storeUnsavedThingChanges({
+         variables: {
+            id,
+            unsavedContent: e.target.value
+         }
+      }).catch(err => {
+         alert(err.message);
+      });
+   };
+
    if ((content == null || content.length === 0) && !canEdit) return null;
 
    let contentElements;
@@ -323,6 +343,7 @@ const Content = ({ context, canEdit, linkedPiece }) => {
                   thingID={id}
                   canEdit={canEdit}
                   rawContentString={contentPiece.content}
+                  unsavedContent={contentPiece.unsavedNewContent}
                   comments={contentPiece.comments}
                   expanded={contentExpansionObject[contentPiece.id]}
                   setExpanded={handleContentExpansion}
@@ -412,6 +433,8 @@ const Content = ({ context, canEdit, linkedPiece }) => {
                   buttonText="add"
                   id={`${id}-content`}
                   inputRef={inputRef}
+                  unsavedChangesHandler={unsavedChangesHandler}
+                  unsavedContent={unsavedNewContent}
                />
             )}
             {canEdit && (

@@ -95,6 +95,7 @@ const contentPieceFields = `
    __typename
    id
    content
+   unsavedNewContent
    comments {
       ${commentFields}
    }
@@ -220,6 +221,7 @@ const fullThingFields = `
    content {
       ${contentPieceFields}
    }
+   unsavedNewContent
    copiedInContent {
       ${contentPieceFields}
    }

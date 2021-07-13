@@ -1,6 +1,7 @@
 import styled, { ThemeContext } from 'styled-components';
 import { useState, useRef, useContext, useEffect } from 'react';
 import { useLazyQuery } from '@apollo/react-hooks';
+import debounce from 'lodash.debounce';
 import { dynamicallyResizeElement, setAlpha } from '../styles/functions';
 import { SEARCH_QUERY } from './SearchResults';
 import { home } from '../config';
@@ -96,6 +97,12 @@ const StyledWrapper = styled.div`
    }
 `;
 
+const debouncedUnsavedChangesHandler = debounce(
+   (handler, e) => handler(e),
+   5000,
+   false
+);
+
 const RichTextArea = ({
    text,
    postText,
@@ -106,7 +113,9 @@ const RichTextArea = ({
    hideStyleGuideLink,
    hideButton,
    id,
-   inputRef
+   inputRef,
+   unsavedChangesHandler,
+   unsavedContent
 }) => {
    const originalText = useRef(text); // We use this to check if there have been any changes to the text, because if there haven't been, we don't need to ask for confirmation before cancelling editing.
 
@@ -614,6 +623,9 @@ const RichTextArea = ({
                onChange={e => {
                   dynamicallyResizeElement(inputRef.current);
                   keepCaretAboveStickyButtons(inputRef.current);
+                  if (unsavedChangesHandler != null) {
+                     debouncedUnsavedChangesHandler(unsavedChangesHandler, e);
+                  }
                }}
                onKeyDown={e => handleKeyDown(e)}
                onKeyUp={e => handleKeyUp(e)}
@@ -651,7 +663,7 @@ const RichTextArea = ({
                   }
                }}
                placeholder={placeholder}
-               defaultValue={text}
+               defaultValue={unsavedContent == null ? text : unsavedContent}
             />
             <div className="postSearchTooltip" style={{ display: 'none' }}>
                {postSearchResultElements}

@@ -5,6 +5,7 @@ type Thing {
   featuredImage: String
   link: String
   content: [ContentPiece!] @scalarList(strategy:RELATION) @relation(name: "OriginalThingForContentPiece")
+  unsavedNewContent: String
   copiedInContent: [ContentPiece] @relation(name: "ThingsAddedToForContentPiece")
   contentOrder: [String!] @scalarList(strategy:RELATION)
   summary: String
@@ -27,6 +28,7 @@ type Thing {
 type ContentPiece {
    id: ID! @id @unique
    content: String!
+   unsavedNewContent: String
    summary: String
    comments: [Comment]
    onThing: Thing @relation(name: "OriginalThingForContentPiece")
@@ -42,6 +44,7 @@ type Tag {
   author: Member!
   featuredImage: String
   content: [ContentPiece!] @scalarList(strategy:RELATION)
+  unsavedNewContent: String
   contentOrder: [String!] @scalarList(strategy:RELATION)
   summary: String
   connectedThings: [Thing]
@@ -57,6 +60,7 @@ type Stack {
   author: Member!
   featuredImage: String
   content: [ContentPiece!] @scalarList(strategy:RELATION)
+  unsavedNewContent: String
   contentOrder: [String!] @scalarList(strategy:RELATION)
   connectedThings: [Thing]
   color: String

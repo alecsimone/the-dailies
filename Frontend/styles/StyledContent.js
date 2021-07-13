@@ -102,6 +102,29 @@ const StyledContent = styled.section`
                            ${props => props.theme.midScreenBreakpoint} {
                               padding: 3rem 0;
                            }
+                           .unsavedContent {
+                              background: ${props =>
+                                 setAlpha(props.theme.warning, 0.25)};
+                              border: 1px solid
+                                 ${props => props.theme.highContrastGrey};
+                              border-radius: 3px;
+                              margin-top: 2rem;
+                              padding: 1rem;
+                              h4 {
+                                 text-align: center;
+                                 margin: 0;
+                                 line-height: 1;
+                              }
+                              div.visibilityInfo {
+                                 text-align: center;
+                                 font-size: ${props => props.theme.miniText};
+                                 margin-bottom: 1rem;
+                              }
+                              button {
+                                 display: block;
+                                 margin: 2rem auto 0;
+                              }
+                           }
                         }
                      }
                      .commentsWrapper {

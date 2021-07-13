@@ -660,6 +660,7 @@ input CommentWhereUniqueInput {
 type ContentPiece {
   id: ID!
   content: String!
+  unsavedNewContent: String
   summary: String
   comments(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Comment!]
   onThing: Thing
@@ -678,6 +679,7 @@ type ContentPieceConnection {
 input ContentPieceCreateInput {
   id: ID
   content: String!
+  unsavedNewContent: String
   summary: String
   comments: CommentCreateManyWithoutOnContentPieceInput
   onThing: ThingCreateOneWithoutContentInput
@@ -720,6 +722,7 @@ input ContentPieceCreateOneWithoutVotesInput {
 input ContentPieceCreateWithoutCommentsInput {
   id: ID
   content: String!
+  unsavedNewContent: String
   summary: String
   onThing: ThingCreateOneWithoutContentInput
   copiedToThings: ThingCreateManyWithoutCopiedInContentInput
@@ -731,6 +734,7 @@ input ContentPieceCreateWithoutCommentsInput {
 input ContentPieceCreateWithoutCopiedToThingsInput {
   id: ID
   content: String!
+  unsavedNewContent: String
   summary: String
   comments: CommentCreateManyWithoutOnContentPieceInput
   onThing: ThingCreateOneWithoutContentInput
@@ -742,6 +746,7 @@ input ContentPieceCreateWithoutCopiedToThingsInput {
 input ContentPieceCreateWithoutOnTagInput {
   id: ID
   content: String!
+  unsavedNewContent: String
   summary: String
   comments: CommentCreateManyWithoutOnContentPieceInput
   onThing: ThingCreateOneWithoutContentInput
@@ -753,6 +758,7 @@ input ContentPieceCreateWithoutOnTagInput {
 input ContentPieceCreateWithoutOnThingInput {
   id: ID
   content: String!
+  unsavedNewContent: String
   summary: String
   comments: CommentCreateManyWithoutOnContentPieceInput
   copiedToThings: ThingCreateManyWithoutCopiedInContentInput
@@ -764,6 +770,7 @@ input ContentPieceCreateWithoutOnThingInput {
 input ContentPieceCreateWithoutVotesInput {
   id: ID
   content: String!
+  unsavedNewContent: String
   summary: String
   comments: CommentCreateManyWithoutOnContentPieceInput
   onThing: ThingCreateOneWithoutContentInput
@@ -782,6 +789,8 @@ enum ContentPieceOrderByInput {
   id_DESC
   content_ASC
   content_DESC
+  unsavedNewContent_ASC
+  unsavedNewContent_DESC
   summary_ASC
   summary_DESC
   score_ASC
@@ -791,6 +800,7 @@ enum ContentPieceOrderByInput {
 type ContentPiecePreviousValues {
   id: ID!
   content: String!
+  unsavedNewContent: String
   summary: String
   score: Int!
 }
@@ -824,6 +834,20 @@ input ContentPieceScalarWhereInput {
   content_not_starts_with: String
   content_ends_with: String
   content_not_ends_with: String
+  unsavedNewContent: String
+  unsavedNewContent_not: String
+  unsavedNewContent_in: [String!]
+  unsavedNewContent_not_in: [String!]
+  unsavedNewContent_lt: String
+  unsavedNewContent_lte: String
+  unsavedNewContent_gt: String
+  unsavedNewContent_gte: String
+  unsavedNewContent_contains: String
+  unsavedNewContent_not_contains: String
+  unsavedNewContent_starts_with: String
+  unsavedNewContent_not_starts_with: String
+  unsavedNewContent_ends_with: String
+  unsavedNewContent_not_ends_with: String
   summary: String
   summary_not: String
   summary_in: [String!]
@@ -871,6 +895,7 @@ input ContentPieceSubscriptionWhereInput {
 
 input ContentPieceUpdateDataInput {
   content: String
+  unsavedNewContent: String
   summary: String
   comments: CommentUpdateManyWithoutOnContentPieceInput
   onThing: ThingUpdateOneWithoutContentInput
@@ -882,6 +907,7 @@ input ContentPieceUpdateDataInput {
 
 input ContentPieceUpdateInput {
   content: String
+  unsavedNewContent: String
   summary: String
   comments: CommentUpdateManyWithoutOnContentPieceInput
   onThing: ThingUpdateOneWithoutContentInput
@@ -893,6 +919,7 @@ input ContentPieceUpdateInput {
 
 input ContentPieceUpdateManyDataInput {
   content: String
+  unsavedNewContent: String
   summary: String
   score: Int
 }
@@ -911,6 +938,7 @@ input ContentPieceUpdateManyInput {
 
 input ContentPieceUpdateManyMutationInput {
   content: String
+  unsavedNewContent: String
   summary: String
   score: Int
 }
@@ -976,6 +1004,7 @@ input ContentPieceUpdateOneWithoutVotesInput {
 
 input ContentPieceUpdateWithoutCommentsDataInput {
   content: String
+  unsavedNewContent: String
   summary: String
   onThing: ThingUpdateOneWithoutContentInput
   copiedToThings: ThingUpdateManyWithoutCopiedInContentInput
@@ -986,6 +1015,7 @@ input ContentPieceUpdateWithoutCommentsDataInput {
 
 input ContentPieceUpdateWithoutCopiedToThingsDataInput {
   content: String
+  unsavedNewContent: String
   summary: String
   comments: CommentUpdateManyWithoutOnContentPieceInput
   onThing: ThingUpdateOneWithoutContentInput
@@ -996,6 +1026,7 @@ input ContentPieceUpdateWithoutCopiedToThingsDataInput {
 
 input ContentPieceUpdateWithoutOnTagDataInput {
   content: String
+  unsavedNewContent: String
   summary: String
   comments: CommentUpdateManyWithoutOnContentPieceInput
   onThing: ThingUpdateOneWithoutContentInput
@@ -1006,6 +1037,7 @@ input ContentPieceUpdateWithoutOnTagDataInput {
 
 input ContentPieceUpdateWithoutOnThingDataInput {
   content: String
+  unsavedNewContent: String
   summary: String
   comments: CommentUpdateManyWithoutOnContentPieceInput
   copiedToThings: ThingUpdateManyWithoutCopiedInContentInput
@@ -1016,6 +1048,7 @@ input ContentPieceUpdateWithoutOnThingDataInput {
 
 input ContentPieceUpdateWithoutVotesDataInput {
   content: String
+  unsavedNewContent: String
   summary: String
   comments: CommentUpdateManyWithoutOnContentPieceInput
   onThing: ThingUpdateOneWithoutContentInput
@@ -1107,6 +1140,20 @@ input ContentPieceWhereInput {
   content_not_starts_with: String
   content_ends_with: String
   content_not_ends_with: String
+  unsavedNewContent: String
+  unsavedNewContent_not: String
+  unsavedNewContent_in: [String!]
+  unsavedNewContent_not_in: [String!]
+  unsavedNewContent_lt: String
+  unsavedNewContent_lte: String
+  unsavedNewContent_gt: String
+  unsavedNewContent_gte: String
+  unsavedNewContent_contains: String
+  unsavedNewContent_not_contains: String
+  unsavedNewContent_starts_with: String
+  unsavedNewContent_not_starts_with: String
+  unsavedNewContent_ends_with: String
+  unsavedNewContent_not_ends_with: String
   summary: String
   summary_not: String
   summary_in: [String!]
@@ -3711,6 +3758,7 @@ type Stack {
   author: Member!
   featuredImage: String
   content(where: ContentPieceWhereInput, orderBy: ContentPieceOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ContentPiece!]
+  unsavedNewContent: String
   contentOrder: [String!]!
   connectedThings(where: ThingWhereInput, orderBy: ThingOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Thing!]
   color: String
@@ -3735,6 +3783,7 @@ input StackCreateInput {
   author: MemberCreateOneInput!
   featuredImage: String
   content: ContentPieceCreateManyInput
+  unsavedNewContent: String
   contentOrder: StackCreatecontentOrderInput
   connectedThings: ThingCreateManyWithoutPartOfStacksInput
   color: String
@@ -3752,6 +3801,7 @@ input StackCreateWithoutConnectedThingsInput {
   author: MemberCreateOneInput!
   featuredImage: String
   content: ContentPieceCreateManyInput
+  unsavedNewContent: String
   contentOrder: StackCreatecontentOrderInput
   color: String
   comments: CommentCreateManyInput
@@ -3769,6 +3819,8 @@ enum StackOrderByInput {
   title_DESC
   featuredImage_ASC
   featuredImage_DESC
+  unsavedNewContent_ASC
+  unsavedNewContent_DESC
   color_ASC
   color_DESC
   createdAt_ASC
@@ -3781,6 +3833,7 @@ type StackPreviousValues {
   id: ID!
   title: String!
   featuredImage: String
+  unsavedNewContent: String
   contentOrder: [String!]!
   color: String
   createdAt: DateTime!
@@ -3830,6 +3883,20 @@ input StackScalarWhereInput {
   featuredImage_not_starts_with: String
   featuredImage_ends_with: String
   featuredImage_not_ends_with: String
+  unsavedNewContent: String
+  unsavedNewContent_not: String
+  unsavedNewContent_in: [String!]
+  unsavedNewContent_not_in: [String!]
+  unsavedNewContent_lt: String
+  unsavedNewContent_lte: String
+  unsavedNewContent_gt: String
+  unsavedNewContent_gte: String
+  unsavedNewContent_contains: String
+  unsavedNewContent_not_contains: String
+  unsavedNewContent_starts_with: String
+  unsavedNewContent_not_starts_with: String
+  unsavedNewContent_ends_with: String
+  unsavedNewContent_not_ends_with: String
   color: String
   color_not: String
   color_in: [String!]
@@ -3892,6 +3959,7 @@ input StackUpdateInput {
   author: MemberUpdateOneRequiredInput
   featuredImage: String
   content: ContentPieceUpdateManyInput
+  unsavedNewContent: String
   contentOrder: StackUpdatecontentOrderInput
   connectedThings: ThingUpdateManyWithoutPartOfStacksInput
   color: String
@@ -3901,6 +3969,7 @@ input StackUpdateInput {
 input StackUpdateManyDataInput {
   title: String
   featuredImage: String
+  unsavedNewContent: String
   contentOrder: StackUpdatecontentOrderInput
   color: String
 }
@@ -3908,6 +3977,7 @@ input StackUpdateManyDataInput {
 input StackUpdateManyMutationInput {
   title: String
   featuredImage: String
+  unsavedNewContent: String
   contentOrder: StackUpdatecontentOrderInput
   color: String
 }
@@ -3934,6 +4004,7 @@ input StackUpdateWithoutConnectedThingsDataInput {
   author: MemberUpdateOneRequiredInput
   featuredImage: String
   content: ContentPieceUpdateManyInput
+  unsavedNewContent: String
   contentOrder: StackUpdatecontentOrderInput
   color: String
   comments: CommentUpdateManyInput
@@ -3997,6 +4068,20 @@ input StackWhereInput {
   content_every: ContentPieceWhereInput
   content_some: ContentPieceWhereInput
   content_none: ContentPieceWhereInput
+  unsavedNewContent: String
+  unsavedNewContent_not: String
+  unsavedNewContent_in: [String!]
+  unsavedNewContent_not_in: [String!]
+  unsavedNewContent_lt: String
+  unsavedNewContent_lte: String
+  unsavedNewContent_gt: String
+  unsavedNewContent_gte: String
+  unsavedNewContent_contains: String
+  unsavedNewContent_not_contains: String
+  unsavedNewContent_starts_with: String
+  unsavedNewContent_not_starts_with: String
+  unsavedNewContent_ends_with: String
+  unsavedNewContent_not_ends_with: String
   connectedThings_every: ThingWhereInput
   connectedThings_some: ThingWhereInput
   connectedThings_none: ThingWhereInput
@@ -4061,6 +4146,7 @@ type Tag {
   author: Member!
   featuredImage: String
   content(where: ContentPieceWhereInput, orderBy: ContentPieceOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ContentPiece!]
+  unsavedNewContent: String
   contentOrder: [String!]!
   summary: String
   connectedThings(where: ThingWhereInput, orderBy: ThingOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Thing!]
@@ -4086,6 +4172,7 @@ input TagCreateInput {
   author: MemberCreateOneWithoutOwnedTagsInput!
   featuredImage: String
   content: ContentPieceCreateManyWithoutOnTagInput
+  unsavedNewContent: String
   contentOrder: TagCreatecontentOrderInput
   summary: String
   connectedThings: ThingCreateManyWithoutPartOfTagsInput
@@ -4118,6 +4205,7 @@ input TagCreateWithoutAuthorInput {
   title: String!
   featuredImage: String
   content: ContentPieceCreateManyWithoutOnTagInput
+  unsavedNewContent: String
   contentOrder: TagCreatecontentOrderInput
   summary: String
   connectedThings: ThingCreateManyWithoutPartOfTagsInput
@@ -4131,6 +4219,7 @@ input TagCreateWithoutCommentsInput {
   author: MemberCreateOneWithoutOwnedTagsInput!
   featuredImage: String
   content: ContentPieceCreateManyWithoutOnTagInput
+  unsavedNewContent: String
   contentOrder: TagCreatecontentOrderInput
   summary: String
   connectedThings: ThingCreateManyWithoutPartOfTagsInput
@@ -4143,6 +4232,7 @@ input TagCreateWithoutConnectedThingsInput {
   author: MemberCreateOneWithoutOwnedTagsInput!
   featuredImage: String
   content: ContentPieceCreateManyWithoutOnTagInput
+  unsavedNewContent: String
   contentOrder: TagCreatecontentOrderInput
   summary: String
   color: String
@@ -4154,6 +4244,7 @@ input TagCreateWithoutContentInput {
   title: String!
   author: MemberCreateOneWithoutOwnedTagsInput!
   featuredImage: String
+  unsavedNewContent: String
   contentOrder: TagCreatecontentOrderInput
   summary: String
   connectedThings: ThingCreateManyWithoutPartOfTagsInput
@@ -4173,6 +4264,8 @@ enum TagOrderByInput {
   title_DESC
   featuredImage_ASC
   featuredImage_DESC
+  unsavedNewContent_ASC
+  unsavedNewContent_DESC
   summary_ASC
   summary_DESC
   color_ASC
@@ -4187,6 +4280,7 @@ type TagPreviousValues {
   id: ID!
   title: String!
   featuredImage: String
+  unsavedNewContent: String
   contentOrder: [String!]!
   summary: String
   color: String
@@ -4237,6 +4331,20 @@ input TagScalarWhereInput {
   featuredImage_not_starts_with: String
   featuredImage_ends_with: String
   featuredImage_not_ends_with: String
+  unsavedNewContent: String
+  unsavedNewContent_not: String
+  unsavedNewContent_in: [String!]
+  unsavedNewContent_not_in: [String!]
+  unsavedNewContent_lt: String
+  unsavedNewContent_lte: String
+  unsavedNewContent_gt: String
+  unsavedNewContent_gte: String
+  unsavedNewContent_contains: String
+  unsavedNewContent_not_contains: String
+  unsavedNewContent_starts_with: String
+  unsavedNewContent_not_starts_with: String
+  unsavedNewContent_ends_with: String
+  unsavedNewContent_not_ends_with: String
   summary: String
   summary_not: String
   summary_in: [String!]
@@ -4313,6 +4421,7 @@ input TagUpdateInput {
   author: MemberUpdateOneRequiredWithoutOwnedTagsInput
   featuredImage: String
   content: ContentPieceUpdateManyWithoutOnTagInput
+  unsavedNewContent: String
   contentOrder: TagUpdatecontentOrderInput
   summary: String
   connectedThings: ThingUpdateManyWithoutPartOfTagsInput
@@ -4323,6 +4432,7 @@ input TagUpdateInput {
 input TagUpdateManyDataInput {
   title: String
   featuredImage: String
+  unsavedNewContent: String
   contentOrder: TagUpdatecontentOrderInput
   summary: String
   color: String
@@ -4331,6 +4441,7 @@ input TagUpdateManyDataInput {
 input TagUpdateManyMutationInput {
   title: String
   featuredImage: String
+  unsavedNewContent: String
   contentOrder: TagUpdatecontentOrderInput
   summary: String
   color: String
@@ -4387,6 +4498,7 @@ input TagUpdateWithoutAuthorDataInput {
   title: String
   featuredImage: String
   content: ContentPieceUpdateManyWithoutOnTagInput
+  unsavedNewContent: String
   contentOrder: TagUpdatecontentOrderInput
   summary: String
   connectedThings: ThingUpdateManyWithoutPartOfTagsInput
@@ -4399,6 +4511,7 @@ input TagUpdateWithoutCommentsDataInput {
   author: MemberUpdateOneRequiredWithoutOwnedTagsInput
   featuredImage: String
   content: ContentPieceUpdateManyWithoutOnTagInput
+  unsavedNewContent: String
   contentOrder: TagUpdatecontentOrderInput
   summary: String
   connectedThings: ThingUpdateManyWithoutPartOfTagsInput
@@ -4410,6 +4523,7 @@ input TagUpdateWithoutConnectedThingsDataInput {
   author: MemberUpdateOneRequiredWithoutOwnedTagsInput
   featuredImage: String
   content: ContentPieceUpdateManyWithoutOnTagInput
+  unsavedNewContent: String
   contentOrder: TagUpdatecontentOrderInput
   summary: String
   color: String
@@ -4420,6 +4534,7 @@ input TagUpdateWithoutContentDataInput {
   title: String
   author: MemberUpdateOneRequiredWithoutOwnedTagsInput
   featuredImage: String
+  unsavedNewContent: String
   contentOrder: TagUpdatecontentOrderInput
   summary: String
   connectedThings: ThingUpdateManyWithoutPartOfTagsInput
@@ -4506,6 +4621,20 @@ input TagWhereInput {
   content_every: ContentPieceWhereInput
   content_some: ContentPieceWhereInput
   content_none: ContentPieceWhereInput
+  unsavedNewContent: String
+  unsavedNewContent_not: String
+  unsavedNewContent_in: [String!]
+  unsavedNewContent_not_in: [String!]
+  unsavedNewContent_lt: String
+  unsavedNewContent_lte: String
+  unsavedNewContent_gt: String
+  unsavedNewContent_gte: String
+  unsavedNewContent_contains: String
+  unsavedNewContent_not_contains: String
+  unsavedNewContent_starts_with: String
+  unsavedNewContent_not_starts_with: String
+  unsavedNewContent_ends_with: String
+  unsavedNewContent_not_ends_with: String
   summary: String
   summary_not: String
   summary_in: [String!]
@@ -4573,6 +4702,7 @@ type Thing {
   featuredImage: String
   link: String
   content(where: ContentPieceWhereInput, orderBy: ContentPieceOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ContentPiece!]
+  unsavedNewContent: String
   copiedInContent(where: ContentPieceWhereInput, orderBy: ContentPieceOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ContentPiece!]
   contentOrder: [String!]!
   summary: String
@@ -4609,6 +4739,7 @@ input ThingCreateInput {
   featuredImage: String
   link: String
   content: ContentPieceCreateManyWithoutOnThingInput
+  unsavedNewContent: String
   copiedInContent: ContentPieceCreateManyWithoutCopiedToThingsInput
   contentOrder: ThingCreatecontentOrderInput
   summary: String
@@ -4677,6 +4808,7 @@ input ThingCreateWithoutAuthorInput {
   featuredImage: String
   link: String
   content: ContentPieceCreateManyWithoutOnThingInput
+  unsavedNewContent: String
   copiedInContent: ContentPieceCreateManyWithoutCopiedToThingsInput
   contentOrder: ThingCreatecontentOrderInput
   summary: String
@@ -4701,6 +4833,7 @@ input ThingCreateWithoutCommentsInput {
   featuredImage: String
   link: String
   content: ContentPieceCreateManyWithoutOnThingInput
+  unsavedNewContent: String
   copiedInContent: ContentPieceCreateManyWithoutCopiedToThingsInput
   contentOrder: ThingCreatecontentOrderInput
   summary: String
@@ -4723,6 +4856,7 @@ input ThingCreateWithoutContentInput {
   author: MemberCreateOneWithoutCreatedThingsInput!
   featuredImage: String
   link: String
+  unsavedNewContent: String
   copiedInContent: ContentPieceCreateManyWithoutCopiedToThingsInput
   contentOrder: ThingCreatecontentOrderInput
   summary: String
@@ -4747,6 +4881,7 @@ input ThingCreateWithoutCopiedInContentInput {
   featuredImage: String
   link: String
   content: ContentPieceCreateManyWithoutOnThingInput
+  unsavedNewContent: String
   contentOrder: ThingCreatecontentOrderInput
   summary: String
   partOfTags: TagCreateManyWithoutConnectedThingsInput
@@ -4770,6 +4905,7 @@ input ThingCreateWithoutIndividualViewPermissionsInput {
   featuredImage: String
   link: String
   content: ContentPieceCreateManyWithoutOnThingInput
+  unsavedNewContent: String
   copiedInContent: ContentPieceCreateManyWithoutCopiedToThingsInput
   contentOrder: ThingCreatecontentOrderInput
   summary: String
@@ -4793,6 +4929,7 @@ input ThingCreateWithoutPartOfStacksInput {
   featuredImage: String
   link: String
   content: ContentPieceCreateManyWithoutOnThingInput
+  unsavedNewContent: String
   copiedInContent: ContentPieceCreateManyWithoutCopiedToThingsInput
   contentOrder: ThingCreatecontentOrderInput
   summary: String
@@ -4816,6 +4953,7 @@ input ThingCreateWithoutPartOfTagsInput {
   featuredImage: String
   link: String
   content: ContentPieceCreateManyWithoutOnThingInput
+  unsavedNewContent: String
   copiedInContent: ContentPieceCreateManyWithoutCopiedToThingsInput
   contentOrder: ThingCreatecontentOrderInput
   summary: String
@@ -4839,6 +4977,7 @@ input ThingCreateWithoutPassesInput {
   featuredImage: String
   link: String
   content: ContentPieceCreateManyWithoutOnThingInput
+  unsavedNewContent: String
   copiedInContent: ContentPieceCreateManyWithoutCopiedToThingsInput
   contentOrder: ThingCreatecontentOrderInput
   summary: String
@@ -4862,6 +5001,7 @@ input ThingCreateWithoutVotesInput {
   featuredImage: String
   link: String
   content: ContentPieceCreateManyWithoutOnThingInput
+  unsavedNewContent: String
   copiedInContent: ContentPieceCreateManyWithoutCopiedToThingsInput
   contentOrder: ThingCreatecontentOrderInput
   summary: String
@@ -4892,6 +5032,8 @@ enum ThingOrderByInput {
   featuredImage_DESC
   link_ASC
   link_DESC
+  unsavedNewContent_ASC
+  unsavedNewContent_DESC
   summary_ASC
   summary_DESC
   color_ASC
@@ -4917,6 +5059,7 @@ type ThingPreviousValues {
   title: String!
   featuredImage: String
   link: String
+  unsavedNewContent: String
   contentOrder: [String!]!
   summary: String
   color: String
@@ -4986,6 +5129,20 @@ input ThingScalarWhereInput {
   link_not_starts_with: String
   link_ends_with: String
   link_not_ends_with: String
+  unsavedNewContent: String
+  unsavedNewContent_not: String
+  unsavedNewContent_in: [String!]
+  unsavedNewContent_not_in: [String!]
+  unsavedNewContent_lt: String
+  unsavedNewContent_lte: String
+  unsavedNewContent_gt: String
+  unsavedNewContent_gte: String
+  unsavedNewContent_contains: String
+  unsavedNewContent_not_contains: String
+  unsavedNewContent_starts_with: String
+  unsavedNewContent_not_starts_with: String
+  unsavedNewContent_ends_with: String
+  unsavedNewContent_not_ends_with: String
   summary: String
   summary_not: String
   summary_in: [String!]
@@ -5093,6 +5250,7 @@ input ThingUpdateInput {
   featuredImage: String
   link: String
   content: ContentPieceUpdateManyWithoutOnThingInput
+  unsavedNewContent: String
   copiedInContent: ContentPieceUpdateManyWithoutCopiedToThingsInput
   contentOrder: ThingUpdatecontentOrderInput
   summary: String
@@ -5114,6 +5272,7 @@ input ThingUpdateManyDataInput {
   title: String
   featuredImage: String
   link: String
+  unsavedNewContent: String
   contentOrder: ThingUpdatecontentOrderInput
   summary: String
   color: String
@@ -5128,6 +5287,7 @@ input ThingUpdateManyMutationInput {
   title: String
   featuredImage: String
   link: String
+  unsavedNewContent: String
   contentOrder: ThingUpdatecontentOrderInput
   summary: String
   color: String
@@ -5244,6 +5404,7 @@ input ThingUpdateWithoutAuthorDataInput {
   featuredImage: String
   link: String
   content: ContentPieceUpdateManyWithoutOnThingInput
+  unsavedNewContent: String
   copiedInContent: ContentPieceUpdateManyWithoutCopiedToThingsInput
   contentOrder: ThingUpdatecontentOrderInput
   summary: String
@@ -5267,6 +5428,7 @@ input ThingUpdateWithoutCommentsDataInput {
   featuredImage: String
   link: String
   content: ContentPieceUpdateManyWithoutOnThingInput
+  unsavedNewContent: String
   copiedInContent: ContentPieceUpdateManyWithoutCopiedToThingsInput
   contentOrder: ThingUpdatecontentOrderInput
   summary: String
@@ -5288,6 +5450,7 @@ input ThingUpdateWithoutContentDataInput {
   author: MemberUpdateOneRequiredWithoutCreatedThingsInput
   featuredImage: String
   link: String
+  unsavedNewContent: String
   copiedInContent: ContentPieceUpdateManyWithoutCopiedToThingsInput
   contentOrder: ThingUpdatecontentOrderInput
   summary: String
@@ -5311,6 +5474,7 @@ input ThingUpdateWithoutCopiedInContentDataInput {
   featuredImage: String
   link: String
   content: ContentPieceUpdateManyWithoutOnThingInput
+  unsavedNewContent: String
   contentOrder: ThingUpdatecontentOrderInput
   summary: String
   partOfTags: TagUpdateManyWithoutConnectedThingsInput
@@ -5333,6 +5497,7 @@ input ThingUpdateWithoutIndividualViewPermissionsDataInput {
   featuredImage: String
   link: String
   content: ContentPieceUpdateManyWithoutOnThingInput
+  unsavedNewContent: String
   copiedInContent: ContentPieceUpdateManyWithoutCopiedToThingsInput
   contentOrder: ThingUpdatecontentOrderInput
   summary: String
@@ -5355,6 +5520,7 @@ input ThingUpdateWithoutPartOfStacksDataInput {
   featuredImage: String
   link: String
   content: ContentPieceUpdateManyWithoutOnThingInput
+  unsavedNewContent: String
   copiedInContent: ContentPieceUpdateManyWithoutCopiedToThingsInput
   contentOrder: ThingUpdatecontentOrderInput
   summary: String
@@ -5377,6 +5543,7 @@ input ThingUpdateWithoutPartOfTagsDataInput {
   featuredImage: String
   link: String
   content: ContentPieceUpdateManyWithoutOnThingInput
+  unsavedNewContent: String
   copiedInContent: ContentPieceUpdateManyWithoutCopiedToThingsInput
   contentOrder: ThingUpdatecontentOrderInput
   summary: String
@@ -5399,6 +5566,7 @@ input ThingUpdateWithoutPassesDataInput {
   featuredImage: String
   link: String
   content: ContentPieceUpdateManyWithoutOnThingInput
+  unsavedNewContent: String
   copiedInContent: ContentPieceUpdateManyWithoutCopiedToThingsInput
   contentOrder: ThingUpdatecontentOrderInput
   summary: String
@@ -5421,6 +5589,7 @@ input ThingUpdateWithoutVotesDataInput {
   featuredImage: String
   link: String
   content: ContentPieceUpdateManyWithoutOnThingInput
+  unsavedNewContent: String
   copiedInContent: ContentPieceUpdateManyWithoutCopiedToThingsInput
   contentOrder: ThingUpdatecontentOrderInput
   summary: String
@@ -5573,6 +5742,20 @@ input ThingWhereInput {
   content_every: ContentPieceWhereInput
   content_some: ContentPieceWhereInput
   content_none: ContentPieceWhereInput
+  unsavedNewContent: String
+  unsavedNewContent_not: String
+  unsavedNewContent_in: [String!]
+  unsavedNewContent_not_in: [String!]
+  unsavedNewContent_lt: String
+  unsavedNewContent_lte: String
+  unsavedNewContent_gt: String
+  unsavedNewContent_gte: String
+  unsavedNewContent_contains: String
+  unsavedNewContent_not_contains: String
+  unsavedNewContent_starts_with: String
+  unsavedNewContent_not_starts_with: String
+  unsavedNewContent_ends_with: String
+  unsavedNewContent_not_ends_with: String
   copiedInContent_every: ContentPieceWhereInput
   copiedInContent_some: ContentPieceWhereInput
   copiedInContent_none: ContentPieceWhereInput

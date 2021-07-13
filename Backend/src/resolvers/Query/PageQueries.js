@@ -60,11 +60,9 @@ async function taxByTitle(parent, { title, personal, cursor }, ctx, info) {
          );
          let cursoredThings = allowedThings;
          if (cursor != null) {
-            cursoredThings = allowedThings.filter(thing => {
-               console.log(Date.parse(thing.createdAt));
-               console.log(Date.parse(cursor));
-               return Date.parse(thing.createdAt) < Date.parse(cursor);
-            });
+            cursoredThings = allowedThings.filter(
+               thing => Date.parse(thing.createdAt) < Date.parse(cursor)
+            );
          }
          cursoredThings.sort(
             (a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt)

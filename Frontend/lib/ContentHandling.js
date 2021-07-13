@@ -45,6 +45,29 @@ const ADD_CONTENTPIECE_MUTATION = gql`
 `;
 export { ADD_CONTENTPIECE_MUTATION };
 
+const STORE_UNSAVED_CONTENT_MUTATION = gql`
+   mutation STORE_UNSAVED_CONTENT_MUTATION($id: ID!, $unsavedContent: String!) {
+      storeUnsavedThingChanges(id: $id, unsavedContent: $unsavedContent) {
+         ... on Tag {
+            __typename
+            id
+            unsavedNewContent
+         }
+         ... on Stack {
+            __typename
+            id
+            unsavedNewContent
+         }
+         ... on Thing {
+            __typename
+            id
+            unsavedNewContent
+         }
+      }
+   }
+`;
+export { STORE_UNSAVED_CONTENT_MUTATION };
+
 const DELETE_CONTENTPIECE_MUTATION = gql`
    mutation DELETE_CONTENTPIECE_MUTATION(
       $contentPieceID: ID!
@@ -132,6 +155,60 @@ const EDIT_CONTENTPIECE_MUTATION = gql`
    }
 `;
 export { EDIT_CONTENTPIECE_MUTATION };
+
+const STORE_UNSAVED_CONTENT_PIECE_MUTATION = gql`
+   mutation STORE_UNSAVED_CONTENT_PIECE_MUTATION(
+      $thingId: ID!
+      $pieceId: ID!
+      $unsavedContent: String!
+   ) {
+      storeUnsavedContentPieceChanges(
+         thingId: $thingId
+         pieceId: $pieceId
+         unsavedContent: $unsavedContent
+      ) {
+         ... on Tag {
+            __typename
+            id
+            unsavedNewContent
+         }
+         ... on Stack {
+            __typename
+            id
+            unsavedNewContent
+         }
+         ... on Thing {
+            __typename
+            id
+            unsavedNewContent
+         }
+      }
+   }
+`;
+export { STORE_UNSAVED_CONTENT_PIECE_MUTATION };
+
+const CLEAR_UNSAVED_CONTENT_PIECE_MUTATION = gql`
+   mutation CLEAR_UNSAVED_CONTENT_PIECE_MUTATION($thingId: ID!, $pieceId: ID!) {
+      clearUnsavedContentPieceChanges(thingId: $thingId, pieceId: $pieceId) {
+         ... on Tag {
+            __typename
+            id
+            unsavedNewContent
+         }
+         ... on Stack {
+            __typename
+            id
+            unsavedNewContent
+         }
+         ... on Thing {
+            __typename
+            id
+            unsavedNewContent
+         }
+      }
+   }
+`;
+export { CLEAR_UNSAVED_CONTENT_PIECE_MUTATION };
 
 const REORDER_CONTENT_MUTATION = gql`
    mutation REORDER_CONTENT_MUTATION(
