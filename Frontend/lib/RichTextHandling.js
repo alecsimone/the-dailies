@@ -46,6 +46,10 @@ const getCursorXY = (input, selectionPoint) => {
 export { getCursorXY };
 
 const keepCaretAboveStickyButtons = el => {
+   // Mobile is real weird with all the screen size changes and whatnot, so let's just skip it
+   const windowHeight = window.innerWidth;
+   if (window.innerWidth < 600) return;
+
    const cursorPosition = el.selectionEnd;
    const cursorXY = getCursorXY(el, cursorPosition);
    const oneRem = getOneRem();
@@ -59,8 +63,6 @@ const keepCaretAboveStickyButtons = el => {
 
    const totalCursorDepth = textAreaRect.top + cursorDepth;
 
-   console.log(textAreaRect.top, cursorDepth);
-   console.log(stickyButtonsRect.top, totalCursorDepth);
    if (stickyButtonsRect.top < totalCursorDepth) {
       const scrollAdjustment =
          stickyButtonsRect.top - (totalCursorDepth + 0.5 * oneRem); // Adding the 0.5rem just for some breathing room beneath the cursor
