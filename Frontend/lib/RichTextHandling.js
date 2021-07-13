@@ -51,22 +51,22 @@ const getCursorXY = (input, selectionPoint) => {
 };
 export { getCursorXY };
 
-const autoCloseBracketLink = (e, setText) => {
+const autoCloseBracketLink = e => {
    const thisInput = e.target;
    const { selectionStart, selectionEnd, value: initialText } = e.target;
 
    const startingText = initialText.substring(0, selectionStart);
    const bracketCheck = startingText.matchAll(/\[.*\]/gim);
-   console.log(bracketCheck);
    for (const match of bracketCheck) {
       e.preventDefault(); // Need this inside the for loop so that it only fires if we get a match. Otherwise it just breaks typing
       // Make sure this is the bracketed text immediately preceding the open paren
       if (match.index + match[0].length === selectionStart) {
          // If they had any text after this, make sure to tack it on the end of our new text
-         const endingText = initialText.substring(selectionEnd);
-         const newText = `${startingText}()${endingText}`;
+         // const newText = `${startingText}()${endingText}`;
 
-         setText(newText);
+         thisInput.setSelectionRange(startingText.length, startingText.length);
+         document.execCommand('insertText', false, '()');
+
          // we need to make sure the text has changed before we set the new selection, otherwise it won't be based on the updated text
          window.setTimeout(
             () =>
@@ -157,15 +157,16 @@ const wrapTextWithTag = (target, tag) => {
 };
 export { wrapTextWithTag };
 
-const linkifyText = (target, setText) => {
+const linkifyText = target => {
    const { selectionStart, selectionEnd } = target;
    const initialText = target.value;
 
-   const before = initialText.substring(0, selectionStart);
-   const selection = initialText.substring(selectionStart, selectionEnd);
-   const after = initialText.substring(selectionEnd);
+   target.focus();
+   target.setSelectionRange(selectionStart, selectionStart);
+   document.execCommand('insertText', false, '[');
 
-   const newText = `${before}[${selection}]()${after}`;
+   target.setSelectionRange(selectionEnd + 1, selectionEnd + 1);
+   document.execCommand('insertText', false, ']()');
 
    // If we have text selected, we want to put the cursor inside the parentheses. If we don't, we want to put it inside the brackets.
    let newCursorPos;
@@ -175,7 +176,6 @@ const linkifyText = (target, setText) => {
       newCursorPos = selectionStart + 1;
    }
 
-   setText(newText);
    // we need to make sure the text has changed before we set the new selection, otherwise it won't be based on the updated text
    window.setTimeout(
       () => target.setSelectionRange(newCursorPos, newCursorPos),
@@ -184,15 +184,15 @@ const linkifyText = (target, setText) => {
 };
 export { linkifyText };
 
-const addSummaryTagsToText = (target, setText) => {
+const addSummaryTagsToText = target => {
    const { selectionStart, selectionEnd } = target;
-   const initialText = target.value;
 
-   const before = initialText.substring(0, selectionStart);
-   const selection = initialText.substring(selectionStart, selectionEnd);
-   const after = initialText.substring(selectionEnd);
+   target.focus();
+   target.setSelectionRange(selectionStart, selectionStart);
+   document.execCommand('insertText', false, '>>');
 
-   const newText = `${before}>>${selection}<<()${after}`;
+   target.setSelectionRange(selectionEnd + 2, selectionEnd + 2);
+   document.execCommand('insertText', false, '<<()');
 
    // If we have text selected, we want to put the cursor inside the parentheses. If we don't, we want to put it inside the arrows.
    let newCursorPos;
@@ -202,7 +202,6 @@ const addSummaryTagsToText = (target, setText) => {
       newCursorPos = selectionStart + 2;
    }
 
-   setText(newText);
    // we need to make sure the text has changed before we set the new selection, otherwise it won't be based on the updated text
    window.setTimeout(
       () => target.setSelectionRange(newCursorPos, newCursorPos),
@@ -211,7 +210,7 @@ const addSummaryTagsToText = (target, setText) => {
 };
 export { addSummaryTagsToText };
 
-const encloseSelectedText = (e, setText) => {
+const encloseSelectedText = e => {
    e.preventDefault();
 
    const thisInput = e.target;
@@ -234,12 +233,17 @@ const encloseSelectedText = (e, setText) => {
       closer = '`';
    }
 
-   const before = initialText.substring(0, selectionStart);
-   const selection = initialText.substring(selectionStart, selectionEnd);
-   const after = initialText.substring(selectionEnd);
-   const newText = `${before}${e.key}${selection}${closer}${after}`;
+   // const before = initialText.substring(0, selectionStart);
+   // const selection = initialText.substring(selectionStart, selectionEnd);
+   // const after = initialText.substring(selectionEnd);
+   // const newText = `${before}${e.key}${selection}${closer}${after}`;
 
-   setText(newText);
+   thisInput.setSelectionRange(selectionStart, selectionStart);
+   document.execCommand('insertText', false, e.key);
+
+   thisInput.setSelectionRange(selectionEnd + 1, selectionEnd + 1);
+   document.execCommand('insertText', false, closer);
+
    // we need to make sure the text has changed before we set the new selection, otherwise it won't be based on the updated text
    window.setTimeout(
       () => thisInput.setSelectionRange(selectionStart + 1, selectionEnd + 1),
@@ -274,8 +278,9 @@ const useSearchResultsSelector = () => {
 };
 export { useSearchResultsSelector };
 
-const tabTheText = (target, setText) => {
+const tabTheText = target => {
    const { selectionStart, selectionEnd, value: initialText } = target;
+   target.focus();
 
    // First we get all the text before the cursor and all the text after
    const textBeforeCursor = initialText.substring(0, selectionStart);
@@ -291,14 +296,12 @@ const tabTheText = (target, setText) => {
       // If text is selected, add a tab at the beginning of the line
       if (lastNewLineIndex === -1) {
          // If there are no new lines, we start at the beginning of the string
-         newText = `        ${textBeforeCursor}${textAfterCursor}`;
+         target.setSelectionRange(0, 0);
+         document.execCommand('insertText', false, '        ');
       } else {
-         const textBeforeLastLine = initialText.substring(
-            0,
-            lastNewLineIndex + 1
-         );
-         const textAfterLastLine = initialText.substring(lastNewLineIndex + 1);
-         newText = `${textBeforeLastLine}        ${textAfterLastLine}`;
+         // If there are new lines, we start at the beginning of the last new line before the cursor
+         target.setSelectionRange(lastNewLineIndex + 1, lastNewLineIndex + 1);
+         document.execCommand('insertText', false, '        ');
       }
       newSelectionStart = selectionStart + 8;
       newSelectionEnd = selectionEnd + 8;
@@ -318,11 +321,14 @@ const tabTheText = (target, setText) => {
       for (let i = 0; i < spacesToNextTab; i += 1) {
          spacesToAdd += ' ';
       }
-      newText = `${textBeforeCursor}${spacesToAdd}${textAfterCursor}`;
+
+      target.setSelectionRange(selectionStart, selectionStart);
+      document.execCommand('insertText', false, spacesToAdd);
+
       newSelectionStart = selectionStart + spacesToNextTab;
       newSelectionEnd = selectionEnd + spacesToNextTab;
    }
-   setText(newText);
+
    window.setTimeout(() => {
       target.setSelectionRange(newSelectionStart, newSelectionEnd);
       dynamicallyResizeElement(target);
@@ -330,24 +336,22 @@ const tabTheText = (target, setText) => {
 };
 export { tabTheText };
 
-const unTabTheText = (target, setText) => {
+const unTabTheText = target => {
    // First we get the text up to the cursor
    const { selectionStart, selectionEnd, value: initialText } = target;
+   target.focus();
+
    const textBeforeCursor = initialText.substring(0, selectionStart);
 
    // Then we look for the last new line within that text
    const lastNewLineIndex = textBeforeCursor.lastIndexOf('\n');
 
-   let textToUntab;
-   let startingText;
    let endingText;
    // if we find one, we split up the text into the text before and after that new line
    if (lastNewLineIndex > -1) {
-      startingText = initialText.substring(0, lastNewLineIndex + 1);
       endingText = initialText.substring(lastNewLineIndex + 1);
    } else {
       // If we don't, we're just going to use the whole string as the ending text
-      startingText = '';
       endingText = initialText;
    }
 
@@ -355,13 +359,17 @@ const unTabTheText = (target, setText) => {
    const spaceMatcher = /^[ ]{2,8}/;
    const spacesMatch = endingText.match(spaceMatcher);
    const spacesCount = spacesMatch[0].length;
-   endingText = endingText.replace(spaceMatcher, '');
+   // endingText = endingText.replace(spaceMatcher, '');
+
+   target.setSelectionRange(
+      lastNewLineIndex + 1,
+      lastNewLineIndex + 1 + spacesCount
+   );
+   document.execCommand('delete', false);
 
    // Put the pieces back together
-   const newText = `${startingText}${endingText}`;
+   // const newText = `${startingText}${endingText}`;
 
-   // And update the text
-   setText(newText);
    window.setTimeout(() => {
       target.setSelectionRange(
          selectionStart - spacesCount,
@@ -372,7 +380,7 @@ const unTabTheText = (target, setText) => {
 };
 export { unTabTheText };
 
-const insertLineAbove = (target, setText) => {
+const insertLineAbove = target => {
    // First we get the text up to the cursor
    const { selectionStart, selectionEnd, value: initialText } = target;
    const textBeforeCursor = initialText.substring(0, selectionStart);
@@ -384,16 +392,16 @@ const insertLineAbove = (target, setText) => {
    let newCursorPos;
    // If we find one, then we add another right before it and put the cursor right after it
    if (lastNewLineIndex > -1) {
-      const startingText = initialText.substring(0, lastNewLineIndex + 1);
-      const endingText = initialText.substring(lastNewLineIndex + 1);
-      newText = `${startingText}\n${endingText}`;
-      newCursorPos = startingText.length;
+      target.setSelectionRange(lastNewLineIndex + 1, lastNewLineIndex + 1);
+      document.execCommand('insertText', false, '\n');
+
+      newCursorPos = lastNewLineIndex + 1;
    } else {
       // If we don't find a new line, we put a new line at the beginning of the string and then put the cursor there too
-      newText = `\n${initialText}`;
+      target.setSelectionRange(0, 0);
+      document.execCommand('insertText', false, '\n');
       newCursorPos = 0;
    }
-   setText(newText);
    window.setTimeout(() => {
       target.setSelectionRange(newCursorPos, newCursorPos);
       dynamicallyResizeElement(target);

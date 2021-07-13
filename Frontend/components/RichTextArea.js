@@ -269,7 +269,7 @@ const RichTextArea = ({
 
       if (e.key === 'Enter' && (e.ctrlKey || e.metaKey) && e.shiftKey) {
          e.preventDefault();
-         insertLineAbove(e.target, newText => undoableEditText(newText));
+         insertLineAbove(e.target);
       }
 
       // Quit editing on escape
@@ -289,7 +289,7 @@ const RichTextArea = ({
          inputRef.current.value[e.target.selectionStart - 1] === ']' &&
          e.target.selectionStart === e.target.selectionEnd
       ) {
-         autoCloseBracketLink(e, newText => undoableEditText(newText));
+         autoCloseBracketLink(e);
          return;
       }
 
@@ -305,7 +305,7 @@ const RichTextArea = ({
          e.target.selectionStart !== e.target.selectionEnd &&
          !(e.ctrlKey || e.metaKey)
       ) {
-         encloseSelectedText(e, newText => undoableEditText(newText));
+         encloseSelectedText(e);
          return;
       }
 
@@ -346,26 +346,26 @@ const RichTextArea = ({
       // ctrl+k adds bracket link
       if (e.key === 'k' && (e.ctrlKey || e.metaKey)) {
          e.preventDefault();
-         linkifyText(e.target, newText => undoableEditText(newText));
+         linkifyText(e.target);
          return;
       }
 
       // ctrl + > adds summary tags
       if ((e.key === '.' || e.key === '>') && (e.ctrlKey || e.metaKey)) {
          e.preventDefault();
-         addSummaryTagsToText(e.target, newText => undoableEditText(newText));
+         addSummaryTagsToText(e.target);
          return;
       }
 
       if (e.key === 'Tab' && !e.shiftKey) {
          e.preventDefault();
-         tabTheText(e.target, newText => undoableEditText(newText));
+         tabTheText(e.target);
          return;
       }
 
       if (e.key === 'Tab' && e.shiftKey) {
          e.preventDefault();
-         unTabTheText(e.target, newText => undoableEditText(newText));
+         unTabTheText(e.target);
       }
    };
 
@@ -570,9 +570,7 @@ const RichTextArea = ({
                   className="stylingButton summary"
                   onClick={e => {
                      e.preventDefault();
-                     addSummaryTagsToText(inputRef.current, newText =>
-                        undoableEditText(newText)
-                     );
+                     addSummaryTagsToText(inputRef.current);
                      inputRef.current.focus();
                   }}
                >
@@ -594,10 +592,7 @@ const RichTextArea = ({
                   className="stylingButton link"
                   onClick={e => {
                      e.preventDefault();
-                     linkifyText(
-                        inputRef.current,
-                        newText => (inputRef.current.value = newText)
-                     );
+                     linkifyText(inputRef.current);
                      inputRef.current.focus();
                   }}
                >
