@@ -56,7 +56,9 @@ const keepCaretAboveStickyButtons = el => {
    const cursorDepth = cursorXY.y - el.offsetTop + 3 * oneRem + 1; // getCursorXY includes the offset of the element, so we're removing it here. I don't really know where the 3 rem comes from, but the 1px I think is for the border
 
    const parentBlock = el.closest('.contentBlock');
+   if (parentBlock == null) return; // If this input isn't part of a contentBlock, then there aren't going to be stickbuttons, so we're done here
    const stickyButtons = parentBlock.querySelector('.newcontentButtons');
+   if (stickyButtons == null) return; // If there are no sticky buttons in this block for some reason, then we're also good
 
    const textAreaRect = el.getBoundingClientRect();
    const stickyButtonsRect = stickyButtons.getBoundingClientRect();

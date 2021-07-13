@@ -46,6 +46,7 @@ const StyledSummary = styled.section`
       max-width: 1200px;
       margin: auto;
       text-align: center;
+      white-space: pre-wrap;
    }
    .addSummaryPrompt {
       cursor: pointer;
