@@ -6,6 +6,7 @@ import { SEARCH_QUERY } from './SearchResults';
 import { home } from '../config';
 import {
    getCursorXY,
+   keepCaretAboveStickyButtons,
    autoCloseBracketLink,
    wrapTextWithTag,
    linkifyText,
@@ -612,6 +613,7 @@ const RichTextArea = ({
                className="richTextInput"
                onChange={e => {
                   dynamicallyResizeElement(inputRef.current);
+                  keepCaretAboveStickyButtons(inputRef.current);
                }}
                onKeyDown={e => handleKeyDown(e)}
                onKeyUp={e => handleKeyUp(e)}

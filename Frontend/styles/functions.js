@@ -1,5 +1,4 @@
 import { pxToInt } from '../lib/TextHandling';
-import { getCursorXY } from '../lib/RichTextHandling';
 
 function setSaturation(baseColor, saturation) {
    if (isHSL(baseColor)) {
@@ -72,41 +71,14 @@ export { getOneRem };
 
 const dynamicallyResizeElement = el => {
    if (el == null) {
+      return;
    }
    const mainSection = document.querySelector('.mainSection');
    const oldScrollTop = mainSection.scrollTop;
    el.style.height = '0';
    const oneRem = getOneRem();
    el.style.height = `${el.scrollHeight + oneRem}px`;
-
-   let newScrollTop = oldScrollTop;
-   if (
-      el === document.activeElement &&
-      el.closest('.theActualContent') != null
-   ) {
-      const cursorPosition = el.selectionEnd;
-      const cursorXY = getCursorXY(el, cursorPosition);
-      const cursorDepth = cursorXY.y - el.offsetTop + 3 * oneRem + 1; // getCursorXY includes the offset of the element, so we're removing it here. I don't really know where the 3 rem comes from, but the 1px I think is for the border
-
-      const parentBlock = el.closest('.contentBlock');
-      const stickyButtons = parentBlock.querySelector('.newcontentButtons');
-
-      const textAreaRect = el.getBoundingClientRect();
-      const stickyButtonsRect = stickyButtons.getBoundingClientRect();
-
-      const totalCursorDepth = textAreaRect.top + cursorDepth;
-
-      if (stickyButtonsRect.top < totalCursorDepth) {
-         const scrollAdjustment =
-            stickyButtonsRect.top - (totalCursorDepth + 0.5 * oneRem); // Adding the 0.5rem just for some breathing room beneath the cursor
-         newScrollTop = oldScrollTop - scrollAdjustment;
-      }
-   }
-   window.setTimeout(() => {
-      if (oldScrollTop !== newScrollTop) {
-         mainSection.scrollTop = newScrollTop;
-      }
-   }, 1);
+   mainSection.scrollTop = oldScrollTop;
 };
 export { dynamicallyResizeElement };
 

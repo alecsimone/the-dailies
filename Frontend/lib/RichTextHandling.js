@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { dynamicallyResizeElement } from '../styles/functions';
+import { dynamicallyResizeElement, getOneRem } from '../styles/functions';
 
 const getCursorXY = (input, selectionPoint) => {
    // stole this from https://medium.com/@jh3y/how-to-where-s-the-caret-getting-the-xy-position-of-the-caret-a24ba372990a
@@ -44,6 +44,35 @@ const getCursorXY = (input, selectionPoint) => {
    };
 };
 export { getCursorXY };
+
+const keepCaretAboveStickyButtons = el => {
+   const cursorPosition = el.selectionEnd;
+   const cursorXY = getCursorXY(el, cursorPosition);
+   const oneRem = getOneRem();
+   const cursorDepth = cursorXY.y - el.offsetTop + 3 * oneRem + 1; // getCursorXY includes the offset of the element, so we're removing it here. I don't really know where the 3 rem comes from, but the 1px I think is for the border
+
+   const parentBlock = el.closest('.contentBlock');
+   const stickyButtons = parentBlock.querySelector('.newcontentButtons');
+
+   const textAreaRect = el.getBoundingClientRect();
+   const stickyButtonsRect = stickyButtons.getBoundingClientRect();
+
+   const totalCursorDepth = textAreaRect.top + cursorDepth;
+
+   console.log(textAreaRect.top, cursorDepth);
+   console.log(stickyButtonsRect.top, totalCursorDepth);
+   if (stickyButtonsRect.top < totalCursorDepth) {
+      const scrollAdjustment =
+         stickyButtonsRect.top - (totalCursorDepth + 0.5 * oneRem); // Adding the 0.5rem just for some breathing room beneath the cursor
+      // newScrollTop = oldScrollTop - scrollAdjustment;
+
+      window.setTimeout(() => {
+         const mainSection = document.querySelector('.mainSection');
+         mainSection.scrollTop -= scrollAdjustment;
+      }, 1);
+   }
+};
+export { keepCaretAboveStickyButtons };
 
 const autoCloseBracketLink = e => {
    const thisInput = e.target;
