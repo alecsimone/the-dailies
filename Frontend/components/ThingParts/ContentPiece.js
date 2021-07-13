@@ -115,7 +115,6 @@ const ContentPiece = ({
             pieceId: id,
             thingId: thingID
          },
-         onCompleted: data => console.log(data),
          onError: err => alert(err.message)
       }
    );
