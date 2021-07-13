@@ -208,6 +208,9 @@ const ContentPiece = ({
          <RichTextArea
             text={rawContentString}
             postText={postContent}
+            rawUpdateText={() =>
+               editContentPiece(id, editContentInputRef.current.value)
+            }
             setEditable={setEditableHandler}
             placeholder="Add content"
             buttonText="save edit"

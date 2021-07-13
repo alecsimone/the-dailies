@@ -100,6 +100,7 @@ const RichTextArea = ({
    text,
    postText,
    setEditable,
+   rawUpdateText,
    placeholder,
    buttonText,
    hideStyleGuideLink,
@@ -270,6 +271,12 @@ const RichTextArea = ({
       if (e.key === 'Enter' && (e.ctrlKey || e.metaKey) && e.shiftKey) {
          e.preventDefault();
          insertLineAbove(e.target);
+      }
+
+      if (e.key === 's' && (e.ctrlKey || e.metaKey)) {
+         if (rawUpdateText == null) return;
+         e.preventDefault();
+         rawUpdateText();
       }
 
       // Quit editing on escape

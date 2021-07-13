@@ -48,7 +48,15 @@ const Content = ({ context, canEdit, linkedPiece }) => {
    });
 
    const [editContentPiece] = useMutation(EDIT_CONTENTPIECE_MUTATION, {
-      onError: err => alert(err.message)
+      onError: err => alert(err.message),
+      onCompleted: data => {
+         const thisThing = document.querySelector('article.fullThing');
+         thisThing.classList.add('success');
+         window.setTimeout(() => {
+            const thisThing = document.querySelector('article.fullThing');
+            thisThing.classList.remove('success');
+         }, 200);
+      }
    });
 
    const [reorderContent] = useMutation(REORDER_CONTENT_MUTATION, {
