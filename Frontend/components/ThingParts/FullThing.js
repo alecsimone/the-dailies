@@ -31,11 +31,6 @@ const StyledFullThing = styled.article`
    }
    border: 2px solid ${props => setAlpha(props.theme.lowContrastGrey, 0.15)};
    background: ${props => props.theme.lightBlack};
-   transition: background 0.5s ease-out;
-   &.success {
-      background: ${props => setLightness(props.theme.primaryAccent, 10)};
-      transition: background 0.2s ease-in;
-   }
    box-shadow: 0 4px 4px ${props => setAlpha(props.theme.deepBlack, 0.2)};
    &:after {
       position: absolute;

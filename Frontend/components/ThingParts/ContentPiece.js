@@ -26,7 +26,11 @@ import {
    changeContentButKeepInFrame,
    editContentButKeepInFrame
 } from '../../lib/ContentHandling';
-import { dynamicallyResizeElement, getOneRem } from '../../styles/functions';
+import {
+   dynamicallyResizeElement,
+   getOneRem,
+   successFlash
+} from '../../styles/functions';
 import CopyContentInterface from './CopyContentInterface';
 import VoteBar, { VOTE_MUTATION } from './VoteBar';
 import { ALL_THINGS_QUERY } from '../../lib/ThingHandling';
@@ -86,7 +90,7 @@ const ContentPiece = ({
 
    const contentContainerRef = useRef(null);
 
-   const postContent = () => {
+   const postContent = async () => {
       const inputRef = editContentInputRef.current;
       const editedContent = inputRef.value;
 
@@ -97,8 +101,9 @@ const ContentPiece = ({
          return;
       }
 
-      editContentPiece(id, editedContent);
       setEditableHandler(false);
+      await editContentPiece(id, editedContent);
+      successFlash(contentContainerRef.current);
    };
 
    const [storeUnsavedContentPieceChanges] = useMutation(
@@ -243,9 +248,10 @@ const ContentPiece = ({
          <RichTextArea
             text={rawContentString}
             postText={postContent}
-            rawUpdateText={() =>
-               editContentPiece(id, editContentInputRef.current.value)
-            }
+            rawUpdateText={async () => {
+               await editContentPiece(id, editContentInputRef.current.value);
+               successFlash(contentContainerRef.current);
+            }}
             setEditable={setEditableHandler}
             placeholder="Add content"
             buttonText="save edit"

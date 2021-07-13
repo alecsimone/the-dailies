@@ -84,3 +84,13 @@ export { dynamicallyResizeElement };
 
 const midScreenBreakpointPx = 1440;
 export { midScreenBreakpointPx };
+
+const successFlash = el => {
+   if (el == null) return;
+
+   el.classList.add('success');
+   window.setTimeout(() => {
+      el.classList.remove('success');
+   }, 200);
+};
+export { successFlash };

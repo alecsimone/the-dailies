@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 import { useRef } from 'react';
-import { commentFields } from './CardInterfaces';
+import { commentFields, contentPieceFields } from './CardInterfaces';
 import { getOneRem, midScreenBreakpointPx } from '../styles/functions';
 
 const ADD_CONTENTPIECE_MUTATION = gql`
@@ -170,17 +170,23 @@ const STORE_UNSAVED_CONTENT_PIECE_MUTATION = gql`
          ... on Tag {
             __typename
             id
-            unsavedNewContent
+            content {
+               ${contentPieceFields}
+            }
          }
          ... on Stack {
             __typename
             id
-            unsavedNewContent
+            content {
+               ${contentPieceFields}
+            }
          }
          ... on Thing {
             __typename
             id
-            unsavedNewContent
+            content {
+               ${contentPieceFields}
+            }
          }
       }
    }
@@ -193,17 +199,23 @@ const CLEAR_UNSAVED_CONTENT_PIECE_MUTATION = gql`
          ... on Tag {
             __typename
             id
-            unsavedNewContent
+            content {
+               ${contentPieceFields}
+            }
          }
          ... on Stack {
             __typename
             id
-            unsavedNewContent
+            content {
+               ${contentPieceFields}
+            }
          }
          ... on Thing {
             __typename
             id
-            unsavedNewContent
+            content {
+               ${contentPieceFields}
+            }
          }
       }
    }

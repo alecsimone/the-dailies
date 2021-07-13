@@ -18,7 +18,7 @@ import {
 import { SINGLE_THING_QUERY } from '../../pages/thing';
 import { SINGLE_TAX_QUERY } from '../../pages/tag';
 import { MemberContext } from '../Account/MemberProvider';
-import { dynamicallyResizeElement } from '../../styles/functions';
+import { dynamicallyResizeElement, successFlash } from '../../styles/functions';
 
 const Content = ({ context, canEdit, linkedPiece }) => {
    // First we'll pull in all our data from context
@@ -59,12 +59,8 @@ const Content = ({ context, canEdit, linkedPiece }) => {
    const [editContentPiece] = useMutation(EDIT_CONTENTPIECE_MUTATION, {
       onError: err => alert(err.message),
       onCompleted: data => {
-         const thisThing = document.querySelector('article.fullThing');
-         thisThing.classList.add('success');
-         window.setTimeout(() => {
-            const thisThing = document.querySelector('article.fullThing');
-            thisThing.classList.remove('success');
-         }, 200);
+         // const thisThing = document.querySelector('article.fullThing');
+         // successFlash(thisThing);
       }
    });
 
