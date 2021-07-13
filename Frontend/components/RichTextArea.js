@@ -99,7 +99,7 @@ const StyledWrapper = styled.div`
 
 const debouncedUnsavedChangesHandler = debounce(
    (handler, e) => handler(e),
-   5000,
+   3000,
    false
 );
 
