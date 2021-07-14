@@ -22,6 +22,8 @@ import { MemberContext } from '../Account/MemberProvider';
 import { ADD_COMMENT_MUTATION } from '../ThingParts/Comments';
 import CardGenerator from './CardGenerator';
 import { minimumTranslationDistance } from '../../config';
+import ThingMeta from '../ThingParts/ThingMeta';
+import TaxBox from '../ThingParts/TaxBox';
 
 const StyledThingCard = styled.div`
    position: relative;
@@ -117,7 +119,6 @@ const StyledThingCard = styled.div`
       flex-wrap: wrap;
       justify-content: space-between;
       align-items: center;
-      font-size: ${props => props.theme.miniText};
       color: ${props => props.theme.lowContrastGrey};
       margin-top: 1.5rem;
       .meta-left {
@@ -133,6 +134,10 @@ const StyledThingCard = styled.div`
                color: ${props => setLightness(props.theme.majorColor, 50)};
                text-decoration: none;
             }
+         }
+         .thingMeta {
+            margin: 0;
+            padding: 0;
          }
          .authorBlock {
             display: inline-flex;
@@ -162,6 +167,9 @@ const StyledThingCard = styled.div`
                   text-decoration: underline;
                }
             }
+         }
+         .taxboxContainer {
+            margin-top: 0;
          }
       }
       .meta-left, .meta-right {
@@ -264,6 +272,14 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
 
    const { lowContrastGrey, midScreenBPWidthRaw } = useContext(ThemeContext);
    const { me } = useContext(MemberContext);
+
+   let canEdit = false;
+   if (me.id === author.id) {
+      canEdit = true;
+   }
+   if (me.role === 'Admin' || me.role === 'Editor') {
+      canEdit = true;
+   }
 
    // First let's make our array of the orderedContent so we can add comments to it when we need to
    let fullContent;
@@ -642,12 +658,19 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
             {contentPossiblyWithSummaryArray.length > 1 && contentSlider}
             <div className="meta">
                <div className="meta-left">
-                  <AuthorLink author={author} />{' '}
-                  <TimeAgo time={createdAt} toggleable />
-                  <span className="privacy">{privacy}</span>
+                  <ThingMeta
+                     key={`${id}-ThingMeta`}
+                     canEdit={canEdit}
+                     context={ThingCardContext}
+                  />
                </div>
                <div className="meta-right">
-                  {tags.length > 0 && <Taxes tags={tags} personal={false} />}
+                  <TaxBox
+                     key={`${id}-TagBox`}
+                     canEdit={canEdit}
+                     personal={false}
+                     context={ThingCardContext}
+                  />
                </div>
             </div>
             <VoteBar votes={votes} id={id} type="Thing" />

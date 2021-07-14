@@ -214,7 +214,6 @@ const getListElement = (listItem, fixedText, match) => {
          const { ordinal } = splitItem.groups;
 
          // We only want to do this with letter ordinals
-         console.log('we out here?');
          if (ordinal.match(/[a-z]/gi) != null) {
             // Then we go through the ordinal character by character
             for (let i = 0; i < ordinal.length; i++) {

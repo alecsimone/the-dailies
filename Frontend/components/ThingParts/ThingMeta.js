@@ -394,9 +394,9 @@ const debouncedMemberSearch = debounce(
    true
 );
 
-const ThingMeta = ({ canEdit }) => {
+const ThingMeta = ({ canEdit, context }) => {
    const { me } = useContext(MemberContext);
-   const fullThingData = useContext(ThingContext);
+   const fullThingData = useContext(context || ThingContext);
    const {
       id,
       author,

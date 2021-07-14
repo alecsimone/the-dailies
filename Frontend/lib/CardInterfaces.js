@@ -192,6 +192,12 @@ const thingCardFields = `
    }
    color
    privacy
+   individualViewPermissions {
+      __typename
+      id
+      displayName
+      avatar
+   }
    votes {
       __typename
       id

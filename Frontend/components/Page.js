@@ -114,10 +114,10 @@ const GlobalStyle = createGlobalStyle`
       box-sizing: inherit;
       transition: background 0.5s ease-out;
    }
-      &.success {
-         background: ${props => setLightness(props.theme.primaryAccent, 10)};
-         transition: background 0.2s ease-in;
-      }
+   &.success {
+      background: ${props => setLightness(props.theme.primaryAccent, 10)};
+      transition: background 0.2s ease-in;
+   }
    body {
       min-height: 100%;
       height: 100%;
