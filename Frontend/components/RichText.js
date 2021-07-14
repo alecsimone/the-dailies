@@ -52,6 +52,7 @@ const RichText = ({ text, priorText, nextText, matchCount = 0 }) => {
       const tags = match[0].matchAll(styleTagSearchString);
       for (const tag of tags) {
          // But we're only interested in the first match of all matches. It might not be a style tag, and if it isn't we'd be skipping ahead and mixing things up.
+         console.log(tag);
          if (tag[0] === match[0]) {
             // First We break off any text before the match and put it in a RichText at the start of our elements array. We have to do this inside each individual for loop because we need the index of the specific match as well.
             const startingTextElement = getStartingTextElement(
