@@ -3,11 +3,14 @@ import styled, { ThemeContext } from 'styled-components';
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import Masonry from 'react-masonry-css';
 import { useContext, useState, useRef, useEffect } from 'react';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { MemberContext } from '../components/Account/MemberProvider';
-import { MY_THINGS_QUERY } from '../components/Archives/MyThings';
 import LoadingRing from '../components/LoadingRing';
 import SmallThingCard from '../components/ThingCards/SmallThingCard';
 import { fullMemberFields, thingCardFields } from '../lib/CardInterfaces';
+import OrganizationCard from '../components/Organize/OrganizationCard';
+import OrganizationGroup from '../components/Organize/OrganizationGroup';
+import { setAlpha } from '../styles/functions';
 
 const MY_BIG_THINGS_QUERY = gql`
    query MY_THINGS_QUERY($cursor: String) {
@@ -21,6 +24,14 @@ const STORE_ORGANIZE_STATE_MUTATION = gql`
    mutation STORE_ORGANIZE_STATE_MUTATION($state: String!) {
       storeOrganizeState(state: $state) {
          ${fullMemberFields}
+      }
+   }
+`;
+
+const ADD_TAX_BY_ID_MUTATION = gql`
+   mutation ADD_TAX_BY_ID_MUTATION($tax: ID!, $thingID: ID!, $personal: Boolean) {
+      addTaxToThingById(tax: $tax, thingID: $thingID, personal: $personal) {
+         ${thingCardFields}
       }
    }
 `;
@@ -47,6 +58,13 @@ const StyledOrganizePage = styled.section`
       }
    }
    .tagGroup {
+      width: 100%;
+      display: inline-block;
+      padding: 0 2rem;
+      border-radius: 6px;
+      vertical-align: top;
+      margin-bottom: 2rem;
+      background: ${props => setAlpha(props.theme.lightBlack, 0.8)};
       .header {
          display: flex;
          align-items: center;
@@ -64,22 +82,6 @@ const StyledOrganizePage = styled.section`
       margin-left: -2rem;
       .column {
          padding-left: 2rem;
-      }
-      .cardWrapper {
-         margin-bottom: 2rem;
-         background: ${props => props.theme.midBlack};
-         .hider {
-            font-size: ${props => props.theme.miniText};
-            padding: 1rem;
-            text-align: right;
-            button {
-               opacity: 0.6;
-               padding: 0.5rem;
-               &:hover {
-                  opacity: 1;
-               }
-            }
-         }
       }
       .smallThingCard {
          max-width: none;
@@ -130,7 +132,8 @@ const Organize = () => {
       hiddenThings: [],
       groupByTag: false,
       hiddenTags: [],
-      userGroups: []
+      userGroups: [],
+      groupOrders: []
    };
    let initialState;
    if (me && me.organizePageState != null) {
@@ -150,6 +153,10 @@ const Organize = () => {
 
    const [storeState] = useMutation(STORE_ORGANIZE_STATE_MUTATION);
 
+   const [addTaxByID] = useMutation(ADD_TAX_BY_ID_MUTATION, {
+      onCompleted: data => console.log(data)
+   });
+
    useEffect(() => {
       if (loadingMe) return;
       const jsonifiedState = JSON.stringify(state);
@@ -166,7 +173,9 @@ const Organize = () => {
 
    useEffect(() => {
       if (!loadingMe && me != null && me.organizePageState != null) {
-         setState(JSON.parse(me.organizePageState));
+         const parsedState = JSON.parse(me.organizePageState);
+         if (typeof parsedState !== 'object' || parsedState == null) return;
+         setState(parsedState);
       }
    }, [loadingMe, me]);
 
@@ -179,6 +188,8 @@ const Organize = () => {
    const [noMoreToFetch, setNoMoreToFetch] = useState(false);
    const cursorRef = useRef(null);
 
+   const defaultOrderRef = useRef([]);
+
    if (loadingMe || state == null) return <LoadingRing />;
 
    const {
@@ -186,7 +197,8 @@ const Organize = () => {
       hiddenThings,
       groupByTag,
       hiddenTags,
-      userGroups
+      userGroups,
+      groupOrders
    } = state;
 
    const fetchMoreHandler = () => {
@@ -217,30 +229,120 @@ const Organize = () => {
       });
    };
 
-   const makeHideableCardFromThing = thing => (
-      <div className="cardWrapper">
-         <SmallThingCard data={thing} key={thing.id} borderSide="top" />
-         <div className="hider">
-            <button
-               onClick={() => {
-                  if (hiddenThings.includes(thing.id)) {
-                     const newHiddenThings = hiddenThings.filter(
-                        id => id !== thing.id
-                     );
-                     setStateHandler('hiddenThings', newHiddenThings);
-                  } else {
-                     setStateHandler('hiddenThings', [
-                        ...hiddenThings,
-                        thing.id
-                     ]);
-                  }
-               }}
-            >
-               hide
-            </button>
-         </div>
-      </div>
-   );
+   const handleDragEnd = result => {
+      const { destination, source, draggableId: rawDraggableId } = result;
+
+      const draggableIdSeparatorIndex = rawDraggableId.indexOf('-');
+      const draggableId = rawDraggableId.substring(
+         draggableIdSeparatorIndex + 1
+      );
+
+      // If the thing was dragged to an empty space, ask if the user wants to remove it from the source group (ie, remove the tag)
+      if (!destination) return;
+
+      if (
+         destination.droppableId === source.droppableId &&
+         destination.index === source.index
+      )
+         return;
+
+      // Check if there's an order for the source group in state
+      const [sourceOrder] = groupOrders.filter(
+         orderObj => orderObj.id === source.droppableId
+      );
+
+      // If there is, copy it
+      let newSourceOrder;
+      if (sourceOrder != null) {
+         newSourceOrder = [...sourceOrder.order];
+      } else {
+         // If there isn't, make one from the defaultOrderRef
+         const [defaultSourceOrder] = defaultOrderRef.current.filter(
+            orderObj => orderObj.id === source.droppableId
+         );
+         newSourceOrder = [...defaultSourceOrder.order];
+      }
+      // And then rearrange it
+      newSourceOrder.splice(source.index, 1);
+
+      // Check if there's an order for the destination group in state
+      const [destinationOrder] = groupOrders.filter(
+         orderObj => orderObj.id === destination.droppableId
+      );
+
+      // If there is, copy it
+      let newDestinationOrder;
+      if (destinationOrder != null) {
+         newDestinationOrder = [...destinationOrder.order];
+      } else {
+         // If there isn't, make one from the defaultOrderRef
+         const [defaultDestinationOrder] = defaultOrderRef.current.filter(
+            orderObj => orderObj.id === destination.droppableId
+         );
+         newDestinationOrder = [...defaultDestinationOrder.order];
+      }
+      // And then rearrange it
+      newDestinationOrder.splice(destination.index, 0, draggableId);
+
+      // Then we update state. First we make a copy of the groupOrders array
+      const groupOrdersCopy = [...groupOrders];
+
+      // Then we update the source order array
+      const indexOfSource = groupOrdersCopy.findIndex(
+         orderObj => orderObj.id === source.droppableId
+      );
+      if (indexOfSource !== -1) {
+         groupOrdersCopy[indexOfSource].order = newSourceOrder;
+      } else {
+         groupOrdersCopy.push({
+            id: source.droppableId,
+            order: newSourceOrder
+         });
+      }
+
+      // Then we update the destination order array
+      const indexOfDestination = groupOrdersCopy.findIndex(
+         orderObj => orderObj.id === destination.droppableId
+      );
+      if (indexOfDestination !== -1) {
+         groupOrdersCopy[indexOfDestination].order = newDestinationOrder;
+      } else {
+         groupOrdersCopy.push({
+            id: source.droppableId,
+            order: newDestinationOrder
+         });
+      }
+
+      // If the thing was dragged onto a different group from where it started, add it to that group (ie, add that tag to it)
+      if (destination.droppableId !== source.droppableId) {
+         if (destination.droppableId === 'tagless') return;
+         const [thingData] = data.myThings.filter(
+            thing => thing.id === draggableId
+         );
+         const [orderObj] = defaultOrderRef.current.filter(
+            tagObj => tagObj.id === destination.droppableId
+         );
+         thingData.partOfTags.push({
+            __typename: 'Tag',
+            id: destination.droppableId,
+            title: orderObj.title
+         });
+         addTaxByID({
+            variables: {
+               tax: destination.droppableId,
+               thingID: draggableId,
+               personal: false
+            },
+            optimisticResponse: {
+               __typename: 'Mutation',
+               addTaxToThingByById: thingData
+            }
+         });
+      }
+
+      // And finally, we push to state
+      setStateHandler('groupOrders', groupOrdersCopy);
+   };
 
    let content;
    if (data) {
@@ -298,44 +400,32 @@ const Organize = () => {
          );
 
          const tagGroups = filteredTagsArray.map(tagObj => {
-            const cards = tagObj.things.map(thing =>
-               makeHideableCardFromThing(thing)
+            const defaultOrder = tagObj.things.map(thing => thing.id);
+            const refIndex = defaultOrderRef.current.findIndex(
+               orderObj => orderObj.id === tagObj.id
             );
+            if (refIndex === -1) {
+               defaultOrderRef.current.push({
+                  id: tagObj.id,
+                  title: tagObj.title,
+                  order: defaultOrder
+               });
+            } else {
+               defaultOrderRef.current[refIndex].order = defaultOrder;
+            }
+
+            const [groupOrder] = groupOrders.filter(
+               orderObj => orderObj.id === tagObj.id
+            );
+
             return (
-               <div className="tagGroup">
-                  <div className="header">
-                     <h3>{tagObj.title}</h3>
-                     <button
-                        onClick={() =>
-                           setStateHandler('hiddenTags', [
-                              ...hiddenTags,
-                              tagObj.id
-                           ])
-                        }
-                     >
-                        hide
-                     </button>
-                  </div>
-                  <Masonry
-                     breakpointCols={{
-                        default: 1,
-                        9999: 3,
-                        [bigScreenBPWidthRaw]: 2,
-                        [desktopBPWidthRaw]: 1
-                     }}
-                     className="masonryContainer"
-                     columnClassName="column"
-                  >
-                     {cards}
-                  </Masonry>
-               </div>
+               <OrganizationGroup
+                  groupObj={tagObj}
+                  setStateHandler={setStateHandler}
+                  order={groupOrder == null ? null : groupOrder.order}
+               />
             );
          });
-         content = tagGroups;
-      } else {
-         const cards = filteredThings.map(thing =>
-            makeHideableCardFromThing(thing)
-         );
          content = (
             <Masonry
                breakpointCols={{
@@ -347,61 +437,80 @@ const Organize = () => {
                className="masonryContainer"
                columnClassName="column"
             >
-               {cards}
+               {tagGroups}
             </Masonry>
+         );
+      } else {
+         const groupObj = {
+            id: 'ungrouped',
+            title: 'Ungrouped',
+            things: filteredThings
+         };
+         content = (
+            <OrganizationGroup
+               groupObj={groupObj}
+               setStateHandler={setStateHandler}
+            />
          );
       }
    } else if (loading) {
       content = <LoadingRing />;
    }
    return (
-      <StyledOrganizePage>
-         {data && (
-            <div className="filterManagement">
-               <input
-                  className="filter"
-                  type="text"
-                  placeholder="Filter"
-                  value={filterString}
-                  onChange={e =>
-                     setStateHandler('filterString', e.target.value)
-                  }
-               />
-               <div className="buttons">
-                  <button
-                     onClick={() => setStateHandler('groupByTag', !groupByTag)}
-                  >
-                     {groupByTag ? 'ungroup by tag' : 'group by tag'}
-                  </button>
-                  {hiddenTags.length > 0 && (
-                     <button onClick={() => setStateHandler('hiddenTags', [])}>
-                        show hidden tags
-                     </button>
-                  )}
-                  {hiddenThings.length > 0 && (
+      <DragDropContext onDragEnd={handleDragEnd}>
+         <StyledOrganizePage>
+            {data && (
+               <div className="filterManagement">
+                  <input
+                     className="filter"
+                     type="text"
+                     placeholder="Filter"
+                     value={filterString}
+                     onChange={e =>
+                        setStateHandler('filterString', e.target.value)
+                     }
+                  />
+                  <div className="buttons">
                      <button
-                        onClick={() => setStateHandler('hiddenThings', [])}
+                        onClick={() =>
+                           setStateHandler('groupByTag', !groupByTag)
+                        }
                      >
-                        show hidden things
+                        {groupByTag ? 'ungroup by tag' : 'group by tag'}
                      </button>
-                  )}
-                  {JSON.stringify(state) !== JSON.stringify(defaultState) && (
-                     <button onClick={() => setState(defaultState)}>
-                        reset page
-                     </button>
-                  )}
+                     {hiddenTags.length > 0 && (
+                        <button
+                           onClick={() => setStateHandler('hiddenTags', [])}
+                        >
+                           show hidden tags
+                        </button>
+                     )}
+                     {hiddenThings.length > 0 && (
+                        <button
+                           onClick={() => setStateHandler('hiddenThings', [])}
+                        >
+                           show hidden things
+                        </button>
+                     )}
+                     {JSON.stringify(state) !==
+                        JSON.stringify(defaultState) && (
+                        <button onClick={() => setState(defaultState)}>
+                           reset page
+                        </button>
+                     )}
+                  </div>
                </div>
-            </div>
-         )}
-         {content}
-         {data && (
-            <button className="more" onClick={fetchMoreHandler}>
-               {isFetchingMore
-                  ? 'Loading...'
-                  : `${noMoreToFetch ? 'No More' : 'Load More'}`}
-            </button>
-         )}
-      </StyledOrganizePage>
+            )}
+            {content}
+            {data && (
+               <button className="more" onClick={fetchMoreHandler}>
+                  {isFetchingMore
+                     ? 'Loading...'
+                     : `${noMoreToFetch ? 'No More' : 'Load More'}`}
+               </button>
+            )}
+         </StyledOrganizePage>
+      </DragDropContext>
    );
 };
 

@@ -25,7 +25,7 @@ import { minimumTranslationDistance } from '../../config';
 import ThingMeta from '../ThingParts/ThingMeta';
 import TaxBox from '../ThingParts/TaxBox';
 
-const StyledThingCard = styled.div`
+const StyledThingCard = styled.article`
    position: relative;
    display: block;
    width: 100%;

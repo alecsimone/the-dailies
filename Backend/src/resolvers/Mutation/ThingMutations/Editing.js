@@ -94,6 +94,29 @@ async function addTaxesToThing(taxTitleArray, thingID, ctx, personal) {
    });
 }
 
+async function addTaxToThingById(parent, {tax, thingID, personal}, ctx, info) {
+   await loggedInGate(ctx).catch(() => {
+      throw new AuthenticationError('You must be logged in to do that!');
+   });
+   fullMemberGate(ctx.req.member);
+
+   const partOf = personal ? 'partOfStacks' : 'partOfTags';
+
+   const dataObj = {
+      [partOf]: {
+         connect: {
+            id: tax
+         }
+      }
+   }
+
+   const updatedThing = await properUpdateStuff(dataObj, thingID, 'Thing', ctx).catch(err => {
+      console.log(err);
+   });
+   return updatedThing;
+}
+exports.addTaxToThingById = addTaxToThingById;
+
 async function removeTaxFromThing(parent, {tax, thingID, personal}, ctx, info) {
    await loggedInGate(ctx).catch(() => {
       throw new AuthenticationError('You must be logged in to do that!');
