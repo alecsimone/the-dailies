@@ -219,6 +219,7 @@ const GlobalStyle = createGlobalStyle`
    }
    button {
       background: none;
+      transition: background 0.2s;
       border: 1px solid ${theme.highContrastGrey};
       border-radius: 3px;
       color: ${theme.mainText};

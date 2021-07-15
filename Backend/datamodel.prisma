@@ -132,6 +132,7 @@ type Member {
   verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
+  organizePageState: String
   twitterTokenSecret: String
   twitterUserName: String
   twitterUserID: String

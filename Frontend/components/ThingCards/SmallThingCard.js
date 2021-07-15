@@ -25,6 +25,7 @@ const StyledSmallThingCard = styled.article`
    display: flex;
    align-items: center;
    cursor: pointer;
+   transition: background 0.2s;
    ${props => props.theme.mobileBreakpoint} {
       opacity: 0.9;
       border-radius: 0 2px 2px 0;
@@ -109,7 +110,12 @@ const SmallThingCard = ({ data, noPic, fullQuery, borderSide }) => {
 
    if (expanded) {
       return (
-         <CardGenerator id={id} cardType="regular" setExpanded={setExpanded} />
+         <CardGenerator
+            id={id}
+            cardType="regular"
+            setExpanded={setExpanded}
+            borderSide={borderSide}
+         />
       );
    }
 
@@ -136,11 +142,17 @@ const SmallThingCard = ({ data, noPic, fullQuery, borderSide }) => {
       queryString = `/thing?id=${id}`;
    }
 
+   const styleObj = { borderLeft: `0.5rem solid ${highlightColor}` };
+   if (borderSide === 'top') {
+      styleObj.borderLeft = 'none';
+      styleObj.borderTop = `0.5rem solid ${highlightColor}`;
+   }
+
    return (
       <Link href={{ pathname: '/thing', query }}>
          <StyledSmallThingCard
             className="smallThingCard thingCard"
-            style={{ borderLeft: `0.5rem solid ${highlightColor}` }}
+            style={styleObj}
          >
             {!(
                featuredImage == null ||

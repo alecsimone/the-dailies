@@ -1233,6 +1233,7 @@ type Member {
   verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
+  organizePageState: String
   twitterTokenSecret: String
   twitterUserName: String
   twitterUserID: String
@@ -1281,6 +1282,7 @@ input MemberCreateInput {
   verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
+  organizePageState: String
   twitterTokenSecret: String
   twitterUserName: String
   twitterUserID: String
@@ -1383,6 +1385,7 @@ input MemberCreateWithoutCommentsInput {
   verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
+  organizePageState: String
   twitterTokenSecret: String
   twitterUserName: String
   twitterUserID: String
@@ -1422,6 +1425,7 @@ input MemberCreateWithoutCreatedThingsInput {
   verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
+  organizePageState: String
   twitterTokenSecret: String
   twitterUserName: String
   twitterUserID: String
@@ -1461,6 +1465,7 @@ input MemberCreateWithoutFriendRequestsInput {
   verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
+  organizePageState: String
   twitterTokenSecret: String
   twitterUserName: String
   twitterUserID: String
@@ -1500,6 +1505,7 @@ input MemberCreateWithoutFriendsInput {
   verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
+  organizePageState: String
   twitterTokenSecret: String
   twitterUserName: String
   twitterUserID: String
@@ -1539,6 +1545,7 @@ input MemberCreateWithoutIgnoredFriendRequestsInput {
   verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
+  organizePageState: String
   twitterTokenSecret: String
   twitterUserName: String
   twitterUserID: String
@@ -1578,6 +1585,7 @@ input MemberCreateWithoutIndividualViewPermissionsInput {
   verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
+  organizePageState: String
   twitterTokenSecret: String
   twitterUserName: String
   twitterUserID: String
@@ -1617,6 +1625,7 @@ input MemberCreateWithoutNotificationsInput {
   verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
+  organizePageState: String
   twitterTokenSecret: String
   twitterUserName: String
   twitterUserID: String
@@ -1656,6 +1665,7 @@ input MemberCreateWithoutOwnedTagsInput {
   verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
+  organizePageState: String
   twitterTokenSecret: String
   twitterUserName: String
   twitterUserID: String
@@ -1695,6 +1705,7 @@ input MemberCreateWithoutPassesInput {
   verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
+  organizePageState: String
   twitterTokenSecret: String
   twitterUserName: String
   twitterUserID: String
@@ -1734,6 +1745,7 @@ input MemberCreateWithoutVotesInput {
   verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
+  organizePageState: String
   twitterTokenSecret: String
   twitterUserName: String
   twitterUserID: String
@@ -1787,6 +1799,8 @@ enum MemberOrderByInput {
   resetToken_DESC
   resetTokenExpiry_ASC
   resetTokenExpiry_DESC
+  organizePageState_ASC
+  organizePageState_DESC
   twitterTokenSecret_ASC
   twitterTokenSecret_DESC
   twitterUserName_ASC
@@ -1826,6 +1840,7 @@ type MemberPreviousValues {
   verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
+  organizePageState: String
   twitterTokenSecret: String
   twitterUserName: String
   twitterUserID: String
@@ -2030,6 +2045,20 @@ input MemberScalarWhereInput {
   resetTokenExpiry_lte: Float
   resetTokenExpiry_gt: Float
   resetTokenExpiry_gte: Float
+  organizePageState: String
+  organizePageState_not: String
+  organizePageState_in: [String!]
+  organizePageState_not_in: [String!]
+  organizePageState_lt: String
+  organizePageState_lte: String
+  organizePageState_gt: String
+  organizePageState_gte: String
+  organizePageState_contains: String
+  organizePageState_not_contains: String
+  organizePageState_starts_with: String
+  organizePageState_not_starts_with: String
+  organizePageState_ends_with: String
+  organizePageState_not_ends_with: String
   twitterTokenSecret: String
   twitterTokenSecret_not: String
   twitterTokenSecret_in: [String!]
@@ -2183,6 +2212,7 @@ input MemberUpdateDataInput {
   verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
+  organizePageState: String
   twitterTokenSecret: String
   twitterUserName: String
   twitterUserID: String
@@ -2222,6 +2252,7 @@ input MemberUpdateInput {
   verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
+  organizePageState: String
   twitterTokenSecret: String
   twitterUserName: String
   twitterUserID: String
@@ -2251,6 +2282,7 @@ input MemberUpdateManyDataInput {
   verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
+  organizePageState: String
   twitterTokenSecret: String
   twitterUserName: String
   twitterUserID: String
@@ -2280,6 +2312,7 @@ input MemberUpdateManyMutationInput {
   verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
+  organizePageState: String
   twitterTokenSecret: String
   twitterUserName: String
   twitterUserID: String
@@ -2428,6 +2461,7 @@ input MemberUpdateWithoutCommentsDataInput {
   verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
+  organizePageState: String
   twitterTokenSecret: String
   twitterUserName: String
   twitterUserID: String
@@ -2466,6 +2500,7 @@ input MemberUpdateWithoutCreatedThingsDataInput {
   verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
+  organizePageState: String
   twitterTokenSecret: String
   twitterUserName: String
   twitterUserID: String
@@ -2504,6 +2539,7 @@ input MemberUpdateWithoutFriendRequestsDataInput {
   verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
+  organizePageState: String
   twitterTokenSecret: String
   twitterUserName: String
   twitterUserID: String
@@ -2542,6 +2578,7 @@ input MemberUpdateWithoutFriendsDataInput {
   verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
+  organizePageState: String
   twitterTokenSecret: String
   twitterUserName: String
   twitterUserID: String
@@ -2580,6 +2617,7 @@ input MemberUpdateWithoutIgnoredFriendRequestsDataInput {
   verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
+  organizePageState: String
   twitterTokenSecret: String
   twitterUserName: String
   twitterUserID: String
@@ -2618,6 +2656,7 @@ input MemberUpdateWithoutIndividualViewPermissionsDataInput {
   verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
+  organizePageState: String
   twitterTokenSecret: String
   twitterUserName: String
   twitterUserID: String
@@ -2656,6 +2695,7 @@ input MemberUpdateWithoutNotificationsDataInput {
   verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
+  organizePageState: String
   twitterTokenSecret: String
   twitterUserName: String
   twitterUserID: String
@@ -2694,6 +2734,7 @@ input MemberUpdateWithoutOwnedTagsDataInput {
   verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
+  organizePageState: String
   twitterTokenSecret: String
   twitterUserName: String
   twitterUserID: String
@@ -2732,6 +2773,7 @@ input MemberUpdateWithoutPassesDataInput {
   verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
+  organizePageState: String
   twitterTokenSecret: String
   twitterUserName: String
   twitterUserID: String
@@ -2770,6 +2812,7 @@ input MemberUpdateWithoutVotesDataInput {
   verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
+  organizePageState: String
   twitterTokenSecret: String
   twitterUserName: String
   twitterUserID: String
@@ -3081,6 +3124,20 @@ input MemberWhereInput {
   resetTokenExpiry_lte: Float
   resetTokenExpiry_gt: Float
   resetTokenExpiry_gte: Float
+  organizePageState: String
+  organizePageState_not: String
+  organizePageState_in: [String!]
+  organizePageState_not_in: [String!]
+  organizePageState_lt: String
+  organizePageState_lte: String
+  organizePageState_gt: String
+  organizePageState_gte: String
+  organizePageState_contains: String
+  organizePageState_not_contains: String
+  organizePageState_starts_with: String
+  organizePageState_not_starts_with: String
+  organizePageState_ends_with: String
+  organizePageState_not_ends_with: String
   twitterTokenSecret: String
   twitterTokenSecret_not: String
   twitterTokenSecret_in: [String!]

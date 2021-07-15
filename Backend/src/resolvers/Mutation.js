@@ -11,7 +11,8 @@ const {
    readNotifications,
    toggleBroadcastView,
    addViewerToThing,
-   removeViewerFromThing
+   removeViewerFromThing,
+   storeOrganizeState
 } = require('./Mutation/MemberMutations');
 const {
    createThing,
@@ -91,7 +92,8 @@ const Mutations = {
    copyContentPiece,
    unlinkContentPiece,
    addViewerToThing,
-   removeViewerFromThing
+   removeViewerFromThing,
+   storeOrganizeState
 };
 
 module.exports = Mutations;

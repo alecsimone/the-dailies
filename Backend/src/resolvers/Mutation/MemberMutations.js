@@ -706,3 +706,27 @@ async function removeViewerFromThing(parent, { thingID, memberID }, ctx, info) {
    return updatedStuff;
 }
 exports.removeViewerFromThing = removeViewerFromThing;
+
+async function storeOrganizeState(parent, { state }, ctx, info) {
+   await loggedInGate(ctx).catch(() => {
+      throw new AuthenticationError('You must be logged in to do that!');
+   });
+   fullMemberGate(ctx.req.member);
+
+   await ctx.db.mutation
+      .updateMember({
+         where: {
+            id: ctx.req.memberId
+         },
+         data: {
+            organizePageState: state
+         }
+      })
+      .catch(err => {
+         console.log(err);
+      });
+
+   const newMe = publishMeUpdate(ctx);
+   return newMe;
+}
+exports.storeOrganizeState = storeOrganizeState;

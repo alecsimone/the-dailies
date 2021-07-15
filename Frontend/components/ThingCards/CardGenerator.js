@@ -6,7 +6,13 @@ import Error from '../ErrorMessage';
 import LoadingRing from '../LoadingRing';
 import ThingCard from './ThingCard';
 
-const CardGenerator = ({ id, cardType, fullQuery, setExpanded }) => {
+const CardGenerator = ({
+   id,
+   cardType,
+   fullQuery,
+   setExpanded,
+   borderSide
+}) => {
    const { data, loading, error } = useQuery(SINGLE_THING_QUERY, {
       variables: {
          id
@@ -20,7 +26,7 @@ const CardGenerator = ({ id, cardType, fullQuery, setExpanded }) => {
          return (
             <ThingCard
                data={data.thing}
-               borderSide="left"
+               borderSide={borderSide}
                setExpanded={setExpanded}
             />
          );

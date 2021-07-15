@@ -356,6 +356,7 @@ const basicMemberFields = `
    defaultPrivacy
    role
    twitterUserName
+   organizePageState
 `;
 export { basicMemberFields };
 
@@ -464,6 +465,7 @@ const fullMemberFields = `
    }
    role
    twitterUserName
+   organizePageState
    createdAt
 `;
 export { fullMemberFields };
