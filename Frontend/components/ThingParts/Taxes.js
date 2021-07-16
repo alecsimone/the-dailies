@@ -39,6 +39,7 @@ const REMOVE_TAX_MUTATION = gql`
       }
    }
 `;
+export { REMOVE_TAX_MUTATION };
 
 const StyledTaxes = styled.div`
    display: inline-block;

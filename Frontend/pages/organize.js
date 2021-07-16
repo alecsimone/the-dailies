@@ -3,14 +3,14 @@ import styled, { ThemeContext } from 'styled-components';
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import Masonry from 'react-masonry-css';
 import { useContext, useState, useRef, useEffect } from 'react';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { DragDropContext } from 'react-beautiful-dnd';
 import { MemberContext } from '../components/Account/MemberProvider';
 import LoadingRing from '../components/LoadingRing';
-import SmallThingCard from '../components/ThingCards/SmallThingCard';
 import { fullMemberFields, thingCardFields } from '../lib/CardInterfaces';
-import OrganizationCard from '../components/Organize/OrganizationCard';
 import OrganizationGroup from '../components/Organize/OrganizationGroup';
 import { setAlpha } from '../styles/functions';
+import { getRandomString } from '../lib/TextHandling';
+import { REMOVE_TAX_MUTATION } from '../components/ThingParts/Taxes';
 
 const MY_BIG_THINGS_QUERY = gql`
    query MY_THINGS_QUERY($cursor: String) {
@@ -69,10 +69,35 @@ const StyledOrganizePage = styled.section`
          display: flex;
          align-items: center;
          justify-content: space-between;
+         h3,
+         input.groupTitle {
+            font-size: ${props => props.theme.bigText};
+            font-weight: bold;
+            margin: 1.5rem 0;
+         }
+         input.groupTitle {
+            border: none;
+            margin-bottom: calc(1.5rem + 1px);
+            &:focus {
+               border-bottom: 1px solid ${props => props.theme.mainText};
+               outline: none;
+               margin-bottom: 1.5rem;
+            }
+         }
          button {
             padding: 0.5rem 1rem;
             font-size: ${props => props.theme.smallText};
             border-radius: 6px;
+         }
+         svg.x {
+            cursor: pointer;
+            height: calc(${props => props.theme.smallText} + 1rem);
+            opacity: 0.6;
+            transition: all 0.2s;
+            &:hover {
+               opacity: 1;
+               transform: scale(1.1);
+            }
          }
       }
    }
@@ -82,6 +107,7 @@ const StyledOrganizePage = styled.section`
       margin-left: -2rem;
       .column {
          padding-left: 2rem;
+         flex-grow: 1;
       }
       .smallThingCard {
          max-width: none;
@@ -132,6 +158,7 @@ const Organize = () => {
       hiddenThings: [],
       groupByTag: false,
       hiddenTags: [],
+      hiddenGroups: [],
       userGroups: [],
       groupOrders: []
    };
@@ -151,9 +178,33 @@ const Organize = () => {
       });
    };
 
+   const renameGroup = (id, newTitle) => {
+      const userGroupsCopy = [...userGroups];
+      const groupToRenameIndex = userGroupsCopy.findIndex(
+         groupObj => groupObj.id === id
+      );
+      userGroupsCopy[groupToRenameIndex].title = newTitle;
+      setStateHandler('userGroups', userGroupsCopy);
+   };
+
+   const hideGroup = (id, type) => {
+      if (type === 'tag') {
+         setStateHandler('hiddenTags', [...hiddenTags, id]);
+      } else if (type === 'manual') {
+         setStateHandler('hiddenGroups', [...hiddenGroups, id]);
+      }
+   };
+
+   const removeGroup = id => {
+      const newUserGroups = userGroups.filter(groupObj => groupObj.id !== id);
+      setStateHandler('userGroups', newUserGroups);
+   };
+
    const [storeState] = useMutation(STORE_ORGANIZE_STATE_MUTATION);
 
-   const [addTaxByID] = useMutation(ADD_TAX_BY_ID_MUTATION, {
+   const [addTaxByID] = useMutation(ADD_TAX_BY_ID_MUTATION);
+
+   const [removeTaxFromThing] = useMutation(REMOVE_TAX_MUTATION, {
       onCompleted: data => console.log(data)
    });
 
@@ -197,6 +248,7 @@ const Organize = () => {
       hiddenThings,
       groupByTag,
       hiddenTags,
+      hiddenGroups,
       userGroups,
       groupOrders
    } = state;
@@ -237,8 +289,67 @@ const Organize = () => {
          draggableIdSeparatorIndex + 1
       );
 
-      // If the thing was dragged to an empty space, ask if the user wants to remove it from the source group (ie, remove the tag)
-      if (!destination) return;
+      if (
+         destination == null ||
+         ((destination.droppableId === 'tagless' ||
+            destination.droppableId === 'ungrouped') &&
+            source.droppableId !== destination.droppableId)
+      ) {
+         if (groupByTag === true) {
+            console.log('removing the tag');
+            // Remove the tag
+            const [tagObj] = defaultOrderRef.current.filter(
+               groupObj => groupObj.id === source.droppableId
+            );
+
+            const [thingData] = data.myThings.filter(
+               thing => thing.id === draggableId
+            );
+
+            const newTags = thingData.partOfTags.filter(
+               tag => tag.title !== tagObj.title
+            );
+            const newThingData = { ...thingData };
+            newThingData.partOfTags = newTags;
+
+            removeTaxFromThing({
+               variables: {
+                  tax: tagObj.title,
+                  thingID: thingData.id,
+                  personal: false
+               },
+               optimisticResponse: {
+                  __typename: 'Mutation',
+                  removeTaxFromThing: newThingData
+               }
+            });
+         } else {
+            // We need to remove it from the source group
+            // First we find the thing
+            const [thingData] = data.myThings.filter(
+               thing => thing.id === draggableId
+            );
+
+            // Then we make a copy of the userGroups array
+            const userGroupsCopy = [...userGroups];
+
+            // And find the group we're dropping onto within it
+            const sourceGroupIndex = userGroupsCopy.findIndex(
+               groupObj => groupObj.id === source.droppableId
+            );
+
+            // Then we remove the thing from that group
+            const newThings = userGroupsCopy[sourceGroupIndex].things.filter(
+               thing => thing.id !== draggableId
+            );
+            userGroupsCopy[sourceGroupIndex].things = newThings;
+
+            // And push to state
+            setStateHandler('userGroups', userGroupsCopy);
+         }
+      }
+
+      if (destination == null) return;
 
       if (
          destination.droppableId === source.droppableId &&
@@ -308,36 +419,75 @@ const Organize = () => {
          groupOrdersCopy[indexOfDestination].order = newDestinationOrder;
       } else {
          groupOrdersCopy.push({
-            id: source.droppableId,
+            id: destination.droppableId,
             order: newDestinationOrder
          });
       }
 
-      // If the thing was dragged onto a different group from where it started, add it to that group (ie, add that tag to it)
+      // If the thing was dragged onto a different group from where it started, add it to that group, and if it's a manual group, remove it from the original group
       if (destination.droppableId !== source.droppableId) {
-         if (destination.droppableId === 'tagless') return;
-         const [thingData] = data.myThings.filter(
-            thing => thing.id === draggableId
-         );
-         const [orderObj] = defaultOrderRef.current.filter(
-            tagObj => tagObj.id === destination.droppableId
-         );
-         thingData.partOfTags.push({
-            __typename: 'Tag',
-            id: destination.droppableId,
-            title: orderObj.title
-         });
-         addTaxByID({
-            variables: {
-               tax: destination.droppableId,
-               thingID: draggableId,
-               personal: false
-            },
-            optimisticResponse: {
-               __typename: 'Mutation',
-               addTaxToThingByById: thingData
+         if (groupByTag === true) {
+            // First let's get the data for the thing to use in our optimistic response
+            const [thingData] = data.myThings.filter(
+               thing => thing.id === draggableId
+            );
+
+            // We need to find the title of the tag we're adding, which is easiest to grab from the defaultOrderRef
+            const [orderObj] = defaultOrderRef.current.filter(
+               tagObj => tagObj.id === destination.droppableId
+            );
+            thingData.partOfTags.push({
+               __typename: 'Tag',
+               id: destination.droppableId,
+               title: orderObj.title
+            });
+
+            // Then we add the tag
+            addTaxByID({
+               variables: {
+                  tax: destination.droppableId,
+                  thingID: draggableId,
+                  personal: false
+               },
+               optimisticResponse: {
+                  __typename: 'Mutation',
+                  addTaxToThingByById: thingData
+               }
+            });
+         } else {
+            // We need to add it to the destination group
+            // First we find the thing
+            const [thingData] = data.myThings.filter(
+               thing => thing.id === draggableId
+            );
+
+            // Then we make a copy of the userGroups array
+            const userGroupsCopy = [...userGroups];
+
+            // And find the group we're dropping onto within it
+            const destinationGroupIndex = userGroupsCopy.findIndex(
+               groupObj => groupObj.id === destination.droppableId
+            );
+
+            // Then we add the thing to that group
+            userGroupsCopy[destinationGroupIndex].things.push(thingData);
+
+            if (source.droppableId !== 'ungrouped') {
+               // And find the group we're dragging from within it
+               const sourceGroupIndex = userGroupsCopy.findIndex(
+                  groupObj => groupObj.id === source.droppableId
+               );
+
+               // And remove it from the original group
+               const newThings = userGroupsCopy[sourceGroupIndex].things.filter(
+                  thing => thing.id !== draggableId
+               );
+               userGroupsCopy[sourceGroupIndex].things = newThings;
             }
-         });
+
+            // And push to state
+            setStateHandler('userGroups', userGroupsCopy);
+         }
       }
 
       // And finally, we push to state
@@ -370,7 +520,9 @@ const Organize = () => {
          return false;
       });
       if (groupByTag) {
-         const tagsArray = [{ id: 'tagless', title: 'Tagless', things: [] }];
+         const tagsArray = [
+            { id: 'tagless', title: 'Tagless', type: 'tag', things: [] }
+         ];
          filteredThings.forEach(thing => {
             if (thing.partOfTags.length === 0) {
                const indexOfTaglessObj = tagsArray.findIndex(
@@ -386,6 +538,7 @@ const Organize = () => {
                      tagsArray.push({
                         id: tag.id,
                         title: tag.title,
+                        type: 'tag',
                         things: [thing]
                      });
                   } else {
@@ -423,6 +576,7 @@ const Organize = () => {
                   groupObj={tagObj}
                   setStateHandler={setStateHandler}
                   order={groupOrder == null ? null : groupOrder.order}
+                  hideGroup={hideGroup}
                />
             );
          });
@@ -440,17 +594,118 @@ const Organize = () => {
                {tagGroups}
             </Masonry>
          );
-      } else {
+      } else if (userGroups.length === 0) {
          const groupObj = {
             id: 'ungrouped',
             title: 'Ungrouped',
+            type: 'manual',
             things: filteredThings
          };
+
+         const defaultOrder = filteredThings.map(thing => thing.id);
+         const refIndex = defaultOrderRef.current.findIndex(
+            orderObj => orderObj.id === 'ungrouped'
+         );
+         if (refIndex === -1) {
+            defaultOrderRef.current.push({
+               id: 'ungrouped',
+               title: 'Ungrouped',
+               order: defaultOrder
+            });
+         } else {
+            defaultOrderRef.current[refIndex].order = defaultOrder;
+         }
+
          content = (
             <OrganizationGroup
                groupObj={groupObj}
                setStateHandler={setStateHandler}
             />
+         );
+      } else {
+         // First we make a copy of the user groups
+         const userGroupsCopy = [...userGroups];
+
+         // Then we need to make a group for all the ungrouped things
+         const ungroupedThings = filteredThings.filter(thing => {
+            // We'll go through each thing, and for each thing, we'll check each group to see if it's in it
+            let isGrouped = false;
+            userGroups.forEach(group => {
+               const [foundThing] = group.things.filter(
+                  groupedThing => groupedThing.id === thing.id
+               );
+               if (foundThing != null) {
+                  isGrouped = true;
+               }
+            });
+            // Things that aren't grouped pass the filter test to make it into our new group
+            return !isGrouped;
+         });
+         // Then we add the ungrouped things group to our user group
+         userGroupsCopy.push({
+            id: 'ungrouped',
+            title: 'Ungrouped',
+            type: 'manual',
+            things: ungroupedThings
+         });
+
+         // now we need to make a list of the default order for each group so we know where to put things when we rearrange them
+         userGroupsCopy.forEach(groupObj => {
+            // First we find the default order of this group
+            const defaultOrder = groupObj.things.map(thing => thing.id);
+
+            // Then we check if we've already got it stored in our defaultOrderRef
+            const refIndex = defaultOrderRef.current.findIndex(
+               orderObj => orderObj.id === groupObj.id
+            );
+            if (refIndex === -1) {
+               // If we don't, we add it
+               defaultOrderRef.current.push({
+                  id: groupObj.id,
+                  title: groupObj.title,
+                  order: defaultOrder
+               });
+            } else {
+               // If we do, we update it
+               defaultOrderRef.current[refIndex].order = defaultOrder;
+            }
+         });
+
+         const filteredGroupElements = userGroupsCopy.filter(
+            groupObj => !hiddenGroups.includes(groupObj.id)
+         );
+         const groupElements = filteredGroupElements.map(groupObj => {
+            // First we have to check state to see if we've set a custom order for this group
+            const [groupOrder] = groupOrders.filter(
+               orderObj => orderObj.id === groupObj.id
+            );
+
+            // Then we can create the component for the group
+            return (
+               <OrganizationGroup
+                  key={groupObj.id}
+                  groupObj={groupObj}
+                  setStateHandler={setStateHandler}
+                  renameGroup={renameGroup}
+                  order={groupOrder == null ? null : groupOrder.order}
+                  hideGroup={hideGroup}
+                  removeGroup={groupObj.id === 'ungrouped' ? null : removeGroup}
+               />
+            );
+         });
+         content = (
+            <Masonry
+               breakpointCols={{
+                  default: 1,
+                  9999: 3,
+                  [bigScreenBPWidthRaw]: 2,
+                  [desktopBPWidthRaw]: 1
+               }}
+               className="masonryContainer"
+               columnClassName="column"
+            >
+               {groupElements}
+            </Masonry>
          );
       }
    } else if (loading) {
@@ -476,13 +731,39 @@ const Organize = () => {
                            setStateHandler('groupByTag', !groupByTag)
                         }
                      >
-                        {groupByTag ? 'ungroup by tag' : 'group by tag'}
+                        {groupByTag ? 'group manually' : 'group by tag'}
                      </button>
+                     {!groupByTag && (
+                        <button
+                           onClick={() => {
+                              const randomID = getRandomString(32);
+                              const newGroups = [
+                                 ...userGroups,
+                                 {
+                                    id: randomID,
+                                    title: 'Untitled Group',
+                                    type: 'manual',
+                                    things: []
+                                 }
+                              ];
+                              setStateHandler('userGroups', newGroups);
+                           }}
+                        >
+                           add group
+                        </button>
+                     )}
                      {hiddenTags.length > 0 && (
                         <button
                            onClick={() => setStateHandler('hiddenTags', [])}
                         >
                            show hidden tags
+                        </button>
+                     )}
+                     {hiddenGroups.length > 0 && (
+                        <button
+                           onClick={() => setStateHandler('hiddenGroups', [])}
+                        >
+                           show hidden groups
                         </button>
                      )}
                      {hiddenThings.length > 0 && (

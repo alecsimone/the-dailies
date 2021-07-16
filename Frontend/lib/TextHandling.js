@@ -231,3 +231,19 @@ const getEndingTextElement = (
    return null;
 };
 export { getEndingTextElement };
+
+const getRandomString = count => {
+   const characters =
+      '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+   let randomString = '';
+
+   for (let i = 0; i < count; i++) {
+      randomString += characters.charAt(
+         Math.floor(Math.random() * characters.length)
+      );
+   }
+
+   return randomString;
+};
+export { getRandomString };

@@ -597,36 +597,39 @@ const ThingMeta = ({ canEdit, context }) => {
       ''
    );
 
-   const extraViewersList = individualViewPermissions.map(viewer => (
-      <div className="extraViewer">
-         <span className="viewerName">{viewer.displayName}</span>
-         <X
-            onClick={() => {
-               const newIndividualViewersList = individualViewPermissions.filter(
-                  individualViewer => individualViewer.id !== viewer.id
-               );
-               // const optimisticResponse = {
-               //    removeViewerFromThing: {
-               //       ...fullThingData,
-               //       individualViewPermissions: newIndividualViewersList
-               //    }
-               // };
-               removeViewerFromThing({
-                  variables: {
-                     memberID: viewer.id,
-                     thingID: id
+   let extraViewersElements;
+   if (individualViewPermissions != null) {
+      const extraViewersList = individualViewPermissions.map(viewer => (
+         <div className="extraViewer">
+            <span className="viewerName">{viewer.displayName}</span>
+            <X
+               onClick={() => {
+                  const newIndividualViewersList = individualViewPermissions.filter(
+                     individualViewer => individualViewer.id !== viewer.id
+                  );
+                  // const optimisticResponse = {
+                  //    removeViewerFromThing: {
+                  //       ...fullThingData,
+                  //       individualViewPermissions: newIndividualViewersList
+                  //    }
+                  // };
+                  removeViewerFromThing({
+                     variables: {
+                        memberID: viewer.id,
+                        thingID: id
+                     }
+                  });
+                  if (newIndividualViewersList.length === 0) {
+                     setShowingExtraViewers(false);
                   }
-               });
-               if (newIndividualViewersList.length === 0) {
-                  setShowingExtraViewers(false);
-               }
-            }}
-         />
-      </div>
-   ));
-   const extraViewersElements = (
-      <div className="extraViewersContainer">{extraViewersList}</div>
-   );
+               }}
+            />
+         </div>
+      ));
+      extraViewersElements = (
+         <div className="extraViewersContainer">{extraViewersList}</div>
+      );
+   }
 
    return (
       <StyledThingMeta className="thingMeta">

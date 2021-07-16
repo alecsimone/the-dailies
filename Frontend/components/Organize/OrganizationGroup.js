@@ -1,10 +1,29 @@
 import { Droppable } from 'react-beautiful-dnd';
 import styled from 'styled-components';
+import { useState, useRef } from 'react';
 import OrganizationCard from './OrganizationCard';
+import X from '../Icons/X';
 
-const StyledCardList = styled.div``;
+const StyledCardList = styled.div`
+   .blankSpace {
+      background: ${props => props.theme.midBlack};
+      padding: 2rem;
+      margin-bottom: 2rem;
+      text-align: center;
+   }
+`;
 
-const OrganizationGroup = ({ groupObj, setStateHandler, order }) => {
+const OrganizationGroup = ({
+   groupObj,
+   setStateHandler,
+   order,
+   renameGroup,
+   hideGroup,
+   removeGroup
+}) => {
+   const [groupTitle, setGroupTitle] = useState(groupObj.title);
+   const titleRef = useRef(null);
+
    if (order != null) {
       groupObj.things.sort((a, b) => {
          const aIndex = order.indexOf(a.id);
@@ -34,14 +53,47 @@ const OrganizationGroup = ({ groupObj, setStateHandler, order }) => {
    return (
       <div className="tagGroup">
          <div className="header">
-            <h3>{groupObj.title}</h3>
-            <button
-               onClick={() =>
-                  setStateHandler('hiddenTags', [...hiddenTags, groupObj.id])
-               }
-            >
-               hide
-            </button>
+            {(groupObj.type === 'tag' || groupObj.id === 'ungrouped') && (
+               <h3>{groupObj.title}</h3>
+            )}
+            {groupObj.type === 'manual' && groupObj.id !== 'ungrouped' && (
+               <input
+                  type="text"
+                  className="groupTitle"
+                  ref={titleRef}
+                  value={groupTitle}
+                  onChange={e => {
+                     setGroupTitle(e.target.value);
+                     renameGroup(groupObj.id, e.target.value);
+                  }}
+                  onKeyDown={e => {
+                     if (e.key === 'Enter') {
+                        e.preventDefault();
+                        titleRef.current.blur();
+                     }
+                  }}
+               />
+            )}
+            {hideGroup != null && (
+               <button onClick={() => hideGroup(groupObj.id, groupObj.type)}>
+                  hide
+               </button>
+            )}
+            {removeGroup != null && (
+               <X
+                  onClick={() => {
+                     if (
+                        !confirm(
+                           `Are you sure you want to remove the group ${
+                              groupObj.title
+                           }?`
+                        )
+                     )
+                        return;
+                     removeGroup(groupObj.id);
+                  }}
+               />
+            )}
          </div>
          <Droppable droppableId={groupObj.id}>
             {provided => (
@@ -50,6 +102,11 @@ const OrganizationGroup = ({ groupObj, setStateHandler, order }) => {
                   ref={provided.innerRef}
                   {...provided.droppableProps}
                >
+                  {cards.length === 0 && (
+                     <div className="blankSpace">
+                        Drop cards here to add them to this group
+                     </div>
+                  )}
                   {cards}
                   {provided.placeholder}
                </StyledCardList>
