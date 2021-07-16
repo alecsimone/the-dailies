@@ -74,26 +74,28 @@ const OrganizationGroup = ({
                   }}
                />
             )}
-            {hideGroup != null && (
-               <button onClick={() => hideGroup(groupObj.id, groupObj.type)}>
-                  hide
-               </button>
-            )}
-            {removeGroup != null && (
-               <X
-                  onClick={() => {
-                     if (
-                        !confirm(
-                           `Are you sure you want to remove the group ${
-                              groupObj.title
-                           }?`
+            <div className="buttons">
+               {hideGroup != null && (
+                  <button onClick={() => hideGroup(groupObj.id, groupObj.type)}>
+                     hide
+                  </button>
+               )}
+               {removeGroup != null && (
+                  <X
+                     onClick={() => {
+                        if (
+                           !confirm(
+                              `Are you sure you want to remove the group ${
+                                 groupObj.title
+                              }?`
+                           )
                         )
-                     )
-                        return;
-                     removeGroup(groupObj.id);
-                  }}
-               />
-            )}
+                           return;
+                        removeGroup(groupObj.id);
+                     }}
+                  />
+               )}
+            </div>
          </div>
          <Droppable droppableId={groupObj.id}>
             {provided => (

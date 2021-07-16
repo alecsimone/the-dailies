@@ -84,19 +84,24 @@ const StyledOrganizePage = styled.section`
                margin-bottom: 1.5rem;
             }
          }
-         button {
-            padding: 0.5rem 1rem;
-            font-size: ${props => props.theme.smallText};
-            border-radius: 6px;
-         }
-         svg.x {
-            cursor: pointer;
-            height: calc(${props => props.theme.smallText} + 1rem);
-            opacity: 0.6;
-            transition: all 0.2s;
-            &:hover {
-               opacity: 1;
-               transform: scale(1.1);
+         .buttons {
+            display: flex;
+            align-items: center;
+            button {
+               padding: 0.5rem 1rem;
+               font-size: ${props => props.theme.smallText};
+               border-radius: 6px;
+            }
+            svg.x {
+               cursor: pointer;
+               height: calc(${props => props.theme.smallText} + 1rem);
+               opacity: 0.6;
+               transition: all 0.2s;
+               &:hover {
+                  opacity: 1;
+                  transform: scale(1.1);
+               }
+               margin-left: 2rem;
             }
          }
       }
