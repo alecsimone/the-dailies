@@ -30,7 +30,13 @@ const StyledCard = styled.div`
    }
 `;
 
-const OrganizationCard = ({ thing, groupId, index, setStateHandler }) => (
+const OrganizationCard = ({
+   thing,
+   groupId,
+   index,
+   setStateHandler,
+   hideThing
+}) => (
    <Draggable draggableId={`${groupId}-${thing.id}`} index={index}>
       {provided => (
          <StyledCard
@@ -42,23 +48,7 @@ const OrganizationCard = ({ thing, groupId, index, setStateHandler }) => (
          >
             <SmallThingCard data={thing} key={thing.id} borderSide="top" />
             <div className="hider">
-               <button
-                  onClick={() => {
-                     if (hiddenThings.includes(thing.id)) {
-                        const newHiddenThings = hiddenThings.filter(
-                           id => id !== thing.id
-                        );
-                        setStateHandler('hiddenThings', newHiddenThings);
-                     } else {
-                        setStateHandler('hiddenThings', [
-                           ...hiddenThings,
-                           thing.id
-                        ]);
-                     }
-                  }}
-               >
-                  hide
-               </button>
+               <button onClick={() => hideThing(thing.id)}>hide</button>
             </div>
          </StyledCard>
       )}

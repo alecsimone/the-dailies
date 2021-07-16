@@ -205,6 +205,10 @@ const Organize = () => {
       setStateHandler('userGroups', newUserGroups);
    };
 
+   const hideThing = id => {
+      setStateHandler('hiddenThings', [...hiddenThings, id]);
+   };
+
    const [storeState] = useMutation(STORE_ORGANIZE_STATE_MUTATION);
 
    const [addTaxByID] = useMutation(ADD_TAX_BY_ID_MUTATION);
@@ -582,6 +586,7 @@ const Organize = () => {
                   setStateHandler={setStateHandler}
                   order={groupOrder == null ? null : groupOrder.order}
                   hideGroup={hideGroup}
+                  hideThing={hideThing}
                />
             );
          });
@@ -625,6 +630,7 @@ const Organize = () => {
             <OrganizationGroup
                groupObj={groupObj}
                setStateHandler={setStateHandler}
+               hideThing={hideThing}
             />
          );
       } else {
@@ -695,6 +701,7 @@ const Organize = () => {
                   order={groupOrder == null ? null : groupOrder.order}
                   hideGroup={hideGroup}
                   removeGroup={groupObj.id === 'ungrouped' ? null : removeGroup}
+                  hideThing={hideThing}
                />
             );
          });

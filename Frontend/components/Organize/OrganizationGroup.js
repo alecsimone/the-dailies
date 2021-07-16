@@ -19,7 +19,8 @@ const OrganizationGroup = ({
    order,
    renameGroup,
    hideGroup,
-   removeGroup
+   removeGroup,
+   hideThing
 }) => {
    const [groupTitle, setGroupTitle] = useState(groupObj.title);
    const titleRef = useRef(null);
@@ -47,6 +48,7 @@ const OrganizationGroup = ({
          groupId={groupObj.id}
          index={index}
          setStateHandler={setStateHandler}
+         hideThing={hideThing}
       />
    ));
 
