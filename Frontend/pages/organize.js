@@ -78,7 +78,11 @@ const Organize = () => {
       setStateHandler('hiddenThings', [...hiddenThings, id]);
    };
 
-   const [storeState] = useMutation(STORE_ORGANIZE_STATE_MUTATION);
+   const [storeState] = useMutation(STORE_ORGANIZE_STATE_MUTATION, {
+      context: {
+         debounceKey: myID
+      }
+   });
 
    const [addTaxByID] = useMutation(ADD_TAX_BY_ID_MUTATION);
 
@@ -98,12 +102,9 @@ const Organize = () => {
       storeState({
          variables: {
             state: jsonifiedState
-         },
-         context: {
-            debounceKey: myID
          }
       });
-   }, [loadingMe, me, myID, state, storeState]);
+   }, [loadingMe, me, state, storeState]);
 
    useEffect(() => {
       if (!loadingMe && me != null && me.organizePageState != null) {

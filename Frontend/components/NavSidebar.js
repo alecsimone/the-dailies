@@ -11,6 +11,7 @@ import SidebarHeaderIcon from './Icons/SidebarHeaderIcon';
 import Search from './Icons/Search';
 import X from './Icons/X';
 import DefaultAvatar from './Icons/DefaultAvatar';
+import StackIcon from './Icons/Stack';
 import { ModalContext } from './ModalProvider';
 import { ALL_THINGS_QUERY } from '../lib/ThingHandling';
 import { PUBLIC_THINGS_QUERY } from './Archives/PublicThings';
@@ -254,6 +255,16 @@ const NavSidebar = () => {
                         <X color="lowContrastGrey" className="navNewPost" />
                      </span>
                      <span className="navLabel">New Thing</span>
+                  </div>
+               </a>
+            </Link>
+            <Link href="/organize">
+               <a onClick={() => setNavSidebarIsOpen(false)} title="Organize">
+                  <div className="navLine">
+                     <span className="navIcon">
+                        <StackIcon />
+                     </span>
+                     <span className="navLabel">Organize</span>
                   </div>
                </a>
             </Link>
