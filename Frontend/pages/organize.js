@@ -189,13 +189,7 @@ const Organize = () => {
                removeTaxFromThing
             );
          } else {
-            ungroupCard(
-               data.myThings,
-               draggableId,
-               userGroups,
-               source,
-               setStateHandler
-            );
+            ungroupCard(draggableId, userGroups, source, setStateHandler);
          }
       }
 
@@ -238,7 +232,6 @@ const Organize = () => {
             );
          } else {
             addCardToGroup(
-               data.myThings,
                draggableId,
                userGroups,
                destination,
@@ -286,7 +279,8 @@ const Organize = () => {
             groupOrders,
             setStateHandler,
             hideGroup,
-            hideThing
+            hideThing,
+            myThings
          );
 
          content = (
@@ -304,16 +298,17 @@ const Organize = () => {
             </Masonry>
          );
       } else if (userGroups.length === 0) {
+         // First we make an array of all the things' ids in their default order
+         const defaultOrder = filteredThings.map(thing => thing.id);
+
          // If they don't have any userGroups, we just need to make one for all the ungrouped things
          const groupObj = {
             id: 'ungrouped',
             title: 'Ungrouped',
             type: 'manual',
-            things: filteredThings
+            things: defaultOrder
          };
 
-         // First we make an array of all the thing's ids in their default order
-         const defaultOrder = filteredThings.map(thing => thing.id);
          // Then we check if the defaultOrderRef already has that array in it
          const refIndex = defaultOrderRef.current.findIndex(
             orderObj => orderObj.id === 'ungrouped'
@@ -333,6 +328,7 @@ const Organize = () => {
          content = (
             <OrganizationGroup
                groupObj={groupObj}
+               allThings={data.myThings}
                setStateHandler={setStateHandler}
                hideThing={hideThing}
             />

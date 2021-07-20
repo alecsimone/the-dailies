@@ -15,6 +15,7 @@ const StyledCardList = styled.div`
 
 const OrganizationGroup = ({
    groupObj,
+   allThings,
    setStateHandler,
    order,
    renameGroup,
@@ -27,8 +28,11 @@ const OrganizationGroup = ({
 
    if (order != null) {
       groupObj.things.sort((a, b) => {
-         const aIndex = order.indexOf(a.id);
-         const bIndex = order.indexOf(b.id);
+         const [aData] = allThings.filter(thing => thing.id === a);
+         const [bData] = allThings.filter(thing => thing.id === b);
+
+         const aIndex = order.indexOf(aData.id);
+         const bIndex = order.indexOf(bData.id);
 
          if (aIndex === -1) {
             return 1;
@@ -42,15 +46,18 @@ const OrganizationGroup = ({
       });
    }
 
-   const cards = groupObj.things.map((thing, index) => (
-      <OrganizationCard
-         thing={thing}
-         groupId={groupObj.id}
-         index={index}
-         setStateHandler={setStateHandler}
-         hideThing={hideThing}
-      />
-   ));
+   const cards = groupObj.things.map((id, index) => {
+      const [thisThing] = allThings.filter(thing => thing.id === id);
+      return (
+         <OrganizationCard
+            thing={thisThing}
+            groupId={groupObj.id}
+            index={index}
+            setStateHandler={setStateHandler}
+            hideThing={hideThing}
+         />
+      );
+   });
 
    return (
       <div className="tagGroup">

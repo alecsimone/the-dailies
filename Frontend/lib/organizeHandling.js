@@ -158,18 +158,10 @@ const getDraggableId = rawDraggableId => {
 };
 export { getDraggableId };
 
-const ungroupCard = (
-   myThings,
-   draggableId,
-   userGroups,
-   source,
-   setStateHandler
-) => {
+const ungroupCard = (draggableId, userGroups, source, setStateHandler) => {
    // We need to remove it from the source group
-   // First we find the thing
-   const [thingData] = myThings.filter(thing => thing.id === draggableId);
 
-   // Then we make a copy of the userGroups array
+   // First we make a copy of the userGroups array
    const userGroupsCopy = [...userGroups];
 
    // And find the group we're dropping onto within it
@@ -179,7 +171,7 @@ const ungroupCard = (
 
    // Then we remove the thing from that group
    const newThings = userGroupsCopy[sourceGroupIndex].things.filter(
-      thing => thing.id !== draggableId
+      thingID => thingID !== draggableId
    );
    userGroupsCopy[sourceGroupIndex].things = newThings;
 
@@ -391,7 +383,6 @@ const addTagToCard = (
 export { addTagToCard };
 
 const addCardToGroup = (
-   myThings,
    draggableId,
    userGroups,
    destination,
@@ -399,10 +390,8 @@ const addCardToGroup = (
    setStateHandler
 ) => {
    // We need to add it to the destination group
-   // First we find the thing
-   const [thingData] = myThings.filter(thing => thing.id === draggableId);
 
-   // Then we make a copy of the userGroups array
+   // First we make a copy of the userGroups array
    const userGroupsCopy = [...userGroups];
 
    // And find the group we're dropping onto within it
@@ -411,7 +400,7 @@ const addCardToGroup = (
    );
 
    // Then we add the thing to that group
-   userGroupsCopy[destinationGroupIndex].things.push(thingData);
+   userGroupsCopy[destinationGroupIndex].things.push(draggableId);
 
    if (source.droppableId !== 'ungrouped') {
       // And find the group we're dragging from within it
@@ -421,7 +410,7 @@ const addCardToGroup = (
 
       // And remove it from the original group
       const newThings = userGroupsCopy[sourceGroupIndex].things.filter(
-         thing => thing.id !== draggableId
+         thingID => thingID !== draggableId
       );
       userGroupsCopy[sourceGroupIndex].things = newThings;
    }
@@ -488,7 +477,8 @@ const makeTagGroups = (
    groupOrders,
    setStateHandler,
    hideGroup,
-   hideThing
+   hideThing,
+   allThings
 ) => {
    const tagGroups = tagsArray.map(tagObj => {
       const defaultOrder = tagObj.things.map(thing => thing.id);
@@ -512,6 +502,7 @@ const makeTagGroups = (
       return (
          <OrganizationGroup
             groupObj={tagObj}
+            allThings={allThings}
             setStateHandler={setStateHandler}
             order={groupOrder == null ? null : groupOrder.order}
             hideGroup={hideGroup}
@@ -544,7 +535,7 @@ const makeUserGroups = (
       let isGrouped = false;
       userGroups.forEach(group => {
          const [foundThing] = group.things.filter(
-            groupedThing => groupedThing.id === thing.id
+            groupedThingID => groupedThingID === thing.id
          );
          if (foundThing != null) {
             isGrouped = true;
@@ -553,12 +544,15 @@ const makeUserGroups = (
       // Things that aren't grouped pass the filter test to make it into our new group
       return !isGrouped;
    });
+   // Then we need to make an array with the ids of all the things in this group
+   const thingIDs = ungroupedThings.map(thing => thing.id);
+
    // Then we add the ungrouped things group to our user group
    userGroupsCopy.push({
       id: 'ungrouped',
       title: 'Ungrouped',
       type: 'manual',
-      things: ungroupedThings
+      things: thingIDs
    });
 
    // now we need to make a list of the default order for each group so we know where to put things when we rearrange them
@@ -597,6 +591,7 @@ const makeUserGroups = (
          <OrganizationGroup
             key={groupObj.id}
             groupObj={groupObj}
+            allThings={things}
             setStateHandler={setStateHandler}
             renameGroup={renameGroup}
             order={groupOrder == null ? null : groupOrder.order}
