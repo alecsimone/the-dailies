@@ -173,12 +173,14 @@ const Organize = () => {
    }) => {
       const draggableId = getDraggableId(rawDraggableId);
 
-      // If the destination is empty, or if the card is dragged to one of the null groups (and it's not being rearranged within that null group), we want to remove it from the group
+      // If the destination is empty, or if the card is dragged to one of the null groups (and it's not being rearranged within that null group, or from one of the null groups), we want to remove it from the group
       if (
-         destination == null ||
-         ((destination.droppableId === 'tagless' ||
-            destination.droppableId === 'ungrouped') &&
-            source.droppableId !== destination.droppableId)
+         source.droppableId !== 'tagless' &&
+         source.droppableId !== 'ungrouped' &&
+         (destination == null ||
+            ((destination.droppableId === 'tagless' ||
+               destination.droppableId === 'ungrouped') &&
+               source.droppableId !== destination.droppableId))
       ) {
          if (groupByTag === true) {
             untagCard(

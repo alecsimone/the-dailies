@@ -5,7 +5,6 @@ import SmallThingCard from '../ThingCards/SmallThingCard';
 const StyledCard = styled.div`
    /* display: inline-block; */
    margin-bottom: 2rem;
-   margin-right: 2rem;
    background: ${props => props.theme.midBlack};
    width: 100%;
    article {
