@@ -558,7 +558,7 @@ const makeUserGroups = (
    // now we need to make a list of the default order for each group so we know where to put things when we rearrange them
    userGroupsCopy.forEach(groupObj => {
       // First we find the default order of this group
-      const defaultOrder = groupObj.things.map(thing => thing.id);
+      const defaultOrder = groupObj.things.map(thingID => thingID);
 
       // Then we check if we've already got it stored in our defaultOrderRef
       const refIndex = defaultOrderRef.current.findIndex(
