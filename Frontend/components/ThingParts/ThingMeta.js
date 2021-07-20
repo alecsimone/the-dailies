@@ -671,11 +671,12 @@ const ThingMeta = ({ canEdit, context }) => {
                   />
                )}
                <span className="uneditable">{privacy}</span>
-               {individualViewPermissions.length > 0 && (
-                  <span className="addedViewersCount">
-                     +{individualViewPermissions.length}
-                  </span>
-               )}
+               {individualViewPermissions &&
+                  individualViewPermissions.length > 0 && (
+                     <span className="addedViewersCount">
+                        +{individualViewPermissions.length}
+                     </span>
+                  )}
             </div>
          )}
          {editing && (
