@@ -274,10 +274,10 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
    const { me } = useContext(MemberContext);
 
    let canEdit = false;
-   if (me.id === author.id) {
+   if (me && me.id === author.id) {
       canEdit = true;
    }
-   if (me.role === 'Admin' || me.role === 'Editor') {
+   if (me && (me.role === 'Admin' || me.role === 'Editor')) {
       canEdit = true;
    }
 

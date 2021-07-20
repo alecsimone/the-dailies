@@ -30,14 +30,12 @@ const StyledCard = styled.div`
    }
 `;
 
-const OrganizationCard = ({
-   thing,
-   groupId,
-   index,
-   setStateHandler,
-   hideThing
-}) => (
-   <Draggable draggableId={`${groupId}-${thing.id}`} index={index}>
+const OrganizationCard = ({ thing, groupId, index, hideThing }) => (
+   <Draggable
+      draggableId={`${groupId}-${thing.id}`}
+      index={index}
+      key={thing.id}
+   >
       {provided => (
          <StyledCard
             className="cardWrapper"
