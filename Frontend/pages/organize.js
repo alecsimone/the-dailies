@@ -26,6 +26,7 @@ import {
 } from '../lib/organizeHandling';
 import { getRandomString } from '../lib/TextHandling';
 import { REMOVE_TAX_MUTATION } from '../components/ThingParts/Taxes';
+import SignupOrLogin from '../components/Account/SignupOrLogin';
 
 const Organize = () => {
    const { me, loading: loadingMe } = useContext(MemberContext);
@@ -125,7 +126,7 @@ const Organize = () => {
 
    const defaultOrderRef = useRef([]);
 
-   if (me == null) return <div>You must be logged in to use this</div>;
+   if (me == null) return <SignupOrLogin explanation styled />;
    if (loadingMe || state == null) return <LoadingRing />;
 
    const {

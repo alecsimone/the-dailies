@@ -7,6 +7,7 @@ import LoadingRing from '../components/LoadingRing';
 import TwitterReader from '../components/Twitter/TwitterReader';
 import TwitterLoginStarter from '../components/Twitter/TwitterLoginStarter';
 import TwitterLoginFinisher from '../components/Twitter/TwitterLoginFinisher';
+import SignupOrLogin from '../components/Account/SignupOrLogin';
 
 const twitter = ({ query: { oauth_token, oauth_verifier, listname } }) => {
    const { me, loading } = useContext(MemberContext);
@@ -17,7 +18,7 @@ const twitter = ({ query: { oauth_token, oauth_verifier, listname } }) => {
    if (loading) {
       content = <LoadingRing />;
    } else if (me == null) {
-      content = <p>Members only.</p>;
+      content = <SignupOrLogin explanation styled />;
    } else if (oauth_token && oauth_verifier) {
       content = (
          <TwitterLoginFinisher

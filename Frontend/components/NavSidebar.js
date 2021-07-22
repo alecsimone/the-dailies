@@ -13,6 +13,7 @@ import X from './Icons/X';
 import DefaultAvatar from './Icons/DefaultAvatar';
 import StackIcon from './Icons/Stack';
 import { ModalContext } from './ModalProvider';
+import { MemberContext } from './Account/MemberProvider';
 import { ALL_THINGS_QUERY } from '../lib/ThingHandling';
 import { PUBLIC_THINGS_QUERY } from './Archives/PublicThings';
 import { CURRENT_MEMBER_QUERY } from './Account/MemberProvider';
@@ -36,6 +37,11 @@ const StyledNavSidebar = styled.section`
       display: flex;
       flex-direction: column;
       justify-content: space-around;
+   }
+   &.loggedOut {
+      .container {
+         justify-content: flex-start;
+      }
    }
    a {
       &:hover {
@@ -168,15 +174,26 @@ const NavSidebar = () => {
    });
    const { navSidebarIsOpen, setNavSidebarIsOpen } = useContext(ModalContext);
 
+   const { me } = useContext(MemberContext);
+
    const [logout] = useMutation(LOGOUT_MUTATION, {
       onError: err => alert(err.message)
    });
+
+   let className = 'navSidebar';
+   if (navSidebarIsOpen) {
+      className += ' visible';
+   } else {
+      className += ' hidden';
+   }
+   if (me != null) {
+      className += ' loggedIn';
+   } else {
+      className += ' loggedOut';
+   }
+
    return (
-      <StyledNavSidebar
-         className={
-            navSidebarIsOpen ? 'navSidebar visible' : 'navSidebar hidden'
-         }
-      >
+      <StyledNavSidebar className={className}>
          <div className="container">
             <Link href="/">
                <a onClick={() => setNavSidebarIsOpen(false)} title="Home">
@@ -188,31 +205,38 @@ const NavSidebar = () => {
                   </div>
                </a>
             </Link>
-            <Link href="/me">
-               <a onClick={() => setNavSidebarIsOpen(false)} title="My Things">
-                  <div className="navLine">
-                     <span className="navIcon">
-                        <SidebarHeaderIcon icon="You" className="wide" />
-                     </span>
-                     <span className="navLabel">My Things</span>
-                  </div>
-               </a>
-            </Link>
-            <Link
-               href={{
-                  pathname: '/me',
-                  query: { stuff: 'Friends' }
-               }}
-            >
-               <a onClick={() => setNavSidebarIsOpen(false)} title="Friends">
-                  <div className="navLine">
-                     <span className="navIcon">
-                        <SidebarHeaderIcon icon="Friends" className="wide" />
-                     </span>
-                     <span className="navLabel">Friends</span>
-                  </div>
-               </a>
-            </Link>
+            {me && (
+               <Link href="/me">
+                  <a
+                     onClick={() => setNavSidebarIsOpen(false)}
+                     title="My Things"
+                  >
+                     <div className="navLine">
+                        <span className="navIcon">
+                           <SidebarHeaderIcon icon="You" className="wide" />
+                        </span>
+                        <span className="navLabel">My Things</span>
+                     </div>
+                  </a>
+               </Link>
+            )}
+            {me && (
+               <Link
+                  href={{
+                     pathname: '/me',
+                     query: { stuff: 'Friends' }
+                  }}
+               >
+                  <a onClick={() => setNavSidebarIsOpen(false)} title="Friends">
+                     <div className="navLine">
+                        <span className="navIcon">
+                           <SidebarHeaderIcon icon="Friends" className="wide" />
+                        </span>
+                        <span className="navLabel">Friends</span>
+                     </div>
+                  </a>
+               </Link>
+            )}
             <Link href="/search">
                <a onClick={() => setNavSidebarIsOpen(false)} title="Search">
                   <div className="navLine">
@@ -223,81 +247,94 @@ const NavSidebar = () => {
                   </div>
                </a>
             </Link>
-            <Link href="/twitter">
-               <a onClick={() => setNavSidebarIsOpen(false)} title="Twitter">
-                  <div className="navLine">
-                     <span className="navIcon">
-                        <SidebarHeaderIcon icon="Tweets" className="wide" />
-                     </span>
-                     <span className="navLabel">Twitter</span>
-                  </div>
-               </a>
-            </Link>
-            <Link href="/new">
+            {me && (
+               <Link href="/twitter">
+                  <a onClick={() => setNavSidebarIsOpen(false)} title="Twitter">
+                     <div className="navLine">
+                        <span className="navIcon">
+                           <SidebarHeaderIcon icon="Tweets" className="wide" />
+                        </span>
+                        <span className="navLabel">Twitter</span>
+                     </div>
+                  </a>
+               </Link>
+            )}
+            {me && (
+               <Link href="/new">
+                  <a
+                     onClick={e => {
+                        setNavSidebarIsOpen(false);
+                        e.preventDefault();
+                        const thisLine = e.target.parentNode;
+                        const plusIconList = thisLine.getElementsByClassName(
+                           'navNewPost'
+                        );
+                        const plusIcon = plusIconList[0];
+                        if (!plusIcon.classList.contains('loading')) {
+                           plusIcon.classList.add('loading');
+                           newBlankThing();
+                        }
+                     }}
+                     title="New Thing"
+                  >
+                     <div className="navLine">
+                        <span className="navIcon">
+                           <X color="lowContrastGrey" className="navNewPost" />
+                        </span>
+                        <span className="navLabel">New Thing</span>
+                     </div>
+                  </a>
+               </Link>
+            )}
+            {me && (
+               <Link href="/organize">
+                  <a
+                     onClick={() => setNavSidebarIsOpen(false)}
+                     title="Organize"
+                  >
+                     <div className="navLine">
+                        <span className="navIcon">
+                           <StackIcon />
+                        </span>
+                        <span className="navLabel">Organize</span>
+                     </div>
+                  </a>
+               </Link>
+            )}
+            {me && (
+               <Link href="/me">
+                  <a onClick={() => setNavSidebarIsOpen(false)} title="Profile">
+                     <div className="navLine">
+                        <span className="navIcon">
+                           <DefaultAvatar />
+                        </span>
+                        <span className="navLabel">Profile</span>
+                     </div>
+                  </a>
+               </Link>
+            )}
+            {me && (
                <a
-                  onClick={e => {
+                  onClick={() => {
+                     if (!confirm('Are you sure you want to logout?')) return;
+                     logout({
+                        refetchQueries: [
+                           { query: CURRENT_MEMBER_QUERY },
+                           { query: ALL_THINGS_QUERY }
+                        ]
+                     });
                      setNavSidebarIsOpen(false);
-                     e.preventDefault();
-                     const thisLine = e.target.parentNode;
-                     const plusIconList = thisLine.getElementsByClassName(
-                        'navNewPost'
-                     );
-                     const plusIcon = plusIconList[0];
-                     if (!plusIcon.classList.contains('loading')) {
-                        plusIcon.classList.add('loading');
-                        newBlankThing();
-                     }
                   }}
-                  title="New Thing"
+                  title="Logout"
                >
                   <div className="navLine">
                      <span className="navIcon">
-                        <X color="lowContrastGrey" className="navNewPost" />
+                        <X color="lowContrastGrey" />
                      </span>
-                     <span className="navLabel">New Thing</span>
+                     <span className="navLabel">Logout</span>
                   </div>
                </a>
-            </Link>
-            <Link href="/organize">
-               <a onClick={() => setNavSidebarIsOpen(false)} title="Organize">
-                  <div className="navLine">
-                     <span className="navIcon">
-                        <StackIcon />
-                     </span>
-                     <span className="navLabel">Organize</span>
-                  </div>
-               </a>
-            </Link>
-            <Link href="/me">
-               <a onClick={() => setNavSidebarIsOpen(false)} title="Profile">
-                  <div className="navLine">
-                     <span className="navIcon">
-                        <DefaultAvatar />
-                     </span>
-                     <span className="navLabel">Profile</span>
-                  </div>
-               </a>
-            </Link>
-            <a
-               onClick={() => {
-                  if (!confirm('Are you sure you want to logout?')) return;
-                  logout({
-                     refetchQueries: [
-                        { query: CURRENT_MEMBER_QUERY },
-                        { query: ALL_THINGS_QUERY }
-                     ]
-                  });
-                  setNavSidebarIsOpen(false);
-               }}
-               title="Logout"
-            >
-               <div className="navLine">
-                  <span className="navIcon">
-                     <X color="lowContrastGrey" />
-                  </span>
-                  <span className="navLabel">Logout</span>
-               </div>
-            </a>
+            )}
          </div>
       </StyledNavSidebar>
    );

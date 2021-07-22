@@ -5,11 +5,10 @@ import Link from 'next/link';
 import { MemberContext } from '../Account/MemberProvider';
 import { ModalContext } from '../ModalProvider';
 import MemberMenu from './MemberMenu';
-import Login from '../Account/Login';
-import Signup from '../Account/Signup';
 import { setAlpha } from '../../styles/functions';
 import Avatar from '../Avatar';
 import DefaultAvatar from '../Icons/DefaultAvatar';
+import SignupOrLogin from '../Account/SignupOrLogin';
 
 const StyledMemberBox = styled.div`
    color: ${props => props.theme.secondaryAccent};
@@ -45,7 +44,6 @@ const MemberBox = () => {
    const { me, loading: memberLoading } = useContext(MemberContext);
    const { mobileBPWidthRaw } = useContext(ThemeContext);
    const {
-      setContent,
       thingsSidebarIsOpen,
       setThingsSidebarIsOpen,
       navSidebarIsOpen,
@@ -120,33 +118,7 @@ const MemberBox = () => {
          </>
       );
    } else {
-      memberBoxContent = (
-         <>
-            <p>
-               <Link href={{ pathname: '/signup' }}>
-                  <a
-                     onClick={e => {
-                        e.preventDefault();
-                        setContent(<Signup />);
-                     }}
-                  >
-                     Sign up
-                  </a>
-               </Link>{' '}
-               or{' '}
-               <Link href={{ pathname: '/login' }}>
-                  <a
-                     onClick={e => {
-                        e.preventDefault();
-                        setContent(<Login redirect={false} />);
-                     }}
-                  >
-                     Log in
-                  </a>
-               </Link>
-            </p>
-         </>
-      );
+      memberBoxContent = <SignupOrLogin />;
    }
 
    return (
