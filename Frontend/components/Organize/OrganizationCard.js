@@ -29,27 +29,31 @@ const StyledCard = styled.div`
    }
 `;
 
-const OrganizationCard = ({ thing, groupId, index, hideThing }) => (
-   <Draggable
-      draggableId={`${groupId}-${thing.id}`}
-      index={index}
-      key={thing.id}
-   >
-      {provided => (
-         <StyledCard
-            className="cardWrapper"
-            {...provided.draggableProps}
-            {...provided.dragHandleProps}
-            ref={provided.innerRef}
-            key={thing.id}
-         >
-            <SmallThingCard data={thing} key={thing.id} borderSide="top" />
-            <div className="hider">
-               <button onClick={() => hideThing(thing.id)}>hide</button>
-            </div>
-         </StyledCard>
-      )}
-   </Draggable>
-);
+const OrganizationCard = ({ thing, groupId, index, hideThing }) => {
+   if (thing == null) return null;
+
+   return (
+      <Draggable
+         draggableId={`${groupId}-${thing.id}`}
+         index={index}
+         key={thing.id}
+      >
+         {provided => (
+            <StyledCard
+               className="cardWrapper"
+               {...provided.draggableProps}
+               {...provided.dragHandleProps}
+               ref={provided.innerRef}
+               key={thing.id}
+            >
+               <SmallThingCard data={thing} key={thing.id} borderSide="top" />
+               <div className="hider">
+                  <button onClick={() => hideThing(thing.id)}>hide</button>
+               </div>
+            </StyledCard>
+         )}
+      </Draggable>
+   );
+};
 
 export default OrganizationCard;

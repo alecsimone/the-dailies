@@ -257,9 +257,9 @@ const Organize = () => {
 
       const filteredThings = myThings.filter(thing => {
          // if the thing has been hidden, skip it
-         if (hiddenThings.includes(thing.id)) return false;
+         if (hiddenThings && hiddenThings.includes(thing.id)) return false;
          // If not, if there's no filter string, everything goes in
-         if (filterString.trim() === '') return true;
+         if (filterString == null || filterString.trim() === '') return true;
 
          // If there is a filter string, only put in the things that include it
          if (thing.title.toLowerCase().includes(filterString.toLowerCase()))
@@ -300,7 +300,7 @@ const Organize = () => {
                {tagGroups}
             </Masonry>
          );
-      } else if (userGroups.length === 0) {
+      } else if (userGroups == null || userGroups.length === 0) {
          // First we make an array of all the things' ids in their default order
          const defaultOrder = filteredThings.map(thing => thing.id);
 
@@ -441,9 +441,15 @@ const Organize = () => {
                   <div className="buttons">
                      {toggleGroupButton}
                      {!groupByTag && addGroupButton}
-                     {hiddenTags.length > 0 && showHiddenTagsButton}
-                     {hiddenGroups.length > 0 && showHiddenGroupsButton}
-                     {hiddenThings.length > 0 && showHiddenThingsButton}
+                     {hiddenTags &&
+                        hiddenTags.length > 0 &&
+                        showHiddenTagsButton}
+                     {hiddenGroups &&
+                        hiddenGroups.length > 0 &&
+                        showHiddenGroupsButton}
+                     {hiddenThings &&
+                        hiddenThings.length > 0 &&
+                        showHiddenThingsButton}
                      {JSON.stringify(state) !== JSON.stringify(defaultState) &&
                         resetpageButton}
                   </div>

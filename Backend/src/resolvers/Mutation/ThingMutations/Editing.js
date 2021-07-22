@@ -94,6 +94,17 @@ async function addTaxesToThing(taxTitleArray, thingID, ctx, personal) {
    });
 }
 
+async function addTaxToThings(taxTitle, thingIDs, ctx, personal) {
+   const updatedThings = []
+   for (const thingID of thingIDs) {
+      if (thingID !== '') {
+         const updatedThing = await addTaxToThing(taxTitle.trim(), thingID, ctx, personal);
+         updatedThings.push(updatedThing);
+      }
+   }
+   return updatedThings;
+}
+
 async function addTaxToThingById(parent, {tax, thingID, personal}, ctx, info) {
    await loggedInGate(ctx).catch(() => {
       throw new AuthenticationError('You must be logged in to do that!');
@@ -116,6 +127,30 @@ async function addTaxToThingById(parent, {tax, thingID, personal}, ctx, info) {
    return updatedThing;
 }
 exports.addTaxToThingById = addTaxToThingById;
+
+async function addTaxesToThings(parent, {taxes, thingIDs, personal}, ctx, info) {
+   if (taxes === '') {
+      throw new Error('Tax cannot be empty');
+   }
+   await loggedInGate(ctx).catch(() => {
+      throw new AuthenticationError('You must be logged in to do that!');
+   });
+   fullMemberGate(ctx.req.member);
+
+   if (taxes.includes(',')) {
+      const taxArray = taxes.split(',');
+      let updatedThings;
+      for (const tax of taxArray) {
+         updatedThings = await addTaxToThings(tax, thingIDs, ctx, personal) // Because we're updating the same things over and over, we can ust take the last one we get and return that
+      }
+      return updatedThings;
+   }
+   const updatedThings = await addTaxToThings(taxes, thingIDs, ctx, personal).catch(err => {
+      console.log(err);
+   });
+   return updatedThings;
+}
+exports.addTaxesToThings = addTaxesToThings;
 
 async function removeTaxFromThing(parent, {tax, thingID, personal}, ctx, info) {
    await loggedInGate(ctx).catch(() => {
