@@ -600,7 +600,7 @@ const ThingMeta = ({ canEdit, context }) => {
    let extraViewersElements;
    if (individualViewPermissions != null) {
       const extraViewersList = individualViewPermissions.map(viewer => (
-         <div className="extraViewer">
+         <div className="extraViewer" key={viewer.id}>
             <span className="viewerName">{viewer.displayName}</span>
             <X
                onClick={() => {

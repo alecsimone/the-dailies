@@ -115,7 +115,8 @@ const GlobalStyle = createGlobalStyle`
       transition: background 0.5s ease-out;
    }
    &.success {
-      background: ${props => setLightness(props.theme.primaryAccent, 10)};
+      background: ${props =>
+         setLightness(props.theme.primaryAccent, 10)} !important;
       transition: background 0.2s ease-in;
    }
    body {

@@ -119,6 +119,7 @@ const Taxes = ({
                   ? 'taxWrapper bulk'
                   : 'taxWrapper final'
             }
+            key={tax.id}
          >
             <Link
                href={{

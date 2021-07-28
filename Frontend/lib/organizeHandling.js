@@ -31,15 +31,6 @@ const ADD_TAX_BY_ID_MUTATION = gql`
 `;
 export { ADD_TAX_BY_ID_MUTATION };
 
-const ADD_TAXES_TO_THINGS_MUTATION = gql`
-   mutation ADD_TAXES_TO_THINGS_MUTATION($taxes: String!, $thingIDs: [ID!] $personal: Boolean) {
-      addTaxesToThings(taxes: $taxes, thingIDs: $thingIDs, personal: $personal) {
-         ${thingCardFields}
-      }
-   }
-`;
-export { ADD_TAXES_TO_THINGS_MUTATION };
-
 const StyledOrganizePage = styled.section`
    padding: 2rem;
    .filterManagement {
