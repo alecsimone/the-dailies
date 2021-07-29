@@ -95,9 +95,18 @@ const StyledSmallThingCard = styled.article`
    }
 `;
 
-const SmallThingCard = ({ data, noPic, fullQuery, borderSide }) => {
+const SmallThingCard = ({
+   data,
+   noPic,
+   fullQuery,
+   borderSide,
+   defaultExpansion,
+   expansionCallback
+}) => {
    const { lowContrastGrey } = useContext(ThemeContext);
-   const [expanded, setExpanded] = useState(false);
+   const [expanded, setExpanded] = useState(
+      defaultExpansion != null ? defaultExpansion : false
+   );
 
    if (!data) {
       return (
@@ -113,7 +122,12 @@ const SmallThingCard = ({ data, noPic, fullQuery, borderSide }) => {
          <CardGenerator
             id={id}
             cardType="regular"
-            setExpanded={setExpanded}
+            setExpanded={newValue => {
+               setExpanded(newValue);
+               if (expansionCallback != null) {
+                  expansionCallback(newValue);
+               }
+            }}
             borderSide={borderSide}
          />
       );
@@ -182,6 +196,9 @@ const SmallThingCard = ({ data, noPic, fullQuery, borderSide }) => {
                   onClick={e => {
                      e.stopPropagation();
                      setExpanded(true);
+                     if (expansionCallback != null) {
+                        expansionCallback(true);
+                     }
                   }}
                />
             </div>

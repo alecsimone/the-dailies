@@ -147,7 +147,8 @@ const defaultState = {
    hiddenTags: [],
    hiddenGroups: [],
    userGroups: [],
-   groupOrders: []
+   groupOrders: [],
+   expandedCards: []
 };
 export { defaultState };
 
@@ -387,6 +388,7 @@ const addCardToGroup = (
    userGroups,
    destination,
    source,
+   expandedCards,
    setStateHandler
 ) => {
    // We need to add it to the destination group
@@ -401,6 +403,28 @@ const addCardToGroup = (
 
    // Then we add the thing to that group
    userGroupsCopy[destinationGroupIndex].things.push(draggableId);
+
+   if (
+      expandedCards !== false &&
+      expandedCards != null &&
+      expandedCards.length > 0
+   ) {
+      // When we copy things, we pass this value as false because we don't want to make the copy card expanded
+
+      // First, let's check if the card we're moving is expanded
+      const thisCardExpansionIndex = expandedCards.findIndex(
+         expansionObj =>
+            expansionObj.thingID === draggableId &&
+            expansionObj.groupID === source.droppableId
+      );
+      if (thisCardExpansionIndex !== -1) {
+         // If it is expanded, we just need to change the groupID of the relevant expansion object within expandedCards from the sourceID to the destinationID
+         const copiedExpandedCards = [...expandedCards];
+         copiedExpandedCards[thisCardExpansionIndex].groupID =
+            destination.droppableId;
+         setStateHandler('expandedCards', copiedExpandedCards);
+      }
+   }
 
    if (source.droppableId !== 'ungrouped') {
       // And find the group we're dragging from within it
@@ -478,7 +502,9 @@ const makeTagGroups = (
    setStateHandler,
    hideGroup,
    hideThing,
-   allThings
+   allThings,
+   expandThingCallback,
+   expandedCards
 ) => {
    const tagGroups = tagsArray.map(tagObj => {
       const defaultOrder = tagObj.things.map(thing => thing.id);
@@ -507,6 +533,8 @@ const makeTagGroups = (
             order={groupOrder == null ? null : groupOrder.order}
             hideGroup={hideGroup}
             hideThing={hideThing}
+            expandThingCallback={expandThingCallback}
+            expandedCards={expandedCards}
          />
       );
    });
@@ -525,7 +553,9 @@ const makeUserGroups = (
    hideGroup,
    removeGroup,
    hideThing,
-   copyThingToGroupByID
+   copyThingToGroupByID,
+   expandThingCallback,
+   expandedCards
 ) => {
    // First we make a copy of the user groups
    const userGroupsCopy = [...userGroups];
@@ -601,6 +631,8 @@ const makeUserGroups = (
             hideThing={hideThing}
             copyThingToGroupByID={copyThingToGroupByID}
             userGroups={userGroups}
+            expandThingCallback={expandThingCallback}
+            expandedCards={expandedCards}
          />
       );
    });

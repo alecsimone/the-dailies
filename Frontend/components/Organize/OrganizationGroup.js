@@ -33,7 +33,9 @@ const OrganizationGroup = ({
    removeGroup,
    hideThing,
    copyThingToGroupByID,
-   userGroups
+   userGroups,
+   expandThingCallback,
+   expandedCards
 }) => {
    const [groupTitle, setGroupTitle] = useState(groupObj.title);
    const [tagsToAdd, setTagsToAdd] = useState('');
@@ -92,6 +94,8 @@ const OrganizationGroup = ({
                hideThing={hideThing}
                copyThingToGroupByID={copyThingToGroupByID}
                userGroups={userGroups}
+               expandThingCallback={expandThingCallback}
+               expandedCards={expandedCards}
             />
          );
       }
@@ -107,6 +111,8 @@ const OrganizationGroup = ({
             hideThing={hideThing}
             copyThingToGroupByID={copyThingToGroupByID}
             userGroups={userGroups}
+            expandThingCallback={expandThingCallback}
+            expandedCards={expandedCards}
          />
       );
    });

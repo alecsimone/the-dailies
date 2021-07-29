@@ -104,12 +104,27 @@ const Organize = () => {
       setStateHandler('hiddenThings', [...hiddenThings, id]);
    };
 
+   const expandThingCallback = (thingID, groupID, newExpansionState) => {
+      let newExpandedCards;
+      if (newExpansionState === true) {
+         newExpandedCards = [...expandedCards, { thingID, groupID }];
+      } else if (newExpansionState === false) {
+         newExpandedCards = expandedCards.filter(
+            expansionObj =>
+               expansionObj.thingID !== thingID &&
+               expansionObj.groupID !== groupID
+         );
+      }
+      setStateHandler('expandedCards', newExpandedCards);
+   };
+
    const copyThingToGroupByID = (thingID, groupID) =>
       addCardToGroup(
          thingID,
          userGroups,
          { droppableId: groupID },
          { droppableId: 'ungrouped' }, // We use "ungrouped" because we don't want to remove it from the current group
+         false,
          setStateHandler
       );
 
@@ -170,7 +185,8 @@ const Organize = () => {
       hiddenTags,
       hiddenGroups,
       userGroups,
-      groupOrders
+      groupOrders,
+      expandedCards
    } = state;
 
    const fetchMoreHandler = () => {
@@ -273,6 +289,7 @@ const Organize = () => {
                userGroups,
                destination,
                source,
+               expandedCards,
                setStateHandler
             );
          }
@@ -317,7 +334,9 @@ const Organize = () => {
             setStateHandler,
             hideGroup,
             hideThing,
-            myThings
+            myThings,
+            expandThingCallback,
+            expandedCards
          );
 
          content = (
@@ -370,6 +389,8 @@ const Organize = () => {
                hideThing={hideThing}
                copyThingToGroupByID={copyThingToGroupByID}
                userGroups={userGroups}
+               expandThingCallback={expandThingCallback}
+               expandedCards={expandedCards}
             />
          );
       } else {
@@ -384,7 +405,9 @@ const Organize = () => {
             hideGroup,
             removeGroup,
             hideThing,
-            copyThingToGroupByID
+            copyThingToGroupByID,
+            expandThingCallback,
+            expandedCards
          );
          content = (
             <Masonry

@@ -54,7 +54,9 @@ const OrganizationCard = ({
    index,
    hideThing,
    copyThingToGroupByID,
-   userGroups
+   userGroups,
+   expandThingCallback,
+   expandedCards
 }) => {
    const [showingCopyTargets, setShowingCopyTargets] = useState(false);
 
@@ -79,6 +81,15 @@ const OrganizationCard = ({
       groupObj.things.includes(thing.id)
    );
 
+   const expandThingHandler = newValue => {
+      expandThingCallback(thing.id, groupId, newValue);
+   };
+
+   const [isExpanded] = expandedCards.filter(
+      expansionObj =>
+         expansionObj.thingID === thing.id && expansionObj.groupID === groupId
+   );
+
    return (
       <Draggable
          draggableId={`${groupId}-${thing.id}`}
@@ -93,7 +104,13 @@ const OrganizationCard = ({
                ref={provided.innerRef}
                key={thing.id}
             >
-               <SmallThingCard data={thing} key={thing.id} borderSide="top" />
+               <SmallThingCard
+                  data={thing}
+                  key={thing.id}
+                  borderSide="top"
+                  expansionCallback={expandThingHandler}
+                  defaultExpansion={isExpanded != null}
+               />
                <div
                   className={
                      filteredGroups.length > 0 ? 'hider' : 'hider noCopy'
