@@ -524,7 +524,8 @@ const makeUserGroups = (
    renameGroup,
    hideGroup,
    removeGroup,
-   hideThing
+   hideThing,
+   copyThingToGroupByID
 ) => {
    // First we make a copy of the user groups
    const userGroupsCopy = [...userGroups];
@@ -598,6 +599,8 @@ const makeUserGroups = (
             hideGroup={hideGroup}
             removeGroup={groupObj.id === 'ungrouped' ? null : removeGroup}
             hideThing={hideThing}
+            copyThingToGroupByID={copyThingToGroupByID}
+            userGroups={userGroups}
          />
       );
    });

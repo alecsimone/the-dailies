@@ -75,9 +75,43 @@ const Organize = () => {
       setStateHandler('userGroups', newUserGroups);
    };
 
-   const hideThing = id => {
+   const hideThing = (id, groupID) => {
+      if (
+         userGroups != null &&
+         userGroups.length > 0 &&
+         groupByTag === false &&
+         groupID != null
+      ) {
+         // If we're doing user groups, and we have some user groups, we want to check if this thing is in more than one of them, because if it is, we just want to remove it from the group that it's in
+         const groupsContainingThing = userGroups.filter(groupObj =>
+            groupObj.things.includes(id)
+         );
+
+         // If we find more than one group with the thing in it, we just want to remove it from the group the instance of it we clicked on was in
+         if (groupsContainingThing.length > 1) {
+            const copiedUserGroups = [...userGroups];
+            const indexOfGroupToChange = copiedUserGroups.findIndex(
+               groupObj => groupObj.id === groupID
+            );
+            const newThings = copiedUserGroups[
+               indexOfGroupToChange
+            ].things.filter(thingID => thingID !== id);
+            copiedUserGroups[indexOfGroupToChange].things = newThings;
+            setStateHandler('userGroups', copiedUserGroups);
+            return;
+         }
+      }
       setStateHandler('hiddenThings', [...hiddenThings, id]);
    };
+
+   const copyThingToGroupByID = (thingID, groupID) =>
+      addCardToGroup(
+         thingID,
+         userGroups,
+         { droppableId: groupID },
+         { droppableId: 'ungrouped' }, // We use "ungrouped" because we don't want to remove it from the current group
+         setStateHandler
+      );
 
    const [storeState] = useMutation(STORE_ORGANIZE_STATE_MUTATION, {
       context: {
@@ -334,6 +368,8 @@ const Organize = () => {
                allThings={data.myThings}
                setStateHandler={setStateHandler}
                hideThing={hideThing}
+               copyThingToGroupByID={copyThingToGroupByID}
+               userGroups={userGroups}
             />
          );
       } else {
@@ -347,7 +383,8 @@ const Organize = () => {
             renameGroup,
             hideGroup,
             removeGroup,
-            hideThing
+            hideThing,
+            copyThingToGroupByID
          );
          content = (
             <Masonry

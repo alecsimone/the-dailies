@@ -1,5 +1,6 @@
 import { Draggable } from 'react-beautiful-dnd';
 import styled from 'styled-components';
+import { useState } from 'react';
 import SmallThingCard from '../ThingCards/SmallThingCard';
 
 const StyledCard = styled.div`
@@ -18,7 +19,12 @@ const StyledCard = styled.div`
    .hider {
       font-size: ${props => props.theme.miniText};
       padding: 1rem;
-      text-align: right;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      &.noCopy {
+         justify-content: flex-end;
+      }
       button {
          opacity: 0.6;
          padding: 0.5rem;
@@ -26,11 +32,52 @@ const StyledCard = styled.div`
             opacity: 1;
          }
       }
+      .copyInterface {
+         display: flex;
+         align-items: center;
+         select {
+            padding: 0.5rem;
+            padding-right: 4rem;
+            margin-left: 2rem;
+            font-size: ${props => props.theme.miniText};
+            cursor: pointer;
+         }
+         option {
+         }
+      }
    }
 `;
 
-const OrganizationCard = ({ thing, groupId, index, hideThing }) => {
+const OrganizationCard = ({
+   thing,
+   groupId,
+   index,
+   hideThing,
+   copyThingToGroupByID,
+   userGroups
+}) => {
+   const [showingCopyTargets, setShowingCopyTargets] = useState(false);
+
    if (thing == null) return null;
+
+   // We need to make the options for the copy to group interface. You can't copy to a group that the thing is already in, so first we need to filter those groups out of the master groups list
+   let filteredGroups = [];
+   if (userGroups != null && userGroups.length > 0) {
+      filteredGroups = userGroups.filter(
+         groupObj => !groupObj.things.includes(thing.id)
+      );
+   }
+
+   // Then we need to make an option element for each remaining group
+   const copyToGroupOptions = filteredGroups.map(groupObj => (
+      <option value={groupObj.id} key={groupObj.id}>
+         {groupObj.title}
+      </option>
+   ));
+
+   const groupsContainingThing = userGroups.filter(groupObj =>
+      groupObj.things.includes(thing.id)
+   );
 
    return (
       <Draggable
@@ -47,8 +94,47 @@ const OrganizationCard = ({ thing, groupId, index, hideThing }) => {
                key={thing.id}
             >
                <SmallThingCard data={thing} key={thing.id} borderSide="top" />
-               <div className="hider">
-                  <button onClick={() => hideThing(thing.id)}>hide</button>
+               <div
+                  className={
+                     filteredGroups.length > 0 ? 'hider' : 'hider noCopy'
+                  }
+               >
+                  {filteredGroups.length > 0 && (
+                     <div className="copyInterface">
+                        <button
+                           onClick={() =>
+                              setShowingCopyTargets(!showingCopyTargets)
+                           }
+                        >
+                           {showingCopyTargets ? 'close' : 'copy'}
+                        </button>
+                        {showingCopyTargets && (
+                           <select
+                              value={null}
+                              onChange={e => {
+                                 if (
+                                    e.target.value != null &&
+                                    e.target.value !== ''
+                                 ) {
+                                    copyThingToGroupByID(
+                                       thing.id,
+                                       e.target.value
+                                    );
+                                    setShowingCopyTargets(false);
+                                 }
+                              }}
+                           >
+                              <option value={null} />
+                              {copyToGroupOptions}
+                           </select>
+                        )}
+                     </div>
+                  )}
+                  <button onClick={() => hideThing(thing.id, groupId)}>
+                     {groupsContainingThing.length > 1
+                        ? 'remove from group'
+                        : 'hide'}
+                  </button>
                </div>
             </StyledCard>
          )}

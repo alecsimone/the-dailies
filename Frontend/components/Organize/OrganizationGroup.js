@@ -31,7 +31,9 @@ const OrganizationGroup = ({
    renameGroup,
    hideGroup,
    removeGroup,
-   hideThing
+   hideThing,
+   copyThingToGroupByID,
+   userGroups
 }) => {
    const [groupTitle, setGroupTitle] = useState(groupObj.title);
    const [tagsToAdd, setTagsToAdd] = useState('');
@@ -44,6 +46,9 @@ const OrganizationGroup = ({
       groupObj.things.sort((a, b) => {
          const [aData] = allThings.filter(thing => thing.id === a);
          const [bData] = allThings.filter(thing => thing.id === b);
+
+         if (aData == null) return 1;
+         if (bData == null) return -1;
 
          const aIndex = order.indexOf(aData.id);
          const bIndex = order.indexOf(bData.id);
@@ -64,6 +69,7 @@ const OrganizationGroup = ({
    const cards = groupObj.things.map((id, index) => {
       if (typeof id === 'string') {
          const [thisThing] = allThings.filter(thing => thing.id === id);
+         if (thisThing == null) return null;
          if (index === 0) {
             universalTags = thisThing.partOfTags;
          } else {
@@ -84,6 +90,8 @@ const OrganizationGroup = ({
                index={index}
                setStateHandler={setStateHandler}
                hideThing={hideThing}
+               copyThingToGroupByID={copyThingToGroupByID}
+               userGroups={userGroups}
             />
          );
       }
@@ -97,6 +105,8 @@ const OrganizationGroup = ({
             index={index}
             setStateHandler={setStateHandler}
             hideThing={hideThing}
+            copyThingToGroupByID={copyThingToGroupByID}
+            userGroups={userGroups}
          />
       );
    });
