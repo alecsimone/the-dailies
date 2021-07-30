@@ -48,7 +48,6 @@ const Modal = () => {
          e.target.closest('.modalContainer') == null &&
          !e.target.classList.contains('forgotPasswordLink') // We need this so the forgot password link doesn't trigger this. I think because changing the content of the modal destroys the DOM chain that closest relies on?
       ) {
-         console.log('this happened');
          setContent(false);
          window.removeEventListener('click', clickOutsideDetector);
       }

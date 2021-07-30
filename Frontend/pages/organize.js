@@ -1,7 +1,5 @@
-import styled, { ThemeContext } from 'styled-components';
 import { useQuery, useMutation } from '@apollo/react-hooks';
-import Masonry from 'react-masonry-css';
-import { useContext, useState, useRef, useEffect } from 'react';
+import React, { useContext, useState, useRef, useEffect } from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
 import { MemberContext } from '../components/Account/MemberProvider';
 import LoadingRing from '../components/LoadingRing';
@@ -27,6 +25,10 @@ import {
 import { getRandomString } from '../lib/TextHandling';
 import { REMOVE_TAX_MUTATION } from '../components/ThingParts/Taxes';
 import SignupOrLogin from '../components/Account/SignupOrLogin';
+import Columnizer from '../components/Columnizer';
+
+const OrganizeContext = React.createContext();
+export { OrganizeContext };
 
 const Organize = () => {
    const { me, loading: loadingMe } = useContext(MemberContext);
@@ -34,8 +36,6 @@ const Organize = () => {
    if (me && me.id) {
       myID = me.id;
    }
-
-   const { desktopBPWidthRaw, bigScreenBPWidthRaw } = useContext(ThemeContext);
 
    let initialState;
    if (me && me.organizePageState != null) {
@@ -136,9 +136,7 @@ const Organize = () => {
 
    const [addTaxByID] = useMutation(ADD_TAX_BY_ID_MUTATION);
 
-   const [removeTaxFromThing] = useMutation(REMOVE_TAX_MUTATION, {
-      onCompleted: data => console.log(data)
-   });
+   const [removeTaxFromThing] = useMutation(REMOVE_TAX_MUTATION);
 
    useEffect(() => {
       if (loadingMe) return;
@@ -174,6 +172,8 @@ const Organize = () => {
    const cursorRef = useRef(null);
 
    const defaultOrderRef = useRef([]);
+   const defaultGroupOrderRef = useRef([]);
+   const defaultTagOrderRef = useRef([]);
 
    if (me == null) return <SignupOrLogin explanation styled />;
    if (loadingMe || state == null) return <LoadingRing />;
@@ -186,7 +186,9 @@ const Organize = () => {
       hiddenGroups,
       userGroups,
       groupOrders,
-      expandedCards
+      expandedCards,
+      columnOrders,
+      tagColumnOrders
    } = state;
 
    const fetchMoreHandler = () => {
@@ -220,9 +222,54 @@ const Organize = () => {
    const handleDragEnd = ({
       destination,
       source,
-      draggableId: rawDraggableId
+      draggableId: rawDraggableId,
+      type
    }) => {
       const draggableId = getDraggableId(rawDraggableId);
+
+      if (type === 'group') {
+         // We aren't going to support removing groups by dragging to empty space, because that's too similar to what it's like to drag into a column, and removing groups is easy enough already. So if the destination is null, we're just going to back out.
+         if (destination == null) return;
+
+         // If the group is dropped back where it started, we don't need to do anything. This needs to stay below the destination == null check or else destination might be undefined
+         if (
+            destination.droppableId === source.droppableId &&
+            destination.index === source.index
+         )
+            return;
+
+         // Otherwise, we need to rearrange the groups
+         if (groupByTag === true) {
+            let tagColumnOrdersCopy;
+            if (tagColumnOrders == null || tagColumnOrders.length === 0) {
+               tagColumnOrdersCopy = defaultTagOrderRef.current;
+            } else {
+               tagColumnOrdersCopy = [...tagColumnOrders];
+            }
+            tagColumnOrdersCopy[source.droppableId].splice(source.index, 1);
+            tagColumnOrdersCopy[destination.droppableId].splice(
+               destination.index,
+               0,
+               draggableId
+            );
+            setStateHandler('tagColumnOrders', tagColumnOrdersCopy);
+            return;
+         }
+         let columnOrdersCopy;
+         if (columnOrders == null || columnOrders.length === 0) {
+            columnOrdersCopy = defaultGroupOrderRef.current;
+         } else {
+            columnOrdersCopy = [...columnOrders];
+         }
+         columnOrdersCopy[source.droppableId].splice(source.index, 1);
+         columnOrdersCopy[destination.droppableId].splice(
+            destination.index,
+            0,
+            draggableId
+         );
+         setStateHandler('columnOrders', columnOrdersCopy);
+         return;
+      }
 
       // If the destination is empty, or if the card is dragged to one of the null groups (and it's not being rearranged within that null group, or from one of the null groups), we want to remove it from the group
       if (
@@ -330,28 +377,15 @@ const Organize = () => {
          const tagGroups = makeTagGroups(
             filteredTagsArray,
             defaultOrderRef,
-            groupOrders,
-            setStateHandler,
-            hideGroup,
-            hideThing,
-            myThings,
-            expandThingCallback,
-            expandedCards
+            groupOrders
          );
 
          content = (
-            <Masonry
-               breakpointCols={{
-                  default: 1,
-                  9999: 3,
-                  [bigScreenBPWidthRaw]: 2,
-                  [desktopBPWidthRaw]: 1
-               }}
-               className="masonryContainer"
-               columnClassName="column"
-            >
-               {tagGroups}
-            </Masonry>
+            <Columnizer
+               items={tagGroups}
+               columnOrders={tagColumnOrders}
+               defaultGroupOrderRef={defaultTagOrderRef}
+            />
          );
       } else if (userGroups == null || userGroups.length === 0) {
          // First we make an array of all the things' ids in their default order
@@ -381,47 +415,21 @@ const Organize = () => {
             defaultOrderRef.current[refIndex].order = defaultOrder;
          }
 
-         content = (
-            <OrganizationGroup
-               groupObj={groupObj}
-               allThings={data.myThings}
-               setStateHandler={setStateHandler}
-               hideThing={hideThing}
-               copyThingToGroupByID={copyThingToGroupByID}
-               userGroups={userGroups}
-               expandThingCallback={expandThingCallback}
-               expandedCards={expandedCards}
-            />
-         );
+         content = <OrganizationGroup groupObj={groupObj} />;
       } else {
          const groupElements = makeUserGroups(
             userGroups,
             filteredThings,
             defaultOrderRef,
             hiddenGroups,
-            groupOrders,
-            setStateHandler,
-            renameGroup,
-            hideGroup,
-            removeGroup,
-            hideThing,
-            copyThingToGroupByID,
-            expandThingCallback,
-            expandedCards
+            groupOrders
          );
          content = (
-            <Masonry
-               breakpointCols={{
-                  default: 1,
-                  9999: 3,
-                  [bigScreenBPWidthRaw]: 2,
-                  [desktopBPWidthRaw]: 1
-               }}
-               className="masonryContainer"
-               columnClassName="column"
-            >
-               {groupElements}
-            </Masonry>
+            <Columnizer
+               items={groupElements}
+               columnOrders={columnOrders}
+               defaultGroupOrderRef={defaultGroupOrderRef}
+            />
          );
       }
    } else if (loading) {
@@ -485,40 +493,55 @@ const Organize = () => {
    );
 
    return (
-      <DragDropContext onDragEnd={handleDragEnd}>
-         <StyledOrganizePage>
-            {data && (
-               <div className="filterManagement">
-                  <input
-                     className="filter"
-                     type="text"
-                     placeholder="Filter"
-                     value={filterString}
-                     onChange={e =>
-                        setStateHandler('filterString', e.target.value)
-                     }
-                  />
-                  <div className="buttons">
-                     {toggleGroupButton}
-                     {!groupByTag && addGroupButton}
-                     {hiddenTags &&
-                        hiddenTags.length > 0 &&
-                        showHiddenTagsButton}
-                     {hiddenGroups &&
-                        hiddenGroups.length > 0 &&
-                        showHiddenGroupsButton}
-                     {hiddenThings &&
-                        hiddenThings.length > 0 &&
-                        showHiddenThingsButton}
-                     {JSON.stringify(state) !== JSON.stringify(defaultState) &&
-                        resetpageButton}
+      <OrganizeContext.Provider
+         value={{
+            allThings: data == null ? null : data.myThings,
+            setStateHandler,
+            userGroups,
+            expandedCards,
+            renameGroup,
+            hideGroup,
+            removeGroup,
+            hideThing,
+            copyThingToGroupByID,
+            expandThingCallback
+         }}
+      >
+         <DragDropContext onDragEnd={handleDragEnd}>
+            <StyledOrganizePage>
+               {data && (
+                  <div className="filterManagement">
+                     <input
+                        className="filter"
+                        type="text"
+                        placeholder="Filter"
+                        value={filterString}
+                        onChange={e =>
+                           setStateHandler('filterString', e.target.value)
+                        }
+                     />
+                     <div className="buttons">
+                        {JSON.stringify(state) !==
+                           JSON.stringify(defaultState) && resetpageButton}
+                        {toggleGroupButton}
+                        {!groupByTag && addGroupButton}
+                        {hiddenTags &&
+                           hiddenTags.length > 0 &&
+                           showHiddenTagsButton}
+                        {hiddenGroups &&
+                           hiddenGroups.length > 0 &&
+                           showHiddenGroupsButton}
+                        {hiddenThings &&
+                           hiddenThings.length > 0 &&
+                           showHiddenThingsButton}
+                     </div>
                   </div>
-               </div>
-            )}
-            {content}
-            {data && fetchMoreButton}
-         </StyledOrganizePage>
-      </DragDropContext>
+               )}
+               {content}
+               {data && fetchMoreButton}
+            </StyledOrganizePage>
+         </DragDropContext>
+      </OrganizeContext.Provider>
    );
 };
 

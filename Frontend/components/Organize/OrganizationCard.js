@@ -1,10 +1,10 @@
 import { Draggable } from 'react-beautiful-dnd';
 import styled from 'styled-components';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import SmallThingCard from '../ThingCards/SmallThingCard';
+import { OrganizeContext } from '../../pages/organize';
 
 const StyledCard = styled.div`
-   /* display: inline-block; */
    margin-bottom: 2rem;
    background: ${props => props.theme.midBlack};
    width: 100%;
@@ -48,17 +48,15 @@ const StyledCard = styled.div`
    }
 `;
 
-const OrganizationCard = ({
-   thing,
-   groupId,
-   index,
-   hideThing,
-   copyThingToGroupByID,
-   userGroups,
-   expandThingCallback,
-   expandedCards
-}) => {
+const OrganizationCard = ({ thing, groupId, index }) => {
    const [showingCopyTargets, setShowingCopyTargets] = useState(false);
+   const {
+      hideThing,
+      copyThingToGroupByID,
+      userGroups,
+      expandThingCallback,
+      expandedCards
+   } = useContext(OrganizeContext);
 
    if (thing == null) return null;
 

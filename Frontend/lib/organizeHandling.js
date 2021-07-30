@@ -1,6 +1,11 @@
 import gql from 'graphql-tag';
 import styled from 'styled-components';
-import { setAlpha } from '../styles/functions';
+import {
+   setAlpha,
+   mobileBreakpointPx,
+   desktopBreakpointPx,
+   bigScreenBreakpointPx
+} from '../styles/functions';
 import { fullMemberFields, thingCardFields } from './CardInterfaces';
 import OrganizationGroup from '../components/Organize/OrganizationGroup';
 
@@ -52,7 +57,8 @@ const StyledOrganizePage = styled.section`
          }
       }
    }
-   .tagGroup {
+   .tagGroup,
+   .blankGroup {
       width: 100%;
       display: inline-block;
       padding: 0 2rem;
@@ -69,6 +75,9 @@ const StyledOrganizePage = styled.section`
             font-size: ${props => props.theme.bigText};
             font-weight: bold;
             margin: 1.5rem 0;
+            width: 1px;
+            flex-grow: 1;
+            margin-right: 1rem;
          }
          input.groupTitle {
             border: none;
@@ -100,6 +109,10 @@ const StyledOrganizePage = styled.section`
             }
          }
       }
+   }
+   .blankGroup {
+      padding: 2rem;
+      text-align: center;
    }
    .masonryContainer {
       display: flex;
@@ -148,7 +161,9 @@ const defaultState = {
    hiddenGroups: [],
    userGroups: [],
    groupOrders: [],
-   expandedCards: []
+   expandedCards: [],
+   columnOrders: [],
+   tagColumnOrders: []
 };
 export { defaultState };
 
@@ -495,17 +510,7 @@ const makeTagsArrayFromThings = things => {
 };
 export { makeTagsArrayFromThings };
 
-const makeTagGroups = (
-   tagsArray,
-   defaultOrderRef,
-   groupOrders,
-   setStateHandler,
-   hideGroup,
-   hideThing,
-   allThings,
-   expandThingCallback,
-   expandedCards
-) => {
+const makeTagGroups = (tagsArray, defaultOrderRef, groupOrders) => {
    const tagGroups = tagsArray.map(tagObj => {
       const defaultOrder = tagObj.things.map(thing => thing.id);
       const refIndex = defaultOrderRef.current.findIndex(
@@ -528,13 +533,7 @@ const makeTagGroups = (
       return (
          <OrganizationGroup
             groupObj={tagObj}
-            allThings={allThings}
-            setStateHandler={setStateHandler}
             order={groupOrder == null ? null : groupOrder.order}
-            hideGroup={hideGroup}
-            hideThing={hideThing}
-            expandThingCallback={expandThingCallback}
-            expandedCards={expandedCards}
          />
       );
    });
@@ -547,15 +546,7 @@ const makeUserGroups = (
    things,
    defaultOrderRef,
    hiddenGroups,
-   groupOrders,
-   setStateHandler,
-   renameGroup,
-   hideGroup,
-   removeGroup,
-   hideThing,
-   copyThingToGroupByID,
-   expandThingCallback,
-   expandedCards
+   groupOrders
 ) => {
    // First we make a copy of the user groups
    const userGroupsCopy = [...userGroups];
@@ -622,20 +613,13 @@ const makeUserGroups = (
          <OrganizationGroup
             key={groupObj.id}
             groupObj={groupObj}
-            allThings={things}
-            setStateHandler={setStateHandler}
-            renameGroup={renameGroup}
             order={groupOrder == null ? null : groupOrder.order}
-            hideGroup={hideGroup}
-            removeGroup={groupObj.id === 'ungrouped' ? null : removeGroup}
-            hideThing={hideThing}
-            copyThingToGroupByID={copyThingToGroupByID}
-            userGroups={userGroups}
-            expandThingCallback={expandThingCallback}
-            expandedCards={expandedCards}
          />
       );
    });
    return groupElements;
 };
 export { makeUserGroups };
+
+const makeColumnsFromItems = items => {};
+export { makeColumnsFromItems };

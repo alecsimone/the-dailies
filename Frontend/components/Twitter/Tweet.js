@@ -295,7 +295,6 @@ const Tweet = props => {
    }
 
    const doubleClickListener = e => {
-      console.log('we got to the doubleClickListener');
       if (e.button === 0) {
          e.preventDefault();
 
@@ -326,7 +325,6 @@ const Tweet = props => {
                );
 
                window.setTimeout(() => {
-                  console.log('remove the event listener');
                   thisTweetRef.current.removeEventListener(
                      'mousedown',
                      doubleClickListener

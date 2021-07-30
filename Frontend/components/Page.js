@@ -17,7 +17,11 @@ import {
    setAlpha,
    setLightness,
    setSaturation,
-   midScreenBreakpointPx
+   mobileBreakpointPx,
+   desktopBreakpointPx,
+   midScreenBreakpointPx,
+   bigScreenBreakpointPx,
+   massiveScreenBreakpointPx
 } from '../styles/functions';
 
 const theme = {
@@ -41,25 +45,25 @@ const theme = {
    secondaryAccent: 'hsl(42, 79%, 64%)',
    warning: 'hsl(0, 75%, 50%)',
 
-   mobileBPWidth: '600px',
-   mobileBPWidthRaw: 600,
-   mobileBreakpoint: '@media screen and (min-width: 600px)',
+   mobileBPWidth: `${mobileBreakpointPx}px`,
+   mobileBPWidthRaw: mobileBreakpointPx,
+   mobileBreakpoint: `@media screen and (min-width: ${mobileBreakpointPx}px)`,
 
-   desktopBPWidth: '1100px',
-   desktopBPWidthRaw: 1100,
-   desktopBreakpoint: '@media screen and (min-width: 1100px)',
+   desktopBPWidth: `${desktopBreakpointPx}px`,
+   desktopBPWidthRaw: desktopBreakpointPx,
+   desktopBreakpoint: `@media screen and (min-width: ${desktopBreakpointPx}px)`,
 
    midScreenBPWidth: `${midScreenBreakpointPx}px`,
    midScreenBPWidthRaw: midScreenBreakpointPx,
    midScreenBreakpoint: `@media screen and (min-width: ${midScreenBreakpointPx}px)`,
 
-   bigScreenBPWidth: '1800px',
-   bigScreenBPWidthRaw: 1800,
-   bigScreenBreakpoint: '@media screen and (min-width: 1800px)',
+   bigScreenBPWidth: `${bigScreenBreakpointPx}px`,
+   bigScreenBPWidthRaw: bigScreenBreakpointPx,
+   bigScreenBreakpoint: `@media screen and (min-width: ${bigScreenBreakpointPx}px)`,
 
-   massiveScreenBPWidth: '1921px',
-   massiveScreenBPWidthRaw: 1921,
-   massiveScreenBreakpoint: '@media screen and (min-width: 1921px)',
+   massiveScreenBPWidth: `${massiveScreenBreakpointPx}px`,
+   massiveScreenBPWidthRaw: massiveScreenBreakpointPx,
+   massiveScreenBreakpoint: `@media screen and (min-width: ${massiveScreenBreakpointPx}px)`,
 
    tweetHead: 'hsl(30, 15%, 2.5%)',
 

@@ -1,11 +1,10 @@
-import { Droppable } from 'react-beautiful-dnd';
+import { Droppable, Draggable } from 'react-beautiful-dnd';
 import styled from 'styled-components';
 import { useState, useRef, useContext } from 'react';
-import { useMutation } from '@apollo/react-hooks';
 import OrganizationCard from './OrganizationCard';
 import X from '../Icons/X';
-import { MemberContext } from '../Account/MemberProvider';
 import TaxInput from '../ThingParts/TaxInput';
+import { OrganizeContext } from '../../pages/organize';
 
 const StyledCardList = styled.div`
    .blankSpace {
@@ -23,26 +22,14 @@ const StyledOrganizationGroup = styled.div`
    }
 `;
 
-const OrganizationGroup = ({
-   groupObj,
-   allThings,
-   setStateHandler,
-   order,
-   renameGroup,
-   hideGroup,
-   removeGroup,
-   hideThing,
-   copyThingToGroupByID,
-   userGroups,
-   expandThingCallback,
-   expandedCards
-}) => {
+const OrganizationGroup = ({ groupObj, order }) => {
    const [groupTitle, setGroupTitle] = useState(groupObj.title);
-   const [tagsToAdd, setTagsToAdd] = useState('');
    const titleRef = useRef(null);
    const groupRef = useRef(null);
 
-   const { me } = useContext(MemberContext);
+   const { allThings, renameGroup, hideGroup, removeGroup } = useContext(
+      OrganizeContext
+   );
 
    if (order != null) {
       groupObj.things.sort((a, b) => {
@@ -90,12 +77,6 @@ const OrganizationGroup = ({
                thing={thisThing}
                groupId={groupObj.id}
                index={index}
-               setStateHandler={setStateHandler}
-               hideThing={hideThing}
-               copyThingToGroupByID={copyThingToGroupByID}
-               userGroups={userGroups}
-               expandThingCallback={expandThingCallback}
-               expandedCards={expandedCards}
             />
          );
       }
@@ -107,12 +88,7 @@ const OrganizationGroup = ({
             thing={id}
             groupId={groupObj.id}
             index={index}
-            setStateHandler={setStateHandler}
-            hideThing={hideThing}
-            copyThingToGroupByID={copyThingToGroupByID}
-            userGroups={userGroups}
-            expandThingCallback={expandThingCallback}
-            expandedCards={expandedCards}
+            key={id.id}
          />
       );
    });
@@ -147,7 +123,7 @@ const OrganizationGroup = ({
                      hide
                   </button>
                )}
-               {removeGroup != null && (
+               {removeGroup != null && groupObj.id !== 'ungrouped' && (
                   <X
                      onClick={() => {
                         if (
@@ -164,11 +140,12 @@ const OrganizationGroup = ({
                )}
             </div>
          </div>
-         <Droppable droppableId={groupObj.id}>
+         <Droppable droppableId={groupObj.id} key={groupObj.id} type="card">
             {provided => (
                <StyledCardList
                   className="droppableWrapper"
                   ref={provided.innerRef}
+                  key={groupObj.id}
                   {...provided.droppableProps}
                >
                   {cards.length === 0 && (

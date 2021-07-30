@@ -82,8 +82,20 @@ const dynamicallyResizeElement = el => {
 };
 export { dynamicallyResizeElement };
 
+const mobileBreakpointPx = 600;
+export { mobileBreakpointPx };
+
+const desktopBreakpointPx = 1100;
+export { desktopBreakpointPx };
+
 const midScreenBreakpointPx = 1440;
 export { midScreenBreakpointPx };
+
+const bigScreenBreakpointPx = 1800;
+export { bigScreenBreakpointPx };
+
+const massiveScreenBreakpointPx = 1921;
+export { massiveScreenBreakpointPx };
 
 const successFlash = el => {
    if (el == null) return;
