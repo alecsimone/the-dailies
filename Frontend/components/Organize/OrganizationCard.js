@@ -3,6 +3,11 @@ import styled from 'styled-components';
 import { useState, useContext } from 'react';
 import SmallThingCard from '../ThingCards/SmallThingCard';
 import { OrganizeContext } from '../../pages/organize';
+import {
+   hideThing,
+   copyThingToGroupByID,
+   expandThingCallback
+} from '../../lib/organizeHandling';
 
 const StyledCard = styled.div`
    margin-bottom: 2rem;
@@ -51,14 +56,15 @@ const StyledCard = styled.div`
 const OrganizationCard = ({ thing, groupId, index }) => {
    const [showingCopyTargets, setShowingCopyTargets] = useState(false);
    const {
-      hideThing,
-      copyThingToGroupByID,
       userGroups,
-      expandThingCallback,
-      expandedCards
+      expandedCards,
+      groupByTag,
+      hiddenThings,
+      setStateHandler
    } = useContext(OrganizeContext);
 
    if (thing == null) return null;
+   if (hiddenThings.includes(thing.id)) return null;
 
    // We need to make the options for the copy to group interface. You can't copy to a group that the thing is already in, so first we need to filter those groups out of the master groups list
    let filteredGroups = [];
@@ -80,7 +86,13 @@ const OrganizationCard = ({ thing, groupId, index }) => {
    );
 
    const expandThingHandler = newValue => {
-      expandThingCallback(thing.id, groupId, newValue);
+      expandThingCallback(
+         thing.id,
+         groupId,
+         newValue,
+         expandedCards,
+         setStateHandler
+      );
    };
 
    const [isExpanded] = expandedCards.filter(
@@ -133,7 +145,9 @@ const OrganizationCard = ({ thing, groupId, index }) => {
                                  ) {
                                     copyThingToGroupByID(
                                        thing.id,
-                                       e.target.value
+                                       e.target.value,
+                                       userGroups,
+                                       setStateHandler
                                     );
                                     setShowingCopyTargets(false);
                                  }
@@ -145,7 +159,19 @@ const OrganizationCard = ({ thing, groupId, index }) => {
                         )}
                      </div>
                   )}
-                  <button onClick={() => hideThing(thing.id, groupId)}>
+                  <button
+                     type="button"
+                     onClick={() =>
+                        hideThing(
+                           thing.id,
+                           groupId,
+                           userGroups,
+                           groupByTag,
+                           hiddenThings,
+                           setStateHandler
+                        )
+                     }
+                  >
                      {groupsContainingThing.length > 1
                         ? 'remove from group'
                         : 'hide'}

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
+import { Draggable, Droppable } from 'react-beautiful-dnd';
 import {
    desktopBreakpointPx,
    bigScreenBreakpointPx
@@ -164,6 +164,10 @@ const Columnizer = ({ items, columnOrders, defaultGroupOrderRef }) => {
                      )}
                      {columnItems.map((columnItem, itemIndex) => {
                         const itemElement = getItemForID(columnItem, items);
+
+                        if (itemElement == null) {
+                           return null;
+                        }
 
                         return (
                            <Draggable

@@ -5,6 +5,11 @@ import OrganizationCard from './OrganizationCard';
 import X from '../Icons/X';
 import TaxInput from '../ThingParts/TaxInput';
 import { OrganizeContext } from '../../pages/organize';
+import {
+   renameGroup,
+   hideGroup,
+   removeGroup
+} from '../../lib/organizeHandling';
 
 const StyledCardList = styled.div`
    .blankSpace {
@@ -27,9 +32,14 @@ const OrganizationGroup = ({ groupObj, order }) => {
    const titleRef = useRef(null);
    const groupRef = useRef(null);
 
-   const { allThings, renameGroup, hideGroup, removeGroup } = useContext(
-      OrganizeContext
-   );
+   const {
+      allThings,
+      userGroups,
+      setStateHandler,
+      hiddenThings,
+      hiddenTags,
+      hiddenGroups
+   } = useContext(OrganizeContext);
 
    if (order != null) {
       groupObj.things.sort((a, b) => {
@@ -55,9 +65,17 @@ const OrganizationGroup = ({ groupObj, order }) => {
    }
 
    let universalTags = [];
-   const cards = groupObj.things.map((id, index) => {
-      if (typeof id === 'string') {
-         const [thisThing] = allThings.filter(thing => thing.id === id);
+   const filteredThings = groupObj.things.filter(thing => {
+      if (typeof thing === 'string') {
+         if (hiddenThings.includes(thing)) return false;
+      } else if (hiddenThings.includes(thing.id)) return false;
+      return true;
+   });
+   const cards = filteredThings.map((thing, index) => {
+      if (typeof thing === 'string') {
+         const [thisThing] = allThings.filter(
+            thingData => thingData.id === thing
+         );
          if (thisThing == null) return null;
          if (index === 0) {
             universalTags = thisThing.partOfTags;
@@ -81,14 +99,14 @@ const OrganizationGroup = ({ groupObj, order }) => {
          );
       }
       if (index === 0) {
-         universalTags = id.partOfTags;
+         universalTags = thing.partOfTags;
       }
       return (
          <OrganizationCard
-            thing={id}
+            thing={thing}
             groupId={groupObj.id}
             index={index}
-            key={id.id}
+            key={thing.id}
          />
       );
    });
@@ -107,7 +125,12 @@ const OrganizationGroup = ({ groupObj, order }) => {
                   value={groupTitle}
                   onChange={e => {
                      setGroupTitle(e.target.value);
-                     renameGroup(groupObj.id, e.target.value);
+                     renameGroup(
+                        groupObj.id,
+                        e.target.value,
+                        userGroups,
+                        setStateHandler
+                     );
                   }}
                   onKeyDown={e => {
                      if (e.key === 'Enter') {
@@ -119,7 +142,17 @@ const OrganizationGroup = ({ groupObj, order }) => {
             )}
             <div className="buttons">
                {hideGroup != null && (
-                  <button onClick={() => hideGroup(groupObj.id, groupObj.type)}>
+                  <button
+                     type="button"
+                     onClick={() =>
+                        hideGroup(
+                           groupObj.id,
+                           groupObj.type,
+                           setStateHandler,
+                           groupObj.type === 'tag' ? hiddenTags : hiddenGroups
+                        )
+                     }
+                  >
                      hide
                   </button>
                )}
@@ -134,7 +167,7 @@ const OrganizationGroup = ({ groupObj, order }) => {
                            )
                         )
                            return;
-                        removeGroup(groupObj.id);
+                        removeGroup(groupObj.id, userGroups, setStateHandler);
                      }}
                   />
                )}

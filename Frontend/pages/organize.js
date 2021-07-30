@@ -32,10 +32,6 @@ export { OrganizeContext };
 
 const Organize = () => {
    const { me, loading: loadingMe } = useContext(MemberContext);
-   let myID;
-   if (me && me.id) {
-      myID = me.id;
-   }
 
    let initialState;
    if (me && me.organizePageState != null) {
@@ -46,6 +42,19 @@ const Organize = () => {
 
    const [state, setState] = useState(initialState);
 
+   const {
+      filterString,
+      hiddenThings,
+      groupByTag,
+      hiddenTags,
+      hiddenGroups,
+      userGroups,
+      groupOrders,
+      expandedCards,
+      columnOrders,
+      tagColumnOrders
+   } = state;
+
    const setStateHandler = async (property, value) => {
       setState({
          ...state,
@@ -53,84 +62,9 @@ const Organize = () => {
       });
    };
 
-   const renameGroup = (id, newTitle) => {
-      const userGroupsCopy = [...userGroups];
-      const groupToRenameIndex = userGroupsCopy.findIndex(
-         groupObj => groupObj.id === id
-      );
-      userGroupsCopy[groupToRenameIndex].title = newTitle;
-      setStateHandler('userGroups', userGroupsCopy);
-   };
-
-   const hideGroup = (id, type) => {
-      if (type === 'tag') {
-         setStateHandler('hiddenTags', [...hiddenTags, id]);
-      } else if (type === 'manual') {
-         setStateHandler('hiddenGroups', [...hiddenGroups, id]);
-      }
-   };
-
-   const removeGroup = id => {
-      const newUserGroups = userGroups.filter(groupObj => groupObj.id !== id);
-      setStateHandler('userGroups', newUserGroups);
-   };
-
-   const hideThing = (id, groupID) => {
-      if (
-         userGroups != null &&
-         userGroups.length > 0 &&
-         groupByTag === false &&
-         groupID != null
-      ) {
-         // If we're doing user groups, and we have some user groups, we want to check if this thing is in more than one of them, because if it is, we just want to remove it from the group that it's in
-         const groupsContainingThing = userGroups.filter(groupObj =>
-            groupObj.things.includes(id)
-         );
-
-         // If we find more than one group with the thing in it, we just want to remove it from the group the instance of it we clicked on was in
-         if (groupsContainingThing.length > 1) {
-            const copiedUserGroups = [...userGroups];
-            const indexOfGroupToChange = copiedUserGroups.findIndex(
-               groupObj => groupObj.id === groupID
-            );
-            const newThings = copiedUserGroups[
-               indexOfGroupToChange
-            ].things.filter(thingID => thingID !== id);
-            copiedUserGroups[indexOfGroupToChange].things = newThings;
-            setStateHandler('userGroups', copiedUserGroups);
-            return;
-         }
-      }
-      setStateHandler('hiddenThings', [...hiddenThings, id]);
-   };
-
-   const expandThingCallback = (thingID, groupID, newExpansionState) => {
-      let newExpandedCards;
-      if (newExpansionState === true) {
-         newExpandedCards = [...expandedCards, { thingID, groupID }];
-      } else if (newExpansionState === false) {
-         newExpandedCards = expandedCards.filter(
-            expansionObj =>
-               expansionObj.thingID !== thingID &&
-               expansionObj.groupID !== groupID
-         );
-      }
-      setStateHandler('expandedCards', newExpandedCards);
-   };
-
-   const copyThingToGroupByID = (thingID, groupID) =>
-      addCardToGroup(
-         thingID,
-         userGroups,
-         { droppableId: groupID },
-         { droppableId: 'ungrouped' }, // We use "ungrouped" because we don't want to remove it from the current group
-         false,
-         setStateHandler
-      );
-
    const [storeState] = useMutation(STORE_ORGANIZE_STATE_MUTATION, {
       context: {
-         debounceKey: myID
+         debounceKey: me == null ? 'organize' : me.id
       }
    });
 
@@ -177,19 +111,6 @@ const Organize = () => {
 
    if (me == null) return <SignupOrLogin explanation styled />;
    if (loadingMe || state == null) return <LoadingRing />;
-
-   const {
-      filterString,
-      hiddenThings,
-      groupByTag,
-      hiddenTags,
-      hiddenGroups,
-      userGroups,
-      groupOrders,
-      expandedCards,
-      columnOrders,
-      tagColumnOrders
-   } = state;
 
    const fetchMoreHandler = () => {
       if (isFetchingMore || noMoreToFetch) return;
@@ -415,7 +336,18 @@ const Organize = () => {
             defaultOrderRef.current[refIndex].order = defaultOrder;
          }
 
-         content = <OrganizationGroup groupObj={groupObj} />;
+         const [ungroupedGroupOrder] = groupOrders.filter(
+            orderObj => orderObj.id === 'ungrouped'
+         );
+
+         content = (
+            <OrganizationGroup
+               groupObj={groupObj}
+               order={
+                  ungroupedGroupOrder == null ? null : ungroupedGroupOrder.order
+               }
+            />
+         );
       } else {
          const groupElements = makeUserGroups(
             userGroups,
@@ -437,13 +369,17 @@ const Organize = () => {
    }
 
    const toggleGroupButton = (
-      <button onClick={() => setStateHandler('groupByTag', !groupByTag)}>
+      <button
+         type="button"
+         onClick={() => setStateHandler('groupByTag', !groupByTag)}
+      >
          {groupByTag ? 'group manually' : 'group by tag'}
       </button>
    );
 
    const addGroupButton = (
       <button
+         type="button"
          onClick={() => {
             const randomID = getRandomString(32);
             const newGroups = [
@@ -463,29 +399,31 @@ const Organize = () => {
    );
 
    const showHiddenTagsButton = (
-      <button onClick={() => setStateHandler('hiddenTags', [])}>
+      <button type="button" onClick={() => setStateHandler('hiddenTags', [])}>
          show hidden tags
       </button>
    );
 
    const showHiddenGroupsButton = (
-      <button onClick={() => setStateHandler('hiddenGroups', [])}>
+      <button type="button" onClick={() => setStateHandler('hiddenGroups', [])}>
          show hidden groups
       </button>
    );
 
    const showHiddenThingsButton = (
-      <button onClick={() => setStateHandler('hiddenThings', [])}>
+      <button type="button" onClick={() => setStateHandler('hiddenThings', [])}>
          show hidden things
       </button>
    );
 
    const resetpageButton = (
-      <button onClick={() => setState(defaultState)}>reset page</button>
+      <button type="button" onClick={() => setState(defaultState)}>
+         reset page
+      </button>
    );
 
    const fetchMoreButton = (
-      <button className="more" onClick={fetchMoreHandler}>
+      <button type="button" className="more" onClick={fetchMoreHandler}>
          {isFetchingMore
             ? 'Loading...'
             : `${noMoreToFetch ? 'No More' : 'Load More'}`}
@@ -495,16 +433,14 @@ const Organize = () => {
    return (
       <OrganizeContext.Provider
          value={{
+            groupByTag,
             allThings: data == null ? null : data.myThings,
             setStateHandler,
             userGroups,
-            expandedCards,
-            renameGroup,
-            hideGroup,
-            removeGroup,
-            hideThing,
-            copyThingToGroupByID,
-            expandThingCallback
+            hiddenThings,
+            hiddenTags,
+            hiddenGroups,
+            expandedCards
          }}
       >
          <DragDropContext onDragEnd={handleDragEnd}>
