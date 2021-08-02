@@ -228,10 +228,16 @@ const ContentPiece = ({
       window.setTimeout(() => dynamicallyResizeElement(inputElement), 1);
    };
 
+   console.log(id, thingID);
+   console.log(onThing);
    const unsavedChangesHandler = async e => {
+      let originalThingId = thingID;
+      if (onThing != null && onThing.id != null) {
+         originalThingId = onThing.id;
+      }
       await storeUnsavedContentPieceChanges({
          variables: {
-            thingId: thingID,
+            thingId: originalThingId,
             pieceId: id,
             unsavedContent: e.target.value
          }
