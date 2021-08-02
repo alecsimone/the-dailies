@@ -390,18 +390,43 @@ async function storeUnsavedContentPieceChanges(parent, {pieceId, thingId, unsave
       console.log(err);
    });
 
-   const dataObj = {
-      content: {
-         update: {
-            where: {
-               id: pieceId
-            },
-            data: {
-               unsavedNewContent: unsavedContent
+   const existingThing = await ctx.db.query.contentPiece(
+      {
+         where: {
+            id: pieceId
+         }
+      },
+      `{content}`
+   );
+   let dataObj;
+   if (existingThing.content === unsavedContent) {
+      dataObj = {
+         content: {
+            update: {
+               where: {
+                  id: pieceId
+               },
+               data: {
+                  unsavedNewContent: null
+               }
             }
          }
-      }
-   };
+      };
+   } else {
+      dataObj = {
+         content: {
+            update: {
+               where: {
+                  id: pieceId
+               },
+               data: {
+                  unsavedNewContent: unsavedContent
+               }
+            }
+         }
+      };
+   }
+
    const updatedThing = await properUpdateStuff(dataObj, thingId, 'Thing', ctx).catch(err => {
       console.log(err);
    });

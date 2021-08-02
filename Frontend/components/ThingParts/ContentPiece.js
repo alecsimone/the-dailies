@@ -588,7 +588,8 @@ const ContentPiece = ({
                   {contentElement}
                   {canEdit &&
                      unsavedNewContent != null &&
-                     unsavedNewContent !== '' && (
+                     unsavedNewContent !== '' &&
+                     unsavedNewContent !== rawContentString && (
                         <div className="unsavedContent">
                            <h4>Unsaved Changes</h4>
                            <div className="visibilityInfo">
