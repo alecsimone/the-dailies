@@ -364,6 +364,11 @@ const GlobalStyle = createGlobalStyle`
             &.visible, &.hidden {
                transform: none;
             }
+            &.desktopHidden {
+               transform: translateX(calc(-100% + ${props =>
+                  props.theme
+                     .smallHead} + 2rem)); // The 2rem is for the 1rem of padding on either side, and the icon is smallHead
+            }
             ${props => props.theme.midScreenBreakpoint} {
                min-width: 320px;
             }

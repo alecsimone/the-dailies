@@ -2,7 +2,7 @@ import gql from 'graphql-tag';
 import styled from 'styled-components';
 import Link from 'next/link';
 import Router from 'next/router';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { useMutation } from '@apollo/react-hooks';
 import { NEW_BLANK_THING } from '../pages/new';
 import { setAlpha } from '../styles/functions';
@@ -17,6 +17,7 @@ import { MemberContext } from './Account/MemberProvider';
 import { ALL_THINGS_QUERY } from '../lib/ThingHandling';
 import { PUBLIC_THINGS_QUERY } from './Archives/PublicThings';
 import { CURRENT_MEMBER_QUERY } from './Account/MemberProvider';
+import ArrowIcon from './Icons/Arrow';
 
 const LOGOUT_MUTATION = gql`
    mutation LOG_OUT_MUTATION {
@@ -151,6 +152,20 @@ const StyledNavSidebar = styled.section`
          }
       }
    }
+   svg.desktopHider {
+      display: none;
+      ${props => props.theme.desktopBreakpoint} {
+         display: inline-block;
+         height: ${props => props.theme.smallHead};
+         position: absolute;
+         right: 1rem;
+         bottom: 1rem;
+         opacity: 0.4;
+         &:hover {
+            opacity: 0.8;
+         }
+      }
+   }
 `;
 
 const NavSidebar = () => {
@@ -176,6 +191,8 @@ const NavSidebar = () => {
 
    const { me } = useContext(MemberContext);
 
+   const [desktopIsHidden, setDesktopIsHidden] = useState(false);
+
    const [logout] = useMutation(LOGOUT_MUTATION, {
       onError: err => alert(err.message)
    });
@@ -190,6 +207,9 @@ const NavSidebar = () => {
       className += ' loggedIn';
    } else {
       className += ' loggedOut';
+   }
+   if (desktopIsHidden) {
+      className += ' desktopHidden';
    }
 
    return (
@@ -336,6 +356,11 @@ const NavSidebar = () => {
                </a>
             )}
          </div>
+         <ArrowIcon
+            className="desktopHider"
+            pointing={desktopIsHidden ? 'right' : 'left'}
+            onClick={() => setDesktopIsHidden(!desktopIsHidden)}
+         />
       </StyledNavSidebar>
    );
 };
