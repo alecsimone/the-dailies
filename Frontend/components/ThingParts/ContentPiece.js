@@ -228,8 +228,6 @@ const ContentPiece = ({
       window.setTimeout(() => dynamicallyResizeElement(inputElement), 1);
    };
 
-   console.log(id, thingID);
-   console.log(onThing);
    const unsavedChangesHandler = async e => {
       let originalThingId = thingID;
       if (onThing != null && onThing.id != null) {
