@@ -79,25 +79,27 @@ async function deleteCollection(parent, { collectionID }, ctx, info) {
       collection => collection.id !== collectionID
    );
 
-   const newLastActiveCollectionID =
-      filteredCollections[filteredCollections.length - 1].id;
+   const data = {
+      collections: {
+         delete: {
+            id: collectionID
+         }
+      }
+   };
+
+   if (filteredCollections.length > 0) {
+      data.lastActiveCollection = {
+         connect: {
+            id: filteredCollections[filteredCollections.length - 1].id
+         }
+      };
+   }
 
    const updatedMember = await ctx.db.mutation.updateMember({
       where: {
          id: ctx.req.memberId
       },
-      data: {
-         lastActiveCollection: {
-            connect: {
-               id: newLastActiveCollectionID
-            }
-         },
-         collections: {
-            delete: {
-               id: collectionID
-            }
-         }
-      }
+      data
    });
 
    // Then we return the current member
