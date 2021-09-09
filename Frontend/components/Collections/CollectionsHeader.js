@@ -22,7 +22,7 @@ const getShortestColumnID = columnData => {
    // Then we need to loop through each column
    columnData.forEach((data, index) => {
       // We need to get the height for each column. First we grab the column container, but these will all have the same height
-      const thisContainer = document.querySelector(`#${data.id}`);
+      const thisContainer = document.querySelector(`#id-${data.id}`);
       // So next we get their first child, which will only have as much height as its contents need
       const thisElement = thisContainer.firstElementChild;
 

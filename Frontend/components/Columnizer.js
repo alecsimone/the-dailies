@@ -87,7 +87,7 @@ const Columnizer = ({ items, columnOrders, draggingGroup }) => {
 
    const columns = necessaryOrders.map((columnOrderObj, index) => (
       <div
-         id={columnOrderObj.id}
+         id={`id-${columnOrderObj.id}`}
          className="column"
          style={{ width: `${100 / columnCount}%` }}
          key={`columnizerColumn-${index}`}
