@@ -1,3 +1,15 @@
+type AggregateCollection {
+  count: Int!
+}
+
+type AggregateCollectionGroup {
+  count: Int!
+}
+
+type AggregateColumnOrder {
+  count: Int!
+}
+
 type AggregateComment {
   count: Int!
 }
@@ -26,6 +38,10 @@ type AggregateTag {
   count: Int!
 }
 
+type AggregateTagOrder {
+  count: Int!
+}
+
 type AggregateThing {
   count: Int!
 }
@@ -40,6 +56,932 @@ type AggregateVote {
 
 type BatchPayload {
   count: Long!
+}
+
+type Collection {
+  id: ID!
+  title: String!
+  author: Member!
+  filterString: String
+  hiddenThings(where: ThingWhereInput, orderBy: ThingOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Thing!]
+  groupByTag: Boolean!
+  hiddenTags(where: TagWhereInput, orderBy: TagOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Tag!]
+  hiddenGroups(where: CollectionGroupWhereInput, orderBy: CollectionGroupOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [CollectionGroup!]
+  userGroups(where: CollectionGroupWhereInput, orderBy: CollectionGroupOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [CollectionGroup!]
+  ungroupedThingsOrder: [String!]!
+  tagOrders(where: TagOrderWhereInput, orderBy: TagOrderOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [TagOrder!]
+  expandedCards: [String!]!
+  columnOrders(where: ColumnOrderWhereInput, orderBy: ColumnOrderOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ColumnOrder!]
+  tagColumnOrders(where: ColumnOrderWhereInput, orderBy: ColumnOrderOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ColumnOrder!]
+  createdAt: DateTime!
+  updatedAt: DateTime
+}
+
+type CollectionConnection {
+  pageInfo: PageInfo!
+  edges: [CollectionEdge]!
+  aggregate: AggregateCollection!
+}
+
+input CollectionCreateexpandedCardsInput {
+  set: [String!]
+}
+
+input CollectionCreateInput {
+  id: ID
+  title: String
+  author: MemberCreateOneWithoutCollectionsInput!
+  filterString: String
+  hiddenThings: ThingCreateManyInput
+  groupByTag: Boolean
+  hiddenTags: TagCreateManyInput
+  hiddenGroups: CollectionGroupCreateManyInput
+  userGroups: CollectionGroupCreateManyWithoutInCollectionInput
+  ungroupedThingsOrder: CollectionCreateungroupedThingsOrderInput
+  tagOrders: TagOrderCreateManyWithoutForCollectionInput
+  expandedCards: CollectionCreateexpandedCardsInput
+  columnOrders: ColumnOrderCreateManyInput
+  tagColumnOrders: ColumnOrderCreateManyInput
+}
+
+input CollectionCreateManyWithoutAuthorInput {
+  create: [CollectionCreateWithoutAuthorInput!]
+  connect: [CollectionWhereUniqueInput!]
+}
+
+input CollectionCreateOneInput {
+  create: CollectionCreateInput
+  connect: CollectionWhereUniqueInput
+}
+
+input CollectionCreateOneWithoutTagOrdersInput {
+  create: CollectionCreateWithoutTagOrdersInput
+  connect: CollectionWhereUniqueInput
+}
+
+input CollectionCreateOneWithoutUserGroupsInput {
+  create: CollectionCreateWithoutUserGroupsInput
+  connect: CollectionWhereUniqueInput
+}
+
+input CollectionCreateungroupedThingsOrderInput {
+  set: [String!]
+}
+
+input CollectionCreateWithoutAuthorInput {
+  id: ID
+  title: String
+  filterString: String
+  hiddenThings: ThingCreateManyInput
+  groupByTag: Boolean
+  hiddenTags: TagCreateManyInput
+  hiddenGroups: CollectionGroupCreateManyInput
+  userGroups: CollectionGroupCreateManyWithoutInCollectionInput
+  ungroupedThingsOrder: CollectionCreateungroupedThingsOrderInput
+  tagOrders: TagOrderCreateManyWithoutForCollectionInput
+  expandedCards: CollectionCreateexpandedCardsInput
+  columnOrders: ColumnOrderCreateManyInput
+  tagColumnOrders: ColumnOrderCreateManyInput
+}
+
+input CollectionCreateWithoutTagOrdersInput {
+  id: ID
+  title: String
+  author: MemberCreateOneWithoutCollectionsInput!
+  filterString: String
+  hiddenThings: ThingCreateManyInput
+  groupByTag: Boolean
+  hiddenTags: TagCreateManyInput
+  hiddenGroups: CollectionGroupCreateManyInput
+  userGroups: CollectionGroupCreateManyWithoutInCollectionInput
+  ungroupedThingsOrder: CollectionCreateungroupedThingsOrderInput
+  expandedCards: CollectionCreateexpandedCardsInput
+  columnOrders: ColumnOrderCreateManyInput
+  tagColumnOrders: ColumnOrderCreateManyInput
+}
+
+input CollectionCreateWithoutUserGroupsInput {
+  id: ID
+  title: String
+  author: MemberCreateOneWithoutCollectionsInput!
+  filterString: String
+  hiddenThings: ThingCreateManyInput
+  groupByTag: Boolean
+  hiddenTags: TagCreateManyInput
+  hiddenGroups: CollectionGroupCreateManyInput
+  ungroupedThingsOrder: CollectionCreateungroupedThingsOrderInput
+  tagOrders: TagOrderCreateManyWithoutForCollectionInput
+  expandedCards: CollectionCreateexpandedCardsInput
+  columnOrders: ColumnOrderCreateManyInput
+  tagColumnOrders: ColumnOrderCreateManyInput
+}
+
+type CollectionEdge {
+  node: Collection!
+  cursor: String!
+}
+
+type CollectionGroup {
+  id: ID!
+  title: String!
+  inCollection: Collection
+  things(where: ThingWhereInput, orderBy: ThingOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Thing!]
+  order: [String!]!
+  createdAt: DateTime!
+  updatedAt: DateTime
+}
+
+type CollectionGroupConnection {
+  pageInfo: PageInfo!
+  edges: [CollectionGroupEdge]!
+  aggregate: AggregateCollectionGroup!
+}
+
+input CollectionGroupCreateInput {
+  id: ID
+  title: String
+  inCollection: CollectionCreateOneWithoutUserGroupsInput
+  things: ThingCreateManyInput
+  order: CollectionGroupCreateorderInput
+}
+
+input CollectionGroupCreateManyInput {
+  create: [CollectionGroupCreateInput!]
+  connect: [CollectionGroupWhereUniqueInput!]
+}
+
+input CollectionGroupCreateManyWithoutInCollectionInput {
+  create: [CollectionGroupCreateWithoutInCollectionInput!]
+  connect: [CollectionGroupWhereUniqueInput!]
+}
+
+input CollectionGroupCreateorderInput {
+  set: [String!]
+}
+
+input CollectionGroupCreateWithoutInCollectionInput {
+  id: ID
+  title: String
+  things: ThingCreateManyInput
+  order: CollectionGroupCreateorderInput
+}
+
+type CollectionGroupEdge {
+  node: CollectionGroup!
+  cursor: String!
+}
+
+enum CollectionGroupOrderByInput {
+  id_ASC
+  id_DESC
+  title_ASC
+  title_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+type CollectionGroupPreviousValues {
+  id: ID!
+  title: String!
+  order: [String!]!
+  createdAt: DateTime!
+  updatedAt: DateTime
+}
+
+input CollectionGroupScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  title: String
+  title_not: String
+  title_in: [String!]
+  title_not_in: [String!]
+  title_lt: String
+  title_lte: String
+  title_gt: String
+  title_gte: String
+  title_contains: String
+  title_not_contains: String
+  title_starts_with: String
+  title_not_starts_with: String
+  title_ends_with: String
+  title_not_ends_with: String
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  AND: [CollectionGroupScalarWhereInput!]
+  OR: [CollectionGroupScalarWhereInput!]
+  NOT: [CollectionGroupScalarWhereInput!]
+}
+
+type CollectionGroupSubscriptionPayload {
+  mutation: MutationType!
+  node: CollectionGroup
+  updatedFields: [String!]
+  previousValues: CollectionGroupPreviousValues
+}
+
+input CollectionGroupSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: CollectionGroupWhereInput
+  AND: [CollectionGroupSubscriptionWhereInput!]
+  OR: [CollectionGroupSubscriptionWhereInput!]
+  NOT: [CollectionGroupSubscriptionWhereInput!]
+}
+
+input CollectionGroupUpdateDataInput {
+  title: String
+  inCollection: CollectionUpdateOneWithoutUserGroupsInput
+  things: ThingUpdateManyInput
+  order: CollectionGroupUpdateorderInput
+}
+
+input CollectionGroupUpdateInput {
+  title: String
+  inCollection: CollectionUpdateOneWithoutUserGroupsInput
+  things: ThingUpdateManyInput
+  order: CollectionGroupUpdateorderInput
+}
+
+input CollectionGroupUpdateManyDataInput {
+  title: String
+  order: CollectionGroupUpdateorderInput
+}
+
+input CollectionGroupUpdateManyInput {
+  create: [CollectionGroupCreateInput!]
+  update: [CollectionGroupUpdateWithWhereUniqueNestedInput!]
+  upsert: [CollectionGroupUpsertWithWhereUniqueNestedInput!]
+  delete: [CollectionGroupWhereUniqueInput!]
+  connect: [CollectionGroupWhereUniqueInput!]
+  set: [CollectionGroupWhereUniqueInput!]
+  disconnect: [CollectionGroupWhereUniqueInput!]
+  deleteMany: [CollectionGroupScalarWhereInput!]
+  updateMany: [CollectionGroupUpdateManyWithWhereNestedInput!]
+}
+
+input CollectionGroupUpdateManyMutationInput {
+  title: String
+  order: CollectionGroupUpdateorderInput
+}
+
+input CollectionGroupUpdateManyWithoutInCollectionInput {
+  create: [CollectionGroupCreateWithoutInCollectionInput!]
+  delete: [CollectionGroupWhereUniqueInput!]
+  connect: [CollectionGroupWhereUniqueInput!]
+  set: [CollectionGroupWhereUniqueInput!]
+  disconnect: [CollectionGroupWhereUniqueInput!]
+  update: [CollectionGroupUpdateWithWhereUniqueWithoutInCollectionInput!]
+  upsert: [CollectionGroupUpsertWithWhereUniqueWithoutInCollectionInput!]
+  deleteMany: [CollectionGroupScalarWhereInput!]
+  updateMany: [CollectionGroupUpdateManyWithWhereNestedInput!]
+}
+
+input CollectionGroupUpdateManyWithWhereNestedInput {
+  where: CollectionGroupScalarWhereInput!
+  data: CollectionGroupUpdateManyDataInput!
+}
+
+input CollectionGroupUpdateorderInput {
+  set: [String!]
+}
+
+input CollectionGroupUpdateWithoutInCollectionDataInput {
+  title: String
+  things: ThingUpdateManyInput
+  order: CollectionGroupUpdateorderInput
+}
+
+input CollectionGroupUpdateWithWhereUniqueNestedInput {
+  where: CollectionGroupWhereUniqueInput!
+  data: CollectionGroupUpdateDataInput!
+}
+
+input CollectionGroupUpdateWithWhereUniqueWithoutInCollectionInput {
+  where: CollectionGroupWhereUniqueInput!
+  data: CollectionGroupUpdateWithoutInCollectionDataInput!
+}
+
+input CollectionGroupUpsertWithWhereUniqueNestedInput {
+  where: CollectionGroupWhereUniqueInput!
+  update: CollectionGroupUpdateDataInput!
+  create: CollectionGroupCreateInput!
+}
+
+input CollectionGroupUpsertWithWhereUniqueWithoutInCollectionInput {
+  where: CollectionGroupWhereUniqueInput!
+  update: CollectionGroupUpdateWithoutInCollectionDataInput!
+  create: CollectionGroupCreateWithoutInCollectionInput!
+}
+
+input CollectionGroupWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  title: String
+  title_not: String
+  title_in: [String!]
+  title_not_in: [String!]
+  title_lt: String
+  title_lte: String
+  title_gt: String
+  title_gte: String
+  title_contains: String
+  title_not_contains: String
+  title_starts_with: String
+  title_not_starts_with: String
+  title_ends_with: String
+  title_not_ends_with: String
+  inCollection: CollectionWhereInput
+  things_every: ThingWhereInput
+  things_some: ThingWhereInput
+  things_none: ThingWhereInput
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  AND: [CollectionGroupWhereInput!]
+  OR: [CollectionGroupWhereInput!]
+  NOT: [CollectionGroupWhereInput!]
+}
+
+input CollectionGroupWhereUniqueInput {
+  id: ID
+}
+
+enum CollectionOrderByInput {
+  id_ASC
+  id_DESC
+  title_ASC
+  title_DESC
+  filterString_ASC
+  filterString_DESC
+  groupByTag_ASC
+  groupByTag_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+type CollectionPreviousValues {
+  id: ID!
+  title: String!
+  filterString: String
+  groupByTag: Boolean!
+  ungroupedThingsOrder: [String!]!
+  expandedCards: [String!]!
+  createdAt: DateTime!
+  updatedAt: DateTime
+}
+
+input CollectionScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  title: String
+  title_not: String
+  title_in: [String!]
+  title_not_in: [String!]
+  title_lt: String
+  title_lte: String
+  title_gt: String
+  title_gte: String
+  title_contains: String
+  title_not_contains: String
+  title_starts_with: String
+  title_not_starts_with: String
+  title_ends_with: String
+  title_not_ends_with: String
+  filterString: String
+  filterString_not: String
+  filterString_in: [String!]
+  filterString_not_in: [String!]
+  filterString_lt: String
+  filterString_lte: String
+  filterString_gt: String
+  filterString_gte: String
+  filterString_contains: String
+  filterString_not_contains: String
+  filterString_starts_with: String
+  filterString_not_starts_with: String
+  filterString_ends_with: String
+  filterString_not_ends_with: String
+  groupByTag: Boolean
+  groupByTag_not: Boolean
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  AND: [CollectionScalarWhereInput!]
+  OR: [CollectionScalarWhereInput!]
+  NOT: [CollectionScalarWhereInput!]
+}
+
+type CollectionSubscriptionPayload {
+  mutation: MutationType!
+  node: Collection
+  updatedFields: [String!]
+  previousValues: CollectionPreviousValues
+}
+
+input CollectionSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: CollectionWhereInput
+  AND: [CollectionSubscriptionWhereInput!]
+  OR: [CollectionSubscriptionWhereInput!]
+  NOT: [CollectionSubscriptionWhereInput!]
+}
+
+input CollectionUpdateDataInput {
+  title: String
+  author: MemberUpdateOneRequiredWithoutCollectionsInput
+  filterString: String
+  hiddenThings: ThingUpdateManyInput
+  groupByTag: Boolean
+  hiddenTags: TagUpdateManyInput
+  hiddenGroups: CollectionGroupUpdateManyInput
+  userGroups: CollectionGroupUpdateManyWithoutInCollectionInput
+  ungroupedThingsOrder: CollectionUpdateungroupedThingsOrderInput
+  tagOrders: TagOrderUpdateManyWithoutForCollectionInput
+  expandedCards: CollectionUpdateexpandedCardsInput
+  columnOrders: ColumnOrderUpdateManyInput
+  tagColumnOrders: ColumnOrderUpdateManyInput
+}
+
+input CollectionUpdateexpandedCardsInput {
+  set: [String!]
+}
+
+input CollectionUpdateInput {
+  title: String
+  author: MemberUpdateOneRequiredWithoutCollectionsInput
+  filterString: String
+  hiddenThings: ThingUpdateManyInput
+  groupByTag: Boolean
+  hiddenTags: TagUpdateManyInput
+  hiddenGroups: CollectionGroupUpdateManyInput
+  userGroups: CollectionGroupUpdateManyWithoutInCollectionInput
+  ungroupedThingsOrder: CollectionUpdateungroupedThingsOrderInput
+  tagOrders: TagOrderUpdateManyWithoutForCollectionInput
+  expandedCards: CollectionUpdateexpandedCardsInput
+  columnOrders: ColumnOrderUpdateManyInput
+  tagColumnOrders: ColumnOrderUpdateManyInput
+}
+
+input CollectionUpdateManyDataInput {
+  title: String
+  filterString: String
+  groupByTag: Boolean
+  ungroupedThingsOrder: CollectionUpdateungroupedThingsOrderInput
+  expandedCards: CollectionUpdateexpandedCardsInput
+}
+
+input CollectionUpdateManyMutationInput {
+  title: String
+  filterString: String
+  groupByTag: Boolean
+  ungroupedThingsOrder: CollectionUpdateungroupedThingsOrderInput
+  expandedCards: CollectionUpdateexpandedCardsInput
+}
+
+input CollectionUpdateManyWithoutAuthorInput {
+  create: [CollectionCreateWithoutAuthorInput!]
+  delete: [CollectionWhereUniqueInput!]
+  connect: [CollectionWhereUniqueInput!]
+  set: [CollectionWhereUniqueInput!]
+  disconnect: [CollectionWhereUniqueInput!]
+  update: [CollectionUpdateWithWhereUniqueWithoutAuthorInput!]
+  upsert: [CollectionUpsertWithWhereUniqueWithoutAuthorInput!]
+  deleteMany: [CollectionScalarWhereInput!]
+  updateMany: [CollectionUpdateManyWithWhereNestedInput!]
+}
+
+input CollectionUpdateManyWithWhereNestedInput {
+  where: CollectionScalarWhereInput!
+  data: CollectionUpdateManyDataInput!
+}
+
+input CollectionUpdateOneInput {
+  create: CollectionCreateInput
+  update: CollectionUpdateDataInput
+  upsert: CollectionUpsertNestedInput
+  delete: Boolean
+  disconnect: Boolean
+  connect: CollectionWhereUniqueInput
+}
+
+input CollectionUpdateOneWithoutTagOrdersInput {
+  create: CollectionCreateWithoutTagOrdersInput
+  update: CollectionUpdateWithoutTagOrdersDataInput
+  upsert: CollectionUpsertWithoutTagOrdersInput
+  delete: Boolean
+  disconnect: Boolean
+  connect: CollectionWhereUniqueInput
+}
+
+input CollectionUpdateOneWithoutUserGroupsInput {
+  create: CollectionCreateWithoutUserGroupsInput
+  update: CollectionUpdateWithoutUserGroupsDataInput
+  upsert: CollectionUpsertWithoutUserGroupsInput
+  delete: Boolean
+  disconnect: Boolean
+  connect: CollectionWhereUniqueInput
+}
+
+input CollectionUpdateungroupedThingsOrderInput {
+  set: [String!]
+}
+
+input CollectionUpdateWithoutAuthorDataInput {
+  title: String
+  filterString: String
+  hiddenThings: ThingUpdateManyInput
+  groupByTag: Boolean
+  hiddenTags: TagUpdateManyInput
+  hiddenGroups: CollectionGroupUpdateManyInput
+  userGroups: CollectionGroupUpdateManyWithoutInCollectionInput
+  ungroupedThingsOrder: CollectionUpdateungroupedThingsOrderInput
+  tagOrders: TagOrderUpdateManyWithoutForCollectionInput
+  expandedCards: CollectionUpdateexpandedCardsInput
+  columnOrders: ColumnOrderUpdateManyInput
+  tagColumnOrders: ColumnOrderUpdateManyInput
+}
+
+input CollectionUpdateWithoutTagOrdersDataInput {
+  title: String
+  author: MemberUpdateOneRequiredWithoutCollectionsInput
+  filterString: String
+  hiddenThings: ThingUpdateManyInput
+  groupByTag: Boolean
+  hiddenTags: TagUpdateManyInput
+  hiddenGroups: CollectionGroupUpdateManyInput
+  userGroups: CollectionGroupUpdateManyWithoutInCollectionInput
+  ungroupedThingsOrder: CollectionUpdateungroupedThingsOrderInput
+  expandedCards: CollectionUpdateexpandedCardsInput
+  columnOrders: ColumnOrderUpdateManyInput
+  tagColumnOrders: ColumnOrderUpdateManyInput
+}
+
+input CollectionUpdateWithoutUserGroupsDataInput {
+  title: String
+  author: MemberUpdateOneRequiredWithoutCollectionsInput
+  filterString: String
+  hiddenThings: ThingUpdateManyInput
+  groupByTag: Boolean
+  hiddenTags: TagUpdateManyInput
+  hiddenGroups: CollectionGroupUpdateManyInput
+  ungroupedThingsOrder: CollectionUpdateungroupedThingsOrderInput
+  tagOrders: TagOrderUpdateManyWithoutForCollectionInput
+  expandedCards: CollectionUpdateexpandedCardsInput
+  columnOrders: ColumnOrderUpdateManyInput
+  tagColumnOrders: ColumnOrderUpdateManyInput
+}
+
+input CollectionUpdateWithWhereUniqueWithoutAuthorInput {
+  where: CollectionWhereUniqueInput!
+  data: CollectionUpdateWithoutAuthorDataInput!
+}
+
+input CollectionUpsertNestedInput {
+  update: CollectionUpdateDataInput!
+  create: CollectionCreateInput!
+}
+
+input CollectionUpsertWithoutTagOrdersInput {
+  update: CollectionUpdateWithoutTagOrdersDataInput!
+  create: CollectionCreateWithoutTagOrdersInput!
+}
+
+input CollectionUpsertWithoutUserGroupsInput {
+  update: CollectionUpdateWithoutUserGroupsDataInput!
+  create: CollectionCreateWithoutUserGroupsInput!
+}
+
+input CollectionUpsertWithWhereUniqueWithoutAuthorInput {
+  where: CollectionWhereUniqueInput!
+  update: CollectionUpdateWithoutAuthorDataInput!
+  create: CollectionCreateWithoutAuthorInput!
+}
+
+input CollectionWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  title: String
+  title_not: String
+  title_in: [String!]
+  title_not_in: [String!]
+  title_lt: String
+  title_lte: String
+  title_gt: String
+  title_gte: String
+  title_contains: String
+  title_not_contains: String
+  title_starts_with: String
+  title_not_starts_with: String
+  title_ends_with: String
+  title_not_ends_with: String
+  author: MemberWhereInput
+  filterString: String
+  filterString_not: String
+  filterString_in: [String!]
+  filterString_not_in: [String!]
+  filterString_lt: String
+  filterString_lte: String
+  filterString_gt: String
+  filterString_gte: String
+  filterString_contains: String
+  filterString_not_contains: String
+  filterString_starts_with: String
+  filterString_not_starts_with: String
+  filterString_ends_with: String
+  filterString_not_ends_with: String
+  hiddenThings_every: ThingWhereInput
+  hiddenThings_some: ThingWhereInput
+  hiddenThings_none: ThingWhereInput
+  groupByTag: Boolean
+  groupByTag_not: Boolean
+  hiddenTags_every: TagWhereInput
+  hiddenTags_some: TagWhereInput
+  hiddenTags_none: TagWhereInput
+  hiddenGroups_every: CollectionGroupWhereInput
+  hiddenGroups_some: CollectionGroupWhereInput
+  hiddenGroups_none: CollectionGroupWhereInput
+  userGroups_every: CollectionGroupWhereInput
+  userGroups_some: CollectionGroupWhereInput
+  userGroups_none: CollectionGroupWhereInput
+  tagOrders_every: TagOrderWhereInput
+  tagOrders_some: TagOrderWhereInput
+  tagOrders_none: TagOrderWhereInput
+  columnOrders_every: ColumnOrderWhereInput
+  columnOrders_some: ColumnOrderWhereInput
+  columnOrders_none: ColumnOrderWhereInput
+  tagColumnOrders_every: ColumnOrderWhereInput
+  tagColumnOrders_some: ColumnOrderWhereInput
+  tagColumnOrders_none: ColumnOrderWhereInput
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  AND: [CollectionWhereInput!]
+  OR: [CollectionWhereInput!]
+  NOT: [CollectionWhereInput!]
+}
+
+input CollectionWhereUniqueInput {
+  id: ID
+}
+
+type ColumnOrder {
+  id: ID!
+  order: [String!]!
+}
+
+type ColumnOrderConnection {
+  pageInfo: PageInfo!
+  edges: [ColumnOrderEdge]!
+  aggregate: AggregateColumnOrder!
+}
+
+input ColumnOrderCreateInput {
+  id: ID
+  order: ColumnOrderCreateorderInput
+}
+
+input ColumnOrderCreateManyInput {
+  create: [ColumnOrderCreateInput!]
+  connect: [ColumnOrderWhereUniqueInput!]
+}
+
+input ColumnOrderCreateorderInput {
+  set: [String!]
+}
+
+type ColumnOrderEdge {
+  node: ColumnOrder!
+  cursor: String!
+}
+
+enum ColumnOrderOrderByInput {
+  id_ASC
+  id_DESC
+}
+
+type ColumnOrderPreviousValues {
+  id: ID!
+  order: [String!]!
+}
+
+input ColumnOrderScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  AND: [ColumnOrderScalarWhereInput!]
+  OR: [ColumnOrderScalarWhereInput!]
+  NOT: [ColumnOrderScalarWhereInput!]
+}
+
+type ColumnOrderSubscriptionPayload {
+  mutation: MutationType!
+  node: ColumnOrder
+  updatedFields: [String!]
+  previousValues: ColumnOrderPreviousValues
+}
+
+input ColumnOrderSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: ColumnOrderWhereInput
+  AND: [ColumnOrderSubscriptionWhereInput!]
+  OR: [ColumnOrderSubscriptionWhereInput!]
+  NOT: [ColumnOrderSubscriptionWhereInput!]
+}
+
+input ColumnOrderUpdateDataInput {
+  order: ColumnOrderUpdateorderInput
+}
+
+input ColumnOrderUpdateInput {
+  order: ColumnOrderUpdateorderInput
+}
+
+input ColumnOrderUpdateManyDataInput {
+  order: ColumnOrderUpdateorderInput
+}
+
+input ColumnOrderUpdateManyInput {
+  create: [ColumnOrderCreateInput!]
+  update: [ColumnOrderUpdateWithWhereUniqueNestedInput!]
+  upsert: [ColumnOrderUpsertWithWhereUniqueNestedInput!]
+  delete: [ColumnOrderWhereUniqueInput!]
+  connect: [ColumnOrderWhereUniqueInput!]
+  set: [ColumnOrderWhereUniqueInput!]
+  disconnect: [ColumnOrderWhereUniqueInput!]
+  deleteMany: [ColumnOrderScalarWhereInput!]
+  updateMany: [ColumnOrderUpdateManyWithWhereNestedInput!]
+}
+
+input ColumnOrderUpdateManyMutationInput {
+  order: ColumnOrderUpdateorderInput
+}
+
+input ColumnOrderUpdateManyWithWhereNestedInput {
+  where: ColumnOrderScalarWhereInput!
+  data: ColumnOrderUpdateManyDataInput!
+}
+
+input ColumnOrderUpdateorderInput {
+  set: [String!]
+}
+
+input ColumnOrderUpdateWithWhereUniqueNestedInput {
+  where: ColumnOrderWhereUniqueInput!
+  data: ColumnOrderUpdateDataInput!
+}
+
+input ColumnOrderUpsertWithWhereUniqueNestedInput {
+  where: ColumnOrderWhereUniqueInput!
+  update: ColumnOrderUpdateDataInput!
+  create: ColumnOrderCreateInput!
+}
+
+input ColumnOrderWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  AND: [ColumnOrderWhereInput!]
+  OR: [ColumnOrderWhereInput!]
+  NOT: [ColumnOrderWhereInput!]
+}
+
+input ColumnOrderWhereUniqueInput {
+  id: ID
 }
 
 type Comment {
@@ -1225,6 +2167,8 @@ type Member {
   individualViewPermissions(where: ThingWhereInput, orderBy: ThingOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Thing!]
   defaultExpansion: Boolean
   broadcastView: Boolean
+  collections(where: CollectionWhereInput, orderBy: CollectionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Collection!]
+  lastActiveCollection: Collection
   comments(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Comment!]
   password: String!
   roles: [Role!]!
@@ -1233,7 +2177,6 @@ type Member {
   verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
-  organizePageState: String
   twitterTokenSecret: String
   twitterUserName: String
   twitterUserID: String
@@ -1274,6 +2217,8 @@ input MemberCreateInput {
   individualViewPermissions: ThingCreateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
+  collections: CollectionCreateManyWithoutAuthorInput
+  lastActiveCollection: CollectionCreateOneInput
   comments: CommentCreateManyWithoutAuthorInput
   password: String!
   roles: MemberCreaterolesInput
@@ -1282,7 +2227,6 @@ input MemberCreateInput {
   verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
-  organizePageState: String
   twitterTokenSecret: String
   twitterUserName: String
   twitterUserID: String
@@ -1314,6 +2258,11 @@ input MemberCreateManyWithoutIndividualViewPermissionsInput {
 
 input MemberCreateOneInput {
   create: MemberCreateInput
+  connect: MemberWhereUniqueInput
+}
+
+input MemberCreateOneWithoutCollectionsInput {
+  create: MemberCreateWithoutCollectionsInput
   connect: MemberWhereUniqueInput
 }
 
@@ -1355,6 +2304,47 @@ input MemberCreatetwitterSeenIDsInput {
   set: [String!]
 }
 
+input MemberCreateWithoutCollectionsInput {
+  id: ID
+  displayName: String!
+  name: String
+  avatar: String
+  rep: Int
+  points: Int
+  giveableRep: Int
+  color: String
+  friends: MemberCreateManyWithoutFriendsInput
+  friendRequests: MemberCreateManyWithoutFriendRequestsInput
+  ignoredFriendRequests: MemberCreateManyWithoutIgnoredFriendRequestsInput
+  notifications: NotificationCreateManyWithoutRecipientInput
+  twitchName: String
+  email: String!
+  votes: VoteCreateManyWithoutVoterInput
+  passes: PassCreateManyWithoutPasserInput
+  createdThings: ThingCreateManyWithoutAuthorInput
+  ownedTags: TagCreateManyWithoutAuthorInput
+  defaultPrivacy: PrivacySetting
+  individualViewPermissions: ThingCreateManyWithoutIndividualViewPermissionsInput
+  defaultExpansion: Boolean
+  broadcastView: Boolean
+  lastActiveCollection: CollectionCreateOneInput
+  comments: CommentCreateManyWithoutAuthorInput
+  password: String!
+  roles: MemberCreaterolesInput
+  role: Role
+  verificationToken: String
+  verificationTokenExpiry: Float
+  resetToken: String
+  resetTokenExpiry: Float
+  twitterTokenSecret: String
+  twitterUserName: String
+  twitterUserID: String
+  twitterUserToken: String
+  twitterUserTokenSecret: String
+  twitterListsObject: String
+  twitterSeenIDs: MemberCreatetwitterSeenIDsInput
+}
+
 input MemberCreateWithoutCommentsInput {
   id: ID
   displayName: String!
@@ -1378,6 +2368,8 @@ input MemberCreateWithoutCommentsInput {
   individualViewPermissions: ThingCreateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
+  collections: CollectionCreateManyWithoutAuthorInput
+  lastActiveCollection: CollectionCreateOneInput
   password: String!
   roles: MemberCreaterolesInput
   role: Role
@@ -1385,7 +2377,6 @@ input MemberCreateWithoutCommentsInput {
   verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
-  organizePageState: String
   twitterTokenSecret: String
   twitterUserName: String
   twitterUserID: String
@@ -1417,6 +2408,8 @@ input MemberCreateWithoutCreatedThingsInput {
   individualViewPermissions: ThingCreateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
+  collections: CollectionCreateManyWithoutAuthorInput
+  lastActiveCollection: CollectionCreateOneInput
   comments: CommentCreateManyWithoutAuthorInput
   password: String!
   roles: MemberCreaterolesInput
@@ -1425,7 +2418,6 @@ input MemberCreateWithoutCreatedThingsInput {
   verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
-  organizePageState: String
   twitterTokenSecret: String
   twitterUserName: String
   twitterUserID: String
@@ -1457,6 +2449,8 @@ input MemberCreateWithoutFriendRequestsInput {
   individualViewPermissions: ThingCreateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
+  collections: CollectionCreateManyWithoutAuthorInput
+  lastActiveCollection: CollectionCreateOneInput
   comments: CommentCreateManyWithoutAuthorInput
   password: String!
   roles: MemberCreaterolesInput
@@ -1465,7 +2459,6 @@ input MemberCreateWithoutFriendRequestsInput {
   verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
-  organizePageState: String
   twitterTokenSecret: String
   twitterUserName: String
   twitterUserID: String
@@ -1497,6 +2490,8 @@ input MemberCreateWithoutFriendsInput {
   individualViewPermissions: ThingCreateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
+  collections: CollectionCreateManyWithoutAuthorInput
+  lastActiveCollection: CollectionCreateOneInput
   comments: CommentCreateManyWithoutAuthorInput
   password: String!
   roles: MemberCreaterolesInput
@@ -1505,7 +2500,6 @@ input MemberCreateWithoutFriendsInput {
   verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
-  organizePageState: String
   twitterTokenSecret: String
   twitterUserName: String
   twitterUserID: String
@@ -1537,6 +2531,8 @@ input MemberCreateWithoutIgnoredFriendRequestsInput {
   individualViewPermissions: ThingCreateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
+  collections: CollectionCreateManyWithoutAuthorInput
+  lastActiveCollection: CollectionCreateOneInput
   comments: CommentCreateManyWithoutAuthorInput
   password: String!
   roles: MemberCreaterolesInput
@@ -1545,7 +2541,6 @@ input MemberCreateWithoutIgnoredFriendRequestsInput {
   verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
-  organizePageState: String
   twitterTokenSecret: String
   twitterUserName: String
   twitterUserID: String
@@ -1577,6 +2572,8 @@ input MemberCreateWithoutIndividualViewPermissionsInput {
   defaultPrivacy: PrivacySetting
   defaultExpansion: Boolean
   broadcastView: Boolean
+  collections: CollectionCreateManyWithoutAuthorInput
+  lastActiveCollection: CollectionCreateOneInput
   comments: CommentCreateManyWithoutAuthorInput
   password: String!
   roles: MemberCreaterolesInput
@@ -1585,7 +2582,6 @@ input MemberCreateWithoutIndividualViewPermissionsInput {
   verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
-  organizePageState: String
   twitterTokenSecret: String
   twitterUserName: String
   twitterUserID: String
@@ -1617,6 +2613,8 @@ input MemberCreateWithoutNotificationsInput {
   individualViewPermissions: ThingCreateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
+  collections: CollectionCreateManyWithoutAuthorInput
+  lastActiveCollection: CollectionCreateOneInput
   comments: CommentCreateManyWithoutAuthorInput
   password: String!
   roles: MemberCreaterolesInput
@@ -1625,7 +2623,6 @@ input MemberCreateWithoutNotificationsInput {
   verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
-  organizePageState: String
   twitterTokenSecret: String
   twitterUserName: String
   twitterUserID: String
@@ -1657,6 +2654,8 @@ input MemberCreateWithoutOwnedTagsInput {
   individualViewPermissions: ThingCreateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
+  collections: CollectionCreateManyWithoutAuthorInput
+  lastActiveCollection: CollectionCreateOneInput
   comments: CommentCreateManyWithoutAuthorInput
   password: String!
   roles: MemberCreaterolesInput
@@ -1665,7 +2664,6 @@ input MemberCreateWithoutOwnedTagsInput {
   verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
-  organizePageState: String
   twitterTokenSecret: String
   twitterUserName: String
   twitterUserID: String
@@ -1697,6 +2695,8 @@ input MemberCreateWithoutPassesInput {
   individualViewPermissions: ThingCreateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
+  collections: CollectionCreateManyWithoutAuthorInput
+  lastActiveCollection: CollectionCreateOneInput
   comments: CommentCreateManyWithoutAuthorInput
   password: String!
   roles: MemberCreaterolesInput
@@ -1705,7 +2705,6 @@ input MemberCreateWithoutPassesInput {
   verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
-  organizePageState: String
   twitterTokenSecret: String
   twitterUserName: String
   twitterUserID: String
@@ -1737,6 +2736,8 @@ input MemberCreateWithoutVotesInput {
   individualViewPermissions: ThingCreateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
+  collections: CollectionCreateManyWithoutAuthorInput
+  lastActiveCollection: CollectionCreateOneInput
   comments: CommentCreateManyWithoutAuthorInput
   password: String!
   roles: MemberCreaterolesInput
@@ -1745,7 +2746,6 @@ input MemberCreateWithoutVotesInput {
   verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
-  organizePageState: String
   twitterTokenSecret: String
   twitterUserName: String
   twitterUserID: String
@@ -1799,8 +2799,6 @@ enum MemberOrderByInput {
   resetToken_DESC
   resetTokenExpiry_ASC
   resetTokenExpiry_DESC
-  organizePageState_ASC
-  organizePageState_DESC
   twitterTokenSecret_ASC
   twitterTokenSecret_DESC
   twitterUserName_ASC
@@ -1840,7 +2838,6 @@ type MemberPreviousValues {
   verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
-  organizePageState: String
   twitterTokenSecret: String
   twitterUserName: String
   twitterUserID: String
@@ -2045,20 +3042,6 @@ input MemberScalarWhereInput {
   resetTokenExpiry_lte: Float
   resetTokenExpiry_gt: Float
   resetTokenExpiry_gte: Float
-  organizePageState: String
-  organizePageState_not: String
-  organizePageState_in: [String!]
-  organizePageState_not_in: [String!]
-  organizePageState_lt: String
-  organizePageState_lte: String
-  organizePageState_gt: String
-  organizePageState_gte: String
-  organizePageState_contains: String
-  organizePageState_not_contains: String
-  organizePageState_starts_with: String
-  organizePageState_not_starts_with: String
-  organizePageState_ends_with: String
-  organizePageState_not_ends_with: String
   twitterTokenSecret: String
   twitterTokenSecret_not: String
   twitterTokenSecret_in: [String!]
@@ -2204,6 +3187,8 @@ input MemberUpdateDataInput {
   individualViewPermissions: ThingUpdateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
+  collections: CollectionUpdateManyWithoutAuthorInput
+  lastActiveCollection: CollectionUpdateOneInput
   comments: CommentUpdateManyWithoutAuthorInput
   password: String
   roles: MemberUpdaterolesInput
@@ -2212,7 +3197,6 @@ input MemberUpdateDataInput {
   verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
-  organizePageState: String
   twitterTokenSecret: String
   twitterUserName: String
   twitterUserID: String
@@ -2244,6 +3228,8 @@ input MemberUpdateInput {
   individualViewPermissions: ThingUpdateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
+  collections: CollectionUpdateManyWithoutAuthorInput
+  lastActiveCollection: CollectionUpdateOneInput
   comments: CommentUpdateManyWithoutAuthorInput
   password: String
   roles: MemberUpdaterolesInput
@@ -2252,7 +3238,6 @@ input MemberUpdateInput {
   verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
-  organizePageState: String
   twitterTokenSecret: String
   twitterUserName: String
   twitterUserID: String
@@ -2282,7 +3267,6 @@ input MemberUpdateManyDataInput {
   verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
-  organizePageState: String
   twitterTokenSecret: String
   twitterUserName: String
   twitterUserID: String
@@ -2312,7 +3296,6 @@ input MemberUpdateManyMutationInput {
   verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
-  organizePageState: String
   twitterTokenSecret: String
   twitterUserName: String
   twitterUserID: String
@@ -2382,6 +3365,13 @@ input MemberUpdateOneRequiredInput {
   connect: MemberWhereUniqueInput
 }
 
+input MemberUpdateOneRequiredWithoutCollectionsInput {
+  create: MemberCreateWithoutCollectionsInput
+  update: MemberUpdateWithoutCollectionsDataInput
+  upsert: MemberUpsertWithoutCollectionsInput
+  connect: MemberWhereUniqueInput
+}
+
 input MemberUpdateOneRequiredWithoutCommentsInput {
   create: MemberCreateWithoutCommentsInput
   update: MemberUpdateWithoutCommentsDataInput
@@ -2432,6 +3422,46 @@ input MemberUpdatetwitterSeenIDsInput {
   set: [String!]
 }
 
+input MemberUpdateWithoutCollectionsDataInput {
+  displayName: String
+  name: String
+  avatar: String
+  rep: Int
+  points: Int
+  giveableRep: Int
+  color: String
+  friends: MemberUpdateManyWithoutFriendsInput
+  friendRequests: MemberUpdateManyWithoutFriendRequestsInput
+  ignoredFriendRequests: MemberUpdateManyWithoutIgnoredFriendRequestsInput
+  notifications: NotificationUpdateManyWithoutRecipientInput
+  twitchName: String
+  email: String
+  votes: VoteUpdateManyWithoutVoterInput
+  passes: PassUpdateManyWithoutPasserInput
+  createdThings: ThingUpdateManyWithoutAuthorInput
+  ownedTags: TagUpdateManyWithoutAuthorInput
+  defaultPrivacy: PrivacySetting
+  individualViewPermissions: ThingUpdateManyWithoutIndividualViewPermissionsInput
+  defaultExpansion: Boolean
+  broadcastView: Boolean
+  lastActiveCollection: CollectionUpdateOneInput
+  comments: CommentUpdateManyWithoutAuthorInput
+  password: String
+  roles: MemberUpdaterolesInput
+  role: Role
+  verificationToken: String
+  verificationTokenExpiry: Float
+  resetToken: String
+  resetTokenExpiry: Float
+  twitterTokenSecret: String
+  twitterUserName: String
+  twitterUserID: String
+  twitterUserToken: String
+  twitterUserTokenSecret: String
+  twitterListsObject: String
+  twitterSeenIDs: MemberUpdatetwitterSeenIDsInput
+}
+
 input MemberUpdateWithoutCommentsDataInput {
   displayName: String
   name: String
@@ -2454,6 +3484,8 @@ input MemberUpdateWithoutCommentsDataInput {
   individualViewPermissions: ThingUpdateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
+  collections: CollectionUpdateManyWithoutAuthorInput
+  lastActiveCollection: CollectionUpdateOneInput
   password: String
   roles: MemberUpdaterolesInput
   role: Role
@@ -2461,7 +3493,6 @@ input MemberUpdateWithoutCommentsDataInput {
   verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
-  organizePageState: String
   twitterTokenSecret: String
   twitterUserName: String
   twitterUserID: String
@@ -2492,6 +3523,8 @@ input MemberUpdateWithoutCreatedThingsDataInput {
   individualViewPermissions: ThingUpdateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
+  collections: CollectionUpdateManyWithoutAuthorInput
+  lastActiveCollection: CollectionUpdateOneInput
   comments: CommentUpdateManyWithoutAuthorInput
   password: String
   roles: MemberUpdaterolesInput
@@ -2500,7 +3533,6 @@ input MemberUpdateWithoutCreatedThingsDataInput {
   verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
-  organizePageState: String
   twitterTokenSecret: String
   twitterUserName: String
   twitterUserID: String
@@ -2531,6 +3563,8 @@ input MemberUpdateWithoutFriendRequestsDataInput {
   individualViewPermissions: ThingUpdateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
+  collections: CollectionUpdateManyWithoutAuthorInput
+  lastActiveCollection: CollectionUpdateOneInput
   comments: CommentUpdateManyWithoutAuthorInput
   password: String
   roles: MemberUpdaterolesInput
@@ -2539,7 +3573,6 @@ input MemberUpdateWithoutFriendRequestsDataInput {
   verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
-  organizePageState: String
   twitterTokenSecret: String
   twitterUserName: String
   twitterUserID: String
@@ -2570,6 +3603,8 @@ input MemberUpdateWithoutFriendsDataInput {
   individualViewPermissions: ThingUpdateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
+  collections: CollectionUpdateManyWithoutAuthorInput
+  lastActiveCollection: CollectionUpdateOneInput
   comments: CommentUpdateManyWithoutAuthorInput
   password: String
   roles: MemberUpdaterolesInput
@@ -2578,7 +3613,6 @@ input MemberUpdateWithoutFriendsDataInput {
   verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
-  organizePageState: String
   twitterTokenSecret: String
   twitterUserName: String
   twitterUserID: String
@@ -2609,6 +3643,8 @@ input MemberUpdateWithoutIgnoredFriendRequestsDataInput {
   individualViewPermissions: ThingUpdateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
+  collections: CollectionUpdateManyWithoutAuthorInput
+  lastActiveCollection: CollectionUpdateOneInput
   comments: CommentUpdateManyWithoutAuthorInput
   password: String
   roles: MemberUpdaterolesInput
@@ -2617,7 +3653,6 @@ input MemberUpdateWithoutIgnoredFriendRequestsDataInput {
   verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
-  organizePageState: String
   twitterTokenSecret: String
   twitterUserName: String
   twitterUserID: String
@@ -2648,6 +3683,8 @@ input MemberUpdateWithoutIndividualViewPermissionsDataInput {
   defaultPrivacy: PrivacySetting
   defaultExpansion: Boolean
   broadcastView: Boolean
+  collections: CollectionUpdateManyWithoutAuthorInput
+  lastActiveCollection: CollectionUpdateOneInput
   comments: CommentUpdateManyWithoutAuthorInput
   password: String
   roles: MemberUpdaterolesInput
@@ -2656,7 +3693,6 @@ input MemberUpdateWithoutIndividualViewPermissionsDataInput {
   verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
-  organizePageState: String
   twitterTokenSecret: String
   twitterUserName: String
   twitterUserID: String
@@ -2687,6 +3723,8 @@ input MemberUpdateWithoutNotificationsDataInput {
   individualViewPermissions: ThingUpdateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
+  collections: CollectionUpdateManyWithoutAuthorInput
+  lastActiveCollection: CollectionUpdateOneInput
   comments: CommentUpdateManyWithoutAuthorInput
   password: String
   roles: MemberUpdaterolesInput
@@ -2695,7 +3733,6 @@ input MemberUpdateWithoutNotificationsDataInput {
   verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
-  organizePageState: String
   twitterTokenSecret: String
   twitterUserName: String
   twitterUserID: String
@@ -2726,6 +3763,8 @@ input MemberUpdateWithoutOwnedTagsDataInput {
   individualViewPermissions: ThingUpdateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
+  collections: CollectionUpdateManyWithoutAuthorInput
+  lastActiveCollection: CollectionUpdateOneInput
   comments: CommentUpdateManyWithoutAuthorInput
   password: String
   roles: MemberUpdaterolesInput
@@ -2734,7 +3773,6 @@ input MemberUpdateWithoutOwnedTagsDataInput {
   verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
-  organizePageState: String
   twitterTokenSecret: String
   twitterUserName: String
   twitterUserID: String
@@ -2765,6 +3803,8 @@ input MemberUpdateWithoutPassesDataInput {
   individualViewPermissions: ThingUpdateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
+  collections: CollectionUpdateManyWithoutAuthorInput
+  lastActiveCollection: CollectionUpdateOneInput
   comments: CommentUpdateManyWithoutAuthorInput
   password: String
   roles: MemberUpdaterolesInput
@@ -2773,7 +3813,6 @@ input MemberUpdateWithoutPassesDataInput {
   verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
-  organizePageState: String
   twitterTokenSecret: String
   twitterUserName: String
   twitterUserID: String
@@ -2804,6 +3843,8 @@ input MemberUpdateWithoutVotesDataInput {
   individualViewPermissions: ThingUpdateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
+  collections: CollectionUpdateManyWithoutAuthorInput
+  lastActiveCollection: CollectionUpdateOneInput
   comments: CommentUpdateManyWithoutAuthorInput
   password: String
   roles: MemberUpdaterolesInput
@@ -2812,7 +3853,6 @@ input MemberUpdateWithoutVotesDataInput {
   verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
-  organizePageState: String
   twitterTokenSecret: String
   twitterUserName: String
   twitterUserID: String
@@ -2845,6 +3885,11 @@ input MemberUpdateWithWhereUniqueWithoutIndividualViewPermissionsInput {
 input MemberUpsertNestedInput {
   update: MemberUpdateDataInput!
   create: MemberCreateInput!
+}
+
+input MemberUpsertWithoutCollectionsInput {
+  update: MemberUpdateWithoutCollectionsDataInput!
+  create: MemberCreateWithoutCollectionsInput!
 }
 
 input MemberUpsertWithoutCommentsInput {
@@ -3059,6 +4104,10 @@ input MemberWhereInput {
   defaultExpansion_not: Boolean
   broadcastView: Boolean
   broadcastView_not: Boolean
+  collections_every: CollectionWhereInput
+  collections_some: CollectionWhereInput
+  collections_none: CollectionWhereInput
+  lastActiveCollection: CollectionWhereInput
   comments_every: CommentWhereInput
   comments_some: CommentWhereInput
   comments_none: CommentWhereInput
@@ -3124,20 +4173,6 @@ input MemberWhereInput {
   resetTokenExpiry_lte: Float
   resetTokenExpiry_gt: Float
   resetTokenExpiry_gte: Float
-  organizePageState: String
-  organizePageState_not: String
-  organizePageState_in: [String!]
-  organizePageState_not_in: [String!]
-  organizePageState_lt: String
-  organizePageState_lte: String
-  organizePageState_gt: String
-  organizePageState_gte: String
-  organizePageState_contains: String
-  organizePageState_not_contains: String
-  organizePageState_starts_with: String
-  organizePageState_not_starts_with: String
-  organizePageState_ends_with: String
-  organizePageState_not_ends_with: String
   twitterTokenSecret: String
   twitterTokenSecret_not: String
   twitterTokenSecret_in: [String!]
@@ -3249,6 +4284,24 @@ input MemberWhereUniqueInput {
 }
 
 type Mutation {
+  createCollection(data: CollectionCreateInput!): Collection!
+  updateCollection(data: CollectionUpdateInput!, where: CollectionWhereUniqueInput!): Collection
+  updateManyCollections(data: CollectionUpdateManyMutationInput!, where: CollectionWhereInput): BatchPayload!
+  upsertCollection(where: CollectionWhereUniqueInput!, create: CollectionCreateInput!, update: CollectionUpdateInput!): Collection!
+  deleteCollection(where: CollectionWhereUniqueInput!): Collection
+  deleteManyCollections(where: CollectionWhereInput): BatchPayload!
+  createCollectionGroup(data: CollectionGroupCreateInput!): CollectionGroup!
+  updateCollectionGroup(data: CollectionGroupUpdateInput!, where: CollectionGroupWhereUniqueInput!): CollectionGroup
+  updateManyCollectionGroups(data: CollectionGroupUpdateManyMutationInput!, where: CollectionGroupWhereInput): BatchPayload!
+  upsertCollectionGroup(where: CollectionGroupWhereUniqueInput!, create: CollectionGroupCreateInput!, update: CollectionGroupUpdateInput!): CollectionGroup!
+  deleteCollectionGroup(where: CollectionGroupWhereUniqueInput!): CollectionGroup
+  deleteManyCollectionGroups(where: CollectionGroupWhereInput): BatchPayload!
+  createColumnOrder(data: ColumnOrderCreateInput!): ColumnOrder!
+  updateColumnOrder(data: ColumnOrderUpdateInput!, where: ColumnOrderWhereUniqueInput!): ColumnOrder
+  updateManyColumnOrders(data: ColumnOrderUpdateManyMutationInput!, where: ColumnOrderWhereInput): BatchPayload!
+  upsertColumnOrder(where: ColumnOrderWhereUniqueInput!, create: ColumnOrderCreateInput!, update: ColumnOrderUpdateInput!): ColumnOrder!
+  deleteColumnOrder(where: ColumnOrderWhereUniqueInput!): ColumnOrder
+  deleteManyColumnOrders(where: ColumnOrderWhereInput): BatchPayload!
   createComment(data: CommentCreateInput!): Comment!
   updateComment(data: CommentUpdateInput!, where: CommentWhereUniqueInput!): Comment
   updateManyComments(data: CommentUpdateManyMutationInput!, where: CommentWhereInput): BatchPayload!
@@ -3290,6 +4343,12 @@ type Mutation {
   upsertTag(where: TagWhereUniqueInput!, create: TagCreateInput!, update: TagUpdateInput!): Tag!
   deleteTag(where: TagWhereUniqueInput!): Tag
   deleteManyTags(where: TagWhereInput): BatchPayload!
+  createTagOrder(data: TagOrderCreateInput!): TagOrder!
+  updateTagOrder(data: TagOrderUpdateInput!, where: TagOrderWhereUniqueInput!): TagOrder
+  updateManyTagOrders(data: TagOrderUpdateManyMutationInput!, where: TagOrderWhereInput): BatchPayload!
+  upsertTagOrder(where: TagOrderWhereUniqueInput!, create: TagOrderCreateInput!, update: TagOrderUpdateInput!): TagOrder!
+  deleteTagOrder(where: TagOrderWhereUniqueInput!): TagOrder
+  deleteManyTagOrders(where: TagOrderWhereInput): BatchPayload!
   createThing(data: ThingCreateInput!): Thing!
   updateThing(data: ThingUpdateInput!, where: ThingWhereUniqueInput!): Thing
   updateManyThings(data: ThingUpdateManyMutationInput!, where: ThingWhereInput): BatchPayload!
@@ -3767,6 +4826,15 @@ enum PrivacySetting {
 }
 
 type Query {
+  collection(where: CollectionWhereUniqueInput!): Collection
+  collections(where: CollectionWhereInput, orderBy: CollectionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Collection]!
+  collectionsConnection(where: CollectionWhereInput, orderBy: CollectionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): CollectionConnection!
+  collectionGroup(where: CollectionGroupWhereUniqueInput!): CollectionGroup
+  collectionGroups(where: CollectionGroupWhereInput, orderBy: CollectionGroupOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [CollectionGroup]!
+  collectionGroupsConnection(where: CollectionGroupWhereInput, orderBy: CollectionGroupOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): CollectionGroupConnection!
+  columnOrder(where: ColumnOrderWhereUniqueInput!): ColumnOrder
+  columnOrders(where: ColumnOrderWhereInput, orderBy: ColumnOrderOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ColumnOrder]!
+  columnOrdersConnection(where: ColumnOrderWhereInput, orderBy: ColumnOrderOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ColumnOrderConnection!
   comment(where: CommentWhereUniqueInput!): Comment
   comments(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Comment]!
   commentsConnection(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): CommentConnection!
@@ -3788,6 +4856,9 @@ type Query {
   tag(where: TagWhereUniqueInput!): Tag
   tags(where: TagWhereInput, orderBy: TagOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Tag]!
   tagsConnection(where: TagWhereInput, orderBy: TagOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): TagConnection!
+  tagOrder(where: TagOrderWhereUniqueInput!): TagOrder
+  tagOrders(where: TagOrderWhereInput, orderBy: TagOrderOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [TagOrder]!
+  tagOrdersConnection(where: TagOrderWhereInput, orderBy: TagOrderOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): TagOrderConnection!
   thing(where: ThingWhereUniqueInput!): Thing
   things(where: ThingWhereInput, orderBy: ThingOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Thing]!
   thingsConnection(where: ThingWhereInput, orderBy: ThingOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ThingConnection!
@@ -4185,6 +5256,9 @@ input StackWhereUniqueInput {
 }
 
 type Subscription {
+  collection(where: CollectionSubscriptionWhereInput): CollectionSubscriptionPayload
+  collectionGroup(where: CollectionGroupSubscriptionWhereInput): CollectionGroupSubscriptionPayload
+  columnOrder(where: ColumnOrderSubscriptionWhereInput): ColumnOrderSubscriptionPayload
   comment(where: CommentSubscriptionWhereInput): CommentSubscriptionPayload
   contentPiece(where: ContentPieceSubscriptionWhereInput): ContentPieceSubscriptionPayload
   member(where: MemberSubscriptionWhereInput): MemberSubscriptionPayload
@@ -4192,6 +5266,7 @@ type Subscription {
   pass(where: PassSubscriptionWhereInput): PassSubscriptionPayload
   stack(where: StackSubscriptionWhereInput): StackSubscriptionPayload
   tag(where: TagSubscriptionWhereInput): TagSubscriptionPayload
+  tagOrder(where: TagOrderSubscriptionWhereInput): TagOrderSubscriptionPayload
   thing(where: ThingSubscriptionWhereInput): ThingSubscriptionPayload
   tweet(where: TweetSubscriptionWhereInput): TweetSubscriptionPayload
   vote(where: VoteSubscriptionWhereInput): VoteSubscriptionPayload
@@ -4237,6 +5312,11 @@ input TagCreateInput {
   comments: CommentCreateManyWithoutOnTagInput
 }
 
+input TagCreateManyInput {
+  create: [TagCreateInput!]
+  connect: [TagWhereUniqueInput!]
+}
+
 input TagCreateManyWithoutAuthorInput {
   create: [TagCreateWithoutAuthorInput!]
   connect: [TagWhereUniqueInput!]
@@ -4245,6 +5325,11 @@ input TagCreateManyWithoutAuthorInput {
 input TagCreateManyWithoutConnectedThingsInput {
   create: [TagCreateWithoutConnectedThingsInput!]
   connect: [TagWhereUniqueInput!]
+}
+
+input TagCreateOneInput {
+  create: TagCreateInput
+  connect: TagWhereUniqueInput
 }
 
 input TagCreateOneWithoutCommentsInput {
@@ -4314,6 +5399,13 @@ type TagEdge {
   cursor: String!
 }
 
+type TagOrder {
+  id: ID!
+  tag: Tag
+  order: [String!]!
+  forCollection: Collection
+}
+
 enum TagOrderByInput {
   id_ASC
   id_DESC
@@ -4331,6 +5423,164 @@ enum TagOrderByInput {
   createdAt_DESC
   updatedAt_ASC
   updatedAt_DESC
+}
+
+type TagOrderConnection {
+  pageInfo: PageInfo!
+  edges: [TagOrderEdge]!
+  aggregate: AggregateTagOrder!
+}
+
+input TagOrderCreateInput {
+  id: ID
+  tag: TagCreateOneInput
+  order: TagOrderCreateorderInput
+  forCollection: CollectionCreateOneWithoutTagOrdersInput
+}
+
+input TagOrderCreateManyWithoutForCollectionInput {
+  create: [TagOrderCreateWithoutForCollectionInput!]
+  connect: [TagOrderWhereUniqueInput!]
+}
+
+input TagOrderCreateorderInput {
+  set: [String!]
+}
+
+input TagOrderCreateWithoutForCollectionInput {
+  id: ID
+  tag: TagCreateOneInput
+  order: TagOrderCreateorderInput
+}
+
+type TagOrderEdge {
+  node: TagOrder!
+  cursor: String!
+}
+
+enum TagOrderOrderByInput {
+  id_ASC
+  id_DESC
+}
+
+type TagOrderPreviousValues {
+  id: ID!
+  order: [String!]!
+}
+
+input TagOrderScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  AND: [TagOrderScalarWhereInput!]
+  OR: [TagOrderScalarWhereInput!]
+  NOT: [TagOrderScalarWhereInput!]
+}
+
+type TagOrderSubscriptionPayload {
+  mutation: MutationType!
+  node: TagOrder
+  updatedFields: [String!]
+  previousValues: TagOrderPreviousValues
+}
+
+input TagOrderSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: TagOrderWhereInput
+  AND: [TagOrderSubscriptionWhereInput!]
+  OR: [TagOrderSubscriptionWhereInput!]
+  NOT: [TagOrderSubscriptionWhereInput!]
+}
+
+input TagOrderUpdateInput {
+  tag: TagUpdateOneInput
+  order: TagOrderUpdateorderInput
+  forCollection: CollectionUpdateOneWithoutTagOrdersInput
+}
+
+input TagOrderUpdateManyDataInput {
+  order: TagOrderUpdateorderInput
+}
+
+input TagOrderUpdateManyMutationInput {
+  order: TagOrderUpdateorderInput
+}
+
+input TagOrderUpdateManyWithoutForCollectionInput {
+  create: [TagOrderCreateWithoutForCollectionInput!]
+  delete: [TagOrderWhereUniqueInput!]
+  connect: [TagOrderWhereUniqueInput!]
+  set: [TagOrderWhereUniqueInput!]
+  disconnect: [TagOrderWhereUniqueInput!]
+  update: [TagOrderUpdateWithWhereUniqueWithoutForCollectionInput!]
+  upsert: [TagOrderUpsertWithWhereUniqueWithoutForCollectionInput!]
+  deleteMany: [TagOrderScalarWhereInput!]
+  updateMany: [TagOrderUpdateManyWithWhereNestedInput!]
+}
+
+input TagOrderUpdateManyWithWhereNestedInput {
+  where: TagOrderScalarWhereInput!
+  data: TagOrderUpdateManyDataInput!
+}
+
+input TagOrderUpdateorderInput {
+  set: [String!]
+}
+
+input TagOrderUpdateWithoutForCollectionDataInput {
+  tag: TagUpdateOneInput
+  order: TagOrderUpdateorderInput
+}
+
+input TagOrderUpdateWithWhereUniqueWithoutForCollectionInput {
+  where: TagOrderWhereUniqueInput!
+  data: TagOrderUpdateWithoutForCollectionDataInput!
+}
+
+input TagOrderUpsertWithWhereUniqueWithoutForCollectionInput {
+  where: TagOrderWhereUniqueInput!
+  update: TagOrderUpdateWithoutForCollectionDataInput!
+  create: TagOrderCreateWithoutForCollectionInput!
+}
+
+input TagOrderWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  tag: TagWhereInput
+  forCollection: CollectionWhereInput
+  AND: [TagOrderWhereInput!]
+  OR: [TagOrderWhereInput!]
+  NOT: [TagOrderWhereInput!]
+}
+
+input TagOrderWhereUniqueInput {
+  id: ID
 }
 
 type TagPreviousValues {
@@ -4473,6 +5723,19 @@ input TagUpdatecontentOrderInput {
   set: [String!]
 }
 
+input TagUpdateDataInput {
+  title: String
+  author: MemberUpdateOneRequiredWithoutOwnedTagsInput
+  featuredImage: String
+  content: ContentPieceUpdateManyWithoutOnTagInput
+  unsavedNewContent: String
+  contentOrder: TagUpdatecontentOrderInput
+  summary: String
+  connectedThings: ThingUpdateManyWithoutPartOfTagsInput
+  color: String
+  comments: CommentUpdateManyWithoutOnTagInput
+}
+
 input TagUpdateInput {
   title: String
   author: MemberUpdateOneRequiredWithoutOwnedTagsInput
@@ -4493,6 +5756,18 @@ input TagUpdateManyDataInput {
   contentOrder: TagUpdatecontentOrderInput
   summary: String
   color: String
+}
+
+input TagUpdateManyInput {
+  create: [TagCreateInput!]
+  update: [TagUpdateWithWhereUniqueNestedInput!]
+  upsert: [TagUpsertWithWhereUniqueNestedInput!]
+  delete: [TagWhereUniqueInput!]
+  connect: [TagWhereUniqueInput!]
+  set: [TagWhereUniqueInput!]
+  disconnect: [TagWhereUniqueInput!]
+  deleteMany: [TagScalarWhereInput!]
+  updateMany: [TagUpdateManyWithWhereNestedInput!]
 }
 
 input TagUpdateManyMutationInput {
@@ -4531,6 +5806,15 @@ input TagUpdateManyWithoutConnectedThingsInput {
 input TagUpdateManyWithWhereNestedInput {
   where: TagScalarWhereInput!
   data: TagUpdateManyDataInput!
+}
+
+input TagUpdateOneInput {
+  create: TagCreateInput
+  update: TagUpdateDataInput
+  upsert: TagUpsertNestedInput
+  delete: Boolean
+  disconnect: Boolean
+  connect: TagWhereUniqueInput
 }
 
 input TagUpdateOneWithoutCommentsInput {
@@ -4599,6 +5883,11 @@ input TagUpdateWithoutContentDataInput {
   comments: CommentUpdateManyWithoutOnTagInput
 }
 
+input TagUpdateWithWhereUniqueNestedInput {
+  where: TagWhereUniqueInput!
+  data: TagUpdateDataInput!
+}
+
 input TagUpdateWithWhereUniqueWithoutAuthorInput {
   where: TagWhereUniqueInput!
   data: TagUpdateWithoutAuthorDataInput!
@@ -4609,6 +5898,11 @@ input TagUpdateWithWhereUniqueWithoutConnectedThingsInput {
   data: TagUpdateWithoutConnectedThingsDataInput!
 }
 
+input TagUpsertNestedInput {
+  update: TagUpdateDataInput!
+  create: TagCreateInput!
+}
+
 input TagUpsertWithoutCommentsInput {
   update: TagUpdateWithoutCommentsDataInput!
   create: TagCreateWithoutCommentsInput!
@@ -4617,6 +5911,12 @@ input TagUpsertWithoutCommentsInput {
 input TagUpsertWithoutContentInput {
   update: TagUpdateWithoutContentDataInput!
   create: TagCreateWithoutContentInput!
+}
+
+input TagUpsertWithWhereUniqueNestedInput {
+  where: TagWhereUniqueInput!
+  update: TagUpdateDataInput!
+  create: TagCreateInput!
 }
 
 input TagUpsertWithWhereUniqueWithoutAuthorInput {
@@ -4812,6 +6112,11 @@ input ThingCreateInput {
   finalistDate: DateTime
   privacy: PrivacySetting
   individualViewPermissions: MemberCreateManyWithoutIndividualViewPermissionsInput
+}
+
+input ThingCreateManyInput {
+  create: [ThingCreateInput!]
+  connect: [ThingWhereUniqueInput!]
 }
 
 input ThingCreateManyWithoutAuthorInput {
@@ -5301,6 +6606,30 @@ input ThingUpdatecontentOrderInput {
   set: [String!]
 }
 
+input ThingUpdateDataInput {
+  title: String
+  author: MemberUpdateOneRequiredWithoutCreatedThingsInput
+  featuredImage: String
+  link: String
+  content: ContentPieceUpdateManyWithoutOnThingInput
+  unsavedNewContent: String
+  copiedInContent: ContentPieceUpdateManyWithoutCopiedToThingsInput
+  contentOrder: ThingUpdatecontentOrderInput
+  summary: String
+  partOfTags: TagUpdateManyWithoutConnectedThingsInput
+  partOfStacks: StackUpdateManyWithoutConnectedThingsInput
+  color: String
+  votes: VoteUpdateManyWithoutOnThingInput
+  passes: PassUpdateManyWithoutOnThingInput
+  score: Int
+  winner: DateTime
+  comments: CommentUpdateManyWithoutOnThingInput
+  eliminated: Boolean
+  finalistDate: DateTime
+  privacy: PrivacySetting
+  individualViewPermissions: MemberUpdateManyWithoutIndividualViewPermissionsInput
+}
+
 input ThingUpdateInput {
   title: String
   author: MemberUpdateOneRequiredWithoutCreatedThingsInput
@@ -5338,6 +6667,18 @@ input ThingUpdateManyDataInput {
   eliminated: Boolean
   finalistDate: DateTime
   privacy: PrivacySetting
+}
+
+input ThingUpdateManyInput {
+  create: [ThingCreateInput!]
+  update: [ThingUpdateWithWhereUniqueNestedInput!]
+  upsert: [ThingUpsertWithWhereUniqueNestedInput!]
+  delete: [ThingWhereUniqueInput!]
+  connect: [ThingWhereUniqueInput!]
+  set: [ThingWhereUniqueInput!]
+  disconnect: [ThingWhereUniqueInput!]
+  deleteMany: [ThingScalarWhereInput!]
+  updateMany: [ThingUpdateManyWithWhereNestedInput!]
 }
 
 input ThingUpdateManyMutationInput {
@@ -5663,6 +7004,11 @@ input ThingUpdateWithoutVotesDataInput {
   individualViewPermissions: MemberUpdateManyWithoutIndividualViewPermissionsInput
 }
 
+input ThingUpdateWithWhereUniqueNestedInput {
+  where: ThingWhereUniqueInput!
+  data: ThingUpdateDataInput!
+}
+
 input ThingUpdateWithWhereUniqueWithoutAuthorInput {
   where: ThingWhereUniqueInput!
   data: ThingUpdateWithoutAuthorDataInput!
@@ -5706,6 +7052,12 @@ input ThingUpsertWithoutPassesInput {
 input ThingUpsertWithoutVotesInput {
   update: ThingUpdateWithoutVotesDataInput!
   create: ThingCreateWithoutVotesInput!
+}
+
+input ThingUpsertWithWhereUniqueNestedInput {
+  where: ThingWhereUniqueInput!
+  update: ThingUpdateDataInput!
+  create: ThingCreateInput!
 }
 
 input ThingUpsertWithWhereUniqueWithoutAuthorInput {

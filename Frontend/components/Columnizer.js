@@ -1,9 +1,16 @@
 import { useState, useEffect } from 'react';
 import { Draggable, Droppable } from 'react-beautiful-dnd';
+import { useMutation } from '@apollo/react-hooks';
 import {
    desktopBreakpointPx,
    bigScreenBreakpointPx
 } from '../styles/functions';
+import { getRandomString } from '../lib/TextHandling';
+import { SET_COLUMN_ORDER_MUTATION } from './Collections/queriesAndMutations';
+import { StyledGroup } from './Collections/styles';
+import LoadingRing from './LoadingRing';
+import { getShortestColumnIndex } from './Collections/CollectionBody';
+import { getShortestColumnID } from './Collections/CollectionsHeader';
 
 const getColumnCount = () => {
    let columnCount = 1;
@@ -16,6 +23,7 @@ const getColumnCount = () => {
    }
    return columnCount;
 };
+export { getColumnCount };
 
 const getItemForID = (id, items) => {
    const [element] = items.filter(
@@ -24,7 +32,7 @@ const getItemForID = (id, items) => {
    return element;
 };
 
-const Columnizer = ({ items, columnOrders, defaultGroupOrderRef }) => {
+const Columnizer = ({ items, columnOrders, draggingGroup }) => {
    const [columnCount, setColumnCount] = useState(getColumnCount());
 
    const resizeHandler = () => setColumnCount(getColumnCount());
@@ -36,44 +44,81 @@ const Columnizer = ({ items, columnOrders, defaultGroupOrderRef }) => {
       return () => window.removeEventListener('resize', resizeHandler);
    }, [resizeHandler]);
 
-   // Then we make an array with a length of our columnCount (but no more than the number of items we have so we don't get empty columns) full of empty arrays
-   const columnsArray = [];
-   const newOrderArray = [];
-   for (let i = 0; i < columnCount && i < items.length; i++) {
-      columnsArray.push([]);
-      newOrderArray.push([]);
+   // If we have more columnOrders than the current columnCount, we need to distribute the groups from the excess columns into the necessary columns
+   const necessaryOrders = [...columnOrders];
+   if (
+      necessaryOrders.length > columnCount ||
+      necessaryOrders.length > items.length
+   ) {
+      // First we figure out which is lower, the number of columns we have or the number of items
+      const lowerNumber =
+         columnCount < items.length ? columnCount : items.length;
+
+      // Then we need to create an array which will hold any columns we don't have room for, so we can redistribute their items later
+      let uncolumnedItems = [];
+
+      // And we need to figure out how many unnecessary columns we have
+      const unnecessaryOrdersCount = necessaryOrders.length - lowerNumber;
+
+      // Then we need to remove that many columns, starting with any empty columns and then working back from the end of the array
+      for (let i = unnecessaryOrdersCount; i > 0; i -= 1) {
+         // First we check for any empty columns
+         let columnToRemoveIndex = necessaryOrders.findIndex(
+            column => column?.order?.length === 0
+         );
+
+         // If we don't have any empty columns, we take from the end of the array
+         if (columnToRemoveIndex === -1) {
+            columnToRemoveIndex = necessaryOrders.length - 1;
+         }
+
+         const removedColumns = necessaryOrders.splice(columnToRemoveIndex, 1);
+         uncolumnedItems = uncolumnedItems.concat(removedColumns[0].order);
+      }
+
+      uncolumnedItems.forEach(item => {
+         const shortestColumnID = getShortestColumnID(necessaryOrders);
+         const shortestColumnIndex = necessaryOrders.findIndex(
+            columnData => columnData.id === shortestColumnID
+         );
+         necessaryOrders[shortestColumnIndex].order.push(item);
+      });
    }
 
-   // Now we loop through our items and put them into their columns
-   items.forEach((item, index) => {
-      const columnIndex = index % columnCount;
-      columnsArray[columnIndex].push(item);
-      newOrderArray[columnIndex].push(item.props.groupObj.id);
-   });
-   defaultGroupOrderRef.current = newOrderArray;
+   const columns = necessaryOrders.map((columnOrderObj, index) => (
+      <div
+         id={columnOrderObj.id}
+         className="column"
+         style={{ width: `${100 / columnCount}%` }}
+         key={`columnizerColumn-${index}`}
+      >
+         <Droppable droppableId={columnOrderObj.id} key={index} type="group">
+            {provided => (
+               <div
+                  ref={provided.innerRef}
+                  key={index}
+                  {...provided.droppableProps}
+                  className={draggingGroup ? 'dragging' : 'notDragging'}
+               >
+                  {columnOrderObj.order.length === 0 && (
+                     <StyledGroup className="blankGroup">
+                        Drop groups here to add them to this column
+                     </StyledGroup>
+                  )}
+                  {columnOrderObj.order.map((columnItem, itemIndex) => {
+                     const itemElement = getItemForID(columnItem, items);
 
-   let columns;
-   if (columnOrders == null || columnOrders.length === 0) {
-      columns = columnsArray.map((columnItems, index) => (
-         <div
-            className="column"
-            style={{ width: `${100 / columnCount}%` }}
-            key={`columnizerColumn-${index}`}
-         >
-            <Droppable droppableId={`${index}`} key={index} type="group">
-               {provided => (
-                  <div
-                     ref={provided.innerRef}
-                     key={index}
-                     {...provided.droppableProps}
-                  >
-                     {columnItems.map((columnItem, itemIndex) => (
+                     if (itemElement == null) {
+                        return null;
+                     }
+
+                     return (
                         <Draggable
                            draggableId={`${index}-${
-                              columnItem.props.groupObj.id
+                              itemElement.props.groupObj.id
                            }`}
                            index={itemIndex}
-                           key={`${index}-${columnItem.props.groupObj.id}`}
+                           key={`${index}-${itemElement.props.groupObj.id}`}
                         >
                            {dragProvided => (
                               <div
@@ -81,122 +126,21 @@ const Columnizer = ({ items, columnOrders, defaultGroupOrderRef }) => {
                                  {...dragProvided.dragHandleProps}
                                  ref={dragProvided.innerRef}
                                  key={itemIndex}
+                                 className="groupContainer"
                               >
-                                 {columnItem}
+                                 {itemElement}
                               </div>
                            )}
                         </Draggable>
-                     ))}
-                     {provided.placeholder}
-                  </div>
-               )}
-            </Droppable>
-         </div>
-      ));
-   } else {
-      const notYetOrderedGroups = items.filter(item => {
-         let groupIsOrdered = false;
-         columnOrders.forEach(orderArray => {
-            if (orderArray.includes(item.props.groupObj.id)) {
-               groupIsOrdered = true;
-            }
-         });
-         return !groupIsOrdered;
-      });
-
-      const allColumnData = [...columnOrders];
-      notYetOrderedGroups.forEach(groupElement => {
-         // Get the approximate height of each column
-         const columnHeights = allColumnData.map(columnItemsArray => {
-            let columnHeight = 1;
-            columnItemsArray.forEach(itemID => {
-               const itemElement = getItemForID(itemID, items);
-               if (
-                  itemElement != null &&
-                  itemElement.props != null &&
-                  itemElement.props.groupObj != null &&
-                  itemElement.props.groupObj.things != null
-               ) {
-                  const { length } = itemElement.props.groupObj.things;
-                  if (length === 0) {
-                     columnHeight += 1;
-                  } else if (length === 1) {
-                     columnHeight += 2;
-                  } else {
-                     columnHeight += length;
-                  }
-               }
-            });
-            return columnHeight;
-         });
-
-         // Add the new element to the shortest column. First we have to figure out which column is the shortest
-         let lowestValueIndex = 0;
-         let currentLowestValue = columnHeights[0];
-         columnHeights.forEach((height, index) => {
-            if (height < currentLowestValue) {
-               currentLowestValue = columnHeights[index];
-               lowestValueIndex = index;
-            }
-         });
-
-         // Then we push the current element into it
-         allColumnData[lowestValueIndex].push(groupElement.props.groupObj.id);
-      });
-
-      columns = allColumnData.map((columnItems, index) => (
-         <div
-            className="column"
-            style={{ width: `${100 / columnCount}%` }}
-            key={`columnizerColumn-${index}`}
-         >
-            <Droppable droppableId={`${index}`} key={index} type="group">
-               {provided => (
-                  <div
-                     ref={provided.innerRef}
-                     key={index}
-                     {...provided.droppableProps}
-                  >
-                     {columnItems.length === 0 && (
-                        <div className="blankGroup">
-                           Drop groups here to add them to this column
-                        </div>
-                     )}
-                     {columnItems.map((columnItem, itemIndex) => {
-                        const itemElement = getItemForID(columnItem, items);
-
-                        if (itemElement == null) {
-                           return null;
-                        }
-
-                        return (
-                           <Draggable
-                              draggableId={`${index}-${
-                                 itemElement.props.groupObj.id
-                              }`}
-                              index={itemIndex}
-                              key={`${index}-${itemElement.props.groupObj.id}`}
-                           >
-                              {dragProvided => (
-                                 <div
-                                    {...dragProvided.draggableProps}
-                                    {...dragProvided.dragHandleProps}
-                                    ref={dragProvided.innerRef}
-                                    key={itemIndex}
-                                 >
-                                    {itemElement}
-                                 </div>
-                              )}
-                           </Draggable>
-                        );
-                     })}
-                     {provided.placeholder}
-                  </div>
-               )}
-            </Droppable>
-         </div>
-      ));
-   }
+                     );
+                  })}
+                  {provided.placeholder}
+               </div>
+            )}
+         </Droppable>
+      </div>
+   ));
+   // }
 
    return <div className="masonryContainer">{columns}</div>;
 };

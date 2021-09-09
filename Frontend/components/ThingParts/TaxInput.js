@@ -5,13 +5,13 @@ import { useMutation, useLazyQuery } from '@apollo/react-hooks';
 import { useCombobox } from 'downshift';
 import debounce from 'lodash.debounce';
 import { MemberContext } from '../Account/MemberProvider';
-import { thingCardFields } from '../../lib/CardInterfaces';
+import { smallThingCardFields } from '../../lib/CardInterfaces';
 import { setAlpha, successFlash } from '../../styles/functions';
 
 const ADD_TAXES_TO_THINGS_MUTATION = gql`
    mutation ADD_TAXES_TO_THINGS_MUTATION($taxes: String!, $thingIDs: [ID!] $personal: Boolean) {
       addTaxesToThings(taxes: $taxes, thingIDs: $thingIDs, personal: $personal) {
-         ${thingCardFields}
+         ${smallThingCardFields}
       }
    }
 `;

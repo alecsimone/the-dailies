@@ -22,10 +22,10 @@ import {
    makeTagGroups,
    makeUserGroups
 } from '../lib/organizeHandling';
-import { getRandomString } from '../lib/TextHandling';
 import { REMOVE_TAX_MUTATION } from '../components/ThingParts/Taxes';
 import SignupOrLogin from '../components/Account/SignupOrLogin';
 import Columnizer from '../components/Columnizer';
+import { getRandomString, isValidJSON } from '../lib/TextHandling';
 
 const OrganizeContext = React.createContext();
 export { OrganizeContext };
@@ -74,7 +74,7 @@ const Organize = () => {
 
    useEffect(() => {
       if (loadingMe) return;
-      const jsonifiedState = JSON.stringify(state);
+      const jsonifiedState = isValidJSON(state) ? state : JSON.stringify(state);
       if (
          me == null ||
          me.organizePageState === jsonifiedState ||
@@ -90,8 +90,11 @@ const Organize = () => {
 
    useEffect(() => {
       if (!loadingMe && me != null && me.organizePageState != null) {
+         if (!isValidJSON(me.organizePageState)) return;
+
          const parsedState = JSON.parse(me.organizePageState);
          if (typeof parsedState !== 'object' || parsedState == null) return;
+
          setState(parsedState);
       }
    }, [loadingMe, me]);

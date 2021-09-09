@@ -1,5 +1,9 @@
+const { AuthenticationError } = require('apollo-server-express');
 const { loggedInGate, fullMemberGate } = require('../../utils/Authentication');
-const { fullThingFields } = require('../../utils/CardInterfaces');
+const {
+   fullThingFields,
+   fullCollectionFields
+} = require('../../utils/CardInterfaces');
 const {
    searchAvailableTaxes,
    canSeeThingGate,
@@ -362,3 +366,23 @@ async function search(parent, { string, isTitleOnly, cursor }, ctx, info) {
    return trimmedThings;
 }
 exports.search = search;
+
+async function getCollections(parent, args, ctx, info) {
+   await loggedInGate(ctx).catch(() => {
+      throw new AuthenticationError('You must be logged in to do that!');
+   });
+   fullMemberGate(ctx.req.member);
+
+   // We need to get the full data for the last active collection and the ID and title of all other collections for the currently logged in member
+   const myCollections = await ctx.db.query.member(
+      {
+         where: {
+            id: ctx.req.memberId
+         }
+      },
+      `{id lastActiveCollection {${fullCollectionFields}} collections {id title} }`
+   );
+
+   return myCollections;
+}
+exports.getCollections = getCollections;

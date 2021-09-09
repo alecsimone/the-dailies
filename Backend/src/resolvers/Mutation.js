@@ -50,6 +50,29 @@ const {
    saveTweet
 } = require('./Mutation/TwitterMutations');
 const { vote } = require('./Mutation/ThingMutations/Voting');
+const {
+   addCollection,
+   deleteCollection,
+   setActiveCollection,
+   renameCollection,
+   setCollectionGroupByTag,
+   addGroupToCollection,
+   deleteGroupFromCollection,
+   hideGroupOnCollection,
+   showHiddenGroupsOnCollection,
+   hideTagOnCollection,
+   showHiddenTagsOnCollection,
+   renameGroupOnCollection,
+   copyThingToCollectionGroup,
+   removeThingFromCollectionGroup,
+   hideThingOnCollection,
+   showHiddenThingsOnCollection,
+   reorderGroups,
+   reorderTags,
+   moveCardToGroup,
+   reorderUngroupedThings,
+   setColumnOrder
+} = require('./Mutation/CollectionMutations');
 
 const Mutations = {
    startSignup,
@@ -97,7 +120,28 @@ const Mutations = {
    unlinkContentPiece,
    addViewerToThing,
    removeViewerFromThing,
-   storeOrganizeState
+   storeOrganizeState,
+   addCollection,
+   deleteCollection,
+   setActiveCollection,
+   renameCollection,
+   setCollectionGroupByTag,
+   addGroupToCollection,
+   deleteGroupFromCollection,
+   hideGroupOnCollection,
+   showHiddenGroupsOnCollection,
+   hideTagOnCollection,
+   showHiddenTagsOnCollection,
+   renameGroupOnCollection,
+   copyThingToCollectionGroup,
+   removeThingFromCollectionGroup,
+   hideThingOnCollection,
+   showHiddenThingsOnCollection,
+   reorderGroups,
+   reorderTags,
+   moveCardToGroup,
+   reorderUngroupedThings,
+   setColumnOrder
 };
 
 module.exports = Mutations;

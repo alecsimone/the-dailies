@@ -13,7 +13,7 @@ const {
    fullMemberGate,
    canEditThing
 } = require('../../../utils/Authentication');
-const {fullMemberFields} = require('../../../utils/CardInterfaces');
+const {fullMemberFields, smallThingCardFields} = require('../../../utils/CardInterfaces');
 
 async function addTaxToThing(taxTitle, thingID, ctx, personal) {
    // Note: there's an addTaxToThingHandler shoved in between the client and this function. This is the function shared by other backend operations.
@@ -95,14 +95,38 @@ async function addTaxesToThing(taxTitleArray, thingID, ctx, personal) {
 }
 
 async function addTaxToThings(taxTitle, thingIDs, ctx, personal) {
-   const updatedThings = []
-   for (const thingID of thingIDs) {
-      if (thingID !== '') {
-         const updatedThing = await addTaxToThing(taxTitle.trim(), thingID, ctx, personal);
-         updatedThings.push(updatedThing);
+   // First we have to figure out the id of the provided tax
+   const queryName = personal ? 'stack' : 'tag'
+   const taxData = await ctx.db.query[queryName]({
+      where: {
+         title: taxTitle
       }
-   }
-   return updatedThings;
+   }, `{id}`);
+
+   // Then we're going to update the provided tax by connecting it to all the provided things
+   const mutationName = personal ? 'updateStack' : 'updateTag';
+
+   // In order to do that, first we have to turn the thingIDs array into an array of objects of the shape {id: 'thingID'};
+   const thingIDObjects = thingIDs.map(id => {return {id}});
+
+   const updatedTax = await ctx.db.mutation[mutationName](
+      {
+         where: {
+            id: taxData.id
+         },
+         data: {
+            connectedThings: {
+               connect: thingIDObjects
+            }
+         }
+      }, `{connectedThings {${smallThingCardFields}}}`
+   );
+
+   // Then we're going to filter the returned connectedThings array to get just the things we want and return that array
+   const filteredThings = updatedTax.connectedThings.filter(
+      thing => thingIDs.includes(thing.id)
+   );
+   return filteredThings;
 }
 
 async function addTaxToThingById(parent, {tax, thingID, personal}, ctx, info) {

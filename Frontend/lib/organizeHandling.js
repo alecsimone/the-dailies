@@ -1,11 +1,6 @@
 import gql from 'graphql-tag';
 import styled from 'styled-components';
-import {
-   setAlpha,
-   mobileBreakpointPx,
-   desktopBreakpointPx,
-   bigScreenBreakpointPx
-} from '../styles/functions';
+import { setAlpha } from '../styles/functions';
 import { fullMemberFields, thingCardFields } from './CardInterfaces';
 import OrganizationGroup from '../components/Organize/OrganizationGroup';
 

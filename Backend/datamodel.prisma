@@ -124,6 +124,8 @@ type Member {
   individualViewPermissions: [Thing] @relation(name: "IndividualViewers")
   defaultExpansion: Boolean @default(value: false)
   broadcastView: Boolean @default(value: false)
+  collections: [Collection] @relation(name: "Collector")
+  lastActiveCollection: Collection @relation(name:"LastActiveCollection")
   comments: [Comment]
   password: String!
   roles: [Role!] @scalarList(strategy: RELATION)
@@ -132,7 +134,6 @@ type Member {
   verificationTokenExpiry: Float
   resetToken: String
   resetTokenExpiry: Float
-  organizePageState: String
   twitterTokenSecret: String
   twitterUserName: String
   twitterUserID: String
@@ -157,6 +158,47 @@ type Tweet {
    localID: ID! @id @unique
    id_str: String! @unique
    tweetJson: Json!
+}
+
+type CollectionGroup {
+   id: ID! @id @unique
+   title: String! @default(value: "Untitled Group")
+   inCollection: Collection @relation(name: "ConnectedGroups")
+   things: [Thing] @scalarList(strategy: RELATION)
+   order: [String] @scalarList(strategy: RELATION)
+   createdAt: DateTime! @createdAt
+   updatedAt: DateTime @updatedAt
+}
+
+type ColumnOrder {
+   id: ID! @id @unique
+   order: [String] @scalarList(strategy: RELATION)
+}
+
+type TagOrder {
+   id: ID! @id @unique
+   tag: Tag
+   order: [String] @scalarList(strategy: RELATION)
+   forCollection: Collection
+}
+
+type Collection {
+   id: ID! @id @unique
+   title: String! @default(value: "New Collection")
+   author: Member! @relation(name: "Collector")
+   filterString: String
+   hiddenThings: [Thing] @scalarList(strategy: RELATION)
+   groupByTag: Boolean! @default(value: false)
+   hiddenTags: [Tag] @scalarList(strategy: RELATION)
+   hiddenGroups: [CollectionGroup] @scalarList(strategy: RELATION) @relation(name: "HiddenGroups")
+   userGroups: [CollectionGroup] @scalarList(strategy: RELATION) @relation(name: "ConnectedGroups")
+   ungroupedThingsOrder: [String] @scalarList(strategy: RELATION)
+   tagOrders: [TagOrder] @scalarList(strategy: RELATION)
+   expandedCards: [String] @scalarList(strategy: RELATION)
+   columnOrders: [ColumnOrder] @relation(name: "ManualColumnOrders")
+   tagColumnOrders: [ColumnOrder] @relation(name: "TagColumnOrders")
+   createdAt: DateTime! @createdAt
+   updatedAt: DateTime @updatedAt
 }
 
 enum Role {

@@ -307,16 +307,16 @@ const NavSidebar = () => {
                </Link>
             )}
             {me && (
-               <Link href="/organize">
+               <Link href="/collections">
                   <a
                      onClick={() => setNavSidebarIsOpen(false)}
-                     title="Organize"
+                     title="Collections"
                   >
                      <div className="navLine">
                         <span className="navIcon">
                            <StackIcon />
                         </span>
-                        <span className="navLabel">Organize</span>
+                        <span className="navLabel">Collections</span>
                      </div>
                   </a>
                </Link>

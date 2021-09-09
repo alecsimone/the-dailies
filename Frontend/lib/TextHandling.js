@@ -247,3 +247,13 @@ const getRandomString = count => {
    return randomString;
 };
 export { getRandomString };
+
+const isValidJSON = text => {
+   try {
+      JSON.parse(text);
+   } catch (e) {
+      return false;
+   }
+   return true;
+};
+export { isValidJSON };

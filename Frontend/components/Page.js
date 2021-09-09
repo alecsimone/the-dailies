@@ -168,12 +168,15 @@ const GlobalStyle = createGlobalStyle`
       background: none;
       color: ${theme.mainText};
       font-family: "proxima-nova", sans-serif;
-      border-radius: 3px;
+      border-radius: 0;
       border: none;
       border-bottom: 1px solid ${theme.lowContrastGrey};
       padding: .25rem 1rem;
       &:disabled {
          background: ${theme.veryLowContrastGrey};
+      }
+      &:focus {
+         border-radius: 3px;
       }
    }
    textarea {
@@ -198,7 +201,10 @@ const GlobalStyle = createGlobalStyle`
       border-radius: 3px;
       color: ${theme.mainText};
       padding: .25rem;
+      padding-right: 4rem;
       font-size: ${theme.smallText};
+      font-family: "proxima-nova", sans-serif;
+      cursor: pointer;
       appearance: none;
       /* The background value is a uri encoded version of Dropdown.svg, with the theme value interpolated and encoded as well  */
       background: url(${props =>
@@ -217,6 +223,7 @@ const GlobalStyle = createGlobalStyle`
          no-repeat right;
       option {
          background: ${theme.deepBlack};
+         cursor: pointer;
          &:focus {
             background: red;
          }
@@ -431,6 +438,8 @@ const GlobalStyle = createGlobalStyle`
       font-size: ${props => props.theme.tinyText};
    }
    .Toastify__toast-container.dailiesStyle {
+      width: auto;
+      max-width: 42rem;
       .Toastify__toast {
          background: ${props => props.theme.deepBlack};
          border: 2px solid

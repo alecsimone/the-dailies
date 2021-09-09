@@ -6,7 +6,8 @@ const {
    myFriendsThings,
    publicThings,
    search,
-   allThings
+   allThings,
+   getCollections
 } = require('./Query/PageQueries');
 const {
    finishSignup,
@@ -39,7 +40,8 @@ const Query = {
    getTweetsForList,
    search,
    searchMembers,
-   allThings
+   allThings,
+   getCollections
 };
 
 module.exports = Query;

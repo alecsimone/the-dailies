@@ -320,6 +320,75 @@ const tagFields = `
 `;
 exports.tagFields = tagFields;
 
+const collectionGroupFields = `
+   __typename
+   id
+   title
+   things {
+      ${smallThingCardFields}
+   }
+   order
+   createdAt
+   updatedAt
+`;
+exports.collectionGroupFields = collectionGroupFields;
+
+const fullCollectionFields = `
+   __typename
+   id
+   title
+   author {
+      __typename
+      id
+      displayName
+   }
+   filterString
+   hiddenThings {
+      __typename
+      id
+   }
+   groupByTag
+   hiddenTags {
+      __typename
+      id
+      author {
+         __typename
+         id
+         displayName
+      }
+   }
+   hiddenGroups {
+      ${collectionGroupFields}
+   }
+   userGroups {
+      ${collectionGroupFields}
+   }
+   tagOrders {
+      __typename
+      id
+      tag {
+         __typename
+         id
+      }
+      order
+   }
+   ungroupedThingsOrder
+   expandedCards
+   columnOrders {
+      __typename
+      id
+      order
+   }
+   tagColumnOrders {
+      __typename
+      id
+      order
+   }
+   createdAt
+   updatedAt
+`;
+exports.fullCollectionFields = fullCollectionFields;
+
 const fullMemberFields = `
    __typename
    id
@@ -402,6 +471,14 @@ const fullMemberFields = `
    defaultPrivacy
    defaultExpansion
    broadcastView
+   lastActiveCollection {
+      ${fullCollectionFields}
+   }
+   collections {
+      __typename
+      id
+      title
+   }
    comments {
       __typename
       id

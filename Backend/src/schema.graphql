@@ -18,6 +18,7 @@ type Query {
    getTweetsForList(listID: String): SuccessMessage!
    search(string: String!, isTitleOnly: Boolean, cursor: String): [Thing]!
    searchMembers(string: String!): [Member]
+   getCollections: Member
 }
 
 type Mutation {
@@ -79,6 +80,27 @@ type Mutation {
   addViewerToThing(thingID: ID!, memberID: ID!): Thing
   removeViewerFromThing(thingID: ID!, memberID: ID!): Thing
   storeOrganizeState(state: String!): Member
+  addCollection: Member
+  deleteCollection(collectionID: ID!): Member
+  setActiveCollection(collectionID: ID!): Member
+  renameCollection(collectionID: ID! newTitle: String!): Collection
+  setCollectionGroupByTag(collectionID: ID! groupByTag: Boolean!): Collection
+  addGroupToCollection(collectionID: ID!, newGroupID: String!, columnID: String!): Collection
+  deleteGroupFromCollection(collectionID: ID! groupID: String!): Collection
+  hideGroupOnCollection(collectionID: ID! groupID: String!): Collection
+  showHiddenGroupsOnCollection(collectionID: ID!): Collection
+  hideTagOnCollection(collectionID: ID! tagID: String!): Collection
+  showHiddenTagsOnCollection(collectionID: ID!): Collection
+  renameGroupOnCollection(collectionID: ID!, groupID: String!, newTitle: String!): Collection
+  copyThingToCollectionGroup(collectionID: ID!, thingID: ID!, targetGroupID: String!): Collection
+  removeThingFromCollectionGroup(collectionID: ID!, thingID: ID!, groupID: String!): Collection
+  hideThingOnCollection(collectionID: ID!, thingID: ID!): Collection
+  showHiddenThingsOnCollection(collectionID: ID!): Collection
+  reorderGroups(groupOneID: ID, newOrderOne: [String!], groupTwoID: ID, newOrderTwo: [String!]): [CollectionGroup!]
+  reorderTags(groupOneID: String, tagOneID: ID, newOrderOne: [String!], groupTwoID: String, tagTwoID: ID, newOrderTwo: [String!], collectionID: ID!): [TagOrder]
+  reorderUngroupedThings(collectionID: ID!, newOrder: [String!]!): Collection
+  moveCardToGroup(thingID: ID!, fromGroupID: ID, toGroupID: ID): [CollectionGroup!]
+  setColumnOrder(columnIDs: [String!]!, newOrders: [[String!]]!, collectionID: String!, isTagOrder: Boolean): Collection
 }
 
 union Stuff = Thing | Tag | Stack | Comment | ContentPiece

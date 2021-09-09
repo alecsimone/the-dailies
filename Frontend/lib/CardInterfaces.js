@@ -356,9 +356,77 @@ const basicMemberFields = `
    defaultPrivacy
    role
    twitterUserName
-   organizePageState
 `;
 export { basicMemberFields };
+
+const collectionGroupFields = `
+   __typename
+   id
+   title
+   things {
+      ${smallThingCardFields}
+   }
+   order
+   createdAt
+   updatedAt
+`;
+export { collectionGroupFields };
+
+const fullCollectionFields = `
+   __typename
+   id
+   title
+   author {
+      __typename
+      id
+      displayName
+   }
+   filterString
+   hiddenThings {
+      __typename
+      id
+   }
+   groupByTag
+   hiddenTags {
+      __typename
+      id
+      author {
+         __typename
+         id
+         displayName
+      }
+   }
+   hiddenGroups {
+      ${collectionGroupFields}
+   }
+   userGroups {
+      ${collectionGroupFields}
+   }
+   ungroupedThingsOrder
+   tagOrders {
+      __typename
+      id
+      tag {
+         __typename
+         id
+      }
+      order
+   }
+   expandedCards
+   columnOrders {
+      __typename
+      id
+      order
+   }
+   tagColumnOrders {
+      __typename
+      id
+      order
+   }
+   createdAt
+   updatedAt
+`;
+export { fullCollectionFields };
 
 const fullMemberFields = `
    __typename
@@ -439,6 +507,14 @@ const fullMemberFields = `
    defaultPrivacy
    defaultExpansion
    broadcastView
+   lastActiveCollection {
+      ${fullCollectionFields}
+   }
+   collections {
+      __typename
+      id
+      title
+   }
    comments {
       __typename
       id
@@ -465,7 +541,6 @@ const fullMemberFields = `
    }
    role
    twitterUserName
-   organizePageState
    createdAt
 `;
 export { fullMemberFields };
