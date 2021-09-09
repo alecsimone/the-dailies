@@ -26,7 +26,8 @@ const CollectionsGroup = ({
    userGroups,
    hiddenGroups,
    hiddenThings,
-   deleteGroupHandler
+   deleteGroupHandler,
+   expandedCards
 }) => {
    const { id, things, title, type } = groupObj;
    const { me } = useContext(MemberContext);
@@ -112,6 +113,7 @@ const CollectionsGroup = ({
          collectionID={collectionID}
          groupID={id}
          hideThingHandler={hideThingHandler}
+         isExpanded={expandedCards.includes(thing.id)}
       />
    ));
 

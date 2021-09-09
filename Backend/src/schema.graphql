@@ -101,6 +101,7 @@ type Mutation {
   reorderUngroupedThings(collectionID: ID!, newOrder: [String!]!): Collection
   moveCardToGroup(thingID: ID!, fromGroupID: ID, toGroupID: ID): [CollectionGroup!]
   setColumnOrder(columnIDs: [String!]!, newOrders: [[String!]]!, collectionID: String!, isTagOrder: Boolean): Collection
+  handleCardExpansion(thingID: ID!, collectionID: ID!, newValue: Boolean!): Collection
 }
 
 union Stuff = Thing | Tag | Stack | Comment | ContentPiece

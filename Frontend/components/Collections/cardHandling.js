@@ -59,7 +59,8 @@ const makeGroups = (
    hiddenThings,
    ungroupedThingsOrder,
    tagOrders,
-   deleteGroupHandler
+   deleteGroupHandler,
+   expandedCards
 ) => {
    let groupElements = [];
    if (groupByTag) {
@@ -138,6 +139,7 @@ const makeGroups = (
             hiddenGroups={hiddenTags}
             hiddenThings={hiddenThings}
             deleteGroupHandler={deleteGroupHandler}
+            expandedCards={expandedCards}
          />
       ));
    } else {
@@ -181,6 +183,7 @@ const makeGroups = (
                         hiddenGroups={hiddenGroups}
                         hiddenThings={hiddenThings}
                         deleteGroupHandler={deleteGroupHandler}
+                        expandedCards={expandedCards}
                      />
                   );
                }
@@ -208,6 +211,7 @@ const makeGroups = (
             hiddenGroups={hiddenGroups}
             hiddenThings={hiddenThings}
             deleteGroupHandler={deleteGroupHandler}
+            expandedCards={expandedCards}
          />
       );
    }

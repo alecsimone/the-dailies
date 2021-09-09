@@ -946,3 +946,54 @@ async function setColumnOrder(
    return updatedCollection;
 }
 exports.setColumnOrder = setColumnOrder;
+
+async function handleCardExpansion(
+   parent,
+   { thingID, collectionID, newValue },
+   ctx,
+   info
+) {
+   await loggedInGate(ctx).catch(() => {
+      throw new AuthenticationError('You must be logged in to do that!');
+   });
+   fullMemberGate(ctx.req.member);
+
+   // First we need to get the old list of expanded cards
+   const oldCollection = await ctx.db.query.collection(
+      {
+         where: {
+            id: collectionID
+         }
+      },
+      `{expandedCards}`
+   );
+
+   let newExpandedCards;
+   if (newValue) {
+      // If we're expanding, we add the given ID to the list
+      newExpandedCards = [...oldCollection.expandedCards, thingID];
+   } else {
+      // If we're collapsing, we remove the given ID from the list
+      newExpandedCards = oldCollection.expandedCards.filter(
+         id => id !== thingID
+      );
+   }
+
+   // Then we update the collection with the new order
+   const updatedCollection = await ctx.db.mutation.updateCollection(
+      {
+         where: {
+            id: collectionID
+         },
+         data: {
+            expandedCards: {
+               set: newExpandedCards
+            }
+         }
+      },
+      `{id expandedCards}`
+   );
+
+   return updatedCollection;
+}
+exports.handleCardExpansion = handleCardExpansion;

@@ -4,6 +4,7 @@ import { Draggable } from 'react-beautiful-dnd';
 import SmallThingCard from '../ThingCards/SmallThingCard';
 import {
    COPY_THING_TO_GROUP_MUTATION,
+   HANDLE_CARD_EXPANSION_MUTATION,
    REMOVE_THING_FROM_GROUP_MUTATION
 } from './queriesAndMutations';
 import { StyledCard } from './styles';
@@ -16,7 +17,8 @@ const CollectionsCard = ({
    groupType,
    collectionID,
    groupID,
-   hideThingHandler
+   hideThingHandler,
+   isExpanded
 }) => {
    const [showingCopyTargets, setShowingCopyTargets] = useState(false);
 
@@ -28,9 +30,21 @@ const CollectionsCard = ({
       REMOVE_THING_FROM_GROUP_MUTATION
    );
 
+   const [handleCardExpansion] = useMutation(HANDLE_CARD_EXPANSION_MUTATION);
+
    if (data == null) return null;
 
    const { id } = data;
+
+   const expandCard = newValue => {
+      handleCardExpansion({
+         variables: {
+            thingID: data.id,
+            collectionID,
+            newValue
+         }
+      });
+   };
 
    // We need to make the options for the copy to group interface. You can't copy to a group that the thing is already in, so first we need to filter those groups out of the master groups list
    let filteredGroups = [];
@@ -123,7 +137,13 @@ const CollectionsCard = ({
                ref={provided.innerRef}
                key={`${groupID}-${id}`}
             >
-               <SmallThingCard data={data} key={id} borderSide="top" />
+               <SmallThingCard
+                  data={data}
+                  key={id}
+                  borderSide="top"
+                  expansionCallback={expandCard}
+                  defaultExpansion={isExpanded}
+               />
                <div
                   className={
                      filteredGroups.length > 0

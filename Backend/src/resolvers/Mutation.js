@@ -71,7 +71,8 @@ const {
    reorderTags,
    moveCardToGroup,
    reorderUngroupedThings,
-   setColumnOrder
+   setColumnOrder,
+   handleCardExpansion
 } = require('./Mutation/CollectionMutations');
 
 const Mutations = {
@@ -141,7 +142,8 @@ const Mutations = {
    reorderTags,
    moveCardToGroup,
    reorderUngroupedThings,
-   setColumnOrder
+   setColumnOrder,
+   handleCardExpansion
 };
 
 module.exports = Mutations;

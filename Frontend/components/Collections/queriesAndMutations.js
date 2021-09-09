@@ -406,3 +406,22 @@ const SET_COLUMN_ORDER_MUTATION = gql`
    }
 `;
 export { SET_COLUMN_ORDER_MUTATION };
+
+const HANDLE_CARD_EXPANSION_MUTATION = gql`
+   mutation HANDLE_CARD_EXPANSION_MUTATION(
+      $thingID: ID!
+      $collectionID: ID!
+      $newValue: Boolean!
+   ) {
+      handleCardExpansion(
+         thingID: $thingID
+         collectionID: $collectionID
+         newValue: $newValue
+      ) {
+         __typename
+         id
+         expandedCards
+      }
+   }
+`;
+export { HANDLE_CARD_EXPANSION_MUTATION };

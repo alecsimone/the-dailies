@@ -82,7 +82,8 @@ const CollectionBody = ({ activeCollection, fetchMoreButton }) => {
       groupByTag,
       ungroupedThingsOrder,
       tagColumnOrders,
-      columnOrders
+      columnOrders,
+      expandedCards
    } = activeCollection;
 
    const { things } = useContext(CollectionsThingsContext);
@@ -153,7 +154,8 @@ const CollectionBody = ({ activeCollection, fetchMoreButton }) => {
       hiddenThings,
       ungroupedThingsOrder,
       tagOrders,
-      deleteGroupHandler
+      deleteGroupHandler,
+      expandedCards
    );
 
    const dragEndHelper = ({
