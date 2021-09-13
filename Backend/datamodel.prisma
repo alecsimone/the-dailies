@@ -197,6 +197,7 @@ type Collection {
    expandedCards: [String] @scalarList(strategy: RELATION)
    columnOrders: [ColumnOrder] @relation(name: "ManualColumnOrders")
    tagColumnOrders: [ColumnOrder] @relation(name: "TagColumnOrders")
+   thingQueryCursor: String
    createdAt: DateTime! @createdAt
    updatedAt: DateTime @updatedAt
 }

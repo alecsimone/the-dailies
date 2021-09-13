@@ -15,15 +15,15 @@ const sortByID = (a, b) => {
    if (a.id != null && b.id != null) {
       // If we're getting an object with an ID property, use that
       if (a.id < b.id) {
-         return -1;
+         return 1;
       }
-      return 1;
+      return -1;
    }
    // Otherwise, assume we're just getting an array of IDs, and use the values directly
    if (a < b) {
-      return -1;
+      return 1;
    }
-   return 1;
+   return -1;
 };
 export { sortByID };
 

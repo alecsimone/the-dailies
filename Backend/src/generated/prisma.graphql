@@ -73,6 +73,7 @@ type Collection {
   expandedCards: [String!]!
   columnOrders(where: ColumnOrderWhereInput, orderBy: ColumnOrderOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ColumnOrder!]
   tagColumnOrders(where: ColumnOrderWhereInput, orderBy: ColumnOrderOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ColumnOrder!]
+  thingQueryCursor: String
   createdAt: DateTime!
   updatedAt: DateTime
 }
@@ -102,6 +103,7 @@ input CollectionCreateInput {
   expandedCards: CollectionCreateexpandedCardsInput
   columnOrders: ColumnOrderCreateManyInput
   tagColumnOrders: ColumnOrderCreateManyInput
+  thingQueryCursor: String
 }
 
 input CollectionCreateManyWithoutAuthorInput {
@@ -142,6 +144,7 @@ input CollectionCreateWithoutAuthorInput {
   expandedCards: CollectionCreateexpandedCardsInput
   columnOrders: ColumnOrderCreateManyInput
   tagColumnOrders: ColumnOrderCreateManyInput
+  thingQueryCursor: String
 }
 
 input CollectionCreateWithoutTagOrdersInput {
@@ -158,6 +161,7 @@ input CollectionCreateWithoutTagOrdersInput {
   expandedCards: CollectionCreateexpandedCardsInput
   columnOrders: ColumnOrderCreateManyInput
   tagColumnOrders: ColumnOrderCreateManyInput
+  thingQueryCursor: String
 }
 
 input CollectionCreateWithoutUserGroupsInput {
@@ -174,6 +178,7 @@ input CollectionCreateWithoutUserGroupsInput {
   expandedCards: CollectionCreateexpandedCardsInput
   columnOrders: ColumnOrderCreateManyInput
   tagColumnOrders: ColumnOrderCreateManyInput
+  thingQueryCursor: String
 }
 
 type CollectionEdge {
@@ -470,6 +475,8 @@ enum CollectionOrderByInput {
   filterString_DESC
   groupByTag_ASC
   groupByTag_DESC
+  thingQueryCursor_ASC
+  thingQueryCursor_DESC
   createdAt_ASC
   createdAt_DESC
   updatedAt_ASC
@@ -483,6 +490,7 @@ type CollectionPreviousValues {
   groupByTag: Boolean!
   ungroupedThingsOrder: [String!]!
   expandedCards: [String!]!
+  thingQueryCursor: String
   createdAt: DateTime!
   updatedAt: DateTime
 }
@@ -532,6 +540,20 @@ input CollectionScalarWhereInput {
   filterString_not_ends_with: String
   groupByTag: Boolean
   groupByTag_not: Boolean
+  thingQueryCursor: String
+  thingQueryCursor_not: String
+  thingQueryCursor_in: [String!]
+  thingQueryCursor_not_in: [String!]
+  thingQueryCursor_lt: String
+  thingQueryCursor_lte: String
+  thingQueryCursor_gt: String
+  thingQueryCursor_gte: String
+  thingQueryCursor_contains: String
+  thingQueryCursor_not_contains: String
+  thingQueryCursor_starts_with: String
+  thingQueryCursor_not_starts_with: String
+  thingQueryCursor_ends_with: String
+  thingQueryCursor_not_ends_with: String
   createdAt: DateTime
   createdAt_not: DateTime
   createdAt_in: [DateTime!]
@@ -585,6 +607,7 @@ input CollectionUpdateDataInput {
   expandedCards: CollectionUpdateexpandedCardsInput
   columnOrders: ColumnOrderUpdateManyInput
   tagColumnOrders: ColumnOrderUpdateManyInput
+  thingQueryCursor: String
 }
 
 input CollectionUpdateexpandedCardsInput {
@@ -605,6 +628,7 @@ input CollectionUpdateInput {
   expandedCards: CollectionUpdateexpandedCardsInput
   columnOrders: ColumnOrderUpdateManyInput
   tagColumnOrders: ColumnOrderUpdateManyInput
+  thingQueryCursor: String
 }
 
 input CollectionUpdateManyDataInput {
@@ -613,6 +637,7 @@ input CollectionUpdateManyDataInput {
   groupByTag: Boolean
   ungroupedThingsOrder: CollectionUpdateungroupedThingsOrderInput
   expandedCards: CollectionUpdateexpandedCardsInput
+  thingQueryCursor: String
 }
 
 input CollectionUpdateManyMutationInput {
@@ -621,6 +646,7 @@ input CollectionUpdateManyMutationInput {
   groupByTag: Boolean
   ungroupedThingsOrder: CollectionUpdateungroupedThingsOrderInput
   expandedCards: CollectionUpdateexpandedCardsInput
+  thingQueryCursor: String
 }
 
 input CollectionUpdateManyWithoutAuthorInput {
@@ -684,6 +710,7 @@ input CollectionUpdateWithoutAuthorDataInput {
   expandedCards: CollectionUpdateexpandedCardsInput
   columnOrders: ColumnOrderUpdateManyInput
   tagColumnOrders: ColumnOrderUpdateManyInput
+  thingQueryCursor: String
 }
 
 input CollectionUpdateWithoutTagOrdersDataInput {
@@ -699,6 +726,7 @@ input CollectionUpdateWithoutTagOrdersDataInput {
   expandedCards: CollectionUpdateexpandedCardsInput
   columnOrders: ColumnOrderUpdateManyInput
   tagColumnOrders: ColumnOrderUpdateManyInput
+  thingQueryCursor: String
 }
 
 input CollectionUpdateWithoutUserGroupsDataInput {
@@ -714,6 +742,7 @@ input CollectionUpdateWithoutUserGroupsDataInput {
   expandedCards: CollectionUpdateexpandedCardsInput
   columnOrders: ColumnOrderUpdateManyInput
   tagColumnOrders: ColumnOrderUpdateManyInput
+  thingQueryCursor: String
 }
 
 input CollectionUpdateWithWhereUniqueWithoutAuthorInput {
@@ -809,6 +838,20 @@ input CollectionWhereInput {
   tagColumnOrders_every: ColumnOrderWhereInput
   tagColumnOrders_some: ColumnOrderWhereInput
   tagColumnOrders_none: ColumnOrderWhereInput
+  thingQueryCursor: String
+  thingQueryCursor_not: String
+  thingQueryCursor_in: [String!]
+  thingQueryCursor_not_in: [String!]
+  thingQueryCursor_lt: String
+  thingQueryCursor_lte: String
+  thingQueryCursor_gt: String
+  thingQueryCursor_gte: String
+  thingQueryCursor_contains: String
+  thingQueryCursor_not_contains: String
+  thingQueryCursor_starts_with: String
+  thingQueryCursor_not_starts_with: String
+  thingQueryCursor_ends_with: String
+  thingQueryCursor_not_ends_with: String
   createdAt: DateTime
   createdAt_not: DateTime
   createdAt_in: [DateTime!]

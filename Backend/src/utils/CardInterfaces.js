@@ -384,6 +384,7 @@ const fullCollectionFields = `
       id
       order
    }
+   thingQueryCursor
    createdAt
    updatedAt
 `;

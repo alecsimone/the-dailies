@@ -6,7 +6,7 @@ type Query {
    me: Member
    member(id: ID, displayName: String): Member
    thing(where: ThingWhereUniqueInput!): Thing
-   myThings(orderBy: ThingOrderByInput, cursor: String): [Thing]!
+   myThings(orderBy: ThingOrderByInput, cursor: String, forCollection: ID): [Thing]!
    myFriendsThings(orderBy: ThingOrderByInput): [Thing]!
    publicThings(orderBy: ThingOrderByInput): [Thing]!
    allThings(cursor: String): [Thing]!

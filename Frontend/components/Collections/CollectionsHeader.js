@@ -20,17 +20,24 @@ const getShortestColumnID = columnData => {
    let lowestHeightID;
 
    // Then we need to loop through each column
+   console.log(columnData);
    columnData.forEach((data, index) => {
       // We need to get the height for each column. First we grab the column container, but these will all have the same height
       const thisContainer = document.querySelector(`#id-${data.id}`);
-      // So next we get their first child, which will only have as much height as its contents need
-      const thisElement = thisContainer.firstElementChild;
 
-      const height = thisElement != null ? thisElement.offsetHeight : 0;
+      if (thisContainer != null) {
+         // So next we get their first child, which will only have as much height as its contents need
+         const thisElement = thisContainer.firstElementChild;
 
-      // If the height of all the groups in this column is less than the lowest height we've found so far (or if this is the first column), we need to set our placeholder values to that of this column
-      if (index === 0 || lowestHeight > height) {
-         lowestHeight = height;
+         const height = thisElement != null ? thisElement.offsetHeight : 0;
+
+         // If the height of all the groups in this column is less than the lowest height we've found so far (or if this is the first column), we need to set our placeholder values to that of this column
+         if (index === 0 || lowestHeight > height) {
+            lowestHeight = height;
+            lowestHeightID = data.id;
+         }
+      } else if (lowestHeight !== 0) {
+         lowestHeight = 0;
          lowestHeightID = data.id;
       }
    });

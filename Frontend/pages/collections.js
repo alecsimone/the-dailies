@@ -33,6 +33,9 @@ const CollectionsPage = ({ query }) => {
       error: thingsError,
       fetchMore: fetchMoreThings
    } = useQuery(MY_BIG_THINGS_QUERY, {
+      variables: {
+         forCollection: '1'
+      },
       ssr: false,
       skip: me == null
    });
@@ -49,7 +52,9 @@ const CollectionsPage = ({ query }) => {
 
       fetchMoreThings({
          variables: {
-            cursor: cursorRef.current
+            cursor: cursorRef.current,
+            forCollection:
+               collectionsData.getCollections.lastActiveCollection.id
          },
          updateQuery: (prev, { fetchMoreResult }) => {
             setIsFetchingMore(false);
