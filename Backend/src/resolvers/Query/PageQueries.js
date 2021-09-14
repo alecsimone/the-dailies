@@ -137,13 +137,12 @@ async function myThings(
    };
 
    if (cursor != null) {
+      // We should only get a cursor when we're doing a fetchMore, in which case we'll want the 20 things after the cursor, so we can push in an updatedAt_lt of the cursor as soon as we get it
       where.AND.push({ updatedAt_lt: cursor });
+      queryObj.first = 20;
    }
 
-   if (forCollection == null) {
-      // If it's not for a collection, we just want 20 things at a time. (If it's for a collection, we want all the things after the cursor)
-      queryObj.first = 20;
-   } else if (cursor == null) {
+   if (forCollection != null && cursor == null) {
       // If this is for a collection, but no cursor is provided, then that means it's the initial collection query, and there might be a cursor already saved for it. Let's check
       const collectionData = await ctx.db.query.member(
          {
@@ -155,7 +154,7 @@ async function myThings(
       );
 
       if (collectionData.lastActiveCollection.thingQueryCursor != null) {
-         // If we find one, we'll add it to our where object
+         // If we find one, we'll add it to our where object. Note that here we want to use updatedAt_gte instead of updatedAt_lt because we want all the things BEFORE the cursor, not after
          queryObj.where.AND.push({
             updatedAt_gte: collectionData.lastActiveCollection.thingQueryCursor
          });
@@ -170,10 +169,12 @@ async function myThings(
    });
 
    if (forCollection != null && forCollection !== '1') {
-      // If this is for a collection, we need to update that collection to represent the new cursor value. However, if the forCollection value is 1, that means it's the initial query and we don't need to update the cursor yet
-      // First we need to find the new cursor value. It will not be the same as a provided cursor, because that will represent where the previous query ended, and we need to know where this query ended so we can get all things before that
+      // If this is for a collection, we need to update that collection to represent the new cursor value. However, if the forCollection value is 1, that means it's the initial query and we don't need to update the cursor yet as it won't have changed
+      // First we need to find the new cursor value. It will not be the same as a provided cursor, because that will represent where the previous query ended, and we need to know where this query ended so we can get all things before that next time
+
       const lastThing = things[things.length - 1];
       if (lastThing == null) return things;
+
       const newCursor = lastThing.updatedAt;
       ctx.db.mutation.updateCollection({
          where: {
