@@ -29,9 +29,7 @@ const StyledFullThing = styled.article`
       padding-top: 0;
       border-radius: 1rem;
    }
-   border: 2px solid ${props => setAlpha(props.theme.lowContrastGrey, 0.15)};
-   background: ${props => props.theme.lightBlack};
-   box-shadow: 0 4px 4px ${props => setAlpha(props.theme.deepBlack, 0.2)};
+   ${props => props.theme.thingColors};
    &:after {
       position: absolute;
       content: '';

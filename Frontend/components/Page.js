@@ -24,6 +24,10 @@ import {
    massiveScreenBreakpointPx
 } from '../styles/functions';
 
+const lightBlack = 'hsl(210, 20%, 8%)';
+const deepBlack = 'hsl(30, 1%, 1%)';
+const lowContrastGrey = 'hsl(210, 10%, 30%)';
+
 const theme = {
    tinyText: '1.25rem',
    miniText: '1.7rem',
@@ -32,12 +36,12 @@ const theme = {
    smallHead: '4rem',
    bigHead: '5rem',
 
-   deepBlack: 'hsl(30, 1%, 1%)',
+   deepBlack,
    midBlack: 'hsl(30, 1%, 4%)',
-   lightBlack: 'hsl(210, 20%, 8%)',
+   lightBlack,
 
    mainText: 'hsl(210, 3%, 90%)',
-   lowContrastGrey: 'hsl(210, 10%, 30%)',
+   lowContrastGrey,
    highContrastGrey: 'hsl(30, 10%, 60%)',
 
    majorColor: 'hsl(210, 100%, 40%)',
@@ -66,6 +70,12 @@ const theme = {
    massiveScreenBreakpoint: `@media screen and (min-width: ${massiveScreenBreakpointPx}px)`,
 
    tweetHead: 'hsl(30, 15%, 2.5%)',
+
+   thingColors: {
+      background: lightBlack,
+      border: `2px solid ${setAlpha(lowContrastGrey, 0.15)}`,
+      boxShadow: `0 4px 4px ${setAlpha(deepBlack, 0.2)}`
+   },
 
    scroll: {
       overflowY: 'auto',

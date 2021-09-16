@@ -69,7 +69,7 @@ const getOneRem = () =>
    parseFloat(getComputedStyle(document.documentElement).fontSize);
 export { getOneRem };
 
-const dynamicallyResizeElement = el => {
+const dynamicallyResizeElement = (el, padded = true) => {
    if (el == null) {
       return;
    }
@@ -77,7 +77,8 @@ const dynamicallyResizeElement = el => {
    const oldScrollTop = mainSection.scrollTop;
    el.style.height = '0';
    const oneRem = getOneRem();
-   el.style.height = `${el.scrollHeight + oneRem}px`;
+   const padding = padded ? oneRem : 0;
+   el.style.height = `${el.scrollHeight + padding}px`;
    mainSection.scrollTop = oldScrollTop;
 };
 export { dynamicallyResizeElement };

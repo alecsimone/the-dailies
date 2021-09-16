@@ -433,7 +433,7 @@ const Content = ({ context, canEdit, linkedPiece }) => {
                   unsavedContent={unsavedNewContent}
                />
             )}
-            {canEdit && (
+            {canEdit && content.length > 1 && (
                <button
                   type="button"
                   className="reorder"

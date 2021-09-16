@@ -42,7 +42,7 @@ const StyledTitleBar = styled.div`
       font-weight: 600;
       color: ${props => setAlpha(props.theme.mainText, 1)};
       padding: 0;
-      margin: 2rem 0;
+      margin: 0;
       line-height: 1.4;
       width: 100%;
       border: none;
@@ -85,7 +85,7 @@ const TitleBar = ({ context, limit, canEdit = true }) => {
       const inputs = document.querySelectorAll(`.titleInput`);
       if (inputs.length > 0) {
          inputs.forEach(input => {
-            dynamicallyResizeElement(input);
+            dynamicallyResizeElement(input, false);
          });
       }
    });
@@ -145,7 +145,7 @@ const TitleBar = ({ context, limit, canEdit = true }) => {
                onKeyDown={handleKeydown}
                onChange={e => {
                   setEditedTitle(e.target.value);
-                  dynamicallyResizeElement(e.target);
+                  dynamicallyResizeElement(e.target, false);
                }}
                onFocus={e => {
                   e.target.spellcheck = true;

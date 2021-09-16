@@ -10,6 +10,7 @@ import { fullThingFields } from '../lib/CardInterfaces';
 import FullThing from '../components/ThingParts/FullThing';
 import BroadcastThing from '../components/ThingCards/BroadcastThing';
 import { home } from '../config';
+import FlexibleThingCard from '../components/ThingCards/FlexibleThingCard';
 
 const SINGLE_THING_QUERY = gql`
    query SINGLE_THING_QUERY($id: ID!) {
@@ -35,6 +36,10 @@ export { ThingContext };
 
 const StyledSingleThing = styled.section`
    position: relative;
+   article {
+      max-width: 1920px;
+      margin: 3rem auto;
+   }
 `;
 
 const SingleThing = ({ query }) => {
@@ -90,12 +95,12 @@ const SingleThing = ({ query }) => {
             );
          } else {
             content = (
-               <FullThing
-                  id={query.id}
-                  key={query.id}
+               <FlexibleThingCard
+                  key={`flexibleCard-${query.id}`}
+                  expanded
+                  canEdit={canEdit}
                   linkedPiece={query.piece}
                   linkedComment={query.comment}
-                  canEdit={canEdit}
                />
             );
          }

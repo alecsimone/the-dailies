@@ -30,7 +30,7 @@ const SET_COLOR_MUTATION = gql`
 const StyledColorSelector = styled.div`
    position: relative;
    font-size: ${props => props.theme.smallText};
-   z-index: 3;
+   z-index: 10;
    .colorInput {
       padding: calc(0.25rem + 1px) 3rem;
       font-size: ${props => props.theme.smallText};
