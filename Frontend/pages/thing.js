@@ -38,6 +38,7 @@ const StyledSingleThing = styled.section`
    position: relative;
    article {
       max-width: 1920px;
+      width: 100%;
       margin: 3rem auto;
    }
 `;

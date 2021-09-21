@@ -35,134 +35,166 @@ const DELETE_THING_MUTATION = gql`
 const StyledFlexibleThingCard = styled.article`
    width: 100%;
    ${props => props.theme.thingColors};
-   padding: 1rem 2rem 1.5rem;
+   padding: 0;
+   ${props => props.theme.mobileBreakpoint} {
+      padding: 1rem 2rem 1.5rem;
+   }
    border-radius: 3px 3px 0.5rem 0.5rem;
    header.flexibleThingHeader {
       background: ${props => props.theme.midBlack};
-      padding: 1rem 2rem 1.5rem;
-      margin: -1rem -2rem -1.5rem;
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-      .thumbWrapper {
-         width: 7.5rem;
-         height: 8.5rem;
-         padding-top: 1rem;
-         img.thumb {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-         }
+      padding: 1rem;
+      margin: 0;
+      ${props => props.theme.mobileBreakpoint} {
+         padding: 1rem 2rem 1.5rem;
+         margin: -1rem -2rem -1.5rem;
       }
-      .headerRight {
-         margin-left: 2rem;
-         flex-grow: 1;
-         .titleBarContainer {
-            margin-bottom: 0.5rem;
-            height: calc(
-               4rem * 1.4
-            ); /* The titlebar has a font-size of 4rem and a line-height of 1.4. It's dynamically sized as we type in it (and should be automatically sized initially as well), but this is just to set a default size */
-            form {
-               max-height: 100%;
-               textarea {
-                  max-height: 100%;
+      max-width: calc(100% + 2rem); /* I believe what's happening here is that we need to add 2rem to make up for the negative margin on this element?  */
+      ${props => props.theme.mobileBreakpoint} {
+         max-width: calc(100% + 4rem);
+      }
+      .headerTop {
+         display: flex;
+         align-items: center;
+         .thumbWrapper {
+            width: 7.5rem;
+            height: 8.5rem;
+            padding-top: 1rem;
+            img.thumb {
+               width: 100%;
+               height: 100%;
+               object-fit: contain;
+               ${props => props.theme.mobileBreakpoint} {
+                  object-fit: cover;
                }
             }
          }
-         .toolbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            a,
-            a:visited {
-               color: ${props =>
-                  setAlpha(setLightness(props.theme.majorColor, 80), 0.7)};
-               &:hover {
-                  color: ${props => setLightness(props.theme.majorColor, 50)};
-                  text-decoration: none;
-               }
+         .headerRight {
+            &.withThumb {
+               margin-left: 2rem;
             }
-            .info {
-               display: flex;
-               align-items: center;
-               font-size: ${props => props.theme.tinyText};
-               color: ${props => setLightness(props.theme.lowContrastGrey, 60)};
-               font-weight: 300;
-               a {
-                  line-height: 0; /* we need this to keep the link from throwing off the align-items: center */
+            flex-grow: 1;
+            .titleBarContainer {
+               margin-bottom: 1rem;
+               ${props => props.theme.mobileBreakpoint} {
+                  margin-bottom: 0.75rem;
                }
-               .authorBlock {
-                  display: inline-flex;
-                  align-items: center;
-                  margin-right: 0.5rem;
-                  cursor: pointer;
-                  .authorLink {
-                     margin-bottom: 2px;
-                  }
-                  .authorImg {
-                     width: 2rem;
-                     height: 2rem;
-                     border-radius: 100%;
-                     margin-right: 0.5rem;
+               height: calc(
+                  4rem * 1.4
+               ); /* The titlebar has a font-size of 4rem and a line-height of 1.4. It's dynamically sized as we type in it (and should be automatically sized initially as well), but this is just to set a default size */
+               padding: 0;
+               form {
+                  max-height: 100%;
+                  textarea {
+                     max-height: 100%;
                   }
                }
             }
-            .buttons {
-               flex-grow: 1;
-               max-width: min(60%, 32rem);
+            .toolbar {
                display: flex;
                justify-content: space-between;
                align-items: center;
-               height: ${props => props.theme.smallText};
-               svg {
-                  height: 100%;
-                  cursor: pointer;
-                  margin: 0;
-                  &.tagIcon {
-                     margin: 0;
-                  }
-                  &.arrow {
-                     width: ${props => props.theme.bigText};
-                     height: auto;
-                     opacity: 0.4;
-                     &:hover {
-                        opacity: 0.75;
-                     }
-                     rect {
-                        /* fill: ${props => props.theme.lowContrastGrey}; */
-                     }
-                  }
-                  &:last-child {
-                     margin-right: 0;
+               flex-wrap: wrap;
+               ${props => props.theme.mobileBreakpoint} {
+                  flex-wrap: nowrap;
+               }
+               margin-top: -2rem;
+               > * {
+                  margin-top: 2rem;
+               }
+               a,
+               a:visited {
+                  color: ${props =>
+                     setAlpha(setLightness(props.theme.majorColor, 80), 0.7)};
+                  &:hover {
+                     color: ${props =>
+                        setLightness(props.theme.majorColor, 50)};
+                     text-decoration: none;
                   }
                }
-               .commentButtonWrapper {
-                  margin: 0 0 -0.3rem;
-                  .commentButton {
-                     svg {
+               .info {
+                  display: flex;
+                  align-items: center;
+                  font-size: ${props => props.theme.tinyText};
+                  color: ${props =>
+                     setLightness(props.theme.lowContrastGrey, 60)};
+                  font-weight: 300;
+                  a {
+                     line-height: 0; /* we need this to keep the link from throwing off the align-items: center */
+                  }
+                  .authorBlock {
+                     display: inline-flex;
+                     align-items: center;
+                     margin-right: 0.5rem;
+                     cursor: pointer;
+                     .authorLink {
+                        margin-bottom: 2px;
+                     }
+                     .authorImg {
+                        width: 2rem;
+                        height: 2rem;
+                        border-radius: 100%;
+                        margin-right: 0.5rem;
+                     }
+                  }
+               }
+               .buttons {
+                  flex-grow: 1;
+                  max-width: min(65%, 360px);
+                  min-width: 240px;
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                  height: ${props => props.theme.smallText};
+                  svg {
+                     height: 100%;
+                     cursor: pointer;
+                     margin: 0;
+                     &.tagIcon {
                         margin: 0;
                      }
-                     span.commentCount {
-                        margin-bottom: 0.4rem;
+                     &.arrow {
+                        width: ${props => props.theme.bigText};
+                        height: auto;
+                        opacity: 0.4;
+                        &:hover {
+                           opacity: 0.75;
+                        }
+                        rect {
+                           /* fill: ${props => props.theme.lowContrastGrey}; */
+                        }
+                     }
+                     &:last-child {
+                        margin-right: 0;
                      }
                   }
-               }
-               .trash {
-                  &.deleting {
-                     ${props => props.theme.twist};
+                  .commentButtonWrapper {
+                     margin: 0 0 -0.3rem;
+                     .commentButton {
+                        svg {
+                           margin: 0;
+                        }
+                        span.commentCount {
+                           margin-bottom: 0.4rem;
+                        }
+                     }
                   }
-               }
-               button {
-                  margin: 0;
-                  font-weight: 600;
-                  border: 3px solid ${props => props.theme.lowContrastGrey};
-                  color: ${props => props.theme.lowContrastGrey};
-                  padding: 4px 0.5rem;
-                  &.colors {
-                     width: ${props => props.theme.smallText};
-                     height: 100%;
-                     border-radius: 50%;
-                     border: none;
+                  .trash {
+                     &.deleting {
+                        ${props => props.theme.twist};
+                     }
+                  }
+                  button {
+                     margin: 0;
+                     font-weight: 600;
+                     border: 3px solid ${props => props.theme.lowContrastGrey};
+                     color: ${props => props.theme.lowContrastGrey};
+                     padding: 4px 0.5rem;
+                     &.colors {
+                        width: ${props => props.theme.smallText};
+                        height: 100%;
+                        border-radius: 50%;
+                        border: none;
+                     }
                   }
                }
             }
@@ -177,8 +209,12 @@ const StyledFlexibleThingCard = styled.article`
       margin-top: 3rem;
       .featuredImage {
          height: auto;
-         margin: -3rem -2rem 0;
-         width: calc(100% + 4rem);
+         width: 100%;
+         margin: -3rem 0 0;
+         ${props => props.theme.mobileBreakpoint} {
+            margin: -3rem -2rem 0;
+            width: calc(100% + 4rem);
+         }
       }
       .taxboxContainer {
          margin-top: -1rem;
@@ -336,101 +372,111 @@ const FlexibleThingCard = ({
       }
    }
 
+   const showingThumb = !(
+      expansion.featuredImage ||
+      featuredImage == null ||
+      isVideo(featuredImage) ||
+      disabledCodewords.includes(featuredImage.toLowerCase()) ||
+      isTweet ||
+      featuredImage.includes('instagram.com/p/')
+   );
+
    return (
       <StyledFlexibleThingCard
          style={{ borderTop: `0.5rem solid ${highlightColor}` }}
       >
          <header className="flexibleThingHeader">
-            {!(
-               expansion.featuredImage ||
-               featuredImage == null ||
-               isVideo(featuredImage) ||
-               disabledCodewords.includes(featuredImage.toLowerCase()) ||
-               isTweet ||
-               featuredImage.includes('instagram.com/p/')
-            ) && (
-               <div className="thumbWrapper">
-                  <img className="thumb" src={featuredImage} alt="thumbnail" />
-               </div>
-            )}
-            <div className="headerRight">
-               <TitleBar context={ThingContext} key={`title-${id}`} />
-               <div className="toolbar">
-                  <div className="info">
-                     <AuthorLink author={author} key={`author-${id}`} />
-                     <div className="ago">
-                        <TimeAgo time={createdAt} key={`ago-${id}`} />
-                     </div>
+            <div className="headerTop">
+               {showingThumb && (
+                  <div className="thumbWrapper">
+                     <img
+                        className="thumb"
+                        src={featuredImage}
+                        alt="thumbnail"
+                     />
                   </div>
-                  <div className="buttons">
-                     <ArrowIcon
-                        pointing={expansion.toggleDirection}
-                        onClick={() =>
-                           expansionHandler(
-                              'toggleDirection',
-                              expansion.toggleDirection
-                           )
-                        }
-                     />
-                     <button
-                        onClick={() =>
-                           expansionHandler(
-                              'featuredImage',
-                              !expansion.featuredImage
-                           )
-                        }
-                     >
-                        I
-                     </button>
-                     <TagIcon
-                        onClick={() =>
-                           expansionHandler('taxes', !expansion.taxes)
-                        }
-                     />
-                     <button
-                        onClick={() =>
-                           expansionHandler('content', !expansion.content)
-                        }
-                     >
-                        C
-                     </button>
-                     <CommentsButton
-                        onClick={() =>
-                           expansionHandler('comments', !expansion.comments)
-                        }
-                        count={comments.length}
-                        key={`comments-button-${id}`}
-                     />
-                     <button
-                        onClick={() =>
-                           expansionHandler('privacy', !expansion.privacy)
-                        }
-                     >
-                        P
-                     </button>
-                     <button
-                        className="colors"
-                        style={{ background: highlightColor }}
-                        onClick={() =>
-                           expansionHandler('colors', !expansion.colors)
-                        }
-                     />
-                     <TrashIcon
-                        classname={deleting ? 'trash deleting' : 'trash'}
-                        onClick={() => {
-                           if (
-                              confirm(
-                                 `Are you sure you want to delete the thing ${title}?`
+               )}
+               <div
+                  className={`headerRight${showingThumb ? ' withThumb' : ''}`}
+               >
+                  <TitleBar context={ThingContext} key={`title-${id}`} />
+                  <div className="toolbar">
+                     <div className="info">
+                        <AuthorLink author={author} key={`author-${id}`} />
+                        <div className="ago">
+                           <TimeAgo time={createdAt} key={`ago-${id}`} />
+                        </div>
+                     </div>
+                     <div className="buttons">
+                        <ArrowIcon
+                           pointing={expansion.toggleDirection}
+                           onClick={() =>
+                              expansionHandler(
+                                 'toggleDirection',
+                                 expansion.toggleDirection
                               )
-                           ) {
-                              deleteThing({
-                                 variables: {
-                                    id
-                                 }
-                              });
                            }
-                        }}
-                     />
+                        />
+                        <button
+                           onClick={() =>
+                              expansionHandler(
+                                 'featuredImage',
+                                 !expansion.featuredImage
+                              )
+                           }
+                        >
+                           I
+                        </button>
+                        <TagIcon
+                           onClick={() =>
+                              expansionHandler('taxes', !expansion.taxes)
+                           }
+                        />
+                        <button
+                           onClick={() =>
+                              expansionHandler('content', !expansion.content)
+                           }
+                        >
+                           C
+                        </button>
+                        <CommentsButton
+                           onClick={() =>
+                              expansionHandler('comments', !expansion.comments)
+                           }
+                           count={comments.length}
+                           key={`comments-button-${id}`}
+                        />
+                        <button
+                           onClick={() =>
+                              expansionHandler('privacy', !expansion.privacy)
+                           }
+                        >
+                           P
+                        </button>
+                        <button
+                           className="colors"
+                           style={{ background: highlightColor }}
+                           onClick={() =>
+                              expansionHandler('colors', !expansion.colors)
+                           }
+                        />
+                        <TrashIcon
+                           classname={deleting ? 'trash deleting' : 'trash'}
+                           onClick={() => {
+                              if (
+                                 confirm(
+                                    `Are you sure you want to delete the thing ${title}?`
+                                 )
+                              ) {
+                                 deleteThing({
+                                    variables: {
+                                       id
+                                    }
+                                 });
+                              }
+                           }}
+                        />
+                     </div>
                   </div>
                </div>
             </div>
