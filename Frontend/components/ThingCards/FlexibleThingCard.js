@@ -14,6 +14,7 @@ import Content from '../ThingParts/Content';
 import TaxBox from '../ThingParts/TaxBox';
 import Comments from '../ThingParts/Comments';
 import PrivacyInterface from '../ThingParts/PrivacyInterface';
+import ArrowIcon from '../Icons/Arrow';
 import TrashIcon from '../Icons/Trash';
 import ColorSelector from '../ThingParts/ColorSelector';
 import VoteBar from '../ThingParts/VoteBar';
@@ -108,7 +109,7 @@ const StyledFlexibleThingCard = styled.article`
             }
             .buttons {
                flex-grow: 1;
-               max-width: min(50%, 28rem);
+               max-width: min(60%, 32rem);
                display: flex;
                justify-content: space-between;
                align-items: center;
@@ -119,6 +120,17 @@ const StyledFlexibleThingCard = styled.article`
                   margin: 0;
                   &.tagIcon {
                      margin: 0;
+                  }
+                  &.arrow {
+                     width: ${props => props.theme.bigText};
+                     height: auto;
+                     opacity: 0.4;
+                     &:hover {
+                        opacity: 0.75;
+                     }
+                     rect {
+                        /* fill: ${props => props.theme.lowContrastGrey}; */
+                     }
                   }
                   &:last-child {
                      margin-right: 0;
@@ -200,7 +212,7 @@ const StyledFlexibleThingCard = styled.article`
 `;
 
 const FlexibleThingCard = ({
-   expanded,
+   expanded = false,
    canEdit,
    linkedPiece,
    linkedComment
@@ -219,22 +231,82 @@ const FlexibleThingCard = ({
       votes
    } = useContext(ThingContext);
 
-   const [showingContent, setShowingContent] = useState(
-      expanded && (content.length > 0 || copiedInContent.length > 0)
-   );
-   const [showingTaxes, setShowingTaxes] = useState(
-      expanded && tags.length > 0
-   );
-   const [showingComments, setShowingComments] = useState(
-      expanded && comments.length > 0
-   );
-   const [showingPrivacy, setShowingPrivacy] = useState(false);
-   const [showingColors, setShowingColors] = useState(false);
-   const [showingFeaturedImage, setShowingFeaturedImage] = useState(
-      expanded &&
+   // Setting the toggle expansion arrow to the opposite of the expanded value would be confusing if we got a thing which is intended to be expanded, but has no fields with data, e.g. if we are looking at a new thing that doesn't have any content, etc yet. So we check for that here.
+   let initialToggleDirection = 'down';
+   if (expanded) {
+      if (
+         content.length > 0 ||
+         copiedInContent.length > 0 ||
+         tags.length > 0 ||
+         comments.length > 0 ||
+         (featuredImage != null && !disabledCodewords.includes(featuredImage))
+      ) {
+         initialToggleDirection = 'up';
+      }
+   }
+
+   const [expansion, setExpansion] = useState({
+      content: expanded && (content.length > 0 || copiedInContent.length > 0),
+      taxes: expanded && tags.length > 0,
+      comments: expanded && comments.length > 0,
+      privacy: false,
+      colors: false,
+      featuredImage:
+         expanded &&
          featuredImage != null &&
-         !disabledCodewords.includes(featuredImage)
-   );
+         !disabledCodewords.includes(featuredImage),
+      toggleDirection: initialToggleDirection
+   });
+
+   const expansionHandler = (property, value) => {
+      if (property === 'toggleDirection') {
+         // Toggle direction directly represents the direction the toggle expansion arrow points, which tells the user what it is going to do. So if the toggle direction is up, we want to collapse all the other values, i.e. set them to false, and if it's down we want to set them to true. Then we set toggle direction to its opposite
+         const newValue = value === 'down';
+         const newExpansionObject = {
+            content: newValue,
+            taxes: newValue,
+            comments: newValue,
+            featuredImage: newValue,
+            privacy: expansion.privacy,
+            colors: expansion.colors,
+            toggleDirection: value === 'up' ? 'down' : 'up'
+         };
+
+         // We also do not want to expand the privacy and color selector sections with an expand command, but we do want to collapse them with a collapse command. So if the value is up, we do set them to false, otherwise we ignore them.
+         if (value === 'up') {
+            newExpansionObject.privacy = false;
+            newExpansionObject.colors = false;
+         }
+         setExpansion(newExpansionObject);
+      } else {
+         // If this change would cause more than two sections to be opposed to the toggle expansion arrow (ie, if more than two things are expanded while the arrow points down), we want to flip the direction of the arrow.
+         // Note that this shouldn't include the privacy and colors sections when the arrow is pointing up
+         const arrowValue = expansion.toggleDirection === 'up'; // If something is expanded, it would have a value of true and be opposed to the arrow when the arrow is pointing down, because the down arrow would expand it, and it's already expanded. So if the arrow is pointing up, it is opposed to things with a value of false. Thus we want arrowValue to be true when it's pointing up and false when it's pointing down.
+         let opposedSectionsCount = 0;
+         const sections = Object.keys(expansion);
+         sections.forEach(section => {
+            if (expansion[section] !== arrowValue) {
+               // eg, if the section is expanded (true), but the arrow is pointing down (false)
+               if (
+                  expansion.toggleDirection !== 'up' ||
+                  (section !== 'privacy' && section !== 'colors')
+               )
+                  // We don't want to count privacy or colors when the arrow is pointing up, so this just filters out those instances
+                  opposedSectionsCount += 1;
+            }
+         });
+         let newArrowValue = expansion.toggleDirection;
+         if (opposedSectionsCount > 2) {
+            newArrowValue = expansion.toggleDirection === 'up' ? 'down' : 'up';
+         }
+
+         setExpansion({
+            ...expansion,
+            [property]: value,
+            toggleDirection: newArrowValue
+         });
+      }
+   };
 
    const [deleteThing, { loading: deleting }] = useMutation(
       DELETE_THING_MUTATION,
@@ -270,7 +342,7 @@ const FlexibleThingCard = ({
       >
          <header className="flexibleThingHeader">
             {!(
-               showingFeaturedImage ||
+               expansion.featuredImage ||
                featuredImage == null ||
                isVideo(featuredImage) ||
                disabledCodewords.includes(featuredImage.toLowerCase()) ||
@@ -291,29 +363,57 @@ const FlexibleThingCard = ({
                      </div>
                   </div>
                   <div className="buttons">
+                     <ArrowIcon
+                        pointing={expansion.toggleDirection}
+                        onClick={() =>
+                           expansionHandler(
+                              'toggleDirection',
+                              expansion.toggleDirection
+                           )
+                        }
+                     />
                      <button
                         onClick={() =>
-                           setShowingFeaturedImage(!showingFeaturedImage)
+                           expansionHandler(
+                              'featuredImage',
+                              !expansion.featuredImage
+                           )
                         }
                      >
                         I
                      </button>
-                     <TagIcon onClick={() => setShowingTaxes(!showingTaxes)} />
-                     <button onClick={() => setShowingContent(!showingContent)}>
+                     <TagIcon
+                        onClick={() =>
+                           expansionHandler('taxes', !expansion.taxes)
+                        }
+                     />
+                     <button
+                        onClick={() =>
+                           expansionHandler('content', !expansion.content)
+                        }
+                     >
                         C
                      </button>
                      <CommentsButton
-                        onClick={() => setShowingComments(!showingComments)}
+                        onClick={() =>
+                           expansionHandler('comments', !expansion.comments)
+                        }
                         count={comments.length}
                         key={`comments-button-${id}`}
                      />
-                     <button onClick={() => setShowingPrivacy(!showingPrivacy)}>
+                     <button
+                        onClick={() =>
+                           expansionHandler('privacy', !expansion.privacy)
+                        }
+                     >
                         P
                      </button>
                      <button
                         className="colors"
                         style={{ background: highlightColor }}
-                        onClick={() => setShowingColors(!showingColors)}
+                        onClick={() =>
+                           expansionHandler('colors', !expansion.colors)
+                        }
                      />
                      <TrashIcon
                         classname={deleting ? 'trash deleting' : 'trash'}
@@ -336,21 +436,21 @@ const FlexibleThingCard = ({
             </div>
             <VoteBar votes={votes} id={id} type="Thing" />
          </header>
-         {(showingTaxes ||
-            showingContent ||
-            showingComments ||
-            showingPrivacy ||
-            showingColors ||
-            showingFeaturedImage) && (
+         {(expansion.taxes ||
+            expansion.content ||
+            expansion.comments ||
+            expansion.privacy ||
+            expansion.colors ||
+            expansion.featuredImage) && (
             <div className="body">
-               {showingFeaturedImage && (
+               {expansion.featuredImage && (
                   <FlexibleFeaturedImage
                      canEdit={canEdit}
                      context={ThingContext}
                      key={`featured-image-${id}`}
                   />
                )}
-               {showingColors && (
+               {expansion.colors && (
                   <ColorSelector
                      initialColor={color}
                      type="Thing"
@@ -358,21 +458,21 @@ const FlexibleThingCard = ({
                      key={`color-${id}`}
                   />
                )}
-               {showingPrivacy && (
+               {expansion.privacy && (
                   <PrivacyInterface
                      canEdit={canEdit}
                      context={ThingContext}
                      key={`privacy-${id}`}
                   />
                )}
-               {showingTaxes && (
+               {expansion.taxes && (
                   <TaxBox
                      canEdit={canEdit}
                      personal={false}
                      key={`taxes-${id}`}
                   />
                )}
-               {showingContent && (
+               {expansion.content && (
                   <Content
                      context={ThingContext}
                      canEdit={canEdit}
@@ -380,7 +480,7 @@ const FlexibleThingCard = ({
                      key={`content-${id}`}
                   />
                )}
-               {showingComments && (
+               {expansion.comments && (
                   <Comments
                      context={ThingContext}
                      linkedComment={linkedComment}
