@@ -23,6 +23,8 @@ import { ALL_THINGS_QUERY, disabledCodewords } from '../../lib/ThingHandling';
 import { PUBLIC_THINGS_QUERY } from '../Archives/PublicThings';
 import FlexibleFeaturedImage from '../ThingParts/FlexibleFeaturedImage';
 import { isVideo } from '../../lib/UrlHandling';
+import ContentIcon from '../Icons/Content';
+import ImageIcon from '../Icons/ImageIcon';
 
 const DELETE_THING_MUTATION = gql`
    mutation DELETE_THING_MUTATION($id: ID!) {
@@ -417,28 +419,24 @@ const FlexibleThingCard = ({
                               )
                            }
                         />
-                        <button
+                        <ImageIcon
                            onClick={() =>
                               expansionHandler(
                                  'featuredImage',
                                  !expansion.featuredImage
                               )
                            }
-                        >
-                           I
-                        </button>
+                        />
                         <TagIcon
                            onClick={() =>
                               expansionHandler('taxes', !expansion.taxes)
                            }
                         />
-                        <button
+                        <ContentIcon
                            onClick={() =>
                               expansionHandler('content', !expansion.content)
                            }
-                        >
-                           C
-                        </button>
+                        />
                         <CommentsButton
                            onClick={() =>
                               expansionHandler('comments', !expansion.comments)
