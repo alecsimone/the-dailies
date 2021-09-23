@@ -25,6 +25,7 @@ import FlexibleFeaturedImage from '../ThingParts/FlexibleFeaturedImage';
 import { isVideo } from '../../lib/UrlHandling';
 import ContentIcon from '../Icons/Content';
 import ImageIcon from '../Icons/ImageIcon';
+import LockIcon from '../Icons/Lock';
 
 const DELETE_THING_MUTATION = gql`
    mutation DELETE_THING_MUTATION($id: ID!) {
@@ -266,7 +267,8 @@ const FlexibleThingCard = ({
       comments,
       partOfTags: tags,
       featuredImage,
-      votes
+      votes,
+      privacy
    } = useContext(ThingContext);
 
    // Setting the toggle expansion arrow to the opposite of the expanded value would be confusing if we got a thing which is intended to be expanded, but has no fields with data, e.g. if we are looking at a new thing that doesn't have any content, etc yet. So we check for that here.
@@ -444,13 +446,12 @@ const FlexibleThingCard = ({
                            count={comments.length}
                            key={`comments-button-${id}`}
                         />
-                        <button
+                        <LockIcon
                            onClick={() =>
                               expansionHandler('privacy', !expansion.privacy)
                            }
-                        >
-                           P
-                        </button>
+                           privacy={privacy}
+                        />
                         <button
                            className="colors"
                            style={{ background: highlightColor }}

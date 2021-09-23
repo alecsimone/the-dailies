@@ -55,6 +55,9 @@ const StyledPrivacyInterface = styled.div`
    display: flex;
    justify-content: center;
    align-items: flex-start;
+   &.Public {
+      justify-content: flex-start;
+   }
    svg {
       width: ${props => props.theme.smallText};
       cursor: pointer;
@@ -341,7 +344,7 @@ const PrivacyInterface = ({ canEdit, context }) => {
    }
 
    return (
-      <StyledPrivacyInterface className="privacyInterface">
+      <StyledPrivacyInterface className={`privacyInterface ${privacy}`}>
          <PrivacyDropdown initialPrivacy={privacy} id={id} />
          {privacy !== 'Public' &&
             individualViewPermissions &&
