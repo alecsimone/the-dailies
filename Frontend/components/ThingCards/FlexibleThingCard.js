@@ -279,7 +279,8 @@ const FlexibleThingCard = ({
          copiedInContent.length > 0 ||
          tags.length > 0 ||
          comments.length > 0 ||
-         (featuredImage != null && !disabledCodewords.includes(featuredImage))
+         (featuredImage != null &&
+            !disabledCodewords.includes(featuredImage.toLowerCase()))
       ) {
          initialToggleDirection = 'up';
       }

@@ -75,7 +75,8 @@ const FlexibleFeaturedImage = ({ canEdit, context }) => {
    const { featuredImage, id } = useContext(context);
 
    const [editingUrl, setEditingUrl] = useState(
-      featuredImage == null || disabledCodewords.includes(featuredImage)
+      featuredImage == null ||
+         disabledCodewords.includes(featuredImage.toLowerCase())
    );
    const [newUrl, setNewUrl] = useState(
       featuredImage != null ? featuredImage : ''
@@ -103,7 +104,7 @@ const FlexibleFeaturedImage = ({ canEdit, context }) => {
             type: 'Thing'
          }
       });
-      if (!disabledCodewords.includes(newUrl)) {
+      if (!disabledCodewords.includes(newUrl.toLowerCase())) {
          setEditingUrl(false);
       }
    };
@@ -116,20 +117,21 @@ const FlexibleFeaturedImage = ({ canEdit, context }) => {
                content={featuredImage != null ? featuredImage : '/logo.png'}
             />
          </Head>
-         {featuredImage != null && !disabledCodewords.includes(featuredImage) && (
-            <div className="featuredImageWrapper">
-               {
-                  <ExplodingLink
-                     url={featuredImage}
-                     alt="Featured"
-                     className="featured"
-                  />
-               }
-               {canEdit && featuredImage != null && (
-                  <EditThis onClick={() => setEditingUrl(!editingUrl)} />
-               )}
-            </div>
-         )}
+         {featuredImage != null &&
+            !disabledCodewords.includes(featuredImage.toLowerCase()) && (
+               <div className="featuredImageWrapper">
+                  {
+                     <ExplodingLink
+                        url={featuredImage}
+                        alt="Featured"
+                        className="featured"
+                     />
+                  }
+                  {canEdit && featuredImage != null && (
+                     <EditThis onClick={() => setEditingUrl(!editingUrl)} />
+                  )}
+               </div>
+            )}
          {editingUrl && (
             <input
                placeholder="add featured image"
