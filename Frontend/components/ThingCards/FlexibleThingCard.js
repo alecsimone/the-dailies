@@ -81,16 +81,17 @@ const StyledFlexibleThingCard = styled.article`
                ${props => props.theme.mobileBreakpoint} {
                   margin-bottom: 0.75rem;
                }
+               /*
                height: calc(
                   4rem * 1.4
-               ); /* The titlebar has a font-size of 4rem and a line-height of 1.4. It's dynamically sized as we type in it (and should be automatically sized initially as well), but this is just to set a default size */
+               ); The titlebar has a font-size of 4rem and a line-height of 1.4. It's dynamically sized as we type in it (and should be automatically sized initially as well), but this is just to set a default size */
                padding: 0;
-               form {
+               /* form {
                   max-height: 100%;
                   textarea {
                      max-height: 100%;
                   }
-               }
+               } */
             }
             .toolbar {
                display: flex;
