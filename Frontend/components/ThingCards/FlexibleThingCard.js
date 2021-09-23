@@ -294,7 +294,7 @@ const FlexibleThingCard = ({
       featuredImage:
          expanded &&
          featuredImage != null &&
-         !disabledCodewords.includes(featuredImage),
+         !disabledCodewords.includes(featuredImage.toLowerCase()),
       toggleDirection: initialToggleDirection
    });
 
