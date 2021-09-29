@@ -149,9 +149,13 @@ const debouncedMemberSearch = debounce(
    true
 );
 
-const PrivacyInterface = ({ canEdit, context }) => {
+const PrivacyInterface = ({
+   canEdit,
+   id,
+   privacy,
+   individualViewPermissions
+}) => {
    const { me } = useContext(MemberContext);
-   const { id, privacy, individualViewPermissions } = useContext(context);
 
    const [addingPeople, setAddingPeople] = useState(false);
    const [peopleSearchTerm, setPeopleSearchTerm] = useState('');

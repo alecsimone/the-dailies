@@ -51,7 +51,7 @@ const ContentPiece = ({
    highlighted,
    stickifier,
    isCopied,
-   context,
+   fullThingData,
    onThing,
    copiedToThings,
    votes,
@@ -60,7 +60,6 @@ const ContentPiece = ({
 }) => {
    const { me } = useContext(MemberContext);
    const { midScreenBPWidthRaw } = useContext(ThemeContext);
-   const fullThingData = useContext(context);
 
    const [editable, setEditable] = useState(false);
    const editContentInputRef = useRef(null); // This ref will be passed down to the RichTextArea that allows us to edit the content piece, and we'll use it to get the value for our editContentPiece mutation

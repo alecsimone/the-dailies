@@ -741,3 +741,83 @@ const editContentButKeepInFrame = (setEditable, value, wrapper) => {
    setEditable(value);
 };
 export { editContentButKeepInFrame };
+
+const sendNewContentPiece = async (
+   inputRef,
+   content,
+   dynamicallyResizeElement,
+   addContentPiece,
+   id,
+   type,
+   SINGLE_THING_QUERY,
+   SINGLE_TAX_QUERY
+) => {
+   const inputElement = inputRef.current;
+   const newContentPiece = inputElement.value;
+   if (newContentPiece.trim() === '') {
+      alert(
+         "You can't add a blank content piece. Please write something first."
+      );
+      return;
+   }
+   inputElement.value = '';
+   content.push({
+      __typename: 'ContentPiece',
+      content: newContentPiece,
+      id: 'temporaryID',
+      comments: []
+   });
+   // setFullThingToLoading(id);
+   dynamicallyResizeElement(inputRef.current);
+   await addContentPiece({
+      variables: {
+         content: newContentPiece,
+         id,
+         type
+      },
+      optimisticResponse: {
+         __typename: 'Mutation',
+         addContentPiece: {
+            __typename: type,
+            id,
+            content,
+            comments: []
+         }
+      },
+      update: (client, { data }) => {
+         if (data.__typename == null) {
+            // Our optimistic response includes a typename for the mutation, but the server's data doesn't
+            let query;
+            switch (data.addContentPiece.__typename) {
+               case 'Thing':
+                  query = SINGLE_THING_QUERY;
+                  break;
+               case 'Tag':
+                  query = SINGLE_TAX_QUERY;
+                  break;
+               case 'Stack':
+                  query = SINGLE_TAX_QUERY;
+                  break;
+               default:
+                  console.log('Unknown stuff type');
+                  return;
+            }
+            const oldData = client.readQuery({
+               query,
+               variables: { id }
+            });
+            oldData[data.addContentPiece.__typename.toLowerCase()].content =
+               data.addContentPiece.content;
+            client.writeQuery({
+               query,
+               variables: { id },
+               data: oldData
+            });
+         }
+      }
+   }).catch(err => {
+      alert(err.message);
+   });
+   inputElement.value = ''; // We need to clear the input after adding it
+};
+export { sendNewContentPiece };

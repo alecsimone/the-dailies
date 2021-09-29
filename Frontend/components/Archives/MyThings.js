@@ -11,7 +11,10 @@ import { ModalContext } from '../ModalProvider';
 import Login from '../Account/Login';
 import Signup from '../Account/Signup';
 import { sidebarPerPage } from '../../config';
-import { smallThingCardFields } from '../../lib/CardInterfaces';
+import {
+   fullThingFields,
+   smallThingCardFields
+} from '../../lib/CardInterfaces';
 import LoadMoreButton from '../LoadMoreButton';
 import { useInfiniteScroll } from '../../lib/ThingHandling';
 
@@ -33,7 +36,7 @@ const StyledMyThings = styled.div`
 const MY_THINGS_QUERY = gql`
    query MY_THINGS_QUERY($cursor: String) {
       myThings(cursor: $cursor) {
-         ${smallThingCardFields}
+         ${fullThingFields}
       }
    }
 `;
@@ -59,61 +62,61 @@ const MyThings = ({ setShowingSidebar, scrollingSelector, borderSide }) => {
       skip: me == null && !loadingMe
    });
 
-   useSubscription(MY_THINGS_SUBSCRIPTION, {
-      ssr: false,
-      skip: me == null && !loadingMe,
-      onSubscriptionData: ({ client, subscriptionData }) => {
-         // Get the current results for the myThings query
-         const oldThings = client.readQuery({
-            query: MY_THINGS_QUERY
-         });
+   // useSubscription(MY_THINGS_SUBSCRIPTION, {
+   //    ssr: false,
+   //    skip: me == null && !loadingMe,
+   //    onSubscriptionData: ({ client, subscriptionData }) => {
+   //       // Get the current results for the myThings query
+   //       const oldThings = client.readQuery({
+   //          query: MY_THINGS_QUERY
+   //       });
 
-         // Check if the new thing already exists in myThings
-         const [existingThing] = oldThings.myThings.filter(
-            thing => thing.id === subscriptionData.data.myThings.node.id
-         );
+   //       // Check if the new thing already exists in myThings
+   //       const [existingThing] = oldThings.myThings.filter(
+   //          thing => thing.id === subscriptionData.data.myThings.node.id
+   //       );
 
-         let newThings;
-         if (existingThing != null) {
-            // If it does, check if we're being told to delete it
-            if (
-               subscriptionData.data.myThings.updatedFields.includes('delete')
-            ) {
-               newThings = oldThings.myThings.filter(
-                  thing => thing.id !== subscriptionData.data.myThings.node.id
-               );
-            }
+   //       let newThings;
+   //       if (existingThing != null) {
+   //          // If it does, check if we're being told to delete it
+   //          if (
+   //             subscriptionData.data.myThings.updatedFields.includes('delete')
+   //          ) {
+   //             newThings = oldThings.myThings.filter(
+   //                thing => thing.id !== subscriptionData.data.myThings.node.id
+   //             );
+   //          }
 
-            // Or edit it
-            if (subscriptionData.data.myThings.updatedFields.includes('edit')) {
-               newThings = oldThings.myThings;
-               const editedThingIndex = newThings.findIndex(
-                  thing => thing.id === subscriptionData.data.myThings.node.id
-               );
-               newThings[editedThingIndex] =
-                  subscriptionData.data.myThings.node;
-            }
-         } else if (
-            subscriptionData.data.myThings.updatedFields.includes('delete')
-         ) {
-            // If it doesn't exist and we're deleting it, our work here is done
-            return;
-         } else {
-            // If it doesn't exist already, add it
-            newThings = [
-               ...oldThings.myThings,
-               subscriptionData.data.myThings.node
-            ];
-         }
-         client.writeQuery({
-            query: MY_THINGS_QUERY,
-            data: {
-               __typename: 'query',
-               myThings: newThings
-            }
-         });
-      }
-   });
+   //          // Or edit it
+   //          if (subscriptionData.data.myThings.updatedFields.includes('edit')) {
+   //             newThings = oldThings.myThings;
+   //             const editedThingIndex = newThings.findIndex(
+   //                thing => thing.id === subscriptionData.data.myThings.node.id
+   //             );
+   //             newThings[editedThingIndex] =
+   //                subscriptionData.data.myThings.node;
+   //          }
+   //       } else if (
+   //          subscriptionData.data.myThings.updatedFields.includes('delete')
+   //       ) {
+   //          // If it doesn't exist and we're deleting it, our work here is done
+   //          return;
+   //       } else {
+   //          // If it doesn't exist already, add it
+   //          newThings = [
+   //             ...oldThings.myThings,
+   //             subscriptionData.data.myThings.node
+   //          ];
+   //       }
+   //       client.writeQuery({
+   //          query: MY_THINGS_QUERY,
+   //          data: {
+   //             __typename: 'query',
+   //             myThings: newThings
+   //          }
+   //       });
+   //    }
+   // });
 
    const {
       scrollerRef,

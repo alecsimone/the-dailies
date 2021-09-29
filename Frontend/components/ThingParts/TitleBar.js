@@ -57,8 +57,7 @@ const StyledTitleBar = styled.div`
    }
 `;
 
-const TitleBar = ({ context, limit, canEdit = true }) => {
-   const { __typename: type, title, id } = useContext(context);
+const TitleBar = ({ limit, canEdit = true, type, title, id }) => {
    const [editedTitle, setEditedTitleState] = useState(title);
    const editedTitleRef = useRef(editedTitle);
 
@@ -66,6 +65,12 @@ const TitleBar = ({ context, limit, canEdit = true }) => {
       setEditedTitleState(data);
       editedTitleRef.current = data;
    };
+
+   /* eslint-disable react-hooks/exhaustive-deps */
+   useEffect(() => {
+      setEditedTitle(title); // This is to handle changes coming in from context. We display the data from state, which was initialized from context, but we need this effect to keep state in line with context
+   }, [title]);
+   /* eslint-enable */
 
    const [setStuffTitle] = useMutation(SET_TITLE_MUTATION, {
       onCompleted: data => {

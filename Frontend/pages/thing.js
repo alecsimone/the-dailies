@@ -61,14 +61,6 @@ const SingleThing = ({ query }) => {
    }, [query.id]);
    /* eslint-enable */
 
-   const {
-      data: subscriptionData,
-      loading: subscriptionLoading
-   } = useSubscription(SINGLE_THING_SUBSCRIPTION, {
-      variables: { id: query.id },
-      skip: query.id === 'new'
-   });
-
    let content;
    let pageTitle;
    if (error) {
@@ -99,6 +91,8 @@ const SingleThing = ({ query }) => {
                <FlexibleThingCard
                   key={`flexibleCard-${query.id}`}
                   expanded
+                  thingData={data.thing}
+                  contentType="full"
                   canEdit={canEdit}
                   linkedPiece={query.piece}
                   linkedComment={query.comment}

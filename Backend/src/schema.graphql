@@ -109,6 +109,7 @@ union Tax = Tag | Stack
 
 type Subscription {
    thing(id: ID!): ThingSubscriptionPayload
+   things(IDs: [ID!]): ThingSubscriptionPayload
    tag: TagSubscriptionPayload
    stack: StackSubscriptionPayload
    me: MemberSubscriptionPayload

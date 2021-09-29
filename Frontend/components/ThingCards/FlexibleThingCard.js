@@ -1,10 +1,10 @@
 import styled, { ThemeContext } from 'styled-components';
-import { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import gql from 'graphql-tag';
 import { useMutation } from '@apollo/react-hooks';
 import Router from 'next/router';
 import TitleBar from '../ThingParts/TitleBar';
-import { ThingContext } from '../../pages/thing';
+import { ThingsContext } from '../ThingsDataProvider';
 import AuthorLink from '../ThingParts/AuthorLink';
 import { setAlpha, setLightness } from '../../styles/functions';
 import TimeAgo from '../TimeAgo';
@@ -26,6 +26,7 @@ import { isVideo } from '../../lib/UrlHandling';
 import ContentIcon from '../Icons/Content';
 import ImageIcon from '../Icons/ImageIcon';
 import LockIcon from '../Icons/Lock';
+import SingleContentSlider from '../ThingParts/SingleContentSlider';
 
 const DELETE_THING_MUTATION = gql`
    mutation DELETE_THING_MUTATION($id: ID!) {
@@ -43,6 +44,33 @@ const StyledFlexibleThingCard = styled.article`
       padding: 1rem 2rem 1.5rem;
    }
    border-radius: 3px 3px 0.5rem 0.5rem;
+   &.small {
+      border-radius: 0;
+      header.flexibleThingHeader {
+         background: ${props => props.theme.midBlack};
+         .headerTop .headerRight {
+            .titleWrapper {
+               h3, textarea, a, a:visited {
+                  font-size: ${props => props.theme.smallText};
+                  color: ${props => setLightness(props.theme.mainText, 70)};
+                  &:hover {
+                     color: ${props => setLightness(props.theme.mainText, 90)};
+                  }
+               }
+            }
+            .toolbar {
+               margin-top: -1.25rem;
+               flex-wrap: wrap;
+               .buttons {
+                  height: ${props => props.theme.miniText};
+                  button.colors {
+                     width: ${props => props.theme.miniText};
+                  }
+               }
+            }
+         }
+      }
+   }
    header.flexibleThingHeader {
       background: ${props => props.theme.midBlack};
       padding: 1rem;
@@ -76,22 +104,25 @@ const StyledFlexibleThingCard = styled.article`
                margin-left: 2rem;
             }
             flex-grow: 1;
-            .titleBarContainer {
-               margin-bottom: 1rem;
-               ${props => props.theme.mobileBreakpoint} {
-                  margin-bottom: 0.75rem;
+            .titleWrapper {
+               h3, textarea, a, a:visited {
+                  font-size: ${props => props.theme.smallHead};
+                  font-weight: 600;
+                  color: ${props => setAlpha(props.theme.mainText, 1)};
+                  padding: 0;
+                  margin: 0;
+                  line-height: 1.4;
+                  width: 100%;
+                  border: none;
                }
-               /*
-               height: calc(
-                  4rem * 1.4
-               ); The titlebar has a font-size of 4rem and a line-height of 1.4. It's dynamically sized as we type in it (and should be automatically sized initially as well), but this is just to set a default size */
-               padding: 0;
-               /* form {
-                  max-height: 100%;
-                  textarea {
-                     max-height: 100%;
+               .titleBarContainer {
+                  margin-bottom: 1rem;
+                  ${props => props.theme.mobileBreakpoint} {
+                     margin-bottom: 0.75rem;
                   }
-               } */
+                  padding: 0;
+
+               }
             }
             .toolbar {
                display: flex;
@@ -252,10 +283,14 @@ const StyledFlexibleThingCard = styled.article`
 `;
 
 const FlexibleThingCard = ({
+   thingData,
    expanded = false,
+   contentType = 'full',
    canEdit,
    linkedPiece,
-   linkedComment
+   linkedComment,
+   titleLink,
+   borderSide = 'top'
 }) => {
    const {
       id,
@@ -265,12 +300,27 @@ const FlexibleThingCard = ({
       title,
       content = [],
       copiedInContent = [],
+      contentOrder,
+      unsavedNewContent,
       comments,
       partOfTags: tags,
+      partOfStacks: stacks,
       featuredImage,
       votes,
-      privacy
-   } = useContext(ThingContext);
+      privacy,
+      individualViewPermissions
+   } = thingData;
+
+   const { addThingID, removeThingID } = useContext(ThingsContext);
+
+   /* eslint-disable react-hooks/exhaustive-deps */
+   useEffect(() => {
+      addThingID(id);
+      return () => {
+         removeThingID(id);
+      };
+   }, []);
+   /* eslint-enable */
 
    // Setting the toggle expansion arrow to the opposite of the expanded value would be confusing if we got a thing which is intended to be expanded, but has no fields with data, e.g. if we are looking at a new thing that doesn't have any content, etc yet. So we check for that here.
    let initialToggleDirection = 'down';
@@ -297,6 +347,7 @@ const FlexibleThingCard = ({
          expanded &&
          featuredImage != null &&
          !disabledCodewords.includes(featuredImage.toLowerCase()),
+      votebar: expanded,
       toggleDirection: initialToggleDirection
    });
 
@@ -387,9 +438,16 @@ const FlexibleThingCard = ({
       featuredImage.includes('instagram.com/p/')
    );
 
+   const styleObj = { borderTop: `0.5rem solid ${highlightColor}` };
+   if (borderSide === 'left') {
+      styleObj.borderLeft = `0.5rem solid ${highlightColor}`;
+      styleObj.borderTop = 'none';
+   }
+
    return (
       <StyledFlexibleThingCard
-         style={{ borderTop: `0.5rem solid ${highlightColor}` }}
+         style={styleObj}
+         className={`flexibleThingCard ${expanded ? 'big' : 'small'}`}
       >
          <header className="flexibleThingHeader">
             <div className="headerTop">
@@ -405,7 +463,23 @@ const FlexibleThingCard = ({
                <div
                   className={`headerRight${showingThumb ? ' withThumb' : ''}`}
                >
-                  <TitleBar context={ThingContext} key={`title-${id}`} />
+                  <div className="titleWrapper">
+                     {!titleLink && (
+                        <TitleBar
+                           key={`title-${id}`}
+                           type="Thing"
+                           title={title}
+                           id={id}
+                        />
+                     )}
+                     {titleLink && (
+                        <a href={`/thing?id=${id}`}>
+                           {title.length > 60
+                              ? `${title.substring(0, 60).trim()}...`
+                              : title}
+                        </a>
+                     )}
+                  </div>
                   <div className="toolbar">
                      <div className="info">
                         <AuthorLink author={author} key={`author-${id}`} />
@@ -445,7 +519,7 @@ const FlexibleThingCard = ({
                            onClick={() =>
                               expansionHandler('comments', !expansion.comments)
                            }
-                           count={comments.length}
+                           count={comments == null ? 0 : comments.length}
                            key={`comments-button-${id}`}
                         />
                         <LockIcon
@@ -481,7 +555,9 @@ const FlexibleThingCard = ({
                   </div>
                </div>
             </div>
-            <VoteBar votes={votes} id={id} type="Thing" />
+            {expansion.votebar && (
+               <VoteBar votes={votes} id={id} type="Thing" />
+            )}
          </header>
          {(expansion.taxes ||
             expansion.content ||
@@ -493,7 +569,8 @@ const FlexibleThingCard = ({
                {expansion.featuredImage && (
                   <FlexibleFeaturedImage
                      canEdit={canEdit}
-                     context={ThingContext}
+                     featuredImage={featuredImage}
+                     id={id}
                      key={`featured-image-${id}`}
                   />
                )}
@@ -508,7 +585,9 @@ const FlexibleThingCard = ({
                {expansion.privacy && (
                   <PrivacyInterface
                      canEdit={canEdit}
-                     context={ThingContext}
+                     id={id}
+                     privacy={privacy}
+                     individualViewPermissions={individualViewPermissions}
                      key={`privacy-${id}`}
                   />
                )}
@@ -516,20 +595,41 @@ const FlexibleThingCard = ({
                   <TaxBox
                      canEdit={canEdit}
                      personal={false}
+                     id={id}
+                     tags={tags}
+                     stacks={stacks}
                      key={`taxes-${id}`}
                   />
                )}
-               {expansion.content && (
+               {expansion.content && contentType === 'full' && (
                   <Content
-                     context={ThingContext}
+                     id={id}
+                     fullThingData={thingData}
+                     contentOrder={contentOrder}
+                     copiedInContent={copiedInContent}
+                     unsavedNewContent={unsavedNewContent}
+                     type="Thing"
                      canEdit={canEdit}
                      linkedPiece={linkedPiece}
                      key={`content-${id}`}
                   />
                )}
+               {expansion.content && contentType === 'single' && (
+                  <SingleContentSlider
+                     canEdit={canEdit}
+                     expanded={expanded}
+                     thingID={id}
+                     content={content}
+                     copiedInContent={copiedInContent}
+                     contentOrder={contentOrder}
+                     unsavedNewContent={unsavedNewContent}
+                  />
+               )}
                {expansion.comments && (
                   <Comments
-                     context={ThingContext}
+                     id={id}
+                     comments={comments}
+                     type="Thing"
                      linkedComment={linkedComment}
                      key={`comments-${id}`}
                   />

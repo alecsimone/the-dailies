@@ -270,7 +270,7 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
    const [touchStartY, setTouchStartY] = useState(0);
    const [touchEnd, setTouchEnd] = useState(0);
 
-   const { lowContrastGrey, midScreenBPWidthRaw } = useContext(ThemeContext);
+   const { lowContrastGrey } = useContext(ThemeContext);
    const { me } = useContext(MemberContext);
 
    let canEdit = false;
@@ -495,19 +495,6 @@ const ThingCard = ({ data, setExpanded, borderSide }) => {
          }}
          onTouchMove={e => {
             e.stopPropagation();
-
-            // Not using this as it loses the native touch scroll function's flick ability, and the native behavior isn't so bad now that I've made this part scroll instead of the whole page
-            // if (translation === 0) {
-            //    const touchWatcher = e.target.closest(
-            //       '.currentContentWrapper'
-            //    );
-            //    const initialScroll = touchWatcher.scrollTop;
-            //    const scrollDistance = touchStartY - e.touches[0].clientY;
-            //    const newScroll = initialScroll + scrollDistance;
-            //    touchWatcher.scrollTop = newScroll;
-            //    setTouchStartY(e.touches[0].clientY);
-            // }
-
             setTouchEnd(e.touches[0].clientX);
          }}
          onTouchEnd={e => {

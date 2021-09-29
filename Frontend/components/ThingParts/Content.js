@@ -13,25 +13,25 @@ import {
    EDIT_CONTENTPIECE_MUTATION,
    REORDER_CONTENT_MUTATION,
    stickifier,
-   orderContent
+   orderContent,
+   sendNewContentPiece
 } from '../../lib/ContentHandling';
 import { SINGLE_THING_QUERY } from '../../pages/thing';
 import { SINGLE_TAX_QUERY } from '../../pages/tag';
 import { MemberContext } from '../Account/MemberProvider';
 import { dynamicallyResizeElement, successFlash } from '../../styles/functions';
 
-const Content = ({ context, canEdit, linkedPiece }) => {
-   // First we'll pull in all our data from context
+const Content = ({ fullThingData, canEdit, linkedPiece }) => {
+   // We need the fullThingData for contentPieces, so we passed it all down. First we're going to destructure the pieces we actually need out of it
    const {
       content = [],
       contentOrder,
       copiedInContent,
       id,
       unsavedNewContent,
-      __typename: type = 'Thing'
-   } = useContext(context);
-
-   // Then we'll pull in the member data so we can get default expansion from it
+      type
+   } = fullThingData;
+   // First we pull in the member data so we can get default expansion from it
    const { me } = useContext(MemberContext);
    let defaultExpansion = false;
    if (me != null) {
@@ -170,74 +170,17 @@ const Content = ({ context, canEdit, linkedPiece }) => {
       };
    }, [stickifierHandler]);
 
-   const sendNewContentPiece = async () => {
-      const inputElement = inputRef.current;
-      const newContentPiece = inputElement.value;
-      if (newContentPiece.trim() === '') {
-         alert(
-            "You can't add a blank content piece. Please write something first."
-         );
-         return;
-      }
-      inputElement.value = '';
-      content.push({
-         __typename: 'ContentPiece',
-         content: newContentPiece,
-         id: 'temporaryID',
-         comments: []
-      });
-      // setFullThingToLoading(id);
-      dynamicallyResizeElement(inputRef.current);
-      await addContentPiece({
-         variables: {
-            content: newContentPiece,
-            id,
-            type
-         },
-         optimisticResponse: {
-            __typename: 'Mutation',
-            addContentPiece: {
-               __typename: type,
-               id,
-               content,
-               comments: []
-            }
-         },
-         update: (client, { data }) => {
-            if (data.__typename == null) {
-               // Our optimistic response includes a typename for the mutation, but the server's data doesn't
-               let query;
-               switch (data.addContentPiece.__typename) {
-                  case 'Thing':
-                     query = SINGLE_THING_QUERY;
-                     break;
-                  case 'Tag':
-                     query = SINGLE_TAX_QUERY;
-                     break;
-                  case 'Stack':
-                     query = SINGLE_TAX_QUERY;
-                     break;
-                  default:
-                     console.log('Unknown stuff type');
-                     return;
-               }
-               const oldData = client.readQuery({
-                  query,
-                  variables: { id }
-               });
-               oldData[data.addContentPiece.__typename.toLowerCase()].content =
-                  data.addContentPiece.content;
-               client.writeQuery({
-                  query,
-                  variables: { id },
-                  data: oldData
-               });
-            }
-         }
-      }).catch(err => {
-         alert(err.message);
-      });
-      inputElement.value = ''; // We need to clear the input after adding it
+   const sendNewContentPieceHandler = () => {
+      sendNewContentPiece(
+         inputRef,
+         content,
+         dynamicallyResizeElement,
+         addContentPiece,
+         id,
+         type,
+         SINGLE_THING_QUERY,
+         SINGLE_TAX_QUERY
+      );
    };
 
    const deletePiece = async contentPieceID => {
@@ -351,7 +294,7 @@ const Content = ({ context, canEdit, linkedPiece }) => {
                   stickifier={stickifier}
                   stickifierData={stickingData}
                   isCopied={!isOriginalContent}
-                  context={context}
+                  fullThingData={fullThingData}
                   onThing={contentPiece.onThing}
                   copiedToThings={contentPiece.copiedToThings}
                   votes={contentPiece.votes}
@@ -424,7 +367,7 @@ const Content = ({ context, canEdit, linkedPiece }) => {
             {canEdit && (
                <RichTextArea
                   text=""
-                  postText={sendNewContentPiece}
+                  postText={sendNewContentPieceHandler}
                   placeholder="Add content"
                   buttonText="add"
                   id={`${id}-content`}

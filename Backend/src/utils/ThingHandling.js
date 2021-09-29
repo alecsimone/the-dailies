@@ -16,6 +16,11 @@ function publishStuffUpdate(type, stuff, ctx) {
    });
    if (type === 'Thing') {
       publishMeUpdate(ctx);
+      ctx.pubsub.publish('things', {
+         things: {
+            node: stuff
+         }
+      });
    }
 }
 

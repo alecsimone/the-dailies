@@ -123,10 +123,7 @@ const ADD_COMMENT_MUTATION = gql`
 `;
 export { ADD_COMMENT_MUTATION };
 
-const Comments = ({ context, linkedComment }) => {
-   // Which kind of context we're using, i.e. what type of stuff this is, comes through props. Everything else gets pulled out of that.
-   const { comments, id, __typename: type } = useContext(context);
-
+const Comments = ({ id, comments, type, linkedComment }) => {
    const { me } = useContext(MemberContext);
 
    // This ref will be passed down to the RichTextArea that allows us to comment on the thing, and we'll use it to get the value for our sendNewComment mutation

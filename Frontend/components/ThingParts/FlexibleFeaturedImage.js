@@ -71,9 +71,7 @@ const StyledFlexibleFeaturedImage = styled.div`
    }
 `;
 
-const FlexibleFeaturedImage = ({ canEdit, context }) => {
-   const { featuredImage, id } = useContext(context);
-
+const FlexibleFeaturedImage = ({ canEdit, featuredImage, id }) => {
    const [editingUrl, setEditingUrl] = useState(
       featuredImage == null ||
          disabledCodewords.includes(featuredImage.toLowerCase())

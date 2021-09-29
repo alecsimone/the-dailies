@@ -1,7 +1,7 @@
 import gql from 'graphql-tag';
 import { useRef, useState, useEffect } from 'react';
 import Router from 'next/router';
-import { thingCardFields } from './CardInterfaces';
+import { fullThingFields } from './CardInterfaces';
 
 const disabledCodewords = ['disabled', 'disable', 'false', 'no', 'off', 'x'];
 export { disabledCodewords };
@@ -19,7 +19,7 @@ export { checkForNewThingRedirect };
 const ALL_THINGS_QUERY = gql`
    query ALL_THINGS_QUERY($cursor: String) {
       allThings(cursor: $cursor) {
-         ${thingCardFields}
+         ${fullThingFields}
       }
    }
 `;

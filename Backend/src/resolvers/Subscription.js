@@ -7,6 +7,12 @@ const Subscription = {
          (payload, variables) => variables.id == payload.thing.node.id
       )
    },
+   things: {
+      subscribe: withFilter(
+         (parent, { IDs }, ctx, info) => ctx.pubsub.asyncIterator('things'),
+         (payload, variables) => variables.IDs.includes(payload.things.node.id)
+      )
+   },
    tag: {
       subscribe: (parent, args, ctx, info) => ctx.pubsub.asyncIterator('tag')
    },

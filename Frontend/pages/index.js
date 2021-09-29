@@ -20,12 +20,13 @@ const StyledHomepage = styled.section`
       padding: 2rem 0;
       overflow: hidden;
       ${props => props.theme.scroll};
-      .things .thingCard {
+      .things .flexibleThingCard {
          margin: 0 auto 2rem;
+         max-width: 1200px;
          ${props => props.theme.mobileBreakpoint} {
             margin-bottom: 4rem;
          }
-         .thingCard {
+         .flexibleThingCard {
             margin: 2rem 0;
          }
       }

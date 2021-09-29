@@ -1,5 +1,5 @@
 import gql from 'graphql-tag';
-import { useQuery, useSubscription } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/react-hooks';
 import { useContext } from 'react';
 import Head from 'next/head';
 import PropTypes from 'prop-types';

@@ -6,6 +6,8 @@ import { ThemeContext } from 'styled-components';
 import SmallThingCard from '../ThingCards/SmallThingCard';
 import ThingCard from '../ThingCards/ThingCard';
 import { setAlpha } from '../../styles/functions';
+import FlexibleThingCard from '../ThingCards/FlexibleThingCard';
+import MemberProvider, { MemberContext } from '../Account/MemberProvider';
 
 const StyledThings = styled.div`
    margin: auto;
@@ -33,11 +35,13 @@ const StyledThings = styled.div`
          box-shadow: none;
          border-bottom: 2px solid
             ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
-         &:first-child {
-            margin-top: 0;
+         &.big {
+            &:first-child {
+               margin-top: 0;
+            }
          }
       }
-      .regularThingCard {
+      .flexibleThingCard.big {
          margin: 2rem auto;
       }
    }
@@ -51,20 +55,40 @@ const Things = ({ things, displayType, cardSize, noPic, borderSide }) => {
       massiveScreenBPWidthRaw
    } = useContext(ThemeContext);
 
+   const { me } = useContext(MemberContext);
+
    const thingCards = things.map(thing => {
-      if (cardSize === 'regular') {
-         return (
-            <ThingCard data={thing} key={thing.id} borderSide={borderSide} />
-         );
+      let canEdit = false;
+      if (thing.author.id === me.id) {
+         canEdit = true;
+      }
+      if (['Admin', 'Editor', 'Moderator'].includes(me.role)) {
+         canEdit = true;
       }
       return (
-         <SmallThingCard
-            data={thing}
+         <FlexibleThingCard
             key={thing.id}
-            noPic={noPic}
+            expanded={cardSize === 'regular'}
+            thingData={thing}
+            contentType="single"
+            canEdit={canEdit}
+            titleLink
             borderSide={borderSide}
          />
       );
+      // if (cardSize === 'regular') {
+      //    return (
+      //       <ThingCard data={thing} key={thing.id} borderSide={borderSide} />
+      //    );
+      // }
+      // return (
+      //    <SmallThingCard
+      //       data={thing}
+      //       key={thing.id}
+      //       noPic={noPic}
+      //       borderSide={borderSide}
+      //    />
+      // );
    });
    if (displayType === 'grid') {
       return (

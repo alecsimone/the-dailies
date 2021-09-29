@@ -23,6 +23,7 @@ import {
    bigScreenBreakpointPx,
    massiveScreenBreakpointPx
 } from '../styles/functions';
+import ThingsDataProvider from './ThingsDataProvider';
 
 const lightBlack = 'hsl(210, 20%, 8%)';
 const deepBlack = 'hsl(30, 1%, 1%)';
@@ -722,44 +723,46 @@ const Page = ({ children, pageProps }) => {
 
    return (
       <MemberProvider isHome={isHome}>
-         <ThemeProvider theme={theme}>
-            <ModalProvider
-               thingsSidebarIsOpen={thingsSidebarIsOpen}
-               setThingsSidebarIsOpen={setThingsSidebarIsOpen}
-               navSidebarIsOpen={navSidebarIsOpen}
-               setNavSidebarIsOpen={setNavSidebarIsOpen}
-               isHome={isHome}
-            >
-               <StyledPage id="page">
-                  <Meta />
-                  <Header pageProps={pageProps} />
-                  <>
-                     <GlobalStyle />
-                     <section className="threeColumns">
-                        <NavSidebar />
-                        <div className="mainSection">{children}</div>
-                        <div
-                           className={
-                              thingsSidebarIsOpen
-                                 ? 'myThingsBar visible'
-                                 : 'myThingsBar hidden'
-                           }
-                        >
-                           <MyThings
-                              setShowingSidebar={setThingsSidebarIsOpen}
-                              scrollingSelector=".myThingsBar"
-                              borderSide="left"
-                           />
-                        </div>
-                     </section>
-                     <Modal />
-                     <HeartPopUp />
-                  </>
-                  <BottomBar />
-               </StyledPage>
-               <ToastContainer className="dailiesStyle" />
-            </ModalProvider>
-         </ThemeProvider>
+         <ThingsDataProvider>
+            <ThemeProvider theme={theme}>
+               <ModalProvider
+                  thingsSidebarIsOpen={thingsSidebarIsOpen}
+                  setThingsSidebarIsOpen={setThingsSidebarIsOpen}
+                  navSidebarIsOpen={navSidebarIsOpen}
+                  setNavSidebarIsOpen={setNavSidebarIsOpen}
+                  isHome={isHome}
+               >
+                  <StyledPage id="page">
+                     <Meta />
+                     <Header pageProps={pageProps} />
+                     <>
+                        <GlobalStyle />
+                        <section className="threeColumns">
+                           <NavSidebar />
+                           <div className="mainSection">{children}</div>
+                           <div
+                              className={
+                                 thingsSidebarIsOpen
+                                    ? 'myThingsBar visible'
+                                    : 'myThingsBar hidden'
+                              }
+                           >
+                              <MyThings
+                                 setShowingSidebar={setThingsSidebarIsOpen}
+                                 scrollingSelector=".myThingsBar"
+                                 borderSide="left"
+                              />
+                           </div>
+                        </section>
+                        <Modal />
+                        <HeartPopUp />
+                     </>
+                     <BottomBar />
+                  </StyledPage>
+                  <ToastContainer className="dailiesStyle" />
+               </ModalProvider>
+            </ThemeProvider>
+         </ThingsDataProvider>
       </MemberProvider>
    );
 };
