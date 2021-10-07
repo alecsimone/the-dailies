@@ -23,17 +23,20 @@ import LinkIcon from './Icons/Link';
 const StyledWrapper = styled.div`
    width: 100%;
    max-width: 900px;
-   ..stylingButtonsPlaceholder {
-      position: relative;
+   .stylingButtonsPlaceholder,
+   .stylingButtonsBar {
       width: 100%;
+   }
+   .stylingButtonsPlaceholder {
+      position: relative;
       height: 0px;
    }
    .stylingButtonsBar {
       display: flex;
       justify-content: space-between;
-      margin-bottom: 1rem;
       background: ${props => props.theme.midBlack};
       z-index: 2;
+      margin-bottom: 1rem;
       button.stylingButton {
          flex-grow: 1;
          margin: 0 0.5rem;

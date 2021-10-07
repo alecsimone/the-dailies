@@ -10,11 +10,12 @@ const StyledContent = styled.section`
       padding-top: 0;
    }
    .contentSectionWrapper {
-      padding: 1rem;
+      padding: 0;
       background: ${props => props.theme.midBlack};
       border-top: 1px solid
          ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
       ${props => props.theme.mobileBreakpoint} {
+         padding: 1rem;
          border: 1px solid
             ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
          border-radius: 0.5rem;
@@ -134,9 +135,11 @@ const StyledContent = styled.section`
                         .theActualContent {
                            max-width: 900px;
                            width: 100%;
+                           position: relative;
                            form {
                               margin: 0 auto;
                            }
+                           padding: 0 1rem;
                            ${props => props.theme.midScreenBreakpoint} {
                               padding: 3rem 0;
                            }
@@ -380,13 +383,6 @@ const StyledContent = styled.section`
                   text-align: center;
                   border-right: 1px solid
                      ${props => setAlpha(props.theme.lowContrastGrey, 0.2)};
-                  &:first-child {
-                     border-left: 1px solid
-                        ${props => setAlpha(props.theme.lowContrastGrey, 0.2)};
-                     ${props => props.theme.midScreenBreakpoint} {
-                        border-left: none;
-                     }
-                  }
                   cursor: pointer;
                   &:hover {
                      background: ${props =>

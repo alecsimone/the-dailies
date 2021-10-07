@@ -178,7 +178,6 @@ const FlexibleContent = ({
 
    // Add the stickifier listeners
    useLayoutEffect(() => {
-      console.log('The stickifier data effect is running!');
       // First we'll collect all the content blocks. If there aren't any, we don't have anything to stick to, so we can return without doing anything (i.e. adding the listener)
       const blocks = thisComponentRef.current.querySelectorAll('.contentBlock');
       if (blocks.length === 0) return;
@@ -212,20 +211,25 @@ const FlexibleContent = ({
       // We need to get the number of pixels between the top of the actual content and the top of the content block, and then we need to account for any padding within the actual content
       // First we figure out the distance between the two tops
       const theActualContent = firstBlock.querySelector('.theActualContent');
-      const actualContentRect = theActualContent.getBoundingClientRect();
-      const topDifference = firstBlockRect.top - actualContentRect.top;
+      let topDifference = 0;
+      let blockPaddingTop = 0;
+      if (theActualContent != null) {
+         const actualContentRect = theActualContent.getBoundingClientRect();
+         topDifference = firstBlockRect.top - actualContentRect.top;
 
-      // Then we find the padding on actual content
-      const actualContentStyle = window.getComputedStyle(theActualContent);
-      const actualContentPaddingTopString = actualContentStyle.paddingTop;
-      const actualContentPaddingTopRaw = actualContentPaddingTopString.substring(
-         0,
-         actualContentPaddingTopString.length - 2
-      );
-      const blockPaddingTop = parseInt(actualContentPaddingTopRaw);
+         // Then we find the padding on actual content
+         const actualContentStyle = window.getComputedStyle(theActualContent);
+         const actualContentPaddingTopString = actualContentStyle.paddingTop;
+         const actualContentPaddingTopRaw = actualContentPaddingTopString.substring(
+            0,
+            actualContentPaddingTopString.length - 2
+         );
+         blockPaddingTop = parseInt(actualContentPaddingTopRaw);
+      }
 
       // And we put that combined value into our stickingData
-      stickingData.current.blockPaddingTop = blockPaddingTop + topDifference;
+      stickingData.current.blockPaddingTop = blockPaddingTop - topDifference;
+      stickingData.current.topDifference = topDifference;
 
       // Then we need to get the total offset of the firstBlock by tallying up the offsetTops of all its offsetParents
       let parentOffset = 0;
