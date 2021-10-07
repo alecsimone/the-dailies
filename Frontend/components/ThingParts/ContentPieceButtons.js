@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { useContext } from 'react';
+import { useState, useContext } from 'react';
 import { ThemeContext } from 'styled-components';
 import { useMutation } from '@apollo/react-hooks';
 import LinkIcon from '../Icons/Link';
@@ -15,6 +14,7 @@ import {
    changeContentButKeepInFrame,
    UNLINK_CONTENTPIECE_MUTATION
 } from '../../lib/ContentHandling';
+import stickifier from '../../lib/stickifier';
 
 const ContentPieceButtons = ({
    canEdit,
@@ -31,7 +31,6 @@ const ContentPieceButtons = ({
    isCopied,
    fullThingData,
    deleteContentPiece,
-   stickifier,
    stickifierData,
    reordering,
    setReordering,
