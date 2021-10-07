@@ -40,6 +40,44 @@ const StyledContent = styled.section`
          &.highlighted {
             background: ${props => setAlpha(props.theme.lowContrastGrey, 0.2)};
          }
+         &.clickToShowComments {
+            .contentArea
+               .contentPiece
+               .overflowWrapper
+               .contentAndCommentContainer {
+               .commentsWrapper {
+                  width: 100%;
+               }
+               .contentWrapper {
+                  max-width: 100%;
+                  min-width: 100%;
+                  border-right: none;
+                  .theActualContent {
+                     width: 49%;
+                     ${props => props.theme.mobileBreakpoint} {
+                        width: 100%;
+                     }
+                  }
+               }
+            }
+            .newcontentButtons {
+               width: 100%;
+               ${props => props.theme.mobileBreakpoint} {
+                  width: calc(100% + 6rem);
+               }
+               margin-right: -3rem;
+               .buttonsContainer {
+                  .buttonWrapper {
+                     &:last-child {
+                        border-right: none;
+                     }
+                  }
+                  .votebar .middle {
+                     border-right: none;
+                  }
+               }
+            }
+         }
          .contentArea {
             width: 100%;
             padding-bottom: 1rem;
@@ -138,6 +176,7 @@ const StyledContent = styled.section`
                         }
                         .commentsArea {
                            width: calc(100% - 4rem);
+                           margin-top: 2rem;
                            ${props => props.theme.midScreenBreakpoint} {
                               width: 100%;
                            }
@@ -480,11 +519,66 @@ const StyledContent = styled.section`
             }
          }
       }
+      .sliderAndShowFormWrapper {
+         .contentSlider {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 1rem;
+            --arrow-width: ${props => props.theme.bigText};
+            svg.arrow {
+               width: var(--arrow-width);
+               margin: 0;
+               cursor: pointer;
+               rect {
+                  fill: ${props => setLightness(props.theme.mainText, 70)};
+               }
+               &:hover {
+                  rect {
+                     fill: ${props => props.theme.mainText};
+                  }
+               }
+            }
+            span.sliderText {
+               &.noLeft {
+                  margin-left: var(--arrow-width);
+               }
+               &.noRight {
+                  margin-right: var(--arrow-width);
+               }
+            }
+         }
+      }
+      .expansionControls {
+         display: flex;
+         align-items: center;
+         justify-content: center;
+         margin: 2rem auto;
+         svg {
+            opacity: 0.7;
+            cursor: pointer;
+            &:hover {
+               opacity: 0.9;
+            }
+         }
+         svg.arrow {
+            width: ${props => props.theme.smallHead};
+            margin-left: 2rem;
+            margin-right: -1rem; /* because the arrow icon doesn't fill up its container, this helps everything look properly centered */
+         }
+         svg.x {
+            width: ${props => props.theme.smallText};
+            transform: rotate(45deg);
+            &.collapse {
+               transform: rotate(0);
+            }
+         }
+      }
       button.reorder {
          display: block;
          position: relative;
          z-index: 0;
-         margin: 0 auto 1rem;
+         margin: 2rem auto;
          opacity: 0.4;
          font-weight: 300;
          &:hover {
@@ -511,7 +605,7 @@ const StyledContent = styled.section`
       display: flex;
       flex-wrap: wrap;
       max-width: 900px;
-      margin: 4rem auto 0;
+      margin: 3rem auto 0;
       .postButtonWrapper {
          width: 100%;
          /* text-align: right; */

@@ -1,53 +1,51 @@
-import gql from 'graphql-tag';
-import React, { useState, useContext, useRef } from 'react';
-import Link from 'next/link';
 import { useMutation } from '@apollo/react-hooks';
-import PropTypes from 'prop-types';
+import React, { useContext, useRef, useState } from 'react';
 import { ThemeContext } from 'styled-components';
-import RichText from '../RichText';
-import RichTextArea from '../RichTextArea';
-import ContentPieceComments from './ContentPieceComments';
-import { minimumTranslationDistance } from '../../config';
-import { ADD_COMMENT_MUTATION } from './Comments';
-import { SINGLE_THING_QUERY } from '../../pages/thing';
-import { MemberContext } from '../Account/MemberProvider';
+import Link from 'next/link';
+import { minimumTranslationDistance } from '../../../config';
 import {
-   UNLINK_CONTENTPIECE_MUTATION,
-   STORE_UNSAVED_CONTENT_PIECE_MUTATION,
-   CLEAR_UNSAVED_CONTENT_PIECE_MUTATION,
    changeContentButKeepInFrame,
-   editContentButKeepInFrame
-} from '../../lib/ContentHandling';
-import stickifier from '../../lib/stickifier';
+   CLEAR_UNSAVED_CONTENT_PIECE_MUTATION,
+   editContentButKeepInFrame,
+   STORE_UNSAVED_CONTENT_PIECE_MUTATION
+} from '../../../lib/ContentHandling';
+import stickifier from '../../../lib/stickifier';
+import { ALL_THINGS_QUERY } from '../../../lib/ThingHandling';
+import { SINGLE_THING_QUERY } from '../../../pages/thing';
 import {
    dynamicallyResizeElement,
    getOneRem,
    successFlash
-} from '../../styles/functions';
-import VoteBar, { VOTE_MUTATION } from './VoteBar';
-import { ALL_THINGS_QUERY } from '../../lib/ThingHandling';
-import { ModalContext } from '../ModalProvider';
-import Login from '../Account/Login';
-import ContentPieceButtons from './ContentPieceButtons';
+} from '../../../styles/functions';
+import { MemberContext } from '../../Account/MemberProvider';
+import { ModalContext } from '../../ModalProvider';
+import RichText from '../../RichText';
+import RichTextArea from '../../RichTextArea';
+import { ADD_COMMENT_MUTATION } from '../Comments';
+import ContentPieceComment from '../ContentPieceComments';
+import { VOTE_MUTATION } from '../VoteBar';
+import Login from '../../Account/Login';
+import ContentPieceButtons from '../ContentPieceButtons';
 
-const ContentPiece = ({
-   id,
-   thingID,
-   rawContentString,
-   unsavedContent,
-   comments,
-   deleteContentPiece,
-   editContentPiece,
+const FlexibleContentPiece = ({
+   clickToShowComments,
    canEdit,
-   setReordering,
-   reordering,
-   highlighted,
-   isCopied,
-   fullThingData,
-   onThing,
-   copiedToThings,
+   pieceID,
+   thingID,
    votes,
+   unsavedContent,
+   comments = [],
+   rawContentString,
+   onThing,
+   isCopied,
+   copiedToThings,
    stickifierData,
+   editContentPiece,
+   deleteContentPiece,
+   reordering,
+   setReordering,
+   highlighted,
+   fullThingData,
    zIndex
 }) => {
    const { me } = useContext(MemberContext);
@@ -58,7 +56,7 @@ const ContentPiece = ({
 
    const commentInputRef = useRef(null); // This ref will be passed down to the RichTextArea that allows us to comment on the content piece, and we'll use it to get the value for our editContentPiece mutation
 
-   const [showingOtherPlaces, setShowingOtherPlaces] = useState(false);
+   const [showingOtherPlaces, setShowingOtherPlaces] = useState(false); // Will handle showing the info on how many other places the content piece appears in if it's been copied to other things
 
    const [touchStart, setTouchStart] = useState(0);
    const [touchEnd, setTouchEnd] = useState(0);
@@ -75,7 +73,7 @@ const ContentPiece = ({
 
    const { setHeartPosition, setFullHeart, setContent } = useContext(
       ModalContext
-   );
+   ); // These are for showing a little heart icon where you tapped when you double tap a content piece
 
    const contentContainerRef = useRef(null);
 
@@ -91,7 +89,7 @@ const ContentPiece = ({
       }
 
       setEditableHandler(false);
-      await editContentPiece(id, editedContent);
+      await editContentPiece(pieceID, editedContent);
       successFlash(contentContainerRef.current);
    };
 
@@ -106,7 +104,7 @@ const ContentPiece = ({
       CLEAR_UNSAVED_CONTENT_PIECE_MUTATION,
       {
          variables: {
-            pieceId: id,
+            pieceId: pieceID,
             thingId: thingID
          },
          onError: err => alert(err.message)
@@ -120,7 +118,7 @@ const ContentPiece = ({
    const [voters, setVoters] = useState(votes || []);
 
    let meVotedCheck = false;
-   let computedScoreCheck = 0;
+   let computedScoreCheck = 0; // We're going to figure out the current score of the content piece by tallying up all its votes
    voters.forEach(({ voter: { id: voterID }, value }) => {
       if (me && voterID === me.id) {
          meVotedCheck = true;
@@ -133,14 +131,13 @@ const ContentPiece = ({
 
    const [vote] = useMutation(VOTE_MUTATION, {
       variables: {
-         id,
+         id: pieceID,
          type: 'ContentPiece',
          isFreshVote: !meVoted
       },
-      refetchQueries: [{ query: ALL_THINGS_QUERY }],
       onError: err => alert(err.message),
       context: {
-         debounceKey: id
+         debounceKey: pieceID
       }
    });
 
@@ -175,14 +172,14 @@ const ContentPiece = ({
       await addComment({
          variables: {
             comment: commentText,
-            id,
+            id: pieceID,
             type: 'ContentPiece'
          },
          optimisticResponse: {
             __typename: 'Mutation',
             addComment: {
                __typename: 'ContentPiece',
-               id,
+               id: pieceID,
                comments
             }
          },
@@ -221,7 +218,7 @@ const ContentPiece = ({
       await storeUnsavedContentPieceChanges({
          variables: {
             thingId: originalThingId,
-            pieceId: id,
+            pieceId: pieceID,
             unsavedContent: e.target.value
          }
       }).catch(err => {
@@ -231,21 +228,24 @@ const ContentPiece = ({
 
    let contentElement;
    if (!editable) {
-      contentElement = <RichText text={rawContentString} key={id} />;
+      contentElement = <RichText text={rawContentString} key={pieceID} />;
    } else {
       contentElement = (
          <RichTextArea
             text={rawContentString}
             postText={postContent}
             rawUpdateText={async () => {
-               await editContentPiece(id, editContentInputRef.current.value);
+               await editContentPiece(
+                  pieceID,
+                  editContentInputRef.current.value
+               );
                successFlash(contentContainerRef.current);
             }}
             setEditable={setEditableHandler}
             placeholder="Add content"
             buttonText="save edit"
-            id={id}
-            key={id}
+            id={pieceID}
+            key={pieceID}
             inputRef={editContentInputRef}
             unsavedChangesHandler={unsavedChangesHandler}
          />
@@ -253,17 +253,18 @@ const ContentPiece = ({
    }
 
    const commentsElement = (
-      <ContentPieceComments
+      <ContentPieceComment
+         defaultView={clickToShowComments ? 'expanded' : 'collapsed'}
          comments={comments}
-         id={id}
-         key={id}
+         id={pieceID}
+         key={pieceID}
          input={
             <RichTextArea
                text=""
                postText={sendNewComment}
                placeholder="Add comment"
                buttonText="comment"
-               id={id}
+               id={pieceID}
                inputRef={commentInputRef}
             />
          }
@@ -306,7 +307,7 @@ const ContentPiece = ({
             <Link
                href={{
                   pathname: '/thing',
-                  query: { id: onThing.id, piece: id }
+                  query: { id: onThing.id, piece: pieceID }
                }}
             >
                <a>{onThing.title}</a>
@@ -317,7 +318,7 @@ const ContentPiece = ({
    }
    if (copiedToThings != null && copiedToThings.length > 0) {
       const otherThingsArray = copiedToThings.filter(
-         thing => thing.id != thingID
+         thing => thing.id !== thingID
       );
       if (otherThingsArray.length > 0) {
          const otherPlaces = otherThingsArray.map(thing => (
@@ -325,7 +326,7 @@ const ContentPiece = ({
                <Link
                   href={{
                      pathname: '/thing',
-                     query: { id: thing.id, piece: id }
+                     query: { id: thing.id, piece: pieceID }
                   }}
                >
                   <a>{thing.title}</a>
@@ -362,66 +363,124 @@ const ContentPiece = ({
    const contentArea = (
       <div className="overflowWrapper">
          <div className="contentAndCommentContainer">
-            <div
-               className={`contentWrapper${
-                  translation === 0 && showingComments
-                     ? ' doesNotGiveSize'
-                     : ' givesSize'
-               }`}
-               style={{
-                  transform: `translateX(${finalTranslation})`
-               }}
-               ref={contentWrapperRef}
-            >
-               <div className="theActualContent">
-                  {contentElement}
-                  {canEdit &&
-                     unsavedNewContent != null &&
-                     unsavedNewContent !== '' &&
-                     unsavedNewContent !== rawContentString && (
-                        <div className="unsavedContent">
-                           <h4>Unsaved Changes</h4>
-                           <div className="visibilityInfo">
-                              (visible only to you)
+            {(!clickToShowComments || !showingComments) && (
+               <div
+                  className={`contentWrapper${
+                     translation === 0 && showingComments
+                        ? ' doesNotGiveSize'
+                        : ' givesSize'
+                  }`}
+                  style={{
+                     transform: `translateX(${finalTranslation})`
+                  }}
+                  ref={contentWrapperRef}
+               >
+                  <div className="theActualContent">
+                     {contentElement}
+                     {canEdit &&
+                        unsavedNewContent != null &&
+                        unsavedNewContent !== '' &&
+                        unsavedNewContent !== rawContentString && (
+                           <div className="unsavedContent">
+                              <h4>Unsaved Changes</h4>
+                              <div className="visibilityInfo">
+                                 (visible only to you)
+                              </div>
+                              {unsavedNewContent}
+                              <button
+                                 onClick={() => {
+                                    if (
+                                       !confirm(
+                                          'Discard these unsaved changes?'
+                                       )
+                                    )
+                                       return;
+                                    clearUnsavedContentPieceChanges();
+                                    setUnsavedNewContent(null);
+                                 }}
+                              >
+                                 discard
+                              </button>
                            </div>
-                           {unsavedNewContent}
-                           <button
-                              onClick={() => {
-                                 if (!confirm('Discard these unsaved changes?'))
-                                    return;
-                                 clearUnsavedContentPieceChanges();
-                                 setUnsavedNewContent(null);
-                              }}
-                           >
-                              discard
-                           </button>
-                        </div>
-                     )}
+                        )}
+                  </div>
+                  {otherLocations}
                </div>
-               {otherLocations}
-            </div>
-            <div
-               className={`commentsWrapper${
-                  translation === 0 && !showingComments
-                     ? ' doesNotGiveSize'
-                     : ' givesSize'
-               }${
-                  (comments.length > 0 &&
-                     !hasShownComments &&
-                     fullThingData.__typename !== 'Tag') ||
-                  showingComments
-                     ? ' withComments'
-                     : ' noComments'
-               }`}
-               style={{
-                  transform: `translateX(${finalTranslation})`
-               }}
-            >
-               {commentsElement}
-            </div>
+            )}
+            {(!clickToShowComments || showingComments) && (
+               <div
+                  className={`commentsWrapper${
+                     translation === 0 && !showingComments
+                        ? ' doesNotGiveSize'
+                        : ' givesSize'
+                  }${
+                     (comments.length > 0 && !hasShownComments) ||
+                     showingComments
+                        ? ' withComments'
+                        : ' noComments'
+                  }`}
+                  style={{
+                     transform: `translateX(${finalTranslation})`
+                  }}
+               >
+                  {commentsElement}
+               </div>
+            )}
          </div>
       </div>
    );
+
+   const secondMiddleOrRightClickListener = e => {
+      if (e.button === 1 || e.button === 2) {
+         setEditableHandler(true);
+      }
+   };
+
+   const doubleClickListener = e => {
+      if (e.button === 0) {
+         if (me == null) {
+            setContent(<Login redirect={false} />);
+            return;
+         }
+
+         e.preventDefault();
+
+         let newVotes;
+         let newScore;
+         if (meVoted) {
+            newVotes = voters.filter(voteData => voteData.voter.id !== me.id);
+            newScore = computedScore - me.rep;
+         } else {
+            newVotes = [
+               ...voters,
+               {
+                  __typename: 'Vote',
+                  id: 'newVote',
+                  value: me.rep,
+                  voter: me
+               }
+            ];
+            newScore = computedScore + me.rep;
+         }
+
+         setHeartPosition([e.clientX, e.clientY]);
+         setFullHeart(!meVoted);
+
+         vote({
+            optimisticResponse: {
+               __typename: 'Mutation',
+               vote: {
+                  __typename: 'ContentPiece',
+                  id: pieceID,
+                  votes: newVotes
+               }
+            }
+         });
+         setVoters(newVotes);
+         setComputedScore(newScore);
+         setMeVoted(!meVoted);
+      }
+   };
 
    const handleMouseDown = e => {
       if (editable || reordering) return;
@@ -475,62 +534,12 @@ const ContentPiece = ({
       }
    };
 
-   const secondMiddleOrRightClickListener = e => {
-      if (e.button === 1 || e.button === 2) {
-         setEditableHandler(true);
-      }
-   };
-
-   const doubleClickListener = e => {
-      if (e.button === 0) {
-         if (me == null) {
-            setContent(<Login redirect={false} />);
-            return;
-         }
-
-         e.preventDefault();
-
-         let newVotes;
-         let newScore;
-         if (meVoted) {
-            newVotes = voters.filter(voteData => voteData.voter.id !== me.id);
-            newScore = computedScore - me.rep;
-         } else {
-            newVotes = [
-               ...voters,
-               {
-                  __typename: 'Vote',
-                  id: 'newVote',
-                  value: me.rep,
-                  voter: me
-               }
-            ];
-            newScore = computedScore + me.rep;
-         }
-
-         setHeartPosition([e.clientX, e.clientY]);
-         setFullHeart(!meVoted);
-
-         vote({
-            optimisticResponse: {
-               __typename: 'Mutation',
-               vote: {
-                  __typename: 'ContentPiece',
-                  id,
-                  votes: newVotes
-               }
-            }
-         });
-         setVoters(newVotes);
-         setComputedScore(newScore);
-         setMeVoted(!meVoted);
-      }
-   };
-
    return (
       <div
-         className={highlighted ? 'contentBlock highlighted' : 'contentBlock'}
-         key={id}
+         className={`contentBlock${highlighted ? ' highlighted' : ''}${
+            clickToShowComments ? ' clickToShowComments' : ''
+         }`}
+         key={pieceID}
          onTouchStart={e => {
             setTouchStart(e.touches[0].clientX);
             setTouchEnd(e.touches[0].clientX);
@@ -546,7 +555,6 @@ const ContentPiece = ({
                   scrollingContainer,
                   () => setShowingComments(true)
                );
-               // setShowingComments(true);
                setHasShownComments(true);
             }
             if (touchEnd - touchStart > 100) {
@@ -558,7 +566,6 @@ const ContentPiece = ({
                   scrollingContainer,
                   () => setShowingComments(false)
                );
-               // setShowingComments(false);
                setHasShownComments(true);
             }
             setTouchStart(0);
@@ -570,7 +577,7 @@ const ContentPiece = ({
          <div className="contentArea">
             <div
                className={canEdit ? 'contentPiece editable' : 'contentPiece'}
-               key={id}
+               key={[pieceID]}
                onMouseDown={handleMouseDown}
             >
                {contentArea}
@@ -588,15 +595,15 @@ const ContentPiece = ({
                hasShownComments={hasShownComments}
                setHasShownComments={setHasShownComments}
                commentCount={comments.length}
+               clickToShowComments={clickToShowComments}
                showingComments={showingComments}
                setShowingComments={setShowingComments}
                thingID={thingID}
-               pieceID={id}
+               pieceID={pieceID}
                voters={voters}
                isCopied={isCopied}
                fullThingData={fullThingData}
                deleteContentPiece={deleteContentPiece}
-               stickifier={stickifier}
                stickifierData={stickifierData}
                reordering={reordering}
                setReordering={setReordering}
@@ -611,23 +618,19 @@ const ContentPiece = ({
       </div>
    );
 };
-ContentPiece.propTypes = {
-   id: PropTypes.string.isRequired,
-   canEdit: PropTypes.bool,
-   rawContentString: PropTypes.string.isRequired,
-   deleteContentPiece: PropTypes.func.isRequired,
-   editContentPiece: PropTypes.func.isRequired
-};
 
-// export default ContentPiece;
-export default React.memo(ContentPiece, (prev, next) => {
+export default React.memo(FlexibleContentPiece, (prev, next) => {
+   if (prev.clickToShowComments !== next.clickToShowComments) {
+      return false;
+   }
    if (prev.rawContentString !== next.rawContentString) {
       return false;
    }
-   if (prev.expanded !== next.expanded) {
-      return false;
-   }
-   if (prev.comments.length !== next.comments.length) {
+   if (
+      prev.comments &&
+      next.comments &&
+      prev.comments.length !== next.comments.length
+   ) {
       return false;
    }
    if (JSON.stringify(prev.comments) !== JSON.stringify(next.comments)) {

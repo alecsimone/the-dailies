@@ -190,8 +190,13 @@ const StyledContentPieceComment = styled.div`
    }
 `;
 
-const ContentPieceComment = ({ comments, id, input }) => {
-   const [commentView, setCommentView] = useState('collapsed'); // We have 3 view states: collapsed, expanded, and full. Collapsed is supposed to be the default.
+const ContentPieceComment = ({
+   comments,
+   id,
+   input,
+   defaultView = 'collapsed'
+}) => {
+   const [commentView, setCommentView] = useState(defaultView); // We have 3 view states: collapsed, expanded, and full. Collapsed is supposed to be the default.
    const [selectedComment, setSelectedComment] = useState(false);
    const containerRef = useRef(null);
 

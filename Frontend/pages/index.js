@@ -14,7 +14,6 @@ const StyledHomepage = styled.section`
    height: 100%;
    .content {
       position: relative;
-      width: 75%;
       max-height: 100%;
       flex-grow: 1;
       padding: 2rem 0;
@@ -25,6 +24,12 @@ const StyledHomepage = styled.section`
          max-width: 1200px;
          ${props => props.theme.mobileBreakpoint} {
             margin-bottom: 4rem;
+         }
+         header.flexibleThingHeader .headerTop .headerRight .titleWrapper {
+            a,
+            a:visited {
+               font-size: ${props => props.theme.bigText};
+            }
          }
          .flexibleThingCard {
             margin: 2rem 0;

@@ -308,6 +308,7 @@ const getButtonsHeight = buttons => {
 };
 
 const stickifier = stickingData => {
+   console.log("this isn't supposed to be in use anymore");
    // We're going to make an array of the tops and bottoms of each contentBlock so that we can check it against the current scroll position and see if we need to reposition its sticky buttons
    const blockPositionsArray = [];
 
@@ -377,6 +378,10 @@ const stickifier = stickingData => {
          viewableTop + window.innerHeight - bottomBarHeight - headerHeight;
    }
 
+   const isClickToShowComments = stickingData.current.blocksArray[0].block.classList.contains(
+      'clickToShowComments'
+   );
+
    // Now we go through each block and see where it is relative to the screen
    stickingData.current.blocksArray.forEach(block => {
       // First we'll deal with the buttons
@@ -396,8 +401,13 @@ const stickifier = stickingData => {
          ) {
             buttons.style.position = 'absolute';
             buttons.style.left = `${stickingData.current.blockPaddingLeft}px`;
-            buttons.style.width =
-               isBigScreen && !isSidebar ? 'calc(60% - 0.6rem)' : '100%'; // Not sure where the 1rem (which here we're taking 60% of) comes from
+            if (isClickToShowComments) {
+               buttons.style.width = '100%';
+            } else {
+               buttons.style.width = isBigScreen
+                  ? 'calc(60% - 0.6rem)'
+                  : '100%'; // Not sure where the 1rem (which here we're taking 60% of) comes from
+            }
             buttons.style.bottom = 'initial';
             buttons.style.top = isBigScreen ? `10rem` : '11.5rem'; // I don't know where the extra 4rem comes from either, but it needs to be 4rem more than the buffer on big screens, and 5.5 more on little screens
 
@@ -420,10 +430,13 @@ const stickifier = stickingData => {
             buttons.style.left = isBigScreen
                ? `${blockRect.left + stickingData.current.blockPaddingLeft}px`
                : `${blockRect.left}px`;
-            buttons.style.width =
-               isBigScreen && !isSidebar
+            if (isClickToShowComments) {
+               buttons.style.width = `${blockRect.width}px`;
+            } else {
+               buttons.style.width = isBigScreen
                   ? `${(blockRect.width - getOneRem()) * 0.6}px`
                   : `${blockRect.width}px`; // I don't know where that extra rem is coming from on big screens, sorry.
+            }
             buttons.style.bottom = isBigScreen ? 0 : `${bottomBarHeight}px`;
             buttons.style.top = 'initial';
 
@@ -433,8 +446,11 @@ const stickifier = stickingData => {
             // Otherwise, we want to put the buttons back at the bottom of the content block
             buttons.style.position = 'relative';
             buttons.style.left = 'initial';
-            buttons.style.width =
-               isBigScreen && !isSidebar ? 'calc(60% + 3rem)' : '100%';
+            if (isClickToShowComments) {
+               buttons.style.width = 'calc(100% + 8rem)';
+            } else {
+               buttons.style.width = isBigScreen ? 'calc(60% + 3rem)' : '100%';
+            }
             buttons.style.bottom = 'initial';
             buttons.style.top = 'initial';
 
@@ -466,62 +482,64 @@ const stickifier = stickingData => {
          const theActualContent = combinedContainer.querySelector(
             '.theActualContent'
          );
-         const theActualContentRect = theActualContent.getBoundingClientRect();
-
-         if (
-            window.innerWidth >= midScreenBreakpointPx &&
-            commentsRect.height >= theActualContentRect.height
-         ) {
-            return;
-         }
-         if (
-            block.blockTop < viewableTop &&
-            block.bottom > viewableTop + commentsRect.height
-         ) {
-            // if the top of the block is above the top of the viewport, and the bottom of the block is below the top of the viewport by MORE than the height of the comments box, fix the comments to the top of the screen
-            comments.style.position = 'fixed';
-
-            // Unfortunately for us, the comments have an ancestor with a transform applied to it, which means it has its own internal coordinate system and position: 'fixed' doesn't work the way it normally does. So we're going to have to figure out where the top of the screen is relative to the transformed element.
-
-            // First, let's figure out which element is transformed
-            let ancestor = comments.parentNode;
-            while (ancestor.style.transform === '') {
-               ancestor = ancestor.parentNode;
-            }
-
-            // Then, let's figure out the conversion between that element's coordinate system and the viewport coordinate system
-            const ancestorRect = ancestor.getBoundingClientRect();
-
-            // Then we'll figure out what 1rem is equal to in pixels
-            const oneRem = getOneRem();
-
-            const commentsLeftPos = commentsRect.left - ancestorRect.left; // Since the commentsRect is relative to the viewport but we're positioning relative to the ancestor, we need to subtract the ancestor's distance from the left of the viewport
-
-            let commentsTopPos = ancestorRect.top * -1 + headerHeight + oneRem;
+         if (theActualContent != null) {
+            const theActualContentRect = theActualContent.getBoundingClientRect();
             if (
-               commentsTopPos + commentsRect.height + oneRem >
-               ancestorRect.height
+               window.innerWidth >= midScreenBreakpointPx &&
+               commentsRect.height >= theActualContentRect.height
             ) {
-               commentsTopPos =
-                  ancestorRect.height - commentsRect.height - oneRem;
+               return;
             }
+            if (
+               block.blockTop < viewableTop &&
+               block.bottom > viewableTop + commentsRect.height
+            ) {
+               // if the top of the block is above the top of the viewport, and the bottom of the block is below the top of the viewport by MORE than the height of the comments box, fix the comments to the top of the screen
+               comments.style.position = 'fixed';
 
-            // comments.style.width = `${commentsRect.width}px`;
-            comments.style.top = `${commentsTopPos}px`;
-            comments.style.bottom = `initial`;
-         } else if (
-            block.bottom > viewableTop &&
-            block.bottom < viewableTop + commentsRect.height &&
-            block.bottom < viewableBottom
-         ) {
-            // If the bottom of the block is below the top of the viewport by LESS than the height of the comments box, and the bottom of the block is above the bottom of the viewport, absolutely position the comments at the bottom of the block
-            comments.style.position = 'absolute';
-            comments.style.bottom = '1rem';
-            comments.style.top = 'initial';
-         } else {
-            comments.style.position = 'relative';
-            comments.style.bottom = 'initial';
-            comments.style.top = 'initial';
+               // Unfortunately for us, the comments have an ancestor with a transform applied to it, which means it has its own internal coordinate system and position: 'fixed' doesn't work the way it normally does. So we're going to have to figure out where the top of the screen is relative to the transformed element.
+
+               // First, let's figure out which element is transformed
+               let ancestor = comments.parentNode;
+               while (ancestor.style.transform === '') {
+                  ancestor = ancestor.parentNode;
+               }
+
+               // Then, let's figure out the conversion between that element's coordinate system and the viewport coordinate system
+               const ancestorRect = ancestor.getBoundingClientRect();
+
+               // Then we'll figure out what 1rem is equal to in pixels
+               const oneRem = getOneRem();
+
+               const commentsLeftPos = commentsRect.left - ancestorRect.left; // Since the commentsRect is relative to the viewport but we're positioning relative to the ancestor, we need to subtract the ancestor's distance from the left of the viewport
+
+               let commentsTopPos =
+                  ancestorRect.top * -1 + headerHeight + oneRem;
+               if (
+                  commentsTopPos + commentsRect.height + oneRem >
+                  ancestorRect.height
+               ) {
+                  commentsTopPos =
+                     ancestorRect.height - commentsRect.height - oneRem;
+               }
+
+               // comments.style.width = `${commentsRect.width}px`;
+               comments.style.top = `${commentsTopPos}px`;
+               comments.style.bottom = `initial`;
+            } else if (
+               block.bottom > viewableTop &&
+               block.bottom < viewableTop + commentsRect.height &&
+               block.bottom < viewableBottom
+            ) {
+               // If the bottom of the block is below the top of the viewport by LESS than the height of the comments box, and the bottom of the block is above the bottom of the viewport, absolutely position the comments at the bottom of the block
+               comments.style.position = 'absolute';
+               comments.style.bottom = '1rem';
+               comments.style.top = 'initial';
+            } else {
+               comments.style.position = 'relative';
+               comments.style.bottom = 'initial';
+               comments.style.top = 'initial';
+            }
          }
       }
 
@@ -758,7 +776,6 @@ const sendNewContentPiece = async (
       alert(
          "You can't add a blank content piece. Please write something first."
       );
-      return;
    }
    inputElement.value = '';
    content.push({

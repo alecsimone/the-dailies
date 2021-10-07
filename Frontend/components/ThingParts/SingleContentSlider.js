@@ -24,6 +24,7 @@ import {
 import { SINGLE_THING_QUERY } from '../../pages/thing';
 import { SINGLE_TAX_QUERY } from '../../pages/tag';
 import X from '../Icons/X';
+import ContentPieceButtons from './ContentPieceButtons';
 
 const StyledSingleContent = styled.div`
    .cardTouchWatcher {
@@ -513,6 +514,7 @@ const SingleContentSlider = ({
    return (
       <StyledSingleContent>
          {contentArray.length > 0 && contentArea}
+         <ContentPieceButtons canEdit={canEdit} />
          {(expanded !== true || contentArray.length > 1) && (
             <div className="sliderAndShowFormWrapper">
                {contentArray.length > 1 && contentSlider}

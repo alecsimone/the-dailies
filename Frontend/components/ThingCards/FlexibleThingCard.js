@@ -3,10 +3,11 @@ import React, { useContext, useState, useEffect } from 'react';
 import gql from 'graphql-tag';
 import { useMutation } from '@apollo/react-hooks';
 import Router from 'next/router';
+import Link from 'next/link';
 import TitleBar from '../ThingParts/TitleBar';
 import { ThingsContext } from '../ThingsDataProvider';
 import AuthorLink from '../ThingParts/AuthorLink';
-import { setAlpha, setLightness } from '../../styles/functions';
+import { getOneRem, setAlpha, setLightness } from '../../styles/functions';
 import TimeAgo from '../TimeAgo';
 import TagIcon from '../Icons/Tag';
 import CommentsButton from '../ThingParts/CommentsButton';
@@ -27,6 +28,7 @@ import ContentIcon from '../Icons/Content';
 import ImageIcon from '../Icons/ImageIcon';
 import LockIcon from '../Icons/Lock';
 import SingleContentSlider from '../ThingParts/SingleContentSlider';
+import FlexibleContent from '../ThingParts/Content/FlexibleContent';
 
 const DELETE_THING_MUTATION = gql`
    mutation DELETE_THING_MUTATION($id: ID!) {
@@ -59,10 +61,25 @@ const StyledFlexibleThingCard = styled.article`
                }
             }
             .toolbar {
-               margin-top: -1.25rem;
+               margin-top: 0;
                flex-wrap: wrap;
+               > * {
+                  margin-top: 1rem;
+               }
+               .info {
+                  margin-right: 2rem;
+               }
                .buttons {
                   height: ${props => props.theme.miniText};
+                  max-width: none;
+                  min-width: initial;
+                  > * {
+                     margin: 0 0.5rem;
+                     &.arrow {
+                        margin: 0;
+                     }
+                  }
+                  flex-grow: 0;
                   button.colors {
                      width: ${props => props.theme.miniText};
                   }
@@ -136,6 +153,10 @@ const StyledFlexibleThingCard = styled.article`
                > * {
                   margin-top: 2rem;
                }
+               .buttons.wrapped {
+                  margin-top: 1rem;
+                  max-width: none;
+               }
                a,
                a:visited {
                   color: ${props =>
@@ -185,7 +206,7 @@ const StyledFlexibleThingCard = styled.article`
                      cursor: pointer;
                      margin: 0;
                      &.tagIcon {
-                        margin: 0;
+                        /* margin: 0; */
                      }
                      &.arrow {
                         width: ${props => props.theme.bigText};
@@ -203,7 +224,7 @@ const StyledFlexibleThingCard = styled.article`
                      }
                   }
                   .commentButtonWrapper {
-                     margin: 0 0 -0.3rem;
+                     margin-bottom: -0.3rem;
                      .commentButton {
                         svg {
                            margin: 0;
@@ -246,6 +267,9 @@ const StyledFlexibleThingCard = styled.article`
          height: auto;
          width: 100%;
          margin: -3rem 0 0;
+         .tweet {
+            text-align: left;
+         }
          ${props => props.theme.mobileBreakpoint} {
             margin: -3rem -2rem 0;
             width: calc(100% + 4rem);
@@ -335,6 +359,17 @@ const FlexibleThingCard = ({
       ) {
          initialToggleDirection = 'up';
       }
+   } else {
+      // If at least one of the buttons is hidden, we want to make the initial toggle direction 'left'
+      if (
+         featuredImage == null ||
+         featuredImage === '' ||
+         tags.length === 0 ||
+         (content.length === 0 && copiedInContent.length === 0) ||
+         comments.length === 0
+      ) {
+         initialToggleDirection = 'left';
+      }
    }
 
    const [expansion, setExpansion] = useState({
@@ -350,6 +385,8 @@ const FlexibleThingCard = ({
       votebar: expanded,
       toggleDirection: initialToggleDirection
    });
+
+   const [showingAllButtons, setShowingAllButtons] = useState(expanded);
 
    const expansionHandler = (property, value) => {
       if (property === 'toggleDirection') {
@@ -473,11 +510,13 @@ const FlexibleThingCard = ({
                         />
                      )}
                      {titleLink && (
-                        <a href={`/thing?id=${id}`}>
-                           {title.length > 60
-                              ? `${title.substring(0, 60).trim()}...`
-                              : title}
-                        </a>
+                        <Link href={{ pathname: '/thing', query: { id } }}>
+                           <a>
+                              {title.length > 60
+                                 ? `${title.substring(0, 60).trim()}...`
+                                 : title}
+                           </a>
+                        </Link>
                      )}
                   </div>
                   <div className="toolbar">
@@ -490,38 +529,67 @@ const FlexibleThingCard = ({
                      <div className="buttons">
                         <ArrowIcon
                            pointing={expansion.toggleDirection}
-                           onClick={() =>
-                              expansionHandler(
-                                 'toggleDirection',
-                                 expansion.toggleDirection
-                              )
-                           }
+                           onClick={() => {
+                              if (expansion.toggleDirection === 'left') {
+                                 setShowingAllButtons(true);
+                                 setExpansion({
+                                    ...expansion,
+                                    toggleDirection: 'down'
+                                 });
+                              } else {
+                                 expansionHandler(
+                                    'toggleDirection',
+                                    expansion.toggleDirection
+                                 );
+                              }
+                           }}
                         />
-                        <ImageIcon
-                           onClick={() =>
-                              expansionHandler(
-                                 'featuredImage',
-                                 !expansion.featuredImage
-                              )
-                           }
-                        />
-                        <TagIcon
-                           onClick={() =>
-                              expansionHandler('taxes', !expansion.taxes)
-                           }
-                        />
-                        <ContentIcon
-                           onClick={() =>
-                              expansionHandler('content', !expansion.content)
-                           }
-                        />
-                        <CommentsButton
-                           onClick={() =>
-                              expansionHandler('comments', !expansion.comments)
-                           }
-                           count={comments == null ? 0 : comments.length}
-                           key={`comments-button-${id}`}
-                        />
+                        {(showingAllButtons ||
+                           expanded ||
+                           (featuredImage != null &&
+                              !disabledCodewords.includes(
+                                 featuredImage.toLowerCase()
+                              ))) && (
+                           <ImageIcon
+                              onClick={() =>
+                                 expansionHandler(
+                                    'featuredImage',
+                                    !expansion.featuredImage
+                                 )
+                              }
+                           />
+                        )}
+                        {(showingAllButtons || expanded || tags.length > 0) && (
+                           <TagIcon
+                              onClick={() =>
+                                 expansionHandler('taxes', !expansion.taxes)
+                              }
+                           />
+                        )}
+                        {(showingAllButtons ||
+                           expanded ||
+                           content.length > 0 ||
+                           copiedInContent.length > 0) && (
+                           <ContentIcon
+                              onClick={() =>
+                                 expansionHandler('content', !expansion.content)
+                              }
+                           />
+                        )}
+                        {(showingAllButtons ||
+                           expanded ||
+                           comments.length > 0) && (
+                           <CommentsButton
+                              onClick={() =>
+                                 expansionHandler(
+                                    'comments',
+                                    !expansion.comments
+                                 )
+                              }
+                              count={comments == null ? 0 : comments.length}
+                              key={`comments-button-${id}`}
+                           />
+                        )}
                         <LockIcon
                            onClick={() =>
                               expansionHandler('privacy', !expansion.privacy)
@@ -601,7 +669,20 @@ const FlexibleThingCard = ({
                      key={`taxes-${id}`}
                   />
                )}
-               {expansion.content && contentType === 'full' && (
+               {expansion.content && (
+                  <FlexibleContent
+                     contentType={contentType}
+                     canEdit={canEdit}
+                     expanded={expanded}
+                     thingID={id}
+                     content={content}
+                     copiedInContent={copiedInContent}
+                     contentOrder={contentOrder}
+                     unsavedNewContent={unsavedNewContent}
+                     fullThingData={thingData}
+                  />
+               )}
+               {false && expansion.content && contentType === 'full' && (
                   <Content
                      id={id}
                      fullThingData={thingData}
@@ -614,7 +695,7 @@ const FlexibleThingCard = ({
                      key={`content-${id}`}
                   />
                )}
-               {expansion.content && contentType === 'single' && (
+               {false && expansion.content && contentType === 'single' && (
                   <SingleContentSlider
                      canEdit={canEdit}
                      expanded={expanded}

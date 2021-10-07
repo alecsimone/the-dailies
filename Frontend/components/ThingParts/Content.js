@@ -12,10 +12,10 @@ import {
    DELETE_CONTENTPIECE_MUTATION,
    EDIT_CONTENTPIECE_MUTATION,
    REORDER_CONTENT_MUTATION,
-   stickifier,
    orderContent,
    sendNewContentPiece
 } from '../../lib/ContentHandling';
+import stickifier from '../../lib/stickifier';
 import { SINGLE_THING_QUERY } from '../../pages/thing';
 import { SINGLE_TAX_QUERY } from '../../pages/tag';
 import { MemberContext } from '../Account/MemberProvider';
@@ -29,7 +29,7 @@ const Content = ({ fullThingData, canEdit, linkedPiece }) => {
       copiedInContent,
       id,
       unsavedNewContent,
-      type
+      __typename: type
    } = fullThingData;
    // First we pull in the member data so we can get default expansion from it
    const { me } = useContext(MemberContext);
