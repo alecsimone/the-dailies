@@ -187,7 +187,11 @@ const NavSidebar = () => {
          debounceKey: 'newThing'
       }
    });
-   const { navSidebarIsOpen, setNavSidebarIsOpen } = useContext(ModalContext);
+   const {
+      navSidebarIsOpen,
+      setNavSidebarIsOpen,
+      setThingsSidebarIsOpen
+   } = useContext(ModalContext);
 
    const { me } = useContext(MemberContext);
 
@@ -216,7 +220,13 @@ const NavSidebar = () => {
       <StyledNavSidebar className={className}>
          <div className="container">
             <Link href="/">
-               <a onClick={() => setNavSidebarIsOpen(false)} title="Home">
+               <a
+                  onClick={() => {
+                     setNavSidebarIsOpen(false);
+                     setThingsSidebarIsOpen(false);
+                  }}
+                  title="Home"
+               >
                   <div className="navLine">
                      <span className="navIcon">
                         <Home />

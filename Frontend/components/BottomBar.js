@@ -3,11 +3,13 @@ import { useState } from 'react';
 import { useMutation } from '@apollo/react-hooks';
 import Link from 'next/link';
 import Router from 'next/router';
+import { useContext } from 'react';
 import { setAlpha, setLightness } from '../styles/functions';
 import { SET_TITLE_MUTATION } from './ThingParts/TitleBar';
 import HomeIcon from './Icons/Home';
 import SearchIcon from './Icons/Search';
 import X from './Icons/X';
+import { ModalContext } from './ModalProvider';
 
 const StyledBottomBar = styled.section`
    position: fixed;
@@ -79,6 +81,8 @@ const BottomBar = () => {
    const searchPlaceholder = 'Search';
    const [inputPlaceholder, setInputPlaceholder] = useState(false);
    const [inputContent, setInputContent] = useState('');
+
+   const { setThingsSidebarIsOpen } = useContext(ModalContext);
 
    const [setStuffTitle] = useMutation(SET_TITLE_MUTATION, {
       variables: {
@@ -159,7 +163,7 @@ const BottomBar = () => {
          </div>
          <Link href="/">
             <div className="bottomBarButton">
-               <HomeIcon />
+               <HomeIcon onClick={() => setThingsSidebarIsOpen(false)} />
             </div>
          </Link>
          <div

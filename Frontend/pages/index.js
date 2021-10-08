@@ -1,5 +1,7 @@
 import styled from 'styled-components';
 import { useQuery } from '@apollo/react-hooks';
+import { useContext } from 'react';
+import { useEffect } from 'react';
 import ErrorMessage from '../components/ErrorMessage';
 import LoadingRing from '../components/LoadingRing';
 import Things from '../components/Archives/Things';
@@ -7,6 +9,7 @@ import MyThings from '../components/Archives/MyThings';
 import LoadMoreButton from '../components/LoadMoreButton';
 import { useInfiniteScroll, ALL_THINGS_QUERY } from '../lib/ThingHandling';
 import { fullSizedLoadMoreButton } from '../styles/styleFragments';
+import { ModalContext } from '../components/ModalProvider';
 
 const StyledHomepage = styled.section`
    display: flex;
@@ -63,6 +66,10 @@ const Home = () => {
    const { data, loading, error, fetchMore } = useQuery(ALL_THINGS_QUERY, {
       ssr: false
    });
+
+   const { setThingsSidebarIsOpen } = useContext(ModalContext);
+
+   useEffect(() => setThingsSidebarIsOpen(false), [setThingsSidebarIsOpen]);
 
    const {
       scrollerRef,

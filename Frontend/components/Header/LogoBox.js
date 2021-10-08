@@ -59,6 +59,8 @@ const LogoBox = () => {
                         setThingsSidebarIsOpen(false);
                      }
                      setNavSidebarIsOpen(!navSidebarIsOpen);
+                  } else {
+                     setThingsSidebarIsOpen(false);
                   }
                }}
             >
@@ -66,7 +68,9 @@ const LogoBox = () => {
             </a>
          </Link>
          <Link href="/">
-            <a className="name">Ouryou</a>
+            <a className="name" onClick={() => setThingsSidebarIsOpen(false)}>
+               Ouryou
+            </a>
          </Link>
       </StyledLogoBox>
    );
