@@ -232,7 +232,7 @@ const StyledContent = styled.section`
                            margin-bottom: 0;
                         }
                      }
-                     svg.arrow {
+                     svg.arrow.truncContArrow {
                         width: ${props => props.theme.bigHead};
                         cursor: pointer;
                         margin: auto;

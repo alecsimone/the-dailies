@@ -143,7 +143,7 @@ const FlexibleContent = ({
    useEffect(() => {
       const oneRem = getOneRem();
       const threshold = 96 * oneRem;
-      if (thisComponentRef.current.clientWidth > threshold) {
+      if (thisComponentRef?.current?.clientWidth > threshold) {
          setClickToShowComments(false);
       } else {
          setClickToShowComments(true);
@@ -178,6 +178,9 @@ const FlexibleContent = ({
 
    // Add the stickifier listeners
    useLayoutEffect(() => {
+      // If the component hasn't loaded yet, we can't do anything
+      if (thisComponentRef.current == null) return;
+
       // First we'll collect all the content blocks. If there aren't any, we don't have anything to stick to, so we can return without doing anything (i.e. adding the listener)
       const blocks = thisComponentRef.current.querySelectorAll('.contentBlock');
       if (blocks.length === 0) return;

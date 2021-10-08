@@ -136,7 +136,7 @@ const StyledVoteBar = styled.section`
    }
 `;
 
-const VoteBar = ({ votes = [], id, type, mini }) => {
+const VoteBar = ({ votes = [], id, type, mini, alwaysMini }) => {
    const { me } = useContext(MemberContext);
    const [vote] = useMutation(VOTE_MUTATION, {
       refetchQueries: [{ query: ALL_THINGS_QUERY }],
@@ -246,7 +246,7 @@ const VoteBar = ({ votes = [], id, type, mini }) => {
    return (
       <StyledVoteBar
          className={
-            mini && (voters == null || voters.length === 0)
+            (mini && (voters == null || voters.length === 0)) || alwaysMini
                ? 'votebar mini'
                : 'votebar'
          }

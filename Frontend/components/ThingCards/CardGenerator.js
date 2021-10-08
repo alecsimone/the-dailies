@@ -33,8 +33,9 @@ const CardGenerator = ({
             thingData={data.thing}
             contentType={cardType === 'regular' ? 'full' : 'single'}
             canEdit={
-               data.thing.author.id === me.id ||
-               ['Admin', 'Editor', 'Moderator'].includes(me.role)
+               me != null &&
+               (data.thing.author.id === me.id ||
+                  ['Admin', 'Editor', 'Moderator'].includes(me.role))
             }
             titleLink
             borderSide={borderSide}

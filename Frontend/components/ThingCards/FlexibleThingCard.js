@@ -4,6 +4,7 @@ import gql from 'graphql-tag';
 import { useMutation } from '@apollo/react-hooks';
 import Router from 'next/router';
 import Link from 'next/link';
+import { valueToObjectRepresentation } from 'apollo-utilities';
 import TitleBar from '../ThingParts/TitleBar';
 import { ThingsContext } from '../ThingsDataProvider';
 import AuthorLink from '../ThingParts/AuthorLink';
@@ -56,11 +57,18 @@ const StyledFlexibleThingCard = styled.article`
          background: ${props => props.theme.midBlack};
          .headerTop .headerRight {
             .titleWrapper {
-               h3, textarea, a, a:visited {
+               h3, textarea, a, a:visited, span.score {
                   font-size: ${props => props.theme.smallText};
                   color: ${props => setLightness(props.theme.mainText, 70)};
                   &:hover {
                      color: ${props => setLightness(props.theme.mainText, 90)};
+                  }
+               }
+               span.score {
+                  color: ${props => props.theme.secondaryAccent};
+                  margin-right: 0.5rem;
+                  &:hover {
+                     color: ${props => props.theme.secondaryAccent};
                   }
                }
             }
@@ -68,7 +76,7 @@ const StyledFlexibleThingCard = styled.article`
                margin-top: 0;
                flex-wrap: wrap;
                > * {
-                  margin-top: 1rem;
+                  margin-top: 1.5rem;
                }
                .info {
                   margin-right: 2rem;
@@ -83,7 +91,7 @@ const StyledFlexibleThingCard = styled.article`
                         margin: 0;
                      }
                   }
-                  flex-grow: 0;
+                  flex-grow: 1;
                   button.colors {
                      width: ${props => props.theme.miniText};
                   }
@@ -108,9 +116,9 @@ const StyledFlexibleThingCard = styled.article`
          display: flex;
          align-items: center;
          .thumbWrapper {
-            width: 7.5rem;
-            height: 8.5rem;
-            padding-top: 1rem;
+            width: 7rem;
+            height: 7rem;
+            /* padding-top: 1rem; */
             img.thumb {
                width: 100%;
                height: 100%;
@@ -122,11 +130,11 @@ const StyledFlexibleThingCard = styled.article`
          }
          .headerRight {
             &.withThumb {
-               margin-left: 2rem;
+               margin-right: 2rem;
             }
             flex-grow: 1;
             .titleWrapper {
-               h3, textarea, a, a:visited {
+               h3, textarea, a, a:visited, span.score {
                   font-size: ${props => props.theme.smallHead};
                   font-weight: 600;
                   color: ${props => setAlpha(props.theme.mainText, 1)};
@@ -254,6 +262,18 @@ const StyledFlexibleThingCard = styled.article`
                         height: 100%;
                         border-radius: 50%;
                         border: none;
+                     }
+                  }
+                  .votebar.mini {
+                     width: auto;
+                     height: ${props => props.theme.smallText};
+                     padding: 0;
+                     .left {
+                        padding: 0;
+                        img.voteButton {
+                           width: ${props => props.theme.smallText};
+                           height: ${props => props.theme.smallText};
+                        }
                      }
                   }
                }
@@ -403,6 +423,7 @@ const FlexibleThingCard = ({
             featuredImage: newValue,
             privacy: expansion.privacy,
             colors: expansion.colors,
+            votebar: newValue,
             toggleDirection: value === 'up' ? 'down' : 'up'
          };
 
@@ -413,6 +434,10 @@ const FlexibleThingCard = ({
          }
          setExpansion(newExpansionObject);
       } else {
+         // First let's stop them if they're trying to expand a section they don't have access to
+         if (!canEdit && (property === 'colors' || property === 'privacy'))
+            return;
+
          // If this change would cause more than two sections to be opposed to the toggle expansion arrow (ie, if more than two things are expanded while the arrow points down), we want to flip the direction of the arrow.
          // Note that this shouldn't include the privacy and colors sections when the arrow is pointing up
          const arrowValue = expansion.toggleDirection === 'up'; // If something is expanded, it would have a value of true and be opposed to the arrow when the arrow is pointing down, because the down arrow would expand it, and it's already expanded. So if the arrow is pointing up, it is opposed to things with a value of false. Thus we want arrowValue to be true when it's pointing up and false when it's pointing down.
@@ -485,6 +510,9 @@ const FlexibleThingCard = ({
       styleObj.borderTop = 'none';
    }
 
+   let score = 0;
+   votes.forEach(vote => (score += vote.value));
+
    return (
       <StyledFlexibleThingCard
          style={styleObj}
@@ -492,19 +520,13 @@ const FlexibleThingCard = ({
       >
          <header className="flexibleThingHeader">
             <div className="headerTop">
-               {showingThumb && (
-                  <div className="thumbWrapper">
-                     <img
-                        className="thumb"
-                        src={featuredImage}
-                        alt="thumbnail"
-                     />
-                  </div>
-               )}
                <div
                   className={`headerRight${showingThumb ? ' withThumb' : ''}`}
                >
                   <div className="titleWrapper">
+                     {score !== 0 && !expansion.votebar && (
+                        <span className="score">(+{score})</span>
+                     )}
                      {!titleLink && (
                         <TitleBar
                            key={`title-${id}`}
@@ -607,28 +629,53 @@ const FlexibleThingCard = ({
                               expansionHandler('colors', !expansion.colors)
                            }
                         />
-                        <TrashIcon
-                           classname={deleting ? 'trash deleting' : 'trash'}
-                           onClick={() => {
-                              if (
-                                 confirm(
-                                    `Are you sure you want to delete the thing ${title}?`
-                                 )
-                              ) {
-                                 deleteThing({
-                                    variables: {
-                                       id
-                                    }
-                                 });
-                              }
-                           }}
-                        />
+                        {canEdit && (
+                           <TrashIcon
+                              classname={deleting ? 'trash deleting' : 'trash'}
+                              onClick={() => {
+                                 if (
+                                    confirm(
+                                       `Are you sure you want to delete the thing ${title}?`
+                                    )
+                                 ) {
+                                    deleteThing({
+                                       variables: {
+                                          id
+                                       }
+                                    });
+                                 }
+                              }}
+                           />
+                        )}
+                        {!expansion.votebar && (
+                           <VoteBar
+                              key={`votebar-${id}`}
+                              votes={votes}
+                              id={id}
+                              type="Thing"
+                              alwaysMini
+                           />
+                        )}
                      </div>
                   </div>
                </div>
+               {showingThumb && (
+                  <div className="thumbWrapper">
+                     <img
+                        className="thumb"
+                        src={featuredImage}
+                        alt="thumbnail"
+                     />
+                  </div>
+               )}
             </div>
             {expansion.votebar && (
-               <VoteBar votes={votes} id={id} type="Thing" />
+               <VoteBar
+                  key={`votebar-${id}`}
+                  votes={votes}
+                  id={id}
+                  type="Thing"
+               />
             )}
          </header>
          {(expansion.taxes ||
@@ -646,7 +693,7 @@ const FlexibleThingCard = ({
                      key={`featured-image-${id}`}
                   />
                )}
-               {expansion.colors && (
+               {expansion.colors && canEdit && (
                   <ColorSelector
                      initialColor={color}
                      type="Thing"
@@ -654,7 +701,7 @@ const FlexibleThingCard = ({
                      key={`color-${id}`}
                   />
                )}
-               {expansion.privacy && (
+               {expansion.privacy && canEdit && (
                   <PrivacyInterface
                      canEdit={canEdit}
                      id={id}

@@ -59,10 +59,10 @@ const Things = ({ things, displayType, cardSize, noPic, borderSide }) => {
 
    const thingCards = things.map(thing => {
       let canEdit = false;
-      if (thing.author.id === me.id) {
+      if (me && thing.author.id === me.id) {
          canEdit = true;
       }
-      if (['Admin', 'Editor', 'Moderator'].includes(me.role)) {
+      if (me && ['Admin', 'Editor', 'Moderator'].includes(me.role)) {
          canEdit = true;
       }
       return (
