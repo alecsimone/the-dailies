@@ -686,30 +686,6 @@ const FlexibleThingCard = ({
                      fullThingData={thingData}
                   />
                )}
-               {false && expansion.content && contentType === 'full' && (
-                  <Content
-                     id={id}
-                     fullThingData={thingData}
-                     contentOrder={contentOrder}
-                     copiedInContent={copiedInContent}
-                     unsavedNewContent={unsavedNewContent}
-                     type="Thing"
-                     canEdit={canEdit}
-                     linkedPiece={linkedPiece}
-                     key={`content-${id}`}
-                  />
-               )}
-               {false && expansion.content && contentType === 'single' && (
-                  <SingleContentSlider
-                     canEdit={canEdit}
-                     expanded={expanded}
-                     thingID={id}
-                     content={content}
-                     copiedInContent={copiedInContent}
-                     contentOrder={contentOrder}
-                     unsavedNewContent={unsavedNewContent}
-                  />
-               )}
                {expansion.comments && (
                   <Comments
                      id={id}

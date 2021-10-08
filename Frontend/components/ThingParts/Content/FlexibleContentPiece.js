@@ -26,8 +26,10 @@ import ContentPieceComment from '../ContentPieceComments';
 import { VOTE_MUTATION } from '../VoteBar';
 import Login from '../../Account/Login';
 import ContentPieceButtons from '../ContentPieceButtons';
+import TruncCont from '../TruncCont';
 
 const FlexibleContentPiece = ({
+   contentType,
    clickToShowComments,
    canEdit,
    pieceID,
@@ -228,7 +230,12 @@ const FlexibleContentPiece = ({
 
    let contentElement;
    if (!editable) {
-      contentElement = <RichText text={rawContentString} key={pieceID} />;
+      contentElement =
+         contentType === 'single' ? (
+            <TruncCont limit={280} cont={rawContentString} />
+         ) : (
+            <RichText text={rawContentString} key={pieceID} />
+         );
    } else {
       contentElement = (
          <RichTextArea

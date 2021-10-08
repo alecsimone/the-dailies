@@ -131,7 +131,7 @@ const FlexibleContent = ({
    const [showingAddContentForm, setShowingAddContentForm] = useState(
       contentType === 'full' ||
          (content.length === 0 && copiedInContent.length === 0)
-   );
+   ); // If there's no content, we want to show the add content form. Otherwise we only show it by default if we're showing all the content
 
    const [displayedContentType, setDisplayedContentType] = useState(
       contentType
@@ -307,6 +307,7 @@ const FlexibleContent = ({
                      key={`${thingID}-${contentPiece.id}-${
                         clickToShowComments ? 'cts' : 'ncts'
                      }`}
+                     contentType={displayedContentType}
                      clickToShowComments={clickToShowComments}
                      canEdit={canEdit}
                      pieceID={contentPiece.id}
@@ -349,6 +350,7 @@ const FlexibleContent = ({
                      key={`${thingID}-${currentContentPiece.id}-${
                         clickToShowComments ? 'cts' : 'ncts'
                      }`}
+                     contentType={displayedContentType}
                      clickToShowComments={clickToShowComments}
                      canEdit={canEdit}
                      pieceID={currentContentPiece.id}
