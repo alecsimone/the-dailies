@@ -158,7 +158,11 @@ const MyThings = ({ setShowingSidebar, scrollingSelector, borderSide }) => {
          return (
             <StyledMyThings
                onClick={e => {
-                  if (e.target.closest('.flexibleThingCard') != null) return; // If they're interacting with a thing card, we don't want to close the sidebar
+                  if (
+                     e.target.closest('.flexibleThingCard') != null &&
+                     e.target.closest('.titleWrapper') == null
+                  )
+                     return; // If they're interacting with a thing card, we don't want to close the sidebar
                   if (setShowingSidebar != null) {
                      setShowingSidebar(false);
                   }
