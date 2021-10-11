@@ -176,6 +176,10 @@ const FlexibleContent = ({
       stickifier(stickingData);
    };
 
+   const testRef = useRef(null);
+
+   const updateStickingData = stickingData => {};
+
    // Add the stickifier listeners
    useLayoutEffect(() => {
       // If the component hasn't loaded yet, we can't do anything
@@ -184,6 +188,12 @@ const FlexibleContent = ({
       // First we'll collect all the content blocks. If there aren't any, we don't have anything to stick to, so we can return without doing anything (i.e. adding the listener)
       const blocks = thisComponentRef.current.querySelectorAll('.contentBlock');
       if (blocks.length === 0) return;
+
+      for (const block of blocks) {
+         // If we don't set an absolute height on each block, they tend to get resized by the various flexboxes that affect them as we change the positioning of our various sticky elements
+         const blockRect = block.getBoundingClientRect();
+         block.style.width = `${blockRect.width}px`;
+      }
 
       // If we do have some blocks, we need to figure out what the scrolling parent is for our current view, because that could change depending on a few factors
       const thisElement = thisComponentRef.current;
@@ -197,6 +207,9 @@ const FlexibleContent = ({
             currentParent = currentParent.parentElement;
          }
       }
+
+      // If for some reason we didn't find a scrolling parent, this isn't going to work, so let's stop here
+      if (scrollingParent == null) return;
 
       // Then we add a listener to it so we can run the handler on scroll to keep the buttons in place
       scrollingParent.addEventListener('scroll', stickifierHandler);
@@ -256,30 +269,6 @@ const FlexibleContent = ({
       // Then we'll add a function to remove our listener when this component unmounts
       return () => {
          scrollingParent.removeEventListener('scroll', stickifierHandler);
-      };
-
-      const blockPaddingLeftString = window.getComputedStyle(firstBlock)
-         .paddingLeft;
-      const blockPaddingLeftRaw = blockPaddingLeftString.substring(
-         0,
-         blockPaddingLeftString.length - 2
-      );
-      const blockPaddingLeft = parseInt(blockPaddingLeftRaw);
-      stickingData.current.blockPaddingLeft = blockPaddingLeft;
-
-      // Do the same for the contentPiece
-      const piece = firstBlock.querySelector('.contentPiece');
-      const piecePaddingString = window.getComputedStyle(piece).paddingTop;
-      const piecePaddingRaw = piecePaddingString.substring(
-         0,
-         piecePaddingString.length - 2
-      );
-      const piecePadding = parseInt(piecePaddingRaw);
-      stickingData.current.piecePadding = piecePadding;
-
-      return () => {
-         mainSection.removeEventListener('scroll', stickifierHandler);
-         threeColumns.removeEventListener('scroll', stickifierHandler);
       };
    }, [stickifierHandler]);
 

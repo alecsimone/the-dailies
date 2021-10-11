@@ -36,6 +36,10 @@ export { ThingContext };
 
 const StyledSingleThing = styled.section`
    position: relative;
+   padding: 0;
+   ${props => props.theme.mobileBreakpoint} {
+      padding: 0 1rem;
+   }
    article {
       max-width: 1920px;
       width: 100%;

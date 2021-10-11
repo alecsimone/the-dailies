@@ -15,7 +15,7 @@ const StyledContent = styled.section`
       border-top: 1px solid
          ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
       ${props => props.theme.mobileBreakpoint} {
-         padding: 1rem;
+         padding: 1rem 0;
          border: 1px solid
             ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
          border-radius: 0.5rem;
@@ -81,7 +81,6 @@ const StyledContent = styled.section`
          }
          .contentArea {
             width: 100%;
-            padding-bottom: 1rem;
             ${props => props.theme.midScreenBreakpoint} {
                padding-bottom: 0;
             }
@@ -92,7 +91,7 @@ const StyledContent = styled.section`
                white-space: pre-wrap;
                padding: 0.5rem;
                ${props => props.theme.mobileBreakpoint} {
-                  padding: 2rem;
+                  padding: 0 2rem;
                }
                ${props => props.theme.midScreenBreakpoint} {
                   height: 100%;
@@ -101,13 +100,39 @@ const StyledContent = styled.section`
                .overflowWrapper {
                   width: 100%;
                   overflow: hidden;
-                  margin: 1rem 0;
+                  margin: 0;
                   ${props => props.theme.midScreenBreakpoint} {
                      margin: 0;
                      overflow: visible;
                   }
                   .contentAndCommentContainer {
-                     width: calc(200% + 1rem);
+                     &.cts {
+                        width: calc(200% + 1rem);
+                     }
+                     &.ncts {
+                        width: 100%;
+                        .contentWrapper {
+                           max-width: 60%;
+                           min-width: 60%;
+                           border-right: 1px solid
+                              ${props =>
+                                 setAlpha(props.theme.lowContrastGrey, 0.2)};
+                           padding-right: calc(
+                              ${props => props.theme.smallText} + 2rem
+                           );
+                           margin-right: 0;
+                        }
+                        .commentsWrapper {
+                           width: 40%;
+                           &.noComments {
+                              display: none;
+                           }
+                           .commentsArea {
+                              width: 100%;
+                              padding: 0 2rem;
+                           }
+                        }
+                     }
                      display: flex;
                      ${props => props.theme.midScreenBreakpoint} {
                         width: 100%;
@@ -121,17 +146,6 @@ const StyledContent = styled.section`
                      .contentWrapper {
                         margin-right: 2rem;
                         z-index: 2;
-                        ${props => props.theme.midScreenBreakpoint} {
-                           max-width: 60%;
-                           min-width: 60%;
-                           border-right: 1px solid
-                              ${props =>
-                                 setAlpha(props.theme.lowContrastGrey, 0.2)};
-                           padding-right: calc(
-                              ${props => props.theme.smallText} + 2rem
-                           );
-                           margin-right: 0;
-                        }
                         .theActualContent {
                            max-width: 900px;
                            width: 100%;
@@ -139,7 +153,7 @@ const StyledContent = styled.section`
                            form {
                               margin: 0 auto;
                            }
-                           padding: 0 1rem;
+                           padding: 2rem 1rem;
                            ${props => props.theme.midScreenBreakpoint} {
                               padding: 3rem 0;
                            }
@@ -169,20 +183,9 @@ const StyledContent = styled.section`
                         }
                      }
                      .commentsWrapper {
-                        ${props => props.theme.midScreenBreakpoint} {
-                           width: 40%;
-                        }
-                        &.noComments {
-                           ${props => props.theme.midScreenBreakpoint} {
-                              display: none;
-                           }
-                        }
                         .commentsArea {
                            width: calc(100% - 4rem);
                            margin-top: 2rem;
-                           ${props => props.theme.midScreenBreakpoint} {
-                              width: 100%;
-                           }
                            &.collapsed {
                               transition: opacity 0.25s ease-out;
                               &:hover {
@@ -347,23 +350,25 @@ const StyledContent = styled.section`
          }
          .buttonsPlaceholder {
             position: relative;
-            width: 100%;
+            width: calc(60% + 3.5rem);
             height: 0px;
          }
          .newcontentButtons {
-            ${props => props.theme.midScreenBreakpoint} {
-               width: calc(60% + 3rem);
-               margin-left: -3rem;
-            }
+            margin-left: -3rem; /* At this screen width, contentBlock has 3rem of padding, so we need to make up for that */
+            width: calc(60% + 2.5rem);
             position: relative;
             background: ${props => props.theme.midBlack};
             --votersHeight: 4rem;
             z-index: 2;
             ${props => props.theme.midScreenBreakpoint} {
                --votersHeight: 5rem;
+               width: calc(60% + 3rem);
             }
             &.withVoters {
                margin-top: var(--votersHeight, 4rem);
+               .buttons .votebar .right {
+                  border-left: none;
+               }
             }
             .buttonsContainer {
                display: flex;

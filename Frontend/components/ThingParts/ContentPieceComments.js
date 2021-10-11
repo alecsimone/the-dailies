@@ -7,9 +7,6 @@ import { setLightness, setAlpha } from '../../styles/functions';
 const StyledContentPieceComment = styled.div`
    width: 100%;
    padding: 0;
-   ${props => props.theme.midScreenBreakpoint} {
-      padding: 0 2rem;
-   }
    &.expanded,
    &.full {
       .commentsContainer {

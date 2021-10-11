@@ -150,6 +150,7 @@ const stickifyComments = (
       const theActualContent = blockObj.block.querySelector(
          '.theActualContent'
       );
+
       if (theActualContent.offsetHeight >= commentsHeight) {
          // If the top of the block is above the top of the viewport and the bottom of the block is below the top of the viewport by MORE than the height of the comments box, we want to fix the comments to the top of the screen
          const commentsRect = comments.getBoundingClientRect();

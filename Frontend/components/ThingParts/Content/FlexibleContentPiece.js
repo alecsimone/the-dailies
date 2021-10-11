@@ -369,7 +369,11 @@ const FlexibleContentPiece = ({
 
    const contentArea = (
       <div className="overflowWrapper">
-         <div className="contentAndCommentContainer">
+         <div
+            className={`contentAndCommentContainer ${
+               clickToShowComments ? 'cts' : 'ncts'
+            }`}
+         >
             {(!clickToShowComments || !showingComments) && (
                <div
                   className={`contentWrapper${
@@ -417,7 +421,9 @@ const FlexibleContentPiece = ({
             {(!clickToShowComments || showingComments) && (
                <div
                   className={`commentsWrapper${
-                     translation === 0 && !showingComments
+                     translation === 0 &&
+                     !showingComments &&
+                     clickToShowComments
                         ? ' doesNotGiveSize'
                         : ' givesSize'
                   }${
