@@ -163,7 +163,7 @@ const StyledFlexibleThingCard = styled.article`
                }
                margin-top: -2rem;
                > * {
-                  margin-top: 2rem;
+                  margin-top: 4rem;
                }
                .buttons.wrapped {
                   margin-top: 1rem;

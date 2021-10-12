@@ -153,7 +153,7 @@ const StyledContent = styled.section`
                            form {
                               margin: 0 auto;
                            }
-                           padding: 2rem 1rem;
+                           padding: 2rem;
                            ${props => props.theme.midScreenBreakpoint} {
                               padding: 3rem 0;
                            }

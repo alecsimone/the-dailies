@@ -34,6 +34,12 @@ const StyledHomepage = styled.section`
                font-size: ${props => props.theme.bigText};
             }
          }
+         .contentSectionWrapper
+            .locked
+            .contentBlock.clickToShowComments
+            .newcontentButtons {
+            margin-left: 0;
+         }
          .flexibleThingCard {
             margin: 2rem 0;
          }
