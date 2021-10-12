@@ -50,8 +50,8 @@ const StyledContent = styled.section`
                   width: 100%;
                }
                .contentWrapper {
-                  max-width: 100%;
-                  min-width: 100%;
+                  max-width: 50%;
+                  min-width: 50%;
                   border-right: none;
                   .theActualContent {
                      width: 49%;

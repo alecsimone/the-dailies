@@ -19,6 +19,13 @@ import LoadMoreButton from '../LoadMoreButton';
 import { useInfiniteScroll } from '../../lib/ThingHandling';
 
 const StyledMyThings = styled.div`
+   article.flexibleThingCard {
+      .contentSectionWrapper
+         .contentBlock.clickToShowComments
+         .newcontentButtons {
+         margin-left: 0;
+      }
+   }
    button.loadMore {
       display: block;
       padding: 1rem;
