@@ -1,5 +1,5 @@
 import { useState, useContext } from 'react';
-import { ThemeContext } from 'styled-components';
+import styled, { ThemeContext } from 'styled-components';
 import { useMutation } from '@apollo/react-hooks';
 import LinkIcon from '../Icons/Link';
 import EditThis from '../Icons/EditThis';
@@ -15,6 +15,33 @@ import {
    UNLINK_CONTENTPIECE_MUTATION
 } from '../../lib/ContentHandling';
 import stickifier from '../../lib/stickifier';
+import { ModalContext } from '../ModalProvider';
+import { setAlpha } from '../../styles/functions';
+
+const StyledSaveOrDiscardContentInterface = styled.div`
+   .responses {
+      margin-top: 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      button {
+         padding: 1rem;
+         font-size: ${props => props.theme.bigText};
+         &.save {
+            background: ${props => setAlpha(props.theme.primaryAccent, 0.75)};
+            &:hover {
+               background: ${props => props.theme.primaryAccent};
+            }
+         }
+         &.discard {
+            background: ${props => setAlpha(props.theme.warning, 0.75)};
+            &:hover {
+               background: ${props => props.theme.warning};
+            }
+         }
+      }
+   }
+`;
 
 const ContentPieceButtons = ({
    canEdit,
@@ -39,7 +66,8 @@ const ContentPieceButtons = ({
    clearUnsavedContentPieceChanges,
    setUnsavedNewContent,
    setEditableHandler,
-   contentContainerRef
+   contentContainerRef,
+   postContent
 }) => {
    const [copied, setCopied] = useState(false);
 
@@ -50,6 +78,38 @@ const ContentPieceButtons = ({
    const [unlinkContentPiece] = useMutation(UNLINK_CONTENTPIECE_MUTATION, {
       onError: err => alert(err.message)
    });
+
+   const { setContent } = useContext(ModalContext);
+
+   const saveOrDiscardContentInterface = (
+      <StyledSaveOrDiscardContentInterface>
+         <div className="prompt">
+            Would you like to save or discard your changes?
+         </div>
+         <div className="responses">
+            <button
+               className="save"
+               onClick={() => {
+                  postContent();
+                  setContent(false);
+               }}
+            >
+               save
+            </button>
+            <button
+               className="discard"
+               onClick={() => {
+                  clearUnsavedContentPieceChanges();
+                  setUnsavedNewContent(null);
+                  setEditableHandler(!editable);
+                  setContent(false);
+               }}
+            >
+               discard
+            </button>
+         </div>
+      </StyledSaveOrDiscardContentInterface>
+   );
 
    return (
       <div
@@ -234,13 +294,8 @@ const ContentPieceButtons = ({
                      return;
                   }
                   if (rawContentString !== editContentInputRef.current.value) {
-                     if (!confirm('Discard changes?')) {
-                        return;
-                     }
+                     setContent(saveOrDiscardContentInterface);
                   }
-                  clearUnsavedContentPieceChanges();
-                  setUnsavedNewContent(null);
-                  setEditableHandler(!editable);
                }}
             >
                <EditThis

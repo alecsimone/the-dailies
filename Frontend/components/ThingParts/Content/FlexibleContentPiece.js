@@ -626,6 +626,7 @@ const FlexibleContentPiece = ({
                setUnsavedNewContent={setUnsavedNewContent}
                setEditableHandler={setEditableHandler}
                contentContainerRef={contentContainerRef}
+               postContent={postContent}
             />
          </div>
       </div>
