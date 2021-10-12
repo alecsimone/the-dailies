@@ -289,7 +289,6 @@ const FlexibleContentPiece = ({
    let finalTranslation = '0';
    if (
       process.browser &&
-      window.innerWidth < midScreenBPWidthRaw &&
       contentWrapperRef != null &&
       contentWrapperRef.current != null
    ) {
@@ -374,7 +373,7 @@ const FlexibleContentPiece = ({
                clickToShowComments ? 'cts' : 'ncts'
             }`}
          >
-            {(!clickToShowComments || !showingComments) && (
+            {(!clickToShowComments || !showingComments || true) && (
                <div
                   className={`contentWrapper${
                      translation === 0 && showingComments
@@ -418,7 +417,7 @@ const FlexibleContentPiece = ({
                   {otherLocations}
                </div>
             )}
-            {(!clickToShowComments || showingComments) && (
+            {(!clickToShowComments || showingComments || true) && (
                <div
                   className={`commentsWrapper${
                      translation === 0 &&
@@ -600,7 +599,7 @@ const FlexibleContentPiece = ({
          <div
             className={`newcontentButtons ${
                votes != null && votes.length > 0 ? 'withVoters' : 'noVoters'
-            }`}
+            } ${showingComments ? 'showingComments' : 'showingContent'}`}
          >
             <ContentPieceButtons
                canEdit={canEdit}

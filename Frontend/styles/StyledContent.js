@@ -54,10 +54,7 @@ const StyledContent = styled.section`
                   min-width: 50%;
                   border-right: none;
                   .theActualContent {
-                     width: 49%;
-                     ${props => props.theme.mobileBreakpoint} {
-                        width: 100%;
-                     }
+                     width: 100%;
                   }
                }
             }
@@ -67,6 +64,9 @@ const StyledContent = styled.section`
                   width: calc(100% + 6rem);
                }
                margin-right: -3rem;
+               &.showingComments {
+                  margin-left: 0; /* If we're showing comments inside of click to show comments, we don't need the negative margin to make up for the padding */
+               }
                .buttonsContainer {
                   .buttonWrapper {
                      &:last-child {
@@ -103,7 +103,7 @@ const StyledContent = styled.section`
                   margin: 0;
                   ${props => props.theme.midScreenBreakpoint} {
                      margin: 0;
-                     overflow: visible;
+                     overflow: hidden;
                   }
                   .contentAndCommentContainer {
                      &.cts {
@@ -354,7 +354,6 @@ const StyledContent = styled.section`
             height: 0px;
          }
          .newcontentButtons {
-            margin-left: -3rem; /* At this screen width, contentBlock has 3rem of padding, so we need to make up for that */
             width: calc(60% + 2.5rem);
             position: relative;
             background: ${props => props.theme.midBlack};
@@ -363,6 +362,7 @@ const StyledContent = styled.section`
             ${props => props.theme.midScreenBreakpoint} {
                --votersHeight: 5rem;
                width: calc(60% + 3rem);
+               margin-left: -3rem; /* At this screen width, contentBlock has 3rem of padding, so we need to make up for that */
             }
             &.withVoters {
                margin-top: var(--votersHeight, 4rem);

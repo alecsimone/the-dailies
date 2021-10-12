@@ -37,8 +37,10 @@ const StyledHomepage = styled.section`
          .contentSectionWrapper
             .locked
             .contentBlock.clickToShowComments
-            .newcontentButtons {
-            margin-left: 0;
+            .newcontentButtons.showingComments {
+            ${props => props.theme.mobileBreakpoint} {
+               margin-left: -3rem;
+            }
          }
          .flexibleThingCard {
             margin: 2rem 0;

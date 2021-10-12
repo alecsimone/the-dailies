@@ -22,8 +22,10 @@ const StyledMyThings = styled.div`
    article.flexibleThingCard {
       .contentSectionWrapper
          .contentBlock.clickToShowComments
-         .newcontentButtons {
-         margin-left: 0;
+         .newcontentButtons.showingComments {
+         ${props => props.theme.mobileBreakpoint} {
+            margin-left: -3rem;
+         }
       }
    }
    button.loadMore {
