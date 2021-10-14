@@ -14,7 +14,6 @@ import {
    changeContentButKeepInFrame,
    UNLINK_CONTENTPIECE_MUTATION
 } from '../../lib/ContentHandling';
-import stickifier from '../../lib/stickifier';
 import { ModalContext } from '../ModalProvider';
 import { setAlpha } from '../../styles/functions';
 
@@ -58,7 +57,6 @@ const ContentPieceButtons = ({
    isCopied,
    fullThingData,
    deleteContentPiece,
-   stickifierData,
    reordering,
    setReordering,
    rawContentString,
@@ -159,7 +157,6 @@ const ContentPieceButtons = ({
                   scrollingContainer,
                   () => setShowingComments(!showingComments)
                );
-               window.setTimeout(() => stickifier(stickifierData), 1);
             }}
          >
             <div className="commentButton">
@@ -295,7 +292,11 @@ const ContentPieceButtons = ({
                   }
                   if (rawContentString !== editContentInputRef.current.value) {
                      setContent(saveOrDiscardContentInterface);
+                     return;
                   }
+                  clearUnsavedContentPieceChanges();
+                  setUnsavedNewContent(null);
+                  setEditableHandler(!editable);
                }}
             >
                <EditThis

@@ -50,11 +50,12 @@ const StyledContent = styled.section`
                   width: 100%;
                }
                .contentWrapper {
-                  max-width: 50%;
-                  min-width: 50%;
+                  max-width: calc(50% - 0.5rem);
+                  min-width: calc(50% - 0.5rem);
                   border-right: none;
                   .theActualContent {
                      width: 100%;
+                     margin: auto;
                   }
                }
             }
@@ -108,6 +109,14 @@ const StyledContent = styled.section`
                   .contentAndCommentContainer {
                      &.cts {
                         width: calc(200% + 1rem);
+                        .commentsWrapper .commentsArea {
+                           display: flex;
+                           flex-wrap: wrap;
+                           justify-content: center;
+                           .commentsControls {
+                              width: 100%;
+                           }
+                        }
                      }
                      &.ncts {
                         width: 100%;
@@ -256,7 +265,7 @@ const StyledContent = styled.section`
                   }
                }
             }
-            div.contentButtons {
+            /* div.contentButtons {
                width: ${props => props.theme.smallText};
                position: absolute;
                bottom: 1rem;
@@ -321,7 +330,7 @@ const StyledContent = styled.section`
                      opacity: 1;
                   }
                }
-            }
+            } */
             .otherLocations {
                font-size: ${props => props.theme.miniText};
                text-align: center;

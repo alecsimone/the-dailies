@@ -7,7 +7,6 @@ import { MemberContext } from '../components/Account/MemberProvider';
 import Error from '../components/ErrorMessage';
 import LoadingRing from '../components/LoadingRing';
 import { fullThingFields } from '../lib/CardInterfaces';
-import FullThing from '../components/ThingParts/FullThing';
 import BroadcastThing from '../components/ThingCards/BroadcastThing';
 import { home } from '../config';
 import FlexibleThingCard from '../components/ThingCards/FlexibleThingCard';
@@ -110,9 +109,6 @@ const SingleThing = ({ query }) => {
    } else if (loading || meLoading) {
       content = <LoadingRing />;
       pageTitle = 'Loading Thing';
-   } else if (query.id === 'new') {
-      content = <FullThing id="new" key="new" canEdit />;
-      pageTitle = 'New Thing';
    }
 
    let dataForContext;

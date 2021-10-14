@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/react-hooks';
-import React, { useContext, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { ThemeContext } from 'styled-components';
 import Link from 'next/link';
 import { minimumTranslationDistance } from '../../../config';
@@ -9,7 +9,6 @@ import {
    editContentButKeepInFrame,
    STORE_UNSAVED_CONTENT_PIECE_MUTATION
 } from '../../../lib/ContentHandling';
-import stickifier from '../../../lib/stickifier';
 import { ALL_THINGS_QUERY } from '../../../lib/ThingHandling';
 import { SINGLE_THING_QUERY } from '../../../pages/thing';
 import {
@@ -27,6 +26,8 @@ import { VOTE_MUTATION } from '../VoteBar';
 import Login from '../../Account/Login';
 import ContentPieceButtons from '../ContentPieceButtons';
 import TruncCont from '../TruncCont';
+import { getScrollingParent } from '../../ThingsDataProvider';
+import { stickifyBlock } from '../../../lib/stickifier';
 
 const FlexibleContentPiece = ({
    contentType,
@@ -41,7 +42,6 @@ const FlexibleContentPiece = ({
    onThing,
    isCopied,
    copiedToThings,
-   stickifierData,
    editContentPiece,
    deleteContentPiece,
    reordering,
@@ -70,7 +70,6 @@ const FlexibleContentPiece = ({
    const contentWrapperRef = useRef(null);
    const setEditableHandler = value => {
       editContentButKeepInFrame(setEditable, value, contentWrapperRef.current);
-      window.setTimeout(() => stickifier(stickifierData), 1);
    };
 
    const { setHeartPosition, setFullHeart, setContent } = useContext(
@@ -227,6 +226,15 @@ const FlexibleContentPiece = ({
          alert(err.message);
       });
    };
+
+   useEffect(() => {
+      // Once the content piece has rendered, we just want to stickify it one time, because otherwise it won't get stickified until something scrolls
+      // First we have to figure out what its scrolling parent is
+      const thisBlock = contentContainerRef.current;
+      const scrollingParent = getScrollingParent(thisBlock);
+
+      stickifyBlock(thisBlock, scrollingParent);
+   }, []);
 
    let contentElement;
    if (!editable) {
@@ -616,7 +624,6 @@ const FlexibleContentPiece = ({
                isCopied={isCopied}
                fullThingData={fullThingData}
                deleteContentPiece={deleteContentPiece}
-               stickifierData={stickifierData}
                reordering={reordering}
                setReordering={setReordering}
                rawContentString={rawContentString}

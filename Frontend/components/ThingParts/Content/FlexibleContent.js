@@ -10,7 +10,6 @@ import {
    sendNewContentPiece,
    STORE_UNSAVED_CONTENT_MUTATION
 } from '../../../lib/ContentHandling';
-import stickifier, { getIntPxFromStyleString } from '../../../lib/stickifier';
 import { SINGLE_TAX_QUERY } from '../../../pages/tag';
 import { SINGLE_THING_QUERY } from '../../../pages/thing';
 import { dynamicallyResizeElement, getOneRem } from '../../../styles/functions';
@@ -166,112 +165,6 @@ const FlexibleContent = ({
       );
    };
 
-   // This ref is going to hold all the data we need for making the buttons and comments sticky. Things that don't change are populated in an effect that runs on the first render only, and everything else is populated in the stickifier function, which will be attached to a scroll listener by that same effect.
-   const stickingData = useRef({
-      blocksArray: []
-   });
-
-   const stickifierHandler = () => {
-      // We need this little function so we can pass a parameter to stickifier when it's called by the scroll listener, and we can't just use an arrow function in the listener because then we can't remove it
-      stickifier(stickingData);
-   };
-
-   const testRef = useRef(null);
-
-   const updateStickingData = stickingData => {};
-
-   // Add the stickifier listeners
-   useLayoutEffect(() => {
-      // If the component hasn't loaded yet, we can't do anything
-      if (thisComponentRef.current == null) return;
-
-      // First we'll collect all the content blocks. If there aren't any, we don't have anything to stick to, so we can return without doing anything (i.e. adding the listener)
-      const blocks = thisComponentRef.current.querySelectorAll('.contentBlock');
-      if (blocks.length === 0) return;
-
-      for (const block of blocks) {
-         // If we don't set an absolute height on each block, they tend to get resized by the various flexboxes that affect them as we change the positioning of our various sticky elements
-         const blockRect = block.getBoundingClientRect();
-         block.style.width = `${blockRect.width}px`;
-      }
-
-      // If we do have some blocks, we need to figure out what the scrolling parent is for our current view, because that could change depending on a few factors
-      const thisElement = thisComponentRef.current;
-      let currentParent = thisElement.parentElement;
-      let scrollingParent = null;
-      while (scrollingParent == null && currentParent != null) {
-         const currentParentStyle = window.getComputedStyle(currentParent);
-         if (currentParentStyle.overflowY === 'auto') {
-            scrollingParent = currentParent;
-         } else {
-            currentParent = currentParent.parentElement;
-         }
-      }
-
-      // If for some reason we didn't find a scrolling parent, this isn't going to work, so let's stop here
-      if (scrollingParent == null) return;
-
-      // Then we add a listener to it so we can run the handler on scroll to keep the buttons in place
-      scrollingParent.addEventListener('scroll', stickifierHandler);
-
-      // And put it in our stickingData so we can use it in the stickifier function
-      stickingData.current.scroller = scrollingParent;
-
-      // We'll add the blocks to the stickifier data so we can loop through them in the actual stickifier function
-      stickingData.current.blocksArray = blocks;
-
-      // We'll use the first block as a sample
-      const firstBlock = blocks[0];
-      const firstBlockRect = firstBlock.getBoundingClientRect();
-
-      // We need to get the number of pixels between the top of the actual content and the top of the content block, and then we need to account for any padding within the actual content
-      // First we figure out the distance between the two tops
-      const theActualContent = firstBlock.querySelector('.theActualContent');
-      let topDifference = 0;
-      let blockPaddingTop = 0;
-      if (theActualContent != null) {
-         const actualContentRect = theActualContent.getBoundingClientRect();
-         topDifference = firstBlockRect.top - actualContentRect.top;
-
-         // Then we find the padding on actual content
-         const actualContentStyle = window.getComputedStyle(theActualContent);
-         const actualContentPaddingTopString = actualContentStyle.paddingTop;
-         const actualContentPaddingTopRaw = actualContentPaddingTopString.substring(
-            0,
-            actualContentPaddingTopString.length - 2
-         );
-         blockPaddingTop = parseInt(actualContentPaddingTopRaw);
-      }
-
-      // And we put that combined value into our stickingData
-      stickingData.current.blockPaddingTop = blockPaddingTop - topDifference;
-      stickingData.current.topDifference = topDifference;
-
-      // Then we need to get the total offset of the firstBlock by tallying up the offsetTops of all its offsetParents
-      let parentOffset = 0;
-      let nextParent = firstBlock.offsetParent;
-      while (nextParent != null) {
-         parentOffset += nextParent.offsetTop;
-         nextParent = nextParent.offsetParent;
-      }
-      stickingData.current.parentOffset = parentOffset;
-
-      // We also might need to account for a difference in left positioning on the buttons (currently this is because of a negative margin on the buttons)
-      const buttons = firstBlock.querySelector('.newcontentButtons');
-      const buttonsStyle = window.getComputedStyle(buttons);
-      const buttonsMarginLeftRaw = buttonsStyle.marginLeft;
-      const buttonsMarginLeft = getIntPxFromStyleString(buttonsMarginLeftRaw);
-      stickingData.current.leftAdjustment = buttonsMarginLeft;
-
-      // We need to run the handler once here so that the edit buttons will be properly placed before the first scroll
-      stickifier(stickingData);
-
-      // Then we'll add a function to remove our listener when this component unmounts
-      return () => {
-         scrollingParent.removeEventListener('scroll', stickifierHandler);
-      };
-   }, [stickifierHandler]);
-
    if ((content == null || content.length === 0) && !canEdit) return null;
 
    let contentElements;
@@ -311,7 +204,6 @@ const FlexibleContent = ({
                      onThing={contentPiece.onThing}
                      isCopied={!isOriginalContent}
                      copiedToThings={contentPiece.copiedToThings}
-                     stickifierData={stickingData}
                      editContentPiece={editPiece}
                      deleteContentPiece={deletePiece}
                      reordering={reordering}
@@ -354,7 +246,6 @@ const FlexibleContent = ({
                      onThing={currentContentPiece.onThing}
                      isCopied={!isOriginalContent}
                      copiedToThings={currentContentPiece.copiedToThings}
-                     stickifierData={stickingData}
                      editContentPiece={editPiece}
                      deleteContentPiece={deletePiece}
                      reordering={reordering}
