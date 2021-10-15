@@ -17,14 +17,18 @@ const LockIcon = ({
    }
 
    let privacyLevel = 0;
+   let properPrivacyName = 'Public';
    if (privacy === 'FriendsOfFriends') {
       privacyLevel = 1;
+      properPrivacyName = 'Friends of Friends';
    }
    if (privacy === 'Friends') {
       privacyLevel = 2;
+      properPrivacyName = 'Friends';
    }
    if (privacy === 'Private') {
       privacyLevel = 3;
+      properPrivacyName = 'Private';
    }
 
    return (
@@ -36,6 +40,7 @@ const LockIcon = ({
          viewBox="0 0 160 200"
          onClick={onClick}
       >
+         <title>{properPrivacyName}</title>
          <path
             className="lockBody"
             d="M161,81H40A18.05,18.05,0,0,0,22,99v82a18.05,18.05,0,0,0,18,18H161a18.05,18.05,0,0,0,18-18V99A18.05,18.05,0,0,0,161,81Zm-20,88H59a9,9,0,0,1,0-18h82a9,9,0,0,1,0,18Zm0-40H59a9,9,0,0,1,0-18h82a9,9,0,0,1,0,18Z"
