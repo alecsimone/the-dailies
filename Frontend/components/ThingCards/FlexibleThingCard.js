@@ -77,7 +77,6 @@ const StyledFlexibleThingCard = styled.article`
                   margin-right: 2rem;
                }
                .buttons {
-                  height: ${props => props.theme.miniText};
                   max-width: none;
                   min-width: initial;
                   > * {
@@ -87,9 +86,6 @@ const StyledFlexibleThingCard = styled.article`
                      }
                   }
                   flex-grow: 1;
-                  button.colors {
-                     width: ${props => props.theme.miniText};
-                  }
                }
             }
          }
@@ -213,7 +209,7 @@ const StyledFlexibleThingCard = styled.article`
             display: flex;
             justify-content: space-between;
             align-items: center;
-            height: ${props => props.theme.smallText};
+            height: ${props => props.theme.miniText};
             svg {
                height: 100%;
                cursor: pointer;
@@ -259,7 +255,7 @@ const StyledFlexibleThingCard = styled.article`
                color: ${props => props.theme.lowContrastGrey};
                padding: 4px 0.5rem;
                &.colors {
-                  width: ${props => props.theme.smallText};
+                  width: ${props => props.theme.miniText};
                   height: 100%;
                   border-radius: 50%;
                   border: none;
