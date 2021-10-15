@@ -53,14 +53,14 @@ const StyledFlexibleThingCard = styled.article`
       header.flexibleThingHeader {
          background: ${props => props.theme.midBlack};
          .headerTop {
-            h3, textarea, a, a:visited, .score {
+            h3, textarea, a, a:visited, span.score {
                font-size: ${props => props.theme.smallText};
                color: ${props => setLightness(props.theme.mainText, 70)};
                &:hover {
                   color: ${props => setLightness(props.theme.mainText, 90)};
                }
             }
-            .score {
+            span.score {
                color: ${props => props.theme.secondaryAccent};
                margin-right: 0.5rem;
                &:hover {
@@ -131,8 +131,8 @@ const StyledFlexibleThingCard = styled.article`
             justify-content: space-between;
          }
          flex-grow: 1;
-         h3, textarea, a, a:visited, .score {
-            font-size: ${props => props.theme.smallHead};
+         h3, textarea, a, a:visited, span.score {
+            font-size: ${props => props.theme.bigText};
             font-weight: 600;
             color: ${props => setAlpha(props.theme.mainText, 1)};
             padding: 0;
@@ -141,9 +141,8 @@ const StyledFlexibleThingCard = styled.article`
             width: 100%;
             border: none;
          }
-         .score {
-            width: auto;
-            margin-right: 2rem;
+         span.score {
+            margin-right: 1rem;
          }
          .titleWrapper {
             flex-grow: 1;
@@ -505,10 +504,6 @@ const FlexibleThingCard = ({
    let score = 0;
    votes.forEach(vote => (score += vote.value));
 
-   const titleWithScore = `${
-      score !== 0 && !expansion.votebar ? `(+${score}) ` : ''
-   }${title}`;
-
    return (
       <StyledFlexibleThingCard
          style={styleObj}
@@ -521,16 +516,23 @@ const FlexibleThingCard = ({
                      <TitleBar
                         key={`title-${id}`}
                         type="Thing"
-                        title={titleWithScore}
+                        title={`${
+                           score !== 0 && !expansion.votebar
+                              ? `(+${score}) `
+                              : ''
+                        }${title}`}
                         id={id}
                      />
                   )}
                   {titleLink && (
                      <Link href={{ pathname: '/thing', query: { id } }}>
                         <a>
+                           {score !== 0 && !expansion.votebar && (
+                              <span className="score">(+{score})</span>
+                           )}
                            {title.length > 60
-                              ? `${titleWithScore.substring(0, 60).trim()}...`
-                              : titleWithScore}
+                              ? `${title.substring(0, 60).trim()}...`
+                              : title}
                         </a>
                      </Link>
                   )}
