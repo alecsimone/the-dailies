@@ -17,8 +17,13 @@ const StyledTruncCont = styled.div`
    }
 `;
 
-const TruncCont = ({ cont: contObj, limit }) => {
-   const [expanded, setExpanded] = useState(false);
+const TruncCont = ({
+   cont: contObj,
+   limit,
+   truncContExpanded = true,
+   setTruncContExpanded
+}) => {
+   // const [expanded, setExpanded] = useState(truncContExpanded);
 
    if (contObj == null) {
       return <div />;
@@ -45,7 +50,7 @@ const TruncCont = ({ cont: contObj, limit }) => {
    }
 
    let truncCont = cont;
-   if (!expanded) {
+   if (!truncContExpanded) {
       if (cont.length > newLimit) {
          truncCont = `${cont.substring(0, newLimit).trim()}${
             newLimit === limit ? '...' : ''
@@ -58,8 +63,12 @@ const TruncCont = ({ cont: contObj, limit }) => {
          <RichText text={truncCont} key={truncCont} />
          {cont.length > newLimit && (
             <ArrowIcon
-               pointing={expanded ? 'up' : 'down'}
-               onClick={() => setExpanded(!expanded)}
+               pointing={truncContExpanded ? 'up' : 'down'}
+               onClick={() => {
+                  if (setTruncContExpanded != null) {
+                     setTruncContExpanded(!truncContExpanded);
+                  }
+               }}
                className="truncContArrow"
             />
          )}

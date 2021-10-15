@@ -189,6 +189,9 @@ const StyledContent = styled.section`
                                  margin: 2rem auto 0;
                               }
                            }
+                           .flexibleThingCard {
+                              ${props => props.theme.thingColors};
+                           }
                         }
                      }
                      .commentsWrapper {
@@ -217,9 +220,9 @@ const StyledContent = styled.section`
                      }
                      .doesNotGiveSize {
                         height: 0;
-                        ${props => props.theme.midScreenBreakpoint} {
+                        /* ${props => props.theme.midScreenBreakpoint} {
                            height: auto;
-                        }
+                        } */
                      }
                      img,
                      video,

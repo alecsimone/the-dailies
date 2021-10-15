@@ -165,6 +165,8 @@ const FlexibleContent = ({
       );
    };
 
+   const [truncContExpanded, setTruncContExpanded] = useState(false);
+
    if ((content == null || content.length === 0) && !canEdit) return null;
 
    let contentElements;
@@ -253,6 +255,8 @@ const FlexibleContent = ({
                      highlighted={linkedPiece === currentContentPiece.id}
                      fullThingData={fullThingData}
                      zIndex={orderedContent.length} // We need to reverse the stacking context order so that each content piece is below the one before it, otherwise the next content piece will cover up the addToInterface, or anything else we might have pop out of the buttons
+                     truncContExpanded={truncContExpanded}
+                     setTruncContExpanded={setTruncContExpanded}
                   />
                </div>
             );

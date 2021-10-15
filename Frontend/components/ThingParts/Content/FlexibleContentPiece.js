@@ -48,7 +48,9 @@ const FlexibleContentPiece = ({
    setReordering,
    highlighted,
    fullThingData,
-   zIndex
+   zIndex,
+   truncContExpanded,
+   setTruncContExpanded
 }) => {
    const { me } = useContext(MemberContext);
    const { midScreenBPWidthRaw } = useContext(ThemeContext);
@@ -240,7 +242,12 @@ const FlexibleContentPiece = ({
    if (!editable) {
       contentElement =
          contentType === 'single' ? (
-            <TruncCont limit={280} cont={rawContentString} />
+            <TruncCont
+               limit={280}
+               cont={rawContentString}
+               truncContExpanded={truncContExpanded}
+               setTruncContExpanded={setTruncContExpanded}
+            />
          ) : (
             <RichText text={rawContentString} key={pieceID} />
          );
@@ -644,6 +651,9 @@ export default React.memo(FlexibleContentPiece, (prev, next) => {
       return false;
    }
    if (prev.rawContentString !== next.rawContentString) {
+      return false;
+   }
+   if (prev.truncContExpanded !== next.truncContExpanded) {
       return false;
    }
    if (

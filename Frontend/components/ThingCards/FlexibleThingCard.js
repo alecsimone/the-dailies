@@ -26,7 +26,6 @@ import { isVideo } from '../../lib/UrlHandling';
 import ContentIcon from '../Icons/Content';
 import ImageIcon from '../Icons/ImageIcon';
 import LockIcon from '../Icons/Lock';
-import SingleContentSlider from '../ThingParts/SingleContentSlider';
 import FlexibleContent from '../ThingParts/Content/FlexibleContent';
 
 const DELETE_THING_MUTATION = gql`
@@ -53,21 +52,19 @@ const StyledFlexibleThingCard = styled.article`
       border-radius: 0;
       header.flexibleThingHeader {
          background: ${props => props.theme.midBlack};
-         .headerTop .headerRight {
-            .titleWrapper {
-               h3, textarea, a, a:visited, span.score {
-                  font-size: ${props => props.theme.smallText};
-                  color: ${props => setLightness(props.theme.mainText, 70)};
-                  &:hover {
-                     color: ${props => setLightness(props.theme.mainText, 90)};
-                  }
+         .headerTop {
+            h3, textarea, a, a:visited, .score {
+               font-size: ${props => props.theme.smallText};
+               color: ${props => setLightness(props.theme.mainText, 70)};
+               &:hover {
+                  color: ${props => setLightness(props.theme.mainText, 90)};
                }
-               span.score {
+            }
+            .score {
+               color: ${props => props.theme.secondaryAccent};
+               margin-right: 0.5rem;
+               &:hover {
                   color: ${props => props.theme.secondaryAccent};
-                  margin-right: 0.5rem;
-                  &:hover {
-                     color: ${props => props.theme.secondaryAccent};
-                  }
                }
             }
             .toolbar {
@@ -115,164 +112,169 @@ const StyledFlexibleThingCard = styled.article`
          align-items: center;
          .thumbWrapper {
             width: 7rem;
+            min-width: 7rem;
             height: 7rem;
+            margin-left: 2rem;
             /* padding-top: 1rem; */
             img.thumb {
                width: 100%;
                height: 100%;
                object-fit: contain;
+               cursor: pointer;
                ${props => props.theme.mobileBreakpoint} {
                   object-fit: cover;
                }
             }
          }
-         .headerRight {
-            &.withThumb {
-               margin-right: 2rem;
-            }
+         &.withThumb {
+            margin-right: 2rem;
+            justify-content: space-between;
+         }
+         flex-grow: 1;
+         h3, textarea, a, a:visited, .score {
+            font-size: ${props => props.theme.smallHead};
+            font-weight: 600;
+            color: ${props => setAlpha(props.theme.mainText, 1)};
+            padding: 0;
+            margin: 0;
+            line-height: 1.4;
+            width: 100%;
+            border: none;
+         }
+         .score {
+            width: auto;
+            margin-right: 2rem;
+         }
+         .titleWrapper {
             flex-grow: 1;
-            .titleWrapper {
-               h3, textarea, a, a:visited, span.score {
-                  font-size: ${props => props.theme.smallHead};
-                  font-weight: 600;
-                  color: ${props => setAlpha(props.theme.mainText, 1)};
-                  padding: 0;
-                  margin: 0;
-                  line-height: 1.4;
-                  width: 100%;
+            .titleBarContainer {
+               margin-bottom: 1rem;
+               ${props => props.theme.mobileBreakpoint} {
+                  margin-bottom: 0.75rem;
+               }
+               padding: 0;
+
+            }
+         }
+      }
+      .toolbar {
+         display: flex;
+         justify-content: space-between;
+         align-items: center;
+         flex-wrap: wrap;
+         ${props => props.theme.mobileBreakpoint} {
+            flex-wrap: nowrap;
+         }
+         margin-top: -2rem;
+         > * {
+            margin-top: 4rem;
+         }
+         .buttons.wrapped {
+            margin-top: 1rem;
+            max-width: none;
+         }
+         a,
+         a:visited {
+            color: ${props =>
+               setAlpha(setLightness(props.theme.majorColor, 80), 0.7)};
+            &:hover {
+               color: ${props => setLightness(props.theme.majorColor, 50)};
+               text-decoration: none;
+            }
+         }
+         .info {
+            display: flex;
+            align-items: center;
+            font-size: ${props => props.theme.tinyText};
+            color: ${props => setLightness(props.theme.lowContrastGrey, 60)};
+            font-weight: 300;
+            a {
+               line-height: 0; /* we need this to keep the link from throwing off the align-items: center */
+            }
+            .authorBlock {
+               display: inline-flex;
+               align-items: center;
+               margin-right: 0.5rem;
+               cursor: pointer;
+               .authorLink {
+                  margin-bottom: 2px;
+               }
+               .authorImg {
+                  width: 2rem;
+                  height: 2rem;
+                  border-radius: 100%;
+                  margin-right: 0.5rem;
+               }
+            }
+         }
+         .buttons {
+            flex-grow: 1;
+            max-width: min(65%, 360px);
+            min-width: 240px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: ${props => props.theme.smallText};
+            svg {
+               height: 100%;
+               cursor: pointer;
+               margin: 0;
+               &.tagIcon {
+                  /* margin: 0; */
+               }
+               &.arrow {
+                  width: ${props => props.theme.bigText};
+                  height: auto;
+                  opacity: 0.4;
+                  &:hover {
+                     opacity: 0.75;
+                  }
+                  rect {
+                     /* fill: ${props => props.theme.lowContrastGrey}; */
+                  }
+               }
+               &:last-child {
+                  margin-right: 0;
+               }
+            }
+            .commentButtonWrapper {
+               margin-bottom: -0.3rem;
+               .commentButton {
+                  svg {
+                     margin: 0;
+                  }
+                  span.commentCount {
+                     margin-bottom: 0.4rem;
+                  }
+               }
+            }
+            .trash {
+               &.deleting {
+                  ${props => props.theme.twist};
+               }
+            }
+            button {
+               margin: 0;
+               font-weight: 600;
+               border: 3px solid ${props => props.theme.lowContrastGrey};
+               color: ${props => props.theme.lowContrastGrey};
+               padding: 4px 0.5rem;
+               &.colors {
+                  width: ${props => props.theme.smallText};
+                  height: 100%;
+                  border-radius: 50%;
                   border: none;
                }
-               .titleBarContainer {
-                  margin-bottom: 1rem;
-                  ${props => props.theme.mobileBreakpoint} {
-                     margin-bottom: 0.75rem;
-                  }
-                  padding: 0;
-
-               }
             }
-            .toolbar {
-               display: flex;
-               justify-content: space-between;
-               align-items: center;
-               flex-wrap: wrap;
-               ${props => props.theme.mobileBreakpoint} {
-                  flex-wrap: nowrap;
-               }
-               margin-top: -2rem;
-               > * {
-                  margin-top: 4rem;
-               }
-               .buttons.wrapped {
-                  margin-top: 1rem;
-                  max-width: none;
-               }
-               a,
-               a:visited {
-                  color: ${props =>
-                     setAlpha(setLightness(props.theme.majorColor, 80), 0.7)};
-                  &:hover {
-                     color: ${props =>
-                        setLightness(props.theme.majorColor, 50)};
-                     text-decoration: none;
-                  }
-               }
-               .info {
-                  display: flex;
-                  align-items: center;
-                  font-size: ${props => props.theme.tinyText};
-                  color: ${props =>
-                     setLightness(props.theme.lowContrastGrey, 60)};
-                  font-weight: 300;
-                  a {
-                     line-height: 0; /* we need this to keep the link from throwing off the align-items: center */
-                  }
-                  .authorBlock {
-                     display: inline-flex;
-                     align-items: center;
-                     margin-right: 0.5rem;
-                     cursor: pointer;
-                     .authorLink {
-                        margin-bottom: 2px;
-                     }
-                     .authorImg {
-                        width: 2rem;
-                        height: 2rem;
-                        border-radius: 100%;
-                        margin-right: 0.5rem;
-                     }
-                  }
-               }
-               .buttons {
-                  flex-grow: 1;
-                  max-width: min(65%, 360px);
-                  min-width: 240px;
-                  display: flex;
-                  justify-content: space-between;
-                  align-items: center;
-                  height: ${props => props.theme.smallText};
-                  svg {
-                     height: 100%;
-                     cursor: pointer;
-                     margin: 0;
-                     &.tagIcon {
-                        /* margin: 0; */
-                     }
-                     &.arrow {
-                        width: ${props => props.theme.bigText};
-                        height: auto;
-                        opacity: 0.4;
-                        &:hover {
-                           opacity: 0.75;
-                        }
-                        rect {
-                           /* fill: ${props => props.theme.lowContrastGrey}; */
-                        }
-                     }
-                     &:last-child {
-                        margin-right: 0;
-                     }
-                  }
-                  .commentButtonWrapper {
-                     margin-bottom: -0.3rem;
-                     .commentButton {
-                        svg {
-                           margin: 0;
-                        }
-                        span.commentCount {
-                           margin-bottom: 0.4rem;
-                        }
-                     }
-                  }
-                  .trash {
-                     &.deleting {
-                        ${props => props.theme.twist};
-                     }
-                  }
-                  button {
-                     margin: 0;
-                     font-weight: 600;
-                     border: 3px solid ${props => props.theme.lowContrastGrey};
-                     color: ${props => props.theme.lowContrastGrey};
-                     padding: 4px 0.5rem;
-                     &.colors {
-                        width: ${props => props.theme.smallText};
-                        height: 100%;
-                        border-radius: 50%;
-                        border: none;
-                     }
-                  }
-                  .votebar.mini {
-                     width: auto;
+            .votebar.mini {
+               width: auto;
+               height: ${props => props.theme.smallText};
+               padding: 0;
+               .left {
+                  padding: 0;
+                  img.voteButton {
+                     width: ${props => props.theme.smallText};
                      height: ${props => props.theme.smallText};
-                     padding: 0;
-                     .left {
-                        padding: 0;
-                        img.voteButton {
-                           width: ${props => props.theme.smallText};
-                           height: ${props => props.theme.smallText};
-                        }
-                     }
                   }
                }
             }
@@ -281,6 +283,9 @@ const StyledFlexibleThingCard = styled.article`
       .votebar {
          width: 100%;
          margin-top: 2rem;
+         &.mini {
+            margin-top: 0;
+         }
       }
    }
    .body {
@@ -381,17 +386,6 @@ const FlexibleThingCard = ({
       ) {
          initialToggleDirection = 'up';
       }
-   } else {
-      // If at least one of the buttons is hidden, we want to make the initial toggle direction 'left'
-      if (
-         featuredImage == null ||
-         featuredImage === '' ||
-         tags.length === 0 ||
-         (content.length === 0 && copiedInContent.length === 0) ||
-         comments.length === 0
-      ) {
-         initialToggleDirection = 'left';
-      }
    }
 
    const [expansion, setExpansion] = useState({
@@ -405,10 +399,9 @@ const FlexibleThingCard = ({
          featuredImage != null &&
          !disabledCodewords.includes(featuredImage.toLowerCase()),
       votebar: expanded,
+      showingAllButtons: expanded,
       toggleDirection: initialToggleDirection
    });
-
-   const [showingAllButtons, setShowingAllButtons] = useState(expanded);
 
    const expansionHandler = (property, value) => {
       if (property === 'toggleDirection') {
@@ -422,6 +415,7 @@ const FlexibleThingCard = ({
             privacy: expansion.privacy,
             colors: expansion.colors,
             votebar: newValue,
+            showingAllButtons: newValue,
             toggleDirection: value === 'up' ? 'down' : 'up'
          };
 
@@ -511,151 +505,35 @@ const FlexibleThingCard = ({
    let score = 0;
    votes.forEach(vote => (score += vote.value));
 
+   const titleWithScore = `${
+      score !== 0 && !expansion.votebar ? `(+${score}) ` : ''
+   }${title}`;
+
    return (
       <StyledFlexibleThingCard
          style={styleObj}
          className={`flexibleThingCard ${expanded ? 'big' : 'small'}`}
       >
          <header className="flexibleThingHeader">
-            <div className="headerTop">
-               <div
-                  className={`headerRight${showingThumb ? ' withThumb' : ''}`}
-               >
-                  <div className="titleWrapper">
-                     {score !== 0 && !expansion.votebar && (
-                        <span className="score">(+{score})</span>
-                     )}
-                     {!titleLink && (
-                        <TitleBar
-                           key={`title-${id}`}
-                           type="Thing"
-                           title={title}
-                           id={id}
-                        />
-                     )}
-                     {titleLink && (
-                        <Link href={{ pathname: '/thing', query: { id } }}>
-                           <a>
-                              {title.length > 60
-                                 ? `${title.substring(0, 60).trim()}...`
-                                 : title}
-                           </a>
-                        </Link>
-                     )}
-                  </div>
-                  <div className="toolbar">
-                     <div className="info">
-                        <AuthorLink author={author} key={`author-${id}`} />
-                        <div className="ago">
-                           <TimeAgo time={createdAt} key={`ago-${id}`} />
-                        </div>
-                     </div>
-                     <div className="buttons">
-                        <ArrowIcon
-                           pointing={expansion.toggleDirection}
-                           onClick={() => {
-                              if (expansion.toggleDirection === 'left') {
-                                 setShowingAllButtons(true);
-                                 setExpansion({
-                                    ...expansion,
-                                    toggleDirection: 'down'
-                                 });
-                              } else {
-                                 expansionHandler(
-                                    'toggleDirection',
-                                    expansion.toggleDirection
-                                 );
-                              }
-                           }}
-                        />
-                        {(showingAllButtons ||
-                           expanded ||
-                           (featuredImage != null &&
-                              !disabledCodewords.includes(
-                                 featuredImage.toLowerCase()
-                              ))) && (
-                           <ImageIcon
-                              onClick={() =>
-                                 expansionHandler(
-                                    'featuredImage',
-                                    !expansion.featuredImage
-                                 )
-                              }
-                           />
-                        )}
-                        {(showingAllButtons || expanded || tags.length > 0) && (
-                           <TagIcon
-                              onClick={() =>
-                                 expansionHandler('taxes', !expansion.taxes)
-                              }
-                           />
-                        )}
-                        {(showingAllButtons ||
-                           expanded ||
-                           content.length > 0 ||
-                           copiedInContent.length > 0) && (
-                           <ContentIcon
-                              onClick={() =>
-                                 expansionHandler('content', !expansion.content)
-                              }
-                           />
-                        )}
-                        {(showingAllButtons ||
-                           expanded ||
-                           comments.length > 0) && (
-                           <CommentsButton
-                              onClick={() =>
-                                 expansionHandler(
-                                    'comments',
-                                    !expansion.comments
-                                 )
-                              }
-                              count={comments == null ? 0 : comments.length}
-                              key={`comments-button-${id}`}
-                           />
-                        )}
-                        <LockIcon
-                           onClick={() =>
-                              expansionHandler('privacy', !expansion.privacy)
-                           }
-                           privacy={privacy}
-                        />
-                        <button
-                           className="colors"
-                           style={{ background: highlightColor }}
-                           onClick={() =>
-                              expansionHandler('colors', !expansion.colors)
-                           }
-                        />
-                        {canEdit && (
-                           <TrashIcon
-                              classname={deleting ? 'trash deleting' : 'trash'}
-                              onClick={() => {
-                                 if (
-                                    confirm(
-                                       `Are you sure you want to delete the thing ${title}?`
-                                    )
-                                 ) {
-                                    deleteThing({
-                                       variables: {
-                                          id
-                                       }
-                                    });
-                                 }
-                              }}
-                           />
-                        )}
-                        {!expansion.votebar && (
-                           <VoteBar
-                              key={`votebar-${id}`}
-                              votes={votes}
-                              id={id}
-                              type="Thing"
-                              alwaysMini
-                           />
-                        )}
-                     </div>
-                  </div>
+            <div className={`headerTop${showingThumb ? ' withThumb' : ''}`}>
+               <div className="titleWrapper">
+                  {!titleLink && (
+                     <TitleBar
+                        key={`title-${id}`}
+                        type="Thing"
+                        title={titleWithScore}
+                        id={id}
+                     />
+                  )}
+                  {titleLink && (
+                     <Link href={{ pathname: '/thing', query: { id } }}>
+                        <a>
+                           {title.length > 60
+                              ? `${titleWithScore.substring(0, 60).trim()}...`
+                              : titleWithScore}
+                        </a>
+                     </Link>
+                  )}
                </div>
                {showingThumb && (
                   <div className="thumbWrapper">
@@ -663,9 +541,119 @@ const FlexibleThingCard = ({
                         className="thumb"
                         src={featuredImage}
                         alt="thumbnail"
+                        onClick={() => {
+                           expansionHandler(
+                              'toggleDirection',
+                              expansion.toggleDirection
+                           );
+                        }}
                      />
                   </div>
                )}
+            </div>
+            <div className="toolbar">
+               <div className="info">
+                  <AuthorLink author={author} key={`author-${id}`} />
+                  <div className="ago">
+                     <TimeAgo time={createdAt} key={`ago-${id}`} />
+                  </div>
+               </div>
+               <div className="buttons">
+                  <ArrowIcon
+                     pointing={expansion.toggleDirection}
+                     onClick={() => {
+                        expansionHandler(
+                           'toggleDirection',
+                           expansion.toggleDirection
+                        );
+                     }}
+                  />
+                  {(expanded ||
+                     expansion.showingAllButtons ||
+                     (featuredImage != null &&
+                        !disabledCodewords.includes(
+                           featuredImage.toLowerCase()
+                        ))) && (
+                     <ImageIcon
+                        onClick={() =>
+                           expansionHandler(
+                              'featuredImage',
+                              !expansion.featuredImage
+                           )
+                        }
+                     />
+                  )}
+                  {(expanded ||
+                     expansion.showingAllButtons ||
+                     tags.length > 0) && (
+                     <TagIcon
+                        onClick={() =>
+                           expansionHandler('taxes', !expansion.taxes)
+                        }
+                     />
+                  )}
+                  {(expanded ||
+                     expansion.showingAllButtons ||
+                     content.length > 0 ||
+                     copiedInContent.length > 0) && (
+                     <ContentIcon
+                        onClick={() =>
+                           expansionHandler('content', !expansion.content)
+                        }
+                     />
+                  )}
+                  {(expanded ||
+                     expansion.showingAllButtons ||
+                     comments.length > 0) && (
+                     <CommentsButton
+                        onClick={() =>
+                           expansionHandler('comments', !expansion.comments)
+                        }
+                        count={comments == null ? 0 : comments.length}
+                        key={`comments-button-${id}`}
+                     />
+                  )}
+                  <LockIcon
+                     onClick={() =>
+                        expansionHandler('privacy', !expansion.privacy)
+                     }
+                     privacy={privacy}
+                  />
+                  <button
+                     className="colors"
+                     style={{ background: highlightColor }}
+                     onClick={() =>
+                        expansionHandler('colors', !expansion.colors)
+                     }
+                  />
+                  {canEdit && (
+                     <TrashIcon
+                        classname={deleting ? 'trash deleting' : 'trash'}
+                        onClick={() => {
+                           if (
+                              confirm(
+                                 `Are you sure you want to delete the thing ${title}?`
+                              )
+                           ) {
+                              deleteThing({
+                                 variables: {
+                                    id
+                                 }
+                              });
+                           }
+                        }}
+                     />
+                  )}
+                  {!expansion.votebar && (
+                     <VoteBar
+                        key={`votebar-${id}`}
+                        votes={votes}
+                        id={id}
+                        type="Thing"
+                        alwaysMini
+                     />
+                  )}
+               </div>
             </div>
             {expansion.votebar && (
                <VoteBar
