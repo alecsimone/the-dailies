@@ -209,6 +209,15 @@ const StyledComment = styled.div`
    .replyInputWrapper {
       margin-top: 2rem;
    }
+   .comment {
+      border-right: none;
+      border-top: none;
+      border-bottom: none;
+      margin: 0.5rem 0;
+      padding-right: 0;
+      padding-bottom: 0;
+      border-radius: 0;
+   }
 `;
 
 const Comment = ({
