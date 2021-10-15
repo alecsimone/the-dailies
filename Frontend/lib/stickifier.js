@@ -89,19 +89,23 @@ const stickifyButtons = (
       buttons.style.left = `${blockRect.left - stickingData.leftAdjustment}px`;
       buttons.style.width = `${buttonsWidth}px`;
       buttons.style.top = 'initial';
-      buttons.style.bottom = `${bottomBarHeight}px`;
 
-      // This next bit stopped being true, and I don't know why. Keeping here for posterity
-      // // If we're inside a sidebar, we'll have to position the bottom differently, so let's check
-      // const sidebar = blockObj.block.closest('.myThingsBar.visible');
-      // let withinSidebarBottom = 0;
-      // if (sidebar != null) {
-      //    const sidebarRect = sidebar.getBoundingClientRect();
-      //    withinSidebarBottom = sidebarRect.bottom - viewableBottom; // Because the sidebar has a transform applied to it, it becomes its own coordinate system for our fixed positioning. So to fix the buttons at the bottom of the screen, they need a bottom property that's equal to the distance between the bottom of the sidebar and the viewable bottom of the screen.
-      // }
-      // // buttons.style.bottom = `${
-      // //    sidebar == null ? bottomBarHeight : withinSidebarBottom
-      // // }px`;
+      // If we're inside a sidebar, it might have a transform applied to it, so we'd have to position the bottom differently, so let's check
+      const sidebar = blockObj.block.closest('.myThingsBar.visible');
+      let withinSidebarBottom = 0;
+      if (sidebar != null) {
+         const sidebarStyles = window.getComputedStyle(sidebar);
+         if (
+            sidebarStyles.transform != null &&
+            sidebarStyles.transform !== 'none'
+         ) {
+            const sidebarRect = sidebar.getBoundingClientRect();
+            withinSidebarBottom = sidebarRect.bottom - viewableBottom; // Because the sidebar has a transform applied to it, it becomes its own coordinate system for our fixed positioning. So to fix the buttons at the bottom of the screen, they need a bottom property that's equal to the distance between the bottom of the sidebar and the viewable bottom of the screen.
+         }
+      }
+      buttons.style.bottom = `${
+         sidebar == null ? bottomBarHeight : withinSidebarBottom
+      }px`;
 
       // Then we make the buttonsPlaceholder the height of the buttons
       buttonsPlaceholder.style.height = `${buttonsHeight}px`;
