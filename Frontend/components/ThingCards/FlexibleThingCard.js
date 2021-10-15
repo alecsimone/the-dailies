@@ -596,6 +596,7 @@ const FlexibleThingCard = ({
                   )}
                   {(expanded ||
                      expansion.showingAllButtons ||
+                     canEdit ||
                      content.length > 0 ||
                      copiedInContent.length > 0) && (
                      <ContentIcon
@@ -604,17 +605,13 @@ const FlexibleThingCard = ({
                         }
                      />
                   )}
-                  {(expanded ||
-                     expansion.showingAllButtons ||
-                     comments.length > 0) && (
-                     <CommentsButton
-                        onClick={() =>
-                           expansionHandler('comments', !expansion.comments)
-                        }
-                        count={comments == null ? 0 : comments.length}
-                        key={`comments-button-${id}`}
-                     />
-                  )}
+                  <CommentsButton
+                     onClick={() =>
+                        expansionHandler('comments', !expansion.comments)
+                     }
+                     count={comments == null ? 0 : comments.length}
+                     key={`comments-button-${id}`}
+                  />
                   <LockIcon
                      onClick={() =>
                         expansionHandler('privacy', !expansion.privacy)
