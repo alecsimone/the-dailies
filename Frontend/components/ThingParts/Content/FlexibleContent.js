@@ -141,7 +141,7 @@ const FlexibleContent = ({
    const [clickToShowComments, setClickToShowComments] = useState(null);
    useEffect(() => {
       const oneRem = getOneRem();
-      const threshold = 96 * oneRem;
+      const threshold = 100 * oneRem;
       if (thisComponentRef?.current?.clientWidth > threshold) {
          setClickToShowComments(false);
       } else {

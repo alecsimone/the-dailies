@@ -424,6 +424,9 @@ const GlobalStyle = createGlobalStyle`
          .list .regularThingCard {
             margin: 0;
          }
+         ${props => props.theme.midScreenBreakpoint} {
+            min-width: 40rem;
+         }
          ${props => props.theme.desktopBreakpoint} {
             position: absolute;
             width: 25%;

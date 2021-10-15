@@ -50,8 +50,18 @@ const StyledFlexibleThingCard = styled.article`
    border-radius: 3px 3px 0.5rem 0.5rem;
    &.small {
       border-radius: 0;
+      padding: 0;
+      ${props => props.theme.midScreenBreakpoint} {
+         padding: 1rem 2rem 1.5rem;
+      }
       header.flexibleThingHeader {
          background: ${props => props.theme.midBlack};
+         padding: 1rem 2rem;
+         margin: 0;
+         ${props => props.theme.midScreenBreakpoint} {
+            padding: 1rem 2rem 1.5rem;
+            margin: -1rem -2rem -1.5rem;
+         }
          .headerTop {
             h3, textarea, a, a:visited, span.score {
                font-size: ${props => props.theme.smallText};
@@ -86,6 +96,47 @@ const StyledFlexibleThingCard = styled.article`
                      }
                   }
                   flex-grow: 1;
+               }
+            }
+         }
+      }
+      .body {
+         margin-top: 0;
+         ${props => props.theme.midScreenBreakpoint} {
+            margin-top: 3rem;
+         }
+         .featuredImage {
+            margin: 0;
+            width: 100%;
+            padding: 0 2rem;
+            ${props => props.theme.midScreenBreakpoint} {
+               padding: 0;
+            }
+            margin: 2rem 0;
+            input {
+               margin: 0 auto;
+            }
+         }
+         .taxBox {
+            padding: 0 2rem;
+            margin: 2rem 0;
+            ${props => props.theme.midScreenBreakpoint} {
+               padding: 0;
+            }
+         }
+         .content {
+            margin-top: 0;
+            .contentSectionWrapper .contentBlock {
+               padding: 1rem 0;
+               ${props => props.theme.midScreenBreakpoint} {
+                  padding: 1rem 2rem;
+               }
+               .contentArea .contentPiece {
+                  padding: 0;
+               }
+               .newcontentButtons {
+                  margin-left: 0;
+                  margin-right: 0;
                }
             }
          }
@@ -183,6 +234,7 @@ const StyledFlexibleThingCard = styled.article`
             font-size: ${props => props.theme.tinyText};
             color: ${props => setLightness(props.theme.lowContrastGrey, 60)};
             font-weight: 300;
+            min-width: 11rem;
             a {
                line-height: 0; /* we need this to keep the link from throwing off the align-items: center */
             }
@@ -336,7 +388,8 @@ const FlexibleThingCard = ({
    linkedPiece,
    linkedComment,
    titleLink,
-   borderSide = 'top'
+   borderSide = 'top',
+   noPic
 }) => {
    const {
       id,
@@ -551,7 +604,11 @@ const FlexibleThingCard = ({
             </div>
             <div className="toolbar">
                <div className="info">
-                  <AuthorLink author={author} key={`author-${id}`} />
+                  <AuthorLink
+                     author={author}
+                     key={`author-${id}`}
+                     noPic={noPic}
+                  />
                   <div className="ago">
                      <TimeAgo time={createdAt} key={`ago-${id}`} />
                   </div>

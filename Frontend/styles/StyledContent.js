@@ -65,6 +65,7 @@ const StyledContent = styled.section`
                   width: calc(100% + 6rem);
                }
                margin-right: -3rem;
+               margin-left: -3rem;
                &.showingComments {
                   margin-left: 0; /* If we're showing comments inside of click to show comments, we don't need the negative margin to make up for the padding */
                }

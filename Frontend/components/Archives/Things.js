@@ -74,6 +74,7 @@ const Things = ({ things, displayType, cardSize, noPic, borderSide }) => {
             canEdit={canEdit}
             titleLink
             borderSide={borderSide}
+            noPic={noPic}
          />
       );
       // if (cardSize === 'regular') {

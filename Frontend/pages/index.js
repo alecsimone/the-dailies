@@ -15,7 +15,7 @@ const StyledHomepage = styled.section`
    display: flex;
    position: relative;
    height: 100%;
-   .content {
+   .pageContent {
       position: relative;
       max-height: 100%;
       flex-grow: 1;
@@ -47,12 +47,13 @@ const StyledHomepage = styled.section`
          }
       }
       ${props => props.theme.desktopBreakpoint} {
-         padding: 2rem;
+         padding: 3rem 8rem;
       }
       ${fullSizedLoadMoreButton}
    }
    .sidebar {
       width: 25%;
+      min-width: 40rem;
       display: none;
       p.emptyThings {
          padding: 0 2rem;
@@ -107,7 +108,7 @@ const Home = () => {
    }
    return (
       <StyledHomepage className="homepage">
-         <div className="content" ref={scrollerRef}>
+         <div className="pageContent" ref={scrollerRef}>
             {content}
             {data && (
                <LoadMoreButton

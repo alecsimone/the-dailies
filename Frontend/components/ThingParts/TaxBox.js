@@ -34,7 +34,7 @@ const TaxBox = ({ canEdit, personal, id, tags, stacks }) => (
    // A quick note here, for context: Originally, I had two kinds of taxonomies: tags and stacks.
    // Tags were public, and anyone could add to them, stacks were personal and only you could add to them. So this component was designed to be generic to work for either kind. I've since gotten rid of stacks, so that's why that genericness seems unnecessary. But I always feel like I might add them back, or some other kind of taxonomy, so I'm not refactoring this component to not be generic.
 
-   <StyledTaxBox>
+   <StyledTaxBox className="taxBox">
       <Taxes
          tags={tags}
          stacks={stacks}

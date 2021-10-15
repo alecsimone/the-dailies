@@ -60,10 +60,6 @@ const updateBlocksList = (
             observerRef.current.observe(block);
          }
 
-         // If we don't set an absolute height on each block, they tend to get resized by the various flexboxes that affect them as we change the positioning of our various sticky elements. So we'll do that now.
-         const blockRect = block.getBoundingClientRect();
-         block.style.width = `${blockRect.width}px`;
-
          // Then let's run stickifier once just in case the object is already on screen, because the observer won't do anything until we scroll
          stickifyBlock(block, getScrollingParent(block.parentElement));
       }
@@ -110,6 +106,11 @@ const updateScrollersList = (
       if (!checkedParents.includes(cardParent)) {
          // If we haven't checked this parent already, let's note that we're checking it
          checkedParents.push(cardParent);
+
+         // Actually, seems like we don't need this
+         // If we don't set an absolute height on each thing card, they tend to get resized by the various flexboxes that affect them as we change the positioning of our various sticky elements. So we'll do that now.
+         // const parentRect = cardParent.getBoundingClientRect();
+         // cardParent.style.width = `${parentRect.width}px`;
 
          // And then look for its scrolling parent
          const scrollingParent = getScrollingParent(card);
