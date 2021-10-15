@@ -128,11 +128,11 @@ const StyledFlexibleThingCard = styled.article`
             margin-top: 0;
             .contentSectionWrapper .contentBlock {
                padding: 1rem 0;
-               ${props => props.theme.midScreenBreakpoint} {
-                  padding: 1rem 2rem;
-               }
                .contentArea .contentPiece {
                   padding: 0;
+                  ${props => props.theme.midScreenBreakpoint} {
+                     padding: 1rem 2rem;
+                  }
                }
                .newcontentButtons {
                   margin-left: 0;

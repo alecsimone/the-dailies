@@ -109,8 +109,8 @@ const updateScrollersList = (
 
          // Actually, seems like we don't need this
          // If we don't set an absolute height on each thing card, they tend to get resized by the various flexboxes that affect them as we change the positioning of our various sticky elements. So we'll do that now.
-         // const parentRect = cardParent.getBoundingClientRect();
-         // cardParent.style.width = `${parentRect.width}px`;
+         const parentRect = cardParent.getBoundingClientRect();
+         cardParent.style.width = `${parentRect.width}px`;
 
          // And then look for its scrolling parent
          const scrollingParent = getScrollingParent(card);
