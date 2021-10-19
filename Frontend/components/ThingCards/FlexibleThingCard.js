@@ -47,6 +47,9 @@ const StyledFlexibleThingCard = styled.article`
          props.theme
             .thingColors}; /* Feels kinda janky to just put the thingColors in again, but we don't want a border on mobile and this seems like the simplest way to achieve that */
    }
+   .flexibleThingCard {
+      max-width: calc(100% - 1rem);
+   }
    border-radius: 3px 3px 0.5rem 0.5rem;
    &.small {
       border-radius: 0;
