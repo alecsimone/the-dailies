@@ -116,7 +116,8 @@ const stickifyButtons = (
             sidebarStyles.transform !== 'none'
          ) {
             const sidebarRect = sidebar.getBoundingClientRect();
-            withinSidebarBottom = sidebarRect.bottom - viewableBottom; // Because the sidebar has a transform applied to it, it becomes its own coordinate system for our fixed positioning. So to fix the buttons at the bottom of the screen, they need a bottom property that's equal to the distance between the bottom of the sidebar and the viewable bottom of the screen.
+            withinSidebarBottom =
+               sidebarRect.bottom - viewableBottom - bottomBarHeight; // Because the sidebar has a transform applied to it, it becomes its own coordinate system for our fixed positioning. So to fix the buttons at the bottom of the screen, they need a bottom property that's equal to the distance between the bottom of the sidebar and the viewable bottom of the screen.
          }
       }
       let thingWithinThingBottom = 0;
@@ -137,9 +138,12 @@ const stickifyButtons = (
          }
          const uncleButtonsHeight = getElementHeight(uncleButtons);
 
-         // When we position the thing within a thing's bottom, it's going to be relative to the bottom of the offsetParent. To get the distance between the offsetParent and the bottom of the screen, we take the offsetRect.bottom (which puts us at the top of the screen), subtract the window.innerHeight (which puts us at the bottom of the screen), and then add the uncleButtonsHeight to get above those. For some reason I can't figure out, we don't need to add the bottomBarHeight here.
+         // When we position the thing within a thing's bottom, it's going to be relative to the bottom of the offsetParent. To get the distance between the offsetParent and the bottom of the screen, we take the offsetRect.bottom (which puts us at the top of the screen), subtract the window.innerHeight (which puts us at the bottom of the screen), and then add the uncleButtonsHeight to get above those. We don't need to add the bottomBarHeight here because we're adding it when we do the final calculation below. For that same reason, we need to subtract withinSidebarBottom, otherwise for thingsWithinThings within the sidebar, it will be added when it's not needed (because the containing thing is the parent, not the sidebar)
          thingWithinThingBottom =
-            offsetRect.bottom - window.innerHeight + uncleButtonsHeight;
+            offsetRect.bottom -
+            window.innerHeight +
+            uncleButtonsHeight -
+            withinSidebarBottom;
       }
       buttons.style.bottom = `${bottomBarHeight +
          withinSidebarBottom +

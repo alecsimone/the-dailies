@@ -511,16 +511,14 @@ const FlexibleThingCard = ({
       }
    };
 
-   console.log(Router.router.route, Router.router.query);
-
    const [deleteThing, { loading: deleting }] = useMutation(
       DELETE_THING_MUTATION,
       {
          onCompleted: data => {
             // We only want to send the user to the homepage if they're currently viewing the page for the thing they just deleted
             if (
-               Router.router.route === '/thing' &&
-               Router.router.query.id === data.deleteThing.id
+               Router?.router?.route === '/thing' &&
+               Router?.router?.query?.id === data?.deleteThing?.id
             ) {
                Router.push({
                   pathname: '/'
