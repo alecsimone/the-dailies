@@ -1,7 +1,12 @@
 import { useContext } from 'react';
 import { ThemeContext } from 'styled-components';
 
-const TagIcon = ({ onClick, className, color = 'lowContrastGrey' }) => {
+const TagIcon = ({
+   onClick,
+   className,
+   color = 'lowContrastGrey',
+   titleText
+}) => {
    const theme = useContext(ThemeContext);
    let computedColor;
    if (theme[color] != null) {
@@ -18,6 +23,7 @@ const TagIcon = ({ onClick, className, color = 'lowContrastGrey' }) => {
          viewBox="0 0 214.76 130.08"
          onClick={onClick}
       >
+         <title>{titleText != null ? titleText : 'Tags'}</title>
          <polygon
             points="12.26 65.04 64.07 9 205.76 9 205.76 121.08 64.07 121.08 12.26 65.04"
             fill="none"

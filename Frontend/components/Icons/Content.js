@@ -1,7 +1,12 @@
 import { useContext } from 'react';
 import { ThemeContext } from 'styled-components';
 
-const ContentIcon = ({ onClick, className, color = 'lowContrastGrey' }) => {
+const ContentIcon = ({
+   onClick,
+   className,
+   color = 'lowContrastGrey',
+   titleText
+}) => {
    const theme = useContext(ThemeContext);
    let computedColor;
    if (theme[color] != null) {
@@ -20,6 +25,7 @@ const ContentIcon = ({ onClick, className, color = 'lowContrastGrey' }) => {
          viewBox="0 0 200 200"
          onClick={onClick}
       >
+         <title>{titleText != null ? titleText : 'Content'}</title>
          <rect
             x="12"
             y="12"

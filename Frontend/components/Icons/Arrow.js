@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { ThemeContext } from 'styled-components';
 
-const ArrowIcon = ({ onClick, className, pointing = 'down' }) => {
+const ArrowIcon = ({ onClick, className, pointing = 'down', titleText }) => {
    const { mainText } = useContext(ThemeContext);
    const style = {
       transition: 'all .3s',
@@ -31,6 +31,7 @@ const ArrowIcon = ({ onClick, className, pointing = 'down' }) => {
          onClick={onClick}
          style={style}
       >
+         {titleText != null && <title>{titleText}</title>}
          <rect
             x="70.35"
             y="67.57"

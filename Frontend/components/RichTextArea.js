@@ -139,6 +139,7 @@ const RichTextArea = ({
    }, [inputRef]);
 
    const secondMiddleOrRightClickListener = e => {
+      if (inputRef.current == null) return;
       if (e.button === 1 || e.button === 2) {
          if (originalText.current !== inputRef.current.value) {
             if (!confirm('Discard changes?')) {

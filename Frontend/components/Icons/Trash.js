@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { ThemeContext } from 'styled-components';
 
-const TrashIcon = ({ onClick, className, onMouseDown }) => {
+const TrashIcon = ({ onClick, className, onMouseDown, titleText }) => {
    const { lowContrastGrey } = useContext(ThemeContext);
    return (
       <svg
@@ -20,6 +20,7 @@ const TrashIcon = ({ onClick, className, onMouseDown }) => {
             strokeMiterlimit="10"
             strokeWidth="12"
          />
+         {titleText != null && <title>{titleText}</title>}
          <rect
             x="12.3"
             y="35.04"

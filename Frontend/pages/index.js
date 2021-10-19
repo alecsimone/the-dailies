@@ -34,12 +34,18 @@ const StyledHomepage = styled.section`
                font-size: ${props => props.theme.bigText};
             }
          }
-         .contentSectionWrapper
-            .locked
-            .contentBlock.clickToShowComments
+         .contentSectionWrapper .locked .contentBlock.clickToShowComments {
             .newcontentButtons.showingComments {
-            ${props => props.theme.mobileBreakpoint} {
-               margin-left: -3rem;
+               ${props => props.theme.mobileBreakpoint} {
+                  margin-left: -3rem;
+               }
+            }
+            .flexibleThingCard
+               .contentSectionWrapper
+               .locked
+               .contentBlock.clickToShowComments
+               .newcontentButtons.showingComments {
+               margin-left: 0; /* For things within things, we don't want to give the newcontent buttons a negative margin left when showing comments */
             }
          }
          .flexibleThingCard {

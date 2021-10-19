@@ -192,6 +192,15 @@ const StyledContent = styled.section`
                            }
                            .flexibleThingCard {
                               ${props => props.theme.thingColors};
+                              .contentSectionWrapper .contentBlock .contentArea .contentPiece .overflowWrapper .contentAndCommentContainer.cts {
+                                 .contentWrapper {
+                                    max-width: 50%;
+                                    min-width: 50%;
+                                 }
+                                 .commentsWrapper {
+                                    width: 50%;
+                                 }
+                              }
                            }
                         }
                      }
@@ -359,6 +368,13 @@ const StyledContent = styled.section`
                &.mini {
                   margin: 0;
                }
+            }
+            .flexibleThingCard .votebar {
+               margin-top: 2rem; // If we have a flexible thing card embedded in our content, we need the votebar to keep the margin-top. The selector above is for the votebar that is part of the content piece
+               &.mini {
+                  margin: 0; // However, if this is the mini votebar inside the flexible thing card buttons, we don't want a margin
+               }
+               width: 100%;
             }
          }
          .buttonsPlaceholder {

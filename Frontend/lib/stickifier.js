@@ -13,12 +13,12 @@ const getIntPxFromStyleString = rawString => {
 };
 export { getIntPxFromStyleString };
 
-const getElementHeight = buttons => {
-   let buttonsHeight = buttons.offsetHeight;
-   const buttonStyle = window.getComputedStyle(buttons);
-   const buttonsMargin = getIntPxFromStyleString(buttonStyle.marginTop);
-   buttonsHeight += buttonsMargin;
-   return buttonsHeight;
+const getElementHeight = element => {
+   let elementHeight = element.offsetHeight;
+   const elementStyle = window.getComputedStyle(element);
+   const elementMargin = getIntPxFromStyleString(elementStyle.marginTop);
+   elementHeight += elementMargin;
+   return elementHeight;
 };
 
 const describeViewport = scroller => {
@@ -51,20 +51,21 @@ const stickifyButtons = (
    blockRect,
    bottomBarHeight
 ) => {
-   const allButtonsPlaceholders = blockObj.block.querySelectorAll(
+   let buttonsPlaceholder;
+   const buttonsPlaceholderArray = blockObj.block.querySelectorAll(
       '.buttonsPlaceholder'
    );
-   let buttonsPlaceholder;
-   for (const theseButtons of allButtonsPlaceholders) {
-      if (
-         theseButtons
-            .closest('.flexibleThingCard')
-            ?.parentElement.closest('.flexibleThingCard') == null
-      ) {
-         buttonsPlaceholder = theseButtons;
+   for (const buttonsPlaceholderTest of buttonsPlaceholderArray) {
+      if (buttonsPlaceholderTest.closest('.contentBlock') === blockObj.block) {
+         buttonsPlaceholder = buttonsPlaceholderTest;
       }
    }
 
+   const { offsetParent } = blockObj.block;
+   const offsetRect = offsetParent.getBoundingClientRect();
+   const offsetStyle = window.getComputedStyle(offsetParent);
+
+   // (offsetRect.bottom - blockRect.bottom)
    // If the sticky top of the element is onscreen by less than the height of the buttons plus a 6rem buffer, and the bottom of the element is not on screen, put them 8rem from the top of the element
    if (
       blockObj.blockStickyTop < viewableBottom && // If the sticky top is above the bottom of the screen
@@ -86,7 +87,22 @@ const stickifyButtons = (
    ) {
       // Then we fix the buttons to the bottom of the screen
       buttons.style.position = 'fixed';
-      buttons.style.left = `${blockRect.left - stickingData.leftAdjustment}px`;
+
+      const grandParentThing = blockObj.block
+         .closest('.flexibleThingCard')
+         .parentElement.closest('.flexibleThingCard');
+      if (grandParentThing != null) {
+         const offsetMarginLeft = getIntPxFromStyleString(
+            offsetStyle.marginLeft
+         );
+         buttons.style.left = `${blockRect.left -
+            stickingData.leftAdjustment -
+            offsetRect.left +
+            offsetMarginLeft}px`;
+      } else {
+         buttons.style.left = `${blockRect.left -
+            stickingData.leftAdjustment}px`;
+      }
       buttons.style.width = `${buttonsWidth}px`;
       buttons.style.top = 'initial';
 
@@ -103,9 +119,34 @@ const stickifyButtons = (
             withinSidebarBottom = sidebarRect.bottom - viewableBottom; // Because the sidebar has a transform applied to it, it becomes its own coordinate system for our fixed positioning. So to fix the buttons at the bottom of the screen, they need a bottom property that's equal to the distance between the bottom of the sidebar and the viewable bottom of the screen.
          }
       }
-      buttons.style.bottom = `${
-         sidebar == null ? bottomBarHeight : withinSidebarBottom
-      }px`;
+      let thingWithinThingBottom = 0;
+
+      if (grandParentThing != null) {
+         // We're going to need to put the buttons for this block above the buttons for the parent block, so first we need to figure out how tall those are
+         let uncleButtons;
+         const uncleButtonsArray = grandParentThing.querySelectorAll(
+            '.newcontentButtons'
+         );
+         for (const uncleButtonsTest of uncleButtonsArray) {
+            if (
+               uncleButtonsTest.closest('.flexibleThingCard') ===
+               grandParentThing
+            ) {
+               uncleButtons = uncleButtonsTest;
+            }
+         }
+         const uncleButtonsHeight = getElementHeight(uncleButtons);
+
+         // When we position the thing within a thing's bottom, it's going to be relative to the bottom of the offsetParent. To get the distance between the offsetParent and the bottom of the screen, we take the offsetRect.bottom (which puts us at the top of the screen), subtract the window.innerHeight (which puts us at the bottom of the screen), and then add the uncleButtonsHeight to get above those, and the bottomBarHeight in case we need to get above that too.
+         thingWithinThingBottom =
+            offsetRect.bottom -
+            window.innerHeight +
+            uncleButtonsHeight +
+            bottomBarHeight;
+      }
+      buttons.style.bottom = `${bottomBarHeight +
+         withinSidebarBottom +
+         thingWithinThingBottom}px`;
 
       // Then we make the buttonsPlaceholder the height of the buttons
       buttonsPlaceholder.style.height = `${buttonsHeight}px`;
@@ -130,7 +171,15 @@ const stickifyComments = (
    headerHeight
 ) => {
    // We don't need to limit our loop to only blocks that actually have comments in them, as we want to keep the add comment form sticky too. So a simple search for the commentsArea on all blocks will suffice.
-   const comments = blockObj.block.querySelector('.commentsArea');
+   let comments;
+   const commentsArray = blockObj.block.querySelectorAll('.commentsArea');
+   for (const commentsTest of commentsArray) {
+      // Let's make sure we have the right actualContent, in case this contentBlock has a thing with contentBlocks of its own embedded inside it
+      if (commentsTest.closest('.contentBlock') === blockObj.block) {
+         comments = commentsTest;
+      }
+   }
+
    const commentsHeight = comments.offsetHeight;
 
    // The bottom of the commentsArea's parent ends above the newcontentButtons, so we need to adjust our boundaries to account for that. The commentsArea also has a marginTop on it, and we need to adjust for that too
@@ -142,9 +191,16 @@ const stickifyComments = (
 
    if (comments != null) {
       // However, we do want to cut out any blocks where the commentsArea is bigger than the content area, as those don't need to be sticky
-      const theActualContent = blockObj.block.querySelector(
+      let theActualContent;
+      const actualContentArray = blockObj.block.querySelectorAll(
          '.theActualContent'
       );
+      for (const actualContentTest of actualContentArray) {
+         // Let's make sure we have the right actualContent, in case this contentBlock has a thing with contentBlocks of its own embedded inside it
+         if (actualContentTest.closest('.contentBlock') === blockObj.block) {
+            theActualContent = actualContentTest;
+         }
+      }
 
       if (theActualContent.offsetHeight >= commentsHeight) {
          // If the top of the block is above the top of the viewport and the bottom of the block is below the top of the viewport by MORE than the height of the comments box, we want to fix the comments to the top of the screen
@@ -202,15 +258,33 @@ const stickifyStyleButtons = (
    headerHeight
 ) => {
    // First we'll get the placeholder styleButtons for this block
-   const styleButtonsPlaceholder = blockObj.block.querySelector(
+   let styleButtonsPlaceholder;
+   const styleButtonsPlaceholderArray = blockObj.block.querySelectorAll(
       '.contentWrapper .stylingButtonsPlaceholder'
    );
+   for (const styleButtonsPlaceholderTest of styleButtonsPlaceholderArray) {
+      // Let's make sure we have the right actualContent, in case this contentBlock has a thing with contentBlocks of its own embedded inside it
+      if (
+         styleButtonsPlaceholderTest.closest('.contentBlock') === blockObj.block
+      ) {
+         styleButtonsPlaceholder = styleButtonsPlaceholderTest;
+      }
+   }
 
    // Then we'll get the height of the styleButtons
    const styleButtonsHeight = getElementHeight(styleButtons);
 
    // The textarea these styleButtons apply to has a different bottom from the blockBottom, so we need to find that next
-   const textArea = blockObj.block.querySelector('.contentWrapper textarea');
+   let textArea;
+   const textAreaArray = blockObj.block.querySelectorAll(
+      ':scope .contentWrapper textarea'
+   ); // see https://developer.mozilla.org/en-US/docs/Web/API/Element/querySelectorAlll#user_notes for why we need that ":scope" pseudo-class
+   for (const textAreaTest of textAreaArray) {
+      // Let's make sure we have the right actualContent, in case this contentBlock has a thing with contentBlocks of its own embedded inside it
+      if (textAreaTest.closest('.contentBlock') === blockObj.block) {
+         textArea = textAreaTest;
+      }
+   }
    const textAreaRect = textArea.getBoundingClientRect();
    const textAreaBottom = textAreaRect.bottom;
 
@@ -254,7 +328,14 @@ const stickifyStyleButtons = (
 const makeStickingData = block => {
    const blockRect = block.getBoundingClientRect();
 
-   const theActualContent = block.querySelector('.theActualContent');
+   let theActualContent;
+   const actualContentArray = block.querySelectorAll('.theActualContent');
+   for (const actualContentTest of actualContentArray) {
+      // Let's make sure we have the right actualContent, in case this contentBlock has a thing with contentBlocks of its own embedded inside it
+      if (actualContentTest.closest('.contentBlock') === block) {
+         theActualContent = actualContentTest;
+      }
+   }
    let topDifference = 0;
    let blockPaddingTop = 0;
    if (theActualContent != null) {
@@ -272,7 +353,14 @@ const makeStickingData = block => {
    }
 
    // We also might need to account for a difference in left positioning on the buttons (currently this is because of a negative margin on the buttons)
-   const buttons = block.querySelector('.newcontentButtons');
+   const buttonsArray = block.querySelectorAll('.newcontentButtons');
+   let buttons;
+   for (const buttonsTest of buttonsArray) {
+      // Let's make sure we have the right set of buttons, in case this contentBlock has a thing with contentBlocks of its own embedded inside it
+      if (buttonsTest.closest('.contentBlock') === block) {
+         buttons = buttonsTest;
+      }
+   }
    const buttonsStyle = window.getComputedStyle(buttons);
    const buttonsMarginLeftRaw = buttonsStyle.marginLeft;
    const buttonsMarginLeft = getIntPxFromStyleString(buttonsMarginLeftRaw);
@@ -299,7 +387,15 @@ const makeBlockPositionObject = (block, stickingData) => {
    const blockTop = parentOffset + blockOffset;
    const blockBottom = blockTop + blockHeight;
 
-   const buttons = block.querySelector('.buttonsContainer');
+   let buttons;
+   const buttonsArray = block.querySelectorAll('.buttonsContainer');
+   if (buttonsArray == null || buttonsArray.length === 0) return;
+
+   for (const buttonsTest of buttonsArray) {
+      if (buttonsTest.closest('.contentBlock') === block) {
+         buttons = buttonsTest;
+      }
+   }
    if (buttons == null) return;
 
    const buttonsHeight = getElementHeight(buttons);
@@ -336,15 +432,11 @@ const stickifyBlock = (block, scroller) => {
    const oneRem = getOneRem();
 
    // First we'll deal with the content buttons
-   const allButtons = blockObj.block.querySelectorAll('.newcontentButtons');
    let buttons;
-   for (const theseButtons of allButtons) {
-      if (
-         theseButtons
-            .closest('.flexibleThingCard')
-            ?.parentElement.closest('.flexibleThingCard') == null
-      ) {
-         buttons = theseButtons;
+   const buttonsArray = block.querySelectorAll('.newcontentButtons');
+   for (const buttonsTest of buttonsArray) {
+      if (buttonsTest.closest('.contentBlock') === block) {
+         buttons = buttonsTest;
       }
    }
 
@@ -381,9 +473,22 @@ const stickifyBlock = (block, scroller) => {
    }
 
    // Next up, the style buttons. We're only going to bother making the ones for editing the content piece sticky (not the ones for editing a comment), so we're including the .contentWrapper selector
-   const styleButtons = blockObj.block.querySelector(
-      '.contentWrapper .stylingButtonsBar'
-   );
+   let styleButtons;
+   const styleButtonsArray = block.querySelectorAll(
+      ':scope .contentWrapper .stylingButtonsBar'
+   ); // see https://developer.mozilla.org/en-US/docs/Web/API/Element/querySelectorAlll#user_notes for why we need that ":scope" pseudo-class
+   for (const styleButtonsTest of styleButtonsArray) {
+      // Let's make sure we have the right actualContent, in case this contentBlock has a thing with contentBlocks of its own embedded inside it
+      if (styleButtonsTest.closest('.contentBlock') === block) {
+         // However, these style buttons could also be from the comments SECTION on an embedded thing card. If that's the case, the closest flexibleThingCard to them will be different from the closest flexibleThingCard to our original block. So we check for that too.
+         if (
+            styleButtonsTest.closest('.flexibleThingCard') ===
+            block.closest('.flexibleThingCard')
+         ) {
+            styleButtons = styleButtonsTest;
+         }
+      }
+   }
    if (styleButtons) {
       stickifyStyleButtons(
          styleButtons,

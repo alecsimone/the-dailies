@@ -1,7 +1,12 @@
 import { useContext } from 'react';
 import { ThemeContext } from 'styled-components';
 
-const ImageIcon = ({ onClick, className, color = 'lowContrastGrey' }) => {
+const ImageIcon = ({
+   onClick,
+   className,
+   color = 'lowContrastGrey',
+   titleText
+}) => {
    const theme = useContext(ThemeContext);
    let computedColor;
    if (theme[color] != null) {
@@ -18,6 +23,7 @@ const ImageIcon = ({ onClick, className, color = 'lowContrastGrey' }) => {
          viewBox="0 0 200 200"
          onClick={onClick}
       >
+         <title>{titleText != null ? titleText : 'Featured Image'}</title>
          <polygon
             points="32 154 32 135.37 62.74 103.7 78.58 119.53 127.94 70.16 168 110.22 168 154 32 154"
             fill={computedColor}

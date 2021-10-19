@@ -127,7 +127,7 @@ const StyledFlexibleThingCard = styled.article`
          .content {
             margin-top: 0;
             .contentSectionWrapper .contentBlock {
-               padding: 1rem 0;
+               padding: 1rem 0 0 0;
                .contentArea .contentPiece {
                   padding: 0;
                   ${props => props.theme.midScreenBreakpoint} {
@@ -622,6 +622,11 @@ const FlexibleThingCard = ({
                            expansion.toggleDirection
                         );
                      }}
+                     titleText={`${
+                        expansion.toggleDirection === 'up'
+                           ? 'Collapse'
+                           : 'Expand'
+                     } Thing`}
                   />
                   {(expanded ||
                      expansion.showingAllButtons ||
@@ -636,6 +641,9 @@ const FlexibleThingCard = ({
                               !expansion.featuredImage
                            )
                         }
+                        titleText={`${
+                           expansion.featuredImage ? 'Hide' : 'Show'
+                        } Featured Image`}
                      />
                   )}
                   {(expanded ||
@@ -645,6 +653,7 @@ const FlexibleThingCard = ({
                         onClick={() =>
                            expansionHandler('taxes', !expansion.taxes)
                         }
+                        titleText={`${expansion.taxes ? 'Hide' : 'Show'} Tags`}
                      />
                   )}
                   {(expanded ||
@@ -656,6 +665,9 @@ const FlexibleThingCard = ({
                         onClick={() =>
                            expansionHandler('content', !expansion.content)
                         }
+                        titleText={`${
+                           expansion.content ? 'Hide' : 'Show'
+                        } Content`}
                      />
                   )}
                   <CommentsButton
@@ -671,13 +683,16 @@ const FlexibleThingCard = ({
                      }
                      privacy={privacy}
                   />
-                  <button
-                     className="colors"
-                     style={{ background: highlightColor }}
-                     onClick={() =>
-                        expansionHandler('colors', !expansion.colors)
-                     }
-                  />
+                  {canEdit && (expanded || expansion.showingAllButtons) && (
+                     <button
+                        className="colors"
+                        style={{ background: highlightColor }}
+                        onClick={() =>
+                           expansionHandler('colors', !expansion.colors)
+                        }
+                        title="Set Color"
+                     />
+                  )}
                   {canEdit && (
                      <TrashIcon
                         classname={deleting ? 'trash deleting' : 'trash'}
@@ -694,6 +709,7 @@ const FlexibleThingCard = ({
                               });
                            }
                         }}
+                        titleText="Delete Thing"
                      />
                   )}
                   {!expansion.votebar && (

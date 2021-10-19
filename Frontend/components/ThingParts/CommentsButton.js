@@ -47,7 +47,10 @@ const StyledCommentsButton = styled.div`
 
 const CommentsButton = ({ onClick, count }) => (
    <StyledCommentsButton className="commentButtonWrapper" onClick={onClick}>
-      <div className="commentButton">
+      <div
+         className="commentButton"
+         title={`${count} Comment${count !== 1 ? 's' : ''}`}
+      >
          <span className="commentCount">{count < 100 ? count : '+'}</span>
          <CommentIcon />
       </div>

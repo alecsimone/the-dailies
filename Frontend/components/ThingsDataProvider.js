@@ -56,6 +56,15 @@ const updateBlocksList = (
    // If we didn't already know about the block, and if the observer is set up, we'll observe the block
    blocksArray.forEach(block => {
       if (!contentBlocksRef.current.includes(block)) {
+         // However, if this is a thing within a thing within a thing (or more), we don't want to do any of this
+         if (
+            block
+               .closest('.flexibleThingCard')
+               ?.parentElement?.closest('.flexibleThingCard')
+               ?.parentElement?.closest('.flexibleThingCard') != null
+         )
+            return;
+
          if (observerRef.current) {
             observerRef.current.observe(block);
          }

@@ -231,6 +231,16 @@ const FlexibleContentPiece = ({
 
    useEffect(() => {
       // Once the content piece has rendered, we just want to stickify it one time, because otherwise it won't get stickified until something scrolls
+
+      // However, if it's a thing within a thing within a thing, we don't want to do anything, cause that's just too much, man
+      if (
+         contentContainerRef.current
+            .closest('.flexibleThingCard')
+            ?.parentElement?.closest('.flexibleThingCard')
+            ?.parentElement?.closest('.flexibleThingCard') != null
+      )
+         return;
+
       // First we have to figure out what its scrolling parent is
       const thisBlock = contentContainerRef.current;
       const scrollingParent = getScrollingParent(thisBlock);
@@ -542,6 +552,7 @@ const FlexibleContentPiece = ({
       }
 
       if (e.button === 1 || e.button === 2) {
+         e.stopPropagation();
          window.setTimeout(
             () =>
                contentContainerRef.current.addEventListener(
@@ -550,14 +561,14 @@ const FlexibleContentPiece = ({
                ),
             1
          );
-         window.setTimeout(
-            () =>
+         window.setTimeout(() => {
+            if (contentContainerRef.current != null) {
                contentContainerRef.current.removeEventListener(
                   'mousedown',
                   secondMiddleOrRightClickListener
-               ),
-            500
-         );
+               );
+            }
+         }, 500);
       }
    };
 
@@ -601,11 +612,10 @@ const FlexibleContentPiece = ({
          style={{ zIndex }} // We need to reverse the stacking context order so that each content piece is below the one before it, otherwise the next content piece will cover up the addToInterface, or anything else we might have pop out of the buttons
          ref={contentContainerRef}
       >
-         <div className="contentArea">
+         <div className="contentArea" onMouseDown={handleMouseDown}>
             <div
                className={canEdit ? 'contentPiece editable' : 'contentPiece'}
                key={[pieceID]}
-               onMouseDown={handleMouseDown}
             >
                {contentArea}
             </div>
