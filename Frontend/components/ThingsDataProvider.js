@@ -33,7 +33,9 @@ const getScrollingParent = el => {
 };
 export { getScrollingParent };
 
-const addThingID = (id, setThingIDs) => {
+const addThingID = (id, setThingIDs, thingIDs) => {
+   if (thingIDs.includes(id)) return;
+   console.log('Adding a thing ID');
    setThingIDs(prevState => {
       if (!prevState.includes(id)) {
          return [...prevState, id];
@@ -41,7 +43,9 @@ const addThingID = (id, setThingIDs) => {
       return prevState;
    });
 };
-const removeThingID = (id, setThingIDs) => {
+const removeThingID = (id, setThingIDs, thingIDs) => {
+   if (!thingIDs.includes(id)) return;
+   console.log('Removing a ThingID');
    setThingIDs(prevState => prevState.filter(thingID => thingID !== id));
 };
 
@@ -161,8 +165,8 @@ const ThingsDataProvider = ({ children }) => {
    });
 
    // These functions will be put in context, and FlexibleThingCards will use them to check in and check out when they render / unrender so we can keep track of all the things we're displaying
-   const addThingIDHandler = id => addThingID(id, setThingIDs);
-   const removeThingIDHandler = id => removeThingID(id, setThingIDs);
+   const addThingIDHandler = id => addThingID(id, setThingIDs, thingIDs);
+   const removeThingIDHandler = id => removeThingID(id, setThingIDs, thingIDs);
 
    const thingsData = {
       addThingID: addThingIDHandler,
