@@ -137,12 +137,9 @@ const stickifyButtons = (
          }
          const uncleButtonsHeight = getElementHeight(uncleButtons);
 
-         // When we position the thing within a thing's bottom, it's going to be relative to the bottom of the offsetParent. To get the distance between the offsetParent and the bottom of the screen, we take the offsetRect.bottom (which puts us at the top of the screen), subtract the window.innerHeight (which puts us at the bottom of the screen), and then add the uncleButtonsHeight to get above those, and the bottomBarHeight in case we need to get above that too.
+         // When we position the thing within a thing's bottom, it's going to be relative to the bottom of the offsetParent. To get the distance between the offsetParent and the bottom of the screen, we take the offsetRect.bottom (which puts us at the top of the screen), subtract the window.innerHeight (which puts us at the bottom of the screen), and then add the uncleButtonsHeight to get above those. For some reason I can't figure out, we don't need to add the bottomBarHeight here.
          thingWithinThingBottom =
-            offsetRect.bottom -
-            window.innerHeight +
-            uncleButtonsHeight +
-            bottomBarHeight;
+            offsetRect.bottom - window.innerHeight + uncleButtonsHeight;
       }
       buttons.style.bottom = `${bottomBarHeight +
          withinSidebarBottom +
