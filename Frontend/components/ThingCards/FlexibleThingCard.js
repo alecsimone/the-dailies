@@ -27,6 +27,7 @@ import ContentIcon from '../Icons/Content';
 import ImageIcon from '../Icons/ImageIcon';
 import LockIcon from '../Icons/Lock';
 import FlexibleContent from '../ThingParts/Content/FlexibleContent';
+import { MY_THINGS_QUERY } from '../Archives/MyThings';
 
 const DELETE_THING_MUTATION = gql`
    mutation DELETE_THING_MUTATION($id: ID!) {
@@ -510,17 +511,26 @@ const FlexibleThingCard = ({
       }
    };
 
+   console.log(Router.router.route, Router.router.query);
+
    const [deleteThing, { loading: deleting }] = useMutation(
       DELETE_THING_MUTATION,
       {
          onCompleted: data => {
-            Router.push({
-               pathname: '/'
-            });
+            // We only want to send the user to the homepage if they're currently viewing the page for the thing they just deleted
+            if (
+               Router.router.route === '/thing' &&
+               Router.router.query.id === data.deleteThing.id
+            ) {
+               Router.push({
+                  pathname: '/'
+               });
+            }
          },
          refetchQueries: [
             { query: ALL_THINGS_QUERY },
-            { query: PUBLIC_THINGS_QUERY }
+            { query: PUBLIC_THINGS_QUERY },
+            { query: MY_THINGS_QUERY }
          ],
          onError: err => alert(err.message)
       }

@@ -44,6 +44,11 @@ const StyledSingleThing = styled.section`
       width: 100%;
       margin: 3rem auto;
    }
+   .noThing {
+      margin: 3rem auto;
+      text-align: center;
+      font-size: ${props => props.theme.bigText};
+   }
 `;
 
 const SingleThing = ({ query }) => {
@@ -122,6 +127,14 @@ const SingleThing = ({ query }) => {
       };
    } else {
       dataForContext = data.thing;
+   }
+
+   if (data == null || data.thing == null) {
+      return (
+         <StyledSingleThing>
+            <div className="noThing">No thing found for that ID</div>
+         </StyledSingleThing>
+      );
    }
 
    let ogDescription = 'A Thing you might find interesting';

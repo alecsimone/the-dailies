@@ -10,6 +10,7 @@ import { setAlpha, setLightness, setSaturation } from '../../styles/functions';
 import X from '../Icons/X';
 import { ALL_THINGS_QUERY } from '../../lib/ThingHandling';
 import { PUBLIC_THINGS_QUERY } from '../Archives/PublicThings';
+import { MY_THINGS_QUERY } from '../Archives/MyThings';
 
 const StyledNav = styled.nav`
    display: flex;
@@ -60,7 +61,8 @@ const NavButtons = ({ showSearch, setShowSearch, search }) => {
       },
       refetchQueries: [
          { query: ALL_THINGS_QUERY },
-         { query: PUBLIC_THINGS_QUERY }
+         { query: PUBLIC_THINGS_QUERY },
+         { query: MY_THINGS_QUERY }
       ],
       onError: err => {
          const newPostButton = document.querySelector('.newPost');
