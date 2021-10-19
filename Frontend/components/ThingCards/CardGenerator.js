@@ -41,18 +41,6 @@ const CardGenerator = ({
             borderSide={borderSide}
          />
       );
-      // if (cardType === 'regular') {
-      //    return (
-      //       <ThingCard
-      //          data={data.thing}
-      //          borderSide={borderSide}
-      //          setExpanded={setExpanded}
-      //       />
-      //    );
-      // }
-      // return (
-      //    <SmallThingCard data={data.thing} key={id} fullQuery={fullQuery} />
-      // );
    }
    if (error) {
       return <Error error={error} />;

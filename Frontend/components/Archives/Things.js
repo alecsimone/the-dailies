@@ -77,19 +77,6 @@ const Things = ({ things, displayType, cardSize, noPic, borderSide }) => {
             noPic={noPic}
          />
       );
-      // if (cardSize === 'regular') {
-      //    return (
-      //       <ThingCard data={thing} key={thing.id} borderSide={borderSide} />
-      //    );
-      // }
-      // return (
-      //    <SmallThingCard
-      //       data={thing}
-      //       key={thing.id}
-      //       noPic={noPic}
-      //       borderSide={borderSide}
-      //    />
-      // );
    });
    if (displayType === 'grid') {
       return (

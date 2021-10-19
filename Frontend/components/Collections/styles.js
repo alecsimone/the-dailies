@@ -186,7 +186,11 @@ const StyledCard = styled.div`
    article {
       width: 100%;
       border-right: none;
+      border-left: none;
       max-width: none;
+      header {
+         display: block;
+      }
       &.smallThingCard {
          opacity: 1;
       }

@@ -1,7 +1,8 @@
 import { useMutation } from '@apollo/react-hooks';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
-import SmallThingCard from '../ThingCards/SmallThingCard';
+import { MemberContext } from '../Account/MemberProvider';
+import FlexibleThingCard from '../ThingCards/FlexibleThingCard';
 import {
    COPY_THING_TO_GROUP_MUTATION,
    HANDLE_CARD_EXPANSION_MUTATION,
@@ -20,6 +21,8 @@ const CollectionsCard = ({
    hideThingHandler,
    isExpanded
 }) => {
+   const { me } = useContext(MemberContext);
+
    const [showingCopyTargets, setShowingCopyTargets] = useState(false);
 
    const [copyThingToCollectionGroup] = useMutation(
@@ -123,6 +126,14 @@ const CollectionsCard = ({
       </div>
    );
 
+   let canEdit = false;
+   if (me && data?.author?.id === me.id) {
+      canEdit = true;
+   }
+   if (me && ['Admin', 'Editor', 'Moderator'].includes(me.role)) {
+      canEdit = true;
+   }
+
    return (
       <Draggable
          draggableId={`${groupID}-${id}`}
@@ -137,12 +148,15 @@ const CollectionsCard = ({
                ref={provided.innerRef}
                key={`${groupID}-${id}`}
             >
-               <SmallThingCard
-                  data={data}
+               <FlexibleThingCard
                   key={id}
+                  expanded={isExpanded}
+                  thingData={data}
+                  contentType="single"
+                  canEdit={canEdit}
+                  titleLink
                   borderSide="top"
-                  expansionCallback={expandCard}
-                  defaultExpansion={isExpanded}
+                  noPic
                />
                <div
                   className={
