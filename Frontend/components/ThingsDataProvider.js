@@ -35,7 +35,6 @@ export { getScrollingParent };
 
 const addThingID = (id, setThingIDs, thingIDs) => {
    if (thingIDs.includes(id)) return;
-   console.log('Adding a thing ID');
    setThingIDs(prevState => {
       if (!prevState.includes(id)) {
          return [...prevState, id];
@@ -45,7 +44,6 @@ const addThingID = (id, setThingIDs, thingIDs) => {
 };
 const removeThingID = (id, setThingIDs, thingIDs) => {
    if (!thingIDs.includes(id)) return;
-   console.log('Removing a ThingID');
    setThingIDs(prevState => prevState.filter(thingID => thingID !== id));
 };
 

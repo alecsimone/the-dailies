@@ -23,10 +23,9 @@ const StyledNewThing = styled.section`
 const NewThing = () => {
    const [newBlankThing] = useMutation(NEW_BLANK_THING, {
       onCompleted: data => {
-         console.log('yeah, that happened');
          Router.push({
             pathname: '/thing',
-            query: { id: data.newBlankThing.id }
+            query: { id: data.newBlankThing.id, new: true }
          });
       },
       onError: err => alert(err.message),

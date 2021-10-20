@@ -129,7 +129,7 @@ const SingleThing = ({ query }) => {
       dataForContext = data.thing;
    }
 
-   if (data == null || data.thing == null) {
+   if ((data == null || data.thing == null) && !loading) {
       return (
          <StyledSingleThing>
             <div className="noThing">No thing found for that ID</div>
