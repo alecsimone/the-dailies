@@ -1,6 +1,8 @@
-import { useMutation } from '@apollo/react-hooks';
+import { useApolloClient, useMutation } from '@apollo/react-hooks';
+import gql from 'graphql-tag';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import Reorder from 'react-reorder';
+import { contentPieceFields } from '../../../lib/CardInterfaces';
 import {
    ADD_CONTENTPIECE_MUTATION,
    DELETE_CONTENTPIECE_MUTATION,
@@ -31,6 +33,19 @@ const FlexibleContent = ({
    contentOrder,
    unsavedNewContent
 }) => {
+   // const apolloClient = useApolloClient();
+   // const { content: cachedContent } = apolloClient.readFragment({
+   //    id: `Thing:${thingID}`,
+   //    fragment: gql`
+   //       fragment ThingContent on Thing {
+   //          content {
+   //             ${contentPieceFields}
+   //          }
+   //       }
+   //    `
+   // });
+   // console.log(cachedContent);
+
    // First we'll set up our mutation hooks
    const [storeUnsavedThingChanges] = useMutation(
       STORE_UNSAVED_CONTENT_MUTATION,

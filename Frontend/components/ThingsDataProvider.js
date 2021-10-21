@@ -157,6 +157,7 @@ const updateScrollersList = (
 const ThingsDataProvider = ({ children }) => {
    // The first role of this component is to keep track of all the various things we've rendered on this page and handle a subscription to them so they stay up to date.
    const [thingIDs, setThingIDs] = useState([]);
+   console.log(thingIDs.length);
 
    const { data, loading } = useSubscription(MANY_THINGS_SUBSCRIPTION, {
       variables: { IDs: thingIDs }

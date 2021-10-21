@@ -24,8 +24,9 @@ const StyledHomepage = styled.section`
       ${props => props.theme.scroll};
       .things .flexibleThingCard {
          margin: 0 auto 2rem;
-         max-width: min(1200px, calc(100% - 1rem));
+         max-width: 100%;
          ${props => props.theme.mobileBreakpoint} {
+            max-width: min(1200px, calc(100% - 1rem));
             margin-bottom: 4rem;
          }
          header.flexibleThingHeader .headerTop .headerRight .titleWrapper {
