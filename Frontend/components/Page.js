@@ -724,6 +724,7 @@ const Page = ({ children, pageProps }) => {
       window.visualViewport.addEventListener('resize', adjustViewport);
    }, [adjustViewport]);
 
+   // Little tool to block the initial render so we can profile it
    // const [initialRenderBlock, setInitialRenderBlock] = useState(true);
    // if (initialRenderBlock) {
    //    return (

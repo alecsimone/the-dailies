@@ -134,7 +134,7 @@ async function myThings(
    const queryObj = {
       where,
       orderBy,
-      first: 20
+      first: 10
    };
 
    if (cursor != null) {
@@ -288,7 +288,7 @@ async function allThings(parent, { cursor }, ctx, info) {
          {
             where,
             orderBy: 'createdAt_DESC',
-            first: 8
+            first: 2
          },
          info
       )

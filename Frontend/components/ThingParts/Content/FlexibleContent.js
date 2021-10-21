@@ -34,7 +34,7 @@ const FlexibleContent = ({
    unsavedNewContent
 }) => {
    // const apolloClient = useApolloClient();
-   // const { content: cachedContent } = apolloClient.readFragment({
+   // const { content } = apolloClient.readFragment({
    //    id: `Thing:${thingID}`,
    //    fragment: gql`
    //       fragment ThingContent on Thing {
@@ -44,7 +44,6 @@ const FlexibleContent = ({
    //       }
    //    `
    // });
-   // console.log(cachedContent);
 
    // First we'll set up our mutation hooks
    const [storeUnsavedThingChanges] = useMutation(
