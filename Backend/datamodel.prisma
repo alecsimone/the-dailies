@@ -21,6 +21,7 @@ type Thing {
   finalistDate: DateTime
   privacy: PrivacySetting @default(value: Private)
   individualViewPermissions: [Member] @relation(name: "IndividualViewers")
+  manualUpdatedAt: DateTime
   createdAt: DateTime! @createdAt
   updatedAt: DateTime @updatedAt
 }

@@ -6118,6 +6118,7 @@ type Thing {
   finalistDate: DateTime
   privacy: PrivacySetting
   individualViewPermissions(where: MemberWhereInput, orderBy: MemberOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Member!]
+  manualUpdatedAt: DateTime
   createdAt: DateTime!
   updatedAt: DateTime
 }
@@ -6155,6 +6156,7 @@ input ThingCreateInput {
   finalistDate: DateTime
   privacy: PrivacySetting
   individualViewPermissions: MemberCreateManyWithoutIndividualViewPermissionsInput
+  manualUpdatedAt: DateTime
 }
 
 input ThingCreateManyInput {
@@ -6229,6 +6231,7 @@ input ThingCreateWithoutAuthorInput {
   finalistDate: DateTime
   privacy: PrivacySetting
   individualViewPermissions: MemberCreateManyWithoutIndividualViewPermissionsInput
+  manualUpdatedAt: DateTime
 }
 
 input ThingCreateWithoutCommentsInput {
@@ -6253,6 +6256,7 @@ input ThingCreateWithoutCommentsInput {
   finalistDate: DateTime
   privacy: PrivacySetting
   individualViewPermissions: MemberCreateManyWithoutIndividualViewPermissionsInput
+  manualUpdatedAt: DateTime
 }
 
 input ThingCreateWithoutContentInput {
@@ -6277,6 +6281,7 @@ input ThingCreateWithoutContentInput {
   finalistDate: DateTime
   privacy: PrivacySetting
   individualViewPermissions: MemberCreateManyWithoutIndividualViewPermissionsInput
+  manualUpdatedAt: DateTime
 }
 
 input ThingCreateWithoutCopiedInContentInput {
@@ -6301,6 +6306,7 @@ input ThingCreateWithoutCopiedInContentInput {
   finalistDate: DateTime
   privacy: PrivacySetting
   individualViewPermissions: MemberCreateManyWithoutIndividualViewPermissionsInput
+  manualUpdatedAt: DateTime
 }
 
 input ThingCreateWithoutIndividualViewPermissionsInput {
@@ -6325,6 +6331,7 @@ input ThingCreateWithoutIndividualViewPermissionsInput {
   eliminated: Boolean
   finalistDate: DateTime
   privacy: PrivacySetting
+  manualUpdatedAt: DateTime
 }
 
 input ThingCreateWithoutPartOfStacksInput {
@@ -6349,6 +6356,7 @@ input ThingCreateWithoutPartOfStacksInput {
   finalistDate: DateTime
   privacy: PrivacySetting
   individualViewPermissions: MemberCreateManyWithoutIndividualViewPermissionsInput
+  manualUpdatedAt: DateTime
 }
 
 input ThingCreateWithoutPartOfTagsInput {
@@ -6373,6 +6381,7 @@ input ThingCreateWithoutPartOfTagsInput {
   finalistDate: DateTime
   privacy: PrivacySetting
   individualViewPermissions: MemberCreateManyWithoutIndividualViewPermissionsInput
+  manualUpdatedAt: DateTime
 }
 
 input ThingCreateWithoutPassesInput {
@@ -6397,6 +6406,7 @@ input ThingCreateWithoutPassesInput {
   finalistDate: DateTime
   privacy: PrivacySetting
   individualViewPermissions: MemberCreateManyWithoutIndividualViewPermissionsInput
+  manualUpdatedAt: DateTime
 }
 
 input ThingCreateWithoutVotesInput {
@@ -6421,6 +6431,7 @@ input ThingCreateWithoutVotesInput {
   finalistDate: DateTime
   privacy: PrivacySetting
   individualViewPermissions: MemberCreateManyWithoutIndividualViewPermissionsInput
+  manualUpdatedAt: DateTime
 }
 
 type ThingEdge {
@@ -6453,6 +6464,8 @@ enum ThingOrderByInput {
   finalistDate_DESC
   privacy_ASC
   privacy_DESC
+  manualUpdatedAt_ASC
+  manualUpdatedAt_DESC
   createdAt_ASC
   createdAt_DESC
   updatedAt_ASC
@@ -6473,6 +6486,7 @@ type ThingPreviousValues {
   eliminated: Boolean!
   finalistDate: DateTime
   privacy: PrivacySetting
+  manualUpdatedAt: DateTime
   createdAt: DateTime!
   updatedAt: DateTime
 }
@@ -6606,6 +6620,14 @@ input ThingScalarWhereInput {
   privacy_not: PrivacySetting
   privacy_in: [PrivacySetting!]
   privacy_not_in: [PrivacySetting!]
+  manualUpdatedAt: DateTime
+  manualUpdatedAt_not: DateTime
+  manualUpdatedAt_in: [DateTime!]
+  manualUpdatedAt_not_in: [DateTime!]
+  manualUpdatedAt_lt: DateTime
+  manualUpdatedAt_lte: DateTime
+  manualUpdatedAt_gt: DateTime
+  manualUpdatedAt_gte: DateTime
   createdAt: DateTime
   createdAt_not: DateTime
   createdAt_in: [DateTime!]
@@ -6671,6 +6693,7 @@ input ThingUpdateDataInput {
   finalistDate: DateTime
   privacy: PrivacySetting
   individualViewPermissions: MemberUpdateManyWithoutIndividualViewPermissionsInput
+  manualUpdatedAt: DateTime
 }
 
 input ThingUpdateInput {
@@ -6695,6 +6718,7 @@ input ThingUpdateInput {
   finalistDate: DateTime
   privacy: PrivacySetting
   individualViewPermissions: MemberUpdateManyWithoutIndividualViewPermissionsInput
+  manualUpdatedAt: DateTime
 }
 
 input ThingUpdateManyDataInput {
@@ -6710,6 +6734,7 @@ input ThingUpdateManyDataInput {
   eliminated: Boolean
   finalistDate: DateTime
   privacy: PrivacySetting
+  manualUpdatedAt: DateTime
 }
 
 input ThingUpdateManyInput {
@@ -6737,6 +6762,7 @@ input ThingUpdateManyMutationInput {
   eliminated: Boolean
   finalistDate: DateTime
   privacy: PrivacySetting
+  manualUpdatedAt: DateTime
 }
 
 input ThingUpdateManyWithoutAuthorInput {
@@ -6861,6 +6887,7 @@ input ThingUpdateWithoutAuthorDataInput {
   finalistDate: DateTime
   privacy: PrivacySetting
   individualViewPermissions: MemberUpdateManyWithoutIndividualViewPermissionsInput
+  manualUpdatedAt: DateTime
 }
 
 input ThingUpdateWithoutCommentsDataInput {
@@ -6884,6 +6911,7 @@ input ThingUpdateWithoutCommentsDataInput {
   finalistDate: DateTime
   privacy: PrivacySetting
   individualViewPermissions: MemberUpdateManyWithoutIndividualViewPermissionsInput
+  manualUpdatedAt: DateTime
 }
 
 input ThingUpdateWithoutContentDataInput {
@@ -6907,6 +6935,7 @@ input ThingUpdateWithoutContentDataInput {
   finalistDate: DateTime
   privacy: PrivacySetting
   individualViewPermissions: MemberUpdateManyWithoutIndividualViewPermissionsInput
+  manualUpdatedAt: DateTime
 }
 
 input ThingUpdateWithoutCopiedInContentDataInput {
@@ -6930,6 +6959,7 @@ input ThingUpdateWithoutCopiedInContentDataInput {
   finalistDate: DateTime
   privacy: PrivacySetting
   individualViewPermissions: MemberUpdateManyWithoutIndividualViewPermissionsInput
+  manualUpdatedAt: DateTime
 }
 
 input ThingUpdateWithoutIndividualViewPermissionsDataInput {
@@ -6953,6 +6983,7 @@ input ThingUpdateWithoutIndividualViewPermissionsDataInput {
   eliminated: Boolean
   finalistDate: DateTime
   privacy: PrivacySetting
+  manualUpdatedAt: DateTime
 }
 
 input ThingUpdateWithoutPartOfStacksDataInput {
@@ -6976,6 +7007,7 @@ input ThingUpdateWithoutPartOfStacksDataInput {
   finalistDate: DateTime
   privacy: PrivacySetting
   individualViewPermissions: MemberUpdateManyWithoutIndividualViewPermissionsInput
+  manualUpdatedAt: DateTime
 }
 
 input ThingUpdateWithoutPartOfTagsDataInput {
@@ -6999,6 +7031,7 @@ input ThingUpdateWithoutPartOfTagsDataInput {
   finalistDate: DateTime
   privacy: PrivacySetting
   individualViewPermissions: MemberUpdateManyWithoutIndividualViewPermissionsInput
+  manualUpdatedAt: DateTime
 }
 
 input ThingUpdateWithoutPassesDataInput {
@@ -7022,6 +7055,7 @@ input ThingUpdateWithoutPassesDataInput {
   finalistDate: DateTime
   privacy: PrivacySetting
   individualViewPermissions: MemberUpdateManyWithoutIndividualViewPermissionsInput
+  manualUpdatedAt: DateTime
 }
 
 input ThingUpdateWithoutVotesDataInput {
@@ -7045,6 +7079,7 @@ input ThingUpdateWithoutVotesDataInput {
   finalistDate: DateTime
   privacy: PrivacySetting
   individualViewPermissions: MemberUpdateManyWithoutIndividualViewPermissionsInput
+  manualUpdatedAt: DateTime
 }
 
 input ThingUpdateWithWhereUniqueNestedInput {
@@ -7287,6 +7322,14 @@ input ThingWhereInput {
   individualViewPermissions_every: MemberWhereInput
   individualViewPermissions_some: MemberWhereInput
   individualViewPermissions_none: MemberWhereInput
+  manualUpdatedAt: DateTime
+  manualUpdatedAt_not: DateTime
+  manualUpdatedAt_in: [DateTime!]
+  manualUpdatedAt_not_in: [DateTime!]
+  manualUpdatedAt_lt: DateTime
+  manualUpdatedAt_lte: DateTime
+  manualUpdatedAt_gt: DateTime
+  manualUpdatedAt_gte: DateTime
   createdAt: DateTime
   createdAt_not: DateTime
   createdAt_in: [DateTime!]

@@ -395,7 +395,6 @@ const FlexibleThingCard = ({
    borderSide = 'top',
    noPic
 }) => {
-   console.log('rendered card');
    const {
       id,
       author,
@@ -412,7 +411,9 @@ const FlexibleThingCard = ({
       featuredImage,
       votes,
       privacy,
-      individualViewPermissions
+      individualViewPermissions,
+      manualUpdatedAt,
+      updatedAt
    } = thingData;
 
    const { addThingID, removeThingID } = useContext(ThingsContext);
@@ -592,6 +593,7 @@ const FlexibleThingCard = ({
                         id={id}
                      />
                   )}
+                  {manualUpdatedAt || 'no manual updatedAt'}
                   {titleLink && (
                      <Link href={{ pathname: '/thing', query: { id } }}>
                         <a>

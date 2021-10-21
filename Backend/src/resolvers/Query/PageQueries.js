@@ -113,7 +113,7 @@ exports.thing = thing;
 
 async function myThings(
    parent,
-   { orderBy = 'updatedAt_DESC', cursor, forCollection },
+   { orderBy = 'manualUpdatedAt_DESC', cursor, forCollection },
    ctx,
    info
 ) {
@@ -138,8 +138,8 @@ async function myThings(
    };
 
    if (cursor != null) {
-      // We should only get a cursor when we're doing a fetchMore, in which case we'll want the 20 things after the cursor, so we can push in an updatedAt_lt of the cursor as soon as we get it
-      where.AND.push({ updatedAt_lt: cursor });
+      // We should only get a cursor when we're doing a fetchMore, in which case we'll want the 20 things after the cursor, so we can push in an manualUpdatedAt_lt of the cursor as soon as we get it
+      where.AND.push({ manualUpdatedAt_lt: cursor });
       // queryObj.first = 20;
    }
 
@@ -155,9 +155,10 @@ async function myThings(
       );
 
       if (collectionData.lastActiveCollection.thingQueryCursor != null) {
-         // If we find one, we'll add it to our where object. Note that here we want to use updatedAt_gte instead of updatedAt_lt because we want all the things BEFORE the cursor, not after
+         // If we find one, we'll add it to our where object. Note that here we want to use manualUpdatedAt_gte instead of manualUpdatedAt_lt because we want all the things BEFORE the cursor, not after
          queryObj.where.AND.push({
-            updatedAt_gte: collectionData.lastActiveCollection.thingQueryCursor
+            manualUpdatedAt_gte:
+               collectionData.lastActiveCollection.thingQueryCursor
          });
       } else {
          // If we don't find one, we just want to get the first 20 things
@@ -176,7 +177,7 @@ async function myThings(
       const lastThing = things[things.length - 1];
       if (lastThing == null) return things;
 
-      const newCursor = lastThing.updatedAt;
+      const newCursor = lastThing.manualUpdatedAt;
       ctx.db.mutation.updateCollection({
          where: {
             id: forCollection
@@ -190,7 +191,12 @@ async function myThings(
 }
 exports.myThings = myThings;
 
-async function myFriendsThings(parent, { orderBy = 'id_DESC' }, ctx, info) {
+async function myFriendsThings(
+   parent,
+   { orderBy = 'manualUpdatedAt_DESC' },
+   ctx,
+   info
+) {
    if (ctx.req.memberId == null) {
       return [];
    }
@@ -216,7 +222,12 @@ async function myFriendsThings(parent, { orderBy = 'id_DESC' }, ctx, info) {
 }
 exports.myFriendsThings = myFriendsThings;
 
-async function publicThings(parent, { orderBy = 'id_DESC' }, ctx, info) {
+async function publicThings(
+   parent,
+   { orderBy = 'manualUpdatedAt_DESC' },
+   ctx,
+   info
+) {
    const things = await ctx.db.query
       .things(
          {
@@ -287,7 +298,7 @@ async function allThings(parent, { cursor }, ctx, info) {
       .things(
          {
             where,
-            orderBy: 'createdAt_DESC',
+            orderBy: 'manualUpdatedAt_DESC',
             first: 2
          },
          info

@@ -172,6 +172,11 @@ async function makeNewThing(dataObj, ctx) {
    ) {
       dataObj.featuredImage = dataObj.link;
    }
+   if (dataObj.manualUpdatedAt == null) {
+      const now = new Date();
+      const newUpdatedAt = now.toISOString();
+      dataObj.manualUpdatedAt = newUpdatedAt;
+   }
    const newThing = await ctx.db.mutation
       .createThing(
          {
@@ -188,11 +193,46 @@ async function makeNewThing(dataObj, ctx) {
 
 async function properUpdateStuff(dataObj, id, type, ctx) {
    if (id.toLowerCase() === 'new') {
+      const now = new Date();
+      const newUpdatedAt = now.toISOString();
+      dataObj.manualUpdatedAt = newUpdatedAt;
       const newThing = await makeNewThing(dataObj, ctx);
       return newThing;
    }
 
+   if (id === 'ckuzy344y015r0709oztsziut') {
+      console.log('giving everything a manual last updated at');
+      const allThings = await ctx.db.query.things({}, `{id, updatedAt}`);
+      for (const thingData of allThings) {
+         await ctx.db.mutation.updateThing({
+            where: {
+               id: thingData.id
+            },
+            data: {
+               manualUpdatedAt: thingData.updatedAt
+            }
+         });
+      }
+   }
+
    editPermissionGate(dataObj, id, type, ctx);
+
+   if (
+      dataObj.title != null ||
+      dataObj.content != null ||
+      dataObj.featuredImage != null ||
+      dataObj.copiedInContent != null ||
+      dataObj.contentOrder != null ||
+      dataObj.partOfTags != null ||
+      dataObj.color != null ||
+      dataObj.comments != null ||
+      dataObj.privacy != null ||
+      dataObj.individualViewPermissions != null
+   ) {
+      const now = new Date();
+      const newUpdatedAt = now.toISOString();
+      dataObj.manualUpdatedAt = newUpdatedAt;
+   }
 
    const updatedStuff = await updateStuffAndNotifySubs(
       dataObj,

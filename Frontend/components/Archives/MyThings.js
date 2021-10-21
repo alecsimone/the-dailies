@@ -93,6 +93,7 @@ const MyThings = ({ setShowingSidebar, scrollingSelector, borderSide }) => {
       }
       if (me != null) {
          let { myThings } = data;
+         console.log(myThings.length);
          myThings.sort((a, b) => {
             const aDate = new Date(a.updatedAt);
             const bDate = new Date(b.updatedAt);
@@ -103,7 +104,7 @@ const MyThings = ({ setShowingSidebar, scrollingSelector, borderSide }) => {
             return bTimestamp - aTimestamp;
          });
          const lastThing = myThings[myThings.length - 1];
-         cursorRef.current = lastThing.updatedAt;
+         cursorRef.current = lastThing.manualUpdatedAt || lastThing.updatedAt;
          if (me.broadcastView) {
             myThings = myThings.filter(thing => thing.privacy !== 'Private');
          }

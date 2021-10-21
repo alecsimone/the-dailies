@@ -17,7 +17,8 @@ const CardGenerator = ({
    const { data, loading, error } = useQuery(SINGLE_THING_QUERY, {
       variables: {
          id
-      }
+      },
+      fetchPolicy: 'cache-first'
    });
 
    const { me } = useContext(MemberContext);

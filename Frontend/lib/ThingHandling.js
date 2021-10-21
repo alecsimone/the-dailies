@@ -36,7 +36,6 @@ const useInfiniteScroll = (fetchMore, scrollingChild, queryName) => {
    const [noMoreToFetch, setNoMoreToFetch] = useState(false); // But we need the state to trigger a re-render, even though we don't actually use the state anywhere
 
    const fetchMoreHandler = () => {
-      console.log('fetch more handler');
       if (noMoreToFetchRef.current) return;
 
       setIsFetchingMore(true);

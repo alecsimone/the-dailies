@@ -33,13 +33,6 @@ type Mutation {
   logout: SuccessMessage
   requestReset(email: String!): Member
   changePassword(id: String!, code: String!, password: String!): Member!
-  createThing(
-      title: String!
-      link: String
-      content: String
-      tags: String
-      privacy: String
-  ): Thing
   addContentPiece(content: String, id: ID!, type: String!): Stuff
   storeUnsavedThingChanges(id: ID!, unsavedContent: String!): Stuff
   deleteContentPiece(contentPieceID: ID!, id: ID!, type: String!): Stuff

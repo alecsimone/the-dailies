@@ -152,6 +152,7 @@ const smallThingCardFields = `
    featuredImage
    privacy
    color
+   manualUpdatedAt
    updatedAt
    createdAt
 `;
@@ -211,6 +212,7 @@ const thingCardFields = `
       }
    }
    score
+   manualUpdatedAt
    createdAt
    updatedAt
 `;
@@ -282,6 +284,7 @@ const fullThingFields = `
       displayName
       avatar
    }
+   manualUpdatedAt
    createdAt
    updatedAt
 `;

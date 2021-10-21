@@ -15,7 +15,6 @@ const {
    storeOrganizeState
 } = require('./Mutation/MemberMutations');
 const {
-   createThing,
    addContentPiece,
    storeUnsavedThingChanges,
    deleteContentPiece,
@@ -81,7 +80,6 @@ const Mutations = {
    logout,
    requestReset,
    changePassword,
-   createThing,
    addContentPiece,
    storeUnsavedThingChanges,
    deleteContentPiece,

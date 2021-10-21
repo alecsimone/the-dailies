@@ -213,58 +213,6 @@ async function removeTaxFromThing(parent, {tax, thingID, personal}, ctx, info) {
 }
 exports.removeTaxFromThing = removeTaxFromThing;
 
-async function createThing(parent, args, ctx, info) {
-   await loggedInGate(ctx).catch(() => {
-      throw new AuthenticationError('You must be logged in to do that!');
-   });
-   fullMemberGate(ctx.req.member);
-
-   const { title, link, content, tags, privacy } = args;
-   const dataObj = {
-      title,
-      link,
-      privacy,
-      author: {
-         connect: {
-            id: ctx.req.memberId
-         }
-      }
-   };
-
-   if (isExplodingLink(link)) {
-      dataObj.featuredImage = link;
-   }
-
-   if (content !== '') {
-      dataObj.content = {
-         create: {
-            content
-         }
-      };
-   }
-   if (dataObj.title == null) {
-      dataObj.title = "Untitled Thing"
-   }
-   const thing = await ctx.db.mutation.createThing(
-      {
-         data: dataObj
-      },
-      info
-   ).catch(err => {
-      console.log(err);
-   });
-
-   const tagsArray = tags.split(',');
-   await addTagsToThing(tagsArray, thing.id, ctx).catch(err => {
-      console.log(err);
-   });
-
-   publishMeUpdate(ctx);
-
-   return thing;
-}
-exports.createThing = createThing;
-
 async function newBlankThing(parent, args, ctx, info) {
    await loggedInGate(ctx).catch(() => {
       throw new AuthenticationError('You must be logged in to do that!');
