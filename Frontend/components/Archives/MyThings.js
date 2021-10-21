@@ -64,7 +64,6 @@ const MY_THINGS_SUBSCRIPTION = gql`
 
 const MyThings = ({ setShowingSidebar, scrollingSelector, borderSide }) => {
    console.log('rendering my things');
-   return <div>My Things</div>;
    const { me, loading: loadingMe } = useContext(MemberContext);
    const { setContent } = useContext(ModalContext);
 
@@ -94,6 +93,7 @@ const MyThings = ({ setShowingSidebar, scrollingSelector, borderSide }) => {
          return <p className="emptyThings">You haven't made any things yet.</p>;
       }
       if (me != null) {
+         console.log(`You have ${data.myThings.length} things`);
          let { myThings } = data;
          myThings.sort((a, b) => {
             const aDate = new Date(a.updatedAt);
