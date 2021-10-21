@@ -395,8 +395,8 @@ const FlexibleThingCard = ({
    borderSide = 'top',
    noPic
 }) => {
-   return <div>Thing!</div>;
    console.log('rendering card');
+   return <div>Thing!</div>;
    const {
       id,
       author,
