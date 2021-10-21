@@ -200,21 +200,6 @@ async function properUpdateStuff(dataObj, id, type, ctx) {
       return newThing;
    }
 
-   if (id === 'ckuzy344y015r0709oztsziut') {
-      console.log('giving everything a manual last updated at');
-      const allThings = await ctx.db.query.things({}, `{id, updatedAt}`);
-      for (const thingData of allThings) {
-         await ctx.db.mutation.updateThing({
-            where: {
-               id: thingData.id
-            },
-            data: {
-               manualUpdatedAt: thingData.updatedAt
-            }
-         });
-      }
-   }
-
    editPermissionGate(dataObj, id, type, ctx);
 
    if (
