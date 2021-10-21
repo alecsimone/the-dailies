@@ -724,6 +724,13 @@ const Page = ({ children, pageProps }) => {
       window.visualViewport.addEventListener('resize', adjustViewport);
    }, [adjustViewport]);
 
+   // const [initialRenderBlock, setInitialRenderBlock] = useState(true);
+   // if (initialRenderBlock) {
+   //    return (
+   //       <button onClick={() => setInitialRenderBlock(false)}>Unblock</button>
+   //    );
+   // }
+
    return (
       <MemberProvider isHome={isHome}>
          <ThingsDataProvider>

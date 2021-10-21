@@ -63,6 +63,8 @@ const MY_THINGS_SUBSCRIPTION = gql`
 `;
 
 const MyThings = ({ setShowingSidebar, scrollingSelector, borderSide }) => {
+   console.log('rendering my things');
+   return <div>My Things</div>;
    const { me, loading: loadingMe } = useContext(MemberContext);
    const { setContent } = useContext(ModalContext);
 
