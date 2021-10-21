@@ -593,7 +593,6 @@ const FlexibleThingCard = ({
                         id={id}
                      />
                   )}
-                  {manualUpdatedAt || 'no manual updatedAt'}
                   {titleLink && (
                      <Link href={{ pathname: '/thing', query: { id } }}>
                         <a>
