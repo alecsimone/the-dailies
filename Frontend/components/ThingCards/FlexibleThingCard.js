@@ -432,9 +432,6 @@ const FlexibleThingCard = ({
    }, []);
    /* eslint-enable */
 
-   console.log('rendering card');
-   return <div>thing</div>;
-
    // Setting the toggle expansion arrow to the opposite of the expanded value would be confusing if we got a thing which is intended to be expanded, but has no fields with data, e.g. if we are looking at a new thing that doesn't have any content, etc yet. So we check for that here.
    let initialToggleDirection = 'down';
    if (expanded) {
