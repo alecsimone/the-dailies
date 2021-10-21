@@ -133,13 +133,14 @@ async function myThings(
 
    const queryObj = {
       where,
-      orderBy
+      orderBy,
+      first: 20
    };
 
    if (cursor != null) {
       // We should only get a cursor when we're doing a fetchMore, in which case we'll want the 20 things after the cursor, so we can push in an updatedAt_lt of the cursor as soon as we get it
       where.AND.push({ updatedAt_lt: cursor });
-      queryObj.first = 20;
+      // queryObj.first = 20;
    }
 
    if (forCollection != null && cursor == null) {
@@ -160,7 +161,7 @@ async function myThings(
          });
       } else {
          // If we don't find one, we just want to get the first 20 things
-         queryObj.first = 20;
+         // queryObj.first = 20;
       }
    }
 
