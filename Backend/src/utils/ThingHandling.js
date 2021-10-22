@@ -14,14 +14,6 @@ function publishStuffUpdate(type, stuff, ctx) {
          node: stuff
       }
    });
-   if (type === 'Thing') {
-      publishMeUpdate(ctx);
-      ctx.pubsub.publish('things', {
-         things: {
-            node: stuff
-         }
-      });
-   }
 }
 
 async function updateStuffAndNotifySubs(data, id, type, ctx) {
@@ -187,7 +179,6 @@ async function makeNewThing(dataObj, ctx) {
       .catch(err => {
          console.log(err);
       });
-   publishMeUpdate(ctx);
    return newThing;
 }
 

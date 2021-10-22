@@ -7,7 +7,7 @@ const {
    editPermissionGate,
    lengthenTikTokURL
 } = require('../../../utils/ThingHandling');
-const { publishMeUpdate, sendNotification} = require('../MemberMutations')
+const { sendNotification} = require('../MemberMutations')
 const {
    loggedInGate,
    fullMemberGate,

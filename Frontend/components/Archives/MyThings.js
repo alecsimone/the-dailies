@@ -93,7 +93,6 @@ const MyThings = ({ setShowingSidebar, scrollingSelector, borderSide }) => {
       }
       if (me != null) {
          let { myThings } = data;
-         console.log(myThings.length);
          myThings.sort((a, b) => {
             const aDate = new Date(a.updatedAt);
             const bDate = new Date(b.updatedAt);

@@ -411,9 +411,7 @@ const FlexibleThingCard = ({
       featuredImage,
       votes,
       privacy,
-      individualViewPermissions,
-      manualUpdatedAt,
-      updatedAt
+      individualViewPermissions
    } = thingData;
 
    const { addThingID, removeThingID } = useContext(ThingsContext);

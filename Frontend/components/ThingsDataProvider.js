@@ -163,12 +163,9 @@ const ThingsDataProvider = ({ children }) => {
    });
 
    // These functions will be put in context, and FlexibleThingCards will use them to check in and check out when they render / unrender so we can keep track of all the things we're displaying
-   const addThingIDHandler = id => addThingID(id, setThingIDs, thingIDs);
-   const removeThingIDHandler = id => removeThingID(id, setThingIDs, thingIDs);
-
    const thingsData = {
-      addThingID: addThingIDHandler,
-      removeThingID: removeThingIDHandler
+      addThingID: id => addThingID(id, setThingIDs, thingIDs),
+      removeThingID: id => removeThingID(id, setThingIDs, thingIDs)
    };
 
    // Because this provider already re-renders every time we render a new thing card, it's a good place to host our stickifier operations too
