@@ -1,15 +1,15 @@
 import gql from 'graphql-tag';
 import styled from 'styled-components';
-import { useContext, useRef, useState } from 'react';
+import { useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useMutation } from '@apollo/react-hooks';
-import { MemberContext } from '../Account/MemberProvider';
 import Comment from './Comment';
 import RichTextArea from '../RichTextArea';
 import { SINGLE_THING_QUERY } from '../../pages/thing';
 import { SINGLE_TAX_QUERY } from '../../pages/tag';
 import { setAlpha } from '../../styles/functions';
 import { commentFields } from '../../lib/CardInterfaces';
+import useMe from '../Account/useMe';
 
 const StyledComments = styled.section`
    padding: 1rem;
@@ -124,7 +124,10 @@ const ADD_COMMENT_MUTATION = gql`
 export { ADD_COMMENT_MUTATION };
 
 const Comments = ({ id, comments, type, linkedComment }) => {
-   const { me } = useContext(MemberContext);
+   const {
+      loggedInUserID,
+      memberFields: { avatar, displayName, rep }
+   } = useMe('Comments', 'avatar displayName rep');
 
    // This ref will be passed down to the RichTextArea that allows us to comment on the thing, and we'll use it to get the value for our sendNewComment mutation
    const commentInputRef = useRef(null);
@@ -163,10 +166,10 @@ const Comments = ({ id, comments, type, linkedComment }) => {
          __typename: 'Comment',
          author: {
             __typename: 'Member',
-            avatar: me.avatar,
-            displayName: me.displayName,
-            id: me.id,
-            rep: me.rep
+            avatar,
+            displayName,
+            id: loggedInUserID,
+            rep
          },
          comment: commentText,
          createdAt: now.toISOString(),
@@ -231,7 +234,7 @@ const Comments = ({ id, comments, type, linkedComment }) => {
       <StyledComments className="commentsSection">
          <header>COMMENTS</header>
          {commentElements}
-         {me && (
+         {loggedInUserID && (
             <RichTextArea
                text=""
                postText={sendNewComment}

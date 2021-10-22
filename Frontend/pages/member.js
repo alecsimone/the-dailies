@@ -1,15 +1,14 @@
 import gql from 'graphql-tag';
 import { useQuery } from '@apollo/react-hooks';
-import { useContext } from 'react';
 import Head from 'next/head';
 import PropTypes from 'prop-types';
 import { StyledProfilePage } from './me';
-import { MemberContext } from '../components/Account/MemberProvider';
 import Error from '../components/ErrorMessage';
 import LoadingRing from '../components/LoadingRing';
 import ProfileSidebar from '../components/Profile/ProfileSidebar';
 import ProfileContent from '../components/Profile/ProfileContent';
 import { fullMemberFields } from '../lib/CardInterfaces';
+import useMe from '../components/Account/useMe';
 
 const MEMBER_PAGE_QUERY = gql`
    query MEMBER_PAGE_QUERY($id: ID, $displayName: String) {
@@ -34,7 +33,10 @@ const member = ({ query }) => {
    const { loading, error, data } = useQuery(MEMBER_PAGE_QUERY, {
       variables
    });
-   const { me, loading: meLoading } = useContext(MemberContext);
+   const {
+      loggedInUserID,
+      memberFields: { role }
+   } = useMe('member', 'role');
 
    let pageTitle;
    let content;
@@ -51,11 +53,11 @@ const member = ({ query }) => {
       if (data.member != null) {
          pageTitle = data.member.displayName;
          let isMe = false;
-         if (me && data.member.id === me.id) {
+         if (loggedInUserID && data.member.id === loggedInUserID) {
             isMe = true;
          }
          let canEdit = isMe;
-         if (me && ['Admin', 'Editor'].includes(me.role)) {
+         if (loggedInUserID && ['Admin', 'Editor'].includes(role)) {
             canEdit = true;
          }
 

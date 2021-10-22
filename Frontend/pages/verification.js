@@ -1,11 +1,9 @@
-import { useContext } from 'react';
 import styled from 'styled-components';
 import gql from 'graphql-tag';
 import { useQuery } from '@apollo/react-hooks';
 import Router from 'next/router';
-import { home } from '../config';
-import { MemberContext } from '../components/Account/MemberProvider';
 import Error from '../components/ErrorMessage';
+import useMe from '../components/Account/useMe';
 
 const StyledVerificationPage = styled.div`
    max-width: 800px;
@@ -31,8 +29,8 @@ const VerificationPage = ({ query }) => {
    });
 
    // If they're logged in, tell them they shouldn't be here and redirect them to the homepage
-   const { me } = useContext(MemberContext);
-   if (me != null && process.browser) {
+   const { loggedInUserID } = useMe();
+   if (loggedInUserID != null && process.browser) {
       Router.push({
          pathname: '/'
       });

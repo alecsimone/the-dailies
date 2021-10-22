@@ -1,13 +1,11 @@
 import gql from 'graphql-tag';
 import { useQuery } from '@apollo/react-hooks';
-import { useContext } from 'react';
-import { MemberContext } from '../Account/MemberProvider';
 import Things from './Things';
 import LoadingRing from '../LoadingRing';
 import ErrorMessage from '../ErrorMessage';
-import { sidebarPerPage } from '../../config';
 import { smallThingCardFields } from '../../lib/CardInterfaces';
 import { useInfiniteScroll } from '../../lib/ThingHandling';
+import useMe from '../Account/useMe';
 
 const MY_FRIENDS_THINGS_QUERY = gql`
    query MY_FRIENDS_THINGS_QUERY {
@@ -18,7 +16,10 @@ const MY_FRIENDS_THINGS_QUERY = gql`
 `;
 
 const MyFriendsThings = () => {
-   const { me } = useContext(MemberContext);
+   const {
+      loggedInUserID,
+      memberFields: { friends }
+   } = useMe('MyFriendsThings', 'friends');
    const { data, loading, error, fetchMore } = useQuery(
       MY_FRIENDS_THINGS_QUERY,
       {
@@ -56,7 +57,7 @@ const MyFriendsThings = () => {
       );
    }
 
-   if (me == null || me.friends == null) {
+   if (loggedInUserID == null || friends == null) {
       return <LoadingRing />;
    }
 };

@@ -1,19 +1,12 @@
 import { useQuery } from '@apollo/react-hooks';
 import PropTypes from 'prop-types';
-import { useContext } from 'react';
 import { SINGLE_THING_QUERY } from '../../pages/thing';
 import FlexibleThingCard from './FlexibleThingCard';
 import Error from '../ErrorMessage';
 import LoadingRing from '../LoadingRing';
-import { MemberContext } from '../Account/MemberProvider';
+import useMe from '../Account/useMe';
 
-const CardGenerator = ({
-   id,
-   cardType,
-   fullQuery,
-   setExpanded,
-   borderSide
-}) => {
+const CardGenerator = ({ id, cardType, borderSide }) => {
    const { data, loading, error } = useQuery(SINGLE_THING_QUERY, {
       variables: {
          id
@@ -21,7 +14,10 @@ const CardGenerator = ({
       fetchPolicy: 'cache-first'
    });
 
-   const { me } = useContext(MemberContext);
+   const {
+      loggedInUserID,
+      memberFields: { role }
+   } = useMe('CardGenerator', 'role');
 
    if (data) {
       if (data.thing == null) {
@@ -34,9 +30,9 @@ const CardGenerator = ({
             thingData={data.thing}
             contentType={cardType === 'regular' ? 'full' : 'single'}
             canEdit={
-               me != null &&
-               (data.thing.author.id === me.id ||
-                  ['Admin', 'Editor', 'Moderator'].includes(me.role))
+               loggedInUserID != null &&
+               (data.thing.author.id === loggedInUserID ||
+                  ['Admin', 'Editor', 'Moderator'].includes(role))
             }
             titleLink
             borderSide={borderSide}

@@ -32,22 +32,20 @@ const MemberProvider = ({ children, isHome }) => {
       loading: subscriptionLoading
    } = useSubscription(ME_SUBSCRIPTION);
 
-   let memberData = {};
+   const memberData = {
+      memberLoading: false,
+      loggedInUserID: null
+   };
    if (error) {
       console.log(error);
       memberData.me = 'error';
    }
-
-   if (data != null) {
-      if (data.me == null) {
-         memberData.me = null;
-      } else {
-         memberData.me = data.me;
-      }
-   } else {
-      memberData = {
-         loading
-      };
+   if (data != null && data.me != null) {
+      // If we've gotten data back, and data.me is not null, we set memberData.id. If data.me is null, we leave memberData.id as null
+      memberData.loggedInUserID = data.me.id;
+   } else if (loading) {
+      // If we haven't gotten data back, we set the loading property
+      memberData.memberLoading = loading;
    }
 
    return (

@@ -13,12 +13,12 @@ import X from './Icons/X';
 import DefaultAvatar from './Icons/DefaultAvatar';
 import StackIcon from './Icons/Stack';
 import { ModalContext } from './ModalProvider';
-import { MemberContext } from './Account/MemberProvider';
 import { ALL_THINGS_QUERY } from '../lib/ThingHandling';
 import { PUBLIC_THINGS_QUERY } from './Archives/PublicThings';
 import { CURRENT_MEMBER_QUERY } from './Account/MemberProvider';
 import ArrowIcon from './Icons/Arrow';
 import { MY_THINGS_QUERY } from './Archives/MyThings';
+import useMe from './Account/useMe';
 
 const LOGOUT_MUTATION = gql`
    mutation LOG_OUT_MUTATION {
@@ -195,7 +195,7 @@ const NavSidebar = () => {
       setThingsSidebarIsOpen
    } = useContext(ModalContext);
 
-   const { me } = useContext(MemberContext);
+   const { loggedInUserID } = useMe();
 
    const [desktopIsHidden, setDesktopIsHidden] = useState(false);
 
@@ -209,7 +209,7 @@ const NavSidebar = () => {
    } else {
       className += ' hidden';
    }
-   if (me != null) {
+   if (loggedInUserID != null) {
       className += ' loggedIn';
    } else {
       className += ' loggedOut';
@@ -237,7 +237,7 @@ const NavSidebar = () => {
                   </div>
                </a>
             </Link>
-            {me && (
+            {loggedInUserID && (
                <Link href="/me">
                   <a
                      onClick={() => setNavSidebarIsOpen(false)}
@@ -252,7 +252,7 @@ const NavSidebar = () => {
                   </a>
                </Link>
             )}
-            {me && (
+            {loggedInUserID && (
                <Link
                   href={{
                      pathname: '/me',
@@ -279,7 +279,7 @@ const NavSidebar = () => {
                   </div>
                </a>
             </Link>
-            {me && (
+            {loggedInUserID && (
                <Link href="/twitter">
                   <a onClick={() => setNavSidebarIsOpen(false)} title="Twitter">
                      <div className="navLine">
@@ -291,7 +291,7 @@ const NavSidebar = () => {
                   </a>
                </Link>
             )}
-            {me && (
+            {loggedInUserID && (
                <Link href="/new">
                   <a
                      onClick={e => {
@@ -318,7 +318,7 @@ const NavSidebar = () => {
                   </a>
                </Link>
             )}
-            {me && (
+            {loggedInUserID && (
                <Link href="/collections">
                   <a
                      onClick={() => setNavSidebarIsOpen(false)}
@@ -333,7 +333,7 @@ const NavSidebar = () => {
                   </a>
                </Link>
             )}
-            {me && (
+            {loggedInUserID && (
                <Link href="/me">
                   <a onClick={() => setNavSidebarIsOpen(false)} title="Profile">
                      <div className="navLine">
@@ -345,7 +345,7 @@ const NavSidebar = () => {
                   </a>
                </Link>
             )}
-            {me && (
+            {loggedInUserID && (
                <a
                   onClick={() => {
                      if (!confirm('Are you sure you want to logout?')) return;

@@ -1,13 +1,10 @@
-import styled from 'styled-components';
+import styled, { ThemeContext } from 'styled-components';
 import PropTypes from 'prop-types';
 import Masonry from 'react-masonry-css';
-import { useContext, useState, useEffect } from 'react';
-import { ThemeContext } from 'styled-components';
-import SmallThingCard from '../ThingCards/SmallThingCard';
-import ThingCard from '../ThingCards/ThingCard';
+import { useContext } from 'react';
 import { setAlpha } from '../../styles/functions';
 import FlexibleThingCard from '../ThingCards/FlexibleThingCard';
-import MemberProvider, { MemberContext } from '../Account/MemberProvider';
+import useMe from '../Account/useMe';
 
 const StyledThings = styled.div`
    margin: auto;
@@ -48,21 +45,19 @@ const StyledThings = styled.div`
 `;
 
 const Things = ({ things, displayType, cardSize, noPic, borderSide }) => {
-   const {
-      mobileBPWidthRaw,
-      desktopBPWidthRaw,
-      bigScreenBPWidthRaw,
-      massiveScreenBPWidthRaw
-   } = useContext(ThemeContext);
+   const { desktopBPWidthRaw, bigScreenBPWidthRaw } = useContext(ThemeContext);
 
-   const { me } = useContext(MemberContext);
+   const {
+      loggedInUserID,
+      memberFields: { role }
+   } = useMe('Things', 'role');
 
    const thingCards = things.map(thing => {
       let canEdit = false;
-      if (me && thing.author.id === me.id) {
+      if (loggedInUserID && thing.author.id === loggedInUserID) {
          canEdit = true;
       }
-      if (me && ['Admin', 'Editor', 'Moderator'].includes(me.role)) {
+      if (loggedInUserID && ['Admin', 'Editor', 'Moderator'].includes(role)) {
          canEdit = true;
       }
       return (

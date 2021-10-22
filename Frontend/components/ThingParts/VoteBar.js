@@ -1,14 +1,13 @@
 import gql from 'graphql-tag';
 import { useMutation } from '@apollo/react-hooks';
 import styled from 'styled-components';
-import Link from 'next/link';
 import { useContext, useState, useEffect } from 'react';
 import { setAlpha } from '../../styles/functions';
-import { MemberContext } from '../Account/MemberProvider';
 import Avatar from '../Avatar';
 import { ALL_THINGS_QUERY } from '../../lib/ThingHandling';
 import { ModalContext } from '../ModalProvider';
 import Login from '../Account/Login';
+import useMe from '../Account/useMe';
 
 const VOTE_MUTATION = gql`
    mutation VOTE_MUTATION($id: ID!, $type: String!, $isFreshVote: Boolean!) {
@@ -137,7 +136,10 @@ const StyledVoteBar = styled.section`
 `;
 
 const VoteBar = ({ votes = [], id, type, mini, alwaysMini }) => {
-   const { me } = useContext(MemberContext);
+   const {
+      loggedInUserID,
+      memberFields: { rep }
+   } = useMe('VoteBar', 'rep');
    const [vote] = useMutation(VOTE_MUTATION, {
       refetchQueries: [{ query: ALL_THINGS_QUERY }],
       context: {
@@ -154,7 +156,7 @@ const VoteBar = ({ votes = [], id, type, mini, alwaysMini }) => {
    if (voters.length > 0) {
       voters.forEach(
          ({ voter: { id: voterID, displayName, avatar }, value }) => {
-            if (me && voterID === me.id) {
+            if (loggedInUserID && voterID === loggedInUserID) {
                meVotedCheck = true;
             }
             voterBubbles.push(
@@ -185,7 +187,7 @@ const VoteBar = ({ votes = [], id, type, mini, alwaysMini }) => {
       let newScore = 0;
       let myVoteExists = false;
       votes.forEach(voteData => {
-         if (me != null && voteData.voter.id === me.id) {
+         if (loggedInUserID != null && voteData.voter.id === loggedInUserID) {
             myVoteExists = true;
          }
          newScore += voteData.value;
@@ -204,19 +206,19 @@ const VoteBar = ({ votes = [], id, type, mini, alwaysMini }) => {
       let newVotes;
       let newScore;
       if (meVoted) {
-         newVotes = voters.filter(vote => vote.voter.id !== me.id);
-         newScore = computedScore - me.rep;
+         newVotes = voters.filter(vote => vote.voter.id !== loggedInUserID);
+         newScore = computedScore - rep;
       } else {
          newVotes = [
             ...voters,
             {
                __typename: 'Vote',
                id: 'newVote',
-               value: me.rep,
-               voter: me
+               value: rep,
+               voter: loggedInUserID
             }
          ];
-         newScore = computedScore + me.rep;
+         newScore = computedScore + rep;
       }
       return [newVotes, newScore];
    };
@@ -255,7 +257,7 @@ const VoteBar = ({ votes = [], id, type, mini, alwaysMini }) => {
             className="left"
             onClick={e => {
                e.stopPropagation();
-               if (me == null) {
+               if (loggedInUserID == null) {
                   setContent(<Login redirect={false} />);
                   return;
                }

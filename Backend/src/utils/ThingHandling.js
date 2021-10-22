@@ -5,7 +5,6 @@ const {
    commentFields,
    contentPieceFields
 } = require('./CardInterfaces');
-const { publishMeUpdate } = require('../resolvers/Mutation/MemberMutations');
 
 function publishStuffUpdate(type, stuff, ctx) {
    const lowerCasedType = type.toLowerCase();

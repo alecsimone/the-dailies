@@ -1,6 +1,5 @@
 import { useMutation } from '@apollo/react-hooks';
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { ThemeContext } from 'styled-components';
 import Link from 'next/link';
 import { minimumTranslationDistance } from '../../../config';
 import {
@@ -9,14 +8,12 @@ import {
    editContentButKeepInFrame,
    STORE_UNSAVED_CONTENT_PIECE_MUTATION
 } from '../../../lib/ContentHandling';
-import { ALL_THINGS_QUERY } from '../../../lib/ThingHandling';
 import { SINGLE_THING_QUERY } from '../../../pages/thing';
 import {
    dynamicallyResizeElement,
    getOneRem,
    successFlash
 } from '../../../styles/functions';
-import { MemberContext } from '../../Account/MemberProvider';
 import { ModalContext } from '../../ModalProvider';
 import RichText from '../../RichText';
 import RichTextArea from '../../RichTextArea';
@@ -28,6 +25,7 @@ import ContentPieceButtons from '../ContentPieceButtons';
 import TruncCont from '../TruncCont';
 import { getScrollingParent } from '../../ThingsDataProvider';
 import { stickifyBlock } from '../../../lib/stickifier';
+import useMe from '../../Account/useMe';
 
 const FlexibleContentPiece = ({
    contentType,
@@ -52,8 +50,10 @@ const FlexibleContentPiece = ({
    truncContExpanded,
    setTruncContExpanded
 }) => {
-   const { me } = useContext(MemberContext);
-   const { midScreenBPWidthRaw } = useContext(ThemeContext);
+   const {
+      loggedInUserID,
+      memberFields: { avatar, displayName, rep }
+   } = useMe('FlexibleContentPiece', 'avatar displayName rep');
 
    const [editable, setEditable] = useState(false);
    const editContentInputRef = useRef(null); // This ref will be passed down to the RichTextArea that allows us to edit the content piece, and we'll use it to get the value for our editContentPiece mutation
@@ -123,7 +123,7 @@ const FlexibleContentPiece = ({
    let meVotedCheck = false;
    let computedScoreCheck = 0; // We're going to figure out the current score of the content piece by tallying up all its votes
    voters.forEach(({ voter: { id: voterID }, value }) => {
-      if (me && voterID === me.id) {
+      if (loggedInUserID && voterID === loggedInUserID) {
          meVotedCheck = true;
       }
       computedScoreCheck += value;
@@ -158,10 +158,10 @@ const FlexibleContentPiece = ({
          __typename: 'Comment',
          author: {
             __typename: 'Member',
-            avatar: me.avatar,
-            displayName: me.displayName,
-            id: me.id,
-            rep: me.rep
+            avatar,
+            displayName,
+            id: loggedInUserID,
+            rep
          },
          comment: commentText,
          createdAt: now.toISOString(),
@@ -475,7 +475,7 @@ const FlexibleContentPiece = ({
 
    const doubleClickListener = e => {
       if (e.button === 0) {
-         if (me == null) {
+         if (loggedInUserID == null) {
             setContent(<Login redirect={false} />);
             return;
          }
@@ -485,19 +485,21 @@ const FlexibleContentPiece = ({
          let newVotes;
          let newScore;
          if (meVoted) {
-            newVotes = voters.filter(voteData => voteData.voter.id !== me.id);
-            newScore = computedScore - me.rep;
+            newVotes = voters.filter(
+               voteData => voteData.voter.id !== loggedInUserID
+            );
+            newScore = computedScore - rep;
          } else {
             newVotes = [
                ...voters,
                {
                   __typename: 'Vote',
                   id: 'newVote',
-                  value: me.rep,
-                  voter: me
+                  value: rep,
+                  voter: loggedInUserID
                }
             ];
-            newScore = computedScore + me.rep;
+            newScore = computedScore + rep;
          }
 
          setHeartPosition([e.clientX, e.clientY]);
@@ -524,7 +526,7 @@ const FlexibleContentPiece = ({
       if (e.target.closest('.buttons') != null) return;
       if (e.target.closest('.votebar') != null) return;
 
-      if (e.button === 0 && me != null) {
+      if (e.button === 0 && loggedInUserID != null) {
          window.setTimeout(
             () =>
                contentContainerRef.current.addEventListener(

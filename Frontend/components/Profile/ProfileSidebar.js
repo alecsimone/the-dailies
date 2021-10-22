@@ -2,11 +2,10 @@ import gql from 'graphql-tag';
 import { useMutation } from '@apollo/react-hooks';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { useContext } from 'react';
-import { MemberContext } from '../Account/MemberProvider';
 import { setAlpha, setLightness } from '../../styles/functions';
 import ProfileBody from './ProfileBody';
 import FriendRequests from './FriendRequests';
+import useMe from '../Account/useMe';
 
 const CONFIRM_FRIEND_REQUEST_MUTATION = gql`
    mutation CONFIRM_FRIEND_REQUEST_MUTATION($id: ID!) {
@@ -135,9 +134,9 @@ const StyledProfileSidebar = styled.div`
 `;
 
 const ProfileSidebar = ({ member, canEdit }) => {
-   const { me } = useContext(MemberContext);
+   const { loggedInUserID } = useMe();
 
-   const isMe = me && me.id === member.id;
+   const isMe = loggedInUserID && loggedInUserID === member.id;
 
    const [confirmFriendRequest] = useMutation(CONFIRM_FRIEND_REQUEST_MUTATION, {
       onError: err => alert(err.message)
@@ -147,12 +146,12 @@ const ProfileSidebar = ({ member, canEdit }) => {
       <StyledProfileSidebar>
          <ProfileBody
             member={member}
-            me={me}
+            me={loggedInUserID}
             isMe={isMe}
             canEdit={canEdit}
             confirmFriendRequest={confirmFriendRequest}
          />
-         {isMe && <FriendRequests me={me} isMe={isMe} />}
+         {isMe && <FriendRequests me={loggedInUserID} isMe={isMe} />}
       </StyledProfileSidebar>
    );
 };

@@ -1,23 +1,26 @@
 import Head from 'next/head';
-import { useContext } from 'react';
 import PropTypes from 'prop-types';
 import StyledPageWithSidebar from '../styles/StyledPageWithSidebar';
-import { MemberContext } from '../components/Account/MemberProvider';
 import LoadingRing from '../components/LoadingRing';
 import TwitterReader from '../components/Twitter/TwitterReader';
 import TwitterLoginStarter from '../components/Twitter/TwitterLoginStarter';
 import TwitterLoginFinisher from '../components/Twitter/TwitterLoginFinisher';
 import SignupOrLogin from '../components/Account/SignupOrLogin';
+import useMe from '../components/Account/useMe';
 
 const twitter = ({ query: { oauth_token, oauth_verifier, listname } }) => {
-   const { me, loading } = useContext(MemberContext);
+   const {
+      loggedInUserID,
+      memberLoading,
+      memberFields: { twitterUserName }
+   } = useMe('twitter', 'twitterUserName');
 
    // This page is the gateway. If you're not logged in, it bounces you. If you're logged in but haven't connected twitter, it does that. If you are logged in, it becomes the TwitterReader, which contains its own sidebar.
 
    let content;
-   if (loading) {
+   if (memberLoading) {
       content = <LoadingRing />;
-   } else if (me == null) {
+   } else if (loggedInUserID == null) {
       content = <SignupOrLogin explanation styled />;
    } else if (oauth_token && oauth_verifier) {
       content = (
@@ -26,7 +29,7 @@ const twitter = ({ query: { oauth_token, oauth_verifier, listname } }) => {
             oauth_verifier={oauth_verifier}
          />
       );
-   } else if (me.twitterUserName) {
+   } else if (twitterUserName) {
       return <TwitterReader list={listname} />;
    } else {
       content = <TwitterLoginStarter />;

@@ -1,7 +1,7 @@
 import { useMutation } from '@apollo/react-hooks';
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
-import { MemberContext } from '../Account/MemberProvider';
+import useMe from '../Account/useMe';
 import FlexibleThingCard from '../ThingCards/FlexibleThingCard';
 import {
    COPY_THING_TO_GROUP_MUTATION,
@@ -21,7 +21,10 @@ const CollectionsCard = ({
    hideThingHandler,
    isExpanded
 }) => {
-   const { me } = useContext(MemberContext);
+   const {
+      loggedInUserID,
+      memberFields: { role }
+   } = useMe('CollectionsCard', 'role');
 
    const [showingCopyTargets, setShowingCopyTargets] = useState(false);
 
@@ -127,10 +130,10 @@ const CollectionsCard = ({
    );
 
    let canEdit = false;
-   if (me && data?.author?.id === me.id) {
+   if (loggedInUserID && data?.author?.id === loggedInUserID) {
       canEdit = true;
    }
-   if (me && ['Admin', 'Editor', 'Moderator'].includes(me.role)) {
+   if (loggedInUserID && ['Admin', 'Editor', 'Moderator'].includes(role)) {
       canEdit = true;
    }
 

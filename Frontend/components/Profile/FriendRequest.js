@@ -1,12 +1,11 @@
-import { useContext } from 'react';
 import gql from 'graphql-tag';
-import styled, { ThemeContext } from 'styled-components';
+import styled from 'styled-components';
 import { useMutation } from '@apollo/react-hooks';
-import { MemberContext } from '../Account/MemberProvider';
 import MemberCard from '../MemberCard';
 import { CONFIRM_FRIEND_REQUEST_MUTATION } from './ProfileSidebar';
 import { setAlpha } from '../../styles/functions';
 import X from '../Icons/X';
+import useMe from '../Account/useMe';
 
 const IGNORE_FRIEND_REQUEST_MUTATION = gql`
    mutation IGNORE_FRIEND_REQUEST_MUTATION($id: ID!) {
@@ -59,7 +58,10 @@ const StyledFriendRequest = styled.div`
 `;
 
 const FriendRequest = ({ requester }) => {
-   const { me } = useContext(MemberContext);
+   const { memberFields } = useMe(
+      'FriendRequest',
+      'friends {__typename id} friendRequests {id} ignoredFriendRequests {__typename id}'
+   );
 
    const [ignoreFriendRequest] = useMutation(IGNORE_FRIEND_REQUEST_MUTATION, {
       onError: err => alert(err.message)
@@ -70,7 +72,7 @@ const FriendRequest = ({ requester }) => {
    });
 
    let alreadyFriends = false;
-   if (me.friends.some(friend => friend.id === requester.id)) {
+   if (memberFields.friends.some(friend => friend.id === requester.id)) {
       alreadyFriends = true;
    }
    return (
@@ -82,7 +84,7 @@ const FriendRequest = ({ requester }) => {
                   className="requestOption confirm"
                   color="primaryAccent"
                   onClick={e => {
-                     const newFriendRequests = me.friendRequests.filter(
+                     const newFriendRequests = memberFields.friendRequests.filter(
                         oldRequester => oldRequester.id !== requester.id
                      );
                      confirmFriendRequest({
@@ -91,7 +93,7 @@ const FriendRequest = ({ requester }) => {
                         },
                         optimisticResponse: {
                            confirmFriendRequest: {
-                              ...me,
+                              ...memberFields,
                               friendRequests: newFriendRequests
                            }
                         }
@@ -107,9 +109,9 @@ const FriendRequest = ({ requester }) => {
                         },
                         optimisticResponse: {
                            ignoreFriendRequest: {
-                              ...me,
+                              ...memberFields,
                               ignoredFriendRequests: [
-                                 ...me.ignoredFriendRequests,
+                                 ...memberFields.ignoredFriendRequests,
                                  {
                                     __typename: 'Member',
                                     ...requester

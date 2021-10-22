@@ -7,7 +7,6 @@ import Router from 'next/router';
 import debounce from 'lodash.debounce';
 import { toast } from 'react-toastify';
 import { ThingContext } from '../../pages/thing';
-import { MemberContext } from '../Account/MemberProvider';
 import { setLightness, setAlpha } from '../../styles/functions';
 import AuthorLink from './AuthorLink';
 import ColorSelector from './ColorSelector';
@@ -21,6 +20,7 @@ import { useSearchResultsSelector } from '../../lib/RichTextHandling';
 import { PUBLIC_THINGS_QUERY } from '../Archives/PublicThings';
 import ArrowIcon from '../Icons/Arrow';
 import { smallThingCardFields } from '../../lib/CardInterfaces';
+import useMe from '../Account/useMe';
 
 const DELETE_THING_MUTATION = gql`
    mutation DELETE_THING_MUTATION($id: ID!) {
@@ -395,7 +395,7 @@ const debouncedMemberSearch = debounce(
 );
 
 const ThingMeta = ({ canEdit, context }) => {
-   const { me } = useContext(MemberContext);
+   const { loggedInUserID } = useMe();
    const fullThingData = useContext(context || ThingContext);
    const {
       id,
@@ -445,7 +445,7 @@ const ThingMeta = ({ canEdit, context }) => {
       {
          onCompleted: data => {
             const filteredData = data.searchMembers.filter(member => {
-               if (member.id === me.id) return false;
+               if (member.id === loggedInUserID) return false;
                let hasViewPermission = false;
                individualViewPermissions.forEach(individualViewer => {
                   if (individualViewer.id === member.id) {

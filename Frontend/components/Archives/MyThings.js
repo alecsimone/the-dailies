@@ -1,10 +1,9 @@
 import gql from 'graphql-tag';
 import styled from 'styled-components';
-import { useQuery, useSubscription } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/react-hooks';
 import { useContext } from 'react';
 import Link from 'next/link';
 import Things from './Things';
-import { MemberContext } from '../Account/MemberProvider';
 import LoadingRing from '../LoadingRing';
 import ErrorMessage from '../ErrorMessage';
 import { ModalContext } from '../ModalProvider';
@@ -17,6 +16,7 @@ import {
 } from '../../lib/CardInterfaces';
 import LoadMoreButton from '../LoadMoreButton';
 import { useInfiniteScroll } from '../../lib/ThingHandling';
+import useMe from '../Account/useMe';
 
 const StyledMyThings = styled.div`
    article.flexibleThingCard {
@@ -63,12 +63,16 @@ const MY_THINGS_SUBSCRIPTION = gql`
 `;
 
 const MyThings = ({ setShowingSidebar, scrollingSelector, borderSide }) => {
-   const { me, loading: loadingMe } = useContext(MemberContext);
+   const {
+      loggedInUserID,
+      memberLoading,
+      memberFields: { broadcastView }
+   } = useMe('MyThings', 'broadcastView');
    const { setContent } = useContext(ModalContext);
 
    const { data, loading, error, fetchMore } = useQuery(MY_THINGS_QUERY, {
       ssr: false,
-      skip: me == null && !loadingMe
+      skip: loggedInUserID == null && !memberLoading
    });
 
    const {
@@ -91,7 +95,7 @@ const MyThings = ({ setShowingSidebar, scrollingSelector, borderSide }) => {
       if (data.myThings == null || data.myThings.length === 0) {
          return <p className="emptyThings">You haven't made any things yet.</p>;
       }
-      if (me != null) {
+      if (loggedInUserID != null) {
          let { myThings } = data;
          myThings.sort((a, b) => {
             const aDate = new Date(a.manualUpdatedAt);
@@ -104,7 +108,7 @@ const MyThings = ({ setShowingSidebar, scrollingSelector, borderSide }) => {
          });
          const lastThing = myThings[myThings.length - 1];
          cursorRef.current = lastThing.manualUpdatedAt;
-         if (me.broadcastView) {
+         if (broadcastView) {
             myThings = myThings.filter(thing => thing.privacy !== 'Private');
          }
 
@@ -140,7 +144,7 @@ const MyThings = ({ setShowingSidebar, scrollingSelector, borderSide }) => {
       }
    }
 
-   if (me == null && !loadingMe) {
+   if (loggedInUserID == null && !memberLoading) {
       return (
          <p className="emptyThings">
             <Link href={{ pathname: '/login' }}>
@@ -169,7 +173,7 @@ const MyThings = ({ setShowingSidebar, scrollingSelector, borderSide }) => {
       );
    }
 
-   if (loading || loadingMe) {
+   if (loading || memberLoading) {
       return <LoadingRing />;
    }
 };

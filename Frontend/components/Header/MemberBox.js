@@ -1,14 +1,12 @@
 import styled, { ThemeContext } from 'styled-components';
 import React, { useContext, useState } from 'react';
-import PropTypes from 'prop-types';
 import Link from 'next/link';
-import { MemberContext } from '../Account/MemberProvider';
 import { ModalContext } from '../ModalProvider';
 import MemberMenu from './MemberMenu';
-import { setAlpha } from '../../styles/functions';
 import Avatar from '../Avatar';
 import DefaultAvatar from '../Icons/DefaultAvatar';
 import SignupOrLogin from '../Account/SignupOrLogin';
+import useMe from '../Account/useMe';
 
 const StyledMemberBox = styled.div`
    color: ${props => props.theme.secondaryAccent};
@@ -41,7 +39,11 @@ const StyledMemberBox = styled.div`
 `;
 
 const MemberBox = () => {
-   const { me, loading: memberLoading } = useContext(MemberContext);
+   const {
+      memberLoading,
+      loggedInUserID,
+      memberFields: { rep, displayName, avatar }
+   } = useMe('MemberBox', 'rep displayName avatar');
    const { mobileBPWidthRaw } = useContext(ThemeContext);
    const {
       thingsSidebarIsOpen,
@@ -86,7 +88,7 @@ const MemberBox = () => {
    };
 
    let memberBoxContent;
-   if (me) {
+   if (loggedInUserID) {
       memberBoxContent = (
          <>
             <Link href={{ pathname: '/me' }}>
@@ -95,13 +97,13 @@ const MemberBox = () => {
                      memberMenuOpen ? 'profileLink open' : 'profileLink closed'
                   }
                >
-                  [{me.rep}] {me.displayName}
+                  [{rep}] {displayName}
                </a>
             </Link>
             <Avatar
-               id={me.id}
-               avatar={me.avatar}
-               displayName={me.displayName}
+               id={loggedInUserID}
+               avatar={avatar}
+               displayName={displayName}
                alt="avatar"
                htmlid="avatar"
                onClick={e => toggleThingsSidebar(e)}

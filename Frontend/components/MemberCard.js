@@ -1,10 +1,9 @@
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import Link from 'next/link';
-import { useContext } from 'react';
 import { setLightness, setAlpha } from '../styles/functions';
-import { MemberContext } from './Account/MemberProvider';
 import Avatar from './Avatar';
+import useMe from './Account/useMe';
 
 const StyledMemberCard = styled.article`
    background: ${props => props.theme.midBlack};
@@ -46,17 +45,20 @@ const StyledMemberCard = styled.article`
 
 const MemberCard = props => {
    const { member } = props;
-   const { me } = useContext(MemberContext);
+   const {
+      loggedInUserID,
+      memberFields: { friends }
+   } = useMe('MemberCard', 'friends');
 
    if (member == null) return null;
 
    const yourFriend =
-      me &&
+      loggedInUserID &&
       member.friends &&
-      member.friends.some(friend => friend.id === me.id);
+      member.friends.some(friend => friend.id === loggedInUserID);
    let mutualFriendCount = 0;
-   if (me && me.friends && member.friends && !yourFriend) {
-      me.friends.forEach(myFriend => {
+   if (loggedInUserID && friends && member.friends && !yourFriend) {
+      friends.forEach(myFriend => {
          const sharedFriends = member.friends.filter(
             theirFriend => theirFriend.id === myFriend.id
          );

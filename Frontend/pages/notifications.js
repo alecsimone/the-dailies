@@ -1,14 +1,16 @@
-import { useContext } from 'react';
 import NotificationsContainer from '../components/Header/NotificationsContainer';
-import { MemberContext } from '../components/Account/MemberProvider';
+import useMe from '../components/Account/useMe';
 
 const notifications = () => {
-   const { me } = useContext(MemberContext);
+   const {
+      loggedInUserID,
+      memberFields: { notifications: myNotifications }
+   } = useMe('notifications', 'notifications');
 
    return (
       <div className="notificationsPageWrapper">
          <NotificationsContainer
-            notifications={me != null ? me.notifications : []}
+            notifications={loggedInUserID != null ? myNotifications : []}
          />
       </div>
    );

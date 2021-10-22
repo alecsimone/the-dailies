@@ -1,12 +1,12 @@
 import gql from 'graphql-tag';
 import styled from 'styled-components';
-import { useState, useContext } from 'react';
+import { useState } from 'react';
 import { useMutation, useLazyQuery } from '@apollo/react-hooks';
 import { useCombobox } from 'downshift';
 import debounce from 'lodash.debounce';
-import { MemberContext } from '../Account/MemberProvider';
 import { smallThingCardFields } from '../../lib/CardInterfaces';
 import { setAlpha, successFlash } from '../../styles/functions';
+import useMe from '../Account/useMe';
 
 const ADD_TAXES_TO_THINGS_MUTATION = gql`
    mutation ADD_TAXES_TO_THINGS_MUTATION($taxes: String!, $thingIDs: [ID!] $personal: Boolean) {
@@ -102,7 +102,7 @@ const getFinalSearchTerm = inputValue => {
 };
 
 const TaxInput = ({ id, tags, stacks, personal, thingData, containerRef }) => {
-   const { me } = useContext(MemberContext);
+   const { loggedInUserID } = useMe();
 
    const [taxInput, setTaxInput] = useState(''); // Controls the input for the add tax box
    const [
@@ -282,7 +282,7 @@ const TaxInput = ({ id, tags, stacks, personal, thingData, containerRef }) => {
             objectToAdd.__typename = personal ? 'Stack' : 'Tag';
             objectToAdd.id = newTaxObj.id == null ? 'unknownID' : newTaxObj.id;
             objectToAdd.author =
-               newTaxObj.author == null ? me : newTaxObj.author;
+               newTaxObj.author == null ? loggedInUserID : newTaxObj.author;
             if (personal) {
                newStacks.push(objectToAdd);
             } else {
@@ -296,7 +296,7 @@ const TaxInput = ({ id, tags, stacks, personal, thingData, containerRef }) => {
          }
          // Optimistic response breaks if we don't provide an author for the tag we're creating
          if (newTaxObj.author == null) {
-            newTaxObj.author = me;
+            newTaxObj.author = loggedInUserID;
          }
 
          if (personal) {

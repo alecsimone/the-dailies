@@ -1,15 +1,15 @@
 import gql from 'graphql-tag';
-import { useQuery, useSubscription } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/react-hooks';
 import styled from 'styled-components';
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect } from 'react';
 import Head from 'next/head';
-import { MemberContext } from '../components/Account/MemberProvider';
 import Error from '../components/ErrorMessage';
 import LoadingRing from '../components/LoadingRing';
 import { fullThingFields } from '../lib/CardInterfaces';
 import BroadcastThing from '../components/ThingCards/BroadcastThing';
 import { home } from '../config';
 import FlexibleThingCard from '../components/ThingCards/FlexibleThingCard';
+import useMe from '../components/Account/useMe';
 
 const SINGLE_THING_QUERY = gql`
    query SINGLE_THING_QUERY($id: ID!) {
@@ -57,7 +57,11 @@ const SingleThing = ({ query }) => {
       skip: query.id === 'new'
    });
 
-   const { me, loading: meLoading } = useContext(MemberContext);
+   const {
+      loggedInUserID,
+      memberLoading,
+      memberFields: { role }
+   } = useMe('SingleThing', 'role');
 
    /* eslint-disable react-hooks/exhaustive-deps */
    // We need to make our thing container scroll to the top when we route to a new thing, but wesbos's eslint rules don't let you use a dependency for an effect that isn't referenced in the effect. I can't find any reason why that is or any better way of doing it, so I'm just turning off that rule for a minute.
@@ -77,16 +81,16 @@ const SingleThing = ({ query }) => {
    } else if (data) {
       if (data.thing != null) {
          let canEdit = false;
-         if (data && me) {
-            if (data.thing.author.id === me.id) {
+         if (data && loggedInUserID) {
+            if (data.thing.author.id === loggedInUserID) {
                canEdit = true;
             }
-            if (['Admin', 'Editor', 'Moderator'].includes(me.role)) {
+            if (['Admin', 'Editor', 'Moderator'].includes(role)) {
                canEdit = true;
             }
          }
 
-         if (me?.broadcastView) {
+         if (loggedInUserID?.broadcastView) {
             content = (
                <BroadcastThing
                   id={query.id}
@@ -111,7 +115,7 @@ const SingleThing = ({ query }) => {
          content = <p>Thing not found.</p>;
       }
       pageTitle = data.thing == null ? "Couldn't find thing" : data.thing.title;
-   } else if (loading || meLoading) {
+   } else if (loading || memberLoading) {
       content = <LoadingRing />;
       pageTitle = 'Loading Thing';
    }

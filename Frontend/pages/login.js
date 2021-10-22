@@ -1,11 +1,10 @@
-import { useContext } from 'react';
 import { home } from '../config';
 import Login from '../components/Account/Login.js';
-import { MemberContext } from '../components/Account/MemberProvider';
+import useMe from '../components/Account/useMe';
 
 const LoginPage = () => {
-   const { me } = useContext(MemberContext);
-   if (me != null && process.browser) {
+   const { loggedInUserID } = useMe();
+   if (loggedInUserID != null && process.browser) {
       window.location.replace(home);
       return (
          <div>You're already logged in, silly! Let's get you back home.</div>

@@ -1,11 +1,11 @@
 import gql from 'graphql-tag';
 import styled from 'styled-components';
 import { useMutation } from '@apollo/react-hooks';
-import { useEffect, useContext } from 'react';
-import { MemberContext } from '../Account/MemberProvider';
+import { useEffect } from 'react';
 import NotificationCard from './NotificationCard';
-import { fullMemberFields } from '../../lib/CardInterfaces';
+import { basicMemberFields, fullMemberFields } from '../../lib/CardInterfaces';
 import { CURRENT_MEMBER_QUERY } from '../Account/MemberProvider';
+import useMe from '../Account/useMe';
 
 const READ_NOTIFICATIONS_MUTATION = gql`
    mutation READ_NOTIFICATIONS_MUTATION($ids: [ID]!) {
@@ -38,7 +38,7 @@ const NotificationsContainer = ({ notifications }) => {
       onError: err => alert(err.message)
    });
 
-   const { me } = useContext(MemberContext);
+   const { memberFields } = useMe('NotificationsContainer', basicMemberFields);
 
    /* eslint-disable react-hooks/exhaustive-deps */
    useEffect(() => {
@@ -60,7 +60,7 @@ const NotificationsContainer = ({ notifications }) => {
                optimisticResponse: {
                   __typename: 'Mutation',
                   readNotifications: {
-                     ...me,
+                     ...memberFields,
                      notifications: updatedNotifications
                   }
                },
@@ -73,12 +73,6 @@ const NotificationsContainer = ({ notifications }) => {
                         oldData.me.notifications[index].unread = false;
                      }
                   });
-                  // const newDataObj = {
-                  //    me: {
-                  //       ...me,
-                  //       notifications: updatedNotifications
-                  //    }
-                  // };
                   client.writeQuery({
                      query: CURRENT_MEMBER_QUERY,
                      data: oldData

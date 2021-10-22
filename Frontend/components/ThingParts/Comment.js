@@ -2,9 +2,8 @@ import gql from 'graphql-tag';
 import styled from 'styled-components';
 import { useMutation } from '@apollo/react-hooks';
 import Link from 'next/link';
-import { useContext, useState, useRef } from 'react';
+import { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { MemberContext } from '../Account/MemberProvider';
 import RichText from '../RichText';
 import RichTextArea from '../RichTextArea';
 import { ADD_COMMENT_MUTATION } from './Comments';
@@ -12,7 +11,6 @@ import { SINGLE_THING_QUERY } from '../../pages/thing';
 import { SINGLE_TAX_QUERY } from '../../pages/tag';
 import { setAlpha, setLightness } from '../../styles/functions';
 import EditThis from '../Icons/EditThis';
-import X from '../Icons/X';
 import Avatar from '../Avatar';
 import TimeAgo from '../TimeAgo';
 import TrashIcon from '../Icons/Trash';
@@ -20,6 +18,7 @@ import LinkIcon from '../Icons/Link';
 import { home } from '../../config';
 import VoteBar from './VoteBar';
 import { commentFields } from '../../lib/CardInterfaces';
+import useMe from '../Account/useMe';
 
 const DELETE_COMMENT_MUTATION = gql`
    mutation DELETE_COMMENT_MUTATION(
@@ -228,7 +227,10 @@ const Comment = ({
    id,
    selectComment
 }) => {
-   const { me } = useContext(MemberContext);
+   const {
+      loggedInUserID,
+      memberFields: { avatar, displayName, rep }
+   } = useMe('Comment', 'avatar displayName rep');
 
    const [addComment] = useMutation(ADD_COMMENT_MUTATION, {
       onError: err => alert(err.message)
@@ -299,10 +301,10 @@ const Comment = ({
          __typename: 'Comment',
          author: {
             __typename: 'Member',
-            avatar: me.avatar,
-            displayName: me.displayName,
-            id: me.id,
-            rep: me.rep
+            avatar,
+            displayName,
+            id: loggedInUserID,
+            rep
          },
          comment: reply,
          createdAt: now.toISOString(),
@@ -498,7 +500,7 @@ const Comment = ({
             </div>
 
             <div className="buttons">
-               {me && me.id === comment.author.id && (
+               {loggedInUserID && loggedInUserID === comment.author.id && (
                   <EditThis onClick={() => setEditing(!editing)} />
                )}
                {editing && (
@@ -596,7 +598,7 @@ const Comment = ({
          <div className="commentMeta">
             <div className="metaLeft">
                <TimeAgo time={comment.createdAt} toggleable />
-               {me != null && (
+               {loggedInUserID != null && (
                   <a
                      className="replyLink"
                      onClick={() => setReplying(!replying)}

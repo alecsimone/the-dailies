@@ -4,18 +4,17 @@ import Head from 'next/head';
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import styled, { ThemeContext } from 'styled-components';
-import StyledPageWithSidebar from '../styles/StyledPageWithSidebar';
 import Error from '../components/ErrorMessage';
 import LoadingRing from '../components/LoadingRing';
 import TaxSidebar from '../components/TaxSidebar';
 import Things from '../components/Archives/Things';
 import { taxFields } from '../lib/CardInterfaces';
-import { MemberContext } from '../components/Account/MemberProvider';
 import { perPage } from '../config';
 import { setAlpha } from '../styles/functions';
 import { fullSizedLoadMoreButton } from '../styles/styleFragments';
 import { useInfiniteScroll } from '../lib/ThingHandling';
 import LoadMoreButton from '../components/LoadMoreButton';
+import useMe from '../components/Account/useMe';
 
 const SINGLE_TAX_QUERY = gql`
    query SINGLE_TAX_QUERY($title: String! $personal: Boolean!, $cursor: String) {
@@ -93,7 +92,10 @@ const tag = ({ query: { id, title } }) => {
       }
    });
 
-   const { me } = useContext(MemberContext);
+   const {
+      loggedInUserID,
+      memberFields: { role }
+   } = useMe('tag', 'role');
 
    const {
       scrollerRef,
@@ -114,11 +116,11 @@ const tag = ({ query: { id, title } }) => {
    }
 
    let canEdit = false;
-   if (data && data.taxByTitle && data.taxByTitle.author && me) {
-      if (data.taxByTitle.author.id === me.id) {
+   if (data && data.taxByTitle && data.taxByTitle.author && loggedInUserID) {
+      if (data.taxByTitle.author.id === loggedInUserID) {
          canEdit = true;
       }
-      if (['Admin', 'Editor', 'Moderator'].includes(me.role)) {
+      if (['Admin', 'Editor', 'Moderator'].includes(role)) {
          canEdit = true;
       }
    }

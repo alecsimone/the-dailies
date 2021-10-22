@@ -3,14 +3,12 @@ import { useContext, useState } from 'react';
 import Router from 'next/router';
 import gql from 'graphql-tag';
 import { useQuery, useMutation } from '@apollo/react-hooks';
-import {
-   MemberContext,
-   CURRENT_MEMBER_QUERY
-} from '../components/Account/MemberProvider';
+import { CURRENT_MEMBER_QUERY } from '../components/Account/MemberProvider';
 import { ModalContext } from '../components/ModalProvider';
 import Error from '../components/ErrorMessage';
 import StyledForm from '../styles/StyledForm';
 import Login from '../components/Account/Login';
+import useMe from '../components/Account/useMe';
 
 const StyledResetPage = styled.div`
    max-width: 800px;
@@ -98,8 +96,8 @@ const PasswordResetPage = ({ query }) => {
    const { setContent } = useContext(ModalContext);
 
    // If they're logged in, tell them they shouldn't be here and redirect them to the homepage
-   const { me } = useContext(MemberContext);
-   if (me != null && process.browser) {
+   const { loggedInUserID } = useMe();
+   if (loggedInUserID != null && process.browser) {
       Router.push({
          pathname: '/'
       });

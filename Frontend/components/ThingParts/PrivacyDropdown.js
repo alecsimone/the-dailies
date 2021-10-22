@@ -1,14 +1,12 @@
 import gql from 'graphql-tag';
 import { useQuery, useMutation } from '@apollo/react-hooks';
-import { useContext } from 'react';
 import PropTypes from 'prop-types';
-import Router from 'next/router';
-import { MemberContext } from '../Account/MemberProvider';
 import MetaOption from './MetaOption';
 import {
    checkForNewThingRedirect,
    ALL_THINGS_QUERY
 } from '../../lib/ThingHandling';
+import useMe from '../Account/useMe';
 
 const GET_PRIVACY_OPTIONS_QUERY = gql`
    query enumValuesOfPrivacySetting {
@@ -38,7 +36,10 @@ const SET_THING_PRIVACY_MUTATION = gql`
 
 const PrivacyDropdown = props => {
    const { initialPrivacy, id } = props;
-   const { me } = useContext(MemberContext);
+   const {
+      loggedInUserID,
+      memberFields: { defaultPrivacy }
+   } = useMe('PrivacyDropdown', 'defaultPrivacy');
 
    const [setThingPrivacy] = useMutation(SET_THING_PRIVACY_MUTATION, {
       onCompleted: data =>
@@ -87,7 +88,7 @@ const PrivacyDropdown = props => {
    return (
       <select
          onChange={selectPrivacy}
-         value={initialPrivacy || (me && me.defaultPrivacy)}
+         value={initialPrivacy || (loggedInUserID && defaultPrivacy)}
       >
          {privacyOptions}
       </select>

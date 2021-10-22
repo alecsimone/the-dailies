@@ -1,12 +1,12 @@
 import { useLazyQuery, useMutation } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 import { debounce } from 'lodash';
-import { useContext, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
 import { useSearchResultsSelector } from '../../lib/RichTextHandling';
 import { setAlpha } from '../../styles/functions';
-import { MemberContext } from '../Account/MemberProvider';
+import useMe from '../Account/useMe';
 import X from '../Icons/X';
 import PrivacyDropdown from './PrivacyDropdown';
 
@@ -155,7 +155,7 @@ const PrivacyInterface = ({
    privacy,
    individualViewPermissions
 }) => {
-   const { me } = useContext(MemberContext);
+   const { loggedInUserID } = useMe();
 
    const [addingPeople, setAddingPeople] = useState(false);
    const [peopleSearchTerm, setPeopleSearchTerm] = useState('');
@@ -178,7 +178,7 @@ const PrivacyInterface = ({
       {
          onCompleted: data => {
             const filteredData = data.searchMembers.filter(member => {
-               if (member.id === me.id) return false;
+               if (member.id === loggedInUserID) return false;
                let hasViewPermission = false;
                individualViewPermissions.forEach(individualViewer => {
                   if (individualViewer.id === member.id) {

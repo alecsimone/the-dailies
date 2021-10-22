@@ -1,10 +1,10 @@
 import styled from 'styled-components';
 import Router from 'next/router';
-import { useState, useContext } from 'react';
+import { useState } from 'react';
 import NotificationsContainer from './NotificationsContainer';
 import Bell from '../Icons/Bell';
-import { setAlpha, setLightness } from '../../styles/functions';
-import { MemberContext } from '../Account/MemberProvider';
+import { setAlpha } from '../../styles/functions';
+import useMe from '../Account/useMe';
 
 const StyledNotifications = styled.div`
    margin-right: 2rem;
@@ -64,7 +64,10 @@ const StyledNotifications = styled.div`
 
 const NotificationsIcon = () => {
    const [showNotifications, setShowNotifications] = useState(false);
-   const { me } = useContext(MemberContext);
+   const {
+      loggedInUserID,
+      memberFields: { notifications }
+   } = useMe('NotificationsIcon', 'notifications {unread}');
 
    const toggleNotificationContainer = () => {
       window.addEventListener('keydown', escapeDetector);
@@ -90,8 +93,8 @@ const NotificationsIcon = () => {
    };
 
    let unreadCount = 0;
-   if (me && me.notifications) {
-      const unreadNotifications = me.notifications.filter(
+   if (loggedInUserID && notifications) {
+      const unreadNotifications = notifications.filter(
          notification => notification.unread === true
       );
       unreadCount = unreadNotifications.length;
@@ -116,7 +119,7 @@ const NotificationsIcon = () => {
          )}
          {showNotifications && (
             <NotificationsContainer
-               notifications={me != null ? me.notifications : []}
+               notifications={loggedInUserID != null ? notifications : []}
             />
          )}
       </StyledNotifications>

@@ -13,8 +13,7 @@ import {
    SET_COLUMN_ORDER_MUTATION
 } from './queriesAndMutations';
 import X from '../Icons/X';
-import { MemberContext } from '../Account/MemberProvider';
-import { getUniversalTags, groupSort, sortByID } from './cardHandling';
+import { getUniversalTags, groupSort } from './cardHandling';
 import TaxInput from '../ThingParts/TaxInput';
 import { CollectionsThingsContext } from '../../pages/collections';
 
@@ -30,7 +29,10 @@ const CollectionsGroup = ({
    expandedCards
 }) => {
    const { id, things, title, type } = groupObj;
-   const { me } = useContext(MemberContext);
+   const {
+      loggedInUserID,
+      memberFields: { displayName }
+   } = useContext('CollectionsGroup', 'displayName');
 
    const { things: fullThingData } = useContext(CollectionsThingsContext);
 
@@ -200,8 +202,8 @@ const CollectionsGroup = ({
                            id,
                            author: {
                               __typename: 'Member',
-                              displayName: me.displayName,
-                              id: me.id
+                              displayName,
+                              id: loggedInUserID
                            }
                         }; // The store won't update unless we provide an author for the tags
                         const newHiddenTags = [

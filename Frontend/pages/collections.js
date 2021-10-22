@@ -1,6 +1,5 @@
 import { useQuery } from '@apollo/react-hooks';
-import React, { useContext, useState, useRef } from 'react';
-import { MemberContext } from '../components/Account/MemberProvider';
+import React, { useState, useRef } from 'react';
 import SignupOrLogin from '../components/Account/SignupOrLogin';
 import {
    COLLECTIONS_PAGE_QUERY,
@@ -12,19 +11,20 @@ import AddCollectionButton from '../components/Collections/AddCollectionButton';
 import { StyledNoCollections } from '../components/Collections/styles';
 import Collections from '../components/Collections/Collections';
 import { sortByUpdatedTime } from '../components/Collections/cardHandling';
+import useMe from '../components/Account/useMe';
 
 const CollectionsThingsContext = React.createContext();
 export { CollectionsThingsContext };
 
 const CollectionsPage = ({ query }) => {
-   const { me, loading: loadingMe } = useContext(MemberContext);
+   const { loggedInUserID, memberLoading } = useMe();
 
    const {
       data: collectionsData,
       loading: collectionsLoading,
       error: collectionsError
    } = useQuery(COLLECTIONS_PAGE_QUERY, {
-      skip: me == null
+      skip: loggedInUserID == null
    });
 
    const {
@@ -37,7 +37,7 @@ const CollectionsPage = ({ query }) => {
          forCollection: '1'
       },
       ssr: false,
-      skip: me == null
+      skip: loggedInUserID == null
    });
 
    const [isFetchingMore, setIsFetchingMore] = useState(false);
@@ -76,8 +76,8 @@ const CollectionsPage = ({ query }) => {
       });
    };
 
-   if (me == null) return <SignupOrLogin explanation styled />;
-   if (loadingMe || loadingThings) return <LoadingRing />;
+   if (loggedInUserID == null) return <SignupOrLogin explanation styled />;
+   if (memberLoading || loadingThings) return <LoadingRing />;
 
    if (collectionsData) {
       const {

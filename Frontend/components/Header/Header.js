@@ -1,15 +1,13 @@
 import Router from 'next/router';
 import NProgress from 'nprogress';
 import styled from 'styled-components';
-import React, { useState, useContext } from 'react';
-import PropTypes from 'prop-types';
+import React, { useState } from 'react';
 import LogoBox from './LogoBox';
 import MemberBox from './MemberBox';
 import NavButtons from './NavButtons';
 import NotificationsIcon from './NotificationsIcon';
-import { setAlpha, setLightness } from '../../styles/functions';
-import { MemberContext } from '../Account/MemberProvider';
-import NotificationsContainer from './NotificationsContainer';
+import { setLightness } from '../../styles/functions';
+import useMe from '../Account/useMe';
 
 Router.events.on('routeChangeStart', target => {
    // If we're routing to the same thing, we need to use Router.push so the browser back button will work properly in broadcast view, but we don't want to fire NProgress.start
@@ -93,7 +91,7 @@ const StyledHeader = styled.div`
 
 const Header = ({ pageProps }) => {
    const [showSearch, setShowSearch] = useState(false);
-   const { me } = useContext(MemberContext);
+   const { loggedInUserID } = useMe();
 
    let search;
    if (pageProps != null && pageProps?.query?.s != null) {
@@ -110,7 +108,7 @@ const Header = ({ pageProps }) => {
             />
             <LogoBox />
             <div className="memberColumn">
-               {me && <NotificationsIcon />}
+               {loggedInUserID && <NotificationsIcon />}
                <MemberBox />
             </div>
          </div>

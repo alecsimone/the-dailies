@@ -2,11 +2,10 @@ import gql from 'graphql-tag';
 import { useMutation } from '@apollo/react-hooks';
 import styled from 'styled-components';
 import Link from 'next/link';
-import PropTypes from 'prop-types';
-import { useState, useContext } from 'react';
-import { CURRENT_MEMBER_QUERY, MemberContext } from '../Account/MemberProvider';
+import { CURRENT_MEMBER_QUERY } from '../Account/MemberProvider';
 import { ALL_THINGS_QUERY } from '../../lib/ThingHandling';
-import { setAlpha, setLightness } from '../../styles/functions';
+import { setAlpha } from '../../styles/functions';
+import useMe from '../Account/useMe';
 
 const LOGOUT_MUTATION = gql`
    mutation LOG_OUT_MUTATION {
@@ -115,8 +114,8 @@ const MemberMenu = () => {
    });
 
    const {
-      me: { broadcastView, id }
-   } = useContext(MemberContext);
+      memberFields: { broadcastView, id }
+   } = useMe('MemberMenu', 'broadcastView id');
 
    const toggleBroadcasting = e => {
       toggleBroadcastView({
