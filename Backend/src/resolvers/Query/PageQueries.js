@@ -113,7 +113,7 @@ exports.thing = thing;
 
 async function myThings(
    parent,
-   { orderBy = 'manualUpdatedAt_DESC', cursor, forCollection },
+   { orderBy = 'manualUpdatedAt_DESC', cursor, forCollection, count = 10 },
    ctx,
    info
 ) {
@@ -134,7 +134,7 @@ async function myThings(
    const queryObj = {
       where,
       orderBy,
-      first: 10
+      first: count
    };
 
    if (cursor != null) {
@@ -245,7 +245,7 @@ async function publicThings(
 }
 exports.publicThings = publicThings;
 
-async function allThings(parent, { cursor }, ctx, info) {
+async function allThings(parent, { cursor, count = 2 }, ctx, info) {
    let where;
    if (ctx.req.memberId == null) {
       where = {
@@ -299,7 +299,7 @@ async function allThings(parent, { cursor }, ctx, info) {
          {
             where,
             orderBy: 'createdAt_DESC',
-            first: 2
+            first: count
          },
          info
       )

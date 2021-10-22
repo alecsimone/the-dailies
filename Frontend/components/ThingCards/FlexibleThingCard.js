@@ -20,7 +20,6 @@ import ColorSelector from '../ThingParts/ColorSelector';
 import VoteBar from '../ThingParts/VoteBar';
 import { smallThingCardFields } from '../../lib/CardInterfaces';
 import { ALL_THINGS_QUERY, disabledCodewords } from '../../lib/ThingHandling';
-import { PUBLIC_THINGS_QUERY } from '../Archives/PublicThings';
 import FlexibleFeaturedImage from '../ThingParts/FlexibleFeaturedImage';
 import { isVideo } from '../../lib/UrlHandling';
 import ContentIcon from '../Icons/Content';
@@ -536,7 +535,6 @@ const FlexibleThingCard = ({
          },
          refetchQueries: [
             { query: ALL_THINGS_QUERY },
-            { query: PUBLIC_THINGS_QUERY },
             { query: MY_THINGS_QUERY }
          ],
          onError: err => alert(err.message)

@@ -14,7 +14,6 @@ import DefaultAvatar from './Icons/DefaultAvatar';
 import StackIcon from './Icons/Stack';
 import { ModalContext } from './ModalProvider';
 import { ALL_THINGS_QUERY } from '../lib/ThingHandling';
-import { PUBLIC_THINGS_QUERY } from './Archives/PublicThings';
 import { CURRENT_MEMBER_QUERY } from './Account/MemberProvider';
 import ArrowIcon from './Icons/Arrow';
 import { MY_THINGS_QUERY } from './Archives/MyThings';
@@ -179,11 +178,7 @@ const NavSidebar = () => {
          const newPostButton = document.querySelector('.navNewPost');
          newPostButton.classList.remove('loading');
       },
-      refetchQueries: [
-         { query: ALL_THINGS_QUERY },
-         { query: PUBLIC_THINGS_QUERY },
-         { query: MY_THINGS_QUERY }
-      ],
+      refetchQueries: [{ query: ALL_THINGS_QUERY }, { query: MY_THINGS_QUERY }],
       onError: err => alert(err.message),
       context: {
          debounceKey: 'newThing'

@@ -6,10 +6,10 @@ type Query {
    me: Member
    member(id: ID, displayName: String): Member
    thing(where: ThingWhereUniqueInput!): Thing
-   myThings(orderBy: ThingOrderByInput, cursor: String, forCollection: ID): [Thing]!
+   myThings(orderBy: ThingOrderByInput, cursor: String, forCollection: ID, count: Int): [Thing]!
    myFriendsThings(orderBy: ThingOrderByInput): [Thing]!
    publicThings(orderBy: ThingOrderByInput): [Thing]!
-   allThings(cursor: String): [Thing]!
+   allThings(cursor: String, count: Int): [Thing]!
    searchTaxes(searchTerm: String, personal: Boolean!): [Tax]!
    taxByTitle(title: String!, personal: Boolean!, cursor: String): Tax
    finishTwitterLogin(token: String!, verifier: String!): SuccessMessage

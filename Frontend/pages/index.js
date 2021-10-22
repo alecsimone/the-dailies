@@ -10,6 +10,7 @@ import LoadMoreButton from '../components/LoadMoreButton';
 import { useInfiniteScroll, ALL_THINGS_QUERY } from '../lib/ThingHandling';
 import { fullSizedLoadMoreButton } from '../styles/styleFragments';
 import { ModalContext } from '../components/ModalProvider';
+import PlaceholderThings from '../components/PlaceholderThings';
 
 const StyledHomepage = styled.section`
    display: flex;
@@ -78,9 +79,14 @@ const StyledHomepage = styled.section`
    }
 `;
 
+const allThingsQueryCount = 2;
+
 const Home = () => {
    const { data, loading, error, fetchMore } = useQuery(ALL_THINGS_QUERY, {
-      ssr: false
+      ssr: false,
+      variables: {
+         count: allThingsQueryCount
+      }
    });
 
    const { setThingsSidebarIsOpen } = useContext(ModalContext);
@@ -96,6 +102,9 @@ const Home = () => {
    } = useInfiniteScroll(fetchMore, '.things', 'allThings');
 
    let content;
+   const thingDisplayProps = {
+      cardSize: 'regular'
+   };
    if (error) {
       content = <ErrorMessage error={error} />;
    } else if (data) {
@@ -111,7 +120,12 @@ const Home = () => {
          cursorRef.current = lastThing.createdAt;
       }
    } else if (loading) {
-      content = <LoadingRing />;
+      content = (
+         <PlaceholderThings
+            count={allThingsQueryCount}
+            {...thingDisplayProps}
+         />
+      );
    }
    return (
       <StyledHomepage className="homepage">

@@ -17,7 +17,6 @@ import X from '../Icons/X';
 import TimeAgo from '../TimeAgo';
 import { ALL_THINGS_QUERY } from '../../lib/ThingHandling';
 import { useSearchResultsSelector } from '../../lib/RichTextHandling';
-import { PUBLIC_THINGS_QUERY } from '../Archives/PublicThings';
 import ArrowIcon from '../Icons/Arrow';
 import { smallThingCardFields } from '../../lib/CardInterfaces';
 import useMe from '../Account/useMe';
@@ -432,10 +431,7 @@ const ThingMeta = ({ canEdit, context }) => {
                pathname: '/'
             });
          },
-         refetchQueries: [
-            { query: ALL_THINGS_QUERY },
-            { query: PUBLIC_THINGS_QUERY }
-         ],
+         refetchQueries: [{ query: ALL_THINGS_QUERY }],
          onError: err => alert(err.message)
       }
    );

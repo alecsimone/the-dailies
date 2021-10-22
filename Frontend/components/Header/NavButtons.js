@@ -9,7 +9,6 @@ import { NEW_BLANK_THING } from '../../pages/new';
 import { setAlpha, setLightness, setSaturation } from '../../styles/functions';
 import X from '../Icons/X';
 import { ALL_THINGS_QUERY } from '../../lib/ThingHandling';
-import { PUBLIC_THINGS_QUERY } from '../Archives/PublicThings';
 import { MY_THINGS_QUERY } from '../Archives/MyThings';
 
 const StyledNav = styled.nav`
@@ -59,11 +58,7 @@ const NavButtons = ({ showSearch, setShowSearch, search }) => {
          const newPostButton = document.querySelector('.newPost');
          newPostButton.classList.remove('loading');
       },
-      refetchQueries: [
-         { query: ALL_THINGS_QUERY },
-         { query: PUBLIC_THINGS_QUERY },
-         { query: MY_THINGS_QUERY }
-      ],
+      refetchQueries: [{ query: ALL_THINGS_QUERY }, { query: MY_THINGS_QUERY }],
       onError: err => {
          const newPostButton = document.querySelector('.newPost');
          newPostButton.classList.remove('loading');

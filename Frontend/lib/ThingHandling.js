@@ -17,8 +17,8 @@ const checkForNewThingRedirect = (thingID, mutationName, data) => {
 export { checkForNewThingRedirect };
 
 const ALL_THINGS_QUERY = gql`
-   query ALL_THINGS_QUERY($cursor: String) {
-      allThings(cursor: $cursor) {
+   query ALL_THINGS_QUERY($cursor: String, $count: Int) {
+      allThings(cursor: $cursor, count: $count) {
          ${fullThingFields}
       }
    }

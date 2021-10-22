@@ -10,6 +10,7 @@ import BroadcastThing from '../components/ThingCards/BroadcastThing';
 import { home } from '../config';
 import FlexibleThingCard from '../components/ThingCards/FlexibleThingCard';
 import useMe from '../components/Account/useMe';
+import PlaceholderThings from '../components/PlaceholderThings';
 
 const SINGLE_THING_QUERY = gql`
    query SINGLE_THING_QUERY($id: ID!) {
@@ -39,10 +40,17 @@ const StyledSingleThing = styled.section`
    ${props => props.theme.mobileBreakpoint} {
       padding: 0 1rem;
    }
-   article {
+   article,
+   article.placeholderThing {
       max-width: 1920px;
       width: 100%;
       margin: 3rem auto;
+      &:first-child {
+         margin-top: 3rem;
+      }
+   }
+   article.placeholderThing .placeholderFeaturedImage {
+      height: 75rem;
    }
    .noThing {
       margin: 3rem auto;
@@ -73,6 +81,11 @@ const SingleThing = ({ query }) => {
    }, [query.id]);
    /* eslint-enable */
 
+   const displayProps = {
+      expanded: true,
+      contentType: 'full'
+   };
+
    let content;
    let pageTitle;
    if (error) {
@@ -102,12 +115,11 @@ const SingleThing = ({ query }) => {
             content = (
                <FlexibleThingCard
                   key={`flexibleCard-${query.id}`}
-                  expanded
                   thingID={data.thing.id}
-                  contentType="full"
                   canEdit={canEdit}
                   linkedPiece={query.piece}
                   linkedComment={query.comment}
+                  {...displayProps}
                />
             );
          }
@@ -116,7 +128,7 @@ const SingleThing = ({ query }) => {
       }
       pageTitle = data.thing == null ? "Couldn't find thing" : data.thing.title;
    } else if (loading || memberLoading) {
-      content = <LoadingRing />;
+      content = <PlaceholderThings count={1} {...displayProps} />;
       pageTitle = 'Loading Thing';
    }
 

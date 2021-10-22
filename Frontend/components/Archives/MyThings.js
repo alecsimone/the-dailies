@@ -17,6 +17,7 @@ import {
 import LoadMoreButton from '../LoadMoreButton';
 import { useInfiniteScroll } from '../../lib/ThingHandling';
 import useMe from '../Account/useMe';
+import PlaceholderThings from '../PlaceholderThings';
 
 const StyledMyThings = styled.div`
    article.flexibleThingCard {
@@ -43,8 +44,8 @@ const StyledMyThings = styled.div`
 `;
 
 const MY_THINGS_QUERY = gql`
-   query MY_THINGS_QUERY($cursor: String) {
-      myThings(cursor: $cursor) {
+   query MY_THINGS_QUERY($cursor: String, $count: Int) {
+      myThings(cursor: $cursor, count: $count) {
          ${fullThingFields}
       }
    }
@@ -62,6 +63,8 @@ const MY_THINGS_SUBSCRIPTION = gql`
    }
 `;
 
+const myThingsQueryCount = 10;
+
 const MyThings = ({ setShowingSidebar, scrollingSelector, borderSide }) => {
    const {
       loggedInUserID,
@@ -72,7 +75,10 @@ const MyThings = ({ setShowingSidebar, scrollingSelector, borderSide }) => {
 
    const { data, loading, error, fetchMore } = useQuery(MY_THINGS_QUERY, {
       ssr: false,
-      skip: loggedInUserID == null && !memberLoading
+      skip: loggedInUserID == null && !memberLoading,
+      variables: {
+         count: myThingsQueryCount
+      }
    });
 
    const {
@@ -90,6 +96,12 @@ const MyThings = ({ setShowingSidebar, scrollingSelector, borderSide }) => {
    if (error) {
       return <ErrorMessage error={error} />;
    }
+
+   const displayProps = {
+      cardSize: 'small',
+      noPic: true,
+      borderSide
+   };
 
    if (data) {
       if (data.myThings == null || data.myThings.length === 0) {
@@ -128,11 +140,9 @@ const MyThings = ({ setShowingSidebar, scrollingSelector, borderSide }) => {
                <Things
                   things={myThings}
                   displayType="list"
-                  cardSize="small"
-                  noPic
                   scrollingParentSelector={scrollingSelector}
                   perPage={sidebarPerPage}
-                  borderSide={borderSide}
+                  {...displayProps}
                />
                <LoadMoreButton
                   loading={loading || isFetchingMore}
@@ -174,7 +184,7 @@ const MyThings = ({ setShowingSidebar, scrollingSelector, borderSide }) => {
    }
 
    if (loading || memberLoading) {
-      return <LoadingRing />;
+      return <PlaceholderThings count={myThingsQueryCount} {...displayProps} />;
    }
 };
 MyThings.propTypes = {};
