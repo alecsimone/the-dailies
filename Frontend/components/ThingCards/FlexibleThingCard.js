@@ -800,6 +800,7 @@ const FlexibleThingCard = ({
                      expanded={expanded}
                      thingID={id}
                      content={content}
+                     linkedPiece={linkedPiece}
                      copiedInContent={copiedInContent}
                      contentOrder={contentOrder}
                      unsavedNewContent={unsavedNewContent}
