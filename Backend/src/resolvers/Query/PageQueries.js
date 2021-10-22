@@ -291,7 +291,7 @@ async function allThings(parent, { cursor }, ctx, info) {
       };
    }
    if (cursor != null) {
-      where.createdAt_lt = cursor;
+      where.manualUpdatedAt_lt = cursor;
    }
 
    const things = await ctx.db.query
