@@ -291,14 +291,14 @@ async function allThings(parent, { cursor }, ctx, info) {
       };
    }
    if (cursor != null) {
-      where.manualUpdatedAt_lt = cursor;
+      where.createdAt_lt = cursor;
    }
 
    const things = await ctx.db.query
       .things(
          {
             where,
-            orderBy: 'manualUpdatedAt_DESC',
+            orderBy: 'createdAt_DESC',
             first: 2
          },
          info

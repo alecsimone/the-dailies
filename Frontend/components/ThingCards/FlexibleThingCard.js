@@ -395,6 +395,7 @@ const FlexibleThingCard = ({
    borderSide = 'top',
    noPic
 }) => {
+   console.log('card render');
    const {
       id,
       author,

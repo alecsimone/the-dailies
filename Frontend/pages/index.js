@@ -108,7 +108,7 @@ const Home = () => {
       );
       if (data.allThings && data.allThings.length > 0) {
          const lastThing = data.allThings[data.allThings.length - 1];
-         cursorRef.current = lastThing.manualUpdatedAt;
+         cursorRef.current = lastThing.createdAt;
       }
    } else if (loading) {
       content = <LoadingRing />;
