@@ -1,6 +1,6 @@
-import { useApolloClient, useMutation } from '@apollo/react-hooks';
+import { useMutation } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Reorder from 'react-reorder';
 import { contentPieceFields } from '../../../lib/CardInterfaces';
 import {
@@ -20,32 +20,23 @@ import ArrowIcon from '../../Icons/Arrow';
 import X from '../../Icons/X';
 import LoadingRing from '../../LoadingRing';
 import RichTextArea from '../../RichTextArea';
+import useThingData from '../../ThingCards/useThingData';
 import FlexibleContentPiece from './FlexibleContentPiece';
 
-const FlexibleContent = ({
-   contentType,
-   fullThingData,
-   canEdit,
-   linkedPiece,
-   thingID,
-   content,
-   copiedInContent,
-   contentOrder,
-   unsavedNewContent
-}) => {
-   // const apolloClient = useApolloClient();
-   // const { content } = apolloClient.readFragment({
-   //    id: `Thing:${thingID}`,
-   //    fragment: gql`
-   //       fragment ThingContent on Thing {
-   //          content {
-   //             ${contentPieceFields}
-   //          }
-   //       }
-   //    `
-   // });
+const FlexibleContent = ({ contentType, canEdit, linkedPiece, thingID }) => {
+   // First we get the thingData we need
+   const {
+      content,
+      copiedInContent,
+      contentOrder,
+      unsavedNewContent
+   } = useThingData(
+      thingID,
+      'FlexibleContent',
+      `content {${contentPieceFields}} copiedInContent {${contentPieceFields}} contentOrder unsavedNewContent`
+   );
 
-   // First we'll set up our mutation hooks
+   // Then we'll set up our mutation hooks
    const [storeUnsavedThingChanges] = useMutation(
       STORE_UNSAVED_CONTENT_MUTATION,
       {
@@ -225,7 +216,6 @@ const FlexibleContent = ({
                      reordering={reordering}
                      setReordering={setReordering}
                      highlighted={linkedPiece === contentPiece.id}
-                     fullThingData={fullThingData}
                      zIndex={orderedContent.length - index} // We need to reverse the stacking context order so that each content piece is below the one before it, otherwise the next content piece will cover up the addToInterface, or anything else we might have pop out of the buttons
                   />
                </div>
@@ -267,7 +257,6 @@ const FlexibleContent = ({
                      reordering={reordering}
                      setReordering={setReordering}
                      highlighted={linkedPiece === currentContentPiece.id}
-                     fullThingData={fullThingData}
                      zIndex={orderedContent.length} // We need to reverse the stacking context order so that each content piece is below the one before it, otherwise the next content piece will cover up the addToInterface, or anything else we might have pop out of the buttons
                      truncContExpanded={truncContExpanded}
                      setTruncContExpanded={setTruncContExpanded}

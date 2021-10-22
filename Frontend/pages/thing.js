@@ -103,7 +103,7 @@ const SingleThing = ({ query }) => {
                <FlexibleThingCard
                   key={`flexibleCard-${query.id}`}
                   expanded
-                  thingData={data.thing}
+                  thingID={data.thing.id}
                   contentType="full"
                   canEdit={canEdit}
                   linkedPiece={query.piece}

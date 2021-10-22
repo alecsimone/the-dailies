@@ -16,6 +16,12 @@ import {
 } from '../../lib/ContentHandling';
 import { ModalContext } from '../ModalProvider';
 import { setAlpha } from '../../styles/functions';
+import useThingData from '../ThingCards/useThingData';
+import {
+   commentFields,
+   contentPieceFields,
+   fullThingFields
+} from '../../lib/CardInterfaces';
 
 const StyledSaveOrDiscardContentInterface = styled.div`
    .responses {
@@ -55,7 +61,6 @@ const ContentPieceButtons = ({
    pieceID,
    voters,
    isCopied,
-   fullThingData,
    deleteContentPiece,
    reordering,
    setReordering,
@@ -67,6 +72,16 @@ const ContentPieceButtons = ({
    contentContainerRef,
    postContent
 }) => {
+   const thingData = useThingData(
+      thingID,
+      'ContentPieceButtons',
+      fullThingFields
+   );
+   const fullThingData = useThingData(
+      thingID,
+      'ContentPieceButtons',
+      fullThingFields
+   );
    const [copied, setCopied] = useState(false);
 
    const [showingAddToBox, setShowingAddToBox] = useState(false);
@@ -168,7 +183,6 @@ const ContentPieceButtons = ({
          <div className="buttonWrapper votebarWrapper">
             <VoteBar
                id={pieceID}
-               votes={voters}
                key={`votebar-${pieceID}`}
                type="ContentPiece"
                mini

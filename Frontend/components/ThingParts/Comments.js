@@ -10,6 +10,7 @@ import { SINGLE_TAX_QUERY } from '../../pages/tag';
 import { setAlpha } from '../../styles/functions';
 import { commentFields } from '../../lib/CardInterfaces';
 import useMe from '../Account/useMe';
+import useThingData from '../ThingCards/useThingData';
 
 const StyledComments = styled.section`
    padding: 1rem;
@@ -123,11 +124,17 @@ const ADD_COMMENT_MUTATION = gql`
 `;
 export { ADD_COMMENT_MUTATION };
 
-const Comments = ({ id, comments, type, linkedComment }) => {
+const Comments = ({ id, type, linkedComment }) => {
    const {
       loggedInUserID,
       memberFields: { avatar, displayName, rep }
    } = useMe('Comments', 'avatar displayName rep');
+
+   const { comments } = useThingData(
+      id,
+      'Comments',
+      `comments {${commentFields}}`
+   );
 
    // This ref will be passed down to the RichTextArea that allows us to comment on the thing, and we'll use it to get the value for our sendNewComment mutation
    const commentInputRef = useRef(null);

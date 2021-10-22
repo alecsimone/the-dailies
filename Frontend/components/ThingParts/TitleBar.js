@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import Router from 'next/router';
 import { setAlpha, dynamicallyResizeElement } from '../../styles/functions';
 import { checkForNewThingRedirect } from '../../lib/ThingHandling';
+import useThingData from '../ThingCards/useThingData';
 // import { setFullThingToLoading } from './FullThing';
 
 const SET_TITLE_MUTATION = gql`
@@ -36,6 +37,17 @@ const StyledTitleBar = styled.div`
    ${props => props.theme.mobileBreakpoint} {
       padding: 0;
    }
+   form {
+      display: flex;
+      align-items: center;
+      textarea {
+         flex-grow: 1;
+      }
+      span.score {
+         width: auto;
+         color: ${props => props.theme.secondaryAccent};
+      }
+   }
    h3,
    textarea {
       font-size: ${props => props.theme.smallHead};
@@ -50,6 +62,7 @@ const StyledTitleBar = styled.div`
    textarea {
       height: 3rem;
       resize: none;
+      display: inline;
       &:focus {
          border: none;
          background: ${props => setAlpha(props.theme.lowContrastGrey, 0.4)};
@@ -57,7 +70,9 @@ const StyledTitleBar = styled.div`
    }
 `;
 
-const TitleBar = ({ limit, canEdit = true, type, title, id }) => {
+const TitleBar = ({ limit, canEdit = true, type, id, showingScore }) => {
+   const { score, title } = useThingData(id, 'TitleBar', 'score title');
+
    const [editedTitle, setEditedTitleState] = useState(title);
    const editedTitleRef = useRef(editedTitle);
 
@@ -136,10 +151,13 @@ const TitleBar = ({ limit, canEdit = true, type, title, id }) => {
       }
    };
 
+   const scoreText = `(+${score}) `;
+
    let titleElement;
    if (canEdit) {
       titleElement = (
          <form onSubmit={submitTitle}>
+            {showingScore && <span className="score">{scoreText}</span>}
             <textarea
                id="titleInput"
                spellCheck={false}
@@ -162,6 +180,7 @@ const TitleBar = ({ limit, canEdit = true, type, title, id }) => {
    } else {
       titleElement = (
          <h3 className="titleBar" id="titleBar">
+            {showingScore && <span className="score">{scoreText}</span>}
             {limit == null || limit >= title.length
                ? title
                : `${title.substring(0, limit).trim()}...`}

@@ -1,5 +1,5 @@
 import gql from 'graphql-tag';
-import { useMutation } from '@apollo/react-hooks';
+import { useApolloClient, useMutation } from '@apollo/react-hooks';
 import styled from 'styled-components';
 import { useContext, useState, useEffect } from 'react';
 import { setAlpha } from '../../styles/functions';
@@ -8,6 +8,8 @@ import { ALL_THINGS_QUERY } from '../../lib/ThingHandling';
 import { ModalContext } from '../ModalProvider';
 import Login from '../Account/Login';
 import useMe from '../Account/useMe';
+import useThingData from '../ThingCards/useThingData';
+import { basicMemberFields } from '../../lib/CardInterfaces';
 
 const VOTE_MUTATION = gql`
    mutation VOTE_MUTATION($id: ID!, $type: String!, $isFreshVote: Boolean!) {
@@ -135,11 +137,33 @@ const StyledVoteBar = styled.section`
    }
 `;
 
-const VoteBar = ({ votes = [], id, type, mini, alwaysMini }) => {
-   const {
-      loggedInUserID,
-      memberFields: { rep }
-   } = useMe('VoteBar', 'rep');
+const VoteBar = ({ id, type, mini, alwaysMini }) => {
+   const { loggedInUserID, memberFields } = useMe('VoteBar', basicMemberFields);
+
+   const apolloClient = useApolloClient();
+   const { votes = [] } = apolloClient.readFragment(
+      {
+         id: `${type}:${id}`,
+         fragment: gql`
+         fragment ${type}ForVoteBar on ${type} {
+            votes {
+               __typename
+               id
+               value
+               voter {
+                  __typename
+                  id
+                  displayName
+                  rep
+                  avatar
+               }
+            }
+         }
+         `
+      },
+      true
+   );
+
    const [vote] = useMutation(VOTE_MUTATION, {
       refetchQueries: [{ query: ALL_THINGS_QUERY }],
       context: {
@@ -207,18 +231,18 @@ const VoteBar = ({ votes = [], id, type, mini, alwaysMini }) => {
       let newScore;
       if (meVoted) {
          newVotes = voters.filter(vote => vote.voter.id !== loggedInUserID);
-         newScore = computedScore - rep;
+         newScore = computedScore - memberFields.rep;
       } else {
          newVotes = [
             ...voters,
             {
                __typename: 'Vote',
                id: 'newVote',
-               value: rep,
-               voter: loggedInUserID
+               value: memberFields.rep,
+               voter: memberFields
             }
          ];
-         newScore = computedScore + rep;
+         newScore = computedScore + memberFields.rep;
       }
       return [newVotes, newScore];
    };

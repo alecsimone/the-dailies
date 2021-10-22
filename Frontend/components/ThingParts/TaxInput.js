@@ -102,7 +102,10 @@ const getFinalSearchTerm = inputValue => {
 };
 
 const TaxInput = ({ id, tags, stacks, personal, thingData, containerRef }) => {
-   const { loggedInUserID } = useMe();
+   const { loggedInUserID, memberFields } = useMe(
+      'TaxInput',
+      '__typename id displayName'
+   );
 
    const [taxInput, setTaxInput] = useState(''); // Controls the input for the add tax box
    const [
@@ -282,7 +285,7 @@ const TaxInput = ({ id, tags, stacks, personal, thingData, containerRef }) => {
             objectToAdd.__typename = personal ? 'Stack' : 'Tag';
             objectToAdd.id = newTaxObj.id == null ? 'unknownID' : newTaxObj.id;
             objectToAdd.author =
-               newTaxObj.author == null ? loggedInUserID : newTaxObj.author;
+               newTaxObj.author == null ? memberFields : newTaxObj.author;
             if (personal) {
                newStacks.push(objectToAdd);
             } else {
@@ -296,7 +299,7 @@ const TaxInput = ({ id, tags, stacks, personal, thingData, containerRef }) => {
          }
          // Optimistic response breaks if we don't provide an author for the tag we're creating
          if (newTaxObj.author == null) {
-            newTaxObj.author = loggedInUserID;
+            newTaxObj.author = memberFields;
          }
 
          if (personal) {

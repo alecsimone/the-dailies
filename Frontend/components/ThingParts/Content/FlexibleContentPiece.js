@@ -26,6 +26,8 @@ import TruncCont from '../TruncCont';
 import { getScrollingParent } from '../../ThingsDataProvider';
 import { stickifyBlock } from '../../../lib/stickifier';
 import useMe from '../../Account/useMe';
+import { basicMemberFields } from '../../../lib/CardInterfaces';
+import member from '../../../pages/member';
 
 const FlexibleContentPiece = ({
    contentType,
@@ -45,15 +47,14 @@ const FlexibleContentPiece = ({
    reordering,
    setReordering,
    highlighted,
-   fullThingData,
    zIndex,
    truncContExpanded,
    setTruncContExpanded
 }) => {
-   const {
-      loggedInUserID,
-      memberFields: { avatar, displayName, rep }
-   } = useMe('FlexibleContentPiece', 'avatar displayName rep');
+   const { loggedInUserID, memberFields } = useMe(
+      'FlexibleContentPiece',
+      basicMemberFields
+   );
 
    const [editable, setEditable] = useState(false);
    const editContentInputRef = useRef(null); // This ref will be passed down to the RichTextArea that allows us to edit the content piece, and we'll use it to get the value for our editContentPiece mutation
@@ -158,10 +159,10 @@ const FlexibleContentPiece = ({
          __typename: 'Comment',
          author: {
             __typename: 'Member',
-            avatar,
-            displayName,
+            avatar: memberFields.avatar,
+            displayName: memberFields.displayName,
             id: loggedInUserID,
-            rep
+            rep: memberFields.rep
          },
          comment: commentText,
          createdAt: now.toISOString(),
@@ -488,18 +489,18 @@ const FlexibleContentPiece = ({
             newVotes = voters.filter(
                voteData => voteData.voter.id !== loggedInUserID
             );
-            newScore = computedScore - rep;
+            newScore = computedScore - memberFields.rep;
          } else {
             newVotes = [
                ...voters,
                {
                   __typename: 'Vote',
                   id: 'newVote',
-                  value: rep,
-                  voter: loggedInUserID
+                  value: memberFields.rep,
+                  voter: memberFields
                }
             ];
-            newScore = computedScore + rep;
+            newScore = computedScore + memberFields.rep;
          }
 
          setHeartPosition([e.clientX, e.clientY]);
@@ -641,7 +642,6 @@ const FlexibleContentPiece = ({
                pieceID={pieceID}
                voters={voters}
                isCopied={isCopied}
-               fullThingData={fullThingData}
                deleteContentPiece={deleteContentPiece}
                reordering={reordering}
                setReordering={setReordering}

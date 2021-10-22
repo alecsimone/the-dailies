@@ -421,6 +421,7 @@ const stickifyBlock = (block, scroller) => {
 
    // We're going to make an object with the tops and bottoms of the contentBlock so that we can check it against the current scroll position and see if we need to reposition its sticky buttons
    const blockObj = makeBlockPositionObject(block, stickingData);
+   if (blockObj == null) return;
 
    // Now we need to figure out where the viewport is
    const {

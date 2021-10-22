@@ -4,6 +4,7 @@ import styled, { ThemeContext } from 'styled-components';
 import { useState, useContext } from 'react';
 import ArrowIcon from '../Icons/Arrow';
 import { setLightness } from '../../styles/functions';
+import useThingData from '../ThingCards/useThingData';
 
 const SET_COLOR_MUTATION = gql`
    mutation SET_COLOR_MUTATION($color: String!, $id: ID!, $type: String!) {
@@ -83,7 +84,8 @@ const StyledColorSelector = styled.div`
    }
 `;
 
-const ColorSelector = ({ initialColor, type, id }) => {
+const ColorSelector = ({ type, id }) => {
+   const { color: initialColor } = useThingData(id, 'ColorSelector', 'color');
    const [showingSuggestions, setShowingSuggestions] = useState(false);
    const [currentColor, setCurrentColor] = useState(initialColor);
 

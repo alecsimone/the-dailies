@@ -7,6 +7,7 @@ import { disabledCodewords } from '../../lib/ThingHandling';
 import { isExplodingLink, isVideo } from '../../lib/UrlHandling';
 import ExplodingLink from '../ExplodingLink';
 import EditThis from '../Icons/EditThis';
+import useThingData from '../ThingCards/useThingData';
 
 const SET_FEATURED_IMAGE_MUTATION = gql`
    mutation SET_FEATURED_IMAGE_MUTATION(
@@ -71,7 +72,12 @@ const StyledFlexibleFeaturedImage = styled.div`
    }
 `;
 
-const FlexibleFeaturedImage = ({ canEdit, featuredImage, id }) => {
+const FlexibleFeaturedImage = ({ canEdit, id }) => {
+   const { featuredImage } = useThingData(
+      id,
+      'FlexibleFeaturedImage',
+      'featuredImage'
+   );
    const [editingUrl, setEditingUrl] = useState(
       featuredImage == null ||
          disabledCodewords.includes(featuredImage.toLowerCase())

@@ -28,6 +28,7 @@ import ImageIcon from '../Icons/ImageIcon';
 import LockIcon from '../Icons/Lock';
 import FlexibleContent from '../ThingParts/Content/FlexibleContent';
 import { MY_THINGS_QUERY } from '../Archives/MyThings';
+import useThingData from './useThingData';
 
 const DELETE_THING_MUTATION = gql`
    mutation DELETE_THING_MUTATION($id: ID!) {
@@ -185,12 +186,14 @@ const StyledFlexibleThingCard = styled.article`
          h3, textarea, a, a:visited, span.score {
             font-size: ${props => props.theme.bigText};
             font-weight: 600;
-            color: ${props => setAlpha(props.theme.mainText, 1)};
             padding: 0;
             margin: 0;
             line-height: 1.4;
-            width: 100%;
             border: none;
+         }
+         h3, textarea, a, a:visited {
+            width: 100%;
+            color: ${props => setAlpha(props.theme.mainText, 1)};
          }
          span.score {
             margin-right: 1rem;
@@ -385,7 +388,7 @@ const StyledFlexibleThingCard = styled.article`
 `;
 
 const FlexibleThingCard = ({
-   thingData,
+   thingID,
    expanded = false,
    contentType = 'full',
    canEdit,
@@ -397,37 +400,35 @@ const FlexibleThingCard = ({
 }) => {
    console.log('card render');
    const {
-      id,
-      author,
       createdAt,
       color,
       title,
       content = [],
       copiedInContent = [],
-      contentOrder,
-      unsavedNewContent,
       comments = [],
       partOfTags: tags,
-      partOfStacks: stacks,
       featuredImage,
-      votes,
-      privacy,
-      individualViewPermissions
-   } = thingData;
+      score,
+      privacy
+   } = useThingData(
+      thingID,
+      'FlexibleThingCard',
+      `id createdAt color title content {id} copiedInContent {id} comments {id} partOfTags {id} featuredImage score privacy`
+   );
 
    const { addThingID, removeThingID } = useContext(ThingsContext);
 
    /* eslint-disable react-hooks/exhaustive-deps */
    useEffect(() => {
-      addThingID(id);
+      addThingID(thingID);
       return () => {
          // Because we're nesting things, these thing cards have a tendency to unmount and remount when their parent is re-rendering but they're not going anywhere.
          // Because we have a context provider keeping track of every thing on the page, which is also listend to by every thing on the page, that means that any time a thing with a thing within it re-renders, EVERY thing on the page re-renders (because the nested thing unmounts and remounts, and thus it calls removeThingID and addThingID, changing the context data, causing all its listeners to re-render)
          // It's incredibly inexpensive to have extra things in our thingsDataProvider's thingIDs list. It's pretty expensive to make every thing on the page re-render. It's also true that (becuase of the myThingsBar) most things stay on the page anyway. So we're adding a quick check here to see if we can find a card for this thing anywhere on the page, and if we can, that means we don't need to removeThingID just because the parent of this card for the thing re-rendered.
          // To be honest, I can't find a way to confirm that this test isn't functionally equivalent to just not removing thing IDs at all. But as I explained before, having a list of too many thingIDs is trivially expensive, so that's a risk I'm willing to take.
-         const thisThingSomewhere = document.querySelector(`.${id}`);
+         const thisThingSomewhere = document.querySelector(`.${thingID}`);
          if (thisThingSomewhere == null) {
-            removeThingID(id);
+            removeThingID(thingID);
          }
       };
    }, []);
@@ -569,38 +570,38 @@ const FlexibleThingCard = ({
       styleObj.borderTop = 'none';
    }
 
-   let score = 0;
-   votes.forEach(vote => (score += vote.value));
-
    return (
       <StyledFlexibleThingCard
          style={styleObj}
-         className={`flexibleThingCard ${expanded ? 'big' : 'small'} ${id}`}
+         className={`flexibleThingCard ${
+            expanded ? 'big' : 'small'
+         } ${thingID}`}
       >
          <header className="flexibleThingHeader">
             <div className={`headerTop${showingThumb ? ' withThumb' : ''}`}>
                <div className="titleWrapper">
                   {!titleLink && (
                      <TitleBar
-                        key={`title-${id}`}
+                        key={`title-${thingID}`}
                         type="Thing"
-                        title={`${
-                           score !== 0 && !expansion.votebar
-                              ? `(+${score}) `
-                              : ''
-                        }${title}`}
-                        id={id}
+                        showingScore={score !== 0 && !expansion.votebar}
+                        id={thingID}
+                        canEdit={canEdit}
                      />
                   )}
                   {titleLink && (
-                     <Link href={{ pathname: '/thing', query: { id } }}>
+                     <Link
+                        href={{ pathname: '/thing', query: { id: thingID } }}
+                     >
                         <a>
-                           {score !== 0 && !expansion.votebar && (
-                              <span className="score">(+{score})</span>
-                           )}
-                           {title.length > 60
-                              ? `${title.substring(0, 60).trim()}...`
-                              : title}
+                           <TitleBar
+                              key={`title-${thingID}`}
+                              type="Thing"
+                              showingScore={score !== 0 && !expansion.votebar}
+                              id={thingID}
+                              canEdit={false}
+                              limit={60}
+                           />
                         </a>
                      </Link>
                   )}
@@ -624,12 +625,12 @@ const FlexibleThingCard = ({
             <div className="toolbar">
                <div className="info">
                   <AuthorLink
-                     author={author}
-                     key={`author-${id}`}
+                     thingID={thingID}
+                     key={`author-${thingID}`}
                      noPic={noPic}
                   />
                   <div className="ago">
-                     <TimeAgo time={createdAt} key={`ago-${id}`} />
+                     <TimeAgo time={createdAt} key={`ago-${thingID}`} />
                   </div>
                </div>
                <div className="buttons">
@@ -694,7 +695,7 @@ const FlexibleThingCard = ({
                         expansionHandler('comments', !expansion.comments)
                      }
                      count={comments == null ? 0 : comments.length}
-                     key={`comments-button-${id}`}
+                     key={`comments-button-${thingID}`}
                   />
                   <LockIcon
                      onClick={() =>
@@ -723,7 +724,7 @@ const FlexibleThingCard = ({
                            ) {
                               deleteThing({
                                  variables: {
-                                    id
+                                    id: thingID
                                  }
                               });
                            }
@@ -733,9 +734,8 @@ const FlexibleThingCard = ({
                   )}
                   {!expansion.votebar && (
                      <VoteBar
-                        key={`votebar-${id}`}
-                        votes={votes}
-                        id={id}
+                        key={`votebar-${thingID}`}
+                        id={thingID}
                         type="Thing"
                         alwaysMini
                      />
@@ -743,12 +743,7 @@ const FlexibleThingCard = ({
                </div>
             </div>
             {expansion.votebar && (
-               <VoteBar
-                  key={`votebar-${id}`}
-                  votes={votes}
-                  id={id}
-                  type="Thing"
-               />
+               <VoteBar key={`votebar-${thingID}`} id={thingID} type="Thing" />
             )}
          </header>
          {(expansion.taxes ||
@@ -761,36 +756,30 @@ const FlexibleThingCard = ({
                {expansion.featuredImage && (
                   <FlexibleFeaturedImage
                      canEdit={canEdit}
-                     featuredImage={featuredImage}
-                     id={id}
-                     key={`featured-image-${id}`}
+                     id={thingID}
+                     key={`featured-image-${thingID}`}
                   />
                )}
                {expansion.colors && canEdit && (
                   <ColorSelector
-                     initialColor={color}
                      type="Thing"
-                     id={id}
-                     key={`color-${id}`}
+                     id={thingID}
+                     key={`color-${thingID}`}
                   />
                )}
                {expansion.privacy && canEdit && (
                   <PrivacyInterface
                      canEdit={canEdit}
-                     id={id}
-                     privacy={privacy}
-                     individualViewPermissions={individualViewPermissions}
-                     key={`privacy-${id}`}
+                     id={thingID}
+                     key={`privacy-${thingID}`}
                   />
                )}
                {expansion.taxes && (
                   <TaxBox
                      canEdit={canEdit}
                      personal={false}
-                     id={id}
-                     tags={tags}
-                     stacks={stacks}
-                     key={`taxes-${id}`}
+                     id={thingID}
+                     key={`taxes-${thingID}`}
                   />
                )}
                {expansion.content && (
@@ -798,22 +787,16 @@ const FlexibleThingCard = ({
                      contentType={contentType}
                      canEdit={canEdit}
                      expanded={expanded}
-                     thingID={id}
-                     content={content}
+                     thingID={thingID}
                      linkedPiece={linkedPiece}
-                     copiedInContent={copiedInContent}
-                     contentOrder={contentOrder}
-                     unsavedNewContent={unsavedNewContent}
-                     fullThingData={thingData}
                   />
                )}
                {expansion.comments && (
                   <Comments
-                     id={id}
-                     comments={comments}
+                     id={thingID}
                      type="Thing"
                      linkedComment={linkedComment}
-                     key={`comments-${id}`}
+                     key={`comments-${thingID}`}
                   />
                )}
             </div>

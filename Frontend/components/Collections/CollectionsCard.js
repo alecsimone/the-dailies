@@ -154,7 +154,7 @@ const CollectionsCard = ({
                <FlexibleThingCard
                   key={id}
                   expanded={isExpanded}
-                  thingData={data}
+                  thingID={data.id}
                   contentType="single"
                   canEdit={canEdit}
                   titleLink

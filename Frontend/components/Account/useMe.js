@@ -22,14 +22,17 @@ const useMe = (fragmentName, requestedFields) => {
    }
 
    // Then we run our readFragment. We need to get a unique fragmentName (which should just be the name of the component calling this hook), and then we just pass in the requested fields
-   const memberFields = apolloClient.readFragment({
-      id: `Member:${loggedInUserID}`,
-      fragment: gql`
+   const memberFields = apolloClient.readFragment(
+      {
+         id: `Member:${loggedInUserID}`,
+         fragment: gql`
          fragment MemberFor${fragmentName} on Member {
             ${requestedFields}
          }
       `
-   });
+      },
+      true // This parameter specifies that we do want to get data from optimisticResponses
+   );
 
    // And return an object with everything the calling component needs
    return { loggedInUserID, memberLoading, memberFields };

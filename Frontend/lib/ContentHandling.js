@@ -32,12 +32,7 @@ const ADD_CONTENTPIECE_MUTATION = gql`
             __typename
             id
             content {
-               __typename
-               id
-               content
-               comments {
-                  ${commentFields}
-               }
+               ${contentPieceFields}
             }
          }
       }
@@ -415,7 +410,12 @@ const sendNewContentPiece = async (
       __typename: 'ContentPiece',
       content: newContentPiece,
       id: 'temporaryID',
-      comments: []
+      comments: [],
+      unsavedNewContent: null,
+      onThing: [],
+      onTag: [],
+      copiedToThings: [],
+      votes: []
    });
    // setFullThingToLoading(id);
    dynamicallyResizeElement(inputRef.current);
@@ -431,7 +431,12 @@ const sendNewContentPiece = async (
             __typename: type,
             id,
             content,
-            comments: []
+            comments: [],
+            unsavedNewContent: null,
+            onThing: [],
+            onTag: [],
+            copiedToThings: [],
+            votes: []
          }
       },
       update: (client, { data }) => {
