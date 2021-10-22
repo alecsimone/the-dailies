@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 import styled from 'styled-components';
-import { useRef } from 'react';
+import React, { useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useMutation } from '@apollo/react-hooks';
 import Comment from './Comment';
@@ -261,4 +261,4 @@ Comments.propTypes = {
    }).isRequired
 };
 
-export default Comments;
+export default React.memo(Comments);

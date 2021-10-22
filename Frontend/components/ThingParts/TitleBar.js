@@ -1,7 +1,7 @@
 import gql from 'graphql-tag';
 import { useMutation } from '@apollo/react-hooks';
 import styled from 'styled-components';
-import { useContext, useState, useEffect, useRef } from 'react';
+import React, { useContext, useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import Router from 'next/router';
 import { setAlpha, dynamicallyResizeElement } from '../../styles/functions';
@@ -203,4 +203,4 @@ TitleBar.propTypes = {
    canEdit: PropTypes.bool
 };
 
-export default TitleBar;
+export default React.memo(TitleBar);

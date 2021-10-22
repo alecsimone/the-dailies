@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import PropTypes from 'prop-types';
+import React from 'react';
 import Avatar from '../Avatar';
 import useThingData from '../ThingCards/useThingData';
 
@@ -41,4 +42,4 @@ AuthorLink.propTypes = {
    })
 };
 
-export default AuthorLink;
+export default React.memo(AuthorLink);

@@ -1,7 +1,7 @@
 import gql from 'graphql-tag';
 import { useApolloClient, useMutation } from '@apollo/react-hooks';
 import styled from 'styled-components';
-import { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { setAlpha } from '../../styles/functions';
 import Avatar from '../Avatar';
 import { ALL_THINGS_QUERY } from '../../lib/ThingHandling';
@@ -223,7 +223,7 @@ const VoteBar = ({ id, type, mini, alwaysMini }) => {
       }
       setVoters(votes);
       setComputedScore(newScore);
-   }, [votes]);
+   }, [votes.length]);
    /* eslint-enable */
 
    const voteRecalculator = () => {
@@ -300,4 +300,4 @@ const VoteBar = ({ id, type, mini, alwaysMini }) => {
       </StyledVoteBar>
    );
 };
-export default VoteBar;
+export default React.memo(VoteBar);

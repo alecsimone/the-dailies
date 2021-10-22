@@ -1,7 +1,7 @@
 import gql from 'graphql-tag';
 import { useMutation } from '@apollo/react-hooks';
 import styled, { ThemeContext } from 'styled-components';
-import { useState, useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import ArrowIcon from '../Icons/Arrow';
 import { setLightness } from '../../styles/functions';
 import useThingData from '../ThingCards/useThingData';
@@ -222,4 +222,4 @@ const ColorSelector = ({ type, id }) => {
       </StyledColorSelector>
    );
 };
-export default ColorSelector;
+export default React.memo(ColorSelector);

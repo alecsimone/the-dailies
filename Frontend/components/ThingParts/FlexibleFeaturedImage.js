@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import { useMutation } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
-import { useContext, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
 import { disabledCodewords } from '../../lib/ThingHandling';
 import { isExplodingLink, isVideo } from '../../lib/UrlHandling';
@@ -155,4 +155,4 @@ const FlexibleFeaturedImage = ({ canEdit, id }) => {
    );
 };
 
-export default FlexibleFeaturedImage;
+export default React.memo(FlexibleFeaturedImage);

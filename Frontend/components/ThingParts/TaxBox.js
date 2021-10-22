@@ -56,4 +56,4 @@ TaxBox.propTypes = {
    personal: PropTypes.bool.isRequired
 };
 
-export default TaxBox;
+export default React.memo(TaxBox);

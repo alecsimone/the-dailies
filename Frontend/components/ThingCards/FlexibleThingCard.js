@@ -805,4 +805,4 @@ const FlexibleThingCard = ({
    );
 };
 
-export default FlexibleThingCard;
+export default React.memo(FlexibleThingCard);

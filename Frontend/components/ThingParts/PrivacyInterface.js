@@ -1,7 +1,7 @@
 import { useLazyQuery, useMutation } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 import { debounce } from 'lodash';
-import { useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
 import { useSearchResultsSelector } from '../../lib/RichTextHandling';
@@ -433,4 +433,4 @@ const PrivacyInterface = ({ canEdit, id }) => {
    );
 };
 
-export default PrivacyInterface;
+export default React.memo(PrivacyInterface);

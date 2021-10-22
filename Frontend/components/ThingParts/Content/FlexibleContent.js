@@ -1,6 +1,6 @@
 import { useMutation } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Reorder from 'react-reorder';
 import { contentPieceFields } from '../../../lib/CardInterfaces';
 import {
@@ -427,4 +427,4 @@ const FlexibleContent = ({ contentType, canEdit, linkedPiece, thingID }) => {
    );
 };
 
-export default FlexibleContent;
+export default React.memo(FlexibleContent);
