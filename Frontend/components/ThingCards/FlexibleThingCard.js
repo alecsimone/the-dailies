@@ -397,7 +397,6 @@ const FlexibleThingCard = ({
    borderSide = 'top',
    noPic
 }) => {
-   console.log('card render');
    const {
       createdAt,
       color,
@@ -666,7 +665,7 @@ const FlexibleThingCard = ({
                   )}
                   {(expanded ||
                      expansion.showingAllButtons ||
-                     tags.length > 0) && (
+                     (tags.length > 0 && canEdit)) && (
                      <TagIcon
                         onClick={() =>
                            expansionHandler('taxes', !expansion.taxes)

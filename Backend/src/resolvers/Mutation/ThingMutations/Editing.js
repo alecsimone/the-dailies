@@ -95,13 +95,23 @@ async function addTaxesToThing(taxTitleArray, thingID, ctx, personal) {
 }
 
 async function addTaxToThings(taxTitle, thingIDs, ctx, personal) {
-   // First we have to figure out the id of the provided tax
+   await loggedInGate(ctx).catch(() => {
+      throw new AuthenticationError('You must be logged in to do that!');
+   });
+   fullMemberGate(ctx.req.member);
+
+   // First we have to figure out the author and id of the provided tax
    const queryName = personal ? 'stack' : 'tag'
    const taxData = await ctx.db.query[queryName]({
       where: {
          title: taxTitle
       }
-   }, `{id}`);
+   }, `{id author {id}}`);
+
+   // If the author of the thing isn't the currently logged in user, don't go any further
+   if (taxData.author.id !== ctx.req.memberId && !['Admin', 'Editor', 'Moderator'].includes(ctx.req.member.role)) {
+      throw new AuthenticationError("You don't have permission to do that!");
+   }
 
    // Then we're going to update the provided tax by connecting it to all the provided things
    const mutationName = personal ? 'updateStack' : 'updateTag';

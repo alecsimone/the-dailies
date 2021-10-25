@@ -122,6 +122,8 @@ const RichTextArea = ({
 }) => {
    const originalText = useRef(text); // We use this to check if there have been any changes to the text, because if there haven't been, we don't need to ask for confirmation before cancelling editing.
 
+   const [showingExtras, setShowingExtras] = useState(false);
+
    const { mobileBPWidthRaw } = useContext(ThemeContext);
 
    const {
@@ -537,88 +539,92 @@ const RichTextArea = ({
             e.preventDefault();
             postText();
          }}
+         onFocus={() => setShowingExtras(true)}
+         onBlur={() => setShowingExtras(false)}
       >
          <StyledWrapper>
-            <div className="stylingButtonsPlaceholder" />
-            <div className="stylingButtonsBar">
-               <button
-                  type="button"
-                  className="stylingButton bold"
-                  onClick={e => {
-                     e.preventDefault();
-                     wrapTextWithTag(inputRef.current, '**');
-                     inputRef.current.focus();
-                  }}
-               >
-                  B
-               </button>
-               <button
-                  type="button"
-                  className="stylingButton italic"
-                  onClick={e => {
-                     e.preventDefault();
-                     wrapTextWithTag(inputRef.current, '//');
-                     inputRef.current.focus();
-                  }}
-               >
-                  I
-               </button>
-               <button
-                  type="button"
-                  className="stylingButton underline"
-                  onClick={e => {
-                     e.preventDefault();
-                     wrapTextWithTag(inputRef.current, '__');
-                     inputRef.current.focus();
-                  }}
-               >
-                  U
-               </button>
-               <button
-                  type="button"
-                  className="stylingButton header"
-                  onClick={e => {
-                     e.preventDefault();
-                     wrapTextWithTag(inputRef.current, '##');
-                     inputRef.current.focus();
-                  }}
-               >
-                  #
-               </button>
-               <button
-                  type="button"
-                  className="stylingButton summary"
-                  onClick={e => {
-                     e.preventDefault();
-                     addSummaryTagsToText(inputRef.current);
-                     inputRef.current.focus();
-                  }}
-               >
-                  {'><'}
-               </button>
-               <button
-                  type="button"
-                  className="stylingButton blockQuote"
-                  onClick={e => {
-                     e.preventDefault();
-                     wrapTextWithTag(inputRef.current, '<"');
-                     inputRef.current.focus();
-                  }}
-               >
-                  "
-               </button>
-               <button
-                  type="button"
-                  className="stylingButton link"
-                  onClick={e => {
-                     e.preventDefault();
-                     linkifyText(inputRef.current);
-                     inputRef.current.focus();
-                  }}
-               >
-                  <LinkIcon />
-               </button>
-            </div>
+            {showingExtras && <div className="stylingButtonsPlaceholder" />}
+            {showingExtras && (
+               <div className="stylingButtonsBar">
+                  <button
+                     type="button"
+                     className="stylingButton bold"
+                     onClick={e => {
+                        e.preventDefault();
+                        wrapTextWithTag(inputRef.current, '**');
+                        inputRef.current.focus();
+                     }}
+                  >
+                     B
+                  </button>
+                  <button
+                     type="button"
+                     className="stylingButton italic"
+                     onClick={e => {
+                        e.preventDefault();
+                        wrapTextWithTag(inputRef.current, '//');
+                        inputRef.current.focus();
+                     }}
+                  >
+                     I
+                  </button>
+                  <button
+                     type="button"
+                     className="stylingButton underline"
+                     onClick={e => {
+                        e.preventDefault();
+                        wrapTextWithTag(inputRef.current, '__');
+                        inputRef.current.focus();
+                     }}
+                  >
+                     U
+                  </button>
+                  <button
+                     type="button"
+                     className="stylingButton header"
+                     onClick={e => {
+                        e.preventDefault();
+                        wrapTextWithTag(inputRef.current, '##');
+                        inputRef.current.focus();
+                     }}
+                  >
+                     #
+                  </button>
+                  <button
+                     type="button"
+                     className="stylingButton summary"
+                     onClick={e => {
+                        e.preventDefault();
+                        addSummaryTagsToText(inputRef.current);
+                        inputRef.current.focus();
+                     }}
+                  >
+                     {'><'}
+                  </button>
+                  <button
+                     type="button"
+                     className="stylingButton blockQuote"
+                     onClick={e => {
+                        e.preventDefault();
+                        wrapTextWithTag(inputRef.current, '<"');
+                        inputRef.current.focus();
+                     }}
+                  >
+                     "
+                  </button>
+                  <button
+                     type="button"
+                     className="stylingButton link"
+                     onClick={e => {
+                        e.preventDefault();
+                        linkifyText(inputRef.current);
+                        inputRef.current.focus();
+                     }}
+                  >
+                     <LinkIcon />
+                  </button>
+               </div>
+            )}
             <textarea
                type="textarea"
                id={id}
@@ -674,7 +680,7 @@ const RichTextArea = ({
             </div>
          </StyledWrapper>
          <div className="postButtonWrapper">
-            {hideStyleGuideLink !== true && (
+            {hideStyleGuideLink !== true && showingExtras && (
                <div className="styleGuideLink">
                   See our{' '}
                   <a
@@ -687,7 +693,7 @@ const RichTextArea = ({
                   for all the things you can do in that box.
                </div>
             )}
-            {hideButton !== true && (
+            {hideButton !== true && showingExtras && (
                <button type="submit" className="post">
                   {buttonText}
                </button>
