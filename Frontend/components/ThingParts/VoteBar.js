@@ -141,7 +141,6 @@ const VoteBar = ({ id, type, mini, alwaysMini }) => {
    const { loggedInUserID, memberFields } = useMe('VoteBar', basicMemberFields);
 
    const apolloClient = useApolloClient();
-   console.log(type, id);
    let votes = [];
    if (id !== 'temporaryID') {
       // This conditional is a quick kludge because the readFragment fails when it tries to read our optimistic response temporaryID content piece votes

@@ -10,6 +10,7 @@ import { CURRENT_MEMBER_QUERY } from './MemberProvider';
 import { ModalContext } from '../ModalProvider';
 import { ALL_THINGS_QUERY } from '../../lib/ThingHandling';
 import RequestPasswordReset from './RequestPasswordReset';
+import { myThingsQueryCount, MY_THINGS_QUERY } from '../Archives/MyThings.js';
 
 const LOGIN_MUTATION = gql`
    mutation LOGIN_MUTATION($email: String!, $password: String!) {
@@ -70,7 +71,11 @@ const Login = props => {
                variables: { email, password },
                refetchQueries: [
                   { query: CURRENT_MEMBER_QUERY },
-                  { query: ALL_THINGS_QUERY }
+                  { query: ALL_THINGS_QUERY },
+                  {
+                     query: MY_THINGS_QUERY,
+                     variables: { count: myThingsQueryCount }
+                  }
                ]
             }).catch(err => {
                console.log(err.message);

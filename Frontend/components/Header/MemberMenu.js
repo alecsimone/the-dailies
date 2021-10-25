@@ -6,6 +6,7 @@ import { CURRENT_MEMBER_QUERY } from '../Account/MemberProvider';
 import { ALL_THINGS_QUERY } from '../../lib/ThingHandling';
 import { setAlpha } from '../../styles/functions';
 import useMe from '../Account/useMe';
+import { myThingsQueryCount, MY_THINGS_QUERY } from '../Archives/MyThings';
 
 const LOGOUT_MUTATION = gql`
    mutation LOG_OUT_MUTATION {
@@ -175,7 +176,11 @@ const MemberMenu = () => {
                   logout({
                      refetchQueries: [
                         { query: CURRENT_MEMBER_QUERY },
-                        { query: ALL_THINGS_QUERY }
+                        { query: ALL_THINGS_QUERY },
+                        {
+                           query: MY_THINGS_QUERY,
+                           variables: { count: myThingsQueryCount }
+                        }
                      ]
                   })
                }

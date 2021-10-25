@@ -16,7 +16,7 @@ import { ModalContext } from './ModalProvider';
 import { ALL_THINGS_QUERY } from '../lib/ThingHandling';
 import { CURRENT_MEMBER_QUERY } from './Account/MemberProvider';
 import ArrowIcon from './Icons/Arrow';
-import { MY_THINGS_QUERY } from './Archives/MyThings';
+import { myThingsQueryCount, MY_THINGS_QUERY } from './Archives/MyThings';
 import useMe from './Account/useMe';
 
 const LOGOUT_MUTATION = gql`
@@ -178,7 +178,10 @@ const NavSidebar = () => {
          const newPostButton = document.querySelector('.navNewPost');
          newPostButton.classList.remove('loading');
       },
-      refetchQueries: [{ query: ALL_THINGS_QUERY }, { query: MY_THINGS_QUERY }],
+      refetchQueries: [
+         { query: ALL_THINGS_QUERY },
+         { query: MY_THINGS_QUERY, variables: { count: myThingsQueryCount } }
+      ],
       onError: err => alert(err.message),
       context: {
          debounceKey: 'newThing'
@@ -347,7 +350,11 @@ const NavSidebar = () => {
                      logout({
                         refetchQueries: [
                            { query: CURRENT_MEMBER_QUERY },
-                           { query: ALL_THINGS_QUERY }
+                           { query: ALL_THINGS_QUERY },
+                           {
+                              query: MY_THINGS_QUERY,
+                              variables: { count: myThingsQueryCount }
+                           }
                         ]
                      });
                      setNavSidebarIsOpen(false);

@@ -10,7 +10,7 @@ import HomeIcon from './Icons/Home';
 import SearchIcon from './Icons/Search';
 import X from './Icons/X';
 import { ModalContext } from './ModalProvider';
-import { MY_THINGS_QUERY } from './Archives/MyThings';
+import { myThingsQueryCount, MY_THINGS_QUERY } from './Archives/MyThings';
 
 const StyledBottomBar = styled.section`
    position: fixed;
@@ -102,9 +102,7 @@ const BottomBar = () => {
       },
       onError: err => alert(err.message),
       refetchQueries: [
-         {
-            query: MY_THINGS_QUERY
-         }
+         { query: MY_THINGS_QUERY, variables: { count: myThingsQueryCount } }
       ]
    });
 

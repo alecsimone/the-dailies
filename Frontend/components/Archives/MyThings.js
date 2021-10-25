@@ -64,6 +64,7 @@ const MY_THINGS_SUBSCRIPTION = gql`
 `;
 
 const myThingsQueryCount = 10;
+export { myThingsQueryCount };
 
 const MyThings = ({ setShowingSidebar, scrollingSelector, borderSide }) => {
    const {

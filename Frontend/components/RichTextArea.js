@@ -540,7 +540,14 @@ const RichTextArea = ({
             postText();
          }}
          onFocus={() => setShowingExtras(true)}
-         onBlur={() => setShowingExtras(false)}
+         onBlur={() => {
+            if (
+               inputRef.current.value == null ||
+               inputRef.current.value.trim() === ''
+            ) {
+               setShowingExtras(false);
+            }
+         }}
       >
          <StyledWrapper>
             {showingExtras && <div className="stylingButtonsPlaceholder" />}

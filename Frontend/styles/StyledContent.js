@@ -11,6 +11,7 @@ const StyledContent = styled.section`
    }
    .contentSectionWrapper {
       padding: 0;
+      padding-bottom: 2rem;
       background: ${props => props.theme.midBlack};
       border-top: 1px solid
          ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};

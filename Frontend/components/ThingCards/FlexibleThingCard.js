@@ -26,7 +26,7 @@ import ContentIcon from '../Icons/Content';
 import ImageIcon from '../Icons/ImageIcon';
 import LockIcon from '../Icons/Lock';
 import FlexibleContent from '../ThingParts/Content/FlexibleContent';
-import { MY_THINGS_QUERY } from '../Archives/MyThings';
+import { myThingsQueryCount, MY_THINGS_QUERY } from '../Archives/MyThings';
 import useThingData from './useThingData';
 
 const DELETE_THING_MUTATION = gql`
@@ -534,7 +534,7 @@ const FlexibleThingCard = ({
          },
          refetchQueries: [
             { query: ALL_THINGS_QUERY },
-            { query: MY_THINGS_QUERY }
+            { query: MY_THINGS_QUERY, variables: { count: myThingsQueryCount } }
          ],
          onError: err => alert(err.message)
       }
@@ -802,4 +802,5 @@ const FlexibleThingCard = ({
    );
 };
 
-export default React.memo(FlexibleThingCard);
+export default FlexibleThingCard;
+// export default React.memo(FlexibleThingCard);

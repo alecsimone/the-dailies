@@ -7,6 +7,7 @@ import {
    ALL_THINGS_QUERY
 } from '../../lib/ThingHandling';
 import useMe from '../Account/useMe';
+import { myThingsQueryCount, MY_THINGS_QUERY } from '../Archives/MyThings';
 
 const GET_PRIVACY_OPTIONS_QUERY = gql`
    query enumValuesOfPrivacySetting {
@@ -65,7 +66,8 @@ const PrivacyDropdown = props => {
          refetchQueries: [
             {
                query: ALL_THINGS_QUERY
-            }
+            },
+            { query: MY_THINGS_QUERY, variables: { count: myThingsQueryCount } }
          ]
       });
    };
