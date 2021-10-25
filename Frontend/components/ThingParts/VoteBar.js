@@ -141,28 +141,34 @@ const VoteBar = ({ id, type, mini, alwaysMini }) => {
    const { loggedInUserID, memberFields } = useMe('VoteBar', basicMemberFields);
 
    const apolloClient = useApolloClient();
-   const { votes = [] } = apolloClient.readFragment(
-      {
-         id: `${type}:${id}`,
-         fragment: gql`
-         fragment ${type}ForVoteBar on ${type} {
-            votes {
-               __typename
-               id
-               value
-               voter {
+   console.log(type, id);
+   let votes = [];
+   if (id !== 'temporaryID') {
+      // This conditional is a quick kludge because the readFragment fails when it tries to read our optimistic response temporaryID content piece votes
+      const voteObj = apolloClient.readFragment(
+         {
+            id: `${type}:${id}`,
+            fragment: gql`
+            fragment ${type}ForVoteBar on ${type} {
+               votes {
                   __typename
                   id
-                  displayName
-                  rep
-                  avatar
+                  value
+                  voter {
+                     __typename
+                     id
+                     displayName
+                     rep
+                     avatar
+                  }
                }
             }
-         }
-         `
-      },
-      true
-   );
+            `
+         },
+         true
+      );
+      votes = voteObj.votes;
+   }
 
    const [vote] = useMutation(VOTE_MUTATION, {
       refetchQueries: [{ query: ALL_THINGS_QUERY }],
