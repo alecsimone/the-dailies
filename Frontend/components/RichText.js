@@ -42,7 +42,8 @@ const RichText = ({ text, priorText, nextText, matchCount = 0 }) => {
    // Here, we'll combine them all into one big search string
    const superMatcherSource = `${urlFinder.source}|${
       styleTagSearchString.source
-   }|${listSearchString.source}`;
+   }`;
+   // |${listSearchString.source}
    const superMatcher = new RegExp(superMatcherSource, 'gim');
 
    // First we do a big matchAll with a giant superstring of all the things we might be looking for.
@@ -204,43 +205,43 @@ const RichText = ({ text, priorText, nextText, matchCount = 0 }) => {
          }
       }
 
-      // If it wasn't a style tag or a URL, we check if it's a list
-      const lists = match[0].matchAll(listSearchString);
-      for (const list of lists) {
-         // But we're only interested in the first match of all matches. It might not be a list, and if it isn't we'd be skipping ahead and mixing things up.
-         if (list[0] === match[0]) {
-            // First We break off any text before the match and put it in a RichText at the start of our elements array. We have to do this inside each individual for loop because we need the index of the specific match as well.
-            const startingTextElement = getStartingTextElement(
-               stoppedAtIndex,
-               match.index + list.index,
-               fixedText,
-               matchCount
-            );
-            elementsArray.push(startingTextElement);
+      // // If it wasn't a style tag or a URL, we check if it's a list
+      // const lists = match[0].matchAll(listSearchString);
+      // for (const list of lists) {
+      //    // But we're only interested in the first match of all matches. It might not be a list, and if it isn't we'd be skipping ahead and mixing things up.
+      //    if (list[0] === match[0]) {
+      //       // First We break off any text before the match and put it in a RichText at the start of our elements array. We have to do this inside each individual for loop because we need the index of the specific match as well.
+      //       const startingTextElement = getStartingTextElement(
+      //          stoppedAtIndex,
+      //          match.index + list.index,
+      //          fixedText,
+      //          matchCount
+      //       );
+      //       elementsArray.push(startingTextElement);
 
-            // First we need to get the whole list. So we'll check the line after this to see if it matches as well
-            const listItem = list[0];
-            if (!list.groups.ordinal.includes('www.')) {
-               const [listElement, endingPoint] = getListElement(
-                  listItem,
-                  fixedText,
-                  match
-               );
+      //       // First we need to get the whole list. So we'll check the line after this to see if it matches as well
+      //       const listItem = list[0];
+      //       if (!list.groups.ordinal.includes('www.')) {
+      //          const [listElement, endingPoint] = getListElement(
+      //             listItem,
+      //             fixedText,
+      //             match
+      //          );
 
-               elementsArray.push(listElement);
+      //          elementsArray.push(listElement);
 
-               const endingTextElement = getEndingTextElement(
-                  endingPoint,
-                  fixedText,
-                  trimEndingText,
-                  matchCount
-               );
-               elementsArray.push(endingTextElement);
+      //          const endingTextElement = getEndingTextElement(
+      //             endingPoint,
+      //             fixedText,
+      //             trimEndingText,
+      //             matchCount
+      //          );
+      //          elementsArray.push(endingTextElement);
 
-               return elementsArray;
-            }
-         }
-      }
+      //          return elementsArray;
+      //       }
+      //    }
+      // }
    }
    return fixedText;
 };

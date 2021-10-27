@@ -540,7 +540,7 @@ const RichTextArea = ({
             postText();
          }}
          onFocus={() => setShowingExtras(true)}
-         onBlur={() => {
+         onBlur={e => {
             if (
                inputRef.current.value == null ||
                inputRef.current.value.trim() === ''
