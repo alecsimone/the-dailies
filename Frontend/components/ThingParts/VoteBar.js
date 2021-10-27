@@ -8,7 +8,6 @@ import { ALL_THINGS_QUERY } from '../../lib/ThingHandling';
 import { ModalContext } from '../ModalProvider';
 import Login from '../Account/Login';
 import useMe from '../Account/useMe';
-import useThingData from '../ThingCards/useThingData';
 import { basicMemberFields } from '../../lib/CardInterfaces';
 
 const VOTE_MUTATION = gql`
@@ -137,37 +136,8 @@ const StyledVoteBar = styled.section`
    }
 `;
 
-const VoteBar = ({ id, type, mini, alwaysMini }) => {
+const VoteBar = ({ id, type, mini, alwaysMini, votes }) => {
    const { loggedInUserID, memberFields } = useMe('VoteBar', basicMemberFields);
-
-   const apolloClient = useApolloClient();
-   let votes = [];
-   if (id !== 'temporaryID') {
-      // This conditional is a quick kludge because the readFragment fails when it tries to read our optimistic response temporaryID content piece votes
-      const voteObj = apolloClient.readFragment(
-         {
-            id: `${type}:${id}`,
-            fragment: gql`
-            fragment ${type}ForVoteBar on ${type} {
-               votes {
-                  __typename
-                  id
-                  value
-                  voter {
-                     __typename
-                     id
-                     displayName
-                     rep
-                     avatar
-                  }
-               }
-            }
-            `
-         },
-         true
-      );
-      votes = voteObj.votes;
-   }
 
    const [vote] = useMutation(VOTE_MUTATION, {
       refetchQueries: [{ query: ALL_THINGS_QUERY }],

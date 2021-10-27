@@ -104,6 +104,10 @@ const MyThings = ({ setShowingSidebar, scrollingSelector, borderSide }) => {
       borderSide
    };
 
+   if (loading || memberLoading) {
+      return <PlaceholderThings count={myThingsQueryCount} {...displayProps} />;
+   }
+
    if (data) {
       if (data.myThings == null || data.myThings.length === 0) {
          return <p className="emptyThings">You haven't made any things yet.</p>;
@@ -182,10 +186,6 @@ const MyThings = ({ setShowingSidebar, scrollingSelector, borderSide }) => {
             to start making things!
          </p>
       );
-   }
-
-   if (loading || memberLoading) {
-      return <PlaceholderThings count={myThingsQueryCount} {...displayProps} />;
    }
 };
 MyThings.propTypes = {};

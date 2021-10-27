@@ -27,7 +27,6 @@ import ImageIcon from '../Icons/ImageIcon';
 import LockIcon from '../Icons/Lock';
 import FlexibleContent from '../ThingParts/Content/FlexibleContent';
 import { myThingsQueryCount, MY_THINGS_QUERY } from '../Archives/MyThings';
-import useThingData from './useThingData';
 
 const DELETE_THING_MUTATION = gql`
    mutation DELETE_THING_MUTATION($id: ID!) {
@@ -387,6 +386,7 @@ const StyledFlexibleThingCard = styled.article`
 `;
 
 const FlexibleThingCard = ({
+   thingData,
    thingID,
    expanded = false,
    contentType = 'full',
@@ -397,6 +397,7 @@ const FlexibleThingCard = ({
    borderSide = 'top',
    noPic
 }) => {
+   console.log('Thing Render');
    const {
       createdAt,
       color,
@@ -404,15 +405,11 @@ const FlexibleThingCard = ({
       content = [],
       copiedInContent = [],
       comments = [],
-      partOfTags: tags,
+      partOfTags: tags = [],
       featuredImage,
       score,
       privacy
-   } = useThingData(
-      thingID,
-      'FlexibleThingCard',
-      `id createdAt color title content {id} copiedInContent {id} comments {id} partOfTags {id} featuredImage score privacy`
-   );
+   } = thingData;
 
    const { addThingID, removeThingID } = useContext(ThingsContext);
 
@@ -582,6 +579,8 @@ const FlexibleThingCard = ({
                         key={`title-${thingID}`}
                         type="Thing"
                         showingScore={score !== 0 && !expansion.votebar}
+                        score={score}
+                        title={title}
                         id={thingID}
                         canEdit={canEdit}
                      />
@@ -595,6 +594,8 @@ const FlexibleThingCard = ({
                               key={`title-${thingID}`}
                               type="Thing"
                               showingScore={score !== 0 && !expansion.votebar}
+                              score={score}
+                              title={title}
                               id={thingID}
                               canEdit={false}
                               limit={60}
@@ -622,7 +623,7 @@ const FlexibleThingCard = ({
             <div className="toolbar">
                <div className="info">
                   <AuthorLink
-                     thingID={thingID}
+                     author={thingData.author}
                      key={`author-${thingID}`}
                      noPic={noPic}
                   />
@@ -732,6 +733,7 @@ const FlexibleThingCard = ({
                   {!expansion.votebar && (
                      <VoteBar
                         key={`votebar-${thingID}`}
+                        votes={thingData.votes}
                         id={thingID}
                         type="Thing"
                         alwaysMini
@@ -740,7 +742,12 @@ const FlexibleThingCard = ({
                </div>
             </div>
             {expansion.votebar && (
-               <VoteBar key={`votebar-${thingID}`} id={thingID} type="Thing" />
+               <VoteBar
+                  key={`votebar-${thingID}`}
+                  id={thingID}
+                  type="Thing"
+                  votes={thingData.votes}
+               />
             )}
          </header>
          {(expansion.taxes ||
@@ -753,6 +760,7 @@ const FlexibleThingCard = ({
                {expansion.featuredImage && (
                   <FlexibleFeaturedImage
                      canEdit={canEdit}
+                     featuredImage={featuredImage}
                      id={thingID}
                      key={`featured-image-${thingID}`}
                   />
@@ -760,6 +768,7 @@ const FlexibleThingCard = ({
                {expansion.colors && canEdit && (
                   <ColorSelector
                      type="Thing"
+                     initialColor={color}
                      id={thingID}
                      key={`color-${thingID}`}
                   />
@@ -768,6 +777,10 @@ const FlexibleThingCard = ({
                   <PrivacyInterface
                      canEdit={canEdit}
                      id={thingID}
+                     privacy={privacy}
+                     individualViewPermissions={
+                        thingData.individualViewPermissions
+                     }
                      key={`privacy-${thingID}`}
                   />
                )}
@@ -776,6 +789,7 @@ const FlexibleThingCard = ({
                      canEdit={canEdit}
                      personal={false}
                      id={thingID}
+                     tags={tags}
                      key={`taxes-${thingID}`}
                   />
                )}
@@ -784,7 +798,7 @@ const FlexibleThingCard = ({
                      contentType={contentType}
                      canEdit={canEdit}
                      expanded={expanded}
-                     thingID={thingID}
+                     thingData={thingData}
                      linkedPiece={linkedPiece}
                   />
                )}
@@ -792,6 +806,7 @@ const FlexibleThingCard = ({
                   <Comments
                      id={thingID}
                      type="Thing"
+                     comments={comments}
                      linkedComment={linkedComment}
                      key={`comments-${thingID}`}
                   />
@@ -802,5 +817,41 @@ const FlexibleThingCard = ({
    );
 };
 
-export default FlexibleThingCard;
-// export default React.memo(FlexibleThingCard);
+export default React.memo(FlexibleThingCard, (prev, next) => {
+   if (prev.thingID != next.thingID) return false;
+   if (prev.expanded != next.expanded) return false;
+   if (prev.contentType != next.contentType) return false;
+   if (prev.canEdit != next.canEdit) return false;
+   if (prev.titleLink != next.titleLink) return false;
+   if (prev.borderSide != next.borderSide) return false;
+   if (prev.noPic != next.noPic) return false;
+
+   const prevData = prev.thingData;
+   const nextData = next.thingData;
+   if (prevData.color != nextData.color) return false;
+   if (prevData.title != nextData.title) return false;
+   if (prevData.featuredImage != nextData.featuredImage) return false;
+   if (prevData.score != nextData.score) return false;
+   if (prevData.privacy != nextData.privacy) return false;
+
+   // For content, we only need to rerender if we go from having no content to having some content, or the reverse
+   const prevContentCount =
+      prevData.content?.length + prevData.copiedInContent?.length;
+   const nextContentCount =
+      nextData.content?.length + nextData.copiedInContent?.length;
+   if (prevContentCount === 0 && nextContentCount !== 0) return false;
+   if (prevContentCount !== 0 && nextContentCount === 0) return false;
+
+   // For comments and tags, it's the same thing: only need to rerender if we go from having none to some or from some to none
+   if (prevData.comments?.length === 0 && nextData.comments?.length !== 0)
+      return false;
+   if (prevData.comments?.length !== 0 && nextData.comments?.length === 0)
+      return false;
+
+   if (prevData.partOfTags?.length === 0 && nextData.partOfTags?.length !== 0)
+      return false;
+   if (prevData.partOfTags?.length !== 0 && nextData.partOfTags?.length === 0)
+      return false;
+
+   return true;
+});

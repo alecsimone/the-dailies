@@ -71,7 +71,6 @@ const TaxMeta = ({ context, canEdit }) => {
                      }
                   }}
                />
-               <ColorSelector initialColor={color} type={type} id={id} />
             </div>
          )}
       </StyledTaxMeta>

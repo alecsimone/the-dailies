@@ -115,6 +115,7 @@ const SingleThing = ({ query }) => {
             content = (
                <FlexibleThingCard
                   key={`flexibleCard-${query.id}`}
+                  thingData={data.thing}
                   thingID={data.thing.id}
                   canEdit={canEdit}
                   linkedPiece={query.piece}

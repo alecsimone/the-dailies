@@ -1,13 +1,11 @@
 import gql from 'graphql-tag';
 import { useMutation } from '@apollo/react-hooks';
 import styled from 'styled-components';
-import React, { useContext, useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import Router from 'next/router';
 import { setAlpha, dynamicallyResizeElement } from '../../styles/functions';
 import { checkForNewThingRedirect } from '../../lib/ThingHandling';
-import useThingData from '../ThingCards/useThingData';
-// import { setFullThingToLoading } from './FullThing';
 
 const SET_TITLE_MUTATION = gql`
    mutation SET_TITLE_MUTATION($title: String!, $id: ID!, $type: String!) {
@@ -70,9 +68,15 @@ const StyledTitleBar = styled.div`
    }
 `;
 
-const TitleBar = ({ limit, canEdit = true, type, id, showingScore }) => {
-   const { score, title } = useThingData(id, 'TitleBar', 'score title');
-
+const TitleBar = ({
+   limit,
+   canEdit = true,
+   type,
+   score,
+   title,
+   id,
+   showingScore
+}) => {
    const [editedTitle, setEditedTitleState] = useState(title);
    const editedTitleRef = useRef(editedTitle);
 

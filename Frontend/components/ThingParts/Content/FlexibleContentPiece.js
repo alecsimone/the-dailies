@@ -27,7 +27,6 @@ import { getScrollingParent } from '../../ThingsDataProvider';
 import { stickifyBlock } from '../../../lib/stickifier';
 import useMe from '../../Account/useMe';
 import { basicMemberFields } from '../../../lib/CardInterfaces';
-import member from '../../../pages/member';
 
 const FlexibleContentPiece = ({
    contentType,
@@ -35,6 +34,7 @@ const FlexibleContentPiece = ({
    canEdit,
    pieceID,
    thingID,
+   thingData,
    votes,
    unsavedContent,
    comments = [],
@@ -639,6 +639,7 @@ const FlexibleContentPiece = ({
                showingComments={showingComments}
                setShowingComments={setShowingComments}
                thingID={thingID}
+               thingData={thingData}
                pieceID={pieceID}
                voters={voters}
                isCopied={isCopied}

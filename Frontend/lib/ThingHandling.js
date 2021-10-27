@@ -122,3 +122,12 @@ const useInfiniteScroll = (fetchMore, scrollingChild, queryName) => {
    };
 };
 export { useInfiniteScroll };
+
+const generateThingQuery = (queryName, requestedFields) => gql`
+   query ${queryName}($id: ID!) {
+      thing(id: $id) {
+         ${requestedFields}
+      }
+   }
+`;
+export { generateThingQuery };

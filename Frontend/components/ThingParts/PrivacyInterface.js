@@ -8,7 +8,6 @@ import { useSearchResultsSelector } from '../../lib/RichTextHandling';
 import { setAlpha } from '../../styles/functions';
 import useMe from '../Account/useMe';
 import X from '../Icons/X';
-import useThingData from '../ThingCards/useThingData';
 import PrivacyDropdown from './PrivacyDropdown';
 
 const SEARCH_MEMBERS_QUERY = gql`
@@ -150,13 +149,13 @@ const debouncedMemberSearch = debounce(
    true
 );
 
-const PrivacyInterface = ({ canEdit, id }) => {
+const PrivacyInterface = ({
+   canEdit,
+   id,
+   privacy,
+   individualViewPermissions
+}) => {
    const { loggedInUserID } = useMe();
-   const { privacy, individualViewPermissions } = useThingData(
-      id,
-      'PrivacyInterface',
-      'privacy individualViewPermissions {id displayName}'
-   );
 
    const [addingPeople, setAddingPeople] = useState(false);
    const [peopleSearchTerm, setPeopleSearchTerm] = useState('');

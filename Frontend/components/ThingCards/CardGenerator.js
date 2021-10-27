@@ -27,6 +27,7 @@ const CardGenerator = ({ id, cardType, borderSide }) => {
          <FlexibleThingCard
             key={data.thing.id}
             expanded={cardType === 'regular'}
+            thingData={data.thing}
             thingID={data.thing.id}
             contentType={cardType === 'regular' ? 'full' : 'single'}
             canEdit={

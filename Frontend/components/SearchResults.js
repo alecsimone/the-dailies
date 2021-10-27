@@ -10,19 +10,22 @@ import { perPage } from '../config';
 import { useInfiniteScroll } from '../lib/ThingHandling';
 import LoadMoreButton from './LoadMoreButton';
 import { fullSizedLoadMoreButton } from '../styles/styleFragments';
+import PlaceholderThings from './PlaceholderThings';
 
 const StyledSearchResults = styled.section`
    ${fullSizedLoadMoreButton}
 `;
 
 const SEARCH_QUERY = gql`
-   query SEARCH_QUERY($string: String!, $isTitleOnly: Boolean, $cursor: String) {
-      search(string: $string, isTitleOnly: $isTitleOnly, cursor: $cursor) {
+   query SEARCH_QUERY($string: String!, $isTitleOnly: Boolean, $cursor: String, $count: Int) {
+      search(string: $string, isTitleOnly: $isTitleOnly, cursor: $cursor, count: $count) {
          ${fullThingFields}
       }
    }
 `;
 export { SEARCH_QUERY };
+
+const searchQueryCount = 12;
 
 const calculateRelevancyScore = (thing, string) => {
    let score = 1;
@@ -164,7 +167,8 @@ export { sortThingsByRelevancy };
 const SearchResults = ({ string }) => {
    const { loading, error, data, fetchMore } = useQuery(SEARCH_QUERY, {
       variables: {
-         string
+         string,
+         count: searchQueryCount
       }
    });
 
@@ -186,6 +190,10 @@ const SearchResults = ({ string }) => {
       }
    }
 
+   const displayProps = {
+      cardSize: 'regular'
+   };
+
    let content;
    if (error) {
       content = <ErrorMessage error={error} />;
@@ -203,10 +211,10 @@ const SearchResults = ({ string }) => {
          content = (
             <Things
                things={sortedThings}
-               cardSize="regular"
                displayType="list"
                scrollingParentSelector=".mainSection"
                perPage={perPage}
+               {...displayProps}
             />
          );
       } else {
@@ -214,7 +222,9 @@ const SearchResults = ({ string }) => {
       }
    }
    if (loading) {
-      content = <LoadingRing />;
+      content = (
+         <PlaceholderThings count={searchQueryCount} {...displayProps} />
+      );
    }
 
    return (

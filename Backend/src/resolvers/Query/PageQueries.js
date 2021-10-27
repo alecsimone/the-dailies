@@ -95,6 +95,7 @@ async function taxByTitle(parent, { title, personal, cursor }, ctx, info) {
 exports.taxByTitle = taxByTitle;
 
 async function thing(parent, { where }, ctx, info) {
+   console.log('Thing Query');
    await canSeeThingGate(where, ctx);
 
    const thingData = await ctx.db.query
@@ -386,7 +387,12 @@ async function searchThings(string, ctx, isTitleOnly = false) {
 }
 exports.searchThings = searchThings;
 
-async function search(parent, { string, isTitleOnly, cursor }, ctx, info) {
+async function search(
+   parent,
+   { string, isTitleOnly, cursor, count = 12 },
+   ctx,
+   info
+) {
    const relevantThings = await searchThings(string, ctx, isTitleOnly).catch(
       err => {
          console.log(err);
@@ -415,7 +421,7 @@ async function search(parent, { string, isTitleOnly, cursor }, ctx, info) {
       return false; // Otherwise, we should have sent this thing so we skip it
    });
 
-   const trimmedThings = cursoredThings.slice(0, 12);
+   const trimmedThings = cursoredThings.slice(0, count);
 
    return trimmedThings;
 }

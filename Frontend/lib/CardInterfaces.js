@@ -308,7 +308,7 @@ const taxFields = `
    contentOrder
    summary
    connectedThings {
-      ${thingCardFields}
+      ${fullThingFields}
    }
    comments {
       ${commentFields}

@@ -15,6 +15,7 @@ import { fullSizedLoadMoreButton } from '../styles/styleFragments';
 import { useInfiniteScroll } from '../lib/ThingHandling';
 import LoadMoreButton from '../components/LoadMoreButton';
 import useMe from '../components/Account/useMe';
+import PlaceholderThings from '../components/PlaceholderThings';
 
 const SINGLE_TAX_QUERY = gql`
    query SINGLE_TAX_QUERY($title: String! $personal: Boolean!, $cursor: String) {
@@ -132,6 +133,10 @@ const tag = ({ query: { id, title } }) => {
       variables: { id }
    });
 
+   const displayProps = {
+      cardSize: 'regular'
+   };
+
    let pageTitle;
    let content;
    let sidebar;
@@ -141,7 +146,7 @@ const tag = ({ query: { id, title } }) => {
    }
    if (loading) {
       pageTitle = 'Loading Tag';
-      content = <LoadingRing />;
+      content = <PlaceholderThings count={10} {...displayProps} />;
       sidebar = <LoadingRing />;
    } else if (data) {
       if (data.taxByTitle != null) {
@@ -159,9 +164,9 @@ const tag = ({ query: { id, title } }) => {
                <Things
                   things={sortedThings}
                   displayType="list"
-                  cardSize="regular"
                   scrollingParentSelector=".mainSection"
                   perPage={perPage}
+                  {...displayProps}
                />
             </StyledTaxContent>
          );

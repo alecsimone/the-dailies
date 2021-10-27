@@ -1,4 +1,4 @@
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation, useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 import React, { useEffect, useRef, useState } from 'react';
 import Reorder from 'react-reorder';
@@ -20,23 +20,18 @@ import ArrowIcon from '../../Icons/Arrow';
 import X from '../../Icons/X';
 import LoadingRing from '../../LoadingRing';
 import RichTextArea from '../../RichTextArea';
-import useThingData from '../../ThingCards/useThingData';
 import FlexibleContentPiece from './FlexibleContentPiece';
 
-const FlexibleContent = ({ contentType, canEdit, linkedPiece, thingID }) => {
-   // First we get the thingData we need
+const FlexibleContent = ({ contentType, canEdit, linkedPiece, thingData }) => {
+   console.log('Content Render');
    const {
+      thingID,
       content,
       copiedInContent,
       contentOrder,
       unsavedNewContent
-   } = useThingData(
-      thingID,
-      'FlexibleContent',
-      `content {${contentPieceFields}} copiedInContent {${contentPieceFields}} contentOrder unsavedNewContent`
-   );
-
-   // Then we'll set up our mutation hooks
+   } = thingData;
+   // First we'll set up our mutation hooks
    const [storeUnsavedThingChanges] = useMutation(
       STORE_UNSAVED_CONTENT_MUTATION,
       {
@@ -204,6 +199,7 @@ const FlexibleContent = ({ contentType, canEdit, linkedPiece, thingID }) => {
                      canEdit={canEdit}
                      pieceID={contentPiece.id}
                      thingID={thingID}
+                     thingData={thingData}
                      votes={contentPiece.votes}
                      unsavedContent={contentPiece.unsavedNewContent}
                      comments={contentPiece.comments}
@@ -245,6 +241,7 @@ const FlexibleContent = ({ contentType, canEdit, linkedPiece, thingID }) => {
                      canEdit={canEdit}
                      pieceID={currentContentPiece.id}
                      thingID={thingID}
+                     thingData={thingData}
                      votes={currentContentPiece.votes}
                      unsavedContent={currentContentPiece.unsavedNewContent}
                      comments={currentContentPiece.comments}
@@ -427,4 +424,19 @@ const FlexibleContent = ({ contentType, canEdit, linkedPiece, thingID }) => {
    );
 };
 
-export default React.memo(FlexibleContent);
+export default React.memo(FlexibleContent, (prev, next) => {
+   if (prev.contentType !== next.contentType) return false;
+   if (prev.canEdit !== next.canEdit) return false;
+   if (prev.linkedPiece !== next.linkedPiece) return false;
+
+   const prevData = prev.thingData;
+   const nextData = next.thingData;
+
+   // At this level, we only need to rerender if the number of content pieces changes
+   if (prevData.thingID !== nextData.thingID) return false;
+   if (prevData.content?.length !== nextData.content?.length) return false;
+   if (prevData.copiedInContent?.length !== nextData.copiedInContent?.length)
+      return false;
+   if (prevData.contentOrder !== nextData.contentOrder) return false;
+   if (prevData.unsavedNewContent !== nextData.unsavedNewContent) return false;
+});

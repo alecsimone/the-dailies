@@ -2,15 +2,8 @@ import Link from 'next/link';
 import PropTypes from 'prop-types';
 import React from 'react';
 import Avatar from '../Avatar';
-import useThingData from '../ThingCards/useThingData';
 
-const AuthorLink = ({ thingID, noPic }) => {
-   const { author } = useThingData(
-      thingID,
-      'AuthorLink',
-      `author {__typename id avatar displayName friends { __typename id friends {__typename id }} rep}`
-   );
-
+const AuthorLink = ({ author, noPic }) => {
    if (author == null) {
       return null;
    }

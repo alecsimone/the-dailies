@@ -608,7 +608,7 @@ const Comment = ({
                )}
             </div>
             <div className="metaRight">
-               <VoteBar type="Comment" id={comment.id} />
+               <VoteBar type="Comment" id={comment.id} votes={comment.votes} />
             </div>
          </div>
          {replying && (

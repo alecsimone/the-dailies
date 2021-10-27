@@ -66,11 +66,6 @@ const TaxSidebar = ({ context, canEdit }) => {
 
    return (
       <StyledTaxSidebar>
-         <FeaturedImage
-            context={context}
-            key={`${title}-FeaturedImage`}
-            canEdit={canEdit}
-         />
          <TaxMeta context={context} key={`${title}-Meta`} canEdit={canEdit} />
          <StuffSummary
             summary={summary}
@@ -79,7 +74,6 @@ const TaxSidebar = ({ context, canEdit }) => {
             canEdit={canEdit}
             type="Tag"
          />
-         <Comments context={context} key={`${title}-Comments`} />
       </StyledTaxSidebar>
    );
 };

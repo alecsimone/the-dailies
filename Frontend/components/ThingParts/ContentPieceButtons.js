@@ -16,7 +16,6 @@ import {
 } from '../../lib/ContentHandling';
 import { ModalContext } from '../ModalProvider';
 import { setAlpha } from '../../styles/functions';
-import useThingData from '../ThingCards/useThingData';
 import {
    commentFields,
    contentPieceFields,
@@ -58,6 +57,7 @@ const ContentPieceButtons = ({
    showingComments,
    setShowingComments,
    thingID,
+   thingData,
    pieceID,
    voters,
    isCopied,
@@ -72,16 +72,6 @@ const ContentPieceButtons = ({
    contentContainerRef,
    postContent
 }) => {
-   const thingData = useThingData(
-      thingID,
-      'ContentPieceButtons',
-      fullThingFields
-   );
-   const fullThingData = useThingData(
-      thingID,
-      'ContentPieceButtons',
-      fullThingFields
-   );
    const [copied, setCopied] = useState(false);
 
    const [showingAddToBox, setShowingAddToBox] = useState(false);
@@ -153,7 +143,7 @@ const ContentPieceButtons = ({
                   commentCount > 0 &&
                   process.browser &&
                   window.innerWidth > midScreenBPWidthRaw &&
-                  fullThingData.__typename !== 'Tag' &&
+                  thingData.__typename !== 'Tag' &&
                   !hasShownComments &&
                   !clickToShowComments
                ) {
@@ -185,6 +175,7 @@ const ContentPieceButtons = ({
                id={pieceID}
                key={`votebar-${pieceID}`}
                type="ContentPiece"
+               votes={voters}
                mini
             />
          </div>
@@ -214,13 +205,13 @@ const ContentPieceButtons = ({
                            thingID
                         }
                      };
-                     if (fullThingData.__typename === 'Thing') {
-                        const oldCopiedContent = fullThingData.copiedInContent;
+                     if (thingData.__typename === 'Thing') {
+                        const oldCopiedContent = thingData.copiedInContent;
                         const newCopiedContent = oldCopiedContent.filter(
                            piece => piece.id !== pieceID
                         );
                         const newThingData = {
-                           ...fullThingData,
+                           ...thingData,
                            copiedInContent: newCopiedContent
                         };
                         unlinkParameterObject.optimisticResponse = {
