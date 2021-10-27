@@ -397,7 +397,6 @@ const FlexibleThingCard = ({
    borderSide = 'top',
    noPic
 }) => {
-   console.log('Thing Render');
    const {
       createdAt,
       color,

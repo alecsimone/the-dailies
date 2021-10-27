@@ -23,9 +23,8 @@ import RichTextArea from '../../RichTextArea';
 import FlexibleContentPiece from './FlexibleContentPiece';
 
 const FlexibleContent = ({ contentType, canEdit, linkedPiece, thingData }) => {
-   console.log('Content Render');
    const {
-      thingID,
+      id: thingID,
       content,
       copiedInContent,
       contentOrder,
