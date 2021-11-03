@@ -11,6 +11,7 @@ import { useInfiniteScroll, ALL_THINGS_QUERY } from '../lib/ThingHandling';
 import { fullSizedLoadMoreButton } from '../styles/styleFragments';
 import { ModalContext } from '../components/ModalProvider';
 import PlaceholderThings from '../components/PlaceholderThings';
+import useThingyQuery from '../thingStore/useThingyQuery';
 
 const StyledHomepage = styled.section`
    display: flex;
@@ -82,12 +83,15 @@ const StyledHomepage = styled.section`
 const allThingsQueryCount = 2;
 
 const Home = () => {
-   const { data, loading, error, fetchMore } = useQuery(ALL_THINGS_QUERY, {
-      ssr: false,
-      variables: {
-         count: allThingsQueryCount
+   const { data, loading, error, fetchMore } = useThingyQuery(
+      ALL_THINGS_QUERY,
+      {
+         ssr: false,
+         variables: {
+            count: allThingsQueryCount
+         }
       }
-   });
+   );
 
    const { setThingsSidebarIsOpen } = useContext(ModalContext);
 

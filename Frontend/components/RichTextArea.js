@@ -118,11 +118,12 @@ const RichTextArea = ({
    id,
    inputRef,
    unsavedChangesHandler,
-   unsavedContent
+   unsavedContent,
+   alwaysShowExtras = true
 }) => {
    const originalText = useRef(text); // We use this to check if there have been any changes to the text, because if there haven't been, we don't need to ask for confirmation before cancelling editing.
 
-   const [showingExtras, setShowingExtras] = useState(false);
+   const [showingExtras, setShowingExtras] = useState(alwaysShowExtras);
 
    const { mobileBPWidthRaw } = useContext(ThemeContext);
 
@@ -540,14 +541,6 @@ const RichTextArea = ({
             postText();
          }}
          onFocus={() => setShowingExtras(true)}
-         onBlur={e => {
-            if (
-               inputRef.current.value == null ||
-               inputRef.current.value.trim() === ''
-            ) {
-               setShowingExtras(false);
-            }
-         }}
       >
          <StyledWrapper>
             {showingExtras && <div className="stylingButtonsPlaceholder" />}

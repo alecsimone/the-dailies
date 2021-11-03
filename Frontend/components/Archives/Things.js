@@ -64,7 +64,6 @@ const Things = ({ things, displayType, cardSize, noPic, borderSide }) => {
          <FlexibleThingCard
             key={thing.id}
             expanded={cardSize === 'regular'}
-            thingData={thing}
             thingID={thing.id}
             contentType="single"
             canEdit={canEdit}

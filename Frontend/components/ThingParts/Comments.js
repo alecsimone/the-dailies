@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import React, { useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useMutation } from '@apollo/react-hooks';
+import { useSelector } from 'react-redux';
 import Comment from './Comment';
 import RichTextArea from '../RichTextArea';
 import { SINGLE_THING_QUERY } from '../../pages/thing';
@@ -123,11 +124,16 @@ const ADD_COMMENT_MUTATION = gql`
 `;
 export { ADD_COMMENT_MUTATION };
 
-const Comments = ({ id, type, comments, linkedComment }) => {
+const useCommentsData = thingID =>
+   useSelector(state => state.things[thingID].comments);
+
+const Comments = ({ id, type, linkedComment }) => {
    const {
       loggedInUserID,
       memberFields: { avatar, displayName, rep }
    } = useMe('Comments', 'avatar displayName rep');
+
+   const comments = useCommentsData(id);
 
    // This ref will be passed down to the RichTextArea that allows us to comment on the thing, and we'll use it to get the value for our sendNewComment mutation
    const commentInputRef = useRef(null);

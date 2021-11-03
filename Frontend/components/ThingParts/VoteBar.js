@@ -2,6 +2,7 @@ import gql from 'graphql-tag';
 import { useApolloClient, useMutation } from '@apollo/react-hooks';
 import styled from 'styled-components';
 import React, { useContext, useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { setAlpha } from '../../styles/functions';
 import Avatar from '../Avatar';
 import { ALL_THINGS_QUERY } from '../../lib/ThingHandling';
@@ -65,6 +66,21 @@ const VOTE_MUTATION = gql`
    }
 `;
 export { VOTE_MUTATION };
+
+const useVoteBarData = (id, thingID, type) => {
+   const votes = useSelector(state => {
+      if (type === 'Thing') {
+         return state.things[id].votes;
+      }
+      if (type === 'ContentPiece') {
+         const { content } = state.things[thingID];
+         const thisPiece = content.find(piece => piece.id === id);
+         return thisPiece.votes;
+      }
+      return [];
+   });
+   return votes;
+};
 
 const StyledVoteBar = styled.section`
    background: ${props => props.theme.midBlack};
@@ -136,8 +152,10 @@ const StyledVoteBar = styled.section`
    }
 `;
 
-const VoteBar = ({ id, type, mini, alwaysMini, votes }) => {
+const VoteBar = ({ id, thingID, type, mini, alwaysMini }) => {
    const { loggedInUserID, memberFields } = useMe('VoteBar', basicMemberFields);
+
+   const votes = useVoteBarData(id, thingID, type);
 
    const [vote] = useMutation(VOTE_MUTATION, {
       refetchQueries: [{ query: ALL_THINGS_QUERY }],

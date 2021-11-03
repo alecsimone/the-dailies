@@ -86,12 +86,15 @@ const TagContext = React.createContext();
 export { TagContext };
 
 const tag = ({ query: { id, title } }) => {
-   const { loading, error, data, fetchMore } = useQuery(SINGLE_TAX_QUERY, {
-      variables: {
-         title,
-         personal: false
+   const { loading, error, data, fetchMore } = useThingyQuery(
+      SINGLE_TAX_QUERY,
+      {
+         variables: {
+            title,
+            personal: false
+         }
       }
-   });
+   );
 
    const {
       loggedInUserID,

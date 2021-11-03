@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import Router from 'next/router';
+import { useSelector } from 'react-redux';
 import { setAlpha, dynamicallyResizeElement } from '../../styles/functions';
 import { checkForNewThingRedirect } from '../../lib/ThingHandling';
 
@@ -29,6 +30,13 @@ const SET_TITLE_MUTATION = gql`
    }
 `;
 export { SET_TITLE_MUTATION };
+
+const useTitleBarData = thingID => {
+   const titleBarData = {};
+   titleBarData.title = useSelector(state => state.things[thingID].title);
+   titleBarData.score = useSelector(state => state.things[thingID].score);
+   return titleBarData;
+};
 
 const StyledTitleBar = styled.div`
    padding: 0 0.5rem;
@@ -68,15 +76,9 @@ const StyledTitleBar = styled.div`
    }
 `;
 
-const TitleBar = ({
-   limit,
-   canEdit = true,
-   type,
-   score,
-   title,
-   id,
-   showingScore
-}) => {
+const TitleBar = ({ limit, canEdit = true, type, id, showingScore }) => {
+   const { title, score } = useTitleBarData(id);
+
    const [editedTitle, setEditedTitleState] = useState(title);
    const editedTitleRef = useRef(editedTitle);
 

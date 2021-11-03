@@ -3,6 +3,7 @@ import { useMutation } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
+import { useSelector } from 'react-redux';
 import { disabledCodewords } from '../../lib/ThingHandling';
 import { isExplodingLink, isVideo } from '../../lib/UrlHandling';
 import ExplodingLink from '../ExplodingLink';
@@ -33,6 +34,9 @@ const SET_FEATURED_IMAGE_MUTATION = gql`
       }
    }
 `;
+
+const useFlexibleFeaturedImageData = thingID =>
+   useSelector(state => state.things[thingID].featuredImage);
 
 const StyledFlexibleFeaturedImage = styled.div`
    width: 100%;
@@ -71,7 +75,8 @@ const StyledFlexibleFeaturedImage = styled.div`
    }
 `;
 
-const FlexibleFeaturedImage = ({ canEdit, id, featuredImage }) => {
+const FlexibleFeaturedImage = ({ canEdit, id }) => {
+   const featuredImage = useFlexibleFeaturedImageData(id);
    const [editingUrl, setEditingUrl] = useState(
       featuredImage == null ||
          disabledCodewords.includes(featuredImage.toLowerCase())

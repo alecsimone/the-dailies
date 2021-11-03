@@ -1,6 +1,7 @@
 import { useState, useContext } from 'react';
 import styled, { ThemeContext } from 'styled-components';
 import { useMutation } from '@apollo/react-hooks';
+import { useSelector } from 'react-redux';
 import LinkIcon from '../Icons/Link';
 import EditThis from '../Icons/EditThis';
 import TrashIcon from '../Icons/Trash';
@@ -57,7 +58,6 @@ const ContentPieceButtons = ({
    showingComments,
    setShowingComments,
    thingID,
-   thingData,
    pieceID,
    voters,
    isCopied,
@@ -72,6 +72,8 @@ const ContentPieceButtons = ({
    contentContainerRef,
    postContent
 }) => {
+   const thingData = useSelector(state => state.things[thingID]);
+
    const [copied, setCopied] = useState(false);
 
    const [showingAddToBox, setShowingAddToBox] = useState(false);
@@ -173,6 +175,7 @@ const ContentPieceButtons = ({
          <div className="buttonWrapper votebarWrapper">
             <VoteBar
                id={pieceID}
+               thingID={thingID}
                key={`votebar-${pieceID}`}
                type="ContentPiece"
                votes={voters}

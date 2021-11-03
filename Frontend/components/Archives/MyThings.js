@@ -18,6 +18,7 @@ import LoadMoreButton from '../LoadMoreButton';
 import { useInfiniteScroll } from '../../lib/ThingHandling';
 import useMe from '../Account/useMe';
 import PlaceholderThings from '../PlaceholderThings';
+import useThingyQuery from '../../thingStore/useThingyQuery';
 
 const StyledMyThings = styled.div`
    article.flexibleThingCard {
@@ -52,17 +53,6 @@ const MY_THINGS_QUERY = gql`
 `;
 export { MY_THINGS_QUERY };
 
-const MY_THINGS_SUBSCRIPTION = gql`
-   subscription MY_THINGS_SUBSCRIPTION {
-      myThings {
-         node {
-            ${smallThingCardFields}
-         }
-         updatedFields
-      }
-   }
-`;
-
 const myThingsQueryCount = 10;
 export { myThingsQueryCount };
 
@@ -74,7 +64,7 @@ const MyThings = ({ setShowingSidebar, scrollingSelector, borderSide }) => {
    } = useMe('MyThings', 'broadcastView');
    const { setContent } = useContext(ModalContext);
 
-   const { data, loading, error, fetchMore } = useQuery(MY_THINGS_QUERY, {
+   const { data, loading, error, fetchMore } = useThingyQuery(MY_THINGS_QUERY, {
       ssr: false,
       skip: loggedInUserID == null && !memberLoading,
       variables: {

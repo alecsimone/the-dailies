@@ -11,6 +11,7 @@ import { home } from '../config';
 import FlexibleThingCard from '../components/ThingCards/FlexibleThingCard';
 import useMe from '../components/Account/useMe';
 import PlaceholderThings from '../components/PlaceholderThings';
+import useThingyQuery from '../thingStore/useThingyQuery';
 
 const SINGLE_THING_QUERY = gql`
    query SINGLE_THING_QUERY($id: ID!) {
@@ -60,7 +61,7 @@ const StyledSingleThing = styled.section`
 `;
 
 const SingleThing = ({ query }) => {
-   const { loading, error, data } = useQuery(SINGLE_THING_QUERY, {
+   const { loading, error, data } = useThingyQuery(SINGLE_THING_QUERY, {
       variables: { id: query.id },
       skip: query.id === 'new'
    });
@@ -91,6 +92,9 @@ const SingleThing = ({ query }) => {
    if (error) {
       content = <Error error={error} />;
       pageTitle = 'Unavailable Thing';
+   } else if (loading || memberLoading) {
+      content = <PlaceholderThings count={1} {...displayProps} />;
+      pageTitle = 'Loading Thing';
    } else if (data) {
       if (data.thing != null) {
          let canEdit = false;
@@ -115,7 +119,6 @@ const SingleThing = ({ query }) => {
             content = (
                <FlexibleThingCard
                   key={`flexibleCard-${query.id}`}
-                  thingData={data.thing}
                   thingID={data.thing.id}
                   canEdit={canEdit}
                   linkedPiece={query.piece}
@@ -128,22 +131,6 @@ const SingleThing = ({ query }) => {
          content = <p>Thing not found.</p>;
       }
       pageTitle = data.thing == null ? "Couldn't find thing" : data.thing.title;
-   } else if (loading || memberLoading) {
-      content = <PlaceholderThings count={1} {...displayProps} />;
-      pageTitle = 'Loading Thing';
-   }
-
-   let dataForContext;
-   if (loading) {
-      dataForContext = loading;
-   } else if (error) {
-      dataForContext = error;
-   } else if (query.id === 'new') {
-      dataForContext = {
-         id: 'new'
-      };
-   } else {
-      dataForContext = data.thing;
    }
 
    if ((data == null || data.thing == null) && !loading) {
@@ -166,28 +153,23 @@ const SingleThing = ({ query }) => {
    }
 
    return (
-      <ThingContext.Provider value={dataForContext}>
-         <StyledSingleThing className="thingPage">
-            <Head>
-               <title>{pageTitle} - Ouryou</title>
-               <meta property="og:type" content="article" key="ogType" />
-               <meta
-                  property="og:url"
-                  content={`${home}/thing?id=${query.id}`}
-               />
-               <meta
-                  property="og:description"
-                  content={ogDescription}
-                  key="ogDescription"
-               />
-               <meta
-                  property="og:title"
-                  content={data ? data.thing.title : 'Ouryou'}
-               />
-            </Head>
-            {content}
-         </StyledSingleThing>
-      </ThingContext.Provider>
+      <StyledSingleThing className="thingPage">
+         <Head>
+            <title>{pageTitle} - Ouryou</title>
+            <meta property="og:type" content="article" key="ogType" />
+            <meta property="og:url" content={`${home}/thing?id=${query.id}`} />
+            <meta
+               property="og:description"
+               content={ogDescription}
+               key="ogDescription"
+            />
+            <meta
+               property="og:title"
+               content={data ? data.thing.title : 'Ouryou'}
+            />
+         </Head>
+         {content}
+      </StyledSingleThing>
    );
 };
 

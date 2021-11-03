@@ -11,6 +11,7 @@ import { useInfiniteScroll } from '../lib/ThingHandling';
 import LoadMoreButton from './LoadMoreButton';
 import { fullSizedLoadMoreButton } from '../styles/styleFragments';
 import PlaceholderThings from './PlaceholderThings';
+import useThingyQuery from '../thingStore/useThingyQuery';
 
 const StyledSearchResults = styled.section`
    ${fullSizedLoadMoreButton}
@@ -165,7 +166,7 @@ const sortThingsByRelevancy = (things, string) => {
 export { sortThingsByRelevancy };
 
 const SearchResults = ({ string }) => {
-   const { loading, error, data, fetchMore } = useQuery(SEARCH_QUERY, {
+   const { loading, error, data, fetchMore } = useThingyQuery(SEARCH_QUERY, {
       variables: {
          string,
          count: searchQueryCount

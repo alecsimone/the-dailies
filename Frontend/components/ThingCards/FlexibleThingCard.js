@@ -4,6 +4,7 @@ import gql from 'graphql-tag';
 import { useMutation } from '@apollo/react-hooks';
 import Router from 'next/router';
 import Link from 'next/link';
+import { useSelector } from 'react-redux';
 import TitleBar from '../ThingParts/TitleBar';
 import { ThingsContext } from '../ThingsDataProvider';
 import AuthorLink from '../ThingParts/AuthorLink';
@@ -35,6 +36,30 @@ const DELETE_THING_MUTATION = gql`
       }
    }
 `;
+
+const useCardData = thingID => {
+   const cardData = {};
+   cardData.createdAt = useSelector(state => state.things[thingID].createdAt);
+   cardData.color = useSelector(state => state.things[thingID].color);
+   cardData.title = useSelector(state => state.things[thingID].title);
+   cardData.hasContent = useSelector(
+      state =>
+         state.things[thingID].content?.length > 0 ||
+         state.things[thingID].copiedInContent?.length > 0
+   );
+   cardData.commentCount = useSelector(
+      state => state.things[thingID].comments?.length
+   );
+   cardData.hasTags = useSelector(
+      state => state.things[thingID].partOfTags?.length > 0
+   );
+   cardData.featuredImage = useSelector(
+      state => state.things[thingID].featuredImage
+   );
+   cardData.score = useSelector(state => state.things[thingID].score);
+   cardData.privacy = useSelector(state => state.things[thingID].privacy);
+   return cardData;
+};
 
 const StyledFlexibleThingCard = styled.article`
    width: 100%;
@@ -386,7 +411,6 @@ const StyledFlexibleThingCard = styled.article`
 `;
 
 const FlexibleThingCard = ({
-   thingData,
    thingID,
    expanded = false,
    contentType = 'full',
@@ -397,45 +421,44 @@ const FlexibleThingCard = ({
    borderSide = 'top',
    noPic
 }) => {
+   console.log(`card render`);
    const {
       createdAt,
       color,
       title,
-      content = [],
-      copiedInContent = [],
-      comments = [],
-      partOfTags: tags = [],
+      hasContent,
+      commentCount,
+      hasTags,
       featuredImage,
       score,
       privacy
-   } = thingData;
+   } = useCardData(thingID);
 
-   const { addThingID, removeThingID } = useContext(ThingsContext);
+   // const { addThingID, removeThingID } = useContext(ThingsContext);
 
-   /* eslint-disable react-hooks/exhaustive-deps */
-   useEffect(() => {
-      addThingID(thingID);
-      return () => {
-         // Because we're nesting things, these thing cards have a tendency to unmount and remount when their parent is re-rendering but they're not going anywhere.
-         // Because we have a context provider keeping track of every thing on the page, which is also listend to by every thing on the page, that means that any time a thing with a thing within it re-renders, EVERY thing on the page re-renders (because the nested thing unmounts and remounts, and thus it calls removeThingID and addThingID, changing the context data, causing all its listeners to re-render)
-         // It's incredibly inexpensive to have extra things in our thingsDataProvider's thingIDs list. It's pretty expensive to make every thing on the page re-render. It's also true that (becuase of the myThingsBar) most things stay on the page anyway. So we're adding a quick check here to see if we can find a card for this thing anywhere on the page, and if we can, that means we don't need to removeThingID just because the parent of this card for the thing re-rendered.
-         // To be honest, I can't find a way to confirm that this test isn't functionally equivalent to just not removing thing IDs at all. But as I explained before, having a list of too many thingIDs is trivially expensive, so that's a risk I'm willing to take.
-         const thisThingSomewhere = document.querySelector(`.${thingID}`);
-         if (thisThingSomewhere == null) {
-            removeThingID(thingID);
-         }
-      };
-   }, []);
-   /* eslint-enable */
+   // /* eslint-disable react-hooks/exhaustive-deps */
+   // useEffect(() => {
+   //    addThingID(thingID);
+   //    return () => {
+   //       // Because we're nesting things, these thing cards have a tendency to unmount and remount when their parent is re-rendering but they're not going anywhere.
+   //       // Because we have a context provider keeping track of every thing on the page, which is also listend to by every thing on the page, that means that any time a thing with a thing within it re-renders, EVERY thing on the page re-renders (because the nested thing unmounts and remounts, and thus it calls removeThingID and addThingID, changing the context data, causing all its listeners to re-render)
+   //       // It's incredibly inexpensive to have extra things in our thingsDataProvider's thingIDs list. It's pretty expensive to make every thing on the page re-render. It's also true that (becuase of the myThingsBar) most things stay on the page anyway. So we're adding a quick check here to see if we can find a card for this thing anywhere on the page, and if we can, that means we don't need to removeThingID just because the parent of this card for the thing re-rendered.
+   //       // To be honest, I can't find a way to confirm that this test isn't functionally equivalent to just not removing thing IDs at all. But as I explained before, having a list of too many thingIDs is trivially expensive, so that's a risk I'm willing to take.
+   //       const thisThingSomewhere = document.querySelector(`.${thingID}`);
+   //       if (thisThingSomewhere == null) {
+   //          removeThingID(thingID);
+   //       }
+   //    };
+   // }, []);
+   // /* eslint-enable */
 
    // Setting the toggle expansion arrow to the opposite of the expanded value would be confusing if we got a thing which is intended to be expanded, but has no fields with data, e.g. if we are looking at a new thing that doesn't have any content, etc yet. So we check for that here.
    let initialToggleDirection = 'down';
    if (expanded) {
       if (
-         content.length > 0 ||
-         copiedInContent.length > 0 ||
-         tags.length > 0 ||
-         comments.length > 0 ||
+         hasContent ||
+         hasTags ||
+         commentCount > 0 ||
          (featuredImage != null &&
             !disabledCodewords.includes(featuredImage.toLowerCase()))
       ) {
@@ -444,9 +467,9 @@ const FlexibleThingCard = ({
    }
 
    const [expansion, setExpansion] = useState({
-      content: expanded && (content.length > 0 || copiedInContent.length > 0),
-      taxes: expanded && tags.length > 0,
-      comments: expanded && comments.length > 0,
+      content: expanded && hasContent,
+      taxes: expanded && hasTags,
+      comments: expanded && commentCount > 0,
       privacy: false,
       colors: false,
       featuredImage:
@@ -578,8 +601,6 @@ const FlexibleThingCard = ({
                         key={`title-${thingID}`}
                         type="Thing"
                         showingScore={score !== 0 && !expansion.votebar}
-                        score={score}
-                        title={title}
                         id={thingID}
                         canEdit={canEdit}
                      />
@@ -593,8 +614,6 @@ const FlexibleThingCard = ({
                               key={`title-${thingID}`}
                               type="Thing"
                               showingScore={score !== 0 && !expansion.votebar}
-                              score={score}
-                              title={title}
                               id={thingID}
                               canEdit={false}
                               limit={60}
@@ -622,8 +641,8 @@ const FlexibleThingCard = ({
             <div className="toolbar">
                <div className="info">
                   <AuthorLink
-                     author={thingData.author}
                      key={`author-${thingID}`}
+                     thingID={thingID}
                      noPic={noPic}
                   />
                   <div className="ago">
@@ -665,7 +684,7 @@ const FlexibleThingCard = ({
                   )}
                   {(expanded ||
                      expansion.showingAllButtons ||
-                     (tags.length > 0 && canEdit)) && (
+                     (hasTags && canEdit)) && (
                      <TagIcon
                         onClick={() =>
                            expansionHandler('taxes', !expansion.taxes)
@@ -676,8 +695,7 @@ const FlexibleThingCard = ({
                   {(expanded ||
                      expansion.showingAllButtons ||
                      canEdit ||
-                     content.length > 0 ||
-                     copiedInContent.length > 0) && (
+                     hasContent) && (
                      <ContentIcon
                         onClick={() =>
                            expansionHandler('content', !expansion.content)
@@ -691,7 +709,7 @@ const FlexibleThingCard = ({
                      onClick={() =>
                         expansionHandler('comments', !expansion.comments)
                      }
-                     count={comments == null ? 0 : comments.length}
+                     count={commentCount || 0}
                      key={`comments-button-${thingID}`}
                   />
                   <LockIcon
@@ -732,7 +750,6 @@ const FlexibleThingCard = ({
                   {!expansion.votebar && (
                      <VoteBar
                         key={`votebar-${thingID}`}
-                        votes={thingData.votes}
                         id={thingID}
                         type="Thing"
                         alwaysMini
@@ -741,12 +758,7 @@ const FlexibleThingCard = ({
                </div>
             </div>
             {expansion.votebar && (
-               <VoteBar
-                  key={`votebar-${thingID}`}
-                  id={thingID}
-                  type="Thing"
-                  votes={thingData.votes}
-               />
+               <VoteBar key={`votebar-${thingID}`} id={thingID} type="Thing" />
             )}
          </header>
          {(expansion.taxes ||
@@ -759,7 +771,6 @@ const FlexibleThingCard = ({
                {expansion.featuredImage && (
                   <FlexibleFeaturedImage
                      canEdit={canEdit}
-                     featuredImage={featuredImage}
                      id={thingID}
                      key={`featured-image-${thingID}`}
                   />
@@ -767,7 +778,6 @@ const FlexibleThingCard = ({
                {expansion.colors && canEdit && (
                   <ColorSelector
                      type="Thing"
-                     initialColor={color}
                      id={thingID}
                      key={`color-${thingID}`}
                   />
@@ -776,10 +786,6 @@ const FlexibleThingCard = ({
                   <PrivacyInterface
                      canEdit={canEdit}
                      id={thingID}
-                     privacy={privacy}
-                     individualViewPermissions={
-                        thingData.individualViewPermissions
-                     }
                      key={`privacy-${thingID}`}
                   />
                )}
@@ -788,7 +794,6 @@ const FlexibleThingCard = ({
                      canEdit={canEdit}
                      personal={false}
                      id={thingID}
-                     tags={tags}
                      key={`taxes-${thingID}`}
                   />
                )}
@@ -797,15 +802,14 @@ const FlexibleThingCard = ({
                      contentType={contentType}
                      canEdit={canEdit}
                      expanded={expanded}
-                     thingData={thingData}
                      linkedPiece={linkedPiece}
+                     thingID={thingID}
                   />
                )}
                {expansion.comments && (
                   <Comments
                      id={thingID}
                      type="Thing"
-                     comments={comments}
                      linkedComment={linkedComment}
                      key={`comments-${thingID}`}
                   />
@@ -816,41 +820,4 @@ const FlexibleThingCard = ({
    );
 };
 
-export default React.memo(FlexibleThingCard, (prev, next) => {
-   if (prev.thingID != next.thingID) return false;
-   if (prev.expanded != next.expanded) return false;
-   if (prev.contentType != next.contentType) return false;
-   if (prev.canEdit != next.canEdit) return false;
-   if (prev.titleLink != next.titleLink) return false;
-   if (prev.borderSide != next.borderSide) return false;
-   if (prev.noPic != next.noPic) return false;
-
-   const prevData = prev.thingData;
-   const nextData = next.thingData;
-   if (prevData.color != nextData.color) return false;
-   if (prevData.title != nextData.title) return false;
-   if (prevData.featuredImage != nextData.featuredImage) return false;
-   if (prevData.score != nextData.score) return false;
-   if (prevData.privacy != nextData.privacy) return false;
-
-   // For content, we only need to rerender if we go from having no content to having some content, or the reverse
-   const prevContentCount =
-      prevData.content?.length + prevData.copiedInContent?.length;
-   const nextContentCount =
-      nextData.content?.length + nextData.copiedInContent?.length;
-   if (prevContentCount === 0 && nextContentCount !== 0) return false;
-   if (prevContentCount !== 0 && nextContentCount === 0) return false;
-
-   // For comments and tags, it's the same thing: only need to rerender if we go from having none to some or from some to none
-   if (prevData.comments?.length === 0 && nextData.comments?.length !== 0)
-      return false;
-   if (prevData.comments?.length !== 0 && nextData.comments?.length === 0)
-      return false;
-
-   if (prevData.partOfTags?.length === 0 && nextData.partOfTags?.length !== 0)
-      return false;
-   if (prevData.partOfTags?.length !== 0 && nextData.partOfTags?.length === 0)
-      return false;
-
-   return true;
-});
+export default React.memo(FlexibleThingCard);

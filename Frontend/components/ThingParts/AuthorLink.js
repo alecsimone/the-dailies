@@ -1,12 +1,11 @@
 import Link from 'next/link';
 import PropTypes from 'prop-types';
 import React from 'react';
+import { useSelector } from 'react-redux';
 import Avatar from '../Avatar';
 
-const AuthorLink = ({ author, noPic }) => {
-   if (author == null) {
-      return null;
-   }
+const AuthorLink = ({ thingID, noPic }) => {
+   const author = useSelector(state => state.things[thingID].author);
    return (
       <Link href={{ pathname: '/member', query: { id: author.id } }}>
          <a>

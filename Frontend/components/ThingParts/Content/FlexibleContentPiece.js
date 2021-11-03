@@ -34,7 +34,6 @@ const FlexibleContentPiece = ({
    canEdit,
    pieceID,
    thingID,
-   thingData,
    votes,
    unsavedContent,
    comments = [],
@@ -639,7 +638,6 @@ const FlexibleContentPiece = ({
                showingComments={showingComments}
                setShowingComments={setShowingComments}
                thingID={thingID}
-               thingData={thingData}
                pieceID={pieceID}
                voters={voters}
                isCopied={isCopied}

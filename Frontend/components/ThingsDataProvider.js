@@ -1,6 +1,8 @@
 import { useSubscription } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
+import _ from 'lodash';
 import React, { useState, useRef, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { fullThingFields } from '../lib/CardInterfaces';
 import { getIntPxFromStyleString, stickifyBlock } from '../lib/stickifier';
 
@@ -156,17 +158,27 @@ const updateScrollersList = (
 
 const ThingsDataProvider = ({ children }) => {
    // The first role of this component is to keep track of all the various things we've rendered on this page and handle a subscription to them so they stay up to date.
-   const [thingIDs, setThingIDs] = useState([]);
+   // const [thingIDs, setThingIDs] = useState([]);
+   const thingIDs = useSelector(
+      state => Object.keys(state.things),
+      (prev, next) => {
+         if (prev.length !== next.length) return false;
+         if (next.some(id => !prev.includes(id))) return false;
+         if (prev.some(id => !next.includes(id))) return false;
+         return true;
+      }
+   );
 
    const { data, loading } = useSubscription(MANY_THINGS_SUBSCRIPTION, {
-      variables: { IDs: thingIDs }
+      variables: { IDs: thingIDs },
+      onCompleted: newData => console.log(newData)
    });
 
-   // These functions will be put in context, and FlexibleThingCards will use them to check in and check out when they render / unrender so we can keep track of all the things we're displaying
-   const thingsData = {
-      addThingID: id => addThingID(id, setThingIDs, thingIDs),
-      removeThingID: id => removeThingID(id, setThingIDs, thingIDs)
-   };
+   // // These functions will be put in context, and FlexibleThingCards will use them to check in and check out when they render / unrender so we can keep track of all the things we're displaying
+   // const thingsData = {
+   //    addThingID: id => addThingID(id, setThingIDs, thingIDs),
+   //    removeThingID: id => removeThingID(id, setThingIDs, thingIDs)
+   // };
 
    // Because this provider already re-renders every time we render a new thing card, it's a good place to host our stickifier operations too
    // First we need some refs to hold all our content blocks, scrolling parents, and our intersection observer
@@ -262,7 +274,7 @@ const ThingsDataProvider = ({ children }) => {
    });
 
    return (
-      <ThingsContext.Provider value={thingsData}>
+      <ThingsContext.Provider value="noContext">
          {children}
       </ThingsContext.Provider>
    );

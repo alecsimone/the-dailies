@@ -2,6 +2,7 @@ import gql from 'graphql-tag';
 import { useMutation } from '@apollo/react-hooks';
 import styled, { ThemeContext } from 'styled-components';
 import React, { useState, useContext } from 'react';
+import { useSelector } from 'react-redux';
 import ArrowIcon from '../Icons/Arrow';
 import { setLightness } from '../../styles/functions';
 
@@ -26,6 +27,9 @@ const SET_COLOR_MUTATION = gql`
       }
    }
 `;
+
+const useColorSelectorData = thingID =>
+   useSelector(state => state.things[thingID].color);
 
 const StyledColorSelector = styled.div`
    position: relative;
@@ -83,7 +87,8 @@ const StyledColorSelector = styled.div`
    }
 `;
 
-const ColorSelector = ({ type, id, initialColor }) => {
+const ColorSelector = ({ type, id }) => {
+   const initialColor = useColorSelectorData(id);
    const [showingSuggestions, setShowingSuggestions] = useState(false);
    const [currentColor, setCurrentColor] = useState(initialColor);
 

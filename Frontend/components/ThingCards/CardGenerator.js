@@ -5,9 +5,10 @@ import FlexibleThingCard from './FlexibleThingCard';
 import Error from '../ErrorMessage';
 import LoadingRing from '../LoadingRing';
 import useMe from '../Account/useMe';
+import useThingyQuery from '../../thingStore/useThingyQuery';
 
 const CardGenerator = ({ id, cardType, borderSide }) => {
-   const { data, loading, error } = useQuery(SINGLE_THING_QUERY, {
+   const { data, loading, error } = useThingyQuery(SINGLE_THING_QUERY, {
       variables: {
          id
       },
@@ -27,7 +28,6 @@ const CardGenerator = ({ id, cardType, borderSide }) => {
          <FlexibleThingCard
             key={data.thing.id}
             expanded={cardType === 'regular'}
-            thingData={data.thing}
             thingID={data.thing.id}
             contentType={cardType === 'regular' ? 'full' : 'single'}
             canEdit={

@@ -8,11 +8,19 @@ const {
 
 function publishStuffUpdate(type, stuff, ctx) {
    const lowerCasedType = type.toLowerCase();
-   ctx.pubsub.publish(lowerCasedType, {
-      [lowerCasedType]: {
-         node: stuff
-      }
-   });
+   if (lowerCasedType === 'thing') {
+      ctx.pubsub.publish('things', {
+         things: {
+            node: stuff
+         }
+      });
+   } else {
+      ctx.pubsub.publish(lowerCasedType, {
+         [lowerCasedType]: {
+            node: stuff
+         }
+      });
+   }
 }
 
 async function updateStuffAndNotifySubs(data, id, type, ctx) {

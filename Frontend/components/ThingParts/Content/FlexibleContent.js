@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 import React, { useEffect, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
 import Reorder from 'react-reorder';
 import { contentPieceFields } from '../../../lib/CardInterfaces';
 import {
@@ -22,14 +23,31 @@ import LoadingRing from '../../LoadingRing';
 import RichTextArea from '../../RichTextArea';
 import FlexibleContentPiece from './FlexibleContentPiece';
 
-const FlexibleContent = ({ contentType, canEdit, linkedPiece, thingData }) => {
+const useFlexibleContentData = thingID => {
+   const flexibleContentData = {};
+   flexibleContentData.content = useSelector(
+      state => state.things[thingID].content
+   );
+   flexibleContentData.contentOrder = useSelector(
+      state => state.things[thingID].contentOrder
+   );
+   flexibleContentData.copiedInContent = useSelector(
+      state => state.things[thingID].copiedInContent
+   );
+   flexibleContentData.unsavedNewContent = useSelector(
+      state => state.things[thingID].unsavedNewContent
+   );
+   return flexibleContentData;
+};
+
+const FlexibleContent = ({ contentType, canEdit, linkedPiece, thingID }) => {
+   // console.log(`content render`);
    const {
-      id: thingID,
       content,
       copiedInContent,
       contentOrder,
       unsavedNewContent
-   } = thingData;
+   } = useFlexibleContentData(thingID);
    // First we'll set up our mutation hooks
    const [storeUnsavedThingChanges] = useMutation(
       STORE_UNSAVED_CONTENT_MUTATION,
@@ -88,17 +106,18 @@ const FlexibleContent = ({ contentType, canEdit, linkedPiece, thingData }) => {
    });
 
    const editPiece = async (contentPieceID, newContent) => {
-      const indexOfEditedContentPiece = fullContent.findIndex(
+      const contentCopy = JSON.parse(JSON.stringify(fullContent));
+      const indexOfEditedContentPiece = contentCopy.findIndex(
          contentPiece => contentPiece.id === contentPieceID
       );
 
-      if (fullContent[indexOfEditedContentPiece] == null) {
+      if (contentCopy[indexOfEditedContentPiece] == null) {
          console.log('Something has gone terribly wrong. Please try again.');
       }
 
-      const thisPiece = fullContent[indexOfEditedContentPiece];
+      const thisPiece = contentCopy[indexOfEditedContentPiece];
 
-      fullContent[indexOfEditedContentPiece].content = newContent;
+      contentCopy[indexOfEditedContentPiece].content = newContent;
 
       await editContentPiece({
          variables: {
@@ -112,7 +131,7 @@ const FlexibleContent = ({ contentType, canEdit, linkedPiece, thingData }) => {
             editContentPiece: {
                __typename: 'Thing',
                id: thingID,
-               content: fullContent
+               content: contentCopy
             }
          }
       }).catch(err => {
@@ -198,7 +217,6 @@ const FlexibleContent = ({ contentType, canEdit, linkedPiece, thingData }) => {
                      canEdit={canEdit}
                      pieceID={contentPiece.id}
                      thingID={thingID}
-                     thingData={thingData}
                      votes={contentPiece.votes}
                      unsavedContent={contentPiece.unsavedNewContent}
                      comments={contentPiece.comments}
@@ -240,7 +258,6 @@ const FlexibleContent = ({ contentType, canEdit, linkedPiece, thingData }) => {
                      canEdit={canEdit}
                      pieceID={currentContentPiece.id}
                      thingID={thingID}
-                     thingData={thingData}
                      votes={currentContentPiece.votes}
                      unsavedContent={currentContentPiece.unsavedNewContent}
                      comments={currentContentPiece.comments}
@@ -407,6 +424,7 @@ const FlexibleContent = ({ contentType, canEdit, linkedPiece, thingData }) => {
                   inputRef={inputRef}
                   unsavedChangesHandler={unsavedChangesHandler}
                   unsavedContent={unsavedNewContent}
+                  alwaysShowExtras={false}
                />
             )}
             {canEdit && content.length > 1 && displayedContentType === 'full' && (
@@ -423,19 +441,4 @@ const FlexibleContent = ({ contentType, canEdit, linkedPiece, thingData }) => {
    );
 };
 
-export default React.memo(FlexibleContent, (prev, next) => {
-   if (prev.contentType !== next.contentType) return false;
-   if (prev.canEdit !== next.canEdit) return false;
-   if (prev.linkedPiece !== next.linkedPiece) return false;
-
-   const prevData = prev.thingData;
-   const nextData = next.thingData;
-
-   // At this level, we only need to rerender if the number of content pieces changes
-   if (prevData.thingID !== nextData.thingID) return false;
-   if (prevData.content?.length !== nextData.content?.length) return false;
-   if (prevData.copiedInContent?.length !== nextData.copiedInContent?.length)
-      return false;
-   if (prevData.contentOrder !== nextData.contentOrder) return false;
-   if (prevData.unsavedNewContent !== nextData.unsavedNewContent) return false;
-});
+export default React.memo(FlexibleContent);

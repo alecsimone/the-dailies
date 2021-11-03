@@ -2,6 +2,7 @@ import { useLazyQuery, useMutation } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 import { debounce } from 'lodash';
 import React, { useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
 import { useSearchResultsSelector } from '../../lib/RichTextHandling';
@@ -50,6 +51,17 @@ const REMOVE_VIEWER_FROM_THING_MUTATION = gql`
       }
    }
 `;
+
+const usePrivacyInterfaceData = thingID => {
+   const privacyInterfaceData = {};
+   privacyInterfaceData.privacy = useSelector(
+      state => state.things[thingID].privacy
+   );
+   privacyInterfaceData.individualViewPermissions = useSelector(
+      state => state.things[thingID].individualViewPermissions
+   );
+   return privacyInterfaceData;
+};
 
 const StyledPrivacyInterface = styled.div`
    display: flex;
@@ -149,12 +161,8 @@ const debouncedMemberSearch = debounce(
    true
 );
 
-const PrivacyInterface = ({
-   canEdit,
-   id,
-   privacy,
-   individualViewPermissions
-}) => {
+const PrivacyInterface = ({ canEdit, id }) => {
+   const { privacy, individualViewPermissions } = usePrivacyInterfaceData(id);
    const { loggedInUserID } = useMe();
 
    const [addingPeople, setAddingPeople] = useState(false);
