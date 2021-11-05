@@ -214,7 +214,9 @@ async function properUpdateStuff(dataObj, id, type, ctx) {
    ) {
       const now = new Date();
       const newUpdatedAt = now.toISOString();
-      dataObj.manualUpdatedAt = newUpdatedAt;
+      if (type === 'Thing') {
+         dataObj.manualUpdatedAt = newUpdatedAt;
+      }
    }
 
    const updatedStuff = await updateStuffAndNotifySubs(

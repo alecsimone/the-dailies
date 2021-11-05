@@ -183,7 +183,9 @@ const Comments = ({ id, type, linkedComment }) => {
          votes: [],
          updatedAt: now.toISOString()
       };
-      comments.push(newComment);
+
+      const commentsCopy = JSON.parse(JSON.stringify(comments));
+      commentsCopy.push(newComment);
 
       inputElement.value = '';
       await addComment({
@@ -197,7 +199,7 @@ const Comments = ({ id, type, linkedComment }) => {
             addComment: {
                __typename: type,
                id,
-               comments
+               comments: commentsCopy
             }
          },
          update: (client, { data }) => {

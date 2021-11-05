@@ -96,7 +96,15 @@ function createClient({ headers, initialState }) {
          link
       ]),
       cache,
-      resolvers: {},
+      resolvers: {
+         Query: {
+            TestQuery: (parent, args, ctx) => {
+               console.log('it worked kinda!');
+
+               return { id: '7' };
+            }
+         }
+      },
       shouldBatch: true
    });
 }

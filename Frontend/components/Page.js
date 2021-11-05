@@ -13,7 +13,7 @@ import Modal from './Modal';
 import HeartPopUp from './HeartPopUp';
 import NavSidebar from './NavSidebar';
 import MyThings from './Archives/MyThings';
-import ThingsDataProvider from './ThingsDataProvider';
+import ThingsSubscriptionManager from '../thingStore/ThingsSubscriptionManager';
 import GlobalStyle, { theme } from '../styles/globalStyle';
 
 const StyledPage = styled.div`
@@ -62,46 +62,45 @@ const Page = ({ children, pageProps }) => {
 
    return (
       <MemberProvider isHome={isHome}>
-         <ThingsDataProvider>
-            <ThemeProvider theme={theme}>
-               <ModalProvider
-                  thingsSidebarIsOpen={thingsSidebarIsOpen}
-                  setThingsSidebarIsOpen={setThingsSidebarIsOpen}
-                  navSidebarIsOpen={navSidebarIsOpen}
-                  setNavSidebarIsOpen={setNavSidebarIsOpen}
-                  isHome={isHome}
-               >
-                  <StyledPage id="page">
-                     <Meta />
-                     <Header pageProps={pageProps} />
-                     <>
-                        <GlobalStyle />
-                        <section className="threeColumns">
-                           <NavSidebar />
-                           <div className="mainSection">{children}</div>
-                           <div
-                              className={
-                                 thingsSidebarIsOpen
-                                    ? 'myThingsBar visible'
-                                    : 'myThingsBar hidden'
-                              }
-                           >
-                              <MyThings
-                                 setShowingSidebar={setThingsSidebarIsOpen}
-                                 scrollingSelector=".myThingsBar"
-                                 borderSide="left"
-                              />
-                           </div>
-                        </section>
-                        <Modal />
-                        <HeartPopUp />
-                     </>
-                     <BottomBar />
-                  </StyledPage>
-                  <ToastContainer className="dailiesStyle" />
-               </ModalProvider>
-            </ThemeProvider>
-         </ThingsDataProvider>
+         <ThemeProvider theme={theme}>
+            <ModalProvider
+               thingsSidebarIsOpen={thingsSidebarIsOpen}
+               setThingsSidebarIsOpen={setThingsSidebarIsOpen}
+               navSidebarIsOpen={navSidebarIsOpen}
+               setNavSidebarIsOpen={setNavSidebarIsOpen}
+               isHome={isHome}
+            >
+               <StyledPage id="page">
+                  <Meta />
+                  <Header pageProps={pageProps} />
+                  <>
+                     <GlobalStyle />
+                     <section className="threeColumns">
+                        <NavSidebar />
+                        <div className="mainSection">{children}</div>
+                        <div
+                           className={
+                              thingsSidebarIsOpen
+                                 ? 'myThingsBar visible'
+                                 : 'myThingsBar hidden'
+                           }
+                        >
+                           <MyThings
+                              setShowingSidebar={setThingsSidebarIsOpen}
+                              scrollingSelector=".myThingsBar"
+                              borderSide="left"
+                           />
+                        </div>
+                     </section>
+                     <Modal />
+                     <HeartPopUp />
+                     <ThingsSubscriptionManager />
+                  </>
+                  <BottomBar />
+               </StyledPage>
+               <ToastContainer className="dailiesStyle" />
+            </ModalProvider>
+         </ThemeProvider>
       </MemberProvider>
    );
 };

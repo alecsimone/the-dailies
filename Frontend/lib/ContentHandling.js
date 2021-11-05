@@ -406,7 +406,10 @@ const sendNewContentPiece = async (
       );
    }
    inputElement.value = '';
-   content.push({
+
+   const contentCopy = JSON.parse(JSON.stringify(content));
+
+   contentCopy.push({
       __typename: 'ContentPiece',
       content: newContentPiece,
       id: 'temporaryID',
@@ -430,7 +433,7 @@ const sendNewContentPiece = async (
          addContentPiece: {
             __typename: type,
             id,
-            content,
+            content: contentCopy,
             comments: [],
             unsavedNewContent: null,
             onThing: [],

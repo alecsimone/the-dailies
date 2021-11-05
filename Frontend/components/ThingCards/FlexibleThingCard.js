@@ -1,12 +1,11 @@
 import styled, { ThemeContext } from 'styled-components';
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState } from 'react';
 import gql from 'graphql-tag';
 import { useMutation } from '@apollo/react-hooks';
 import Router from 'next/router';
 import Link from 'next/link';
 import { useSelector } from 'react-redux';
 import TitleBar from '../ThingParts/TitleBar';
-import { ThingsContext } from '../ThingsDataProvider';
 import AuthorLink from '../ThingParts/AuthorLink';
 import { setAlpha, setLightness } from '../../styles/functions';
 import TimeAgo from '../TimeAgo';
@@ -421,7 +420,6 @@ const FlexibleThingCard = ({
    borderSide = 'top',
    noPic
 }) => {
-   console.log(`card render`);
    const {
       createdAt,
       color,
@@ -433,24 +431,6 @@ const FlexibleThingCard = ({
       score,
       privacy
    } = useCardData(thingID);
-
-   // const { addThingID, removeThingID } = useContext(ThingsContext);
-
-   // /* eslint-disable react-hooks/exhaustive-deps */
-   // useEffect(() => {
-   //    addThingID(thingID);
-   //    return () => {
-   //       // Because we're nesting things, these thing cards have a tendency to unmount and remount when their parent is re-rendering but they're not going anywhere.
-   //       // Because we have a context provider keeping track of every thing on the page, which is also listend to by every thing on the page, that means that any time a thing with a thing within it re-renders, EVERY thing on the page re-renders (because the nested thing unmounts and remounts, and thus it calls removeThingID and addThingID, changing the context data, causing all its listeners to re-render)
-   //       // It's incredibly inexpensive to have extra things in our thingsDataProvider's thingIDs list. It's pretty expensive to make every thing on the page re-render. It's also true that (becuase of the myThingsBar) most things stay on the page anyway. So we're adding a quick check here to see if we can find a card for this thing anywhere on the page, and if we can, that means we don't need to removeThingID just because the parent of this card for the thing re-rendered.
-   //       // To be honest, I can't find a way to confirm that this test isn't functionally equivalent to just not removing thing IDs at all. But as I explained before, having a list of too many thingIDs is trivially expensive, so that's a risk I'm willing to take.
-   //       const thisThingSomewhere = document.querySelector(`.${thingID}`);
-   //       if (thisThingSomewhere == null) {
-   //          removeThingID(thingID);
-   //       }
-   //    };
-   // }, []);
-   // /* eslint-enable */
 
    // Setting the toggle expansion arrow to the opposite of the expanded value would be confusing if we got a thing which is intended to be expanded, but has no fields with data, e.g. if we are looking at a new thing that doesn't have any content, etc yet. So we check for that here.
    let initialToggleDirection = 'down';

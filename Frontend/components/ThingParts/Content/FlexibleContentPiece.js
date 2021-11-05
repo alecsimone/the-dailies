@@ -23,8 +23,10 @@ import { VOTE_MUTATION } from '../VoteBar';
 import Login from '../../Account/Login';
 import ContentPieceButtons from '../ContentPieceButtons';
 import TruncCont from '../TruncCont';
-import { getScrollingParent } from '../../ThingsDataProvider';
-import { stickifyBlock } from '../../../lib/stickifier';
+import useStickifier, {
+   getScrollingParent
+} from '../../../Stickifier/useStickifier';
+import { stickifyBlock } from '../../../Stickifier/stickifier';
 import useMe from '../../Account/useMe';
 import { basicMemberFields } from '../../../lib/CardInterfaces';
 
@@ -79,6 +81,8 @@ const FlexibleContentPiece = ({
    ); // These are for showing a little heart icon where you tapped when you double tap a content piece
 
    const contentContainerRef = useRef(null);
+
+   useStickifier();
 
    const postContent = async () => {
       const inputRef = editContentInputRef.current;
@@ -169,7 +173,9 @@ const FlexibleContentPiece = ({
          votes: [],
          updatedAt: now.toISOString()
       };
-      comments.push(newComment);
+
+      const commentsCopy = JSON.parse(JSON.stringify(comments));
+      commentsCopy.push(newComment);
 
       inputElement.value = '';
       await addComment({
@@ -183,7 +189,7 @@ const FlexibleContentPiece = ({
             addComment: {
                __typename: 'ContentPiece',
                id: pieceID,
-               comments
+               comments: commentsCopy
             }
          },
          update: (client, { data }) => {
@@ -230,7 +236,7 @@ const FlexibleContentPiece = ({
    };
 
    useEffect(() => {
-      // Once the content piece has rendered, we just want to stickify it one time, because otherwise it won't get stickified until something scrolls
+      // Every time the content piece re-renders, we want to stickify it again, just in case it needs an adjustment, and to make sure it gets stickified on its first render
 
       // However, if it's a thing within a thing within a thing, we don't want to do anything, cause that's just too much, man
       if (
@@ -241,12 +247,9 @@ const FlexibleContentPiece = ({
       )
          return;
 
-      // First we have to figure out what its scrolling parent is
       const thisBlock = contentContainerRef.current;
-      const scrollingParent = getScrollingParent(thisBlock);
-
-      stickifyBlock(thisBlock, scrollingParent);
-   }, []);
+      stickifyBlock(thisBlock);
+   });
 
    let contentElement;
    if (!editable) {
