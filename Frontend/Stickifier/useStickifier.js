@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { stickifyBlock } from './stickifier';
 
 const getScrollingParent = el => {
@@ -17,11 +17,13 @@ const getScrollingParent = el => {
 };
 export { getScrollingParent };
 
-const updateBlocksList = (contentBlocks, scrollingParents) => {
+const updateBlocksList = (
+   contentBlocks,
+   scrollingParents,
+   stickifierObserver
+) => {
    const blocks = document.querySelectorAll('.contentBlock');
    const blocksArray = Array.from(blocks);
-
-   const { stickifierObserver } = window;
 
    // If we didn't already know about the block, and if the observer is set up, we'll observe the block
    blocksArray.forEach(block => {
@@ -122,22 +124,21 @@ const updateScrollersList = (
 
 const useStickifier = () => {
    // This hook will be called by FlexibleContentPiece, and it will be used to handle all the work we need to do to stickify the buttons and comments for a contentPiece as the user scrolls.
-   // Because this is purely styling functionality that only needs to listen to our components but never affect their operations (ie, we never want it to trigger a re-render, and they don't need to know about what goes on here), we're going to store the data for it in the global window object.
-   // However, that means we need to make sure we only get here if we're in a browser. Note that this means we'll be calling some hooks "conditionally", but not really, because the same number will always be called in a given environment.
-   if (!process.browser) return;
 
-   window.contentBlocks = [];
-   window.scrollingParents = [];
-   window.stickifierObserver = null;
-
-   const { contentBlocks, scrollingParents, stickifierObserver } = window;
+   const contentBlocksRef = useRef([]);
+   const scrollingParentsRef = useRef([]);
+   const stickifierObserverRef = useRef(null);
 
    // Then we need the handler functions that can be passed to our scroll listeners
    const updateBlocksListHandler = () =>
-      updateBlocksList(contentBlocks, scrollingParents, stickifierObserver);
+      updateBlocksList(
+         contentBlocksRef.current,
+         scrollingParentsRef.current,
+         stickifierObserverRef.current
+      );
 
    const stickifyOnScreenBlocks = e => {
-      const [thisScrollerObj] = scrollingParents.filter(
+      const [thisScrollerObj] = scrollingParentsRef.current.filter(
          obj => obj.scroller === e.target
       );
       if (thisScrollerObj != null) {
@@ -156,17 +157,21 @@ const useStickifier = () => {
          );
 
          // Then we find the object for that scroller in our scrollingParentsRef
-         const thisScrollerObjIndex = scrollingParents.findIndex(
+         const thisScrollerObjIndex = scrollingParentsRef.current.findIndex(
             obj => obj.scroller === scrollingParent
          );
          if (thisScrollerObjIndex === -1) return;
 
          if (entry.isIntersecting) {
             // If this block just came on screen, we add it to the list of blocks that scroller is keeping sticky
-            scrollingParents[thisScrollerObjIndex].blocks.push(entry.target);
+            scrollingParentsRef.current[thisScrollerObjIndex].blocks.push(
+               entry.target
+            );
          } else {
             // If this block just left the screen, we remove it from the list of blocks that scroller is keeping sticky
-            scrollingParents[thisScrollerObjIndex].blocks = scrollingParents[
+            scrollingParentsRef.current[
+               thisScrollerObjIndex
+            ].blocks = scrollingParentsRef.current[
                thisScrollerObjIndex
             ].blocks.filter(block => block !== entry.target);
          }
@@ -188,15 +193,15 @@ const useStickifier = () => {
          threshold: 0
       };
 
-      window.stickifierObserver = new IntersectionObserver(
+      stickifierObserverRef.current = new IntersectionObserver(
          observerCallback,
          options
       );
-   }, [observerCallback]);
+   }, [observerCallback, stickifierObserverRef]);
 
    // Then, every time this hook runs (i.e. every time there's a new content piece) we need to update the scrollers list. We'll check each thing on the page to get a list of all their scrolling parents, and then attach listeners to each of those parents that will handle our stickifier functionality.
    updateScrollersList(
-      scrollingParents,
+      scrollingParentsRef.current,
       updateBlocksListHandler,
       stickifyOnScreenBlocks
    );
