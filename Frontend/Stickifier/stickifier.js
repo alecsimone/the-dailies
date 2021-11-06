@@ -66,13 +66,13 @@ const stickifyButtons = (
    const offsetRect = offsetParent.getBoundingClientRect();
    const offsetStyle = window.getComputedStyle(offsetParent);
 
-   // (offsetRect.bottom - blockRect.bottom)
    // If the sticky top of the element is onscreen by less than the height of the buttons plus a 6rem buffer, and the bottom of the element is not on screen, put them 8rem from the top of the element
    if (
       blockObj.blockStickyTop < viewableBottom && // If the sticky top is above the bottom of the screen
       blockObj.blockStickyTop + 6 * oneRem > viewableBottom && // If the sticky top is less than 6rem above the bottom of the screen
       blockObj.blockBottom > viewableBottom // if the bottom of the block is below the bottom of the screen
    ) {
+      blockObj.block.style.background = 'blue';
       buttons.style.position = 'absolute';
       buttons.style.left = `${-1 * stickingData.leftAdjustment}px`;
       buttons.style.width = `${buttonsWidth}px`;
@@ -86,6 +86,7 @@ const stickifyButtons = (
       blockObj.blockStickyTop + 6 * oneRem <= viewableBottom && // If the sticky top is more than 6rem above the bottom of the screen
       blockObj.blockBottom > viewableBottom // If the bottom of the block is below the bottom of the screen
    ) {
+      blockObj.block.style.background = 'green';
       // Then we fix the buttons to the bottom of the screen
       buttons.style.position = 'fixed';
 
@@ -154,6 +155,7 @@ const stickifyButtons = (
       // Then we make the buttonsPlaceholder the height of the buttons
       buttonsPlaceholder.style.height = `${buttonsHeight}px`;
    } else {
+      blockObj.block.style.background = 'orange';
       // Otherwise we want to put the buttons back at the bottom of the content block
       buttons.style.position = 'relative';
       buttons.style.left = 'initial';
@@ -391,7 +393,7 @@ const makeBlockPositionObject = (block, stickingData) => {
    const blockBottom = blockTop + blockHeight;
 
    let buttons;
-   const buttonsArray = block.querySelectorAll('.buttonsContainer');
+   const buttonsArray = block.querySelectorAll('.newcontentButtons');
    if (buttonsArray == null || buttonsArray.length === 0) return;
 
    for (const buttonsTest of buttonsArray) {
@@ -453,7 +455,8 @@ const stickifyBlock = block => {
    if (buttons != null) {
       const buttonsRect = buttons.getBoundingClientRect();
       const { width: buttonsWidth } = buttonsRect;
-      buttonsHeight = buttonsRect.height;
+      // buttonsHeight = buttonsRect.height;
+      buttonsHeight = getElementHeight(buttons);
       stickifyButtons(
          buttons,
          stickingData,
