@@ -319,7 +319,8 @@ const Comment = ({
          votes: [],
          updatedAt: now.toISOString()
       };
-      comments.push(newComment);
+      const commentsCopy = JSON.parse(JSON.stringify(comments));
+      commentsCopy.push(newComment);
 
       const originalCommentIndex = comments.findIndex(
          fullData => fullData.id === comment.id
@@ -328,7 +329,7 @@ const Comment = ({
          originalCommentIndex != null &&
          comments[originalCommentIndex] != null
       ) {
-         comments[originalCommentIndex].replies.push(newComment);
+         commentsCopy[originalCommentIndex].replies.push(newComment);
       }
       inputElement.value = '';
       setReplying(false);
@@ -344,7 +345,7 @@ const Comment = ({
             addComment: {
                __typename: type,
                id,
-               comments
+               comments: commentsCopy
             }
          },
          update: (client, { data }) => {

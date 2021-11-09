@@ -18,7 +18,7 @@ import LoadMoreButton from '../LoadMoreButton';
 import { useInfiniteScroll } from '../../lib/ThingHandling';
 import useMe from '../Account/useMe';
 import PlaceholderThings from '../PlaceholderThings';
-import useThingyQuery from '../../thingStore/useThingyQuery';
+import useQueryAndStoreIt from '../../stuffStore/useQueryAndStoreIt';
 
 const StyledMyThings = styled.div`
    article.flexibleThingCard {
@@ -64,13 +64,16 @@ const MyThings = ({ setShowingSidebar, scrollingSelector, borderSide }) => {
    } = useMe('MyThings', 'broadcastView');
    const { setContent } = useContext(ModalContext);
 
-   const { data, loading, error, fetchMore } = useThingyQuery(MY_THINGS_QUERY, {
-      ssr: false,
-      skip: loggedInUserID == null && !memberLoading,
-      variables: {
-         count: myThingsQueryCount
+   const { data, loading, error, fetchMore } = useQueryAndStoreIt(
+      MY_THINGS_QUERY,
+      {
+         ssr: false,
+         skip: loggedInUserID == null && !memberLoading,
+         variables: {
+            count: myThingsQueryCount
+         }
       }
-   });
+   );
 
    const {
       scrollerRef,

@@ -124,8 +124,8 @@ const ADD_COMMENT_MUTATION = gql`
 `;
 export { ADD_COMMENT_MUTATION };
 
-const useCommentsData = thingID =>
-   useSelector(state => state.things[thingID].comments);
+const useCommentsData = (thingID, type) =>
+   useSelector(state => state.stuff[`${type}:${thingID}`].comments);
 
 const Comments = ({ id, type, linkedComment }) => {
    const {
@@ -133,7 +133,7 @@ const Comments = ({ id, type, linkedComment }) => {
       memberFields: { avatar, displayName, rep }
    } = useMe('Comments', 'avatar displayName rep');
 
-   const comments = useCommentsData(id);
+   const comments = useCommentsData(id, type);
 
    // This ref will be passed down to the RichTextArea that allows us to comment on the thing, and we'll use it to get the value for our sendNewComment mutation
    const commentInputRef = useRef(null);

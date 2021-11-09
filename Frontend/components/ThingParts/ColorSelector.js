@@ -28,13 +28,22 @@ const SET_COLOR_MUTATION = gql`
    }
 `;
 
-const useColorSelectorData = thingID =>
-   useSelector(state => state.things[thingID].color);
+const useColorSelectorData = (thingID, type) =>
+   useSelector(state => state.stuff[`${type}:${thingID}`].color);
 
 const StyledColorSelector = styled.div`
    position: relative;
    font-size: ${props => props.theme.smallText};
    z-index: 10;
+   .colorDisplay {
+      position: absolute;
+      left: 0.5rem;
+      bottom: 0.75rem;
+      width: 2rem;
+      height: 2rem;
+      border-radius: 3px;
+      border: 1px solid ${props => props.theme.lowContrastGrey};
+   }
    .colorInput {
       padding: calc(0.25rem + 1px) 3rem;
       font-size: ${props => props.theme.smallText};
@@ -88,7 +97,7 @@ const StyledColorSelector = styled.div`
 `;
 
 const ColorSelector = ({ type, id }) => {
-   const initialColor = useColorSelectorData(id);
+   const initialColor = useColorSelectorData(id, type);
    const [showingSuggestions, setShowingSuggestions] = useState(false);
    const [currentColor, setCurrentColor] = useState(initialColor);
 

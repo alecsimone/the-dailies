@@ -68,18 +68,21 @@ const VOTE_MUTATION = gql`
 export { VOTE_MUTATION };
 
 const useVoteBarData = (id, thingID, type) => {
+   return [];
+   const propertyName = `${type}:${id}`;
    const votes = useSelector(state => {
       if (type === 'Thing') {
-         return state.things[id].votes;
+         return state.stuff[propertyName].votes;
       }
       if (type === 'ContentPiece') {
-         const { content } = state.things[thingID];
-         const thisPiece = content.find(piece => piece.id === id);
+         const { content, copiedInContent } = state.stuff[`Thing:${thingID}`];
+         const allContent = content.concat(copiedInContent);
+         const thisPiece = allContent.find(piece => piece.id === id);
          return thisPiece.votes;
       }
       if (type === 'Comment') {
          // This is pretty ugly right now. On a comment, the thingID prop will actually be the ID of whatever the comment is on, so it might be a comment or it might be a content piece. We'll have to figure that out, and hopefully we don't get any content pieces with the same ID as a thing we have
-         const thingMatch = state.things[thingID];
+         const thingMatch = state.stuff[propertyName];
          if (thingMatch != null) {
             const { comments } = thingMatch;
             if (comments != null) {
@@ -90,14 +93,14 @@ const useVoteBarData = (id, thingID, type) => {
             }
          } else {
             // First we need to make an array of all the thing IDs
-            const allThingIDs = Object.keys(state.things);
+            const allThingIDs = Object.keys(state.stuff);
 
             // Then we're going to check each thing until we find one with the content piece we need
             let neededContentPiece;
             allThingIDs.every(id => {
                // We use every instead of forEach so that it can be stopped once we find the contentPiece by returning false
                // First we get the content on the thing from state
-               const { content } = state.things[id];
+               const { content } = state.stuff[id];
                if (content != null && content.length > 0) {
                   // If we find content, we check if any of it is our needed piece
                   neededContentPiece = content.find(

@@ -9,7 +9,6 @@ import TitleBar from '../ThingParts/TitleBar';
 import AuthorLink from '../ThingParts/AuthorLink';
 import { setAlpha, setLightness } from '../../styles/functions';
 import TimeAgo from '../TimeAgo';
-import TagIcon from '../Icons/Tag';
 import CommentsButton from '../ThingParts/CommentsButton';
 import TaxBox from '../ThingParts/TaxBox';
 import Comments from '../ThingParts/Comments';
@@ -20,13 +19,14 @@ import ColorSelector from '../ThingParts/ColorSelector';
 import VoteBar from '../ThingParts/VoteBar';
 import { smallThingCardFields } from '../../lib/CardInterfaces';
 import { ALL_THINGS_QUERY, disabledCodewords } from '../../lib/ThingHandling';
-import FlexibleFeaturedImage from '../ThingParts/FlexibleFeaturedImage';
+import FeaturedImage from '../ThingParts/FeaturedImage';
 import { isVideo } from '../../lib/UrlHandling';
 import ContentIcon from '../Icons/Content';
 import ImageIcon from '../Icons/ImageIcon';
 import LockIcon from '../Icons/Lock';
-import FlexibleContent from '../ThingParts/Content/FlexibleContent';
+import Content from '../ThingParts/Content/Content';
 import { myThingsQueryCount, MY_THINGS_QUERY } from '../Archives/MyThings';
+import HashtagIcon from '../Icons/Hashtag';
 
 const DELETE_THING_MUTATION = gql`
    mutation DELETE_THING_MUTATION($id: ID!) {
@@ -38,25 +38,28 @@ const DELETE_THING_MUTATION = gql`
 
 const useCardData = thingID => {
    const cardData = {};
-   cardData.createdAt = useSelector(state => state.things[thingID].createdAt);
-   cardData.color = useSelector(state => state.things[thingID].color);
-   cardData.title = useSelector(state => state.things[thingID].title);
+   const propertyName = `Thing:${thingID}`;
+   cardData.createdAt = useSelector(
+      state => state.stuff[propertyName].createdAt
+   );
+   cardData.color = useSelector(state => state.stuff[propertyName].color);
+   cardData.title = useSelector(state => state.stuff[propertyName].title);
    cardData.hasContent = useSelector(
       state =>
-         state.things[thingID].content?.length > 0 ||
-         state.things[thingID].copiedInContent?.length > 0
+         state.stuff[propertyName].content?.length > 0 ||
+         state.stuff[propertyName].copiedInContent?.length > 0
    );
    cardData.commentCount = useSelector(
-      state => state.things[thingID].comments?.length
+      state => state.stuff[propertyName].comments?.length
    );
    cardData.hasTags = useSelector(
-      state => state.things[thingID].partOfTags?.length > 0
+      state => state.stuff[propertyName].partOfTags?.length > 0
    );
    cardData.featuredImage = useSelector(
-      state => state.things[thingID].featuredImage
+      state => state.stuff[propertyName].featuredImage
    );
-   cardData.score = useSelector(state => state.things[thingID].score);
-   cardData.privacy = useSelector(state => state.things[thingID].privacy);
+   cardData.score = useSelector(state => state.stuff[propertyName].score);
+   cardData.privacy = useSelector(state => state.stuff[propertyName].privacy);
    return cardData;
 };
 
@@ -396,15 +399,6 @@ const StyledFlexibleThingCard = styled.article`
          position: relative;
          max-width: 34rem;
          margin: 4rem 0 2rem;
-         .colorDisplay {
-            position: absolute;
-            left: 0.5rem;
-            bottom: 0.75rem;
-            width: 2rem;
-            height: 2rem;
-            border-radius: 3px;
-            border: 1px solid ${props => props.theme.lowContrastGrey};
-         }
       }
    }
 `;
@@ -623,6 +617,7 @@ const FlexibleThingCard = ({
                   <AuthorLink
                      key={`author-${thingID}`}
                      thingID={thingID}
+                     type="Thing"
                      noPic={noPic}
                   />
                   <div className="ago">
@@ -665,7 +660,7 @@ const FlexibleThingCard = ({
                   {(expanded ||
                      expansion.showingAllButtons ||
                      (hasTags && canEdit)) && (
-                     <TagIcon
+                     <HashtagIcon
                         onClick={() =>
                            expansionHandler('taxes', !expansion.taxes)
                         }
@@ -749,9 +744,10 @@ const FlexibleThingCard = ({
             expansion.featuredImage) && (
             <div className="body">
                {expansion.featuredImage && (
-                  <FlexibleFeaturedImage
+                  <FeaturedImage
                      canEdit={canEdit}
                      id={thingID}
+                     type="Thing"
                      key={`featured-image-${thingID}`}
                   />
                )}
@@ -766,6 +762,7 @@ const FlexibleThingCard = ({
                   <PrivacyInterface
                      canEdit={canEdit}
                      id={thingID}
+                     type="Thing"
                      key={`privacy-${thingID}`}
                   />
                )}
@@ -774,16 +771,18 @@ const FlexibleThingCard = ({
                      canEdit={canEdit}
                      personal={false}
                      id={thingID}
+                     type="Thing"
                      key={`taxes-${thingID}`}
                   />
                )}
                {expansion.content && (
-                  <FlexibleContent
+                  <Content
                      contentType={contentType}
                      canEdit={canEdit}
                      expanded={expanded}
                      linkedPiece={linkedPiece}
                      thingID={thingID}
+                     type="Thing"
                   />
                )}
                {expansion.comments && (

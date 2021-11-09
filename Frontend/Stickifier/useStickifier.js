@@ -123,7 +123,7 @@ const updateScrollersList = (
 };
 
 const useStickifier = () => {
-   // This hook will be called by FlexibleContentPiece, and it will be used to handle all the work we need to do to stickify the buttons and comments for a contentPiece as the user scrolls.
+   // This hook will be called by ContentPiece, and it will be used to handle all the work we need to do to stickify the buttons and comments for a contentPiece as the user scrolls.
 
    const contentBlocksRef = useRef([]);
    const scrollingParentsRef = useRef([]);

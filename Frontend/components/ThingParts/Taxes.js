@@ -178,15 +178,17 @@ const Taxes = ({
          {canEdit && cleanTaxes && cleanTaxes.length > 0 && (
             <EditThis onClick={() => setShowingXs(!showingXs)} />
          )}
-         <h5
-            title={
-               personal
-                  ? 'Stacks are personal, only you can add to them'
-                  : 'Tags are public, anyone can add to them'
-            }
-         >
-            {personal ? 'Stacks' : 'Tags'}:
-         </h5>{' '}
+         {false && (
+            <h5
+               title={
+                  personal
+                     ? 'Stacks are personal, only you can add to them'
+                     : 'Tags are public, anyone can add to them'
+               }
+            >
+               {personal ? 'Stacks' : 'Tags'}:
+            </h5>
+         )}
          {taxElements}
       </StyledTaxes>
    );

@@ -30,7 +30,7 @@ import { stickifyBlock } from '../../../Stickifier/stickifier';
 import useMe from '../../Account/useMe';
 import { basicMemberFields } from '../../../lib/CardInterfaces';
 
-const FlexibleContentPiece = ({
+const ContentPiece = ({
    contentType,
    clickToShowComments,
    canEdit,
@@ -53,7 +53,7 @@ const FlexibleContentPiece = ({
    setTruncContExpanded
 }) => {
    const { loggedInUserID, memberFields } = useMe(
-      'FlexibleContentPiece',
+      'ContentPiece',
       basicMemberFields
    );
 
@@ -660,7 +660,7 @@ const FlexibleContentPiece = ({
    );
 };
 
-export default React.memo(FlexibleContentPiece, (prev, next) => {
+export default React.memo(ContentPiece, (prev, next) => {
    if (prev.clickToShowComments !== next.clickToShowComments) {
       return false;
    }

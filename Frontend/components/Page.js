@@ -13,7 +13,7 @@ import Modal from './Modal';
 import HeartPopUp from './HeartPopUp';
 import NavSidebar from './NavSidebar';
 import MyThings from './Archives/MyThings';
-import ThingsSubscriptionManager from '../thingStore/ThingsSubscriptionManager';
+import ThingsSubscriptionManager from '../stuffStore/ThingsSubscriptionManager';
 import GlobalStyle, { theme } from '../styles/globalStyle';
 
 const StyledPage = styled.div`

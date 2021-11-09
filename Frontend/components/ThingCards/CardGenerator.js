@@ -5,10 +5,10 @@ import FlexibleThingCard from './FlexibleThingCard';
 import Error from '../ErrorMessage';
 import LoadingRing from '../LoadingRing';
 import useMe from '../Account/useMe';
-import useThingyQuery from '../../thingStore/useThingyQuery';
+import useQueryAndStoreIt from '../../stuffStore/useQueryAndStoreIt';
 
 const CardGenerator = ({ id, cardType, borderSide }) => {
-   const { data, loading, error } = useThingyQuery(SINGLE_THING_QUERY, {
+   const { data, loading, error } = useQueryAndStoreIt(SINGLE_THING_QUERY, {
       variables: {
          id
       },

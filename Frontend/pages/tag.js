@@ -11,11 +11,15 @@ import Things from '../components/Archives/Things';
 import { taxFields } from '../lib/CardInterfaces';
 import { perPage } from '../config';
 import { setAlpha } from '../styles/functions';
-import { fullSizedLoadMoreButton } from '../styles/styleFragments';
+import {
+   fullSizedLoadMoreButton,
+   StyledThingsPage
+} from '../styles/styleFragments';
 import { useInfiniteScroll } from '../lib/ThingHandling';
 import LoadMoreButton from '../components/LoadMoreButton';
 import useMe from '../components/Account/useMe';
 import PlaceholderThings from '../components/PlaceholderThings';
+import useQueryAndStoreIt from '../stuffStore/useQueryAndStoreIt';
 
 const SINGLE_TAX_QUERY = gql`
    query SINGLE_TAX_QUERY($title: String! $personal: Boolean!, $cursor: String) {
@@ -28,20 +32,20 @@ const SINGLE_TAX_QUERY = gql`
 `;
 export { SINGLE_TAX_QUERY };
 
-const SINGLE_TAG_SUBSCRIPTION = gql`
-   subscription SINGLE_TAG_SUBSCRIPTION {
-      tag {
-         node {
-            ${taxFields}
-         }
-      }
-   }
-`;
+// const SINGLE_TAG_SUBSCRIPTION = gql`
+//    subscription SINGLE_TAG_SUBSCRIPTION {
+//       tag {
+//          node {
+//             ${taxFields}
+//          }
+//       }
+//    }
+// `;
 
 const StyledTaxContent = styled.section`
    h2 {
       text-align: center;
-      margin: 0 auto 3rem;
+      margin: 3rem auto;
       font-weight: 600;
       font-size: ${props => props.theme.smallHead};
    }
@@ -67,6 +71,7 @@ const StyledTagPage = styled.section`
          ${props => props.theme.scroll};
       }
       ${fullSizedLoadMoreButton}
+      ${StyledThingsPage}
    }
    .sidebar {
       width: 100%;
@@ -85,8 +90,8 @@ const StyledTagPage = styled.section`
 const TagContext = React.createContext();
 export { TagContext };
 
-const tag = ({ query: { id, title } }) => {
-   const { loading, error, data, fetchMore } = useThingyQuery(
+const tag = ({ query: { title } }) => {
+   const { loading, error, data, fetchMore } = useQueryAndStoreIt(
       SINGLE_TAX_QUERY,
       {
          variables: {
@@ -129,13 +134,6 @@ const tag = ({ query: { id, title } }) => {
       }
    }
 
-   const {
-      data: subscriptionData,
-      loading: subscriptionLoading
-   } = useSubscription(SINGLE_TAG_SUBSCRIPTION, {
-      variables: { id }
-   });
-
    const displayProps = {
       cardSize: 'regular'
    };
@@ -154,7 +152,8 @@ const tag = ({ query: { id, title } }) => {
    } else if (data) {
       if (data.taxByTitle != null) {
          pageTitle = data.taxByTitle.title;
-         const sortedThings = data.taxByTitle.connectedThings.sort((a, b) => {
+         const dataCopy = JSON.parse(JSON.stringify(data.taxByTitle));
+         const sortedThings = dataCopy.connectedThings.sort((a, b) => {
             const aDate = new Date(a.createdAt);
             const bDate = new Date(b.createdAt);
             return bDate - aDate;
@@ -163,7 +162,7 @@ const tag = ({ query: { id, title } }) => {
          cursorRef.current = lastThing.createdAt;
          content = (
             <StyledTaxContent className="content">
-               <h2>Tag: {title}</h2>
+               <h2># {data.taxByTitle.title}</h2>
                <Things
                   things={sortedThings}
                   displayType="list"
@@ -173,7 +172,7 @@ const tag = ({ query: { id, title } }) => {
                />
             </StyledTaxContent>
          );
-         sidebar = <TaxSidebar context={TagContext} canEdit={canEdit} />;
+         sidebar = <TaxSidebar id={data.taxByTitle.id} canEdit={canEdit} />;
       } else {
          pageTitle = "Couldn't find tag";
          content = <p>Tag not found.</p>;
@@ -181,24 +180,22 @@ const tag = ({ query: { id, title } }) => {
    }
 
    return (
-      <TagContext.Provider value={loading || error || data.taxByTitle}>
-         <StyledTagPage className="styledTagPage">
-            <Head>
-               <title>{pageTitle} - Ouryou</title>
-            </Head>
-            <div className="tagContent">
-               {content}
-               {data && (
-                  <LoadMoreButton
-                     loading={loading || isFetchingMore}
-                     noMore={noMoreToFetchRef.current}
-                     fetchMore={fetchMoreHandler}
-                  />
-               )}
-            </div>
-            <div className="sidebar">{sidebar}</div>
-         </StyledTagPage>
-      </TagContext.Provider>
+      <StyledTagPage className="styledTagPage">
+         <Head>
+            <title>{pageTitle} - Ouryou</title>
+         </Head>
+         <div className="tagContent">
+            {content}
+            {data && (
+               <LoadMoreButton
+                  loading={loading || isFetchingMore}
+                  noMore={noMoreToFetchRef.current}
+                  fetchMore={fetchMoreHandler}
+               />
+            )}
+         </div>
+         <div className="sidebar">{sidebar}</div>
+      </StyledTagPage>
    );
 };
 tag.propTypes = {

@@ -11,7 +11,7 @@ import { home } from '../config';
 import FlexibleThingCard from '../components/ThingCards/FlexibleThingCard';
 import useMe from '../components/Account/useMe';
 import PlaceholderThings from '../components/PlaceholderThings';
-import useThingyQuery from '../thingStore/useThingyQuery';
+import useQueryAndStoreIt from '../stuffStore/useQueryAndStoreIt';
 
 const SINGLE_THING_QUERY = gql`
    query SINGLE_THING_QUERY($id: ID!) {
@@ -61,7 +61,7 @@ const StyledSingleThing = styled.section`
 `;
 
 const SingleThing = ({ query }) => {
-   const { loading, error, data } = useThingyQuery(SINGLE_THING_QUERY, {
+   const { loading, error, data } = useQueryAndStoreIt(SINGLE_THING_QUERY, {
       variables: { id: query.id },
       skip: query.id === 'new'
    });

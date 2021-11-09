@@ -72,7 +72,7 @@ const ContentPieceButtons = ({
    contentContainerRef,
    postContent
 }) => {
-   const thingData = useSelector(state => state.things[thingID]);
+   const thingData = useSelector(state => state.stuff[`Thing:${thingID}`]);
 
    const [copied, setCopied] = useState(false);
 

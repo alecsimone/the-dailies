@@ -61,6 +61,11 @@ const SEARCH_TAX_QUERY = gql`
 
 const StyledTaxInput = styled.div`
    position: relative;
+   input {
+      width: 10rem;
+      min-width: 10rem;
+      max-width: 40rem;
+   }
    .resultsContainer {
       position: absolute;
       z-index: 2;
@@ -274,8 +279,8 @@ const TaxInput = ({ id, tags, stacks, personal, thingData, containerRef }) => {
          title = newTaxObj.title;
       }
 
-      const newTags = tags;
-      const newStacks = stacks;
+      const newTags = JSON.parse(JSON.stringify(tags));
+      // const newStacks = JSON.parse(JSON.stringify(stacks));
       // If the title has a comma in it, we have multiple tags here. That doesn't matter for the actual mutation because it'll get parsed properly on the backend, but it will affect our optimistic response
       if (title.includes(',')) {
          const titleArray = title.split(',');
@@ -286,11 +291,11 @@ const TaxInput = ({ id, tags, stacks, personal, thingData, containerRef }) => {
             objectToAdd.id = newTaxObj.id == null ? 'unknownID' : newTaxObj.id;
             objectToAdd.author =
                newTaxObj.author == null ? memberFields : newTaxObj.author;
-            if (personal) {
-               newStacks.push(objectToAdd);
-            } else {
-               newTags.push(objectToAdd);
-            }
+            // if (personal) {
+            // newStacks.push(objectToAdd);
+            // } else {
+            newTags.push(objectToAdd);
+            // }
          });
       } else {
          newTaxObj.__typename = personal ? 'Stack' : 'Tag';
@@ -302,11 +307,11 @@ const TaxInput = ({ id, tags, stacks, personal, thingData, containerRef }) => {
             newTaxObj.author = memberFields;
          }
 
-         if (personal) {
-            newStacks.push(newTaxObj);
-         } else {
-            newTags.push(newTaxObj);
-         }
+         // if (personal) {
+         // newStacks.push(newTaxObj);
+         // } else {
+         newTags.push(newTaxObj);
+         // }
       }
       window.setTimeout(() => setTaxInput(''), 1); // We need this setTaxInput to hit after the handleTaxInput hits, so we set a timeout
 
@@ -317,11 +322,11 @@ const TaxInput = ({ id, tags, stacks, personal, thingData, containerRef }) => {
                fullThing => thingID === fullThing.id
             );
             const copiedThing = { ...thisThing };
-            if (personal) {
-               copiedThings.partOfStacks = newStacks;
-            } else {
-               copiedThing.partOfTags = newTags;
-            }
+            // if (personal) {
+            // copiedThing.partOfStacks = newStacks;
+            // } else {
+            copiedThing.partOfTags = newTags;
+            // }
             responseData.push(copiedThing);
          });
 
@@ -343,11 +348,11 @@ const TaxInput = ({ id, tags, stacks, personal, thingData, containerRef }) => {
             __typename: 'Thing',
             id
          };
-         if (personal) {
-            responseData.partOfStacks = newStacks;
-         } else {
-            responseData.partOfTags = newTags;
-         }
+         // if (personal) {
+         // responseData.partOfStacks = newStacks;
+         // } else {
+         responseData.partOfTags = newTags;
+         // }
          await addTaxToThing({
             variables: {
                tax: title,
@@ -364,10 +369,14 @@ const TaxInput = ({ id, tags, stacks, personal, thingData, containerRef }) => {
       }
    };
 
-   let placeholder = personal ? '+ Add Stack' : '+ Add Tag';
+   let placeholder = 'add tag';
    if (Array.isArray(id)) {
       placeholder += ' To All Things';
    }
+
+   const resizeInput = e => {
+      e.target.style.width = `${e.target.value.length + 1}ch`;
+   };
 
    return (
       <StyledTaxInput className="taxboxContainer">
@@ -383,6 +392,10 @@ const TaxInput = ({ id, tags, stacks, personal, thingData, containerRef }) => {
                   onKeyDown: e => {
                      e.persist();
                      handleKeyDown(e);
+                  },
+                  onKeyUp: e => {
+                     e.persist();
+                     resizeInput(e);
                   }
                })}
             />

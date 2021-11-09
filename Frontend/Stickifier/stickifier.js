@@ -89,8 +89,8 @@ const stickifyButtons = (
       buttons.style.position = 'fixed';
 
       const grandParentThing = blockObj.block
-         .closest('.flexibleThingCard')
-         .parentElement.closest('.flexibleThingCard');
+         .closest('.flexibleThingCard, .taxSidebar')
+         .parentElement.closest('.flexibleThingCard, .taxSidebar');
       if (grandParentThing != null) {
          const offsetMarginLeft = getIntPxFromStyleString(
             offsetStyle.marginLeft
@@ -416,6 +416,9 @@ const makeBlockPositionObject = (block, stickingData) => {
 };
 
 const stickifyBlock = block => {
+   // We haven't worked out stickifier for tax sidebars yet, so let's just skip those for now
+   if (block.closest('.taxSidebar') != null) return;
+
    // First we're going to collect some data about the block that we'll need throughout the stickifying process
    const stickingData = makeStickingData(block);
 
@@ -424,6 +427,7 @@ const stickifyBlock = block => {
    if (blockObj == null) return;
 
    const scroller = getScrollingParent(block);
+   if (scroller == null) return; // Not sure why this is happening sometimes, but we can't go on if we don't find a scroller.
 
    // Now we need to figure out where the viewport is
    const {

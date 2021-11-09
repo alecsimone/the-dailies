@@ -21,33 +21,37 @@ import ArrowIcon from '../../Icons/Arrow';
 import X from '../../Icons/X';
 import LoadingRing from '../../LoadingRing';
 import RichTextArea from '../../RichTextArea';
-import FlexibleContentPiece from './FlexibleContentPiece';
+import ContentPiece from './ContentPiece';
 
-const useFlexibleContentData = thingID => {
-   const flexibleContentData = {};
-   flexibleContentData.content = useSelector(
-      state => state.things[thingID].content
+const useContentData = (thingID, type) => {
+   const contentData = {};
+   contentData.content = useSelector(
+      state => state.stuff[`${type}:${thingID}`].content
    );
-   flexibleContentData.contentOrder = useSelector(
-      state => state.things[thingID].contentOrder
+   contentData.contentOrder = useSelector(
+      state => state.stuff[`${type}:${thingID}`].contentOrder
    );
-   flexibleContentData.copiedInContent = useSelector(
-      state => state.things[thingID].copiedInContent
+   if (type === 'Thing') {
+      contentData.copiedInContent = useSelector(
+         state => state.stuff[`${type}:${thingID}`].copiedInContent
+      );
+   } else {
+      contentData.copiedInContent = [];
+   }
+   contentData.unsavedNewContent = useSelector(
+      state => state.stuff[`${type}:${thingID}`].unsavedNewContent
    );
-   flexibleContentData.unsavedNewContent = useSelector(
-      state => state.things[thingID].unsavedNewContent
-   );
-   return flexibleContentData;
+   return contentData;
 };
 
-const FlexibleContent = ({ contentType, canEdit, linkedPiece, thingID }) => {
+const Content = ({ contentType, canEdit, linkedPiece, thingID, type }) => {
    // console.log(`content render`);
    const {
       content,
       copiedInContent,
       contentOrder,
       unsavedNewContent
-   } = useFlexibleContentData(thingID);
+   } = useContentData(thingID, type);
    // First we'll set up our mutation hooks
    const [storeUnsavedThingChanges] = useMutation(
       STORE_UNSAVED_CONTENT_MUTATION,
@@ -208,7 +212,7 @@ const FlexibleContent = ({ contentType, canEdit, linkedPiece, thingID }) => {
                   key={contentPiece.id}
                   className={reordering ? 'reordering' : 'locked'}
                >
-                  <FlexibleContentPiece
+                  <ContentPiece
                      key={`${thingID}-${contentPiece.id}-${
                         clickToShowComments ? 'cts' : 'ncts'
                      }`}
@@ -249,7 +253,7 @@ const FlexibleContent = ({ contentType, canEdit, linkedPiece, thingID }) => {
                   key={currentContentPiece.id}
                   className={reordering ? 'reordering' : 'locked'}
                >
-                  <FlexibleContentPiece
+                  <ContentPiece
                      key={`${thingID}-${currentContentPiece.id}-${
                         clickToShowComments ? 'cts' : 'ncts'
                      }`}
@@ -441,4 +445,4 @@ const FlexibleContent = ({ contentType, canEdit, linkedPiece, thingID }) => {
    );
 };
 
-export default React.memo(FlexibleContent);
+export default React.memo(Content);

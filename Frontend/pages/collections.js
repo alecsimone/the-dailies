@@ -12,7 +12,7 @@ import { StyledNoCollections } from '../components/Collections/styles';
 import Collections from '../components/Collections/Collections';
 import { sortByUpdatedTime } from '../components/Collections/cardHandling';
 import useMe from '../components/Account/useMe';
-import useThingyQuery from '../thingStore/useThingyQuery';
+import useQueryAndStoreIt from '../thingStore/useQueryAndStoreIt';
 
 const CollectionsThingsContext = React.createContext();
 export { CollectionsThingsContext };
@@ -33,7 +33,7 @@ const CollectionsPage = ({ query }) => {
       loading: loadingThings,
       error: thingsError,
       fetchMore: fetchMoreThings
-   } = useThingyQuery(MY_BIG_THINGS_QUERY, {
+   } = useQueryAndStoreIt(MY_BIG_THINGS_QUERY, {
       variables: {
          forCollection: '1'
       },

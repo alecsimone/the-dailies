@@ -3,7 +3,7 @@ import { ApolloProvider } from '@apollo/react-hooks';
 import { Provider } from 'react-redux';
 import Page from '../components/Page';
 import apolloCreator from '../lib/apolloCreator';
-import thingStore from '../thingStore/configureStore';
+import stuffStore from '../stuffStore/configureStore';
 
 if (process.browser) {
    if (
@@ -31,7 +31,7 @@ class MyApp extends App {
 
       return (
          <ApolloProvider client={apollo}>
-            <Provider store={thingStore}>
+            <Provider store={stuffStore}>
                <Page pageProps={pageProps}>
                   <Component {...pageProps} prefetchedData={apolloState.data} />
                </Page>

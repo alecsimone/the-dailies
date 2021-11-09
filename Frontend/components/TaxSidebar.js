@@ -1,29 +1,38 @@
-import { useContext } from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import FeaturedImage from './ThingParts/FeaturedImage';
-import StuffSummary from './ThingParts/StuffSummary';
+import styled, { ThemeContext } from 'styled-components';
+import { useSelector } from 'react-redux';
+import { useContext } from 'react';
 import TaxMeta from './TaxMeta';
+import TitleBar from './ThingParts/TitleBar';
+import FeaturedImage from './ThingParts/FeaturedImage';
+import Content from './ThingParts/Content/Content';
 import Comments from './ThingParts/Comments';
-import { setAlpha } from '../styles/functions';
 
 const StyledTaxSidebar = styled.div`
    padding: 2rem;
-   .content .contentSectionWrapper .contentBlock {
-      padding: 1rem 0 0 0;
-      .contentArea {
-         padding: 0 1.5rem;
-      }
-      .newcontentButtons {
-         margin-left: 0;
-         .buttonsContainer {
-            .buttonWrapper {
-               &:last-child {
-                  border-right: none;
+   .content {
+      padding: 0;
+      .contentSectionWrapper .contentBlock.clickToShowComments {
+         padding: 1rem 0 0 0;
+         .contentArea {
+            padding: 0 1.5rem;
+         }
+         .newcontentButtons {
+            width: 100%;
+            margin-left: 0;
+            .buttonsContainer {
+               .buttonWrapper {
+                  &:last-child {
+                     border-right: none;
+                  }
                }
             }
          }
       }
+   }
+   .commentsSection {
+      border: none;
+      padding: 0;
    }
    ${props => props.theme.midScreenBreakpoint} {
       .contentSectionWrapper {
@@ -61,19 +70,28 @@ const StyledTaxSidebar = styled.div`
    }
 `;
 
-const TaxSidebar = ({ context, canEdit }) => {
-   const { title, id, summary } = useContext(context);
+const TaxSidebar = ({ id, canEdit }) => {
+   const color = useSelector(state => state.stuff[`Tag:${id}`].color);
+
+   const { lowContrastGrey } = useContext(ThemeContext);
+
+   const highlightColor = color != null ? color : lowContrastGrey;
 
    return (
-      <StyledTaxSidebar>
-         <TaxMeta context={context} key={`${title}-Meta`} canEdit={canEdit} />
-         <StuffSummary
-            summary={summary}
-            stuffID={id}
-            key={`${id}-Summary`}
+      <StyledTaxSidebar
+         className="taxSidebar"
+         style={{ borderTop: `0.5rem solid ${highlightColor}` }}
+      >
+         <TitleBar canEdit={canEdit} type="Tag" id={id} showingScore={false} />
+         <FeaturedImage canEdit={canEdit} id={id} type="Tag" />
+         <TaxMeta id={id} key={`Tag:${id}-Meta`} canEdit={canEdit} />
+         <Content
+            contentType="full"
             canEdit={canEdit}
+            thingID={id}
             type="Tag"
          />
+         <Comments id={id} type="Tag" />
       </StyledTaxSidebar>
    );
 };

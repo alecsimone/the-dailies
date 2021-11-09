@@ -52,13 +52,13 @@ const REMOVE_VIEWER_FROM_THING_MUTATION = gql`
    }
 `;
 
-const usePrivacyInterfaceData = thingID => {
+const usePrivacyInterfaceData = (thingID, type) => {
    const privacyInterfaceData = {};
    privacyInterfaceData.privacy = useSelector(
-      state => state.things[thingID].privacy
+      state => state.stuff[`${type}:${thingID}`].privacy
    );
    privacyInterfaceData.individualViewPermissions = useSelector(
-      state => state.things[thingID].individualViewPermissions
+      state => state.stuff[`${type}:${thingID}`].individualViewPermissions
    );
    return privacyInterfaceData;
 };
@@ -161,8 +161,11 @@ const debouncedMemberSearch = debounce(
    true
 );
 
-const PrivacyInterface = ({ canEdit, id }) => {
-   const { privacy, individualViewPermissions } = usePrivacyInterfaceData(id);
+const PrivacyInterface = ({ canEdit, id, type }) => {
+   const { privacy, individualViewPermissions } = usePrivacyInterfaceData(
+      id,
+      type
+   );
    const { loggedInUserID } = useMe();
 
    const [addingPeople, setAddingPeople] = useState(false);

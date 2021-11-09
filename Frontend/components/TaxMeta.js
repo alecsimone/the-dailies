@@ -1,9 +1,10 @@
 import gql from 'graphql-tag';
-import styled from 'styled-components';
-import { useContext } from 'react';
+import styled, { ThemeContext } from 'styled-components';
+import { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useMutation } from '@apollo/react-hooks';
 import Router from 'next/router';
+import { useSelector } from 'react-redux';
 import TrashIcon from './Icons/Trash';
 import ColorSelector from './ThingParts/ColorSelector';
 
@@ -26,9 +27,16 @@ const StyledTaxMeta = styled.div`
    font-size: ${props => props.theme.tinyText};
    display: flex;
    justify-content: space-between;
+   flex-wrap: wrap;
    .right {
       display: flex;
       align-items: center;
+      button.colors {
+         width: ${props => props.theme.bigText};
+         height: 100%;
+         border-radius: 50%;
+         border: none;
+      }
       svg.trash {
          height: ${props => props.theme.bigText};
          width: auto;
@@ -39,15 +47,28 @@ const StyledTaxMeta = styled.div`
          }
       }
    }
+   .colorSelector {
+      margin-top: 1rem;
+      width: 100%;
+   }
 `;
 
-const TaxMeta = ({ context, canEdit }) => {
-   const { __typename: type, author, id, color } = useContext(context);
+const TaxMeta = ({ id, canEdit }) => {
+   const authorName = useSelector(
+      state => state.stuff[`Tag:${id}`].author.displayName
+   );
+   const color = useSelector(state => state.stuff[`Tag:${id}`].color);
+
+   const { lowContrastGrey } = useContext(ThemeContext);
+
+   const highlightColor = color != null ? color : lowContrastGrey;
+
+   const [showingColorSelector, setShowingColorSelector] = useState(false);
 
    const [deleteTax] = useMutation(DELETE_TAG_MUTATION, {
       variables: {
          id,
-         personal: type === 'Stack'
+         personal: false
       },
       onCompleted: () => Router.push({ pathname: '/' }),
       onError: err => alert(err.message)
@@ -55,9 +76,18 @@ const TaxMeta = ({ context, canEdit }) => {
 
    return (
       <StyledTaxMeta>
-         {author && `Created by ${author.displayName}`}
+         Created by {authorName}
          {canEdit && (
             <div className="right">
+               <button
+                  className="colors"
+                  style={{ background: highlightColor }}
+                  onClick={() => {
+                     if (!canEdit) return;
+                     setShowingColorSelector(!showingColorSelector);
+                  }}
+                  title="Set Color"
+               />
                <TrashIcon
                   className="trash"
                   onClick={e => {
@@ -71,6 +101,11 @@ const TaxMeta = ({ context, canEdit }) => {
                      }
                   }}
                />
+            </div>
+         )}
+         {canEdit && showingColorSelector && (
+            <div className="colorSelector">
+               <ColorSelector type="Tag" id={id} />
             </div>
          )}
       </StyledTaxMeta>

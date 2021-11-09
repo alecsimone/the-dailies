@@ -4,8 +4,10 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import Avatar from '../Avatar';
 
-const AuthorLink = ({ thingID, noPic }) => {
-   const author = useSelector(state => state.things[thingID].author);
+const AuthorLink = ({ thingID, type, noPic }) => {
+   const author = useSelector(
+      state => state.stuff[`${type}:${thingID}`].author
+   );
    return (
       <Link href={{ pathname: '/member', query: { id: author.id } }}>
          <a>

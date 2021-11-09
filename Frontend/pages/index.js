@@ -8,10 +8,13 @@ import Things from '../components/Archives/Things';
 import MyThings from '../components/Archives/MyThings';
 import LoadMoreButton from '../components/LoadMoreButton';
 import { useInfiniteScroll, ALL_THINGS_QUERY } from '../lib/ThingHandling';
-import { fullSizedLoadMoreButton } from '../styles/styleFragments';
+import {
+   fullSizedLoadMoreButton,
+   StyledThingsPage
+} from '../styles/styleFragments';
 import { ModalContext } from '../components/ModalProvider';
 import PlaceholderThings from '../components/PlaceholderThings';
-import useThingyQuery from '../thingStore/useThingyQuery';
+import useQueryAndStoreIt from '../thingStore/useQueryAndStoreIt';
 
 const StyledHomepage = styled.section`
    display: flex;
@@ -24,37 +27,7 @@ const StyledHomepage = styled.section`
       padding: 2rem 0;
       overflow: hidden;
       ${props => props.theme.scroll};
-      .things .flexibleThingCard {
-         margin: 0 auto 2rem;
-         max-width: 100%;
-         ${props => props.theme.mobileBreakpoint} {
-            max-width: min(1200px, calc(100% - 1rem));
-            margin-bottom: 4rem;
-         }
-         header.flexibleThingHeader .headerTop .headerRight .titleWrapper {
-            a,
-            a:visited {
-               font-size: ${props => props.theme.bigText};
-            }
-         }
-         .contentSectionWrapper .locked .contentBlock.clickToShowComments {
-            .newcontentButtons.showingComments {
-               ${props => props.theme.mobileBreakpoint} {
-                  margin-left: -3rem;
-               }
-            }
-            .flexibleThingCard
-               .contentSectionWrapper
-               .locked
-               .contentBlock.clickToShowComments
-               .newcontentButtons.showingComments {
-               margin-left: 0; /* For things within things, we don't want to give the newcontent buttons a negative margin left when showing comments */
-            }
-         }
-         .flexibleThingCard {
-            margin: 2rem 0;
-         }
-      }
+      ${StyledThingsPage}
       ${props => props.theme.desktopBreakpoint} {
          padding: 3rem 8rem;
       }
@@ -83,7 +56,7 @@ const StyledHomepage = styled.section`
 const allThingsQueryCount = 2;
 
 const Home = () => {
-   const { data, loading, error, fetchMore } = useThingyQuery(
+   const { data, loading, error, fetchMore } = useQueryAndStoreIt(
       ALL_THINGS_QUERY,
       {
          ssr: false,

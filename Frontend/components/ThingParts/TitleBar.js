@@ -31,10 +31,14 @@ const SET_TITLE_MUTATION = gql`
 `;
 export { SET_TITLE_MUTATION };
 
-const useTitleBarData = thingID => {
+const useTitleBarData = (thingID, type) => {
    const titleBarData = {};
-   titleBarData.title = useSelector(state => state.things[thingID].title);
-   titleBarData.score = useSelector(state => state.things[thingID].score);
+   titleBarData.title = useSelector(
+      state => state.stuff[`${type}:${thingID}`].title
+   );
+   titleBarData.score = useSelector(
+      state => state.stuff[`${type}:${thingID}`].score
+   );
    return titleBarData;
 };
 
@@ -77,7 +81,7 @@ const StyledTitleBar = styled.div`
 `;
 
 const TitleBar = ({ limit, canEdit = true, type, id, showingScore }) => {
-   const { title, score } = useTitleBarData(id);
+   const { title, score } = useTitleBarData(id, type);
 
    const [editedTitle, setEditedTitleState] = useState(title);
    const editedTitleRef = useRef(editedTitle);
@@ -94,16 +98,6 @@ const TitleBar = ({ limit, canEdit = true, type, id, showingScore }) => {
    /* eslint-enable */
 
    const [setStuffTitle] = useMutation(SET_TITLE_MUTATION, {
-      onCompleted: data => {
-         checkForNewThingRedirect(id, 'setStuffTitle', data);
-         if (type === 'Tag' || type === 'Stack') {
-            const href = `/${type.toLowerCase()}?title=${
-               data.setStuffTitle.title
-            }`;
-            const as = href;
-            Router.replace(href, as, { shallow: true });
-         }
-      },
       onError: err => alert(err.message)
    });
 
