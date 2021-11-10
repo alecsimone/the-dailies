@@ -55,10 +55,16 @@ const StyledTaxSidebar = styled.div`
                      }
                   }
                }
-               .commentsWrapper {
-                  width: 100%;
-                  .commentsArea {
-                     padding: 0;
+               &.cts {
+                  .commentsWrapper {
+                     width: 100%;
+                     .commentsArea {
+                        padding: 0;
+                        width: 100%;
+                        .richTextArea {
+                           margin-top: 0;
+                        }
+                     }
                   }
                }
             }
@@ -88,7 +94,7 @@ const TaxSidebar = ({ id, canEdit }) => {
          <Content
             contentType="full"
             canEdit={canEdit}
-            thingID={id}
+            stuffID={id}
             type="Tag"
          />
          <Comments id={id} type="Tag" />

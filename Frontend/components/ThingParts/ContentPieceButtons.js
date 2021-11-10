@@ -57,7 +57,8 @@ const ContentPieceButtons = ({
    clickToShowComments,
    showingComments,
    setShowingComments,
-   thingID,
+   stuffID,
+   stuffType,
    pieceID,
    voters,
    isCopied,
@@ -72,7 +73,9 @@ const ContentPieceButtons = ({
    contentContainerRef,
    postContent
 }) => {
-   const thingData = useSelector(state => state.stuff[`Thing:${thingID}`]);
+   const stuffData = useSelector(
+      state => state.stuff[`${stuffType}:${stuffID}`]
+   );
 
    const [copied, setCopied] = useState(false);
 
@@ -126,7 +129,7 @@ const ContentPieceButtons = ({
             className="buttonWrapper"
             onClick={async () => {
                await navigator.clipboard
-                  .writeText(`${home}/thing?id=${thingID}&piece=${pieceID}`)
+                  .writeText(`${home}/thing?id=${stuffID}&piece=${pieceID}`)
                   .catch(err => {
                      alert(err.message);
                   });
@@ -145,7 +148,7 @@ const ContentPieceButtons = ({
                   commentCount > 0 &&
                   process.browser &&
                   window.innerWidth > midScreenBPWidthRaw &&
-                  thingData.__typename !== 'Tag' &&
+                  stuffData.__typename !== 'Tag' &&
                   !hasShownComments &&
                   !clickToShowComments
                ) {
@@ -175,7 +178,7 @@ const ContentPieceButtons = ({
          <div className="buttonWrapper votebarWrapper">
             <VoteBar
                id={pieceID}
-               thingID={thingID}
+               thingID={stuffID}
                key={`votebar-${pieceID}`}
                type="ContentPiece"
                votes={voters}
@@ -205,16 +208,16 @@ const ContentPieceButtons = ({
                      const unlinkParameterObject = {
                         variables: {
                            contentPieceID: pieceID,
-                           thingID
+                           thingID: stuffID
                         }
                      };
-                     if (thingData.__typename === 'Thing') {
-                        const oldCopiedContent = thingData.copiedInContent;
+                     if (stuffData.__typename === 'Thing') {
+                        const oldCopiedContent = stuffData.copiedInContent;
                         const newCopiedContent = oldCopiedContent.filter(
                            piece => piece.id !== pieceID
                         );
                         const newThingData = {
-                           ...thingData,
+                           ...stuffData,
                            copiedInContent: newCopiedContent
                         };
                         unlinkParameterObject.optimisticResponse = {
@@ -260,7 +263,7 @@ const ContentPieceButtons = ({
                   {showingAddToBox && (
                      <CopyContentInterface
                         id={pieceID}
-                        thingID={thingID}
+                        thingID={stuffID}
                         setShowingAddToBox={setShowingAddToBox}
                      />
                   )}

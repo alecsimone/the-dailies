@@ -546,24 +546,42 @@ async function sendNotification(notification, ctx) {
                      id: notification.linkQuery
                   }
                },
-               `{onThing {id}}`
+               `{onThing {id} onTag {id}}`
             )
             .catch(err => {
                console.log(err);
             });
-         const theContainingThing = await ctx.db.query
-            .thing(
-               {
-                  where: {
-                     id: theContentPiece.onThing.id
-                  }
-               },
-               `{author {id}}`
-            )
-            .catch(err => {
-               console.log(err);
-            });
-         notification.recipient = theContainingThing.author.id;
+         let recipient;
+         if (theContentPiece.onThing != null) {
+            const theContainingThing = await ctx.db.query
+               .thing(
+                  {
+                     where: {
+                        id: theContentPiece.onThing.id
+                     }
+                  },
+                  `{author {id}}`
+               )
+               .catch(err => {
+                  console.log(err);
+               });
+            recipient = theContainingThing.author.id;
+         } else if (theContentPiece.onTag != null) {
+            const theContainingTag = await ctx.db.query
+               .tag(
+                  {
+                     where: {
+                        id: theContentPiece.onTag.id
+                     }
+                  },
+                  `{author {id}}`
+               )
+               .catch(err => {
+                  console.log(err);
+               });
+            recipient = theContainingTag.author.id;
+         }
+         notification.recipient = recipient;
       } else {
          notification.recipient = theThing.author.id;
       }

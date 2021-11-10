@@ -261,10 +261,12 @@ const Comment = ({
          return;
       }
 
-      const indexOfEditedComment = comments.findIndex(
+      const commentsCopy = JSON.parse(JSON.stringify(comments));
+
+      const indexOfEditedComment = commentsCopy.findIndex(
          currentComment => currentComment.id === comment.id
       );
-      comments[indexOfEditedComment].comment = editedComment;
+      commentsCopy[indexOfEditedComment].comment = editedComment;
 
       setEditing(false);
       await editComment({
@@ -279,7 +281,7 @@ const Comment = ({
             editComment: {
                __typename: type,
                id,
-               comments
+               comments: commentsCopy
             }
          }
       }).catch(err => {
@@ -481,7 +483,7 @@ const Comment = ({
       >
          <div className="commentContent">
             <div className="commentLeft">
-               {authorAvatar}
+               {!editing && authorAvatar}
                <div className="commentAndAuthorContainer">
                   {!editing && authorLink}
                   {!editing ? (

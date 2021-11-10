@@ -441,7 +441,7 @@ const FlexibleThingCard = ({
    }
 
    const [expansion, setExpansion] = useState({
-      content: expanded && hasContent,
+      content: expanded && (canEdit || hasContent),
       taxes: expanded && hasTags,
       comments: expanded && commentCount > 0,
       privacy: false,
@@ -781,7 +781,7 @@ const FlexibleThingCard = ({
                      canEdit={canEdit}
                      expanded={expanded}
                      linkedPiece={linkedPiece}
-                     thingID={thingID}
+                     stuffID={thingID}
                      type="Thing"
                   />
                )}

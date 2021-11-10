@@ -91,7 +91,7 @@ function createClient({ headers, initialState }) {
             if (networkError)
                console.log(`[Network error]: ${networkError}`, networkError);
          }),
-         new DebounceLink(2000), // Any mutation or query which gets a debounceKey in the context property of its useMutation or useQuery hook (note: has to be in the hook, not in a mutation function) will be debounced for the length in ms of the argument of the DebounceLink() function
+         new DebounceLink(1000), // Any mutation or query which gets a debounceKey in the context property of its useMutation or useQuery hook (note: has to be in the hook, not in a mutation function) will be debounced for the length in ms of the argument of the DebounceLink() function
          requestLink,
          link
       ]),

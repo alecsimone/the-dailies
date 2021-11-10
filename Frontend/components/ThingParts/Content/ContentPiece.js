@@ -35,7 +35,8 @@ const ContentPiece = ({
    clickToShowComments,
    canEdit,
    pieceID,
-   thingID,
+   stuffID,
+   stuffType,
    votes,
    unsavedContent,
    comments = [],
@@ -112,7 +113,7 @@ const ContentPiece = ({
       {
          variables: {
             pieceId: pieceID,
-            thingId: thingID
+            thingId: stuffID
          },
          onError: err => alert(err.message)
       }
@@ -198,7 +199,7 @@ const ContentPiece = ({
                const query = SINGLE_THING_QUERY;
                const oldData = client.readQuery({
                   query,
-                  variables: { id: thingID }
+                  variables: { id: stuffID }
                });
                const thisContentPieceIndex = oldData.thing.content.findIndex(
                   piece => piece.id === data.addComment.id
@@ -207,7 +208,7 @@ const ContentPiece = ({
                   data.addComment.comments;
                client.writeQuery({
                   query,
-                  variables: { id: thingID },
+                  variables: { id: stuffID },
                   data: oldData
                });
             }
@@ -220,7 +221,7 @@ const ContentPiece = ({
    };
 
    const unsavedChangesHandler = async e => {
-      let originalThingId = thingID;
+      let originalThingId = stuffID;
       if (onThing != null && onThing.id != null) {
          originalThingId = onThing.id;
       }
@@ -334,7 +335,7 @@ const ContentPiece = ({
    let otherLocations = false;
    let copiedFrom;
    let alsoFoundIn;
-   if (isCopied && onThing != null && onThing.id !== thingID) {
+   if (isCopied && onThing != null && onThing.id !== stuffID) {
       copiedFrom = (
          <div>
             Copied from{' '}
@@ -352,7 +353,7 @@ const ContentPiece = ({
    }
    if (copiedToThings != null && copiedToThings.length > 0) {
       const otherThingsArray = copiedToThings.filter(
-         thing => thing.id !== thingID
+         thing => thing.id !== stuffID
       );
       if (otherThingsArray.length > 0) {
          const otherPlaces = otherThingsArray.map(thing => (
@@ -640,7 +641,8 @@ const ContentPiece = ({
                clickToShowComments={clickToShowComments}
                showingComments={showingComments}
                setShowingComments={setShowingComments}
-               thingID={thingID}
+               stuffID={stuffID}
+               stuffType={stuffType}
                pieceID={pieceID}
                voters={voters}
                isCopied={isCopied}

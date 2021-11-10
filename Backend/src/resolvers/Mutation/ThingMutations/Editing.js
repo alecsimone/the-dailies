@@ -297,6 +297,8 @@ async function deleteContentPiece(
    });
    fullMemberGate(ctx.req.member);
 
+   console.log(type, id);
+
    const {contentOrder: oldContentOrder} = await ctx.db.query[type.toLowerCase()](
       {
          where: {
@@ -570,7 +572,6 @@ async function setPublicity(parent, {public, id, type}, ctx, info) {
 exports.setPublicity = setPublicity;
 
 async function addComment(parent, {comment, id, type, replyToID}, ctx, info) {
-   console.log("Hello, I would like to add a comment, please");
    await loggedInGate(ctx).catch(() => {
       throw new AuthenticationError('You must be logged in to do that!');
    });

@@ -12,7 +12,7 @@ import { StyledNoCollections } from '../components/Collections/styles';
 import Collections from '../components/Collections/Collections';
 import { sortByUpdatedTime } from '../components/Collections/cardHandling';
 import useMe from '../components/Account/useMe';
-import useQueryAndStoreIt from '../thingStore/useQueryAndStoreIt';
+import useQueryAndStoreIt from '../stuffStore/useQueryAndStoreIt';
 
 const CollectionsThingsContext = React.createContext();
 export { CollectionsThingsContext };

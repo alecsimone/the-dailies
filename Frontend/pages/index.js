@@ -14,7 +14,7 @@ import {
 } from '../styles/styleFragments';
 import { ModalContext } from '../components/ModalProvider';
 import PlaceholderThings from '../components/PlaceholderThings';
-import useQueryAndStoreIt from '../thingStore/useQueryAndStoreIt';
+import useQueryAndStoreIt from '../stuffStore/useQueryAndStoreIt';
 
 const StyledHomepage = styled.section`
    display: flex;

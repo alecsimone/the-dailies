@@ -68,60 +68,16 @@ const VOTE_MUTATION = gql`
 export { VOTE_MUTATION };
 
 const useVoteBarData = (id, thingID, type) => {
-   return [];
    const propertyName = `${type}:${id}`;
-   const votes = useSelector(state => {
-      if (type === 'Thing') {
-         return state.stuff[propertyName].votes;
-      }
-      if (type === 'ContentPiece') {
-         const { content, copiedInContent } = state.stuff[`Thing:${thingID}`];
-         const allContent = content.concat(copiedInContent);
-         const thisPiece = allContent.find(piece => piece.id === id);
-         return thisPiece.votes;
-      }
-      if (type === 'Comment') {
-         // This is pretty ugly right now. On a comment, the thingID prop will actually be the ID of whatever the comment is on, so it might be a comment or it might be a content piece. We'll have to figure that out, and hopefully we don't get any content pieces with the same ID as a thing we have
-         const thingMatch = state.stuff[propertyName];
-         if (thingMatch != null) {
-            const { comments } = thingMatch;
-            if (comments != null) {
-               const neededComment = comments.find(
-                  comment => comment.id === id
-               );
-               return neededComment.votes;
-            }
-         } else {
-            // First we need to make an array of all the thing IDs
-            const allThingIDs = Object.keys(state.stuff);
+   const votes = useSelector(state => state.stuff[propertyName].votes);
+   // For debugging
+   // const stuff = useSelector(state => state.stuff[propertyName]);
+   // if (stuff == null) {
+   //    console.log(id, type);
+   //    return [];
+   // }
+   // return stuff.votes;
 
-            // Then we're going to check each thing until we find one with the content piece we need
-            let neededContentPiece;
-            allThingIDs.every(id => {
-               // We use every instead of forEach so that it can be stopped once we find the contentPiece by returning false
-               // First we get the content on the thing from state
-               const { content } = state.stuff[id];
-               if (content != null && content.length > 0) {
-                  // If we find content, we check if any of it is our needed piece
-                  neededContentPiece = content.find(
-                     piece => piece.id === thingID
-                  );
-                  if (neededContentPiece != null) return false;
-               }
-               return true;
-            });
-
-            if (neededContentPiece != null) {
-               // Then we have to find the comment we need from within the contentPiece
-               const neededComment = neededContentPiece.comments?.find(
-                  comment => comment.id === id
-               );
-               return neededComment.votes;
-            }
-         }
-      }
-      return [];
-   });
    return votes;
 };
 

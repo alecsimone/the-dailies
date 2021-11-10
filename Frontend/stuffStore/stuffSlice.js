@@ -54,18 +54,35 @@ const upsertNewData = (state, stuffData) => {
       } else if (newStuffType === 'Thing') {
          // If it's a thing, we upsert every contentPiece and then upsert the thing itself with an array of references to the contentPieces in state
          const contentReferences = [];
+         const copiedInContentReferences = [];
          const commentReferences = [];
          stuffData.content.forEach(contentPiece => {
             upsertNewData(state, contentPiece);
             contentReferences.push(state[`ContentPiece:${contentPiece.id}`]);
+         });
+         stuffData.copiedInContent.forEach(contentPiece => {
+            upsertNewData(state, contentPiece);
+            copiedInContentReferences.push(
+               state[`ContentPiece:${contentPiece.id}`]
+            );
          });
          stuffData.comments.forEach(comment => {
             upsertNewData(state, comment);
             commentReferences.push(state[`Comment:${comment.id}`]);
          });
          stuffData.content = contentReferences;
+         stuffData.copiedInContent = copiedInContentReferences;
          stuffData.comments = commentReferences;
          state[`Thing:${newStuffID}`] = stuffData;
+      } else if (newStuffType === 'ContentPiece') {
+         // If it's a thing, we upsert every comment and then upsert the content piece itself with an array of references to the contentPieces in state
+         const commentReferences = [];
+         stuffData.comments.forEach(comment => {
+            upsertNewData(state, comment);
+            commentReferences.push(state[`Comment:${comment.id}`]);
+         });
+         stuffData.comments = commentReferences;
+         state[`ContentPiece:${newStuffID}`] = stuffData;
       } else {
          state[`${newStuffType}:${newStuffID}`] = stuffData;
       }
@@ -86,7 +103,8 @@ const upsertNewData = (state, stuffData) => {
          );
       }
 
-      if (newStuffData.content != null) {
+      if (newStuffData.content != null && newStuffType !== 'ContentPiece') {
+         // ContentPieces have a content field too, but it's just the content of the piece, not an array of ContentPieces, which is what this block is expecting
          newStuffData.content.forEach(contentPiece =>
             upsertNewData(state, contentPiece)
          );

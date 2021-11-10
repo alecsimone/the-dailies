@@ -44,14 +44,13 @@ const useContentData = (thingID, type) => {
    return contentData;
 };
 
-const Content = ({ contentType, canEdit, linkedPiece, thingID, type }) => {
-   // console.log(`content render`);
+const Content = ({ contentType, canEdit, linkedPiece, stuffID, type }) => {
    const {
       content,
       copiedInContent,
       contentOrder,
       unsavedNewContent
-   } = useContentData(thingID, type);
+   } = useContentData(stuffID, type);
    // First we'll set up our mutation hooks
    const [storeUnsavedThingChanges] = useMutation(
       STORE_UNSAVED_CONTENT_MUTATION,
@@ -63,7 +62,7 @@ const Content = ({ contentType, canEdit, linkedPiece, thingID, type }) => {
    const unsavedChangesHandler = async e => {
       await storeUnsavedThingChanges({
          variables: {
-            id: thingID,
+            id: stuffID,
             unsavedContent: e.target.value
          }
       }).catch(err => {
@@ -83,20 +82,37 @@ const Content = ({ contentType, canEdit, linkedPiece, thingID, type }) => {
       if (!confirm('Are you sure you want to delete that?')) {
          return;
       }
-      const newContent = content.filter(
+
+      const contentCopy = JSON.parse(JSON.stringify(fullContent));
+      const indexOfEditedContentPiece = contentCopy.findIndex(
+         contentPiece => contentPiece.id === contentPieceID
+      );
+      const thisPiece = contentCopy[indexOfEditedContentPiece];
+
+      const newContent = contentCopy.filter(
          contentPiece => contentPiece.id !== contentPieceID
       );
+
+      let thisPieceStuffID; // The piece might be copied from another thing, so we can't assume it has the id of the thing/tag we're viewing,
+      if (thisPiece.onThing != null) {
+         thisPieceStuffID = thisPiece.onThing.id;
+      } else if (thisPiece.onTag != null) {
+         thisPieceStuffID = thisPiece.onTag.id;
+      } else {
+         return;
+      }
+
       await deleteContentPiece({
          variables: {
             contentPieceID,
-            id: thingID,
-            type: 'Thing'
+            id: thisPieceStuffID,
+            type
          },
          optimisticResponse: {
             __typename: 'Mutation',
             deleteContentPiece: {
-               __typename: 'Thing',
-               id: thingID,
+               __typename: type,
+               id: thisPieceStuffID,
                content: newContent
             }
          }
@@ -123,18 +139,27 @@ const Content = ({ contentType, canEdit, linkedPiece, thingID, type }) => {
 
       contentCopy[indexOfEditedContentPiece].content = newContent;
 
+      let thisPieceStuffID;
+      if (thisPiece.onThing != null) {
+         thisPieceStuffID = thisPiece.onThing.id; // The piece might be copied from another thing, so we can't assume it has the id of the thing we're viewing,
+      } else if (thisPiece.onTag != null) {
+         thisPieceStuffID = thisPiece.onTag.id;
+      } else {
+         return;
+      }
+
       await editContentPiece({
          variables: {
             contentPieceID,
             content: newContent,
-            id: thisPiece.onThing.id, // The piece might be copied from another thing, so we can't assume it has the id of the thing we're viewing,
-            type: 'Thing'
+            id: thisPieceStuffID,
+            type
          },
          optimisticResponse: {
             __typename: 'Mutation',
             editContentPiece: {
-               __typename: 'Thing',
-               id: thingID,
+               __typename: type,
+               id: thisPieceStuffID,
                content: contentCopy
             }
          }
@@ -180,8 +205,8 @@ const Content = ({ contentType, canEdit, linkedPiece, thingID, type }) => {
          content,
          dynamicallyResizeElement,
          addContentPiece,
-         thingID,
-         'Thing',
+         stuffID,
+         type,
          SINGLE_THING_QUERY,
          SINGLE_TAX_QUERY
       );
@@ -213,14 +238,15 @@ const Content = ({ contentType, canEdit, linkedPiece, thingID, type }) => {
                   className={reordering ? 'reordering' : 'locked'}
                >
                   <ContentPiece
-                     key={`${thingID}-${contentPiece.id}-${
+                     key={`${stuffID}-${contentPiece.id}-${
                         clickToShowComments ? 'cts' : 'ncts'
                      }`}
                      contentType={displayedContentType}
                      clickToShowComments={clickToShowComments}
                      canEdit={canEdit}
                      pieceID={contentPiece.id}
-                     thingID={thingID}
+                     stuffID={stuffID}
+                     stuffType={type}
                      votes={contentPiece.votes}
                      unsavedContent={contentPiece.unsavedNewContent}
                      comments={contentPiece.comments}
@@ -254,14 +280,15 @@ const Content = ({ contentType, canEdit, linkedPiece, thingID, type }) => {
                   className={reordering ? 'reordering' : 'locked'}
                >
                   <ContentPiece
-                     key={`${thingID}-${currentContentPiece.id}-${
+                     key={`${stuffID}-${currentContentPiece.id}-${
                         clickToShowComments ? 'cts' : 'ncts'
                      }`}
                      contentType={displayedContentType}
                      clickToShowComments={clickToShowComments}
                      canEdit={canEdit}
                      pieceID={currentContentPiece.id}
-                     thingID={thingID}
+                     stuffID={stuffID}
+                     stuffType={type}
                      votes={currentContentPiece.votes}
                      unsavedContent={currentContentPiece.unsavedNewContent}
                      comments={currentContentPiece.comments}
@@ -287,7 +314,7 @@ const Content = ({ contentType, canEdit, linkedPiece, thingID, type }) => {
    if (process.browser && canEdit && reordering) {
       contentElements = (
          <Reorder
-            reorderId={thingID}
+            reorderId={stuffID}
             touchHoldTime={250}
             placeholderClassName="placeholder"
             draggedClassName="dragged"
@@ -315,7 +342,7 @@ const Content = ({ contentType, canEdit, linkedPiece, thingID, type }) => {
                order.splice(newPosition, 0, order.splice(oldPosition, 1)[0]);
                await reorderContent({
                   variables: {
-                     id: thingID,
+                     id: stuffID,
                      type: 'Thing',
                      oldPosition,
                      newPosition
@@ -323,7 +350,7 @@ const Content = ({ contentType, canEdit, linkedPiece, thingID, type }) => {
                   optimisticResponse: {
                      reorderContent: {
                         __typename: 'Thing',
-                        id: thingID,
+                        id: stuffID,
                         content,
                         contentOrder: order
                      }
@@ -389,48 +416,52 @@ const Content = ({ contentType, canEdit, linkedPiece, thingID, type }) => {
                   )}
                </div>
             )}
-            <div className="expansionControls">
-               <X
-                  onClick={() =>
-                     setShowingAddContentForm(!showingAddContentForm)
-                  }
-                  className={`showAddContentForm ${
-                     showingAddContentForm ? 'collapse' : 'expand'
-                  }`}
-                  color="mainText"
-               />
-               <ArrowIcon
-                  pointing={displayedContentType === 'full' ? 'up' : 'down'}
-                  onClick={() => {
-                     if (displayedContentType === 'full') {
-                        setDisplayedContentType('single');
-                        if (
-                           inputRef.current.value === '' ||
-                           inputRef.current.value == null
-                        ) {
-                           setShowingAddContentForm(false);
-                        }
-                     }
-                     if (displayedContentType === 'single') {
-                        setDisplayedContentType('full');
-                        setShowingAddContentForm(true);
-                     }
-                  }}
-               />
-            </div>
             {canEdit && showingAddContentForm && (
                <RichTextArea
                   text=""
                   postText={sendNewContentPieceHandler}
                   placeholder="Add content"
                   buttonText="add"
-                  id={`${thingID}-content`}
+                  id={`${stuffID}-content`}
                   inputRef={inputRef}
                   unsavedChangesHandler={unsavedChangesHandler}
                   unsavedContent={unsavedNewContent}
                   alwaysShowExtras={false}
                />
             )}
+            <div className="expansionControls">
+               {canEdit && (
+                  <X
+                     onClick={() =>
+                        setShowingAddContentForm(!showingAddContentForm)
+                     }
+                     className={`showAddContentForm ${
+                        showingAddContentForm ? 'collapse' : 'expand'
+                     }`}
+                     color="mainText"
+                  />
+               )}
+               {content.length > 0 && (
+                  <ArrowIcon
+                     pointing={displayedContentType === 'full' ? 'up' : 'down'}
+                     onClick={() => {
+                        if (displayedContentType === 'full') {
+                           setDisplayedContentType('single');
+                           if (
+                              inputRef.current.value === '' ||
+                              inputRef.current.value == null
+                           ) {
+                              setShowingAddContentForm(false);
+                           }
+                        }
+                        if (displayedContentType === 'single') {
+                           setDisplayedContentType('full');
+                           setShowingAddContentForm(true);
+                        }
+                     }}
+                  />
+               )}
+            </div>
             {canEdit && content.length > 1 && displayedContentType === 'full' && (
                <button
                   type="button"
