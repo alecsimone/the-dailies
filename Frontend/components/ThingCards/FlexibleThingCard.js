@@ -46,21 +46,21 @@ const useCardData = thingID => {
    );
    cardData.color = useSelector(state => state.stuff[propertyName].color);
    cardData.title = useSelector(state => state.stuff[propertyName].title);
-   cardData.hasContent = useSelector(
+   cardData.contentCount = useSelector(
       state =>
-         state.stuff[propertyName].content?.length > 0 ||
-         state.stuff[propertyName].copiedInContent?.length > 0
+         state.stuff[propertyName].content?.length +
+         state.stuff[propertyName].copiedInContent?.length
    );
    cardData.commentCount = useSelector(
       state => state.stuff[propertyName].comments?.length
    );
-   cardData.hasTags = useSelector(
-      state => state.stuff[propertyName].partOfTags?.length > 0
+   cardData.tagCount = useSelector(
+      state => state.stuff[propertyName].partOfTags?.length
    );
-   cardData.hasConnections = useSelector(
+   cardData.connectionCount = useSelector(
       state =>
-         state.stuff[propertyName].subjectConnections?.length > 0 ||
-         state.stuff[propertyName].objectConnections?.length > 0
+         state.stuff[propertyName].subjectConnections?.length +
+         state.stuff[propertyName].objectConnections?.length
    );
    cardData.featuredImage = useSelector(
       state => state.stuff[propertyName].featuredImage
@@ -126,6 +126,7 @@ const StyledFlexibleThingCard = styled.article`
                .buttons {
                   max-width: none;
                   min-width: initial;
+
                   > * {
                      margin: 0 0.5rem;
                      &.arrow {
@@ -300,7 +301,32 @@ const StyledFlexibleThingCard = styled.article`
             display: flex;
             justify-content: space-between;
             align-items: center;
-            height: ${props => props.theme.miniText};
+            --button-size: ${props => props.theme.miniText};
+            height: var(--button-size);
+            .counterParent {
+               height: var(--button-size);
+               width: var(--button-size);
+               position: relative;
+               svg {
+                  width: var(--button-size);
+                  position: absolute;
+                  top: 0;
+                  left: 0;
+               }
+               .counter {
+                  position: absolute;
+                  font-size: ${props => props.theme.tinyText};
+                  bottom: calc(${props => props.theme.tinyText} * -0.25);
+                  right: calc(${props => props.theme.tinyText} * -0.25);
+                  background: ${props => setAlpha(props.theme.majorColor, 0.8)};
+                  line-height: 1;
+                  height: ${props => props.theme.tinyText};
+                  width: ${props => props.theme.tinyText};
+                  text-align: center;
+                  border-radius: 100%;
+                  padding-top: 1px;
+               }
+            }
             svg {
                height: 100%;
                cursor: pointer;
@@ -425,10 +451,10 @@ const FlexibleThingCard = ({
       createdAt,
       color,
       title,
-      hasContent,
+      contentCount,
       commentCount,
-      hasTags,
-      hasConnections,
+      tagCount,
+      connectionCount,
       featuredImage,
       score,
       privacy
@@ -438,8 +464,8 @@ const FlexibleThingCard = ({
    let initialToggleDirection = 'down';
    if (expanded) {
       if (
-         hasContent ||
-         hasTags ||
+         contentCount > 0 ||
+         tagCount > 0 ||
          commentCount > 0 ||
          (featuredImage != null &&
             !disabledCodewords.includes(featuredImage.toLowerCase()))
@@ -449,9 +475,9 @@ const FlexibleThingCard = ({
    }
 
    const [expansion, setExpansion] = useState({
-      content: expanded && (canEdit || hasContent),
-      taxes: expanded && hasTags,
-      connections: expanded && hasConnections,
+      content: expanded && (canEdit || contentCount > 0),
+      taxes: expanded && tagCount > 0,
+      connections: expanded && connectionCount > 0,
       comments: expanded && commentCount > 0,
       privacy: false,
       colors: false,
@@ -669,27 +695,39 @@ const FlexibleThingCard = ({
                   )}
                   {(expanded ||
                      expansion.showingAllButtons ||
-                     hasTags ||
+                     tagCount > 0 ||
                      canEdit) && (
-                     <HashtagIcon
-                        onClick={() =>
-                           expansionHandler('taxes', !expansion.taxes)
-                        }
-                        titleText={`${expansion.taxes ? 'Hide' : 'Show'} Tags`}
-                     />
+                     <div className="counterParent">
+                        <HashtagIcon
+                           onClick={() =>
+                              expansionHandler('taxes', !expansion.taxes)
+                           }
+                           titleText={`${
+                              expansion.taxes ? 'Hide' : 'Show'
+                           } Tags`}
+                        />
+                        {tagCount > 0 && (
+                           <div className="counter">{tagCount}</div>
+                        )}
+                     </div>
                   )}
                   {(expanded ||
                      expansion.showingAllButtons ||
                      canEdit ||
-                     hasContent) && (
-                     <ContentIcon
-                        onClick={() =>
-                           expansionHandler('content', !expansion.content)
-                        }
-                        titleText={`${
-                           expansion.content ? 'Hide' : 'Show'
-                        } Content`}
-                     />
+                     contentCount > 0) && (
+                     <div className="counterParent">
+                        <ContentIcon
+                           onClick={() =>
+                              expansionHandler('content', !expansion.content)
+                           }
+                           titleText={`${
+                              expansion.content ? 'Hide' : 'Show'
+                           } Content`}
+                        />
+                        {contentCount > 0 && (
+                           <div className="counter">{contentCount}</div>
+                        )}
+                     </div>
                   )}
                   <CommentsButton
                      onClick={() =>
@@ -699,17 +737,22 @@ const FlexibleThingCard = ({
                      key={`comments-button-${thingID}`}
                   />
                   {(expanded || expansion.showingAllButtons || canEdit) && (
-                     <ConnectionsIcon
-                        onClick={() =>
-                           expansionHandler(
-                              'connections',
-                              !expansion.connections
-                           )
-                        }
-                        titleText={`${
-                           expansion.connections ? 'Hide' : 'Show'
-                        } Connections`}
-                     />
+                     <div className="counterParent">
+                        <ConnectionsIcon
+                           onClick={() =>
+                              expansionHandler(
+                                 'connections',
+                                 !expansion.connections
+                              )
+                           }
+                           titleText={`${
+                              expansion.connections ? 'Hide' : 'Show'
+                           } Connections`}
+                        />
+                        {connectionCount > 0 && (
+                           <div className="counter">{connectionCount}</div>
+                        )}
+                     </div>
                   )}
                   <LockIcon
                      onClick={() =>
