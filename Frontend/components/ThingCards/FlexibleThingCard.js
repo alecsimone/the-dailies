@@ -707,7 +707,9 @@ const FlexibleThingCard = ({
                            } Tags`}
                         />
                         {tagCount > 0 && (
-                           <div className="counter">{tagCount}</div>
+                           <div className="counter">
+                              {tagCount > 99 ? '+' : tagCount}
+                           </div>
                         )}
                      </div>
                   )}
@@ -725,7 +727,9 @@ const FlexibleThingCard = ({
                            } Content`}
                         />
                         {contentCount > 0 && (
-                           <div className="counter">{contentCount}</div>
+                           <div className="counter">
+                              {contentCount > 99 ? '+' : contentCount}
+                           </div>
                         )}
                      </div>
                   )}
@@ -750,7 +754,9 @@ const FlexibleThingCard = ({
                            } Connections`}
                         />
                         {connectionCount > 0 && (
-                           <div className="counter">{connectionCount}</div>
+                           <div className="counter">
+                              {connectionCount > 99 ? '+' : connectionCount}
+                           </div>
                         )}
                      </div>
                   )}
