@@ -40,7 +40,9 @@ const {
    setColor,
    editSummary,
    copyContentPiece,
-   unlinkContentPiece
+   unlinkContentPiece,
+   addConnection,
+   deleteConnection
 } = require('./Mutation/ThingMutations/Editing');
 const {
    initiateTwitterLogin,
@@ -141,7 +143,9 @@ const Mutations = {
    moveCardToGroup,
    reorderUngroupedThings,
    setColumnOrder,
-   handleCardExpansion
+   handleCardExpansion,
+   addConnection,
+   deleteConnection
 };
 
 module.exports = Mutations;

@@ -27,6 +27,8 @@ import LockIcon from '../Icons/Lock';
 import Content from '../ThingParts/Content/Content';
 import { myThingsQueryCount, MY_THINGS_QUERY } from '../Archives/MyThings';
 import HashtagIcon from '../Icons/Hashtag';
+import ConnectionsInterface from '../ThingParts/ConnectionsInterface';
+import ConnectionsIcon from '../Icons/Connections';
 
 const DELETE_THING_MUTATION = gql`
    mutation DELETE_THING_MUTATION($id: ID!) {
@@ -54,6 +56,11 @@ const useCardData = thingID => {
    );
    cardData.hasTags = useSelector(
       state => state.stuff[propertyName].partOfTags?.length > 0
+   );
+   cardData.hasConnections = useSelector(
+      state =>
+         state.stuff[propertyName].subjectConnections?.length > 0 ||
+         state.stuff[propertyName].objectConnections?.length > 0
    );
    cardData.featuredImage = useSelector(
       state => state.stuff[propertyName].featuredImage
@@ -407,7 +414,7 @@ const FlexibleThingCard = ({
    thingID,
    expanded = false,
    contentType = 'full',
-   canEdit,
+   canEdit = false,
    linkedPiece,
    linkedComment,
    titleLink,
@@ -421,6 +428,7 @@ const FlexibleThingCard = ({
       hasContent,
       commentCount,
       hasTags,
+      hasConnections,
       featuredImage,
       score,
       privacy
@@ -443,6 +451,7 @@ const FlexibleThingCard = ({
    const [expansion, setExpansion] = useState({
       content: expanded && (canEdit || hasContent),
       taxes: expanded && hasTags,
+      connections: expanded && hasConnections,
       comments: expanded && commentCount > 0,
       privacy: false,
       colors: false,
@@ -462,6 +471,7 @@ const FlexibleThingCard = ({
          const newExpansionObject = {
             content: newValue,
             taxes: newValue,
+            connections: newValue,
             comments: newValue,
             featuredImage: newValue,
             privacy: expansion.privacy,
@@ -659,7 +669,8 @@ const FlexibleThingCard = ({
                   )}
                   {(expanded ||
                      expansion.showingAllButtons ||
-                     (hasTags && canEdit)) && (
+                     hasTags ||
+                     canEdit) && (
                      <HashtagIcon
                         onClick={() =>
                            expansionHandler('taxes', !expansion.taxes)
@@ -687,6 +698,19 @@ const FlexibleThingCard = ({
                      count={commentCount || 0}
                      key={`comments-button-${thingID}`}
                   />
+                  {(expanded || expansion.showingAllButtons || canEdit) && (
+                     <ConnectionsIcon
+                        onClick={() =>
+                           expansionHandler(
+                              'connections',
+                              !expansion.connections
+                           )
+                        }
+                        titleText={`${
+                           expansion.connections ? 'Hide' : 'Show'
+                        } Connections`}
+                     />
+                  )}
                   <LockIcon
                      onClick={() =>
                         expansionHandler('privacy', !expansion.privacy)
@@ -792,6 +816,9 @@ const FlexibleThingCard = ({
                      linkedComment={linkedComment}
                      key={`comments-${thingID}`}
                   />
+               )}
+               {expansion.connections && (
+                  <ConnectionsInterface thingID={thingID} />
                )}
             </div>
          )}

@@ -213,6 +213,10 @@ const fullThingFields = `
       friends {
          __typename
          id
+         friends {
+            __typename
+            id
+         }
       }
       rep
    }
@@ -228,18 +232,6 @@ const fullThingFields = `
    summary
    contentOrder
    partOfTags {
-      __typename
-      id
-      title
-      author {
-         __typename
-         id
-         displayName
-         avatar
-         rep
-      }
-   }
-   partOfStacks {
       __typename
       id
       title
@@ -267,19 +259,7 @@ const fullThingFields = `
          avatar
       }
    }
-   passes {
-      __typename
-      passer {
-         __typename
-         id
-         displayName
-         avatar
-         role
-      }
-   }
    score
-   winner
-   finalistDate
    privacy
    individualViewPermissions {
       __typename
@@ -287,7 +267,31 @@ const fullThingFields = `
       displayName
       avatar
    }
-   eliminated
+   manualUpdatedAt
+   subjectConnections {
+      id
+      subject {
+         id
+      }
+      object {
+         id
+      }
+      relationship
+      strength
+      createdAt
+   }
+   objectConnections {
+      id
+      subject {
+         id
+      }
+      object {
+         id
+      }
+      relationship
+      strength
+      createdAt
+   }
    createdAt
    updatedAt
 `;

@@ -22,6 +22,8 @@ type Thing {
   privacy: PrivacySetting @default(value: Private)
   individualViewPermissions: [Member] @relation(name: "IndividualViewers")
   manualUpdatedAt: DateTime
+  subjectConnections: [Connection!] @scalarList(strategy: RELATION) @relation(name:"IsSubject")
+  objectConnections: [Connection!] @scalarList(strategy: RELATION) @relation(name:"IsObject")
   createdAt: DateTime! @createdAt
   updatedAt: DateTime @updatedAt
 }
@@ -142,6 +144,7 @@ type Member {
   twitterUserTokenSecret: String
   twitterListsObject: String
   twitterSeenIDs: [String] @scalarList(strategy: RELATION)
+  createdConnections: [Connection] @scalarList(strategy: RELATION)
   createdAt: DateTime! @createdAt
   updatedAt: DateTime @updatedAt
 }
@@ -201,6 +204,16 @@ type Collection {
    thingQueryCursor: String
    createdAt: DateTime! @createdAt
    updatedAt: DateTime @updatedAt
+}
+
+type Connection {
+   id: ID! @id @unique
+   creator: Member
+   subject: Thing! @relation(name: "IsSubject")
+   object: Thing! @relation(name: "IsObject")
+   relationship: String!
+   strength: Int! @default(value: 0)
+   createdAt: DateTime! @createdAt
 }
 
 enum Role {

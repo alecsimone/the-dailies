@@ -14,6 +14,10 @@ type AggregateComment {
   count: Int!
 }
 
+type AggregateConnection {
+  count: Int!
+}
+
 type AggregateContentPiece {
   count: Int!
 }
@@ -1642,6 +1646,331 @@ input CommentWhereUniqueInput {
   id: ID
 }
 
+type Connection {
+  id: ID!
+  creator: Member
+  subject: Thing!
+  object: Thing!
+  relationship: String!
+  strength: Int!
+  createdAt: DateTime!
+}
+
+type ConnectionConnection {
+  pageInfo: PageInfo!
+  edges: [ConnectionEdge]!
+  aggregate: AggregateConnection!
+}
+
+input ConnectionCreateInput {
+  id: ID
+  creator: MemberCreateOneWithoutCreatedConnectionsInput
+  subject: ThingCreateOneWithoutSubjectConnectionsInput!
+  object: ThingCreateOneWithoutObjectConnectionsInput!
+  relationship: String!
+  strength: Int
+}
+
+input ConnectionCreateManyWithoutCreatorInput {
+  create: [ConnectionCreateWithoutCreatorInput!]
+  connect: [ConnectionWhereUniqueInput!]
+}
+
+input ConnectionCreateManyWithoutObjectInput {
+  create: [ConnectionCreateWithoutObjectInput!]
+  connect: [ConnectionWhereUniqueInput!]
+}
+
+input ConnectionCreateManyWithoutSubjectInput {
+  create: [ConnectionCreateWithoutSubjectInput!]
+  connect: [ConnectionWhereUniqueInput!]
+}
+
+input ConnectionCreateWithoutCreatorInput {
+  id: ID
+  subject: ThingCreateOneWithoutSubjectConnectionsInput!
+  object: ThingCreateOneWithoutObjectConnectionsInput!
+  relationship: String!
+  strength: Int
+}
+
+input ConnectionCreateWithoutObjectInput {
+  id: ID
+  creator: MemberCreateOneWithoutCreatedConnectionsInput
+  subject: ThingCreateOneWithoutSubjectConnectionsInput!
+  relationship: String!
+  strength: Int
+}
+
+input ConnectionCreateWithoutSubjectInput {
+  id: ID
+  creator: MemberCreateOneWithoutCreatedConnectionsInput
+  object: ThingCreateOneWithoutObjectConnectionsInput!
+  relationship: String!
+  strength: Int
+}
+
+type ConnectionEdge {
+  node: Connection!
+  cursor: String!
+}
+
+enum ConnectionOrderByInput {
+  id_ASC
+  id_DESC
+  relationship_ASC
+  relationship_DESC
+  strength_ASC
+  strength_DESC
+  createdAt_ASC
+  createdAt_DESC
+}
+
+type ConnectionPreviousValues {
+  id: ID!
+  relationship: String!
+  strength: Int!
+  createdAt: DateTime!
+}
+
+input ConnectionScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  relationship: String
+  relationship_not: String
+  relationship_in: [String!]
+  relationship_not_in: [String!]
+  relationship_lt: String
+  relationship_lte: String
+  relationship_gt: String
+  relationship_gte: String
+  relationship_contains: String
+  relationship_not_contains: String
+  relationship_starts_with: String
+  relationship_not_starts_with: String
+  relationship_ends_with: String
+  relationship_not_ends_with: String
+  strength: Int
+  strength_not: Int
+  strength_in: [Int!]
+  strength_not_in: [Int!]
+  strength_lt: Int
+  strength_lte: Int
+  strength_gt: Int
+  strength_gte: Int
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  AND: [ConnectionScalarWhereInput!]
+  OR: [ConnectionScalarWhereInput!]
+  NOT: [ConnectionScalarWhereInput!]
+}
+
+type ConnectionSubscriptionPayload {
+  mutation: MutationType!
+  node: Connection
+  updatedFields: [String!]
+  previousValues: ConnectionPreviousValues
+}
+
+input ConnectionSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: ConnectionWhereInput
+  AND: [ConnectionSubscriptionWhereInput!]
+  OR: [ConnectionSubscriptionWhereInput!]
+  NOT: [ConnectionSubscriptionWhereInput!]
+}
+
+input ConnectionUpdateInput {
+  creator: MemberUpdateOneWithoutCreatedConnectionsInput
+  subject: ThingUpdateOneRequiredWithoutSubjectConnectionsInput
+  object: ThingUpdateOneRequiredWithoutObjectConnectionsInput
+  relationship: String
+  strength: Int
+}
+
+input ConnectionUpdateManyDataInput {
+  relationship: String
+  strength: Int
+}
+
+input ConnectionUpdateManyMutationInput {
+  relationship: String
+  strength: Int
+}
+
+input ConnectionUpdateManyWithoutCreatorInput {
+  create: [ConnectionCreateWithoutCreatorInput!]
+  delete: [ConnectionWhereUniqueInput!]
+  connect: [ConnectionWhereUniqueInput!]
+  set: [ConnectionWhereUniqueInput!]
+  disconnect: [ConnectionWhereUniqueInput!]
+  update: [ConnectionUpdateWithWhereUniqueWithoutCreatorInput!]
+  upsert: [ConnectionUpsertWithWhereUniqueWithoutCreatorInput!]
+  deleteMany: [ConnectionScalarWhereInput!]
+  updateMany: [ConnectionUpdateManyWithWhereNestedInput!]
+}
+
+input ConnectionUpdateManyWithoutObjectInput {
+  create: [ConnectionCreateWithoutObjectInput!]
+  delete: [ConnectionWhereUniqueInput!]
+  connect: [ConnectionWhereUniqueInput!]
+  set: [ConnectionWhereUniqueInput!]
+  disconnect: [ConnectionWhereUniqueInput!]
+  update: [ConnectionUpdateWithWhereUniqueWithoutObjectInput!]
+  upsert: [ConnectionUpsertWithWhereUniqueWithoutObjectInput!]
+  deleteMany: [ConnectionScalarWhereInput!]
+  updateMany: [ConnectionUpdateManyWithWhereNestedInput!]
+}
+
+input ConnectionUpdateManyWithoutSubjectInput {
+  create: [ConnectionCreateWithoutSubjectInput!]
+  delete: [ConnectionWhereUniqueInput!]
+  connect: [ConnectionWhereUniqueInput!]
+  set: [ConnectionWhereUniqueInput!]
+  disconnect: [ConnectionWhereUniqueInput!]
+  update: [ConnectionUpdateWithWhereUniqueWithoutSubjectInput!]
+  upsert: [ConnectionUpsertWithWhereUniqueWithoutSubjectInput!]
+  deleteMany: [ConnectionScalarWhereInput!]
+  updateMany: [ConnectionUpdateManyWithWhereNestedInput!]
+}
+
+input ConnectionUpdateManyWithWhereNestedInput {
+  where: ConnectionScalarWhereInput!
+  data: ConnectionUpdateManyDataInput!
+}
+
+input ConnectionUpdateWithoutCreatorDataInput {
+  subject: ThingUpdateOneRequiredWithoutSubjectConnectionsInput
+  object: ThingUpdateOneRequiredWithoutObjectConnectionsInput
+  relationship: String
+  strength: Int
+}
+
+input ConnectionUpdateWithoutObjectDataInput {
+  creator: MemberUpdateOneWithoutCreatedConnectionsInput
+  subject: ThingUpdateOneRequiredWithoutSubjectConnectionsInput
+  relationship: String
+  strength: Int
+}
+
+input ConnectionUpdateWithoutSubjectDataInput {
+  creator: MemberUpdateOneWithoutCreatedConnectionsInput
+  object: ThingUpdateOneRequiredWithoutObjectConnectionsInput
+  relationship: String
+  strength: Int
+}
+
+input ConnectionUpdateWithWhereUniqueWithoutCreatorInput {
+  where: ConnectionWhereUniqueInput!
+  data: ConnectionUpdateWithoutCreatorDataInput!
+}
+
+input ConnectionUpdateWithWhereUniqueWithoutObjectInput {
+  where: ConnectionWhereUniqueInput!
+  data: ConnectionUpdateWithoutObjectDataInput!
+}
+
+input ConnectionUpdateWithWhereUniqueWithoutSubjectInput {
+  where: ConnectionWhereUniqueInput!
+  data: ConnectionUpdateWithoutSubjectDataInput!
+}
+
+input ConnectionUpsertWithWhereUniqueWithoutCreatorInput {
+  where: ConnectionWhereUniqueInput!
+  update: ConnectionUpdateWithoutCreatorDataInput!
+  create: ConnectionCreateWithoutCreatorInput!
+}
+
+input ConnectionUpsertWithWhereUniqueWithoutObjectInput {
+  where: ConnectionWhereUniqueInput!
+  update: ConnectionUpdateWithoutObjectDataInput!
+  create: ConnectionCreateWithoutObjectInput!
+}
+
+input ConnectionUpsertWithWhereUniqueWithoutSubjectInput {
+  where: ConnectionWhereUniqueInput!
+  update: ConnectionUpdateWithoutSubjectDataInput!
+  create: ConnectionCreateWithoutSubjectInput!
+}
+
+input ConnectionWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  creator: MemberWhereInput
+  subject: ThingWhereInput
+  object: ThingWhereInput
+  relationship: String
+  relationship_not: String
+  relationship_in: [String!]
+  relationship_not_in: [String!]
+  relationship_lt: String
+  relationship_lte: String
+  relationship_gt: String
+  relationship_gte: String
+  relationship_contains: String
+  relationship_not_contains: String
+  relationship_starts_with: String
+  relationship_not_starts_with: String
+  relationship_ends_with: String
+  relationship_not_ends_with: String
+  strength: Int
+  strength_not: Int
+  strength_in: [Int!]
+  strength_not_in: [Int!]
+  strength_lt: Int
+  strength_lte: Int
+  strength_gt: Int
+  strength_gte: Int
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  AND: [ConnectionWhereInput!]
+  OR: [ConnectionWhereInput!]
+  NOT: [ConnectionWhereInput!]
+}
+
+input ConnectionWhereUniqueInput {
+  id: ID
+}
+
 type ContentPiece {
   id: ID!
   content: String!
@@ -2227,6 +2556,7 @@ type Member {
   twitterUserTokenSecret: String
   twitterListsObject: String
   twitterSeenIDs: [String!]!
+  createdConnections(where: ConnectionWhereInput, orderBy: ConnectionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Connection!]
   createdAt: DateTime!
   updatedAt: DateTime
 }
@@ -2277,6 +2607,7 @@ input MemberCreateInput {
   twitterUserTokenSecret: String
   twitterListsObject: String
   twitterSeenIDs: MemberCreatetwitterSeenIDsInput
+  createdConnections: ConnectionCreateManyWithoutCreatorInput
 }
 
 input MemberCreateManyWithoutFriendRequestsInput {
@@ -2311,6 +2642,11 @@ input MemberCreateOneWithoutCollectionsInput {
 
 input MemberCreateOneWithoutCommentsInput {
   create: MemberCreateWithoutCommentsInput
+  connect: MemberWhereUniqueInput
+}
+
+input MemberCreateOneWithoutCreatedConnectionsInput {
+  create: MemberCreateWithoutCreatedConnectionsInput
   connect: MemberWhereUniqueInput
 }
 
@@ -2386,6 +2722,7 @@ input MemberCreateWithoutCollectionsInput {
   twitterUserTokenSecret: String
   twitterListsObject: String
   twitterSeenIDs: MemberCreatetwitterSeenIDsInput
+  createdConnections: ConnectionCreateManyWithoutCreatorInput
 }
 
 input MemberCreateWithoutCommentsInput {
@@ -2413,6 +2750,49 @@ input MemberCreateWithoutCommentsInput {
   broadcastView: Boolean
   collections: CollectionCreateManyWithoutAuthorInput
   lastActiveCollection: CollectionCreateOneInput
+  password: String!
+  roles: MemberCreaterolesInput
+  role: Role
+  verificationToken: String
+  verificationTokenExpiry: Float
+  resetToken: String
+  resetTokenExpiry: Float
+  twitterTokenSecret: String
+  twitterUserName: String
+  twitterUserID: String
+  twitterUserToken: String
+  twitterUserTokenSecret: String
+  twitterListsObject: String
+  twitterSeenIDs: MemberCreatetwitterSeenIDsInput
+  createdConnections: ConnectionCreateManyWithoutCreatorInput
+}
+
+input MemberCreateWithoutCreatedConnectionsInput {
+  id: ID
+  displayName: String!
+  name: String
+  avatar: String
+  rep: Int
+  points: Int
+  giveableRep: Int
+  color: String
+  friends: MemberCreateManyWithoutFriendsInput
+  friendRequests: MemberCreateManyWithoutFriendRequestsInput
+  ignoredFriendRequests: MemberCreateManyWithoutIgnoredFriendRequestsInput
+  notifications: NotificationCreateManyWithoutRecipientInput
+  twitchName: String
+  email: String!
+  votes: VoteCreateManyWithoutVoterInput
+  passes: PassCreateManyWithoutPasserInput
+  createdThings: ThingCreateManyWithoutAuthorInput
+  ownedTags: TagCreateManyWithoutAuthorInput
+  defaultPrivacy: PrivacySetting
+  individualViewPermissions: ThingCreateManyWithoutIndividualViewPermissionsInput
+  defaultExpansion: Boolean
+  broadcastView: Boolean
+  collections: CollectionCreateManyWithoutAuthorInput
+  lastActiveCollection: CollectionCreateOneInput
+  comments: CommentCreateManyWithoutAuthorInput
   password: String!
   roles: MemberCreaterolesInput
   role: Role
@@ -2468,6 +2848,7 @@ input MemberCreateWithoutCreatedThingsInput {
   twitterUserTokenSecret: String
   twitterListsObject: String
   twitterSeenIDs: MemberCreatetwitterSeenIDsInput
+  createdConnections: ConnectionCreateManyWithoutCreatorInput
 }
 
 input MemberCreateWithoutFriendRequestsInput {
@@ -2509,6 +2890,7 @@ input MemberCreateWithoutFriendRequestsInput {
   twitterUserTokenSecret: String
   twitterListsObject: String
   twitterSeenIDs: MemberCreatetwitterSeenIDsInput
+  createdConnections: ConnectionCreateManyWithoutCreatorInput
 }
 
 input MemberCreateWithoutFriendsInput {
@@ -2550,6 +2932,7 @@ input MemberCreateWithoutFriendsInput {
   twitterUserTokenSecret: String
   twitterListsObject: String
   twitterSeenIDs: MemberCreatetwitterSeenIDsInput
+  createdConnections: ConnectionCreateManyWithoutCreatorInput
 }
 
 input MemberCreateWithoutIgnoredFriendRequestsInput {
@@ -2591,6 +2974,7 @@ input MemberCreateWithoutIgnoredFriendRequestsInput {
   twitterUserTokenSecret: String
   twitterListsObject: String
   twitterSeenIDs: MemberCreatetwitterSeenIDsInput
+  createdConnections: ConnectionCreateManyWithoutCreatorInput
 }
 
 input MemberCreateWithoutIndividualViewPermissionsInput {
@@ -2632,6 +3016,7 @@ input MemberCreateWithoutIndividualViewPermissionsInput {
   twitterUserTokenSecret: String
   twitterListsObject: String
   twitterSeenIDs: MemberCreatetwitterSeenIDsInput
+  createdConnections: ConnectionCreateManyWithoutCreatorInput
 }
 
 input MemberCreateWithoutNotificationsInput {
@@ -2673,6 +3058,7 @@ input MemberCreateWithoutNotificationsInput {
   twitterUserTokenSecret: String
   twitterListsObject: String
   twitterSeenIDs: MemberCreatetwitterSeenIDsInput
+  createdConnections: ConnectionCreateManyWithoutCreatorInput
 }
 
 input MemberCreateWithoutOwnedTagsInput {
@@ -2714,6 +3100,7 @@ input MemberCreateWithoutOwnedTagsInput {
   twitterUserTokenSecret: String
   twitterListsObject: String
   twitterSeenIDs: MemberCreatetwitterSeenIDsInput
+  createdConnections: ConnectionCreateManyWithoutCreatorInput
 }
 
 input MemberCreateWithoutPassesInput {
@@ -2755,6 +3142,7 @@ input MemberCreateWithoutPassesInput {
   twitterUserTokenSecret: String
   twitterListsObject: String
   twitterSeenIDs: MemberCreatetwitterSeenIDsInput
+  createdConnections: ConnectionCreateManyWithoutCreatorInput
 }
 
 input MemberCreateWithoutVotesInput {
@@ -2796,6 +3184,7 @@ input MemberCreateWithoutVotesInput {
   twitterUserTokenSecret: String
   twitterListsObject: String
   twitterSeenIDs: MemberCreatetwitterSeenIDsInput
+  createdConnections: ConnectionCreateManyWithoutCreatorInput
 }
 
 type MemberEdge {
@@ -3247,6 +3636,7 @@ input MemberUpdateDataInput {
   twitterUserTokenSecret: String
   twitterListsObject: String
   twitterSeenIDs: MemberUpdatetwitterSeenIDsInput
+  createdConnections: ConnectionUpdateManyWithoutCreatorInput
 }
 
 input MemberUpdateInput {
@@ -3288,6 +3678,7 @@ input MemberUpdateInput {
   twitterUserTokenSecret: String
   twitterListsObject: String
   twitterSeenIDs: MemberUpdatetwitterSeenIDsInput
+  createdConnections: ConnectionUpdateManyWithoutCreatorInput
 }
 
 input MemberUpdateManyDataInput {
@@ -3457,6 +3848,15 @@ input MemberUpdateOneRequiredWithoutVotesInput {
   connect: MemberWhereUniqueInput
 }
 
+input MemberUpdateOneWithoutCreatedConnectionsInput {
+  create: MemberCreateWithoutCreatedConnectionsInput
+  update: MemberUpdateWithoutCreatedConnectionsDataInput
+  upsert: MemberUpsertWithoutCreatedConnectionsInput
+  delete: Boolean
+  disconnect: Boolean
+  connect: MemberWhereUniqueInput
+}
+
 input MemberUpdaterolesInput {
   set: [Role!]
 }
@@ -3503,6 +3903,7 @@ input MemberUpdateWithoutCollectionsDataInput {
   twitterUserTokenSecret: String
   twitterListsObject: String
   twitterSeenIDs: MemberUpdatetwitterSeenIDsInput
+  createdConnections: ConnectionUpdateManyWithoutCreatorInput
 }
 
 input MemberUpdateWithoutCommentsDataInput {
@@ -3529,6 +3930,48 @@ input MemberUpdateWithoutCommentsDataInput {
   broadcastView: Boolean
   collections: CollectionUpdateManyWithoutAuthorInput
   lastActiveCollection: CollectionUpdateOneInput
+  password: String
+  roles: MemberUpdaterolesInput
+  role: Role
+  verificationToken: String
+  verificationTokenExpiry: Float
+  resetToken: String
+  resetTokenExpiry: Float
+  twitterTokenSecret: String
+  twitterUserName: String
+  twitterUserID: String
+  twitterUserToken: String
+  twitterUserTokenSecret: String
+  twitterListsObject: String
+  twitterSeenIDs: MemberUpdatetwitterSeenIDsInput
+  createdConnections: ConnectionUpdateManyWithoutCreatorInput
+}
+
+input MemberUpdateWithoutCreatedConnectionsDataInput {
+  displayName: String
+  name: String
+  avatar: String
+  rep: Int
+  points: Int
+  giveableRep: Int
+  color: String
+  friends: MemberUpdateManyWithoutFriendsInput
+  friendRequests: MemberUpdateManyWithoutFriendRequestsInput
+  ignoredFriendRequests: MemberUpdateManyWithoutIgnoredFriendRequestsInput
+  notifications: NotificationUpdateManyWithoutRecipientInput
+  twitchName: String
+  email: String
+  votes: VoteUpdateManyWithoutVoterInput
+  passes: PassUpdateManyWithoutPasserInput
+  createdThings: ThingUpdateManyWithoutAuthorInput
+  ownedTags: TagUpdateManyWithoutAuthorInput
+  defaultPrivacy: PrivacySetting
+  individualViewPermissions: ThingUpdateManyWithoutIndividualViewPermissionsInput
+  defaultExpansion: Boolean
+  broadcastView: Boolean
+  collections: CollectionUpdateManyWithoutAuthorInput
+  lastActiveCollection: CollectionUpdateOneInput
+  comments: CommentUpdateManyWithoutAuthorInput
   password: String
   roles: MemberUpdaterolesInput
   role: Role
@@ -3583,6 +4026,7 @@ input MemberUpdateWithoutCreatedThingsDataInput {
   twitterUserTokenSecret: String
   twitterListsObject: String
   twitterSeenIDs: MemberUpdatetwitterSeenIDsInput
+  createdConnections: ConnectionUpdateManyWithoutCreatorInput
 }
 
 input MemberUpdateWithoutFriendRequestsDataInput {
@@ -3623,6 +4067,7 @@ input MemberUpdateWithoutFriendRequestsDataInput {
   twitterUserTokenSecret: String
   twitterListsObject: String
   twitterSeenIDs: MemberUpdatetwitterSeenIDsInput
+  createdConnections: ConnectionUpdateManyWithoutCreatorInput
 }
 
 input MemberUpdateWithoutFriendsDataInput {
@@ -3663,6 +4108,7 @@ input MemberUpdateWithoutFriendsDataInput {
   twitterUserTokenSecret: String
   twitterListsObject: String
   twitterSeenIDs: MemberUpdatetwitterSeenIDsInput
+  createdConnections: ConnectionUpdateManyWithoutCreatorInput
 }
 
 input MemberUpdateWithoutIgnoredFriendRequestsDataInput {
@@ -3703,6 +4149,7 @@ input MemberUpdateWithoutIgnoredFriendRequestsDataInput {
   twitterUserTokenSecret: String
   twitterListsObject: String
   twitterSeenIDs: MemberUpdatetwitterSeenIDsInput
+  createdConnections: ConnectionUpdateManyWithoutCreatorInput
 }
 
 input MemberUpdateWithoutIndividualViewPermissionsDataInput {
@@ -3743,6 +4190,7 @@ input MemberUpdateWithoutIndividualViewPermissionsDataInput {
   twitterUserTokenSecret: String
   twitterListsObject: String
   twitterSeenIDs: MemberUpdatetwitterSeenIDsInput
+  createdConnections: ConnectionUpdateManyWithoutCreatorInput
 }
 
 input MemberUpdateWithoutNotificationsDataInput {
@@ -3783,6 +4231,7 @@ input MemberUpdateWithoutNotificationsDataInput {
   twitterUserTokenSecret: String
   twitterListsObject: String
   twitterSeenIDs: MemberUpdatetwitterSeenIDsInput
+  createdConnections: ConnectionUpdateManyWithoutCreatorInput
 }
 
 input MemberUpdateWithoutOwnedTagsDataInput {
@@ -3823,6 +4272,7 @@ input MemberUpdateWithoutOwnedTagsDataInput {
   twitterUserTokenSecret: String
   twitterListsObject: String
   twitterSeenIDs: MemberUpdatetwitterSeenIDsInput
+  createdConnections: ConnectionUpdateManyWithoutCreatorInput
 }
 
 input MemberUpdateWithoutPassesDataInput {
@@ -3863,6 +4313,7 @@ input MemberUpdateWithoutPassesDataInput {
   twitterUserTokenSecret: String
   twitterListsObject: String
   twitterSeenIDs: MemberUpdatetwitterSeenIDsInput
+  createdConnections: ConnectionUpdateManyWithoutCreatorInput
 }
 
 input MemberUpdateWithoutVotesDataInput {
@@ -3903,6 +4354,7 @@ input MemberUpdateWithoutVotesDataInput {
   twitterUserTokenSecret: String
   twitterListsObject: String
   twitterSeenIDs: MemberUpdatetwitterSeenIDsInput
+  createdConnections: ConnectionUpdateManyWithoutCreatorInput
 }
 
 input MemberUpdateWithWhereUniqueWithoutFriendRequestsInput {
@@ -3938,6 +4390,11 @@ input MemberUpsertWithoutCollectionsInput {
 input MemberUpsertWithoutCommentsInput {
   update: MemberUpdateWithoutCommentsDataInput!
   create: MemberCreateWithoutCommentsInput!
+}
+
+input MemberUpsertWithoutCreatedConnectionsInput {
+  update: MemberUpdateWithoutCreatedConnectionsDataInput!
+  create: MemberCreateWithoutCreatedConnectionsInput!
 }
 
 input MemberUpsertWithoutCreatedThingsInput {
@@ -4300,6 +4757,9 @@ input MemberWhereInput {
   twitterListsObject_not_starts_with: String
   twitterListsObject_ends_with: String
   twitterListsObject_not_ends_with: String
+  createdConnections_every: ConnectionWhereInput
+  createdConnections_some: ConnectionWhereInput
+  createdConnections_none: ConnectionWhereInput
   createdAt: DateTime
   createdAt_not: DateTime
   createdAt_in: [DateTime!]
@@ -4351,6 +4811,12 @@ type Mutation {
   upsertComment(where: CommentWhereUniqueInput!, create: CommentCreateInput!, update: CommentUpdateInput!): Comment!
   deleteComment(where: CommentWhereUniqueInput!): Comment
   deleteManyComments(where: CommentWhereInput): BatchPayload!
+  createConnection(data: ConnectionCreateInput!): Connection!
+  updateConnection(data: ConnectionUpdateInput!, where: ConnectionWhereUniqueInput!): Connection
+  updateManyConnections(data: ConnectionUpdateManyMutationInput!, where: ConnectionWhereInput): BatchPayload!
+  upsertConnection(where: ConnectionWhereUniqueInput!, create: ConnectionCreateInput!, update: ConnectionUpdateInput!): Connection!
+  deleteConnection(where: ConnectionWhereUniqueInput!): Connection
+  deleteManyConnections(where: ConnectionWhereInput): BatchPayload!
   createContentPiece(data: ContentPieceCreateInput!): ContentPiece!
   updateContentPiece(data: ContentPieceUpdateInput!, where: ContentPieceWhereUniqueInput!): ContentPiece
   updateManyContentPieces(data: ContentPieceUpdateManyMutationInput!, where: ContentPieceWhereInput): BatchPayload!
@@ -4881,6 +5347,9 @@ type Query {
   comment(where: CommentWhereUniqueInput!): Comment
   comments(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Comment]!
   commentsConnection(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): CommentConnection!
+  connection(where: ConnectionWhereUniqueInput!): Connection
+  connections(where: ConnectionWhereInput, orderBy: ConnectionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Connection]!
+  connectionsConnection(where: ConnectionWhereInput, orderBy: ConnectionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ConnectionConnection!
   contentPiece(where: ContentPieceWhereUniqueInput!): ContentPiece
   contentPieces(where: ContentPieceWhereInput, orderBy: ContentPieceOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ContentPiece]!
   contentPiecesConnection(where: ContentPieceWhereInput, orderBy: ContentPieceOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ContentPieceConnection!
@@ -5303,6 +5772,7 @@ type Subscription {
   collectionGroup(where: CollectionGroupSubscriptionWhereInput): CollectionGroupSubscriptionPayload
   columnOrder(where: ColumnOrderSubscriptionWhereInput): ColumnOrderSubscriptionPayload
   comment(where: CommentSubscriptionWhereInput): CommentSubscriptionPayload
+  connection(where: ConnectionSubscriptionWhereInput): ConnectionSubscriptionPayload
   contentPiece(where: ContentPieceSubscriptionWhereInput): ContentPieceSubscriptionPayload
   member(where: MemberSubscriptionWhereInput): MemberSubscriptionPayload
   notification(where: NotificationSubscriptionWhereInput): NotificationSubscriptionPayload
@@ -6119,6 +6589,8 @@ type Thing {
   privacy: PrivacySetting
   individualViewPermissions(where: MemberWhereInput, orderBy: MemberOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Member!]
   manualUpdatedAt: DateTime
+  subjectConnections(where: ConnectionWhereInput, orderBy: ConnectionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Connection!]
+  objectConnections(where: ConnectionWhereInput, orderBy: ConnectionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Connection!]
   createdAt: DateTime!
   updatedAt: DateTime
 }
@@ -6157,6 +6629,8 @@ input ThingCreateInput {
   privacy: PrivacySetting
   individualViewPermissions: MemberCreateManyWithoutIndividualViewPermissionsInput
   manualUpdatedAt: DateTime
+  subjectConnections: ConnectionCreateManyWithoutSubjectInput
+  objectConnections: ConnectionCreateManyWithoutObjectInput
 }
 
 input ThingCreateManyInput {
@@ -6199,8 +6673,18 @@ input ThingCreateOneWithoutContentInput {
   connect: ThingWhereUniqueInput
 }
 
+input ThingCreateOneWithoutObjectConnectionsInput {
+  create: ThingCreateWithoutObjectConnectionsInput
+  connect: ThingWhereUniqueInput
+}
+
 input ThingCreateOneWithoutPassesInput {
   create: ThingCreateWithoutPassesInput
+  connect: ThingWhereUniqueInput
+}
+
+input ThingCreateOneWithoutSubjectConnectionsInput {
+  create: ThingCreateWithoutSubjectConnectionsInput
   connect: ThingWhereUniqueInput
 }
 
@@ -6232,6 +6716,8 @@ input ThingCreateWithoutAuthorInput {
   privacy: PrivacySetting
   individualViewPermissions: MemberCreateManyWithoutIndividualViewPermissionsInput
   manualUpdatedAt: DateTime
+  subjectConnections: ConnectionCreateManyWithoutSubjectInput
+  objectConnections: ConnectionCreateManyWithoutObjectInput
 }
 
 input ThingCreateWithoutCommentsInput {
@@ -6257,6 +6743,8 @@ input ThingCreateWithoutCommentsInput {
   privacy: PrivacySetting
   individualViewPermissions: MemberCreateManyWithoutIndividualViewPermissionsInput
   manualUpdatedAt: DateTime
+  subjectConnections: ConnectionCreateManyWithoutSubjectInput
+  objectConnections: ConnectionCreateManyWithoutObjectInput
 }
 
 input ThingCreateWithoutContentInput {
@@ -6282,6 +6770,8 @@ input ThingCreateWithoutContentInput {
   privacy: PrivacySetting
   individualViewPermissions: MemberCreateManyWithoutIndividualViewPermissionsInput
   manualUpdatedAt: DateTime
+  subjectConnections: ConnectionCreateManyWithoutSubjectInput
+  objectConnections: ConnectionCreateManyWithoutObjectInput
 }
 
 input ThingCreateWithoutCopiedInContentInput {
@@ -6307,6 +6797,8 @@ input ThingCreateWithoutCopiedInContentInput {
   privacy: PrivacySetting
   individualViewPermissions: MemberCreateManyWithoutIndividualViewPermissionsInput
   manualUpdatedAt: DateTime
+  subjectConnections: ConnectionCreateManyWithoutSubjectInput
+  objectConnections: ConnectionCreateManyWithoutObjectInput
 }
 
 input ThingCreateWithoutIndividualViewPermissionsInput {
@@ -6332,6 +6824,35 @@ input ThingCreateWithoutIndividualViewPermissionsInput {
   finalistDate: DateTime
   privacy: PrivacySetting
   manualUpdatedAt: DateTime
+  subjectConnections: ConnectionCreateManyWithoutSubjectInput
+  objectConnections: ConnectionCreateManyWithoutObjectInput
+}
+
+input ThingCreateWithoutObjectConnectionsInput {
+  id: ID
+  title: String
+  author: MemberCreateOneWithoutCreatedThingsInput!
+  featuredImage: String
+  link: String
+  content: ContentPieceCreateManyWithoutOnThingInput
+  unsavedNewContent: String
+  copiedInContent: ContentPieceCreateManyWithoutCopiedToThingsInput
+  contentOrder: ThingCreatecontentOrderInput
+  summary: String
+  partOfTags: TagCreateManyWithoutConnectedThingsInput
+  partOfStacks: StackCreateManyWithoutConnectedThingsInput
+  color: String
+  votes: VoteCreateManyWithoutOnThingInput
+  passes: PassCreateManyWithoutOnThingInput
+  score: Int
+  winner: DateTime
+  comments: CommentCreateManyWithoutOnThingInput
+  eliminated: Boolean
+  finalistDate: DateTime
+  privacy: PrivacySetting
+  individualViewPermissions: MemberCreateManyWithoutIndividualViewPermissionsInput
+  manualUpdatedAt: DateTime
+  subjectConnections: ConnectionCreateManyWithoutSubjectInput
 }
 
 input ThingCreateWithoutPartOfStacksInput {
@@ -6357,6 +6878,8 @@ input ThingCreateWithoutPartOfStacksInput {
   privacy: PrivacySetting
   individualViewPermissions: MemberCreateManyWithoutIndividualViewPermissionsInput
   manualUpdatedAt: DateTime
+  subjectConnections: ConnectionCreateManyWithoutSubjectInput
+  objectConnections: ConnectionCreateManyWithoutObjectInput
 }
 
 input ThingCreateWithoutPartOfTagsInput {
@@ -6382,6 +6905,8 @@ input ThingCreateWithoutPartOfTagsInput {
   privacy: PrivacySetting
   individualViewPermissions: MemberCreateManyWithoutIndividualViewPermissionsInput
   manualUpdatedAt: DateTime
+  subjectConnections: ConnectionCreateManyWithoutSubjectInput
+  objectConnections: ConnectionCreateManyWithoutObjectInput
 }
 
 input ThingCreateWithoutPassesInput {
@@ -6407,6 +6932,35 @@ input ThingCreateWithoutPassesInput {
   privacy: PrivacySetting
   individualViewPermissions: MemberCreateManyWithoutIndividualViewPermissionsInput
   manualUpdatedAt: DateTime
+  subjectConnections: ConnectionCreateManyWithoutSubjectInput
+  objectConnections: ConnectionCreateManyWithoutObjectInput
+}
+
+input ThingCreateWithoutSubjectConnectionsInput {
+  id: ID
+  title: String
+  author: MemberCreateOneWithoutCreatedThingsInput!
+  featuredImage: String
+  link: String
+  content: ContentPieceCreateManyWithoutOnThingInput
+  unsavedNewContent: String
+  copiedInContent: ContentPieceCreateManyWithoutCopiedToThingsInput
+  contentOrder: ThingCreatecontentOrderInput
+  summary: String
+  partOfTags: TagCreateManyWithoutConnectedThingsInput
+  partOfStacks: StackCreateManyWithoutConnectedThingsInput
+  color: String
+  votes: VoteCreateManyWithoutOnThingInput
+  passes: PassCreateManyWithoutOnThingInput
+  score: Int
+  winner: DateTime
+  comments: CommentCreateManyWithoutOnThingInput
+  eliminated: Boolean
+  finalistDate: DateTime
+  privacy: PrivacySetting
+  individualViewPermissions: MemberCreateManyWithoutIndividualViewPermissionsInput
+  manualUpdatedAt: DateTime
+  objectConnections: ConnectionCreateManyWithoutObjectInput
 }
 
 input ThingCreateWithoutVotesInput {
@@ -6432,6 +6986,8 @@ input ThingCreateWithoutVotesInput {
   privacy: PrivacySetting
   individualViewPermissions: MemberCreateManyWithoutIndividualViewPermissionsInput
   manualUpdatedAt: DateTime
+  subjectConnections: ConnectionCreateManyWithoutSubjectInput
+  objectConnections: ConnectionCreateManyWithoutObjectInput
 }
 
 type ThingEdge {
@@ -6694,6 +7250,8 @@ input ThingUpdateDataInput {
   privacy: PrivacySetting
   individualViewPermissions: MemberUpdateManyWithoutIndividualViewPermissionsInput
   manualUpdatedAt: DateTime
+  subjectConnections: ConnectionUpdateManyWithoutSubjectInput
+  objectConnections: ConnectionUpdateManyWithoutObjectInput
 }
 
 input ThingUpdateInput {
@@ -6719,6 +7277,8 @@ input ThingUpdateInput {
   privacy: PrivacySetting
   individualViewPermissions: MemberUpdateManyWithoutIndividualViewPermissionsInput
   manualUpdatedAt: DateTime
+  subjectConnections: ConnectionUpdateManyWithoutSubjectInput
+  objectConnections: ConnectionUpdateManyWithoutObjectInput
 }
 
 input ThingUpdateManyDataInput {
@@ -6830,6 +7390,20 @@ input ThingUpdateManyWithWhereNestedInput {
   data: ThingUpdateManyDataInput!
 }
 
+input ThingUpdateOneRequiredWithoutObjectConnectionsInput {
+  create: ThingCreateWithoutObjectConnectionsInput
+  update: ThingUpdateWithoutObjectConnectionsDataInput
+  upsert: ThingUpsertWithoutObjectConnectionsInput
+  connect: ThingWhereUniqueInput
+}
+
+input ThingUpdateOneRequiredWithoutSubjectConnectionsInput {
+  create: ThingCreateWithoutSubjectConnectionsInput
+  update: ThingUpdateWithoutSubjectConnectionsDataInput
+  upsert: ThingUpsertWithoutSubjectConnectionsInput
+  connect: ThingWhereUniqueInput
+}
+
 input ThingUpdateOneWithoutCommentsInput {
   create: ThingCreateWithoutCommentsInput
   update: ThingUpdateWithoutCommentsDataInput
@@ -6888,6 +7462,8 @@ input ThingUpdateWithoutAuthorDataInput {
   privacy: PrivacySetting
   individualViewPermissions: MemberUpdateManyWithoutIndividualViewPermissionsInput
   manualUpdatedAt: DateTime
+  subjectConnections: ConnectionUpdateManyWithoutSubjectInput
+  objectConnections: ConnectionUpdateManyWithoutObjectInput
 }
 
 input ThingUpdateWithoutCommentsDataInput {
@@ -6912,6 +7488,8 @@ input ThingUpdateWithoutCommentsDataInput {
   privacy: PrivacySetting
   individualViewPermissions: MemberUpdateManyWithoutIndividualViewPermissionsInput
   manualUpdatedAt: DateTime
+  subjectConnections: ConnectionUpdateManyWithoutSubjectInput
+  objectConnections: ConnectionUpdateManyWithoutObjectInput
 }
 
 input ThingUpdateWithoutContentDataInput {
@@ -6936,6 +7514,8 @@ input ThingUpdateWithoutContentDataInput {
   privacy: PrivacySetting
   individualViewPermissions: MemberUpdateManyWithoutIndividualViewPermissionsInput
   manualUpdatedAt: DateTime
+  subjectConnections: ConnectionUpdateManyWithoutSubjectInput
+  objectConnections: ConnectionUpdateManyWithoutObjectInput
 }
 
 input ThingUpdateWithoutCopiedInContentDataInput {
@@ -6960,6 +7540,8 @@ input ThingUpdateWithoutCopiedInContentDataInput {
   privacy: PrivacySetting
   individualViewPermissions: MemberUpdateManyWithoutIndividualViewPermissionsInput
   manualUpdatedAt: DateTime
+  subjectConnections: ConnectionUpdateManyWithoutSubjectInput
+  objectConnections: ConnectionUpdateManyWithoutObjectInput
 }
 
 input ThingUpdateWithoutIndividualViewPermissionsDataInput {
@@ -6984,6 +7566,34 @@ input ThingUpdateWithoutIndividualViewPermissionsDataInput {
   finalistDate: DateTime
   privacy: PrivacySetting
   manualUpdatedAt: DateTime
+  subjectConnections: ConnectionUpdateManyWithoutSubjectInput
+  objectConnections: ConnectionUpdateManyWithoutObjectInput
+}
+
+input ThingUpdateWithoutObjectConnectionsDataInput {
+  title: String
+  author: MemberUpdateOneRequiredWithoutCreatedThingsInput
+  featuredImage: String
+  link: String
+  content: ContentPieceUpdateManyWithoutOnThingInput
+  unsavedNewContent: String
+  copiedInContent: ContentPieceUpdateManyWithoutCopiedToThingsInput
+  contentOrder: ThingUpdatecontentOrderInput
+  summary: String
+  partOfTags: TagUpdateManyWithoutConnectedThingsInput
+  partOfStacks: StackUpdateManyWithoutConnectedThingsInput
+  color: String
+  votes: VoteUpdateManyWithoutOnThingInput
+  passes: PassUpdateManyWithoutOnThingInput
+  score: Int
+  winner: DateTime
+  comments: CommentUpdateManyWithoutOnThingInput
+  eliminated: Boolean
+  finalistDate: DateTime
+  privacy: PrivacySetting
+  individualViewPermissions: MemberUpdateManyWithoutIndividualViewPermissionsInput
+  manualUpdatedAt: DateTime
+  subjectConnections: ConnectionUpdateManyWithoutSubjectInput
 }
 
 input ThingUpdateWithoutPartOfStacksDataInput {
@@ -7008,6 +7618,8 @@ input ThingUpdateWithoutPartOfStacksDataInput {
   privacy: PrivacySetting
   individualViewPermissions: MemberUpdateManyWithoutIndividualViewPermissionsInput
   manualUpdatedAt: DateTime
+  subjectConnections: ConnectionUpdateManyWithoutSubjectInput
+  objectConnections: ConnectionUpdateManyWithoutObjectInput
 }
 
 input ThingUpdateWithoutPartOfTagsDataInput {
@@ -7032,6 +7644,8 @@ input ThingUpdateWithoutPartOfTagsDataInput {
   privacy: PrivacySetting
   individualViewPermissions: MemberUpdateManyWithoutIndividualViewPermissionsInput
   manualUpdatedAt: DateTime
+  subjectConnections: ConnectionUpdateManyWithoutSubjectInput
+  objectConnections: ConnectionUpdateManyWithoutObjectInput
 }
 
 input ThingUpdateWithoutPassesDataInput {
@@ -7056,6 +7670,34 @@ input ThingUpdateWithoutPassesDataInput {
   privacy: PrivacySetting
   individualViewPermissions: MemberUpdateManyWithoutIndividualViewPermissionsInput
   manualUpdatedAt: DateTime
+  subjectConnections: ConnectionUpdateManyWithoutSubjectInput
+  objectConnections: ConnectionUpdateManyWithoutObjectInput
+}
+
+input ThingUpdateWithoutSubjectConnectionsDataInput {
+  title: String
+  author: MemberUpdateOneRequiredWithoutCreatedThingsInput
+  featuredImage: String
+  link: String
+  content: ContentPieceUpdateManyWithoutOnThingInput
+  unsavedNewContent: String
+  copiedInContent: ContentPieceUpdateManyWithoutCopiedToThingsInput
+  contentOrder: ThingUpdatecontentOrderInput
+  summary: String
+  partOfTags: TagUpdateManyWithoutConnectedThingsInput
+  partOfStacks: StackUpdateManyWithoutConnectedThingsInput
+  color: String
+  votes: VoteUpdateManyWithoutOnThingInput
+  passes: PassUpdateManyWithoutOnThingInput
+  score: Int
+  winner: DateTime
+  comments: CommentUpdateManyWithoutOnThingInput
+  eliminated: Boolean
+  finalistDate: DateTime
+  privacy: PrivacySetting
+  individualViewPermissions: MemberUpdateManyWithoutIndividualViewPermissionsInput
+  manualUpdatedAt: DateTime
+  objectConnections: ConnectionUpdateManyWithoutObjectInput
 }
 
 input ThingUpdateWithoutVotesDataInput {
@@ -7080,6 +7722,8 @@ input ThingUpdateWithoutVotesDataInput {
   privacy: PrivacySetting
   individualViewPermissions: MemberUpdateManyWithoutIndividualViewPermissionsInput
   manualUpdatedAt: DateTime
+  subjectConnections: ConnectionUpdateManyWithoutSubjectInput
+  objectConnections: ConnectionUpdateManyWithoutObjectInput
 }
 
 input ThingUpdateWithWhereUniqueNestedInput {
@@ -7122,9 +7766,19 @@ input ThingUpsertWithoutContentInput {
   create: ThingCreateWithoutContentInput!
 }
 
+input ThingUpsertWithoutObjectConnectionsInput {
+  update: ThingUpdateWithoutObjectConnectionsDataInput!
+  create: ThingCreateWithoutObjectConnectionsInput!
+}
+
 input ThingUpsertWithoutPassesInput {
   update: ThingUpdateWithoutPassesDataInput!
   create: ThingCreateWithoutPassesInput!
+}
+
+input ThingUpsertWithoutSubjectConnectionsInput {
+  update: ThingUpdateWithoutSubjectConnectionsDataInput!
+  create: ThingCreateWithoutSubjectConnectionsInput!
 }
 
 input ThingUpsertWithoutVotesInput {
@@ -7330,6 +7984,12 @@ input ThingWhereInput {
   manualUpdatedAt_lte: DateTime
   manualUpdatedAt_gt: DateTime
   manualUpdatedAt_gte: DateTime
+  subjectConnections_every: ConnectionWhereInput
+  subjectConnections_some: ConnectionWhereInput
+  subjectConnections_none: ConnectionWhereInput
+  objectConnections_every: ConnectionWhereInput
+  objectConnections_some: ConnectionWhereInput
+  objectConnections_none: ConnectionWhereInput
   createdAt: DateTime
   createdAt_not: DateTime
   createdAt_in: [DateTime!]

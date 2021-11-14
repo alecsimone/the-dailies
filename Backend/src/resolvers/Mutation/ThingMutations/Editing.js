@@ -13,7 +13,7 @@ const {
    fullMemberGate,
    canEditThing
 } = require('../../../utils/Authentication');
-const {fullMemberFields, smallThingCardFields} = require('../../../utils/CardInterfaces');
+const {fullMemberFields, smallThingCardFields, fullThingFields} = require('../../../utils/CardInterfaces');
 
 async function addTaxToThing(taxTitle, thingID, ctx, personal) {
    // Note: there's an addTaxToThingHandler shoved in between the client and this function. This is the function shared by other backend operations.
@@ -944,3 +944,144 @@ async function unlinkContentPiece(parent, {contentPieceID, thingID}, ctx, info) 
    return updatedStuff;
 }
 exports.unlinkContentPiece = unlinkContentPiece;
+
+async function addConnection(parent, { subjectID, objectID, relationship }, ctx, info) {
+   await loggedInGate(ctx).catch(() => {
+      throw new AuthenticationError('You must be logged in to do that!');
+   });
+   fullMemberGate(ctx.req.member);
+
+   if (subjectID === objectID) {
+      throw new Error("You can't connect a thing to itself.");
+   }
+
+   // First we have to get the data for the two things so we can check that one of them was created by the current user
+   const things = await ctx.db.query.things({
+      where: {
+         id_in: [subjectID, objectID]
+      }
+   }, `{author {id}}`);
+   if (things[0].author.id !== ctx.req.memberId && things[1].author.id !== ctx.req.memberId) {
+      throw new AuthenticationError('You must be the author of at least one of the things in a connection, sorry.');
+   }
+
+   if (things[0] == null || things[1] == null) {
+      throw new Error(`Thing not found`);
+   }
+
+   const existingConnection = await ctx.db.query.connections({
+      where: {
+         AND: [
+            {
+               subject: {
+                  id: subjectID
+               }
+            },
+            {
+               object: {
+                  id: objectID
+               }
+            },
+            {
+               relationship
+            }
+         ]
+      }
+   }, `{id}`);
+   if (existingConnection != null && existingConnection.length > 0) {
+      throw new Error("That connection already exists.");
+   }
+
+   // If one of the two provided things was created by our user, we create a connection and connect it to both things
+   const dataObj = {
+      relationship,
+      subject: {
+         connect: {
+            id: subjectID
+         }
+      },
+      object: {
+         connect: {
+            id: objectID
+         }
+      },
+      creator: {
+         connect: {
+            id: ctx.req.memberId
+         }
+      }
+   };
+
+   // Then, since it's not a normal stuff update, we're going to manually write the changes to the db and publish an update to the things channel
+   const updatedStuff = await ctx.db.mutation.createConnection({
+      data: dataObj
+   }, info);
+
+   const fullThings = await ctx.db.query.things({
+      where: {
+         id_in: [subjectID, objectID]
+      }
+   }, `{${fullThingFields}}`);
+
+   ctx.pubsub.publish('things', {
+      things: {
+         node: fullThings[0]
+      }
+   });
+   ctx.pubsub.publish('things', {
+      things: {
+         node: fullThings[1]
+      }
+   });
+
+   return fullThings;
+}
+exports.addConnection = addConnection;
+
+async function deleteConnection(parent, { connectionID }, ctx, info) {
+   await loggedInGate(ctx).catch(() => {
+      throw new AuthenticationError('You must be logged in to do that!');
+   });
+   fullMemberGate(ctx.req.member);
+
+   // First we get the connection so we can make sure it exists, find out which things it was connecting, and make sure the current user has the authority do delete it
+
+   const connection = await ctx.db.query.connection({
+      where: {
+         id: connectionID
+      }
+   }, `{id subject {${fullThingFields}} object {${fullThingFields}} creator {id}}`);
+
+   if (connection == null) {
+      throw new Error("No connection found for that ID");
+   }
+
+   if (
+         connection.creator.id !== ctx.req.memberId &&
+         connection.subject.author.id !== ctx.req.memberId &&
+         connection.object.author.id !== ctx.req.memberId &&
+         !['Admin', 'Editor', 'Moderator'].includes(ctx.req.member.role)
+      ) {
+      throw new AuthenticationError("You don't have permission to delete that connection");
+   }
+
+   const deletedConnection = await ctx.db.mutation.deleteConnection({
+      where: {
+         id: connectionID
+      }
+   }, `{subject {${fullThingFields}} object {${fullThingFields}}}`);
+
+   ctx.pubsub.publish('things', {
+      things: {
+         node: deletedConnection.subject
+      }
+   });
+   ctx.pubsub.publish('things', {
+      things: {
+         node: deletedConnection.object
+      }
+   });
+
+   return [deletedConnection.subject, deletedConnection.object];
+}
+exports.deleteConnection = deleteConnection;

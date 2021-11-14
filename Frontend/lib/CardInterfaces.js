@@ -285,6 +285,30 @@ const fullThingFields = `
       avatar
    }
    manualUpdatedAt
+   subjectConnections {
+      id
+      subject {
+         id
+      }
+      object {
+         id
+      }
+      relationship
+      strength
+      createdAt
+   }
+   objectConnections {
+      id
+      subject {
+         id
+      }
+      object {
+         id
+      }
+      relationship
+      strength
+      createdAt
+   }
    createdAt
    updatedAt
 `;

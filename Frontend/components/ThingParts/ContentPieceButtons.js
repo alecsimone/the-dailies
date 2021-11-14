@@ -238,7 +238,12 @@ const ContentPieceButtons = ({
          {editable && (
             <div
                className="buttonWrapper"
-               onClick={() => {
+               onClick={e => {
+                  if (
+                     e.target.closest('.addToInterface') != null &&
+                     showingAddToBox
+                  )
+                     return;
                   setShowingAddToBox(!showingAddToBox);
                   if (!showingAddToBox) {
                      window.setTimeout(() => {
