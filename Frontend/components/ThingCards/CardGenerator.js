@@ -22,7 +22,6 @@ const CardGenerator = ({ id, cardType, borderSide }) => {
          expanded={cardType === 'regular'}
          thingID={id}
          contentType={cardType === 'regular' ? 'full' : 'single'}
-         canEdit={false}
          titleLink
          borderSide={borderSide}
       />

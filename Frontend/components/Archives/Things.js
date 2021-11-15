@@ -52,27 +52,17 @@ const Things = ({ things, displayType, cardSize, noPic, borderSide }) => {
       memberFields: { role }
    } = useMe('Things', 'role');
 
-   const thingCards = things.map(thing => {
-      let canEdit = false;
-      if (loggedInUserID && thing.author.id === loggedInUserID) {
-         canEdit = true;
-      }
-      if (loggedInUserID && ['Admin', 'Editor', 'Moderator'].includes(role)) {
-         canEdit = true;
-      }
-      return (
-         <FlexibleThingCard
-            key={thing.id}
-            expanded={cardSize === 'regular'}
-            thingID={thing.id}
-            contentType="single"
-            canEdit={canEdit}
-            titleLink
-            borderSide={borderSide}
-            noPic={noPic}
-         />
-      );
-   });
+   const thingCards = things.map(thing => (
+      <FlexibleThingCard
+         key={thing.id}
+         expanded={cardSize === 'regular'}
+         thingID={thing.id}
+         contentType="single"
+         titleLink
+         borderSide={borderSide}
+         noPic={noPic}
+      />
+   ));
    if (displayType === 'grid') {
       return (
          <StyledThings className={`things ${displayType}`}>

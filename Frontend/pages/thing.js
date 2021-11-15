@@ -97,16 +97,6 @@ const SingleThing = ({ query }) => {
       pageTitle = 'Loading Thing';
    } else if (data) {
       if (data.thing != null) {
-         let canEdit = false;
-         if (data && loggedInUserID) {
-            if (data.thing.author.id === loggedInUserID) {
-               canEdit = true;
-            }
-            if (['Admin', 'Editor', 'Moderator'].includes(role)) {
-               canEdit = true;
-            }
-         }
-
          if (loggedInUserID?.broadcastView) {
             content = (
                <BroadcastThing
@@ -120,7 +110,6 @@ const SingleThing = ({ query }) => {
                <FlexibleThingCard
                   key={`flexibleCard-${query.id}`}
                   thingID={data.thing.id}
-                  canEdit={canEdit}
                   linkedPiece={query.piece}
                   linkedComment={query.comment}
                   {...displayProps}

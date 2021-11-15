@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { useSelector } from 'react-redux';
 import TitleBar from '../ThingParts/TitleBar';
 import AuthorLink from '../ThingParts/AuthorLink';
-import { setAlpha, setLightness } from '../../styles/functions';
+import { setAlpha, setLightness, setSaturation } from '../../styles/functions';
 import TimeAgo from '../TimeAgo';
 import CommentsButton from '../ThingParts/CommentsButton';
 import TaxBox from '../ThingParts/TaxBox';
@@ -29,6 +29,7 @@ import { myThingsQueryCount, MY_THINGS_QUERY } from '../Archives/MyThings';
 import HashtagIcon from '../Icons/Hashtag';
 import ConnectionsInterface from '../ThingParts/ConnectionsInterface';
 import ConnectionsIcon from '../Icons/Connections';
+import useMe from '../Account/useMe';
 
 const DELETE_THING_MUTATION = gql`
    mutation DELETE_THING_MUTATION($id: ID!) {
@@ -67,6 +68,9 @@ const useCardData = thingID => {
    );
    cardData.score = useSelector(state => state.stuff[propertyName].score);
    cardData.privacy = useSelector(state => state.stuff[propertyName].privacy);
+   cardData.authorID = useSelector(
+      state => state.stuff[propertyName].author.id
+   );
    return cardData;
 };
 
@@ -318,7 +322,8 @@ const StyledFlexibleThingCard = styled.article`
                   font-size: ${props => props.theme.tinyText};
                   bottom: calc(${props => props.theme.tinyText} * -0.25);
                   right: calc(${props => props.theme.tinyText} * -0.25);
-                  background: ${props => setAlpha(props.theme.majorColor, 0.8)};
+                  background: ${props =>
+                     setSaturation(setAlpha(props.theme.majorColor, 0.7), 50)};
                   line-height: 1;
                   height: ${props => props.theme.tinyText};
                   width: ${props => props.theme.tinyText};
@@ -440,7 +445,6 @@ const FlexibleThingCard = ({
    thingID,
    expanded = false,
    contentType = 'full',
-   canEdit = false,
    linkedPiece,
    linkedComment,
    titleLink,
@@ -457,8 +461,21 @@ const FlexibleThingCard = ({
       connectionCount,
       featuredImage,
       score,
-      privacy
+      privacy,
+      authorID
    } = useCardData(thingID);
+
+   const {
+      loggedInUserID,
+      memberFields: { role: memberRole }
+   } = useMe('ThingCard', 'role');
+
+   let canEdit = false;
+   if (loggedInUserID === authorID) {
+      canEdit = true;
+   } else if (['Admin', 'Editor', 'Moderator'].includes(memberRole)) {
+      canEdit = true;
+   }
 
    // Setting the toggle expansion arrow to the opposite of the expanded value would be confusing if we got a thing which is intended to be expanded, but has no fields with data, e.g. if we are looking at a new thing that doesn't have any content, etc yet. So we check for that here.
    let initialToggleDirection = 'down';

@@ -129,14 +129,6 @@ const CollectionsCard = ({
       </div>
    );
 
-   let canEdit = false;
-   if (loggedInUserID && data?.author?.id === loggedInUserID) {
-      canEdit = true;
-   }
-   if (loggedInUserID && ['Admin', 'Editor', 'Moderator'].includes(role)) {
-      canEdit = true;
-   }
-
    return (
       <Draggable
          draggableId={`${groupID}-${id}`}
@@ -156,7 +148,6 @@ const CollectionsCard = ({
                   expanded={isExpanded}
                   thingID={data.id}
                   contentType="single"
-                  canEdit={canEdit}
                   titleLink
                   borderSide="top"
                   noPic
