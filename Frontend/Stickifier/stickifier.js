@@ -419,6 +419,9 @@ const stickifyBlock = block => {
    // We haven't worked out stickifier for tax sidebars yet, so let's just skip those for now
    if (block.closest('.taxSidebar') != null) return;
 
+   // If the blocks are being reordered, we don't want to bother with stickifying, because it can make things real jumpy
+   if (block.closest('.reordering') != null) return;
+
    // First we're going to collect some data about the block that we'll need throughout the stickifying process
    const stickingData = makeStickingData(block);
 
