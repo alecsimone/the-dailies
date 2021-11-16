@@ -3,6 +3,7 @@ import styled, { ThemeContext } from 'styled-components';
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import { ModalContext } from '../ModalProvider';
+import Logo from '../Icons/Logo';
 
 const StyledLogoBox = styled.div`
    display: inline-flex;
@@ -10,7 +11,7 @@ const StyledLogoBox = styled.div`
    a.logo {
       line-height: 0;
       height: ${props => props.theme.smallHead};
-      img {
+      svg {
          width: ${props => props.theme.smallHead};
          cursor: pointer;
          ${props => props.theme.mobileBreakpoint} {
@@ -64,7 +65,7 @@ const LogoBox = () => {
                   }
                }}
             >
-               <img src="/logo.png" alt="logo" />
+               <Logo />
             </a>
          </Link>
          <Link href="/">

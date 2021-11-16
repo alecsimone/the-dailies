@@ -10,6 +10,7 @@ import { ModalContext } from '../ModalProvider';
 import Login from '../Account/Login';
 import useMe from '../Account/useMe';
 import { basicMemberFields } from '../../lib/CardInterfaces';
+import Logo from '../Icons/Logo';
 
 const VOTE_MUTATION = gql`
    mutation VOTE_MUTATION($id: ID!, $type: String!, $isFreshVote: Boolean!) {
@@ -93,7 +94,7 @@ const StyledVoteBar = styled.section`
    }
    .left {
       line-height: 0;
-      img.voteButton {
+      svg {
          height: 3rem;
          width: 3rem;
          cursor: pointer;
@@ -280,8 +281,7 @@ const VoteBar = ({ id, thingID, type, mini, alwaysMini }) => {
                voteHandler();
             }}
          >
-            <img
-               src="/logo-small.png"
+            <Logo
                alt="Vote Button"
                role="button"
                className={meVoted ? 'voteButton full' : 'voteButton empty'}
