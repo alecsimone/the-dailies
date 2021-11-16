@@ -94,6 +94,14 @@ const StyledVoteBar = styled.section`
    }
    .left {
       line-height: 0;
+      &:hover svg {
+         &.empty {
+            filter: saturate(0.4) brightness(0.6);
+         }
+         &.full {
+            filter: saturate(0.6) brightness(0.8);
+         }
+      }
       svg {
          height: 3rem;
          width: 3rem;
@@ -101,14 +109,6 @@ const StyledVoteBar = styled.section`
          transition: filter 0.25s;
          &.empty {
             filter: saturate(0) brightness(0.4);
-            &:hover {
-               filter: saturate(0.4) brightness(0.6);
-            }
-         }
-         &.full {
-            &:hover {
-               filter: saturate(0.6) brightness(0.8);
-            }
          }
       }
    }
@@ -285,6 +285,7 @@ const VoteBar = ({ id, thingID, type, mini, alwaysMini }) => {
                alt="Vote Button"
                role="button"
                className={meVoted ? 'voteButton full' : 'voteButton empty'}
+               empty={!meVoted}
             />
          </div>
          <div className="middle">{voterBubbles}</div>
