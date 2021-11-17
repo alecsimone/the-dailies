@@ -3,6 +3,7 @@ import {
    collectionGroupFields,
    fullCollectionFields,
    fullMemberFields,
+   fullThingFields,
    smallThingCardFields,
    thingCardFields
 } from '../../lib/CardInterfaces';
@@ -28,7 +29,7 @@ export { COLLECTIONS_PAGE_QUERY };
 const MY_BIG_THINGS_QUERY = gql`
    query MY_THINGS_QUERY($cursor: String, $forCollection: ID) {
       myThings(cursor: $cursor, forCollection: $forCollection) {
-         ${thingCardFields}
+         ${fullThingFields}
       }
    }
 `;
