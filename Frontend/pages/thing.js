@@ -3,6 +3,7 @@ import { useQuery } from '@apollo/react-hooks';
 import styled from 'styled-components';
 import React, { useEffect } from 'react';
 import Head from 'next/head';
+import { useSelector } from 'react-redux';
 import Error from '../components/ErrorMessage';
 import LoadingRing from '../components/LoadingRing';
 import { fullThingFields } from '../lib/CardInterfaces';
@@ -61,9 +62,12 @@ const StyledSingleThing = styled.section`
 `;
 
 const SingleThing = ({ query }) => {
+   const hasData = useSelector(
+      state => state.stuff[`Thing:${query.id}`] != null
+   );
    const { loading, error, data } = useQueryAndStoreIt(SINGLE_THING_QUERY, {
       variables: { id: query.id },
-      skip: query.id === 'new'
+      skip: query.id === 'new' || hasData
    });
 
    const {
@@ -109,7 +113,7 @@ const SingleThing = ({ query }) => {
             content = (
                <FlexibleThingCard
                   key={`flexibleCard-${query.id}`}
-                  thingID={data.thing.id}
+                  thingID={query.id}
                   linkedPiece={query.piece}
                   linkedComment={query.comment}
                   {...displayProps}
