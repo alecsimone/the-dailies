@@ -29,6 +29,7 @@ import useStickifier, {
 import { stickifyBlock } from '../../../Stickifier/stickifier';
 import useMe from '../../Account/useMe';
 import { basicMemberFields } from '../../../lib/CardInterfaces';
+import Swiper from '../Swiper';
 
 const ContentPiece = ({
    contentType,
@@ -307,31 +308,6 @@ const ContentPiece = ({
       />
    );
 
-   let translation = touchEnd - touchStart;
-   if (!showingComments && translation > minimumTranslationDistance * -1) {
-      translation = 0;
-   }
-   if (showingComments && translation < minimumTranslationDistance) {
-      translation = 0;
-   }
-
-   let finalTranslation = '0';
-   if (
-      process.browser &&
-      contentWrapperRef != null &&
-      contentWrapperRef.current != null
-   ) {
-      const oneRem = getOneRem();
-
-      const container = contentWrapperRef.current.parentNode;
-      const containerRect = container.getBoundingClientRect();
-      const containerWidth = containerRect.width;
-      const calculatedTranslation = showingComments
-         ? translation - containerWidth / 2 - oneRem + 1
-         : translation;
-      finalTranslation = `${calculatedTranslation}px`;
-   }
-
    let otherLocations = false;
    let copiedFrom;
    let alsoFoundIn;
@@ -395,81 +371,72 @@ const ContentPiece = ({
       otherLocations = null;
    }
 
-   const contentArea = (
-      <div className="overflowWrapper">
-         <div
-            className={`contentAndCommentContainer ${
-               clickToShowComments ? 'cts' : 'ncts'
-            }`}
-         >
-            {(!clickToShowComments || !showingComments || true) && (
-               <div
-                  className={`contentWrapper${
-                     translation === 0 && showingComments
-                        ? ' doesNotGiveSize'
-                        : ' givesSize'
-                  }`}
-                  style={{
-                     transform: `translateX(${finalTranslation})`
-                  }}
-                  ref={contentWrapperRef}
-               >
-                  <div className="theActualContent">
-                     {contentElement}
-                     {canEdit &&
-                        unsavedNewContent != null &&
-                        unsavedNewContent !== '' &&
-                        unsavedNewContent !== rawContentString && (
-                           <div className="unsavedContent">
-                              <h4>Unsaved Changes</h4>
-                              <div className="visibilityInfo">
-                                 (visible only to you)
-                              </div>
-                              {unsavedNewContent}
-                              <button
-                                 onClick={() => {
-                                    if (
-                                       !confirm(
-                                          'Discard these unsaved changes?'
-                                       )
-                                    )
-                                       return;
-                                    clearUnsavedContentPieceChanges();
-                                    setUnsavedNewContent(null);
-                                 }}
-                              >
-                                 discard
-                              </button>
-                           </div>
-                        )}
+   const fullContentElement = (
+      <div className="contentWrapper" ref={contentWrapperRef}>
+         <div className="theActualContent">
+            {contentElement}
+            {canEdit &&
+               unsavedNewContent != null &&
+               unsavedNewContent !== '' &&
+               unsavedNewContent !== rawContentString && (
+                  <div className="unsavedContent">
+                     <h4>Unsaved Changes</h4>
+                     <div className="visibilityInfo">(visible only to you)</div>
+                     {unsavedNewContent}
+                     <button
+                        onClick={() => {
+                           if (!confirm('Discard these unsaved changes?'))
+                              return;
+                           clearUnsavedContentPieceChanges();
+                           setUnsavedNewContent(null);
+                        }}
+                     >
+                        discard
+                     </button>
                   </div>
-                  {otherLocations}
-               </div>
-            )}
-            {(!clickToShowComments || showingComments || true) && (
-               <div
-                  className={`commentsWrapper${
-                     translation === 0 &&
-                     !showingComments &&
-                     clickToShowComments
-                        ? ' doesNotGiveSize'
-                        : ' givesSize'
-                  }${
-                     (comments.length > 0 && !hasShownComments) ||
-                     showingComments
-                        ? ' withComments'
-                        : ' noComments'
-                  }`}
-                  style={{
-                     transform: `translateX(${finalTranslation})`
-                  }}
-               >
-                  {commentsElement}
-               </div>
-            )}
+               )}
          </div>
+         {otherLocations}
       </div>
    );
+
+   const fullCommentsElement = (
+      <div
+         className={`commentsWrapper${
+            (comments.length > 0 && !hasShownComments) || showingComments
+               ? ' withComments'
+               : ' noComments'
+         }`}
+      >
+         {commentsElement}
+      </div>
+   );
+
+   let contentArea;
+   if (contentType === 'full' && clickToShowComments) {
+      contentArea = (
+         <Swiper
+            elementsArray={[fullContentElement, fullCommentsElement]}
+            hideNavigator
+            overridePosition={showingComments ? 1 : 0}
+         />
+      );
+   } else {
+      contentArea = (
+         <div className="overflowWrapper">
+            <div
+               className={`contentAndCommentContainer ${
+                  clickToShowComments ? 'cts' : 'ncts'
+               }`}
+            >
+               {(!clickToShowComments || !showingComments) &&
+                  fullContentElement}
+               {(!clickToShowComments || showingComments) &&
+                  fullCommentsElement}
+            </div>
+         </div>
+      );
+   }
 
    const secondMiddleOrRightClickListener = e => {
       if (e.button === 1 || e.button === 2) {

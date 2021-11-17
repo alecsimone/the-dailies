@@ -189,7 +189,8 @@ const stickifyComments = (
    const commentMarginRaw = commentsStyles.marginTop;
    const commentMargin = getIntPxFromStyleString(commentMarginRaw);
 
-   const topAdjustment = buttonsHeight + commentMargin;
+   // const topAdjustment = buttonsHeight + commentMargin;
+   const topAdjustment = commentMargin;
 
    if (comments != null) {
       // However, we do want to cut out any blocks where the commentsArea is bigger than the content area, as those don't need to be sticky
@@ -218,10 +219,21 @@ const stickifyComments = (
             // First we find the transformed element
             let transformedAncestor = comments.parentNode;
             while (
-               transformedAncestor.style.transform === '' &&
-               transformedAncestor != null
+               transformedAncestor != null &&
+               transformedAncestor.style != null &&
+               transformedAncestor.style.transform === ''
             ) {
                transformedAncestor = transformedAncestor.parentNode;
+            }
+
+            if (
+               transformedAncestor == null ||
+               transformedAncestor.style == null
+            ) {
+               comments.style.top = `${headerHeight}px`;
+               comments.style.bottom = `initial`;
+               comments.style.width = `${commentsRect.width}px`;
+               return;
             }
 
             // Then we figure out the conversion between the transformed ancestor's coordinate system and the viewport coordinate system

@@ -51,8 +51,8 @@ const StyledContent = styled.section`
                   width: 100%;
                }
                .contentWrapper {
-                  max-width: calc(50% - 0.5rem);
-                  min-width: calc(50% - 0.5rem);
+                  /* max-width: calc(50% - 0.5rem);
+                  min-width: calc(50% - 0.5rem); */
                   border-right: none;
                   .theActualContent {
                      width: 100%;
@@ -110,11 +110,15 @@ const StyledContent = styled.section`
                   }
                   .contentAndCommentContainer {
                      &.cts {
-                        width: calc(200% + 1rem);
+                        /* width: calc(200% + 1rem); */
                         .commentsWrapper .commentsArea {
                            display: flex;
                            flex-wrap: wrap;
                            justify-content: center;
+                           margin-top: 0;
+                           form.richTextArea {
+                              margin-top: 0;
+                           }
                            .commentsControls {
                               width: 100%;
                            }
@@ -151,7 +155,7 @@ const StyledContent = styled.section`
                      .contentWrapper,
                      .commentsWrapper {
                         display: inline-block;
-                        width: 50%;
+                        width: 100%;
                         /* min-height: 15rem; */
                      }
                      .contentWrapper {
@@ -207,7 +211,7 @@ const StyledContent = styled.section`
                      }
                      .commentsWrapper {
                         .commentsArea {
-                           width: calc(100% - 4rem);
+                           /* width: calc(100% - 4rem); */
                            margin-top: 2rem;
                            &.collapsed {
                               transition: opacity 0.25s ease-out;

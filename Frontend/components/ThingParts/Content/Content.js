@@ -1,9 +1,7 @@
 import { useMutation, useQuery } from '@apollo/react-hooks';
-import gql from 'graphql-tag';
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import Reorder from 'react-reorder';
-import { contentPieceFields } from '../../../lib/CardInterfaces';
 import {
    ADD_CONTENTPIECE_MUTATION,
    DELETE_CONTENTPIECE_MUTATION,
@@ -21,6 +19,7 @@ import ArrowIcon from '../../Icons/Arrow';
 import X from '../../Icons/X';
 import LoadingRing from '../../LoadingRing';
 import RichTextArea from '../../RichTextArea';
+import Swiper from '../Swiper';
 import ContentPiece from './ContentPiece';
 
 const useContentData = (thingID, type) => {
@@ -173,7 +172,6 @@ const Content = ({ contentType, canEdit, linkedPiece, stuffID, type }) => {
    });
    const [reordering, setReordering] = useState(false);
 
-   const [currentContentPosition, setCurrentContentPosition] = useState(0);
    const [showingAddContentForm, setShowingAddContentForm] = useState(
       contentType === 'full' ||
          (content.length === 0 && copiedInContent.length === 0)
@@ -266,48 +264,47 @@ const Content = ({ contentType, canEdit, linkedPiece, stuffID, type }) => {
          });
       }
       if (displayedContentType === 'single') {
-         const currentContentPiece = orderedContent[currentContentPosition];
+         const contentElementsArray = orderedContent.map(piece => {
+            const [originalContentCheck] = content.filter(
+               piece => piece.id === piece.id
+            );
+            const isOriginalContent = originalContentCheck != null;
 
-         const [originalContentCheck] = content.filter(
-            piece => piece.id === currentContentPiece.id
-         );
-         const isOriginalContent = originalContentCheck != null;
-
-         if (currentContentPiece != null) {
-            contentElements = (
+            return (
                <div
-                  key={currentContentPiece.id}
+                  key={piece.id}
                   className={reordering ? 'reordering' : 'locked'}
                >
                   <ContentPiece
-                     key={`${stuffID}-${currentContentPiece.id}-${
+                     key={`${stuffID}-${piece.id}-${
                         clickToShowComments ? 'cts' : 'ncts'
                      }`}
                      contentType={displayedContentType}
                      clickToShowComments={clickToShowComments}
                      canEdit={canEdit}
-                     pieceID={currentContentPiece.id}
+                     pieceID={piece.id}
                      stuffID={stuffID}
                      stuffType={type}
-                     votes={currentContentPiece.votes}
-                     unsavedContent={currentContentPiece.unsavedNewContent}
-                     comments={currentContentPiece.comments}
-                     rawContentString={currentContentPiece.content}
-                     onThing={currentContentPiece.onThing}
+                     votes={piece.votes}
+                     unsavedContent={piece.unsavedNewContent}
+                     comments={piece.comments}
+                     rawContentString={piece.content}
+                     onThing={piece.onThing}
                      isCopied={!isOriginalContent}
-                     copiedToThings={currentContentPiece.copiedToThings}
+                     copiedToThings={piece.copiedToThings}
                      editContentPiece={editPiece}
                      deleteContentPiece={deletePiece}
                      reordering={reordering}
                      setReordering={setReordering}
-                     highlighted={linkedPiece === currentContentPiece.id}
+                     highlighted={linkedPiece === piece.id}
                      zIndex={orderedContent.length} // We need to reverse the stacking context order so that each content piece is below the one before it, otherwise the next content piece will cover up the addToInterface, or anything else we might have pop out of the buttons
                      truncContExpanded={truncContExpanded}
                      setTruncContExpanded={setTruncContExpanded}
                   />
                </div>
             );
-         }
+         });
+         contentElements = <Swiper elementsArray={contentElementsArray} />;
       }
    }
 
@@ -377,45 +374,6 @@ const Content = ({ contentType, canEdit, linkedPiece, stuffID, type }) => {
       <StyledContent className="content" ref={thisComponentRef}>
          <div className="contentSectionWrapper">
             {contentElements}
-            {displayedContentType === 'single' && (
-               <div className="sliderAndShowFormWrapper">
-                  {fullContent.length > 1 && (
-                     <div className="contentSlider">
-                        {currentContentPosition > 0 && (
-                           <ArrowIcon
-                              onClick={() =>
-                                 setCurrentContentPosition(
-                                    currentContentPosition - 1
-                                 )
-                              }
-                              pointing="left"
-                           />
-                        )}
-                        <span
-                           className={`sliderText${
-                              currentContentPosition === 0 ? ' noLeft' : ''
-                           }${
-                              currentContentPosition + 1 === fullContent.length
-                                 ? ' noRight'
-                                 : ''
-                           }`}
-                        >
-                           {currentContentPosition + 1} / {fullContent.length}
-                        </span>
-                        {currentContentPosition + 1 < fullContent.length && (
-                           <ArrowIcon
-                              onClick={() =>
-                                 setCurrentContentPosition(
-                                    currentContentPosition + 1
-                                 )
-                              }
-                              pointing="right"
-                           />
-                        )}
-                     </div>
-                  )}
-               </div>
-            )}
             {canEdit && showingAddContentForm && (
                <RichTextArea
                   text=""
