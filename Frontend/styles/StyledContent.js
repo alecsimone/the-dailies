@@ -151,6 +151,11 @@ const StyledContent = styled.section`
                      display: flex;
                      ${props => props.theme.midScreenBreakpoint} {
                         width: 100%;
+                        .flexibleThingCard {
+                           .contentAndCommentContainer {
+                              width: 200%;
+                           }
+                        }
                      }
                      .givesSize {
                         height: auto;

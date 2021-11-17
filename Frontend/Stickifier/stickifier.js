@@ -50,7 +50,8 @@ const stickifyButtons = (
    viewableBottom,
    oneRem,
    blockRect,
-   bottomBarHeight
+   bottomBarHeight,
+   headerHeight
 ) => {
    let buttonsPlaceholder;
    const buttonsPlaceholderArray = blockObj.block.querySelectorAll(
@@ -88,6 +89,19 @@ const stickifyButtons = (
       // Then we fix the buttons to the bottom of the screen
       buttons.style.position = 'fixed';
 
+      let transformedAncestor = buttons.parentNode;
+      let transformedAncestorRect;
+      while (
+         transformedAncestor != null &&
+         transformedAncestor.style != null &&
+         transformedAncestor.style.transform === ''
+      ) {
+         transformedAncestor = transformedAncestor.parentNode;
+      }
+      if (transformedAncestor != null && transformedAncestor.style != null) {
+         transformedAncestorRect = transformedAncestor.getBoundingClientRect();
+      }
+
       const grandParentThing = blockObj.block
          .closest('.flexibleThingCard, .taxSidebar')
          .parentElement.closest('.flexibleThingCard, .taxSidebar');
@@ -100,8 +114,17 @@ const stickifyButtons = (
             offsetRect.left +
             offsetMarginLeft}px`;
       } else {
-         buttons.style.left = `${blockRect.left -
-            stickingData.leftAdjustment}px`;
+         const transformedAncestorLeft =
+            transformedAncestorRect != null ? transformedAncestorRect.left : 0;
+
+         if (transformedAncestorRect != null) {
+            buttons.style.left = `${transformedAncestorLeft -
+               blockRect.left -
+               stickingData.leftAdjustment}px`;
+         } else {
+            buttons.style.left = `${blockRect.left -
+               stickingData.leftAdjustment}px`;
+         }
       }
       buttons.style.width = `${buttonsWidth}px`;
       buttons.style.top = 'initial';
@@ -122,6 +145,7 @@ const stickifyButtons = (
       }
       let thingWithinThingBottom = 0;
 
+      let extraButtonsHeight = 0;
       if (grandParentThing != null) {
          // We're going to need to put the buttons for this block above the buttons for the parent block, so first we need to figure out how tall those are
          let uncleButtons;
@@ -145,10 +169,22 @@ const stickifyButtons = (
             window.innerHeight +
             uncleButtonsHeight -
             withinSidebarBottom;
+
+         extraButtonsHeight = buttonsHeight;
       }
-      buttons.style.bottom = `${bottomBarHeight +
-         withinSidebarBottom +
-         thingWithinThingBottom}px`;
+
+      const transformedBottomAdjustment =
+         transformedAncestorRect != null ? transformedAncestorRect.bottom : 0;
+
+      if (transformedAncestorRect != null) {
+         buttons.style.bottom = `${transformedBottomAdjustment -
+            window.innerHeight +
+            extraButtonsHeight}px`;
+      } else {
+         buttons.style.bottom = `${bottomBarHeight +
+            withinSidebarBottom +
+            thingWithinThingBottom}px`;
+      }
 
       // Then we make the buttonsPlaceholder the height of the buttons
       buttonsPlaceholder.style.height = `${buttonsHeight}px`;
@@ -482,7 +518,8 @@ const stickifyBlock = block => {
          viewableBottom,
          oneRem,
          blockRect,
-         bottomBarHeight
+         bottomBarHeight,
+         headerHeight
       );
    }
 
