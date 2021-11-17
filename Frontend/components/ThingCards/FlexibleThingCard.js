@@ -248,6 +248,32 @@ const StyledFlexibleThingCard = styled.article`
             }
          }
       }
+      .info {
+         display: flex;
+         align-items: center;
+         font-size: ${props => props.theme.tinyText};
+         color: ${props => setLightness(props.theme.lowContrastGrey, 60)};
+         font-weight: 300;
+         min-width: 11rem;
+         a {
+            line-height: 0; /* we need this to keep the link from throwing off the align-items: center */
+         }
+         .authorBlock {
+            display: inline-flex;
+            align-items: center;
+            margin-right: 0.5rem;
+            cursor: pointer;
+            .authorLink {
+               margin-bottom: 2px;
+            }
+            .authorImg {
+               width: 2rem;
+               height: 2rem;
+               border-radius: 100%;
+               margin-right: 0.5rem;
+            }
+         }
+      }
       .toolbar {
          display: flex;
          justify-content: space-between;
@@ -273,36 +299,10 @@ const StyledFlexibleThingCard = styled.article`
                text-decoration: none;
             }
          }
-         .info {
-            display: flex;
-            align-items: center;
-            font-size: ${props => props.theme.tinyText};
-            color: ${props => setLightness(props.theme.lowContrastGrey, 60)};
-            font-weight: 300;
-            min-width: 11rem;
-            a {
-               line-height: 0; /* we need this to keep the link from throwing off the align-items: center */
-            }
-            .authorBlock {
-               display: inline-flex;
-               align-items: center;
-               margin-right: 0.5rem;
-               cursor: pointer;
-               .authorLink {
-                  margin-bottom: 2px;
-               }
-               .authorImg {
-                  width: 2rem;
-                  height: 2rem;
-                  border-radius: 100%;
-                  margin-right: 0.5rem;
-               }
-            }
-         }
          .buttons {
             flex-grow: 1;
-            max-width: min(65%, 360px);
-            min-width: 240px;
+            width: 100%;
+            max-width: 64rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -666,18 +666,18 @@ const FlexibleThingCard = ({
                   </div>
                )}
             </div>
-            <div className="toolbar">
-               <div className="info">
-                  <AuthorLink
-                     key={`author-${thingID}`}
-                     thingID={thingID}
-                     type="Thing"
-                     noPic={noPic}
-                  />
-                  <div className="ago">
-                     <TimeAgo time={createdAt} key={`ago-${thingID}`} />
-                  </div>
+            <div className="info">
+               <AuthorLink
+                  key={`author-${thingID}`}
+                  thingID={thingID}
+                  type="Thing"
+                  noPic={noPic}
+               />
+               <div className="ago">
+                  <TimeAgo time={createdAt} key={`ago-${thingID}`} />
                </div>
+            </div>
+            <div className="toolbar">
                <div className="buttons">
                   <ArrowIcon
                      pointing={expansion.toggleDirection}
