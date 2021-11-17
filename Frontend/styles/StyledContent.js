@@ -152,7 +152,59 @@ const StyledContent = styled.section`
                      ${props => props.theme.midScreenBreakpoint} {
                         width: 100%;
                      }
-                     .contentWrapper,
+                     .givesSize {
+                        height: auto;
+                     }
+                     .doesNotGiveSize {
+                        height: 0;
+                        /* ${props => props.theme.midScreenBreakpoint} {
+                           height: auto;
+                        } */
+                     }
+                     img,
+                     video,
+                     iframe {
+                        max-width: 100%;
+                     }
+                     iframe {
+                        width: 100%;
+                     }
+                     .smallThingCard {
+                        margin: 2rem 0;
+                     }
+                     .regularThingCard {
+                        border: 1px solid
+                           ${props =>
+                              setAlpha(props.theme.lowContrastGrey, 0.25)};
+                     }
+                     .tweet.threadStarter {
+                        margin-bottom: 0;
+                        .quoteTweetContainer {
+                           margin-top: 0;
+                           margin-bottom: 0;
+                        }
+                     }
+                     svg.arrow.truncContArrow {
+                        width: ${props => props.theme.bigHead};
+                        cursor: pointer;
+                        margin: auto;
+                        display: block;
+                        rect {
+                           fill: ${props =>
+                              setLightness(props.theme.mainText, 70)};
+                        }
+                        &:hover {
+                           rect {
+                              fill: ${props => props.theme.mainText};
+                           }
+                        }
+                     }
+                     .contentSlider svg.arrow {
+                        margin: 0; /* need this here because I'm not sure how to make the svg.arrow on ThingCards more specific from within them */
+                     }
+                  }
+               }
+               .contentWrapper,
                      .commentsWrapper {
                         display: inline-block;
                         width: 100%;
@@ -168,7 +220,10 @@ const StyledContent = styled.section`
                            form {
                               margin: 0 auto;
                            }
-                           padding: 2rem;
+                           img {
+                              max-width: 100%;
+                           }
+                           padding: 1rem;
                            ${props => props.theme.midScreenBreakpoint} {
                               padding: 3rem 0;
                            }
@@ -230,58 +285,6 @@ const StyledContent = styled.section`
                            }
                         }
                      }
-                     .givesSize {
-                        height: auto;
-                     }
-                     .doesNotGiveSize {
-                        height: 0;
-                        /* ${props => props.theme.midScreenBreakpoint} {
-                           height: auto;
-                        } */
-                     }
-                     img,
-                     video,
-                     iframe {
-                        max-width: 100%;
-                     }
-                     iframe {
-                        width: 100%;
-                     }
-                     .smallThingCard {
-                        margin: 2rem 0;
-                     }
-                     .regularThingCard {
-                        border: 1px solid
-                           ${props =>
-                              setAlpha(props.theme.lowContrastGrey, 0.25)};
-                     }
-                     .tweet.threadStarter {
-                        margin-bottom: 0;
-                        .quoteTweetContainer {
-                           margin-top: 0;
-                           margin-bottom: 0;
-                        }
-                     }
-                     svg.arrow.truncContArrow {
-                        width: ${props => props.theme.bigHead};
-                        cursor: pointer;
-                        margin: auto;
-                        display: block;
-                        rect {
-                           fill: ${props =>
-                              setLightness(props.theme.mainText, 70)};
-                        }
-                        &:hover {
-                           rect {
-                              fill: ${props => props.theme.mainText};
-                           }
-                        }
-                     }
-                     .contentSlider svg.arrow {
-                        margin: 0; /* need this here because I'm not sure how to make the svg.arrow on ThingCards more specific from within them */
-                     }
-                  }
-               }
             }
             /* div.contentButtons {
                width: ${props => props.theme.smallText};
