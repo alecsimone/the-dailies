@@ -61,20 +61,54 @@ const StyledSingleThing = styled.section`
    }
 `;
 
-const SingleThing = ({ query }) => {
-   const hasData = useSelector(
-      state => state.stuff[`Thing:${query.id}`] != null
+const useSingleThingData = id => {
+   const singleThingData = {};
+
+   singleThingData.hasData = useSelector(
+      state => state.stuff[`Thing:${id}`] != null
    );
+   singleThingData.title = useSelector(
+      state => state.stuff[`Thing:${id}`]?.title
+   );
+   singleThingData.summary = useSelector(
+      state => state.stuff[`Thing:${id}`]?.summary
+   );
+   singleThingData.authorName = useSelector(
+      state => state.stuff[`Thing:${id}`]?.author?.displayname
+   );
+   singleThingData.score = useSelector(
+      state => state.stuff[`Thing:${id}`]?.score
+   );
+
+   return singleThingData;
+};
+
+const SingleThing = ({ query }) => {
+   const { hasData, title, summary, authorName, score } = useSingleThingData(
+      query.id
+   );
+
    const { loading, error, data } = useQueryAndStoreIt(SINGLE_THING_QUERY, {
       variables: { id: query.id },
       skip: query.id === 'new' || hasData
    });
 
-   const {
-      loggedInUserID,
-      memberLoading,
-      memberFields: { role }
-   } = useMe('SingleThing', 'role');
+   let compiledData;
+   if (hasData) {
+      compiledData = {
+         id: query.id,
+         title,
+         summary,
+         author: {
+            displayName: authorName
+         },
+         score
+      };
+   } else if (data != null && data.thing != null) {
+      compiledData = data.thing;
+   }
+
+   const { loggedInUserID, memberLoading } = useMe();
 
    /* eslint-disable react-hooks/exhaustive-deps */
    // We need to make our thing container scroll to the top when we route to a new thing, but wesbos's eslint rules don't let you use a dependency for an effect that isn't referenced in the effect. I can't find any reason why that is or any better way of doing it, so I'm just turning off that rule for a minute.
@@ -99,34 +133,35 @@ const SingleThing = ({ query }) => {
    } else if (loading || memberLoading) {
       content = <PlaceholderThings count={1} {...displayProps} />;
       pageTitle = 'Loading Thing';
-   } else if (data) {
-      if (data.thing != null) {
-         if (loggedInUserID?.broadcastView) {
-            content = (
-               <BroadcastThing
-                  id={query.id}
-                  linkedPiece={query.piece}
-                  key={query.id}
-               />
-            );
-         } else {
-            content = (
-               <FlexibleThingCard
-                  key={`flexibleCard-${query.id}`}
-                  thingID={query.id}
-                  linkedPiece={query.piece}
-                  linkedComment={query.comment}
-                  {...displayProps}
-               />
-            );
-         }
+   } else if (compiledData) {
+      if (loggedInUserID?.broadcastView) {
+         content = (
+            <BroadcastThing
+               id={query.id}
+               linkedPiece={query.piece}
+               key={query.id}
+            />
+         );
       } else {
-         content = <p>Thing not found.</p>;
+         content = (
+            <FlexibleThingCard
+               key={`flexibleCard-${query.id}`}
+               thingID={query.id}
+               linkedPiece={query.piece}
+               linkedComment={query.comment}
+               {...displayProps}
+            />
+         );
       }
-      pageTitle = data.thing == null ? "Couldn't find thing" : data.thing.title;
+      pageTitle = compiledData.title;
    }
 
-   if ((data == null || data.thing == null) && !loading) {
+   if (data && data.thing == null) {
+      content = <p>Thing not found.</p>;
+      pageTitle = "Couldn't find thing";
+   }
+
+   if ((data == null || data.thing == null) && !loading && !hasData) {
       return (
          <StyledSingleThing>
             <div className="noThing">No thing found for that ID</div>
@@ -135,12 +170,12 @@ const SingleThing = ({ query }) => {
    }
 
    let ogDescription = 'A Thing you might find interesting';
-   if (data && data.thing) {
-      if (data.thing.summary != null && data.thing.summary !== '') {
-         ogDescription = data.thing.summary;
+   if ((data && data.thing) || hasData) {
+      if (compiledData.summary != null && compiledData.summary !== '') {
+         ogDescription = compiledData.summary;
       } else {
-         ogDescription = `A Thing by ${data.thing.author.displayName} with ${
-            data.thing.score
+         ogDescription = `A Thing by ${compiledData.author.displayName} with ${
+            compiledData.score
          } votes`;
       }
    }
@@ -158,7 +193,7 @@ const SingleThing = ({ query }) => {
             />
             <meta
                property="og:title"
-               content={data ? data.thing.title : 'Ouryou'}
+               content={data ? compiledData.title : 'Ouryou'}
             />
          </Head>
          {content}
