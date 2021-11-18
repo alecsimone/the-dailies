@@ -5,7 +5,7 @@ import { getScrollingParent } from '../../Stickifier/useStickifier';
 import { getOneRem, setLightness } from '../../styles/functions';
 import ArrowIcon from '../Icons/Arrow';
 
-const swipeThreshold = 100;
+const swipeThreshold = 75;
 
 const StyledSwiper = styled.div`
    margin: 2rem 0;

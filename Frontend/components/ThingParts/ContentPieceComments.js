@@ -10,7 +10,7 @@ const StyledContentPieceComment = styled.div`
    &.expanded,
    &.full {
       .commentsContainer {
-         max-height: 40rem;
+         max-height: 80rem;
          overflow: hidden;
          ${props => props.theme.scroll};
          .comment .votebar {
