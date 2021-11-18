@@ -99,6 +99,28 @@ const Swiper = ({
 
    const finalTranslation = `calc(${initialTranslationAmount}% + ${calculatedTranslation}px)`;
 
+   const scrollToTop = e => {
+      const scrollingParent = getScrollingParent(e.target);
+
+      const contentElement = e.target.closest('.swiper');
+
+      const contentElementRect = contentElement.getBoundingClientRect();
+      console.log(contentElementRect.top);
+
+      if (contentElementRect.top < 0) {
+         let totalOffset = contentElement.offsetTop;
+         let parent = contentElement.offsetParent;
+         while (parent != null) {
+            totalOffset += parent.offsetTop;
+            parent = parent.offsetParent;
+         }
+
+         const oneRem = getOneRem();
+
+         scrollingParent.scrollTop = totalOffset - oneRem * 10;
+      }
+   };
+
    const elements = (
       <div
          className="overflowWrapper"
@@ -111,10 +133,12 @@ const Swiper = ({
             if (touchEnd - touchStart > swipeThreshold) {
                if (previousElementExists) {
                   setCurrentPosition(currentPosition - 1);
+                  scrollToTop(e);
                }
             } else if (touchEnd - touchStart < swipeThreshold * -1) {
                if (nextElementExists) {
                   setCurrentPosition(currentPosition + 1);
+                  scrollToTop(e);
                }
             }
             setTouchStart(0);
@@ -161,26 +185,7 @@ const Swiper = ({
                   <ArrowIcon
                      onClick={e => {
                         setCurrentPosition(currentPosition - 1);
-                        const scrollingParent = getScrollingParent(e.target);
-
-                        const contentElement = e.target.closest('.swiper');
-
-                        const contentElementRect = contentElement.getBoundingClientRect();
-                        console.log(contentElementRect.top);
-
-                        if (contentElementRect.top < 0) {
-                           let totalOffset = contentElement.offsetTop;
-                           let parent = contentElement.offsetParent;
-                           while (parent != null) {
-                              totalOffset += parent.offsetTop;
-                              parent = parent.offsetParent;
-                           }
-
-                           const oneRem = getOneRem();
-
-                           scrollingParent.scrollTop =
-                              totalOffset - oneRem * 10;
-                        }
+                        scrollToTop(e);
                      }}
                      pointing="left"
                   />
@@ -200,25 +205,7 @@ const Swiper = ({
                   <ArrowIcon
                      onClick={e => {
                         setCurrentPosition(currentPosition + 1);
-                        const scrollingParent = getScrollingParent(e.target);
-
-                        const contentElement = e.target.closest('.swiper');
-
-                        const contentElementRect = contentElement.getBoundingClientRect();
-
-                        if (contentElementRect.top < 0) {
-                           let totalOffset = contentElement.offsetTop;
-                           let parent = contentElement.offsetParent;
-                           while (parent != null) {
-                              totalOffset += parent.offsetTop;
-                              parent = parent.offsetParent;
-                           }
-
-                           const oneRem = getOneRem();
-
-                           scrollingParent.scrollTop =
-                              totalOffset - oneRem * 10;
-                        }
+                        scrollToTop(e);
                      }}
                      pointing="right"
                   />
