@@ -43,6 +43,9 @@ const updateBlocksList = (
 
          // Then let's run stickifier once just in case the object is already on screen, because the observer won't do anything until we scroll
          stickifyBlock(block);
+
+         // And finally, add it to our blocks array
+         contentBlocks.push(block);
       }
    });
 
