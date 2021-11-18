@@ -485,6 +485,9 @@ const stickifyBlock = block => {
    // If the blocks are being reordered, we don't want to bother with stickifying, because it can make things real jumpy
    if (block.closest('.reordering') != null) return;
 
+   // If the block is one of the offscreen elements from a Swiper, we don't need to stickify it.
+   if (block.closest('.doesNotGiveSize') != null) return;
+
    // First we're going to collect some data about the block that we'll need throughout the stickifying process
    const stickingData = makeStickingData(block);
 

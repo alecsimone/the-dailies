@@ -105,7 +105,6 @@ const Swiper = ({
       const contentElement = e.target.closest('.swiper');
 
       const contentElementRect = contentElement.getBoundingClientRect();
-      console.log(contentElementRect.top);
 
       if (contentElementRect.top < 0) {
          let totalOffset = contentElement.offsetTop;
