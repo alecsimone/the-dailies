@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { minimumTranslationDistance } from '../../config';
-import { setLightness } from '../../styles/functions';
+import { getScrollingParent } from '../../Stickifier/useStickifier';
+import { getOneRem, setLightness } from '../../styles/functions';
 import ArrowIcon from '../Icons/Arrow';
 
 const swipeThreshold = 100;
@@ -152,13 +153,35 @@ const Swiper = ({
    );
 
    return (
-      <StyledSwiper>
+      <StyledSwiper className="swiper">
          {elements}
          {elementsArray.length > 1 && !hideNavigator && (
             <div className="navigator">
                {currentPosition > 0 && (
                   <ArrowIcon
-                     onClick={() => setCurrentPosition(currentPosition - 1)}
+                     onClick={e => {
+                        setCurrentPosition(currentPosition - 1);
+                        const scrollingParent = getScrollingParent(e.target);
+
+                        const contentElement = e.target.closest('.swiper');
+
+                        const contentElementRect = contentElement.getBoundingClientRect();
+                        console.log(contentElementRect.top);
+
+                        if (contentElementRect.top < 0) {
+                           let totalOffset = contentElement.offsetTop;
+                           let parent = contentElement.offsetParent;
+                           while (parent != null) {
+                              totalOffset += parent.offsetTop;
+                              parent = parent.offsetParent;
+                           }
+
+                           const oneRem = getOneRem();
+
+                           scrollingParent.scrollTop =
+                              totalOffset - oneRem * 10;
+                        }
+                     }}
                      pointing="left"
                   />
                )}
@@ -175,7 +198,28 @@ const Swiper = ({
                </span>
                {currentPosition + 1 < elementsArray.length && (
                   <ArrowIcon
-                     onClick={() => setCurrentPosition(currentPosition + 1)}
+                     onClick={e => {
+                        setCurrentPosition(currentPosition + 1);
+                        const scrollingParent = getScrollingParent(e.target);
+
+                        const contentElement = e.target.closest('.swiper');
+
+                        const contentElementRect = contentElement.getBoundingClientRect();
+
+                        if (contentElementRect.top < 0) {
+                           let totalOffset = contentElement.offsetTop;
+                           let parent = contentElement.offsetParent;
+                           while (parent != null) {
+                              totalOffset += parent.offsetTop;
+                              parent = parent.offsetParent;
+                           }
+
+                           const oneRem = getOneRem();
+
+                           scrollingParent.scrollTop =
+                              totalOffset - oneRem * 10;
+                        }
+                     }}
                      pointing="right"
                   />
                )}
