@@ -179,7 +179,8 @@ const stickifyButtons = (
       if (transformedAncestorRect != null) {
          buttons.style.bottom = `${transformedBottomAdjustment -
             window.innerHeight +
-            extraButtonsHeight}px`;
+            extraButtonsHeight +
+            bottomBarHeight}px`;
       } else {
          buttons.style.bottom = `${bottomBarHeight +
             withinSidebarBottom +
