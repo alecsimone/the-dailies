@@ -67,6 +67,8 @@ const stickifyButtons = (
    const offsetRect = offsetParent.getBoundingClientRect();
    const offsetStyle = window.getComputedStyle(offsetParent);
 
+   const { transformedAncestorRect } = stickingData;
+
    // If the sticky top of the element is onscreen by less than the height of the buttons plus a 6rem buffer, and the bottom of the element is not on screen, put them 8rem from the top of the element
    if (
       blockObj.blockStickyTop < viewableBottom && // If the sticky top is above the bottom of the screen
@@ -89,18 +91,18 @@ const stickifyButtons = (
       // Then we fix the buttons to the bottom of the screen
       buttons.style.position = 'fixed';
 
-      let transformedAncestor = buttons.parentNode;
-      let transformedAncestorRect;
-      while (
-         transformedAncestor != null &&
-         transformedAncestor.style != null &&
-         transformedAncestor.style.transform === ''
-      ) {
-         transformedAncestor = transformedAncestor.parentNode;
-      }
-      if (transformedAncestor != null && transformedAncestor.style != null) {
-         transformedAncestorRect = transformedAncestor.getBoundingClientRect();
-      }
+      // let transformedAncestor = buttons.parentNode;
+      // let transformedAncestorRect;
+      // while (
+      //    transformedAncestor != null &&
+      //    transformedAncestor.style != null &&
+      //    transformedAncestor.style.transform === ''
+      // ) {
+      //    transformedAncestor = transformedAncestor.parentNode;
+      // }
+      // if (transformedAncestor != null && transformedAncestor.style != null) {
+      //    transformedAncestorRect = transformedAncestor.getBoundingClientRect();
+      // }
 
       const grandParentThing = blockObj.block
          .closest('.flexibleThingCard, .taxSidebar')
@@ -207,7 +209,8 @@ const stickifyComments = (
    buttonsHeight,
    viewableTop,
    viewableBottom,
-   headerHeight
+   headerHeight,
+   stickingData
 ) => {
    // We don't need to limit our loop to only blocks that actually have comments in them, as we want to keep the add comment form sticky too. So a simple search for the commentsArea on all blocks will suffice.
    let comments;
@@ -220,6 +223,8 @@ const stickifyComments = (
    }
 
    const commentsHeight = comments.offsetHeight;
+
+   const { transformedAncestorRect } = stickingData;
 
    // The bottom of the commentsArea's parent ends above the newcontentButtons, so we need to adjust our boundaries to account for that. The commentsArea also has a marginTop on it, and we need to adjust for that too
    const commentsStyles = window.getComputedStyle(comments);
@@ -253,31 +258,26 @@ const stickifyComments = (
 
             // Unfortunately, the comments are in a container with a transform applied to it, which means it has its own interal coordinate system for position: 'fixed' and we can't just use that to stick them somewhere on the screen. So we need to figure out where the top of the screen is relative to the transformed element.
 
-            // First we find the transformed element
-            let transformedAncestor = comments.parentNode;
-            while (
-               transformedAncestor != null &&
-               transformedAncestor.style != null &&
-               transformedAncestor.style.transform === ''
-            ) {
-               transformedAncestor = transformedAncestor.parentNode;
-            }
+            // // First we find the transformed element
+            // let transformedAncestor = comments.parentNode;
+            // while (
+            //    transformedAncestor != null &&
+            //    transformedAncestor.style != null &&
+            //    transformedAncestor.style.transform === ''
+            // ) {
+            //    transformedAncestor = transformedAncestor.parentNode;
+            // }
 
-            if (
-               transformedAncestor == null ||
-               transformedAncestor.style == null
-            ) {
+            if (transformedAncestorRect == null) {
                comments.style.top = `${headerHeight}px`;
                comments.style.bottom = `initial`;
                comments.style.width = `${commentsRect.width}px`;
                return;
             }
 
-            // Then we figure out the conversion between the transformed ancestor's coordinate system and the viewport coordinate system
-            const ancestorRect = transformedAncestor.getBoundingClientRect();
-
             // The top property we're setting here represents how far below the top of the ancestor we want to put the comments. The ancestorRect.top property represents how far below the top of the screen the ancestor is. Thus the negative of the ancestorRect.top property represents how far below the top of the ancestor the top of the screen is. Then we adjust for the header and one rem of buffer.
-            comments.style.top = `${-1 * ancestorRect.top + headerHeight}px`;
+            comments.style.top = `${-1 * transformedAncestorRect.top +
+               headerHeight}px`;
 
             comments.style.bottom = `initial`;
          } else if (
@@ -416,10 +416,24 @@ const makeStickingData = block => {
    const buttonsMarginLeftRaw = buttonsStyle.marginLeft;
    const buttonsMarginLeft = getIntPxFromStyleString(buttonsMarginLeftRaw);
 
+   let transformedAncestor = buttons.parentNode;
+   let transformedAncestorRect;
+   while (
+      transformedAncestor != null &&
+      transformedAncestor.style != null &&
+      transformedAncestor.style.transform === ''
+   ) {
+      transformedAncestor = transformedAncestor.parentNode;
+   }
+   if (transformedAncestor != null && transformedAncestor.style != null) {
+      transformedAncestorRect = transformedAncestor.getBoundingClientRect();
+   }
+
    return {
       blockPaddingTop,
       topDifference,
-      leftAdjustment: buttonsMarginLeft
+      leftAdjustment: buttonsMarginLeft,
+      transformedAncestorRect
    };
 };
 
@@ -531,7 +545,8 @@ const stickifyBlock = block => {
          buttonsHeight,
          viewableTop,
          viewableBottom,
-         headerHeight
+         headerHeight,
+         stickingData
       );
    }
 
