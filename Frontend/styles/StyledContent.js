@@ -559,6 +559,19 @@ const StyledContent = styled.section`
                      line-height: 1.6;
                   }
                }
+               .privacyInterfaceWrapper {
+                  position: absolute;
+                  width: 100%;
+                  bottom: 100%;
+                  left: 0;
+                  background: ${props => props.theme.deepBlack};
+                  border: 1px solid ${props =>
+                     setAlpha(props.theme.lowContrastGrey, 0.2)};
+                  .privacyInterface {
+                     margin: 0;
+                     padding: 1rem;
+                  }
+               }
             }
          }
       }

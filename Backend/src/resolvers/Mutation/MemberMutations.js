@@ -639,26 +639,51 @@ async function toggleBroadcastView(parent, { newState }, ctx, info) {
 }
 exports.toggleBroadcastView = toggleBroadcastView;
 
-async function addViewerToThing(parent, { thingID, memberID }, ctx, info) {
+async function addViewerToStuff(
+   parent,
+   { stuffID, memberID, type = 'Thing' },
+   ctx,
+   info
+) {
    await loggedInGate(ctx).catch(() => {
       throw new AuthenticationError('You must be logged in to do that!');
    });
    fullMemberGate(ctx.req.member);
 
-   const thingData = await ctx.db.query
-      .thing(
+   let authorID;
+
+   if (type === 'ContentPiece') {
+      const pieceData = await ctx.db.query.contentPiece(
          {
             where: {
-               id: thingID
+               id: stuffID
             }
          },
-         '{author {id}}'
-      )
-      .catch(err => {
-         console.log(err);
-      });
+         '{onThing {author {id}}}'
+      );
+      if (pieceData.onThing == null) {
+         throw new Error(
+            'You can only set the privacy on a content piece on a Thing, sorry'
+         );
+      }
+      authorID = pieceData.onThing.author.id;
+   } else if (type === 'Thing') {
+      const thingData = await ctx.db.query
+         .thing(
+            {
+               where: {
+                  id: stuffID
+               }
+            },
+            '{author {id}}'
+         )
+         .catch(err => {
+            console.log(err);
+         });
+      authorID = thingData.author.id;
+   }
 
-   if (thingData.author.id !== ctx.req.memberId) {
+   if (authorID !== ctx.req.memberId) {
       throw new Error("You don't have permission to edit that thing");
    }
 
@@ -672,36 +697,58 @@ async function addViewerToThing(parent, { thingID, memberID }, ctx, info) {
 
    const updatedStuff = await properUpdateStuff(
       dataObj,
-      thingID,
-      'Thing',
+      stuffID,
+      type,
       ctx
    ).catch(err => {
       console.log(err);
    });
    return updatedStuff;
 }
-exports.addViewerToThing = addViewerToThing;
+exports.addViewerToStuff = addViewerToStuff;
 
-async function removeViewerFromThing(parent, { thingID, memberID }, ctx, info) {
+async function removeViewerFromStuff(
+   parent,
+   { stuffID, memberID, type = 'Thing' },
+   ctx,
+   info
+) {
    await loggedInGate(ctx).catch(() => {
       throw new AuthenticationError('You must be logged in to do that!');
    });
    fullMemberGate(ctx.req.member);
 
-   const thingData = await ctx.db.query
-      .thing(
+   let authorID;
+   if (type === 'ContentPiece') {
+      const pieceData = await ctx.db.query.contentPiece(
          {
             where: {
-               id: thingID
+               id: stuffID
             }
          },
-         '{author {id}}'
-      )
-      .catch(err => {
-         console.log(err);
-      });
+         '{onThing {author {id}}}'
+      );
+      if (pieceData.onThing == null) {
+         throw new Error("You can't do that, sorry");
+      }
+      authorID = pieceData.onThing.author.id;
+   } else if (type === 'Thing') {
+      const thingData = await ctx.db.query
+         .thing(
+            {
+               where: {
+                  id: stuffID
+               }
+            },
+            '{author {id}}'
+         )
+         .catch(err => {
+            console.log(err);
+         });
+      authorID = thingData.author.id;
+   }
 
-   if (thingData.author.id !== ctx.req.memberId) {
+   if (authorID !== ctx.req.memberId) {
       throw new Error("You don't have permission to edit that thing");
    }
 
@@ -715,15 +762,15 @@ async function removeViewerFromThing(parent, { thingID, memberID }, ctx, info) {
 
    const updatedStuff = await properUpdateStuff(
       dataObj,
-      thingID,
-      'Thing',
+      stuffID,
+      type,
       ctx
    ).catch(err => {
       console.log(err);
    });
    return updatedStuff;
 }
-exports.removeViewerFromThing = removeViewerFromThing;
+exports.removeViewerFromStuff = removeViewerFromStuff;
 
 async function storeOrganizeState(parent, { state }, ctx, info) {
    await loggedInGate(ctx).catch(() => {

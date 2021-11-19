@@ -39,6 +39,8 @@ type ContentPiece {
    onTag: Tag
    votes: [Vote]
    score: Int! @default(value: 0)
+   privacy: PrivacySetting @default(value: Public)
+   individualViewPermissions: [Member] @relation(name: "IndividualContentPieceViewers")
 }
 
 type Tag {
@@ -125,6 +127,7 @@ type Member {
   ownedTags: [Tag]
   defaultPrivacy: PrivacySetting
   individualViewPermissions: [Thing] @relation(name: "IndividualViewers")
+  individualContentPieceViewPermissions: [ContentPiece] @relation(name: "IndividualContentPieceViewers")
   defaultExpansion: Boolean @default(value: false)
   broadcastView: Boolean @default(value: false)
   collections: [Collection] @relation(name: "Collector")

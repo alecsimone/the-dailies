@@ -348,6 +348,112 @@ const canSeeThingGate = async (where, ctx) => {
 };
 exports.canSeeThingGate = canSeeThingGate;
 
+const filterContentPiecesForPrivacy = async (thingData, ctx) => {
+   // First let's pull out the thing's privacy, because we'll be using that for pieces that don't have privacy settings of their own
+   const thingPrivacy = thingData.privacy;
+   // Then the author ID
+   const thingAuthorID = thingData.author.id;
+   // And then the current member's role and ID
+   const memberRole = ctx.req.member != null ? ctx.req.member.role : 'none';
+   const memberID = ctx.req.memberId;
+
+   if (['Admin', 'Editor'].includes(memberRole)) {
+      // Admins and editors can see everything
+      return thingData;
+   }
+
+   // We'll start with content pieces on this thing
+   if (thingData.content != null && thingData.content.length > 0) {
+      thingData.content = thingData.content.filter(piece => {
+         const privacy = piece.privacy != null ? piece.privacy : thingPrivacy;
+         if (privacy === 'Public') {
+            return true;
+         }
+         if (privacy === 'Private') {
+            if (thingAuthorID === memberID) {
+               return true;
+            }
+            return false;
+         }
+         if (privacy === 'Friends') {
+            return thingData.author.friends.some(
+               friend => friend.id === memberID
+            );
+         }
+         if (privacy === 'FriendsOfFriends') {
+            return thingData.author.friends.some(friend => {
+               if (friend == null || friend.friends == null) {
+                  return false;
+               }
+               return friend.friends.some(
+                  friendOfFriend => friendOfFriend.id === memberID
+               );
+            });
+         }
+      });
+   }
+
+   // Then we'll do the same for content pieces which have been copied in to this thing
+   if (
+      thingData.copiedInContent != null &&
+      thingData.copiedInContent.length > 0
+   ) {
+      const filteredCopiedContent = [];
+      for (const piece of thingData.copiedInContent) {
+         // First we need to get the data for the thing the piece was originally from
+         const originalThingID = piece.onThing.id;
+         const originalThingData = await ctx.db.query.thing(
+            {
+               where: {
+                  id: originalThingID
+               }
+            },
+            '{privacy author {id friends {id friends {id}}}}'
+         );
+
+         const privacy =
+            piece.privacy != null ? piece.privacy : originalThingData.privacy;
+
+         const originalThingAuthorID = originalThingData.author.id;
+
+         if (privacy === 'Public') {
+            filteredCopiedContent.push(piece);
+         }
+         if (privacy === 'Private') {
+            if (originalThingAuthorID === memberID) {
+               filteredCopiedContent.push(piece);
+            }
+         }
+         if (privacy === 'Friends') {
+            if (
+               originalThingData.author.friends.some(
+                  friend => friend.id === memberID
+               )
+            ) {
+               filteredCopiedContent.push(piece);
+            }
+         }
+         if (privacy === 'FriendsOfFriends') {
+            if (
+               originalThingData.author.friends.some(friend => {
+                  if (friend == null || friend.friends == null) {
+                     return false;
+                  }
+                  return friend.friends.some(
+                     friendOfFriend => friendOfFriend.id === memberID
+                  );
+               })
+            ) {
+               filteredCopiedContent.push(piece);
+            }
+         }
+      }
+   }
+
+   return thingData;
+};
+exports.filterContentPiecesForPrivacy = filterContentPiecesForPrivacy;
+
 const lengthenTikTokURL = async text => {
    if (!text.includes('vm.tiktok.com')) return text;
    const tiktokShortlinkRegex = /https:\/\/vm\.tiktok\.com\/[-a-z0-9]+[/]?/gim;

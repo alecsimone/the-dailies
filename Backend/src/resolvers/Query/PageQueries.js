@@ -9,7 +9,8 @@ const {
    canSeeThingGate,
    canSeeThing,
    properUpdateStuff,
-   calculateRelevancyScore
+   calculateRelevancyScore,
+   filterContentPiecesForPrivacy
 } = require('../../utils/ThingHandling');
 
 async function searchTaxes(parent, { searchTerm, personal }, ctx, info) {
@@ -62,7 +63,15 @@ async function taxByTitle(parent, { title, personal, cursor }, ctx, info) {
          const allowedThings = theTax.connectedThings.filter(thing =>
             canSeeThing(ctx, thing)
          );
-         let cursoredThings = allowedThings;
+         const filteredThings = [];
+         for (const thingData of allowedThings) {
+            const filteredThingData = await filterContentPiecesForPrivacy(
+               thingData,
+               ctx
+            );
+            filteredThings.push(filteredThingData);
+         }
+         let cursoredThings = filteredThings;
          if (cursor != null) {
             cursoredThings = allowedThings.filter(
                thing => Date.parse(thing.createdAt) < Date.parse(cursor)
@@ -108,7 +117,12 @@ async function thing(parent, { where }, ctx, info) {
       .catch(err => {
          console.log(err);
       });
-   return thingData;
+
+   const filteredThingData = await filterContentPiecesForPrivacy(
+      thingData,
+      ctx
+   );
+   return filteredThingData;
 }
 exports.thing = thing;
 
@@ -176,7 +190,18 @@ async function myThings(
       // First we need to find the new cursor value. It will not be the same as a provided cursor, because that will represent where the previous query ended, and we need to know where this query ended so we can get all things before that next time
 
       const lastThing = things[things.length - 1];
-      if (lastThing == null) return things;
+      if (lastThing == null) {
+         const filteredThings = [];
+         for (const thingData of things) {
+            const filteredThingData = await filterContentPiecesForPrivacy(
+               thingData,
+               ctx
+            );
+            filteredThings.push(filteredThingData);
+         }
+
+         return filteredThings;
+      }
 
       const newCursor = lastThing.manualUpdatedAt;
       ctx.db.mutation.updateCollection({
@@ -188,7 +213,17 @@ async function myThings(
          }
       });
    }
-   return things;
+
+   const filteredThings = [];
+   for (const thingData of things) {
+      const filteredThingData = await filterContentPiecesForPrivacy(
+         thingData,
+         ctx
+      );
+      filteredThings.push(filteredThingData);
+   }
+
+   return filteredThings;
 }
 exports.myThings = myThings;
 
@@ -219,7 +254,17 @@ async function myFriendsThings(
       .catch(err => {
          console.log(err);
       });
-   return things;
+
+   const filteredThings = [];
+   for (const thingData of things) {
+      const filteredThingData = await filterContentPiecesForPrivacy(
+         thingData,
+         ctx
+      );
+      filteredThings.push(filteredThingData);
+   }
+
+   return filteredThings;
 }
 exports.myFriendsThings = myFriendsThings;
 
@@ -242,7 +287,17 @@ async function publicThings(
       .catch(err => {
          console.log(err);
       });
-   return things;
+
+   const filteredThings = [];
+   for (const thingData of things) {
+      const filteredThingData = await filterContentPiecesForPrivacy(
+         thingData,
+         ctx
+      );
+      filteredThings.push(filteredThingData);
+   }
+
+   return filteredThings;
 }
 exports.publicThings = publicThings;
 
@@ -308,7 +363,16 @@ async function allThings(parent, { cursor, count = 2 }, ctx, info) {
          throw new Error(err.message);
       });
 
-   return things;
+   const filteredThings = [];
+   for (const thingData of things) {
+      const filteredThingData = await filterContentPiecesForPrivacy(
+         thingData,
+         ctx
+      );
+      filteredThings.push(filteredThingData);
+   }
+
+   return filteredThings;
 }
 exports.allThings = allThings;
 
@@ -383,7 +447,16 @@ async function searchThings(string, ctx, isTitleOnly = false) {
       )
       .catch(err => console.log(err));
 
-   return foundThings;
+   const filteredThings = [];
+   for (const thingData of foundThings) {
+      const filteredThingData = await filterContentPiecesForPrivacy(
+         thingData,
+         ctx
+      );
+      filteredThings.push(filteredThingData);
+   }
+
+   return filteredThings;
 }
 exports.searchThings = searchThings;
 
@@ -423,7 +496,16 @@ async function search(
 
    const trimmedThings = cursoredThings.slice(0, count);
 
-   return trimmedThings;
+   const filteredThings = [];
+   for (const thingData of trimmedThings) {
+      const filteredThingData = await filterContentPiecesForPrivacy(
+         thingData,
+         ctx
+      );
+      filteredThings.push(filteredThingData);
+   }
+
+   return filteredThings;
 }
 exports.search = search;
 

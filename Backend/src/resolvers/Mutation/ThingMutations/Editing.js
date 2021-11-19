@@ -493,7 +493,7 @@ async function reorderContent(parent, {id, type, oldPosition, newPosition}, ctx,
 }
 exports.reorderContent = reorderContent;
 
-async function setThingPrivacy(parent, { privacySetting, thingID }, ctx, info) {
+async function setStuffPrivacy(parent, { privacySetting, stuffID, type = 'Thing' }, ctx, info) {
    await loggedInGate(ctx).catch(() => {
       throw new AuthenticationError('You must be logged in to do that!');
    });
@@ -502,12 +502,12 @@ async function setThingPrivacy(parent, { privacySetting, thingID }, ctx, info) {
    const dataObj = {
       privacy: privacySetting
    };
-   const updatedThing = await properUpdateStuff(dataObj, thingID, 'Thing', ctx).catch(err => {
+   const updatedStuff = await properUpdateStuff(dataObj, stuffID, type, ctx).catch(err => {
       console.log(err);
    });
-   return updatedThing;
+   return updatedStuff;
 }
-exports.setThingPrivacy = setThingPrivacy;
+exports.setStuffPrivacy = setStuffPrivacy;
 
 async function setFeaturedImage(
    parent,

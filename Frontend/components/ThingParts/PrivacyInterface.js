@@ -22,31 +22,67 @@ const SEARCH_MEMBERS_QUERY = gql`
    }
 `;
 
-const ADD_VIEWER_TO_THING_MUTATION = gql`
-   mutation ADD_VIEWER_TO_THING_MUTATION($thingID: ID!, $memberID: ID!) {
-      addViewerToThing(thingID: $thingID, memberID: $memberID) {
-         __typename
-         id
-         individualViewPermissions {
+const ADD_VIEWER_TO_STUFF_MUTATION = gql`
+   mutation ADD_VIEWER_TO_STUFF_MUTATION(
+      $stuffID: ID!
+      $memberID: ID!
+      $type: String
+   ) {
+      addViewerToStuff(stuffID: $stuffID, memberID: $memberID, type: $type) {
+         ... on Thing {
             __typename
             id
-            displayName
-            avatar
+            individualViewPermissions {
+               __typename
+               id
+               displayName
+               avatar
+            }
+         }
+         ... on ContentPiece {
+            __typename
+            id
+            individualViewPermissions {
+               __typename
+               id
+               displayName
+               avatar
+            }
          }
       }
    }
 `;
 
-const REMOVE_VIEWER_FROM_THING_MUTATION = gql`
-   mutation REMOVE_VIEWER_FROM_THING_MUTATION($thingID: ID!, $memberID: ID!) {
-      removeViewerFromThing(thingID: $thingID, memberID: $memberID) {
-         __typename
-         id
-         individualViewPermissions {
+const REMOVE_VIEWER_FROM_STUFF_MUTATION = gql`
+   mutation REMOVE_VIEWER_FROM_STUFF_MUTATION(
+      $stuffID: ID!
+      $memberID: ID!
+      $type: String
+   ) {
+      removeViewerFromStuff(
+         stuffID: $stuffID
+         memberID: $memberID
+         type: $type
+      ) {
+         ... on ContentPiece {
             __typename
             id
-            displayName
-            avatar
+            individualViewPermissions {
+               __typename
+               id
+               displayName
+               avatar
+            }
+         }
+         ... on Thing {
+            __typename
+            id
+            individualViewPermissions {
+               __typename
+               id
+               displayName
+               avatar
+            }
          }
       }
    }
@@ -57,6 +93,18 @@ const usePrivacyInterfaceData = (thingID, type) => {
    privacyInterfaceData.privacy = useSelector(
       state => state.stuff[`${type}:${thingID}`].privacy
    );
+
+   const parentPrivacy = useSelector(state => {
+      if (type === 'ContentPiece') {
+         return state.stuff[`ContentPiece:${thingID}`].onThing.privacy;
+      }
+      return null;
+   });
+
+   if (privacyInterfaceData.privacy == null && parentPrivacy != null) {
+      privacyInterfaceData.privacy = parentPrivacy;
+   }
+
    privacyInterfaceData.individualViewPermissions = useSelector(
       state => state.stuff[`${type}:${thingID}`].individualViewPermissions
    );
@@ -205,14 +253,15 @@ const PrivacyInterface = ({ canEdit, id, type }) => {
       }
    );
 
-   const [addViewerToThing] = useMutation(ADD_VIEWER_TO_THING_MUTATION, {
+   const [addViewerToStuff] = useMutation(ADD_VIEWER_TO_STUFF_MUTATION, {
       onCompleted: data => {
          if (
             data &&
-            data.addViewerToThing &&
-            data.addViewerToThing.__typename === 'Thing'
+            data.addViewerToStuff &&
+            (data.addViewerToStuff.__typename === 'Thing' ||
+               data.addViewerToStuff.__typename === 'ContentPiece')
          ) {
-            toast(`${addedMemberRef.current} can now view this Thing`, {
+            toast(`${addedMemberRef.current} can now view this ${type}`, {
                position: 'bottom-center',
                autoClose: 3000
             });
@@ -221,8 +270,8 @@ const PrivacyInterface = ({ canEdit, id, type }) => {
       onError: err => alert(err.message)
    });
 
-   const [removeViewerFromThing] = useMutation(
-      REMOVE_VIEWER_FROM_THING_MUTATION,
+   const [removeViewerFromStuff] = useMutation(
+      REMOVE_VIEWER_FROM_STUFF_MUTATION,
       {
          onError: err => alert(err.message)
       }
@@ -242,10 +291,11 @@ const PrivacyInterface = ({ canEdit, id, type }) => {
       }
 
       const selectedMember = searchResultsRef.current[index];
-      addViewerToThing({
+      addViewerToStuff({
          variables: {
             memberID: selectedMember.id,
-            thingID: id
+            stuffID: id,
+            type
          }
       });
       addedMemberRef.current = selectedMember.displayName;
@@ -342,10 +392,11 @@ const PrivacyInterface = ({ canEdit, id, type }) => {
                   //       individualViewPermissions: newIndividualViewersList
                   //    }
                   // };
-                  removeViewerFromThing({
+                  removeViewerFromStuff({
                      variables: {
                         memberID: viewer.id,
-                        thingID: id
+                        stuffID: id,
+                        type
                      }
                   });
                   if (newIndividualViewersList.length === 0) {
@@ -362,7 +413,7 @@ const PrivacyInterface = ({ canEdit, id, type }) => {
 
    return (
       <StyledPrivacyInterface className={`privacyInterface ${privacy}`}>
-         <PrivacyDropdown initialPrivacy={privacy} id={id} />
+         <PrivacyDropdown initialPrivacy={privacy} id={id} type={type} />
          {privacy !== 'Public' &&
             individualViewPermissions &&
             individualViewPermissions.length > 0 && (
@@ -394,15 +445,17 @@ const PrivacyInterface = ({ canEdit, id, type }) => {
                            const thisBox = document.querySelector(
                               '#addPeopleInterface'
                            );
-                           thisBox.addEventListener(
-                              'keydown',
-                              navigateResultsRef.current
-                           );
+                           if (thisBox != null) {
+                              thisBox.addEventListener(
+                                 'keydown',
+                                 navigateResultsRef.current
+                              );
 
-                           const thisInput = thisBox.querySelector(
-                              'input.searchBox'
-                           );
-                           thisInput.focus();
+                              const thisInput = thisBox.querySelector(
+                                 'input.searchBox'
+                              );
+                              thisInput.focus();
+                           }
                         }, 1);
                      }
                   }

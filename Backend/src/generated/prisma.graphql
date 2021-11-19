@@ -1982,6 +1982,8 @@ type ContentPiece {
   onTag: Tag
   votes(where: VoteWhereInput, orderBy: VoteOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Vote!]
   score: Int!
+  privacy: PrivacySetting
+  individualViewPermissions(where: MemberWhereInput, orderBy: MemberOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Member!]
 }
 
 type ContentPieceConnection {
@@ -2001,6 +2003,8 @@ input ContentPieceCreateInput {
   onTag: TagCreateOneWithoutContentInput
   votes: VoteCreateManyWithoutOnContentPieceInput
   score: Int
+  privacy: PrivacySetting
+  individualViewPermissions: MemberCreateManyWithoutIndividualContentPieceViewPermissionsInput
 }
 
 input ContentPieceCreateManyInput {
@@ -2010,6 +2014,11 @@ input ContentPieceCreateManyInput {
 
 input ContentPieceCreateManyWithoutCopiedToThingsInput {
   create: [ContentPieceCreateWithoutCopiedToThingsInput!]
+  connect: [ContentPieceWhereUniqueInput!]
+}
+
+input ContentPieceCreateManyWithoutIndividualViewPermissionsInput {
+  create: [ContentPieceCreateWithoutIndividualViewPermissionsInput!]
   connect: [ContentPieceWhereUniqueInput!]
 }
 
@@ -2043,6 +2052,8 @@ input ContentPieceCreateWithoutCommentsInput {
   onTag: TagCreateOneWithoutContentInput
   votes: VoteCreateManyWithoutOnContentPieceInput
   score: Int
+  privacy: PrivacySetting
+  individualViewPermissions: MemberCreateManyWithoutIndividualContentPieceViewPermissionsInput
 }
 
 input ContentPieceCreateWithoutCopiedToThingsInput {
@@ -2055,6 +2066,22 @@ input ContentPieceCreateWithoutCopiedToThingsInput {
   onTag: TagCreateOneWithoutContentInput
   votes: VoteCreateManyWithoutOnContentPieceInput
   score: Int
+  privacy: PrivacySetting
+  individualViewPermissions: MemberCreateManyWithoutIndividualContentPieceViewPermissionsInput
+}
+
+input ContentPieceCreateWithoutIndividualViewPermissionsInput {
+  id: ID
+  content: String!
+  unsavedNewContent: String
+  summary: String
+  comments: CommentCreateManyWithoutOnContentPieceInput
+  onThing: ThingCreateOneWithoutContentInput
+  copiedToThings: ThingCreateManyWithoutCopiedInContentInput
+  onTag: TagCreateOneWithoutContentInput
+  votes: VoteCreateManyWithoutOnContentPieceInput
+  score: Int
+  privacy: PrivacySetting
 }
 
 input ContentPieceCreateWithoutOnTagInput {
@@ -2067,6 +2094,8 @@ input ContentPieceCreateWithoutOnTagInput {
   copiedToThings: ThingCreateManyWithoutCopiedInContentInput
   votes: VoteCreateManyWithoutOnContentPieceInput
   score: Int
+  privacy: PrivacySetting
+  individualViewPermissions: MemberCreateManyWithoutIndividualContentPieceViewPermissionsInput
 }
 
 input ContentPieceCreateWithoutOnThingInput {
@@ -2079,6 +2108,8 @@ input ContentPieceCreateWithoutOnThingInput {
   onTag: TagCreateOneWithoutContentInput
   votes: VoteCreateManyWithoutOnContentPieceInput
   score: Int
+  privacy: PrivacySetting
+  individualViewPermissions: MemberCreateManyWithoutIndividualContentPieceViewPermissionsInput
 }
 
 input ContentPieceCreateWithoutVotesInput {
@@ -2091,6 +2122,8 @@ input ContentPieceCreateWithoutVotesInput {
   copiedToThings: ThingCreateManyWithoutCopiedInContentInput
   onTag: TagCreateOneWithoutContentInput
   score: Int
+  privacy: PrivacySetting
+  individualViewPermissions: MemberCreateManyWithoutIndividualContentPieceViewPermissionsInput
 }
 
 type ContentPieceEdge {
@@ -2109,6 +2142,8 @@ enum ContentPieceOrderByInput {
   summary_DESC
   score_ASC
   score_DESC
+  privacy_ASC
+  privacy_DESC
 }
 
 type ContentPiecePreviousValues {
@@ -2117,6 +2152,7 @@ type ContentPiecePreviousValues {
   unsavedNewContent: String
   summary: String
   score: Int!
+  privacy: PrivacySetting
 }
 
 input ContentPieceScalarWhereInput {
@@ -2184,6 +2220,10 @@ input ContentPieceScalarWhereInput {
   score_lte: Int
   score_gt: Int
   score_gte: Int
+  privacy: PrivacySetting
+  privacy_not: PrivacySetting
+  privacy_in: [PrivacySetting!]
+  privacy_not_in: [PrivacySetting!]
   AND: [ContentPieceScalarWhereInput!]
   OR: [ContentPieceScalarWhereInput!]
   NOT: [ContentPieceScalarWhereInput!]
@@ -2217,6 +2257,8 @@ input ContentPieceUpdateDataInput {
   onTag: TagUpdateOneWithoutContentInput
   votes: VoteUpdateManyWithoutOnContentPieceInput
   score: Int
+  privacy: PrivacySetting
+  individualViewPermissions: MemberUpdateManyWithoutIndividualContentPieceViewPermissionsInput
 }
 
 input ContentPieceUpdateInput {
@@ -2229,6 +2271,8 @@ input ContentPieceUpdateInput {
   onTag: TagUpdateOneWithoutContentInput
   votes: VoteUpdateManyWithoutOnContentPieceInput
   score: Int
+  privacy: PrivacySetting
+  individualViewPermissions: MemberUpdateManyWithoutIndividualContentPieceViewPermissionsInput
 }
 
 input ContentPieceUpdateManyDataInput {
@@ -2236,6 +2280,7 @@ input ContentPieceUpdateManyDataInput {
   unsavedNewContent: String
   summary: String
   score: Int
+  privacy: PrivacySetting
 }
 
 input ContentPieceUpdateManyInput {
@@ -2255,6 +2300,7 @@ input ContentPieceUpdateManyMutationInput {
   unsavedNewContent: String
   summary: String
   score: Int
+  privacy: PrivacySetting
 }
 
 input ContentPieceUpdateManyWithoutCopiedToThingsInput {
@@ -2265,6 +2311,18 @@ input ContentPieceUpdateManyWithoutCopiedToThingsInput {
   disconnect: [ContentPieceWhereUniqueInput!]
   update: [ContentPieceUpdateWithWhereUniqueWithoutCopiedToThingsInput!]
   upsert: [ContentPieceUpsertWithWhereUniqueWithoutCopiedToThingsInput!]
+  deleteMany: [ContentPieceScalarWhereInput!]
+  updateMany: [ContentPieceUpdateManyWithWhereNestedInput!]
+}
+
+input ContentPieceUpdateManyWithoutIndividualViewPermissionsInput {
+  create: [ContentPieceCreateWithoutIndividualViewPermissionsInput!]
+  delete: [ContentPieceWhereUniqueInput!]
+  connect: [ContentPieceWhereUniqueInput!]
+  set: [ContentPieceWhereUniqueInput!]
+  disconnect: [ContentPieceWhereUniqueInput!]
+  update: [ContentPieceUpdateWithWhereUniqueWithoutIndividualViewPermissionsInput!]
+  upsert: [ContentPieceUpsertWithWhereUniqueWithoutIndividualViewPermissionsInput!]
   deleteMany: [ContentPieceScalarWhereInput!]
   updateMany: [ContentPieceUpdateManyWithWhereNestedInput!]
 }
@@ -2325,6 +2383,8 @@ input ContentPieceUpdateWithoutCommentsDataInput {
   onTag: TagUpdateOneWithoutContentInput
   votes: VoteUpdateManyWithoutOnContentPieceInput
   score: Int
+  privacy: PrivacySetting
+  individualViewPermissions: MemberUpdateManyWithoutIndividualContentPieceViewPermissionsInput
 }
 
 input ContentPieceUpdateWithoutCopiedToThingsDataInput {
@@ -2336,6 +2396,21 @@ input ContentPieceUpdateWithoutCopiedToThingsDataInput {
   onTag: TagUpdateOneWithoutContentInput
   votes: VoteUpdateManyWithoutOnContentPieceInput
   score: Int
+  privacy: PrivacySetting
+  individualViewPermissions: MemberUpdateManyWithoutIndividualContentPieceViewPermissionsInput
+}
+
+input ContentPieceUpdateWithoutIndividualViewPermissionsDataInput {
+  content: String
+  unsavedNewContent: String
+  summary: String
+  comments: CommentUpdateManyWithoutOnContentPieceInput
+  onThing: ThingUpdateOneWithoutContentInput
+  copiedToThings: ThingUpdateManyWithoutCopiedInContentInput
+  onTag: TagUpdateOneWithoutContentInput
+  votes: VoteUpdateManyWithoutOnContentPieceInput
+  score: Int
+  privacy: PrivacySetting
 }
 
 input ContentPieceUpdateWithoutOnTagDataInput {
@@ -2347,6 +2422,8 @@ input ContentPieceUpdateWithoutOnTagDataInput {
   copiedToThings: ThingUpdateManyWithoutCopiedInContentInput
   votes: VoteUpdateManyWithoutOnContentPieceInput
   score: Int
+  privacy: PrivacySetting
+  individualViewPermissions: MemberUpdateManyWithoutIndividualContentPieceViewPermissionsInput
 }
 
 input ContentPieceUpdateWithoutOnThingDataInput {
@@ -2358,6 +2435,8 @@ input ContentPieceUpdateWithoutOnThingDataInput {
   onTag: TagUpdateOneWithoutContentInput
   votes: VoteUpdateManyWithoutOnContentPieceInput
   score: Int
+  privacy: PrivacySetting
+  individualViewPermissions: MemberUpdateManyWithoutIndividualContentPieceViewPermissionsInput
 }
 
 input ContentPieceUpdateWithoutVotesDataInput {
@@ -2369,6 +2448,8 @@ input ContentPieceUpdateWithoutVotesDataInput {
   copiedToThings: ThingUpdateManyWithoutCopiedInContentInput
   onTag: TagUpdateOneWithoutContentInput
   score: Int
+  privacy: PrivacySetting
+  individualViewPermissions: MemberUpdateManyWithoutIndividualContentPieceViewPermissionsInput
 }
 
 input ContentPieceUpdateWithWhereUniqueNestedInput {
@@ -2379,6 +2460,11 @@ input ContentPieceUpdateWithWhereUniqueNestedInput {
 input ContentPieceUpdateWithWhereUniqueWithoutCopiedToThingsInput {
   where: ContentPieceWhereUniqueInput!
   data: ContentPieceUpdateWithoutCopiedToThingsDataInput!
+}
+
+input ContentPieceUpdateWithWhereUniqueWithoutIndividualViewPermissionsInput {
+  where: ContentPieceWhereUniqueInput!
+  data: ContentPieceUpdateWithoutIndividualViewPermissionsDataInput!
 }
 
 input ContentPieceUpdateWithWhereUniqueWithoutOnTagInput {
@@ -2411,6 +2497,12 @@ input ContentPieceUpsertWithWhereUniqueWithoutCopiedToThingsInput {
   where: ContentPieceWhereUniqueInput!
   update: ContentPieceUpdateWithoutCopiedToThingsDataInput!
   create: ContentPieceCreateWithoutCopiedToThingsInput!
+}
+
+input ContentPieceUpsertWithWhereUniqueWithoutIndividualViewPermissionsInput {
+  where: ContentPieceWhereUniqueInput!
+  update: ContentPieceUpdateWithoutIndividualViewPermissionsDataInput!
+  create: ContentPieceCreateWithoutIndividualViewPermissionsInput!
 }
 
 input ContentPieceUpsertWithWhereUniqueWithoutOnTagInput {
@@ -2501,6 +2593,13 @@ input ContentPieceWhereInput {
   score_lte: Int
   score_gt: Int
   score_gte: Int
+  privacy: PrivacySetting
+  privacy_not: PrivacySetting
+  privacy_in: [PrivacySetting!]
+  privacy_not_in: [PrivacySetting!]
+  individualViewPermissions_every: MemberWhereInput
+  individualViewPermissions_some: MemberWhereInput
+  individualViewPermissions_none: MemberWhereInput
   AND: [ContentPieceWhereInput!]
   OR: [ContentPieceWhereInput!]
   NOT: [ContentPieceWhereInput!]
@@ -2537,6 +2636,7 @@ type Member {
   ownedTags(where: TagWhereInput, orderBy: TagOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Tag!]
   defaultPrivacy: PrivacySetting
   individualViewPermissions(where: ThingWhereInput, orderBy: ThingOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Thing!]
+  individualContentPieceViewPermissions(where: ContentPieceWhereInput, orderBy: ContentPieceOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ContentPiece!]
   defaultExpansion: Boolean
   broadcastView: Boolean
   collections(where: CollectionWhereInput, orderBy: CollectionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Collection!]
@@ -2588,6 +2688,7 @@ input MemberCreateInput {
   ownedTags: TagCreateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
   individualViewPermissions: ThingCreateManyWithoutIndividualViewPermissionsInput
+  individualContentPieceViewPermissions: ContentPieceCreateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
   collections: CollectionCreateManyWithoutAuthorInput
@@ -2622,6 +2723,11 @@ input MemberCreateManyWithoutFriendsInput {
 
 input MemberCreateManyWithoutIgnoredFriendRequestsInput {
   create: [MemberCreateWithoutIgnoredFriendRequestsInput!]
+  connect: [MemberWhereUniqueInput!]
+}
+
+input MemberCreateManyWithoutIndividualContentPieceViewPermissionsInput {
+  create: [MemberCreateWithoutIndividualContentPieceViewPermissionsInput!]
   connect: [MemberWhereUniqueInput!]
 }
 
@@ -2704,6 +2810,7 @@ input MemberCreateWithoutCollectionsInput {
   ownedTags: TagCreateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
   individualViewPermissions: ThingCreateManyWithoutIndividualViewPermissionsInput
+  individualContentPieceViewPermissions: ContentPieceCreateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
   lastActiveCollection: CollectionCreateOneInput
@@ -2746,6 +2853,7 @@ input MemberCreateWithoutCommentsInput {
   ownedTags: TagCreateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
   individualViewPermissions: ThingCreateManyWithoutIndividualViewPermissionsInput
+  individualContentPieceViewPermissions: ContentPieceCreateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
   collections: CollectionCreateManyWithoutAuthorInput
@@ -2788,6 +2896,7 @@ input MemberCreateWithoutCreatedConnectionsInput {
   ownedTags: TagCreateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
   individualViewPermissions: ThingCreateManyWithoutIndividualViewPermissionsInput
+  individualContentPieceViewPermissions: ContentPieceCreateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
   collections: CollectionCreateManyWithoutAuthorInput
@@ -2829,6 +2938,7 @@ input MemberCreateWithoutCreatedThingsInput {
   ownedTags: TagCreateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
   individualViewPermissions: ThingCreateManyWithoutIndividualViewPermissionsInput
+  individualContentPieceViewPermissions: ContentPieceCreateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
   collections: CollectionCreateManyWithoutAuthorInput
@@ -2871,6 +2981,7 @@ input MemberCreateWithoutFriendRequestsInput {
   ownedTags: TagCreateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
   individualViewPermissions: ThingCreateManyWithoutIndividualViewPermissionsInput
+  individualContentPieceViewPermissions: ContentPieceCreateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
   collections: CollectionCreateManyWithoutAuthorInput
@@ -2913,6 +3024,7 @@ input MemberCreateWithoutFriendsInput {
   ownedTags: TagCreateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
   individualViewPermissions: ThingCreateManyWithoutIndividualViewPermissionsInput
+  individualContentPieceViewPermissions: ContentPieceCreateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
   collections: CollectionCreateManyWithoutAuthorInput
@@ -2946,6 +3058,50 @@ input MemberCreateWithoutIgnoredFriendRequestsInput {
   color: String
   friends: MemberCreateManyWithoutFriendsInput
   friendRequests: MemberCreateManyWithoutFriendRequestsInput
+  notifications: NotificationCreateManyWithoutRecipientInput
+  twitchName: String
+  email: String!
+  votes: VoteCreateManyWithoutVoterInput
+  passes: PassCreateManyWithoutPasserInput
+  createdThings: ThingCreateManyWithoutAuthorInput
+  ownedTags: TagCreateManyWithoutAuthorInput
+  defaultPrivacy: PrivacySetting
+  individualViewPermissions: ThingCreateManyWithoutIndividualViewPermissionsInput
+  individualContentPieceViewPermissions: ContentPieceCreateManyWithoutIndividualViewPermissionsInput
+  defaultExpansion: Boolean
+  broadcastView: Boolean
+  collections: CollectionCreateManyWithoutAuthorInput
+  lastActiveCollection: CollectionCreateOneInput
+  comments: CommentCreateManyWithoutAuthorInput
+  password: String!
+  roles: MemberCreaterolesInput
+  role: Role
+  verificationToken: String
+  verificationTokenExpiry: Float
+  resetToken: String
+  resetTokenExpiry: Float
+  twitterTokenSecret: String
+  twitterUserName: String
+  twitterUserID: String
+  twitterUserToken: String
+  twitterUserTokenSecret: String
+  twitterListsObject: String
+  twitterSeenIDs: MemberCreatetwitterSeenIDsInput
+  createdConnections: ConnectionCreateManyWithoutCreatorInput
+}
+
+input MemberCreateWithoutIndividualContentPieceViewPermissionsInput {
+  id: ID
+  displayName: String!
+  name: String
+  avatar: String
+  rep: Int
+  points: Int
+  giveableRep: Int
+  color: String
+  friends: MemberCreateManyWithoutFriendsInput
+  friendRequests: MemberCreateManyWithoutFriendRequestsInput
+  ignoredFriendRequests: MemberCreateManyWithoutIgnoredFriendRequestsInput
   notifications: NotificationCreateManyWithoutRecipientInput
   twitchName: String
   email: String!
@@ -2997,6 +3153,7 @@ input MemberCreateWithoutIndividualViewPermissionsInput {
   createdThings: ThingCreateManyWithoutAuthorInput
   ownedTags: TagCreateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
+  individualContentPieceViewPermissions: ContentPieceCreateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
   collections: CollectionCreateManyWithoutAuthorInput
@@ -3039,6 +3196,7 @@ input MemberCreateWithoutNotificationsInput {
   ownedTags: TagCreateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
   individualViewPermissions: ThingCreateManyWithoutIndividualViewPermissionsInput
+  individualContentPieceViewPermissions: ContentPieceCreateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
   collections: CollectionCreateManyWithoutAuthorInput
@@ -3081,6 +3239,7 @@ input MemberCreateWithoutOwnedTagsInput {
   createdThings: ThingCreateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
   individualViewPermissions: ThingCreateManyWithoutIndividualViewPermissionsInput
+  individualContentPieceViewPermissions: ContentPieceCreateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
   collections: CollectionCreateManyWithoutAuthorInput
@@ -3123,6 +3282,7 @@ input MemberCreateWithoutPassesInput {
   ownedTags: TagCreateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
   individualViewPermissions: ThingCreateManyWithoutIndividualViewPermissionsInput
+  individualContentPieceViewPermissions: ContentPieceCreateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
   collections: CollectionCreateManyWithoutAuthorInput
@@ -3165,6 +3325,7 @@ input MemberCreateWithoutVotesInput {
   ownedTags: TagCreateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
   individualViewPermissions: ThingCreateManyWithoutIndividualViewPermissionsInput
+  individualContentPieceViewPermissions: ContentPieceCreateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
   collections: CollectionCreateManyWithoutAuthorInput
@@ -3617,6 +3778,7 @@ input MemberUpdateDataInput {
   ownedTags: TagUpdateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
   individualViewPermissions: ThingUpdateManyWithoutIndividualViewPermissionsInput
+  individualContentPieceViewPermissions: ContentPieceUpdateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
   collections: CollectionUpdateManyWithoutAuthorInput
@@ -3659,6 +3821,7 @@ input MemberUpdateInput {
   ownedTags: TagUpdateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
   individualViewPermissions: ThingUpdateManyWithoutIndividualViewPermissionsInput
+  individualContentPieceViewPermissions: ContentPieceUpdateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
   collections: CollectionUpdateManyWithoutAuthorInput
@@ -3775,6 +3938,18 @@ input MemberUpdateManyWithoutIgnoredFriendRequestsInput {
   updateMany: [MemberUpdateManyWithWhereNestedInput!]
 }
 
+input MemberUpdateManyWithoutIndividualContentPieceViewPermissionsInput {
+  create: [MemberCreateWithoutIndividualContentPieceViewPermissionsInput!]
+  delete: [MemberWhereUniqueInput!]
+  connect: [MemberWhereUniqueInput!]
+  set: [MemberWhereUniqueInput!]
+  disconnect: [MemberWhereUniqueInput!]
+  update: [MemberUpdateWithWhereUniqueWithoutIndividualContentPieceViewPermissionsInput!]
+  upsert: [MemberUpsertWithWhereUniqueWithoutIndividualContentPieceViewPermissionsInput!]
+  deleteMany: [MemberScalarWhereInput!]
+  updateMany: [MemberUpdateManyWithWhereNestedInput!]
+}
+
 input MemberUpdateManyWithoutIndividualViewPermissionsInput {
   create: [MemberCreateWithoutIndividualViewPermissionsInput!]
   delete: [MemberWhereUniqueInput!]
@@ -3885,6 +4060,7 @@ input MemberUpdateWithoutCollectionsDataInput {
   ownedTags: TagUpdateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
   individualViewPermissions: ThingUpdateManyWithoutIndividualViewPermissionsInput
+  individualContentPieceViewPermissions: ContentPieceUpdateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
   lastActiveCollection: CollectionUpdateOneInput
@@ -3926,6 +4102,7 @@ input MemberUpdateWithoutCommentsDataInput {
   ownedTags: TagUpdateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
   individualViewPermissions: ThingUpdateManyWithoutIndividualViewPermissionsInput
+  individualContentPieceViewPermissions: ContentPieceUpdateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
   collections: CollectionUpdateManyWithoutAuthorInput
@@ -3967,6 +4144,7 @@ input MemberUpdateWithoutCreatedConnectionsDataInput {
   ownedTags: TagUpdateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
   individualViewPermissions: ThingUpdateManyWithoutIndividualViewPermissionsInput
+  individualContentPieceViewPermissions: ContentPieceUpdateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
   collections: CollectionUpdateManyWithoutAuthorInput
@@ -4007,6 +4185,7 @@ input MemberUpdateWithoutCreatedThingsDataInput {
   ownedTags: TagUpdateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
   individualViewPermissions: ThingUpdateManyWithoutIndividualViewPermissionsInput
+  individualContentPieceViewPermissions: ContentPieceUpdateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
   collections: CollectionUpdateManyWithoutAuthorInput
@@ -4048,6 +4227,7 @@ input MemberUpdateWithoutFriendRequestsDataInput {
   ownedTags: TagUpdateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
   individualViewPermissions: ThingUpdateManyWithoutIndividualViewPermissionsInput
+  individualContentPieceViewPermissions: ContentPieceUpdateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
   collections: CollectionUpdateManyWithoutAuthorInput
@@ -4089,6 +4269,7 @@ input MemberUpdateWithoutFriendsDataInput {
   ownedTags: TagUpdateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
   individualViewPermissions: ThingUpdateManyWithoutIndividualViewPermissionsInput
+  individualContentPieceViewPermissions: ContentPieceUpdateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
   collections: CollectionUpdateManyWithoutAuthorInput
@@ -4121,6 +4302,49 @@ input MemberUpdateWithoutIgnoredFriendRequestsDataInput {
   color: String
   friends: MemberUpdateManyWithoutFriendsInput
   friendRequests: MemberUpdateManyWithoutFriendRequestsInput
+  notifications: NotificationUpdateManyWithoutRecipientInput
+  twitchName: String
+  email: String
+  votes: VoteUpdateManyWithoutVoterInput
+  passes: PassUpdateManyWithoutPasserInput
+  createdThings: ThingUpdateManyWithoutAuthorInput
+  ownedTags: TagUpdateManyWithoutAuthorInput
+  defaultPrivacy: PrivacySetting
+  individualViewPermissions: ThingUpdateManyWithoutIndividualViewPermissionsInput
+  individualContentPieceViewPermissions: ContentPieceUpdateManyWithoutIndividualViewPermissionsInput
+  defaultExpansion: Boolean
+  broadcastView: Boolean
+  collections: CollectionUpdateManyWithoutAuthorInput
+  lastActiveCollection: CollectionUpdateOneInput
+  comments: CommentUpdateManyWithoutAuthorInput
+  password: String
+  roles: MemberUpdaterolesInput
+  role: Role
+  verificationToken: String
+  verificationTokenExpiry: Float
+  resetToken: String
+  resetTokenExpiry: Float
+  twitterTokenSecret: String
+  twitterUserName: String
+  twitterUserID: String
+  twitterUserToken: String
+  twitterUserTokenSecret: String
+  twitterListsObject: String
+  twitterSeenIDs: MemberUpdatetwitterSeenIDsInput
+  createdConnections: ConnectionUpdateManyWithoutCreatorInput
+}
+
+input MemberUpdateWithoutIndividualContentPieceViewPermissionsDataInput {
+  displayName: String
+  name: String
+  avatar: String
+  rep: Int
+  points: Int
+  giveableRep: Int
+  color: String
+  friends: MemberUpdateManyWithoutFriendsInput
+  friendRequests: MemberUpdateManyWithoutFriendRequestsInput
+  ignoredFriendRequests: MemberUpdateManyWithoutIgnoredFriendRequestsInput
   notifications: NotificationUpdateManyWithoutRecipientInput
   twitchName: String
   email: String
@@ -4171,6 +4395,7 @@ input MemberUpdateWithoutIndividualViewPermissionsDataInput {
   createdThings: ThingUpdateManyWithoutAuthorInput
   ownedTags: TagUpdateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
+  individualContentPieceViewPermissions: ContentPieceUpdateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
   collections: CollectionUpdateManyWithoutAuthorInput
@@ -4212,6 +4437,7 @@ input MemberUpdateWithoutNotificationsDataInput {
   ownedTags: TagUpdateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
   individualViewPermissions: ThingUpdateManyWithoutIndividualViewPermissionsInput
+  individualContentPieceViewPermissions: ContentPieceUpdateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
   collections: CollectionUpdateManyWithoutAuthorInput
@@ -4253,6 +4479,7 @@ input MemberUpdateWithoutOwnedTagsDataInput {
   createdThings: ThingUpdateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
   individualViewPermissions: ThingUpdateManyWithoutIndividualViewPermissionsInput
+  individualContentPieceViewPermissions: ContentPieceUpdateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
   collections: CollectionUpdateManyWithoutAuthorInput
@@ -4294,6 +4521,7 @@ input MemberUpdateWithoutPassesDataInput {
   ownedTags: TagUpdateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
   individualViewPermissions: ThingUpdateManyWithoutIndividualViewPermissionsInput
+  individualContentPieceViewPermissions: ContentPieceUpdateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
   collections: CollectionUpdateManyWithoutAuthorInput
@@ -4335,6 +4563,7 @@ input MemberUpdateWithoutVotesDataInput {
   ownedTags: TagUpdateManyWithoutAuthorInput
   defaultPrivacy: PrivacySetting
   individualViewPermissions: ThingUpdateManyWithoutIndividualViewPermissionsInput
+  individualContentPieceViewPermissions: ContentPieceUpdateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
   collections: CollectionUpdateManyWithoutAuthorInput
@@ -4370,6 +4599,11 @@ input MemberUpdateWithWhereUniqueWithoutFriendsInput {
 input MemberUpdateWithWhereUniqueWithoutIgnoredFriendRequestsInput {
   where: MemberWhereUniqueInput!
   data: MemberUpdateWithoutIgnoredFriendRequestsDataInput!
+}
+
+input MemberUpdateWithWhereUniqueWithoutIndividualContentPieceViewPermissionsInput {
+  where: MemberWhereUniqueInput!
+  data: MemberUpdateWithoutIndividualContentPieceViewPermissionsDataInput!
 }
 
 input MemberUpdateWithWhereUniqueWithoutIndividualViewPermissionsInput {
@@ -4438,6 +4672,12 @@ input MemberUpsertWithWhereUniqueWithoutIgnoredFriendRequestsInput {
   where: MemberWhereUniqueInput!
   update: MemberUpdateWithoutIgnoredFriendRequestsDataInput!
   create: MemberCreateWithoutIgnoredFriendRequestsInput!
+}
+
+input MemberUpsertWithWhereUniqueWithoutIndividualContentPieceViewPermissionsInput {
+  where: MemberWhereUniqueInput!
+  update: MemberUpdateWithoutIndividualContentPieceViewPermissionsDataInput!
+  create: MemberCreateWithoutIndividualContentPieceViewPermissionsInput!
 }
 
 input MemberUpsertWithWhereUniqueWithoutIndividualViewPermissionsInput {
@@ -4600,6 +4840,9 @@ input MemberWhereInput {
   individualViewPermissions_every: ThingWhereInput
   individualViewPermissions_some: ThingWhereInput
   individualViewPermissions_none: ThingWhereInput
+  individualContentPieceViewPermissions_every: ContentPieceWhereInput
+  individualContentPieceViewPermissions_some: ContentPieceWhereInput
+  individualContentPieceViewPermissions_none: ContentPieceWhereInput
   defaultExpansion: Boolean
   defaultExpansion_not: Boolean
   broadcastView: Boolean

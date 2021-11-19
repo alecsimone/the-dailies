@@ -103,6 +103,7 @@ const contentPieceFields = `
       __typename
       id
       title
+      privacy
    }
    onTag {
       __typename
@@ -125,6 +126,13 @@ const contentPieceFields = `
          rep
          avatar
       }
+   }
+   privacy
+   individualViewPermissions {
+      __typename
+      id
+      displayName
+      avatar
    }
 `;
 export { contentPieceFields };

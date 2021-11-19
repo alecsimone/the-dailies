@@ -22,27 +22,38 @@ const GET_PRIVACY_OPTIONS_QUERY = gql`
 `;
 export { GET_PRIVACY_OPTIONS_QUERY };
 
-const SET_THING_PRIVACY_MUTATION = gql`
-   mutation SET_THING_PRIVACY_MUTATION(
+const SET_STUFF_PRIVACY_MUTATION = gql`
+   mutation SET_STUFF_PRIVACY_MUTATION(
       $privacySetting: PrivacySetting!
-      $thingID: ID!
+      $stuffID: ID!
+      $type: String
    ) {
-      setThingPrivacy(privacySetting: $privacySetting, thingID: $thingID) {
-         __typename
-         id
-         privacy
+      setStuffPrivacy(
+         privacySetting: $privacySetting
+         stuffID: $stuffID
+         type: $type
+      ) {
+         ... on Thing {
+            __typename
+            id
+            privacy
+         }
+         ... on ContentPiece {
+            __typename
+            id
+            privacy
+         }
       }
    }
 `;
 
-const PrivacyDropdown = props => {
-   const { initialPrivacy, id } = props;
+const PrivacyDropdown = ({ initialPrivacy, id, type }) => {
    const {
       loggedInUserID,
       memberFields: { defaultPrivacy }
    } = useMe('PrivacyDropdown', 'defaultPrivacy');
 
-   const [setThingPrivacy] = useMutation(SET_THING_PRIVACY_MUTATION, {
+   const [setThingPrivacy] = useMutation(SET_STUFF_PRIVACY_MUTATION, {
       onCompleted: data =>
          checkForNewThingRedirect(id, 'setThingPrivacy', data),
       onError: err => alert(err.message)
@@ -54,11 +65,11 @@ const PrivacyDropdown = props => {
       } = e;
       // setFullThingToLoading(id);
       setThingPrivacy({
-         variables: { privacySetting: value, thingID: id },
+         variables: { privacySetting: value, stuffID: id, type },
          optimisticResponse: {
             __typename: 'Mutation',
-            setThingPrivacy: {
-               __typename: 'Thing',
+            setStuffPrivacy: {
+               __typename: type,
                id,
                privacy: value
             }

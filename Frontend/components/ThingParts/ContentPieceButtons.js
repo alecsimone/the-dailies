@@ -17,11 +17,8 @@ import {
 } from '../../lib/ContentHandling';
 import { ModalContext } from '../ModalProvider';
 import { setAlpha } from '../../styles/functions';
-import {
-   commentFields,
-   contentPieceFields,
-   fullThingFields
-} from '../../lib/CardInterfaces';
+import LockIcon from '../Icons/Lock';
+import PrivacyInterface from './PrivacyInterface';
 
 const StyledSaveOrDiscardContentInterface = styled.div`
    .responses {
@@ -77,9 +74,18 @@ const ContentPieceButtons = ({
       state => state.stuff[`${stuffType}:${stuffID}`]
    );
 
+   const piecePrivacy = useSelector(
+      state => state.stuff[`ContentPiece:${pieceID}`].privacy
+   );
+
+   const privacy = piecePrivacy != null ? piecePrivacy : stuffData.privacy;
+
    const [copied, setCopied] = useState(false);
 
    const [showingAddToBox, setShowingAddToBox] = useState(false);
+   const [showingPrivacyInterface, setShowingPrivacyInterface] = useState(
+      false
+   );
 
    const { midScreenBPWidthRaw } = useContext(ThemeContext);
 
@@ -185,6 +191,27 @@ const ContentPieceButtons = ({
                mini
             />
          </div>
+         {editable && !isCopied && stuffType === 'Thing' && (
+            <div
+               className="buttonWrapper"
+               onClick={e => {
+                  if (e.target.closest('.privacyInterface') != null) return;
+                  setShowingPrivacyInterface(!showingPrivacyInterface);
+               }}
+            >
+               <LockIcon className="privacy buttons" privacy={privacy} />
+               {showingPrivacyInterface && (
+                  <div className="privacyInterfaceWrapper">
+                     <PrivacyInterface
+                        canEdit={canEdit}
+                        id={pieceID}
+                        type="ContentPiece"
+                        key={`privacy-${stuffID}`}
+                     />
+                  </div>
+               )}
+            </div>
+         )}
          {editable && !isCopied && (
             <div
                className="buttonWrapper"

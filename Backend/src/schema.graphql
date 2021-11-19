@@ -40,7 +40,7 @@ type Mutation {
   storeUnsavedContentPieceChanges(pieceId: ID!, thingId: ID!, unsavedContent: String!): Stuff
   clearUnsavedContentPieceChanges(pieceId: ID!, thingId: ID!): Stuff
   reorderContent(id: ID!, type: String!, oldPosition: Int!, newPosition: Int!): Stuff
-  setThingPrivacy(privacySetting: PrivacySetting!, thingID: ID!): Thing
+  setStuffPrivacy(privacySetting: PrivacySetting!, stuffID: ID!, type: String): Stuff
   addTaxToThing(tax: String!, thingID: ID!, personal: Boolean): Thing
   addTaxToThingById(tax: ID!, thingID: ID!, personal: Boolean): Thing
   addTaxesToThings(taxes: String!, thingIDs: [ID!] personal: Boolean): [Thing]
@@ -70,8 +70,8 @@ type Mutation {
   editSummary(summary: String!, id: ID!, type: String!): Stuff
   copyContentPiece(contentPieceID: ID!, newThingID: ID!): Thing
   unlinkContentPiece(contentPieceID: ID!, thingID: ID!): Thing
-  addViewerToThing(thingID: ID!, memberID: ID!): Thing
-  removeViewerFromThing(thingID: ID!, memberID: ID!): Thing
+  addViewerToStuff(stuffID: ID!, memberID: ID!, type: String): Stuff
+  removeViewerFromStuff(stuffID: ID!, memberID: ID!, type: String): Stuff
   storeOrganizeState(state: String!): Member
   addCollection: Member
   deleteCollection(collectionID: ID!): Member
