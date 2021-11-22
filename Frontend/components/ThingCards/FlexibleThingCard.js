@@ -306,7 +306,7 @@ const StyledFlexibleThingCard = styled.article`
             justify-content: stretch;
             align-items: center;
             --button-size: ${props => props.theme.miniText};
-            height: var(--button-size);
+            height: calc(var(--button-size) + 1rem);
             .thingCardButton {
                height: 100%;
                display: flex;
@@ -314,6 +314,13 @@ const StyledFlexibleThingCard = styled.article`
                justify-content: center;
                flex-grow: 1;
                cursor: pointer;
+               padding: 0.5rem 0;
+               margin: 0 0.5rem;
+               border-radius: 3px;
+               &.expanded {
+                  background: ${props =>
+                     setAlpha(props.theme.lowContrastGrey, 0.25)};
+               }
             }
             .counterParent {
                height: var(--button-size);
@@ -711,7 +718,9 @@ const FlexibleThingCard = ({
                            featuredImage.toLowerCase()
                         ))) && (
                      <div
-                        className="thingCardButton"
+                        className={`thingCardButton ${
+                           expansion.featuredImage ? 'expanded' : 'collapsed'
+                        }`}
                         onClick={() =>
                            expansionHandler(
                               'featuredImage',
@@ -730,7 +739,11 @@ const FlexibleThingCard = ({
                      expansion.showingAllButtons ||
                      tagCount > 0 ||
                      canEdit) && (
-                     <div className="thingCardButton">
+                     <div
+                        className={`thingCardButton ${
+                           expansion.taxes ? 'expanded' : 'collapsed'
+                        }`}
+                     >
                         <div
                            className="counterParent"
                            onClick={() =>
@@ -755,7 +768,9 @@ const FlexibleThingCard = ({
                      canEdit ||
                      contentCount > 0) && (
                      <div
-                        className="thingCardButton"
+                        className={`thingCardButton ${
+                           expansion.content ? 'expanded' : 'collapsed'
+                        }`}
                         onClick={() =>
                            expansionHandler('content', !expansion.content)
                         }
@@ -775,7 +790,9 @@ const FlexibleThingCard = ({
                      </div>
                   )}
                   <div
-                     className="thingCardButton"
+                     className={`thingCardButton ${
+                        expansion.comments ? 'expanded' : 'collapsed'
+                     }`}
                      onClick={() =>
                         expansionHandler('comments', !expansion.comments)
                      }
@@ -787,7 +804,9 @@ const FlexibleThingCard = ({
                   </div>
                   {(expanded || expansion.showingAllButtons || canEdit) && (
                      <div
-                        className="thingCardButton"
+                        className={`thingCardButton ${
+                           expansion.connections ? 'expanded' : 'collapsed'
+                        }`}
                         onClick={() =>
                            expansionHandler(
                               'connections',
@@ -810,7 +829,9 @@ const FlexibleThingCard = ({
                      </div>
                   )}
                   <div
-                     className="thingCardButton"
+                     className={`thingCardButton ${
+                        expansion.privacy ? 'expanded' : 'collapsed'
+                     }`}
                      onClick={() =>
                         expansionHandler('privacy', !expansion.privacy)
                      }
@@ -819,7 +840,9 @@ const FlexibleThingCard = ({
                   </div>
                   {canEdit && (expanded || expansion.showingAllButtons) && (
                      <div
-                        className="thingCardButton"
+                        className={`thingCardButton ${
+                           expansion.colors ? 'expanded' : 'collapsed'
+                        }`}
                         onClick={() =>
                            expansionHandler('colors', !expansion.colors)
                         }
