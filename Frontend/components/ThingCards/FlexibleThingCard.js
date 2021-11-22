@@ -304,10 +304,18 @@ const StyledFlexibleThingCard = styled.article`
             width: 100%;
             max-width: 64rem;
             display: flex;
-            justify-content: space-between;
+            justify-content: stretch;
             align-items: center;
             --button-size: ${props => props.theme.miniText};
             height: var(--button-size);
+            .thingCardButton {
+               height: 100%;
+               display: flex;
+               align-items: center;
+               justify-content: center;
+               flex-grow: 1;
+               cursor: pointer;
+            }
             .counterParent {
                height: var(--button-size);
                width: var(--button-size);
@@ -679,124 +687,154 @@ const FlexibleThingCard = ({
             </div>
             <div className="toolbar">
                <div className="buttons">
-                  <ArrowIcon
-                     pointing={expansion.toggleDirection}
+                  <div
+                     className="thingCardButton"
                      onClick={() => {
                         expansionHandler(
                            'toggleDirection',
                            expansion.toggleDirection
                         );
                      }}
-                     titleText={`${
-                        expansion.toggleDirection === 'up'
-                           ? 'Collapse'
-                           : 'Expand'
-                     } Thing`}
-                  />
+                  >
+                     <ArrowIcon
+                        pointing={expansion.toggleDirection}
+                        titleText={`${
+                           expansion.toggleDirection === 'up'
+                              ? 'Collapse'
+                              : 'Expand'
+                        } Thing`}
+                     />
+                  </div>
                   {(expanded ||
                      expansion.showingAllButtons ||
                      (featuredImage != null &&
                         !disabledCodewords.includes(
                            featuredImage.toLowerCase()
                         ))) && (
-                     <ImageIcon
+                     <div
+                        className="thingCardButton"
                         onClick={() =>
                            expansionHandler(
                               'featuredImage',
                               !expansion.featuredImage
                            )
                         }
-                        titleText={`${
-                           expansion.featuredImage ? 'Hide' : 'Show'
-                        } Featured Image`}
-                     />
+                     >
+                        <ImageIcon
+                           titleText={`${
+                              expansion.featuredImage ? 'Hide' : 'Show'
+                           } Featured Image`}
+                        />
+                     </div>
                   )}
                   {(expanded ||
                      expansion.showingAllButtons ||
                      tagCount > 0 ||
                      canEdit) && (
-                     <div className="counterParent">
-                        <HashtagIcon
+                     <div className="thingCardButton">
+                        <div
+                           className="counterParent"
                            onClick={() =>
                               expansionHandler('taxes', !expansion.taxes)
                            }
-                           titleText={`${
-                              expansion.taxes ? 'Hide' : 'Show'
-                           } Tags`}
-                        />
-                        {tagCount > 0 && (
-                           <div className="counter">
-                              {tagCount > 99 ? '+' : tagCount}
-                           </div>
-                        )}
+                        >
+                           <HashtagIcon
+                              titleText={`${
+                                 expansion.taxes ? 'Hide' : 'Show'
+                              } Tags`}
+                           />
+                           {tagCount > 0 && (
+                              <div className="counter">
+                                 {tagCount > 99 ? '+' : tagCount}
+                              </div>
+                           )}
+                        </div>
                      </div>
                   )}
                   {(expanded ||
                      expansion.showingAllButtons ||
                      canEdit ||
                      contentCount > 0) && (
-                     <div className="counterParent">
-                        <ContentIcon
-                           onClick={() =>
-                              expansionHandler('content', !expansion.content)
-                           }
-                           titleText={`${
-                              expansion.content ? 'Hide' : 'Show'
-                           } Content`}
-                        />
-                        {contentCount > 0 && (
-                           <div className="counter">
-                              {contentCount > 99 ? '+' : contentCount}
-                           </div>
-                        )}
+                     <div
+                        className="thingCardButton"
+                        onClick={() =>
+                           expansionHandler('content', !expansion.content)
+                        }
+                     >
+                        <div className="counterParent">
+                           <ContentIcon
+                              titleText={`${
+                                 expansion.content ? 'Hide' : 'Show'
+                              } Content`}
+                           />
+                           {contentCount > 0 && (
+                              <div className="counter">
+                                 {contentCount > 99 ? '+' : contentCount}
+                              </div>
+                           )}
+                        </div>
                      </div>
                   )}
-                  <CommentsButton
+                  <div
+                     className="thingCardButton"
                      onClick={() =>
                         expansionHandler('comments', !expansion.comments)
                      }
-                     count={commentCount || 0}
-                     key={`comments-button-${thingID}`}
-                  />
+                  >
+                     <CommentsButton
+                        count={commentCount || 0}
+                        key={`comments-button-${thingID}`}
+                     />
+                  </div>
                   {(expanded || expansion.showingAllButtons || canEdit) && (
-                     <div className="counterParent">
-                        <ConnectionsIcon
-                           onClick={() =>
-                              expansionHandler(
-                                 'connections',
-                                 !expansion.connections
-                              )
-                           }
-                           titleText={`${
-                              expansion.connections ? 'Hide' : 'Show'
-                           } Connections`}
-                        />
-                        {connectionCount > 0 && (
-                           <div className="counter">
-                              {connectionCount > 99 ? '+' : connectionCount}
-                           </div>
-                        )}
+                     <div
+                        className="thingCardButton"
+                        onClick={() =>
+                           expansionHandler(
+                              'connections',
+                              !expansion.connections
+                           )
+                        }
+                     >
+                        <div className="counterParent">
+                           <ConnectionsIcon
+                              titleText={`${
+                                 expansion.connections ? 'Hide' : 'Show'
+                              } Connections`}
+                           />
+                           {connectionCount > 0 && (
+                              <div className="counter">
+                                 {connectionCount > 99 ? '+' : connectionCount}
+                              </div>
+                           )}
+                        </div>
                      </div>
                   )}
-                  <LockIcon
+                  <div
+                     className="thingCardButton"
                      onClick={() =>
                         expansionHandler('privacy', !expansion.privacy)
                      }
-                     privacy={privacy}
-                  />
+                  >
+                     <LockIcon privacy={privacy} />
+                  </div>
                   {canEdit && (expanded || expansion.showingAllButtons) && (
-                     <button
-                        className="colors"
-                        style={{ background: highlightColor }}
+                     <div
+                        className="thingCardButton"
                         onClick={() =>
                            expansionHandler('colors', !expansion.colors)
                         }
-                        title="Set Color"
-                     />
+                     >
+                        <button
+                           className="colors"
+                           style={{ background: highlightColor }}
+                           title="Set Color"
+                        />
+                     </div>
                   )}
                   {canEdit && (
-                     <TrashIcon
-                        classname={deleting ? 'trash deleting' : 'trash'}
+                     <div
+                        className="thingCardButton"
                         onClick={() => {
                            if (
                               confirm(
@@ -810,16 +848,22 @@ const FlexibleThingCard = ({
                               });
                            }
                         }}
-                        titleText="Delete Thing"
-                     />
+                     >
+                        <TrashIcon
+                           classname={deleting ? 'trash deleting' : 'trash'}
+                           titleText="Delete Thing"
+                        />
+                     </div>
                   )}
                   {!expansion.votebar && (
-                     <VoteBar
-                        key={`votebar-${thingID}`}
-                        id={thingID}
-                        type="Thing"
-                        alwaysMini
-                     />
+                     <div className="thingCardButton">
+                        <VoteBar
+                           key={`votebar-${thingID}`}
+                           id={thingID}
+                           type="Thing"
+                           alwaysMini
+                        />
+                     </div>
                   )}
                </div>
             </div>

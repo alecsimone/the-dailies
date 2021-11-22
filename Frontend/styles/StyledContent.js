@@ -562,7 +562,7 @@ const StyledContent = styled.section`
                .privacyInterfaceWrapper {
                   position: absolute;
                   width: 100%;
-                  bottom: 100%;
+                  top: 100%;
                   left: 0;
                   background: ${props => props.theme.deepBlack};
                   border: 1px solid ${props =>
