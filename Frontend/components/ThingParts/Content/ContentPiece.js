@@ -311,7 +311,6 @@ const ContentPiece = ({
    let otherLocations = false;
    let copiedFrom;
    let alsoFoundIn;
-   console.log(isCopied, onThing);
    if (isCopied && onThing != null && onThing.id !== stuffID) {
       copiedFrom = (
          <div>
@@ -508,14 +507,14 @@ const ContentPiece = ({
             1
          );
 
-         window.setTimeout(
-            () =>
+         window.setTimeout(() => {
+            if (contentContainerRef.current != null) {
                contentContainerRef.current.removeEventListener(
                   'mousedown',
                   doubleClickListener
-               ),
-            500
-         );
+               );
+            }
+         }, 500);
       }
 
       if (!canEdit) return;

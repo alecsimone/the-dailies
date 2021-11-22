@@ -30,7 +30,6 @@ import HashtagIcon from '../Icons/Hashtag';
 import ConnectionsInterface from '../ThingParts/ConnectionsInterface';
 import ConnectionsIcon from '../Icons/Connections';
 import useMe from '../Account/useMe';
-import Swiper from '../ThingParts/Swiper';
 
 const DELETE_THING_MUTATION = gql`
    mutation DELETE_THING_MUTATION($id: ID!) {
