@@ -80,7 +80,7 @@ export { decodeHTML };
 // const styleTagSearchString = /(?:(?<style><style="(?<styleObjectRaw>.+)">(?<styleTextContent>.+)<\/style>)|(?<stars>\*\*(?<starsTextContent>[^*]*(?:\*[^*]+)*)\*\*)|(?<bars>__(?<barsTextContent>[^_]*(?:\_[^_]+)*)__)|(?<pounds>##(?<poundsTextContent>[^#]*(?:#[^#]+)*)##)|(?<slashes>\/\/(?<slashesTextContent>((?:(?!\/\/)|https:\/\/|http:\/\/|ftp:\/\/).)*)(?<!https:|http:|ftp:)\/\/)|(?<quote><(?<quoteTextContent>".+")>)|(?<summary>>>(?<summarizedText>.+)<<(\((?<summaryText>.+)\))?))/gis;
 // export { styleTagSearchString };
 
-const styleTagSearchString = /(?:(?<style><style="(?<styleObjectRaw>.+)">(?<styleTextContent>.+)<\/style>)|(?<stars>\*\*(?<starsTextContent>[^*]*(?:\*[^*]+)*)\*\*)|(?<bars>__(?<barsTextContent>[^_]*(?:\_[^_]+)*)__)|(?<pounds>##(?<poundsTextContent>[^#]*(?:#[^#]+)*)##)|(?<slashes>\/\/(?<slashesTextContent>((?:(?!\/\/)|https:\/\/|http:\/\/|ftp:\/\/).)*)(?<!https:|http:|ftp:)\/\/)|(?<quote><(?<quoteTextContent>".+")>)|(?<summary>>>(?<summarizedText>.+)<<(\((?<summaryText>.+)\))?))/gis;
+const styleTagSearchString = /(?:(?<style><style="(?<styleObjectRaw>.+)">(?<styleTextContent>.+)<\/style>)|(?<stars>\*\*(?<starsTextContent>[^*]*(?:\*[^*]+)*)\*\*)|(?<bars>__(?<barsTextContent>[^_]*(?:\_[^_]+)*)__)|(?<pounds>##(?<poundsTextContent>[^#]*(?:#[^#]+)*)##)|(?<slashes>\/\/(?<slashesTextContent>((?:(?!\/\/)|https:\/\/|http:\/\/|ftp:\/\/).)*)(?<!https:|http:|ftp:)\/\/)|(?<quote><(?<quoteTextContent>".+")>)|(?<summary>>>(?<summarizedText>(?!.*>>).+)<<(\((?<summaryText>(?!.*>>).+)\))?))/gis;
 export { styleTagSearchString };
 
 const stringToObject = (string, splitSearch) => {
