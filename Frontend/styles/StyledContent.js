@@ -259,11 +259,10 @@ const StyledContent = styled.section`
                               ${props => props.theme.thingColors};
                               .contentSectionWrapper .contentBlock .contentArea .contentPiece .overflowWrapper .contentAndCommentContainer.cts {
                                  .contentWrapper {
-                                    max-width: 50%;
-                                    min-width: 50%;
+                                    width: 100%;
                                  }
                                  .commentsWrapper {
-                                    width: 50%;
+                                    width: 100%;
                                  }
                               }
                            }
