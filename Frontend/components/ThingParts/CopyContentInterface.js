@@ -71,6 +71,7 @@ const CopyContentInterface = ({ id, thingID, setShowingAddToBox }) => {
    };
 
    const onChosenResult = selectedPost => {
+      setShowingAddToBox(false);
       copyContentPiece({
          variables: {
             contentPieceID: id,

@@ -14,7 +14,6 @@ import {
    getEndingTextElement,
    getStyledSpan
 } from '../lib/TextHandling';
-import { listSearchString, getListElement } from '../lib/listHandling';
 import { urlFinder } from '../lib/UrlHandling';
 
 const RichText = ({ text, priorText, nextText, matchCount = 0 }) => {

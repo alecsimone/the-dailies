@@ -86,7 +86,13 @@ const ThingSearchInput = ({
       handleSetSearchTerm = setValue;
       handledSearchTerm = value;
    } else {
-      handleSetSearchTerm = e => setSearchTerm(e.target.value);
+      handleSetSearchTerm = e => {
+         if (e.target == null) {
+            setSearchTerm('');
+            return;
+         }
+         setSearchTerm(e.target.value);
+      };
       handledSearchTerm = searchTerm;
    }
 
@@ -158,7 +164,9 @@ const ThingSearchInput = ({
       resetResultsSelector();
 
       const thisBox = thisInterfaceRef.current;
-      thisBox.removeEventListener('keydown', navigateResultsRef.current);
+      if (thisBox != null) {
+         thisBox.removeEventListener('keydown', navigateResultsRef.current);
+      }
       if (setShowing != null) {
          setShowing(false);
       }
