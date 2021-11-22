@@ -266,7 +266,7 @@ const Content = ({ contentType, canEdit, linkedPiece, stuffID, type }) => {
       if (displayedContentType === 'single') {
          const contentElementsArray = orderedContent.map(piece => {
             const [originalContentCheck] = content.filter(
-               piece => piece.id === piece.id
+               contentPiece => piece.id === contentPiece.id
             );
             const isOriginalContent = originalContentCheck != null;
 

@@ -311,6 +311,7 @@ const ContentPiece = ({
    let otherLocations = false;
    let copiedFrom;
    let alsoFoundIn;
+   console.log(isCopied, onThing);
    if (isCopied && onThing != null && onThing.id !== stuffID) {
       copiedFrom = (
          <div>

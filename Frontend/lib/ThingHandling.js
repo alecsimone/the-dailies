@@ -95,6 +95,8 @@ const useInfiniteScroll = (fetchMore, scrollingChild, queryName) => {
       }
       const thingsContainer = scrollingSection.querySelector(scrollingChild);
 
+      if (thingsContainer == null) return;
+
       const totalHeight = thingsContainer.offsetHeight; // Note that this is pretty imprecise. There are other elements in there and padding and stuff. But since we're pretty arbitrarily picking the distance from the bottom of the section at which to load more things, I don't think we need to be all that precise here. Especially since this function runs every single scroll tick.
 
       const windowHeight = window.innerHeight;
