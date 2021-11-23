@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { stickifyBlock, makeStickingData } from './stickifier';
+import { stickifyBlock } from './stickifier';
 
 const getScrollingParent = el => {
    if (el == null) return;
@@ -145,9 +145,7 @@ const useStickifier = () => {
          obj => obj.scroller === e.target
       );
       if (thisScrollerObj != null) {
-         thisScrollerObj.blocks.forEach(blockObj => {
-            stickifyBlock(blockObj.block, blockObj.allStickingData);
-         });
+         thisScrollerObj.blocks.forEach(block => stickifyBlock(block));
       }
    };
 
@@ -169,20 +167,16 @@ const useStickifier = () => {
 
          if (entry.isIntersecting) {
             // If this block just came on screen, we add it to the list of blocks that scroller is keeping sticky
-            // First though, we need to make the sticking data for that block, so we can stick it in the ref and not need to recalculate it on every scroll
-            const block = entry.target;
-            const allStickingData = makeStickingData(block);
-            scrollingParentsRef.current[thisScrollerObjIndex].blocks.push({
-               block,
-               allStickingData
-            });
+            scrollingParentsRef.current[thisScrollerObjIndex].blocks.push(
+               entry.target
+            );
          } else {
             // If this block just left the screen, we remove it from the list of blocks that scroller is keeping sticky
             scrollingParentsRef.current[
                thisScrollerObjIndex
             ].blocks = scrollingParentsRef.current[
                thisScrollerObjIndex
-            ].blocks.filter(blockObj => blockObj.block !== entry.target);
+            ].blocks.filter(block => block !== entry.target);
          }
       });
    };
