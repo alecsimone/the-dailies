@@ -743,13 +743,11 @@ const FlexibleThingCard = ({
                         className={`thingCardButton ${
                            expansion.taxes ? 'expanded' : 'collapsed'
                         }`}
+                        onClick={() =>
+                           expansionHandler('taxes', !expansion.taxes)
+                        }
                      >
-                        <div
-                           className="counterParent"
-                           onClick={() =>
-                              expansionHandler('taxes', !expansion.taxes)
-                           }
-                        >
+                        <div className="counterParent">
                            <HashtagIcon
                               titleText={`${
                                  expansion.taxes ? 'Hide' : 'Show'
@@ -898,7 +896,8 @@ const FlexibleThingCard = ({
             expansion.comments ||
             expansion.privacy ||
             expansion.colors ||
-            expansion.featuredImage) && (
+            expansion.featuredImage ||
+            expansion.connections) && (
             <div className="body">
                {expansion.featuredImage && (
                   <FeaturedImage

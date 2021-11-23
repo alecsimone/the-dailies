@@ -64,6 +64,7 @@ const stickifyButtons = (
    }
 
    const { offsetParent } = blockObj.block;
+   if (offsetParent == null) return;
    const offsetRect = offsetParent.getBoundingClientRect();
    const offsetStyle = window.getComputedStyle(offsetParent);
 
@@ -147,7 +148,6 @@ const stickifyButtons = (
       }
       let thingWithinThingBottom = 0;
 
-      let extraButtonsHeight = 0;
       if (grandParentThing != null) {
          // We're going to need to put the buttons for this block above the buttons for the parent block, so first we need to figure out how tall those are
          let uncleButtons;
@@ -171,18 +171,16 @@ const stickifyButtons = (
             window.innerHeight +
             uncleButtonsHeight -
             withinSidebarBottom;
-
-         extraButtonsHeight = buttonsHeight;
       }
 
       const transformedBottomAdjustment =
          transformedAncestorRect != null ? transformedAncestorRect.bottom : 0;
 
       if (transformedAncestorRect != null) {
-         buttons.style.bottom = `${transformedBottomAdjustment -
-            window.innerHeight +
-            extraButtonsHeight +
-            bottomBarHeight}px`;
+         // buttons.style.bottom = `${transformedBottomAdjustment -
+         //    window.innerHeight +
+         //    bottomBarHeight}px`;
+         buttons.style.bottom = `${thingWithinThingBottom + bottomBarHeight}px`;
       } else {
          buttons.style.bottom = `${bottomBarHeight +
             withinSidebarBottom +
@@ -376,6 +374,41 @@ const stickifyStyleButtons = (
    }
 };
 
+const makeBlockPositionObject = (block, stickingData) => {
+   const blockOffset = block.offsetTop;
+   const blockHeight = block.offsetHeight;
+
+   // We need to get the total offset of the firstBlock by tallying up the offsetTops of all its offsetParents
+   let parentOffset = 0;
+   let nextParent = block.offsetParent;
+   while (nextParent != null) {
+      parentOffset += nextParent.offsetTop;
+      nextParent = nextParent.offsetParent;
+   }
+
+   const blockTop = parentOffset + blockOffset;
+   const blockBottom = blockTop + blockHeight;
+
+   const { buttons } = stickingData;
+
+   let buttonsHeight = 0;
+   if (buttons != null) {
+      buttonsHeight = getElementHeight(buttons);
+   }
+
+   // We'll start sticking the buttons once there's enough space between the top of the content block and the bottom of the viewport to fit them in. That value is the sum of the blockTop, the blockPaddingTop (calculated when we created stickingData), and the height of the buttons, and will be called the blockStickyTop
+   const blockStickyTop =
+      blockTop + stickingData.blockPaddingTop + buttonsHeight;
+
+   // Then we push all this data into our blockPositionsArray
+   return {
+      block,
+      blockTop,
+      blockStickyTop,
+      blockBottom
+   };
+};
+
 const makeStickingData = block => {
    const blockRect = block.getBoundingClientRect();
 
@@ -429,56 +462,24 @@ const makeStickingData = block => {
       transformedAncestorRect = transformedAncestor.getBoundingClientRect();
    }
 
-   return {
+   const stickingData = {
       blockPaddingTop,
+      blockRect,
       topDifference,
       leftAdjustment: buttonsMarginLeft,
-      transformedAncestorRect
+      transformedAncestorRect,
+      buttons
    };
+
+   const blockObj = makeBlockPositionObject(block, stickingData);
+
+   const scroller = getScrollingParent(block);
+
+   return { stickingData, blockObj, scroller };
 };
+export { makeStickingData };
 
-const makeBlockPositionObject = (block, stickingData) => {
-   const blockOffset = block.offsetTop;
-   const blockHeight = block.offsetHeight;
-
-   // We need to get the total offset of the firstBlock by tallying up the offsetTops of all its offsetParents
-   let parentOffset = 0;
-   let nextParent = block.offsetParent;
-   while (nextParent != null) {
-      parentOffset += nextParent.offsetTop;
-      nextParent = nextParent.offsetParent;
-   }
-
-   const blockTop = parentOffset + blockOffset;
-   const blockBottom = blockTop + blockHeight;
-
-   let buttons;
-   const buttonsArray = block.querySelectorAll('.newcontentButtons');
-   if (buttonsArray == null || buttonsArray.length === 0) return;
-
-   for (const buttonsTest of buttonsArray) {
-      if (buttonsTest.closest('.contentBlock') === block) {
-         buttons = buttonsTest;
-      }
-   }
-   if (buttons == null) return;
-
-   const buttonsHeight = getElementHeight(buttons);
-
-   // We'll start sticking the buttons once there's enough space between the top of the content block and the bottom of the viewport to fit them in. That value is the sum of the blockTop, the blockPaddingTop (calculated when we created stickingData), and the height of the buttons, and will be called the blockStickyTop
-   const blockStickyTop =
-      blockTop + stickingData.blockPaddingTop + buttonsHeight;
-
-   // Then we push all this data into our blockPositionsArray
-   return {
-      block,
-      blockTop,
-      blockStickyTop,
-      blockBottom
-   };
-};
-
-const stickifyBlock = block => {
+const stickifyBlock = (block, allStickingData) => {
    // We haven't worked out stickifier for tax sidebars yet, so let's just skip those for now
    if (block.closest('.taxSidebar') != null) return;
 
@@ -488,14 +489,15 @@ const stickifyBlock = block => {
    // If the block is one of the offscreen elements from a Swiper, we don't need to stickify it.
    if (block.closest('.doesNotGiveSize') != null) return;
 
+   let computedStickingData;
+   if (allStickingData != null) {
+      computedStickingData = allStickingData;
+   } else {
+      computedStickingData = makeStickingData(block);
+   }
    // First we're going to collect some data about the block that we'll need throughout the stickifying process
-   const stickingData = makeStickingData(block);
-
-   // We're going to make an object with the tops and bottoms of the contentBlock so that we can check it against the current scroll position and see if we need to reposition its sticky buttons
-   const blockObj = makeBlockPositionObject(block, stickingData);
+   const { stickingData, blockObj, scroller } = computedStickingData;
    if (blockObj == null) return;
-
-   const scroller = getScrollingParent(block);
    if (scroller == null) return; // Not sure why this is happening sometimes, but we can't go on if we don't find a scroller.
 
    // Now we need to figure out where the viewport is
@@ -509,19 +511,10 @@ const stickifyBlock = block => {
    // Let's also define oneRem up here so we can use it throughout the function
    const oneRem = getOneRem();
 
-   // First we'll deal with the content buttons
-   let buttons;
-   const buttonsArray = block.querySelectorAll('.newcontentButtons');
-   for (const buttonsTest of buttonsArray) {
-      if (buttonsTest.closest('.contentBlock') === block) {
-         buttons = buttonsTest;
-      }
-   }
-
-   // We'll need to figure out where the content block is on the screen right now
-   const blockRect = blockObj.block.getBoundingClientRect();
+   // We'll need to get the buttons and figure out where the content block is on the screen right now
+   const { buttons, blockRect } = stickingData;
    let buttonsHeight = 0; // defining this here so we can use it in the comments block too
-
+   // First we'll deal with the content buttons
    if (buttons != null) {
       const buttonsRect = buttons.getBoundingClientRect();
       const { width: buttonsWidth } = buttonsRect;
@@ -557,7 +550,7 @@ const stickifyBlock = block => {
    let styleButtons;
    const styleButtonsArray = block.querySelectorAll(
       ':scope .contentWrapper .stylingButtonsBar'
-   ); // see https://developer.mozilla.org/en-US/docs/Web/API/Element/querySelectorAlll#user_notes for why we need that ":scope" pseudo-class
+   ); // see https://developer.mozilla.org/en-US/docs/Web/API/Element/querySelectorAll#user_notes for why we need that ":scope" pseudo-class
    for (const styleButtonsTest of styleButtonsArray) {
       // Let's make sure we have the right actualContent, in case this contentBlock has a thing with contentBlocks of its own embedded inside it
       if (styleButtonsTest.closest('.contentBlock') === block) {

@@ -129,6 +129,17 @@ const StyledContent = styled.section`
                         .contentWrapper {
                            max-width: 60%;
                            min-width: 60%;
+                           .flexibleThingCard {
+                              .contentBlock.clickToShowComments {
+                                 .contentWrapper {
+                                    max-width: 100%;
+                                    border-right: none;
+                                 }
+                                 .commentsWrapper {
+                                    width: 100%;
+                                 }
+                              }
+                           }
                            border-right: 1px solid
                               ${props =>
                                  setAlpha(props.theme.lowContrastGrey, 0.2)};
@@ -153,7 +164,7 @@ const StyledContent = styled.section`
                         width: 100%;
                         .flexibleThingCard {
                            .contentAndCommentContainer {
-                              width: 200%;
+                              /* width: 200%; */
                            }
                         }
                      }
