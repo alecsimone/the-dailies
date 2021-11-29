@@ -304,7 +304,12 @@ const Content = ({ contentType, canEdit, linkedPiece, stuffID, type }) => {
                </div>
             );
          });
-         contentElements = <Swiper elementsArray={contentElementsArray} />;
+         contentElements = (
+            <Swiper
+               elementsArray={contentElementsArray}
+               onSwipe={() => setTruncContExpanded(true)}
+            />
+         );
       }
    }
 

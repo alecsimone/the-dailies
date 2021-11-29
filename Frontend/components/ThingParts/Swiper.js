@@ -60,7 +60,8 @@ const StyledSwiper = styled.div`
 const Swiper = ({
    elementsArray = [],
    hideNavigator,
-   overridePosition = 0
+   overridePosition = 0,
+   onSwipe
 }) => {
    const [currentPosition, setCurrentPosition] = useState(overridePosition);
 
@@ -138,11 +139,17 @@ const Swiper = ({
                if (previousElementExists) {
                   setCurrentPosition(currentPosition - 1);
                   scrollToTop(e);
+                  if (onSwipe != null) {
+                     onSwipe();
+                  }
                }
             } else if (touchEnd - touchStart < swipeThreshold * -1) {
                if (nextElementExists) {
                   setCurrentPosition(currentPosition + 1);
                   scrollToTop(e);
+                  if (onSwipe != null) {
+                     onSwipe();
+                  }
                }
             }
             setTouchStart(0);
@@ -190,6 +197,9 @@ const Swiper = ({
                      onClick={e => {
                         setCurrentPosition(currentPosition - 1);
                         scrollToTop(e);
+                        if (onSwipe != null) {
+                           onSwipe();
+                        }
                      }}
                      pointing="left"
                   />
@@ -210,6 +220,9 @@ const Swiper = ({
                      onClick={e => {
                         setCurrentPosition(currentPosition + 1);
                         scrollToTop(e);
+                        if (onSwipe != null) {
+                           onSwipe();
+                        }
                      }}
                      pointing="right"
                   />
