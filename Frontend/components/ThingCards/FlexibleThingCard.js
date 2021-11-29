@@ -86,7 +86,7 @@ const StyledFlexibleThingCard = styled.article`
             .thingColors}; /* Feels kinda janky to just put the thingColors in again, but we don't want a border on mobile and this seems like the simplest way to achieve that */
    }
    .flexibleThingCard {
-      max-width: calc(100% - 1rem);
+      /* max-width: calc(100% - 1rem); */
    }
    border-radius: 3px 3px 0.5rem 0.5rem;
    &.small {
@@ -150,13 +150,13 @@ const StyledFlexibleThingCard = styled.article`
          .featuredImage {
             margin: 0;
             width: 100%;
-            padding: 0 2rem;
+            padding: 0;
             ${props => props.theme.midScreenBreakpoint} {
                padding: 0;
             }
-            margin: 2rem 0;
+            margin: 0;
             input {
-               margin: 0 auto;
+               margin: 2rem auto;
             }
          }
          .taxBox {
@@ -516,7 +516,8 @@ const FlexibleThingCard = ({
       featuredImage:
          expanded &&
          featuredImage != null &&
-         !disabledCodewords.includes(featuredImage.toLowerCase()),
+         !disabledCodewords.includes(featuredImage.toLowerCase()) &&
+         featuredImage !== '',
       votebar: expanded,
       showingAllButtons: expanded,
       toggleDirection: initialToggleDirection
@@ -616,6 +617,7 @@ const FlexibleThingCard = ({
    const showingThumb = !(
       expansion.featuredImage ||
       featuredImage == null ||
+      featuredImage === '' ||
       isVideo(featuredImage) ||
       disabledCodewords.includes(featuredImage.toLowerCase()) ||
       isTweet ||

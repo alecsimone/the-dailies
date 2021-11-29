@@ -79,7 +79,8 @@ const FlexibleFeaturedImage = ({ canEdit, id, type }) => {
    const featuredImage = useFlexibleFeaturedImageData(id, type);
    const [editingUrl, setEditingUrl] = useState(
       featuredImage == null ||
-         disabledCodewords.includes(featuredImage.toLowerCase())
+         disabledCodewords.includes(featuredImage.toLowerCase()) ||
+         featuredImage === ''
    );
    const [newUrl, setNewUrl] = useState(
       featuredImage != null ? featuredImage : ''
@@ -95,7 +96,8 @@ const FlexibleFeaturedImage = ({ canEdit, id, type }) => {
    const sendNewFeaturedImage = () => {
       if (
          !isExplodingLink(newUrl) &&
-         !disabledCodewords.includes(newUrl.toLowerCase())
+         !disabledCodewords.includes(newUrl.toLowerCase()) &&
+         newUrl !== ''
       ) {
          window.alert("That's not a valid featured image, sorry");
          return;
@@ -121,7 +123,8 @@ const FlexibleFeaturedImage = ({ canEdit, id, type }) => {
             />
          </Head>
          {featuredImage != null &&
-            !disabledCodewords.includes(featuredImage.toLowerCase()) && (
+            !disabledCodewords.includes(featuredImage.toLowerCase()) &&
+            featuredImage !== '' && (
                <div className="featuredImageWrapper">
                   {
                      <ExplodingLink
