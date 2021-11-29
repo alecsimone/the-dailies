@@ -3,10 +3,11 @@ import styled from 'styled-components';
 import SearchBar from '../components/SearchBar';
 import SearchResults from '../components/SearchResults';
 import { setAlpha } from '../styles/functions';
+import { StyledThingsPage } from '../styles/styleFragments';
 
 const StyledSearchPage = styled.div`
    position: relative;
-   padding: 2rem;
+   padding: 2rem 0;
    h3 {
       margin-top: 0;
    }
@@ -26,7 +27,8 @@ const StyledSearchPage = styled.div`
          }
       }
    }
-   .thingCard {
+   ${StyledThingsPage}
+   .flexibleThingCard {
       text-align: left;
    }
 `;
