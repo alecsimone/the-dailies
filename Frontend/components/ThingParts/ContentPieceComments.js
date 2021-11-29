@@ -11,6 +11,9 @@ const StyledContentPieceComment = styled.div`
    &.full {
       .commentsContainer {
          max-height: 80rem;
+         &.cts {
+            max-height: none;
+         }
          overflow: hidden;
          ${props => props.theme.scroll};
          .comment .votebar {
@@ -191,7 +194,8 @@ const ContentPieceComment = ({
    comments,
    id,
    input,
-   defaultView = 'collapsed'
+   defaultView = 'collapsed',
+   clickToShowComments
 }) => {
    const [commentView, setCommentView] = useState(defaultView); // We have 3 view states: collapsed, expanded, and full. Collapsed is supposed to be the default.
    const [selectedComment, setSelectedComment] = useState(false);
@@ -308,7 +312,12 @@ const ContentPieceComment = ({
 
    return (
       <StyledContentPieceComment className={`commentsArea ${commentView}`}>
-         <div className={`commentsContainer ${commentView}`} ref={containerRef}>
+         <div
+            className={`commentsContainer ${commentView} ${
+               clickToShowComments ? 'cts' : 'ncts'
+            }`}
+            ref={containerRef}
+         >
             {commentElements}
             {commentView === 'collapsed' && topLevelComments.length > 3 && (
                <div

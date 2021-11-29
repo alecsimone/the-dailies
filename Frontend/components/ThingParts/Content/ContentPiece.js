@@ -293,6 +293,7 @@ const ContentPiece = ({
       <ContentPieceComment
          defaultView={clickToShowComments ? 'expanded' : 'collapsed'}
          comments={comments}
+         clickToShowComments={clickToShowComments}
          id={pieceID}
          key={pieceID}
          input={
