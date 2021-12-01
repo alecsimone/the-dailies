@@ -13,7 +13,17 @@ const useQueryAndStoreIt = (query, optionsObject) => {
       // First we need to pull the actual data out of our data object. It will be stored under a key we don't know the name of, but we can just loop through every key (it will probably be the only one)
       const dataKeys = Object.keys(data);
       dataKeys.forEach(key => {
-         if (Array.isArray(data[key])) {
+         if (data[key].__typename === 'Member') {
+            const memberThings = data[key].createdThings;
+            if (memberThings != null) {
+               dispatch(upsertStuffArray(memberThings));
+            }
+
+            const memberVotes = data[key].votes;
+            if (memberVotes != null) {
+               dispatch(upsertStuffArray(memberVotes));
+            }
+         } else if (Array.isArray(data[key])) {
             // console.log('dispatch new stuff array', data[key]);
             dispatch(upsertStuffArray(data[key]));
          } else {
@@ -35,7 +45,17 @@ const useLazyQueryAndStoreIt = (query, optionsObject) => {
       // First we need to pull the actual data out of our data object. It will be stored under a key we don't know the name of, but we can just loop through every key (it will probably be the only one)
       const dataKeys = Object.keys(data);
       dataKeys.forEach(key => {
-         if (Array.isArray(data[key])) {
+         if (data[key].__typename === 'Member') {
+            const memberThings = data[key].createdThings;
+            if (memberThings != null) {
+               dispatch(upsertStuffArray(memberThings));
+            }
+
+            const memberVotes = data[key].votes;
+            if (memberVotes != null) {
+               dispatch(upsertStuffArray(memberVotes));
+            }
+         } else if (Array.isArray(data[key])) {
             // console.log('dispatch new stuff array', data[key]);
             dispatch(upsertStuffArray(data[key]));
          } else {

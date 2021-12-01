@@ -43,12 +43,11 @@ const StyledMemberCard = styled.article`
    }
 `;
 
-const MemberCard = props => {
-   const { member } = props;
+const MemberCard = ({ member }) => {
    const {
       loggedInUserID,
       memberFields: { friends }
-   } = useMe('MemberCard', 'friends');
+   } = useMe('MemberCard', 'friends {id}');
 
    if (member == null) return null;
 

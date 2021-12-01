@@ -134,7 +134,10 @@ const StyledProfileSidebar = styled.div`
 `;
 
 const ProfileSidebar = ({ member, canEdit }) => {
-   const { loggedInUserID } = useMe();
+   const { loggedInUserID, memberFields } = useMe(
+      'ProfileSidebar',
+      'id friends {id} friendRequests {id}'
+   );
 
    const isMe = loggedInUserID && loggedInUserID === member.id;
 
@@ -146,7 +149,7 @@ const ProfileSidebar = ({ member, canEdit }) => {
       <StyledProfileSidebar>
          <ProfileBody
             member={member}
-            me={loggedInUserID}
+            me={memberFields}
             isMe={isMe}
             canEdit={canEdit}
             confirmFriendRequest={confirmFriendRequest}

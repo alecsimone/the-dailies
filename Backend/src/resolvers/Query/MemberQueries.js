@@ -93,7 +93,7 @@ async function me(parent, args, ctx, info) {
    if (!ctx.req.memberId) {
       return null;
    }
-   const member = await ctx.db.query
+   const memberData = await ctx.db.query
       .member(
          {
             where: { id: ctx.req.memberId }
@@ -103,18 +103,13 @@ async function me(parent, args, ctx, info) {
       .catch(err => {
          console.log(err);
       });
-   // if (member && member.friends) {
-   //    member.friends.forEach((friend, index) => {
-   //       member.friends[index].createdThings = friend.createdThings.filter(
-   //          thing => canSeeThing(ctx, thing)
-   //       );
-   //    });
-   // }
-   return member;
+
+   return memberData;
 }
 exports.me = me;
 
 async function member(parent, { id, displayName }, ctx, info) {
+   console.log("let's get some member data");
    let where;
    if (id) {
       where = {
@@ -137,9 +132,14 @@ async function member(parent, { id, displayName }, ctx, info) {
       });
 
    if (member && member.createdThings && member.createdThings.length > 0) {
-      member.createdThings = member.createdThings.filter(thing =>
-         canSeeThing(ctx, thing)
-      );
+      const safeThings = [];
+      for (const thing of member.createdThings) {
+         const hasPermission = await canSeeThing(ctx, thing);
+         if (hasPermission) {
+            safeThings.push(thing);
+         }
+      }
+      member.createdThings = safeThings;
    }
 
    if (ctx.req.memberId !== id) {
@@ -182,3 +182,153 @@ async function searchMembers(parent, { string }, ctx, info) {
    return relevantMembers;
 }
 exports.searchMembers = searchMembers;
+
+async function moreMemberThings(
+   parent,
+   { memberID, cursor, count = 2 },
+   ctx,
+   info
+) {
+   const moreThings = await ctx.db.query.things(
+      {
+         where: {
+            AND: [
+               {
+                  author: {
+                     id: memberID
+                  }
+               },
+               {
+                  createdAt_lt: cursor
+               }
+            ]
+         },
+         orderBy: 'createdAt_DESC',
+         first: count
+      },
+      info
+   );
+
+   const safeThings = moreThings.filter(thing => canSeeThing(ctx, thing));
+
+   return safeThings;
+}
+exports.moreMemberThings = moreMemberThings;
+
+async function moreMemberVotes(
+   parent,
+   { memberID, cursor, count = 2 },
+   ctx,
+   info
+) {
+   const moreVotes = await ctx.db.query.votes(
+      {
+         where: {
+            AND: [
+               {
+                  voter: {
+                     id: memberID
+                  }
+               },
+               {
+                  createdAt_lt: cursor
+               }
+            ]
+         },
+         orderBy: 'createdAt_DESC',
+         first: count
+      },
+      info
+   );
+
+   if (moreVotes.length === 0) return [];
+
+   const safeVotes = [];
+   for (const vote of moreVotes) {
+      if (vote.onThing != null) {
+         const canSee = await canSeeThing(ctx, vote.onThing);
+         if (canSee) {
+            safeVotes.push(vote);
+         }
+      }
+      if (vote.onContentPiece != null) {
+         // TODO: Actually check content piece privacy
+         safeVotes.push(vote);
+      }
+      if (vote.onComment != null) {
+         // TODO: Actually check comment privacy. Currently comments don't have their own privacy, so this means finding the thing or content piece they're on and then checking that stuff's privacy
+         safeVotes.push(vote);
+      }
+   }
+
+   if (safeVotes.length < count && moreVotes.length > 0) {
+      // If we didn't get enough votes that passed our filter, we need to get more until we do.
+      let supplementaryVotes = [];
+      let noMoreVotes = false;
+      let newCursor = moreVotes[moreVotes.length - 1].createdAt;
+
+      // We're going to keep getting more votes until we have enough votes to send back to the user, or until we run out of votes
+      while (
+         supplementaryVotes.length < count - safeVotes.length &&
+         !noMoreVotes
+      ) {
+         // First we'll get as many new votes as we still need to complete our count
+         const newVotes = await ctx.db.query.votes(
+            {
+               where: {
+                  AND: [
+                     {
+                        voter: {
+                           id: memberID
+                        }
+                     },
+                     {
+                        createdAt_lt: newCursor
+                     }
+                  ]
+               },
+               orderBy: 'createdAt_DESC',
+               first: count - supplementaryVotes.length - safeVotes.length
+            },
+            info
+         );
+
+         if (newVotes.length === 0) {
+            // If we don't get anything from that query, that means we're all out of votes and can exit the loop
+            noMoreVotes = true;
+
+            const combinedVotes = safeVotes.concat(supplementaryVotes);
+
+            return combinedVotes;
+         }
+
+         // Otherwise, we run our filter again on the new votes
+         const newSafeVotes = [];
+         for (const vote of newVotes) {
+            if (vote.onThing != null) {
+               const canSee = await canSeeThing(ctx, vote.onThing);
+               if (canSee) {
+                  newSafeVotes.push(vote);
+               }
+            }
+            if (vote.onContentPiece != null) {
+               // TODO: Actually check content piece privacy
+               newSafeVotes.push(vote);
+            }
+            if (vote.onComment != null) {
+               // TODO: Actually check comment privacy
+               newSafeVotes.push(vote);
+            }
+         }
+         // And combine what we have left with our previous supplementary votes
+         supplementaryVotes = supplementaryVotes.concat(newSafeVotes);
+
+         newCursor = newVotes[newVotes.length - 1].createdAt;
+      }
+      const finalVotes = safeVotes.concat(supplementaryVotes);
+      return finalVotes;
+   }
+
+   return safeVotes;
+}
+exports.moreMemberVotes = moreMemberVotes;

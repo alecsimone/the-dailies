@@ -5,6 +5,7 @@ import { useContext } from 'react';
 import { setAlpha } from '../../styles/functions';
 import FlexibleThingCard from '../ThingCards/FlexibleThingCard';
 import useMe from '../Account/useMe';
+import CardGenerator from '../ThingCards/CardGenerator';
 
 const StyledThings = styled.div`
    margin: auto;
@@ -44,7 +45,14 @@ const StyledThings = styled.div`
    }
 `;
 
-const Things = ({ things, displayType, cardSize, noPic, borderSide }) => {
+const Things = ({
+   things,
+   displayType,
+   cardSize = 'regular',
+   contentType = 'single',
+   noPic,
+   borderSide
+}) => {
    const { desktopBPWidthRaw, bigScreenBPWidthRaw } = useContext(ThemeContext);
 
    const {
@@ -52,15 +60,24 @@ const Things = ({ things, displayType, cardSize, noPic, borderSide }) => {
       memberFields: { role }
    } = useMe('Things', 'role');
 
+   // const thingCards = things.map(thing => (
+   //    <FlexibleThingCard
+   //       key={thing.id}
+   //       expanded={cardSize === 'regular'}
+   //       thingID={thing.id}
+   //       contentType="single"
+   //       titleLink
+   //       borderSide={borderSide}
+   //       noPic={noPic}
+   //    />
+   // ));
    const thingCards = things.map(thing => (
-      <FlexibleThingCard
-         key={thing.id}
-         expanded={cardSize === 'regular'}
-         thingID={thing.id}
-         contentType="single"
-         titleLink
-         borderSide={borderSide}
+      <CardGenerator
+         id={thing.id}
+         cardType={cardSize}
+         contentType={contentType}
          noPic={noPic}
+         borderSide={borderSide}
       />
    ));
    if (displayType === 'grid') {

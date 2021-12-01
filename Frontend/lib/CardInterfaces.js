@@ -85,6 +85,25 @@ const commentFields = `
       }
       value
    }
+   onContentPiece {
+      __typename
+      id
+      onThing {
+         __typename
+         id
+         title
+      }
+   }
+   onThing {
+      __typename
+      id
+      title
+   }
+   onTag {
+      __typename
+      id
+      title
+   }
    score
    createdAt
    updatedAt
@@ -399,7 +418,7 @@ const collectionGroupFields = `
    id
    title
    things {
-      ${smallThingCardFields}
+      ${fullThingFields}
    }
    order
    createdAt
@@ -481,7 +500,7 @@ const fullMemberFields = `
       rep
       role
       createdThings {
-         ${smallThingCardFields}
+         ${fullThingFields}
       }
       friends {
          __typename
@@ -528,17 +547,23 @@ const fullMemberFields = `
    }
    twitchName
    email
-   votes {
+   votes(last: 2) {
       __typename
       id
       onThing {
-         ${thingCardFields}
+         ${fullThingFields}
+      }
+      onComment {
+         ${commentFields}
+      }
+      onContentPiece {
+         ${contentPieceFields}
       }
       value
       createdAt
    }
-   createdThings {
-      ${thingCardFields}
+   createdThings(last: 2) {
+      ${fullThingFields}
    }
    defaultPrivacy
    defaultExpansion

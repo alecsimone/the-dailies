@@ -104,7 +104,6 @@ async function taxByTitle(parent, { title, personal, cursor }, ctx, info) {
 exports.taxByTitle = taxByTitle;
 
 async function thing(parent, { where }, ctx, info) {
-   console.log('Thing Query');
    await canSeeThingGate(where, ctx);
 
    const thingData = await ctx.db.query

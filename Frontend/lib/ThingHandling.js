@@ -45,6 +45,7 @@ const useInfiniteScroll = (fetchMore, scrollingChild, queryName) => {
             cursor: cursorRef.current
          },
          updateQuery: (prev, { fetchMoreResult }) => {
+            console.log('updating');
             isFetchingMoreRef.current = false;
             setIsFetchingMore(false);
 
@@ -93,7 +94,7 @@ const useInfiniteScroll = (fetchMore, scrollingChild, queryName) => {
       if (noMoreToFetchRef.current) {
          scrollingSection.removeEventListener('scroll', scrollHandler);
       }
-      const thingsContainer = scrollingSection.querySelector(scrollingChild);
+      const thingsContainer = scrollingSection?.querySelector(scrollingChild);
 
       if (thingsContainer == null) return;
 
@@ -120,7 +121,9 @@ const useInfiniteScroll = (fetchMore, scrollingChild, queryName) => {
       isFetchingMoreRef,
       isFetchingMore,
       noMoreToFetchRef,
-      fetchMoreHandler
+      setNoMoreToFetch,
+      fetchMoreHandler,
+      setIsFetchingMore
    };
 };
 export { useInfiniteScroll };

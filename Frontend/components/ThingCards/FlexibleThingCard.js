@@ -466,6 +466,7 @@ const FlexibleThingCard = ({
    borderSide = 'top',
    noPic
 }) => {
+   // return <div>Card!</div>;
    const {
       createdAt,
       color,

@@ -83,6 +83,17 @@ const upsertNewData = (state, stuffData) => {
          });
          stuffData.comments = commentReferences;
          state[`ContentPiece:${newStuffID}`] = stuffData;
+      } else if (newStuffType === 'Vote') {
+         // If it's a vote, we have to find what it's a vote on and then upsert that
+         if (stuffData.onThing != null) {
+            upsertNewData(state, stuffData.onThing);
+         }
+         if (stuffData.onContentPiece != null) {
+            upsertNewData(state, stuffData.onContentPiece);
+         }
+         if (stuffData.onComment != null) {
+            upsertNewData(state, stuffData.onComment);
+         }
       } else {
          state[`${newStuffType}:${newStuffID}`] = stuffData;
       }

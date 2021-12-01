@@ -3,8 +3,9 @@ import useQueryAndStoreIt from '../../stuffStore/useQueryAndStoreIt';
 import LoadingRing from '../LoadingRing';
 import FlexibleThingCard from './FlexibleThingCard';
 import Error from '../ErrorMessage';
+import PlaceholderThings from '../PlaceholderThings';
 
-const CardFetcher = ({ thingID, cardType, borderSide }) => {
+const CardFetcher = ({ thingID, cardType, borderSide, noPic, contentType }) => {
    const { data, loading, error } = useQueryAndStoreIt(SINGLE_THING_QUERY, {
       variables: {
          id: thingID
@@ -13,7 +14,14 @@ const CardFetcher = ({ thingID, cardType, borderSide }) => {
    });
 
    if (loading) {
-      return <LoadingRing />;
+      return (
+         <PlaceholderThings
+            count={1}
+            borderSide={borderSide}
+            contentType={contentType}
+            expanded={cardType === 'regular'}
+         />
+      );
    }
 
    if (data) {
@@ -22,8 +30,9 @@ const CardFetcher = ({ thingID, cardType, borderSide }) => {
             key={thingID}
             expanded={cardType === 'regular'}
             thingID={thingID}
-            contentType={cardType === 'regular' ? 'full' : 'single'}
+            contentType={contentType}
             titleLink
+            noPic={noPic}
             borderSide={borderSide}
          />
       );

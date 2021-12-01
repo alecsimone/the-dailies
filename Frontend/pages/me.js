@@ -10,6 +10,8 @@ import ProfileSidebar from '../components/Profile/ProfileSidebar';
 import ProfileContent from '../components/Profile/ProfileContent';
 import { fullMemberFields } from '../lib/CardInterfaces';
 import { setAlpha } from '../styles/functions';
+import useQueryAndStoreIt from '../stuffStore/useQueryAndStoreIt';
+import PlaceholderThings from '../components/PlaceholderThings';
 
 const ME_PAGE_QUERY = gql`
    query ME_PAGE_QUERY {
@@ -33,8 +35,6 @@ const StyledProfilePage = styled.section`
       position: relative;
       ${props => props.theme.desktopBreakpoint} {
          width: 75%;
-         overflow: hidden;
-         ${props => props.theme.scroll};
       }
    }
    .sidebar {
@@ -53,7 +53,7 @@ const StyledProfilePage = styled.section`
 export { StyledProfilePage };
 
 const me = ({ query }) => {
-   const { data, loading, error } = useQuery(ME_PAGE_QUERY);
+   const { data, loading, error } = useQueryAndStoreIt(ME_PAGE_QUERY);
 
    let pageTitle;
    let content;
@@ -61,16 +61,18 @@ const me = ({ query }) => {
    if (error) {
       pageTitle = "Couldn't find you";
       content = <p>You were not found.</p>;
+   } else if (loading) {
+      pageTitle = 'Loading You';
+      // content = <PlaceholderThings count={2} cardSize="regular" />;
+      content = <LoadingRing />;
+      sidebar = <LoadingRing />;
    } else if (data && data.me) {
       pageTitle = data.me.displayName;
+      // content = <div>Content!</div>;
       content = (
          <ProfileContent member={data.me} isMe defaultTab={query.stuff} />
       );
       sidebar = <ProfileSidebar member={data.me} canEdit />;
-   } else if (loading) {
-      pageTitle = 'Loading You';
-      content = <LoadingRing />;
-      sidebar = <LoadingRing />;
    }
 
    return (

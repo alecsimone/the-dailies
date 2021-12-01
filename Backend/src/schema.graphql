@@ -18,7 +18,9 @@ type Query {
    getTweetsForList(listID: String): SuccessMessage!
    search(string: String!, isTitleOnly: Boolean, cursor: String, count: Int): [Thing]!
    searchMembers(string: String!): [Member]
-   getCollections: Member
+   getCollections: Member,
+   moreMemberThings(memberID: String!, cursor: String, count: Int): [Thing]
+   moreMemberVotes(memberID: String!, cursor: String, count: Int): [Vote]
 }
 
 type Mutation {

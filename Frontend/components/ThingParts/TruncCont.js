@@ -19,7 +19,7 @@ const StyledTruncCont = styled.div`
 
 const TruncCont = ({
    cont: contObj,
-   limit,
+   limit = 280,
    truncContExpanded = true,
    setTruncContExpanded
 }) => {
@@ -65,6 +65,7 @@ const TruncCont = ({
             <ArrowIcon
                pointing={truncContExpanded ? 'up' : 'down'}
                onClick={() => {
+                  console.log(setTruncContExpanded, truncContExpanded);
                   if (setTruncContExpanded != null) {
                      setTruncContExpanded(!truncContExpanded);
                   }

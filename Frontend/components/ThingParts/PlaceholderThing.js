@@ -1,3 +1,5 @@
+// NOTE: Do not use this directly as it will have no styling. Use PlaceholderThings instead, and just pass it a count of 1 if you only want one placeholder thing
+
 const PlaceholderThing = ({ borderSide, contentType, expanded }) => (
    <article
       className={`placeholderThing${

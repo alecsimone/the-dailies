@@ -14,7 +14,9 @@ const {
    finishReset,
    me,
    member,
-   searchMembers
+   searchMembers,
+   moreMemberThings,
+   moreMemberVotes
 } = require('./Query/MemberQueries');
 const {
    finishTwitterLogin,
@@ -40,6 +42,8 @@ const Query = {
    getTweetsForList,
    search,
    searchMembers,
+   moreMemberThings,
+   moreMemberVotes,
    allThings,
    getCollections
 };

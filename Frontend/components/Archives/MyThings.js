@@ -19,6 +19,7 @@ import { useInfiniteScroll } from '../../lib/ThingHandling';
 import useMe from '../Account/useMe';
 import PlaceholderThings from '../PlaceholderThings';
 import useQueryAndStoreIt from '../../stuffStore/useQueryAndStoreIt';
+import { fullSizedLoadMoreButton } from '../../styles/styleFragments';
 
 const StyledMyThings = styled.div`
    article.flexibleThingCard {
@@ -30,18 +31,7 @@ const StyledMyThings = styled.div`
          }
       }
    }
-   button.loadMore {
-      display: block;
-      padding: 1rem;
-      font-size: ${props => props.theme.smallText};
-      margin: 2rem auto;
-   }
-   div.loadMore {
-      font-size: ${props => props.theme.bigText};
-      text-align: center;
-      margin: 1rem 0;
-      font-weight: bold;
-   }
+   ${fullSizedLoadMoreButton}
 `;
 
 const MY_THINGS_QUERY = gql`
