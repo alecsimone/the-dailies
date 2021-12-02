@@ -268,6 +268,12 @@ const ProfileContent = ({ member, isMe, defaultTab }) => {
    // We need to make our container switch to the Things tab when we route to a new member, but eslint doesn't let you use a dependency for an effect that isn't referenced in the effect. I can't find any reason why that is or any better way of doing it, so I'm just turning off that rule for a minute.
    useEffect(() => {
       setSelectedTab(defaultTab || 'Things');
+
+      // We also need to reset our refs
+      createdThingsRef.current = JSON.parse(
+         JSON.stringify(member.createdThings)
+      );
+      votesRef.current = JSON.parse(JSON.stringify(member.votes));
    }, [member.id, member.displayName, defaultTab]);
    /* eslint-enable */
 

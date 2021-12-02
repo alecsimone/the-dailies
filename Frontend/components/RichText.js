@@ -201,6 +201,21 @@ const RichText = ({ text, priorText, nextText, matchCount = 0 }) => {
 
                return elementsArray;
             }
+            // If we did get a faulty ...in link, we still need to add the ending text and return something, otherwise the text leading up to the ...in link will be added to the elements arary, and then the whole thing will run again, leading to that text being repeated
+            // First we have to add in the faulty link as plain text
+            elementsArray.push(fullUrl);
+
+            // Then we get our new ending text
+            stoppedAtIndex = match.index + url.index + url[0].length;
+
+            const linkSkipEndingText = getEndingTextElement(
+               stoppedAtIndex,
+               fixedText,
+               trimEndingText,
+               matchCount
+            );
+            elementsArray.push(linkSkipEndingText);
+            return elementsArray;
          }
       }
 

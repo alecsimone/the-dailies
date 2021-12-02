@@ -1,5 +1,9 @@
 const jwt = require('jsonwebtoken');
-const { canSeeThing } = require('../../utils/ThingHandling');
+const {
+   canSeeThing,
+   supplementFilteredQuery,
+   canSeeContentPiece
+} = require('../../utils/ThingHandling');
 
 async function finishSignup(parent, { id, code }, ctx, info) {
    const existingMember = await ctx.db.query
@@ -109,7 +113,6 @@ async function me(parent, args, ctx, info) {
 exports.me = me;
 
 async function member(parent, { id, displayName }, ctx, info) {
-   console.log("let's get some member data");
    let where;
    if (id) {
       where = {
@@ -209,7 +212,45 @@ async function moreMemberThings(
       info
    );
 
-   const safeThings = moreThings.filter(thing => canSeeThing(ctx, thing));
+   const filterFunction = async thing => canSeeThing(ctx, thing);
+
+   let safeThings = [];
+   for (const thing of moreThings) {
+      if (await filterFunction(thing)) {
+         safeThings.push(thing);
+      }
+   }
+
+   if (safeThings.length < count && moreThings.length > 0) {
+      // The supplementFilteredQuery function needs a query object that's missing the cursor
+      const queryObj = {
+         where: {
+            AND: [
+               {
+                  author: {
+                     id: memberID
+                  }
+               }
+            ]
+         },
+         orderBy: 'createdAt_DESC',
+         first: count - safeThings.length
+      };
+
+      const supplementaryThings = await supplementFilteredQuery(
+         ctx,
+         'things',
+         queryObj,
+         info,
+         filterFunction,
+         'createdAt_lt',
+         moreThings[moreThings.length - 1].createdAt,
+         'createdAt',
+         count - safeThings.length
+      );
+
+      safeThings = safeThings.concat(supplementaryThings);
+   }
 
    return safeThings;
 }
@@ -243,90 +284,60 @@ async function moreMemberVotes(
 
    if (moreVotes.length === 0) return [];
 
-   const safeVotes = [];
-   for (const vote of moreVotes) {
+   const filterFunction = async vote => {
       if (vote.onThing != null) {
-         const canSee = await canSeeThing(ctx, vote.onThing);
-         if (canSee) {
-            safeVotes.push(vote);
-         }
+         return canSeeThing(ctx, vote.onThing);
       }
       if (vote.onContentPiece != null) {
-         // TODO: Actually check content piece privacy
-         safeVotes.push(vote);
+         return canSeeContentPiece(ctx, vote.onContentPiece);
       }
       if (vote.onComment != null) {
-         // TODO: Actually check comment privacy. Currently comments don't have their own privacy, so this means finding the thing or content piece they're on and then checking that stuff's privacy
+         // Comments can be on things or content pieces. They do not have their own privacy outside of that.
+         if (vote.onComment.onThing != null) {
+            return canSeeThing(ctx, vote.onComment.onThing);
+         }
+         return canSeeContentPiece(ctx, vote.onComment.onContentPiece);
+      }
+      return false;
+   };
+
+   let safeVotes = [];
+   for (const vote of moreVotes) {
+      if (await filterFunction(vote)) {
          safeVotes.push(vote);
       }
    }
 
+   // If we got things back, but we now have less things than were asked for, we need to supplement our results
    if (safeVotes.length < count && moreVotes.length > 0) {
-      // If we didn't get enough votes that passed our filter, we need to get more until we do.
-      let supplementaryVotes = [];
-      let noMoreVotes = false;
-      let newCursor = moreVotes[moreVotes.length - 1].createdAt;
-
-      // We're going to keep getting more votes until we have enough votes to send back to the user, or until we run out of votes
-      while (
-         supplementaryVotes.length < count - safeVotes.length &&
-         !noMoreVotes
-      ) {
-         // First we'll get as many new votes as we still need to complete our count
-         const newVotes = await ctx.db.query.votes(
-            {
-               where: {
-                  AND: [
-                     {
-                        voter: {
-                           id: memberID
-                        }
-                     },
-                     {
-                        createdAt_lt: newCursor
-                     }
-                  ]
-               },
-               orderBy: 'createdAt_DESC',
-               first: count - supplementaryVotes.length - safeVotes.length
-            },
-            info
-         );
-
-         if (newVotes.length === 0) {
-            // If we don't get anything from that query, that means we're all out of votes and can exit the loop
-            noMoreVotes = true;
-
-            const combinedVotes = safeVotes.concat(supplementaryVotes);
-
-            return combinedVotes;
-         }
-
-         // Otherwise, we run our filter again on the new votes
-         const newSafeVotes = [];
-         for (const vote of newVotes) {
-            if (vote.onThing != null) {
-               const canSee = await canSeeThing(ctx, vote.onThing);
-               if (canSee) {
-                  newSafeVotes.push(vote);
+      // The supplementFilteredQuery function needs a query object that's missing the cursor
+      const queryObj = {
+         where: {
+            AND: [
+               {
+                  voter: {
+                     id: memberID
+                  }
                }
-            }
-            if (vote.onContentPiece != null) {
-               // TODO: Actually check content piece privacy
-               newSafeVotes.push(vote);
-            }
-            if (vote.onComment != null) {
-               // TODO: Actually check comment privacy
-               newSafeVotes.push(vote);
-            }
-         }
-         // And combine what we have left with our previous supplementary votes
-         supplementaryVotes = supplementaryVotes.concat(newSafeVotes);
+            ]
+         },
+         orderBy: 'createdAt_DESC',
+         first: count - safeVotes.length
+      };
 
-         newCursor = newVotes[newVotes.length - 1].createdAt;
-      }
-      const finalVotes = safeVotes.concat(supplementaryVotes);
-      return finalVotes;
+      const supplementaryVotes = await supplementFilteredQuery(
+         ctx,
+         'votes',
+         queryObj,
+         info,
+         filterFunction,
+         'createdAt_lt',
+         moreVotes[moreVotes.length - 1].createdAt,
+         'createdAt',
+         count - safeVotes.length
+      );
+
+      safeVotes = safeVotes.concat(supplementaryVotes);
    }
 
    return safeVotes;

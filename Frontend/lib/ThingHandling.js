@@ -91,7 +91,7 @@ const useInfiniteScroll = (fetchMore, scrollingChild, queryName) => {
 
       const scrollingSection = scrollerRef.current;
 
-      if (noMoreToFetchRef.current) {
+      if (noMoreToFetchRef.current && scrollingSection != null) {
          scrollingSection.removeEventListener('scroll', scrollHandler);
       }
       const thingsContainer = scrollingSection?.querySelector(scrollingChild);

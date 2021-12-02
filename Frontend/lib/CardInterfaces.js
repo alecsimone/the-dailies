@@ -92,17 +92,44 @@ const commentFields = `
          __typename
          id
          title
+         author {
+            id
+            friends {
+               id
+               friends {
+                  id
+               }
+            }
+         }
       }
    }
    onThing {
       __typename
       id
       title
+      author {
+         id
+         friends {
+            id
+            friends {
+               id
+            }
+         }
+      }
    }
    onTag {
       __typename
       id
       title
+      author {
+         id
+         friends {
+            id
+            friends {
+               id
+            }
+         }
+      }
    }
    score
    createdAt
@@ -123,11 +150,29 @@ const contentPieceFields = `
       id
       title
       privacy
+      author {
+         id
+         friends {
+            id
+            friends {
+               id
+            }
+         }
+      }
    }
    onTag {
       __typename
       id
       title
+      author {
+         id
+         friends {
+            id
+            friends {
+               id
+            }
+         }
+      }
    }
    copiedToThings {
       __typename

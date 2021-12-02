@@ -348,6 +348,60 @@ const canSeeThingGate = async (where, ctx) => {
 };
 exports.canSeeThingGate = canSeeThingGate;
 
+const canSeeContentPiece = async (ctx, pieceData) => {
+   const memberID = ctx.req.memberId;
+
+   // ContentPieces may have their own privacy, but if they don't, we use the privacy of whatever they're on
+   if (pieceData.privacy != null) {
+      if (pieceData.privacy === 'Public') return true;
+
+      const authorID =
+         pieceData.onThing != null
+            ? pieceData.onThing.author.id
+            : pieceData.onTag.author.id;
+
+      if (memberID === authorID) return true;
+
+      if (pieceData.privacy === 'Private') {
+         if (pieceData.individualViewPermissions != null) {
+            return pieceData.individualViewPermissions.some(
+               viewer => viewer.id === memberID
+            );
+         }
+         return false;
+      }
+
+      if (
+         pieceData.privacy === 'Friends' &&
+         !pieceData.author.friends.some(friend => friend.id === memberID)
+      ) {
+         return false;
+      }
+
+      if (
+         pieceData.privacy === 'FriendsOfFriends' &&
+         !pieceData.author.friends.some(friend => {
+            if (friend == null || friend.friends == null) {
+               return false;
+            }
+            return friend.friends.some(
+               friendOfFriend => friendOfFriend.id === memberID
+            );
+         })
+      ) {
+         return false;
+      }
+      return true;
+   }
+
+   if (pieceData.onThing != null) {
+      return canSeeThing(ctx, pieceData.onThing);
+   }
+   // Content Pieces currently can only be on things or tags. Tags are all public, so if it's not on a thing, then it can be seen
+   return true;
+};
+exports.canSeeContentPiece = canSeeContentPiece;
+
 const filterContentPiecesForPrivacy = async (thingData, ctx) => {
    // First let's pull out the thing's privacy, because we'll be using that for pieces that don't have privacy settings of their own
    const thingPrivacy = thingData.privacy;
@@ -601,3 +655,53 @@ const calculateRelevancyScore = (thing, string) => {
    return score;
 };
 exports.calculateRelevancyScore = calculateRelevancyScore;
+
+const supplementFilteredQuery = async (
+   ctx,
+   queryType, // The type we're querying the db for, so in ctx.db.query.things, it's 'things'
+   queryObject, // The object that will be passed to the query, i.e. the object with properties where, orderBy, first, etc. **IT MUST BE STRUCTURED WITH AN AND ARRAY FOR THE WHERE OBJECT, AND THAT ARRAY MUST NOT HAVE THE CURSOR PROPERTY IN IT.**
+   queryFields, // The fields you want back from the query. Usually just pass the info parameter for this.
+   filterFunction, // The function that will be used to filter the query results. Works like the standard array filter method, where returning true means the item is included, false means excluded.
+   cursorType, // The graphql property value for the cursor, eg "createdAt_lt"
+   startingCursor, // The initial cursor value, should be whatever the cursor is after the initial query we're supplementing. Will probably have a shape similar to things[things.length - 1].createdAt
+   cursorPropertyname, // The property on the returned items we're using for a cursor. Probably something like createdAt
+   itemsToSupplementCount // How many more items the query needs
+) => {
+   let supplementaryItems = [];
+   let noMoreItems = false;
+   let newCursor = startingCursor;
+
+   // We're going to keep getting more items until we get the number we need or until we run out of items
+   while (supplementaryItems.length < itemsToSupplementCount && !noMoreItems) {
+      // First we need to add our cursor to the query
+      queryObject.where.AND.push({
+         [cursorType]: newCursor
+      });
+      // Then we need to update the query so it only asks for the number of items we still need
+      queryObject.first -= supplementaryItems.length;
+
+      // we'll get as many new items as we still need to complete our count
+      const newItems = await ctx.db.query[queryType](queryObject, queryFields);
+
+      if (newItems.length === 0) {
+         // If we don't get anything from our query, that means we're all out of items and can exit the loop
+         noMoreItems = true;
+         return supplementaryItems;
+      }
+
+      // Otherwise, we run our filter again on the new items
+      const newSafeItems = [];
+      for (const item of newItems) {
+         if (await filterFunction(item)) {
+            newSafeItems.push(item);
+         }
+      }
+
+      // And combine what we have left with our previous supplementary items
+      supplementaryItems = supplementaryItems.concat(newSafeItems);
+
+      newCursor = newItems[newItems.length - 1][cursorPropertyname];
+   }
+   return supplementaryItems;
+};
+exports.supplementFilteredQuery = supplementFilteredQuery;

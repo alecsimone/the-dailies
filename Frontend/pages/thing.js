@@ -46,9 +46,14 @@ const StyledSingleThing = styled.section`
    article.placeholderThing {
       max-width: 1920px;
       width: 100%;
-      margin: 3rem auto 6rem;
+      margin: 0 auto 6rem;
+      ${props => props.theme.mobileBreakpoint} {
+         margin: 3rem auto 6rem;
+      }
       &:first-child {
-         margin-top: 3rem;
+         ${props => props.theme.mobileBreakpoint} {
+            margin-top: 3rem;
+         }
       }
    }
    article.placeholderThing .placeholderFeaturedImage {
