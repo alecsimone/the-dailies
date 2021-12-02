@@ -7,13 +7,14 @@ import Error from '../components/ErrorMessage';
 import LoadingRing from '../components/LoadingRing';
 import ProfileSidebar from '../components/Profile/ProfileSidebar';
 import ProfileContent from '../components/Profile/ProfileContent';
-import { fullMemberFields } from '../lib/CardInterfaces';
+import { fullMemberFields, profileFields } from '../lib/CardInterfaces';
 import useMe from '../components/Account/useMe';
+import useQueryAndStoreIt from '../stuffStore/useQueryAndStoreIt';
 
 const MEMBER_PAGE_QUERY = gql`
    query MEMBER_PAGE_QUERY($id: ID, $displayName: String) {
       member(id: $id, displayName: $displayName) {
-         ${fullMemberFields}
+         ${profileFields}
       }
    }
 `;
@@ -30,7 +31,7 @@ const member = ({ query }) => {
          id: query.id
       };
    }
-   const { loading, error, data } = useQuery(MEMBER_PAGE_QUERY, {
+   const { loading, error, data } = useQueryAndStoreIt(MEMBER_PAGE_QUERY, {
       variables
    });
    const {

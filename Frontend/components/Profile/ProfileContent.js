@@ -360,20 +360,21 @@ const ProfileContent = ({ member, isMe, defaultTab }) => {
             <div
                className={selectedTab === tab ? 'tab selected' : 'tab'}
                onClick={() => {
-                  // const href = `/me?stuff=${tab}`;
-                  // const as = href;
-                  // Router.replace(href, as, { shallow: true });
-                  // setSelectedTab(tab);
                   const query = {
                      stuff: tab
                   };
                   if (!isMe) {
                      query.id = member.id;
                   }
-                  Router.push({
-                     pathname: isMe ? '/me' : '/member',
-                     query
-                  });
+                  Router.push(
+                     {
+                        pathname: isMe ? '/me' : '/member',
+                        query
+                     },
+                     undefined,
+                     { shallow: true }
+                  );
+                  setSelectedTab(tab);
                }}
             >
                {tab}

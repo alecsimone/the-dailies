@@ -528,6 +528,91 @@ const fullCollectionFields = `
 `;
 export { fullCollectionFields };
 
+const profileFields = `
+   __typename
+   id
+   displayName
+   avatar
+   rep
+   points
+   giveableRep
+   friends {
+      __typename
+      id
+      displayName
+      avatar
+      rep
+      role
+      friends {
+         __typename
+         id
+         displayName
+         avatar
+         rep
+      }
+   }
+   friendRequests {
+      __typename
+      id
+      avatar
+      rep
+      displayName
+      role
+      friends {
+         __typename
+         id
+      }
+   }
+   ignoredFriendRequests {
+      __typename
+      id
+   }
+   notifications {
+      __typename
+      id
+      kind
+      initiator {
+         __typename
+         id
+         avatar
+         rep
+         displayName
+         role
+         friends {
+            __typename
+            id
+         }
+      }
+      unread
+      linkQuery
+   }
+   twitchName
+   email
+   votes(last: 2) {
+      __typename
+      id
+      onThing {
+         ${fullThingFields}
+      }
+      onComment {
+         ${commentFields}
+      }
+      onContentPiece {
+         ${contentPieceFields}
+      }
+      value
+      createdAt
+   }
+   createdThings(last: 2) {
+      ${fullThingFields}
+   }
+   defaultPrivacy
+   role
+   twitterUserName
+   createdAt
+`;
+export { profileFields };
+
 const fullMemberFields = `
    __typename
    id
@@ -621,7 +706,7 @@ const fullMemberFields = `
       id
       title
    }
-   comments {
+   comments(last: 4) {
       __typename
       id
       author {

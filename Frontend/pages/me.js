@@ -8,7 +8,7 @@ import ErrorMessage from '../components/ErrorMessage';
 import LoadingRing from '../components/LoadingRing';
 import ProfileSidebar from '../components/Profile/ProfileSidebar';
 import ProfileContent from '../components/Profile/ProfileContent';
-import { fullMemberFields } from '../lib/CardInterfaces';
+import { profileFields } from '../lib/CardInterfaces';
 import { setAlpha } from '../styles/functions';
 import useQueryAndStoreIt from '../stuffStore/useQueryAndStoreIt';
 import PlaceholderThings from '../components/PlaceholderThings';
@@ -16,7 +16,7 @@ import PlaceholderThings from '../components/PlaceholderThings';
 const ME_PAGE_QUERY = gql`
    query ME_PAGE_QUERY {
       me {
-         ${fullMemberFields}
+         ${profileFields}
       }
    }
 `;
@@ -54,6 +54,7 @@ export { StyledProfilePage };
 
 const me = ({ query }) => {
    const { data, loading, error } = useQueryAndStoreIt(ME_PAGE_QUERY);
+   console.log(data);
 
    let pageTitle;
    let content;
