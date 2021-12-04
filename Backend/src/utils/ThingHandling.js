@@ -286,27 +286,55 @@ const isExplodingLink = url => {
 exports.isExplodingLink = isExplodingLink;
 
 const canSeeThing = async (ctx, thingData) => {
+   // If we didn't get all the thingData we need, let's query for it
+   let computedData = thingData;
+   if (
+      thingData.author == null ||
+      thingData.author.id == null ||
+      thingData.individualViewPermissions == null ||
+      (thingData.privacy === 'Friends' && thingData.author.friends == null) ||
+      (thingData.privacy === 'FriendsOfFriends' &&
+         (thingData.author.friends == null ||
+            thingData.author.friends.some(friend => friend.friend == null)))
+   ) {
+      const queriedData = await ctx.db.query.thing(
+         {
+            where: {
+               id: thingData.id
+            }
+         },
+         `{${fullThingFields}}`
+      );
+      computedData = queriedData;
+   }
+
    const memberID = ctx.req.memberId;
-   if (memberID === thingData.author.id) {
+   // If the current member created this thing, they can see it
+   if (memberID === computedData.author.id) {
       return true;
    }
-   if (thingData.privacy === 'Private') {
-      if (thingData.individualViewPermissions != null) {
-         return thingData.individualViewPermissions.some(
-            viewer => viewer.id === memberID
-         );
-      }
+
+   // If the current member is listed in the individualViewPermissions of this thing, they can see it
+   if (computedData.individualViewPermissions != null) {
+      return computedData.individualViewPermissions.some(
+         viewer => viewer.id === memberID
+      );
+   }
+
+   if (computedData.privacy === 'Private') {
+      // If this thing is private, and it wasn't created by the current member and they're not listed in the individual view permissions (both of which we've already checked for), they can't see it
       return false;
    }
+
    if (
-      thingData.privacy === 'Friends' &&
-      !thingData.author.friends.some(friend => friend.id === memberID)
+      computedData.privacy === 'Friends' &&
+      !computedData.author.friends.some(friend => friend.id === memberID)
    ) {
       return false;
    }
    if (
-      thingData.privacy === 'FriendsOfFriends' &&
-      !thingData.author.friends.some(friend => {
+      computedData.privacy === 'FriendsOfFriends' &&
+      !computedData.author.friends.some(friend => {
          if (friend == null || friend.friends == null) {
             return false;
          }

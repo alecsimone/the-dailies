@@ -3,14 +3,14 @@ import styled from 'styled-components';
 import { useMutation } from '@apollo/react-hooks';
 import { useEffect } from 'react';
 import NotificationCard from './NotificationCard';
-import { basicMemberFields, fullMemberFields } from '../../lib/CardInterfaces';
+import { basicMemberFields } from '../../lib/CardInterfaces';
 import { CURRENT_MEMBER_QUERY } from '../Account/MemberProvider';
 import useMe from '../Account/useMe';
 
 const READ_NOTIFICATIONS_MUTATION = gql`
    mutation READ_NOTIFICATIONS_MUTATION($ids: [ID]!) {
       readNotifications(ids: $ids) {
-         ${fullMemberFields}
+         ${basicMemberFields}
       }
    }
 `;

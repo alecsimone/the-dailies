@@ -54,7 +54,6 @@ export { StyledProfilePage };
 
 const me = ({ query }) => {
    const { data, loading, error } = useQueryAndStoreIt(ME_PAGE_QUERY);
-   console.log(data);
 
    let pageTitle;
    let content;

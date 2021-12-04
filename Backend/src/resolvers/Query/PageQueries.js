@@ -60,9 +60,12 @@ async function taxByTitle(parent, { title, personal, cursor }, ctx, info) {
       }
 
       if (theTax.connectedThings && theTax.connectedThings.length > 0) {
-         const allowedThings = theTax.connectedThings.filter(thing =>
-            canSeeThing(ctx, thing)
-         );
+         const allowedThings = [];
+         for (const thing of theTax.connectedThings) {
+            if (await canSeeThing(ctx, thing)) {
+               allowedThings.push(thing);
+            }
+         }
          const filteredThings = [];
          for (const thingData of allowedThings) {
             const filteredThingData = await filterContentPiecesForPrivacy(
@@ -471,7 +474,12 @@ async function search(
       }
    );
 
-   const safeThings = relevantThings.filter(thing => canSeeThing(ctx, thing));
+   const safeThings = [];
+   for (const thing of relevantThings) {
+      if (await canSeeThing(ctx, thing)) {
+         safeThings.push(thing);
+      }
+   }
 
    safeThings.sort(
       (a, b) =>

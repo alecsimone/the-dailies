@@ -67,7 +67,10 @@ const NotificationsIcon = () => {
    const {
       loggedInUserID,
       memberFields: { notifications }
-   } = useMe('NotificationsIcon', 'notifications {unread}');
+   } = useMe(
+      'NotificationsIcon',
+      'notifications { __typename id kind initiator { __typename id avatar rep displayName role friends { __typename id } } unread linkQuery }'
+   );
 
    const toggleNotificationContainer = () => {
       window.addEventListener('keydown', escapeDetector);
