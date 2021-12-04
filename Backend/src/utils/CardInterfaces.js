@@ -85,6 +85,52 @@ const commentFields = `
       }
       value
    }
+   onContentPiece {
+      __typename
+      id
+      onThing {
+         __typename
+         id
+         title
+         author {
+            id
+            friends {
+               id
+               friends {
+                  id
+               }
+            }
+         }
+      }
+   }
+   onThing {
+      __typename
+      id
+      title
+      author {
+         id
+         friends {
+            id
+            friends {
+               id
+            }
+         }
+      }
+   }
+   onTag {
+      __typename
+      id
+      title
+      author {
+         id
+         friends {
+            id
+            friends {
+               id
+            }
+         }
+      }
+   }
    score
    createdAt
    updatedAt
@@ -104,11 +150,29 @@ const contentPieceFields = `
       id
       title
       privacy
+      author {
+         id
+         friends {
+            id
+            friends {
+               id
+            }
+         }
+      }
    }
    onTag {
       __typename
       id
       title
+      author {
+         id
+         friends {
+            id
+            friends {
+               id
+            }
+         }
+      }
    }
    copiedToThings {
       __typename
@@ -137,15 +201,16 @@ const contentPieceFields = `
 `;
 exports.contentPieceFields = contentPieceFields;
 
+// smallThingCardFields need to have author friend and friend of friend info so we can check if they can be seen. It doesn't show up on the frontend as far as I know, but when we make a request to the backend with it we're going to need it
 const smallThingCardFields = `
    __typename
    id
    title
-   featuredImage
    author {
       __typename
       id
       displayName
+      rep
       avatar
       friends {
          __typename
@@ -155,57 +220,13 @@ const smallThingCardFields = `
             id
          }
       }
-      rep
    }
-   content {
-      ${contentPieceFields}
-   }
-   copiedInContent {
-      ${contentPieceFields}
-   }
-   summary
-   contentOrder
-   partOfTags {
-      __typename
-      id
-      title
-      author {
-         __typename
-         id
-         displayName
-         avatar
-         rep
-      }
-   }
-   partOfStacks {
-      __typename
-      id
-      title
-      author {
-         __typename
-         id
-         displayName
-         avatar
-         rep
-      }
-   }
-   color
-   votes {
-      __typename
-      id
-      value
-      voter {
-         __typename
-         id
-         displayName
-         rep
-         avatar
-      }
-   }
-   score
-   createdAt
-   updatedAt
+   featuredImage
    privacy
+   color
+   manualUpdatedAt
+   updatedAt
+   createdAt
 `;
 exports.smallThingCardFields = smallThingCardFields;
 
@@ -314,7 +335,7 @@ const tagFields = `
       __typename
       id
       displayName
-      rep
+      avatar
    }
    color
    content {
@@ -323,7 +344,7 @@ const tagFields = `
    contentOrder
    summary
    connectedThings {
-      ${smallThingCardFields}
+      ${fullThingFields}
    }
    comments {
       ${commentFields}
