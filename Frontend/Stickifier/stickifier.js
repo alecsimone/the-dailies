@@ -75,6 +75,7 @@ const stickifyButtons = (
       blockObj.blockStickyTop + 6 * oneRem > viewableBottom && // If the sticky top is less than 6rem above the bottom of the screen
       blockObj.blockBottom > viewableBottom // if the bottom of the block is below the bottom of the screen
    ) {
+      // blockObj.block.style.background = 'blue';
       buttons.style.position = 'absolute';
       buttons.style.left = `${-1 * stickingData.leftAdjustment}px`;
       buttons.style.width = `${buttonsWidth}px`;
@@ -88,6 +89,7 @@ const stickifyButtons = (
       blockObj.blockStickyTop + 6 * oneRem <= viewableBottom && // If the sticky top is more than 6rem above the bottom of the screen
       blockObj.blockBottom > viewableBottom // If the bottom of the block is below the bottom of the screen
    ) {
+      // blockObj.block.style.background = 'green';
       // Then we fix the buttons to the bottom of the screen
       buttons.style.position = 'fixed';
 
@@ -150,14 +152,17 @@ const stickifyButtons = (
       let extraButtonsHeight = 0;
       if (grandParentThing != null) {
          // We're going to need to put the buttons for this block above the buttons for the parent block, so first we need to figure out how tall those are
+         const grandParentBlock = blockObj.block.parentElement.closest(
+            '.contentBlock'
+         );
          let uncleButtons;
-         const uncleButtonsArray = grandParentThing.querySelectorAll(
-            '.newcontentButtons'
+         const uncleButtonsArray = grandParentBlock.querySelectorAll(
+            ':scope .newcontentButtons'
          );
          for (const uncleButtonsTest of uncleButtonsArray) {
             if (
-               uncleButtonsTest.closest('.flexibleThingCard') ===
-               grandParentThing
+               uncleButtonsTest.parentElement.closest('.contentBlock') ===
+               grandParentBlock
             ) {
                uncleButtons = uncleButtonsTest;
             }
@@ -172,7 +177,7 @@ const stickifyButtons = (
             uncleButtonsHeight -
             withinSidebarBottom;
 
-         extraButtonsHeight = buttonsHeight;
+         extraButtonsHeight = uncleButtonsHeight;
       }
 
       const transformedBottomAdjustment =
@@ -192,6 +197,7 @@ const stickifyButtons = (
       // Then we make the buttonsPlaceholder the height of the buttons
       buttonsPlaceholder.style.height = `${buttonsHeight}px`;
    } else {
+      // blockObj.block.style.background = 'orange';
       // Otherwise we want to put the buttons back at the bottom of the content block
       buttons.style.position = 'relative';
       buttons.style.left = 'initial';
