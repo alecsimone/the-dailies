@@ -53,10 +53,15 @@ const StyledProfileContent = styled.div`
    top: 0;
    left: 0;
    width: 100%;
+   min-height: 100vh;
    max-height: 100%;
    overflow: hidden;
    ${props => props.theme.scroll};
-   padding: 3rem;
+   margin-top: 3rem;
+   ${props => props.theme.mobileBreakpoint} {
+      margin-top: 0;
+      padding: 3rem;
+   }
    .stuffSelector {
       display: flex;
       justify-content: space-between;
