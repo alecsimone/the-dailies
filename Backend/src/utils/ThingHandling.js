@@ -308,17 +308,29 @@ const canSeeThing = async (ctx, thingData) => {
       computedData = queriedData;
    }
 
+   // If the thing is public, anyone can see it
+   if (computedData.privacy === 'Public') return true;
+
    const memberID = ctx.req.memberId;
    // If the current member created this thing, they can see it
    if (memberID === computedData.author.id) {
       return true;
    }
 
+   if (memberID == null) {
+      // We've already checked if the thing is public, so if it's not public and the user is not logged in, they can't see it.
+      return false;
+   }
+
    // If the current member is listed in the individualViewPermissions of this thing, they can see it
    if (computedData.individualViewPermissions != null) {
-      return computedData.individualViewPermissions.some(
-         viewer => viewer.id === memberID
-      );
+      if (
+         computedData.individualViewPermissions.some(
+            viewer => viewer.id === memberID
+         )
+      ) {
+         return true;
+      }
    }
 
    if (computedData.privacy === 'Private') {
