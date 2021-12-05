@@ -338,18 +338,22 @@ const canSeeThing = async (ctx, thingData) => {
       return false;
    }
 
+   // If the thing is for friends only, and the current member is not a friend of the author, then they can't see it.
    if (
       computedData.privacy === 'Friends' &&
       !computedData.author.friends.some(friend => friend.id === memberID)
    ) {
       return false;
    }
+
+   // If the thing is for friends of friends, and the current member is not a friend of the author nor a friend of any of their friends, then they can't see it
    if (
       computedData.privacy === 'FriendsOfFriends' &&
       !computedData.author.friends.some(friend => {
-         if (friend == null || friend.friends == null) {
-            return false;
-         }
+         // this function needs to return true if the current member is a friend of the author or a friend of one of their friends
+         if (friend.id === memberID) return true;
+         if (friend == null) return false;
+         if (friend.friends == null) return false;
          return friend.friends.some(
             friendOfFriend => friendOfFriend.id === memberID
          );
@@ -389,55 +393,108 @@ const canSeeThingGate = async (where, ctx) => {
 exports.canSeeThingGate = canSeeThingGate;
 
 const canSeeContentPiece = async (ctx, pieceData) => {
-   const memberID = ctx.req.memberId;
-
-   // ContentPieces may have their own privacy, but if they don't, we use the privacy of whatever they're on
-   if (pieceData.privacy != null) {
-      if (pieceData.privacy === 'Public') return true;
-
-      const authorID =
-         pieceData.onThing != null
-            ? pieceData.onThing.author.id
-            : pieceData.onTag.author.id;
-
-      if (memberID === authorID) return true;
-
-      if (pieceData.privacy === 'Private') {
-         if (pieceData.individualViewPermissions != null) {
-            return pieceData.individualViewPermissions.some(
-               viewer => viewer.id === memberID
-            );
-         }
-         return false;
+   // We need to figure out the privacy setting we're going to use. The piece itself may not have a privacy setting, but it might be on a thing that does. It also might be on a tag, and tags are all public.
+   let computedPrivacy = pieceData.privacy;
+   if (computedPrivacy == null) {
+      if (pieceData.onThing != null) {
+         computedPrivacy = pieceData.onThing.privacy;
       }
-
-      if (
-         pieceData.privacy === 'Friends' &&
-         !pieceData.author.friends.some(friend => friend.id === memberID)
-      ) {
-         return false;
+      if (pieceData.onTag != null) {
+         computedPrivacy = 'Public';
       }
+   }
 
-      if (
-         pieceData.privacy === 'FriendsOfFriends' &&
-         !pieceData.author.friends.some(friend => {
-            if (friend == null || friend.friends == null) {
-               return false;
+   // If we didn't get all the pieceData we need, let's query for it
+   let computedData = pieceData;
+   if (
+      computedPrivacy == null ||
+      (computedPrivacy !== 'Public' &&
+         (pieceData.author == null ||
+            pieceData.author.id == null ||
+            pieceData.individualViewPermissions == null ||
+            (computedPrivacy === 'Friends' &&
+               pieceData.author.friends == null) ||
+            (computedPrivacy === 'FriendsOfFriends' &&
+               (pieceData.author.friends == null ||
+                  pieceData.author.friends.some(
+                     friend => friend.friend == null
+                  )))))
+   ) {
+      const queriedData = await ctx.db.query.contentPiece(
+         {
+            where: {
+               id: pieceData.id
             }
-            return friend.friends.some(
-               friendOfFriend => friendOfFriend.id === memberID
-            );
-         })
-      ) {
-         return false;
+         },
+         `{${contentPieceFields}}`
+      );
+      computedData = queriedData;
+   }
+
+   // If we couldn't figure out the proper privacy level before we queried for more data, now we check again
+   if (computedPrivacy == null) {
+      if (computedData.privacy != null) {
+         computedPrivacy = computedData.privacy;
+      } else if (computedData.onThing != null) {
+         computedPrivacy = pieceData.onThing.privacy;
+      } else if (computedData.onTag != null) {
+         computedPrivacy = 'Public';
       }
+   }
+
+   // If the piece is public, anyone can see it
+   if (computedPrivacy === 'Public') return true;
+
+   const memberID = ctx.req.memberId;
+   // If the current member created this piece, they can see it
+   if (memberID === computedData.author.id) {
       return true;
    }
 
-   if (pieceData.onThing != null) {
-      return canSeeThing(ctx, pieceData.onThing);
+   if (memberID == null) {
+      // We've already checked if the piece is public, so if it's not public and the user is not logged in, they can't see it.
+      return false;
    }
-   // Content Pieces currently can only be on things or tags. Tags are all public, so if it's not on a thing, then it can be seen
+
+   // If the current member is listed in the individualViewPermissions of this piece, they can see it
+   if (computedData.individualViewPermissions != null) {
+      if (
+         computedData.individualViewPermissions.some(
+            viewer => viewer.id === memberID
+         )
+      ) {
+         return true;
+      }
+   }
+
+   if (computedData.privacy === 'Private') {
+      // If this piece is private, and it wasn't created by the current member and they're not listed in the individual view permissions (both of which we've already checked for), they can't see it
+      return false;
+   }
+
+   // If the piece is for friends only, and the current member is not a friend of the author, then they can't see it.
+   if (
+      computedData.privacy === 'Friends' &&
+      !computedData.author.friends.some(friend => friend.id === memberID)
+   ) {
+      return false;
+   }
+
+   // If the piece is for friends of friends, and the current member is not a friend of the author nor a friend of any of their friends, then they can't see it
+   if (
+      computedData.privacy === 'FriendsOfFriends' &&
+      !computedData.author.friends.some(friend => {
+         // this function needs to return true if the current member is a friend of the author or a friend of one of their friends
+         if (friend.id === memberID) return true;
+         if (friend == null) return false;
+         if (friend.friends == null) return false;
+         return friend.friends.some(
+            friendOfFriend => friendOfFriend.id === memberID
+         );
+      })
+   ) {
+      return false;
+   }
    return true;
 };
 exports.canSeeContentPiece = canSeeContentPiece;
