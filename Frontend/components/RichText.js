@@ -12,7 +12,8 @@ import {
    getStyleTagElement,
    getQuoteTagElement,
    getEndingTextElement,
-   getStyledSpan
+   getStyledSpan,
+   testBrowserForNegativeLookarounds
 } from '../lib/TextHandling';
 import { urlFinder } from '../lib/UrlHandling';
 
