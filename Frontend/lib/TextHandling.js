@@ -99,16 +99,9 @@ const decodeHTML = text => {
 };
 export { decodeHTML };
 
-// let styleTagSearchString;
-// if (testBrowserForNegativeLookarounds()) {
-//    console.log('lookarounds');
-//    styleTagSearchString = /(?:(?<style><style="(?<styleObjectRaw>.+)">(?<styleTextContent>.+)<\/style>)|(?<stars>\*\*(?<starsTextContent>[^*]*(?:\*[^*]+)*)\*\*)|(?<bars>__(?<barsTextContent>[^_]*(?:\_[^_]+)*)__)|(?<pounds>##(?<poundsTextContent>[^#]*(?:#[^#]+)*)##)|(?<slashes>\/\/(?<slashesTextContent>((?:(?!\/\/)|https:\/\/|http:\/\/|ftp:\/\/).)*)(?<!https:|http:|ftp:)\/\/)|(?<quote><(?<quoteTextContent>".+")>)|(?<summary>>>(?<summarizedText>(?!.*>>).+)<<(\((?<summaryText>(?!.*>>).+)\))?))/gis;
-// } else {
-const styleTagSearchString = /(?:(?<style><style="(?<styleObjectRaw>.+)">(?<styleTextContent>.+)<\/style>)|(?<stars>\*\*(?<starsTextContent>[^*]*(?:\*[^*]+)*)\*\*)|(?<bars>__(?<barsTextContent>[^_]*(?:\_[^_]+)*)__)|(?<pounds>##(?<poundsTextContent>[^#]*(?:#[^#]+)*)##)|(?<slashes>\/\/(?<slashesTextContent>((?:https:\/\/|http:\/\/|ftp:\/\/).)*)\/\/)|(?<quote><(?<quoteTextContent>".+")>)|(?<summary>>>(?<summarizedText>.+)<<(\((?<summaryText>.+)\))?))/gis;
-// }
-// const styleTagSearchString = testBrowserForNegativeLookarounds()
-//    ? /(?:(?<style><style="(?<styleObjectRaw>.+)">(?<styleTextContent>.+)<\/style>)|(?<stars>\*\*(?<starsTextContent>[^*]*(?:\*[^*]+)*)\*\*)|(?<bars>__(?<barsTextContent>[^_]*(?:\_[^_]+)*)__)|(?<pounds>##(?<poundsTextContent>[^#]*(?:#[^#]+)*)##)|(?<slashes>\/\/(?<slashesTextContent>((?:(?!\/\/)|https:\/\/|http:\/\/|ftp:\/\/).)*)(?<!https:|http:|ftp:)\/\/)|(?<quote><(?<quoteTextContent>".+")>)|(?<summary>>>(?<summarizedText>(?!.*>>).+)<<(\((?<summaryText>(?!.*>>).+)\))?))/gis
-//    : /(?:(?<style><style="(?<styleObjectRaw>.+)">(?<styleTextContent>.+)<\/style>)|(?<stars>\*\*(?<starsTextContent>[^*]*(?:\*[^*]+)*)\*\*)|(?<bars>__(?<barsTextContent>[^_]*(?:\_[^_]+)*)__)|(?<pounds>##(?<poundsTextContent>[^#]*(?:#[^#]+)*)##)|(?<slashes>\/\/(?<slashesTextContent>((?:https:\/\/|http:\/\/|ftp:\/\/).)*)(?<!https:|http:|ftp:)\/\/)|(?<quote><(?<quoteTextContent>".+")>)|(?<summary>>>(?<summarizedText>.+)<<(\((?<summaryText>.+)\))?))/gis;
+const styleTagSearchString = testBrowserForNegativeLookarounds()
+   ? /(?:(?<style><style="(?<styleObjectRaw>.+)">(?<styleTextContent>.+)<\/style>)|(?<stars>\*\*(?<starsTextContent>[^*]*(?:\*[^*]+)*)\*\*)|(?<bars>__(?<barsTextContent>[^_]*(?:\_[^_]+)*)__)|(?<pounds>##(?<poundsTextContent>[^#]*(?:#[^#]+)*)##)|(?<slashes>\/\/(?<slashesTextContent>((?:(?!\/\/)|https:\/\/|http:\/\/|ftp:\/\/).)*)(?<!https:|http:|ftp:)\/\/)|(?<quote><(?<quoteTextContent>".+")>)|(?<summary>>>(?<summarizedText>(?!.*>>).+)<<(\((?<summaryText>(?!.*>>).+)\))?))/gis
+   : /(?:(?<style><style="(?<styleObjectRaw>.+)">(?<styleTextContent>.+)<\/style>)|(?<stars>\*\*(?<starsTextContent>[^*]*(?:\*[^*]+)*)\*\*)|(?<bars>__(?<barsTextContent>[^_]*(?:\_[^_]+)*)__)|(?<pounds>##(?<poundsTextContent>[^#]*(?:#[^#]+)*)##)|(?<slashes>\/\/(?<slashesTextContent>((?:https:\/\/|http:\/\/|ftp:\/\/).)*)\/\/)|(?<quote><(?<quoteTextContent>".+")>)|(?<summary>>>(?<summarizedText>.+)<<(\((?<summaryText>.+)\))?))/gis;
 export { styleTagSearchString };
 
 const stringToObject = (string, splitSearch) => {
