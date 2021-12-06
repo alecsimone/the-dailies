@@ -15,13 +15,6 @@ const testBrowserForNegativeLookarounds = () => {
 };
 export { testBrowserForNegativeLookarounds };
 
-console.log('hello');
-if (testBrowserForNegativeLookarounds()) {
-   console.log('negative lookarounds supported');
-} else {
-   console.log('negative lookarounds not supported');
-}
-
 const replaceTwitterMentions = rawText => {
    let mentionSearchString;
    if (testBrowserForNegativeLookarounds()) {
@@ -106,9 +99,17 @@ const decodeHTML = text => {
 };
 export { decodeHTML };
 
-const styleTagSearchString = testBrowserForNegativeLookarounds()
-   ? /(?:(?<style><style="(?<styleObjectRaw>.+)">(?<styleTextContent>.+)<\/style>)|(?<stars>\*\*(?<starsTextContent>[^*]*(?:\*[^*]+)*)\*\*)|(?<bars>__(?<barsTextContent>[^_]*(?:\_[^_]+)*)__)|(?<pounds>##(?<poundsTextContent>[^#]*(?:#[^#]+)*)##)|(?<slashes>\/\/(?<slashesTextContent>((?:(?!\/\/)|https:\/\/|http:\/\/|ftp:\/\/).)*)(?<!https:|http:|ftp:)\/\/)|(?<quote><(?<quoteTextContent>".+")>)|(?<summary>>>(?<summarizedText>(?!.*>>).+)<<(\((?<summaryText>(?!.*>>).+)\))?))/gis
-   : /(?:(?<style><style="(?<styleObjectRaw>.+)">(?<styleTextContent>.+)<\/style>)|(?<stars>\*\*(?<starsTextContent>[^*]*(?:\*[^*]+)*)\*\*)|(?<bars>__(?<barsTextContent>[^_]*(?:\_[^_]+)*)__)|(?<pounds>##(?<poundsTextContent>[^#]*(?:#[^#]+)*)##)|(?<slashes>\/\/(?<slashesTextContent>((?:https:\/\/|http:\/\/|ftp:\/\/).)*)(?<!https:|http:|ftp:)\/\/)|(?<quote><(?<quoteTextContent>".+")>)|(?<summary>>>(?<summarizedText>.+)<<(\((?<summaryText>.+)\))?))/gis;
+let styleTagSearchString;
+if (testBrowserForNegativeLookarounds()) {
+   console.log('lookarounds');
+   styleTagSearchString = /(?:(?<style><style="(?<styleObjectRaw>.+)">(?<styleTextContent>.+)<\/style>)|(?<stars>\*\*(?<starsTextContent>[^*]*(?:\*[^*]+)*)\*\*)|(?<bars>__(?<barsTextContent>[^_]*(?:\_[^_]+)*)__)|(?<pounds>##(?<poundsTextContent>[^#]*(?:#[^#]+)*)##)|(?<slashes>\/\/(?<slashesTextContent>((?:(?!\/\/)|https:\/\/|http:\/\/|ftp:\/\/).)*)(?<!https:|http:|ftp:)\/\/)|(?<quote><(?<quoteTextContent>".+")>)|(?<summary>>>(?<summarizedText>(?!.*>>).+)<<(\((?<summaryText>(?!.*>>).+)\))?))/gis;
+} else {
+   console.log('no lookarounds');
+   styleTagSearchString = /(?:(?<style><style="(?<styleObjectRaw>.+)">(?<styleTextContent>.+)<\/style>)|(?<stars>\*\*(?<starsTextContent>[^*]*(?:\*[^*]+)*)\*\*)|(?<bars>__(?<barsTextContent>[^_]*(?:\_[^_]+)*)__)|(?<pounds>##(?<poundsTextContent>[^#]*(?:#[^#]+)*)##)|(?<slashes>\/\/(?<slashesTextContent>((?:https:\/\/|http:\/\/|ftp:\/\/).)*)(?<!https:|http:|ftp:)\/\/)|(?<quote><(?<quoteTextContent>".+")>)|(?<summary>>>(?<summarizedText>.+)<<(\((?<summaryText>.+)\))?))/gis;
+}
+// const styleTagSearchString = testBrowserForNegativeLookarounds()
+//    ? /(?:(?<style><style="(?<styleObjectRaw>.+)">(?<styleTextContent>.+)<\/style>)|(?<stars>\*\*(?<starsTextContent>[^*]*(?:\*[^*]+)*)\*\*)|(?<bars>__(?<barsTextContent>[^_]*(?:\_[^_]+)*)__)|(?<pounds>##(?<poundsTextContent>[^#]*(?:#[^#]+)*)##)|(?<slashes>\/\/(?<slashesTextContent>((?:(?!\/\/)|https:\/\/|http:\/\/|ftp:\/\/).)*)(?<!https:|http:|ftp:)\/\/)|(?<quote><(?<quoteTextContent>".+")>)|(?<summary>>>(?<summarizedText>(?!.*>>).+)<<(\((?<summaryText>(?!.*>>).+)\))?))/gis
+//    : /(?:(?<style><style="(?<styleObjectRaw>.+)">(?<styleTextContent>.+)<\/style>)|(?<stars>\*\*(?<starsTextContent>[^*]*(?:\*[^*]+)*)\*\*)|(?<bars>__(?<barsTextContent>[^_]*(?:\_[^_]+)*)__)|(?<pounds>##(?<poundsTextContent>[^#]*(?:#[^#]+)*)##)|(?<slashes>\/\/(?<slashesTextContent>((?:https:\/\/|http:\/\/|ftp:\/\/).)*)(?<!https:|http:|ftp:)\/\/)|(?<quote><(?<quoteTextContent>".+")>)|(?<summary>>>(?<summarizedText>.+)<<(\((?<summaryText>.+)\))?))/gis;
 export { styleTagSearchString };
 
 const stringToObject = (string, splitSearch) => {
