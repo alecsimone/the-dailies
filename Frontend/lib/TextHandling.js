@@ -15,41 +15,40 @@ const testBrowserForNegativeLookarounds = () => {
 };
 export { testBrowserForNegativeLookarounds };
 
-const replaceTwitterMentions = rawText => {
-   const browserSupportsNegativeLookarounds = testBrowserForNegativeLookarounds();
+const replaceTwitterMentions = rawText => rawText;
+// const browserSupportsNegativeLookarounds = testBrowserForNegativeLookarounds();
 
-   let mentionSearchString;
-   if (browserSupportsNegativeLookarounds) {
-      mentionSearchString = new RegExp(
-         `@(?:(?<username>\\w+)(?!\\w*\\.(?:${topLevelDomains})))`,
-         'gim' // Match an @ followed by at least one word character, not followed by any top level domains (which would suggest it's an email)
-      );
-   } else {
-      mentionSearchString = /(?:^|[^@\w])@(?<username>\w{1,15})\b/g;
-   }
+// let mentionSearchString;
+// if (browserSupportsNegativeLookarounds) {
+//    mentionSearchString = new RegExp(
+//       `@(?:(?<username>\\w+)(?!\\w*\\.(?:${topLevelDomains})))`,
+//       'gim' // Match an @ followed by at least one word character, not followed by any top level domains (which would suggest it's an email)
+//    );
+// } else {
+//    mentionSearchString = /(?:^|[^@\w])@(?<username>\w{1,15})\b/g;
+// }
 
-   return rawText.replace(
-      mentionSearchString,
-      (wholeMatch, groupOne, matchIndex, wholeString, groups) => {
-         const newText = `${
-            wholeMatch[0] === ' ' ? ' ' : '' // Our regex for browsers that don't support negative lookarounds might match a space at the beginning of the username. If it did, we need to add it back in before the link here
-         }https://twitter.com/${groups.username}\u200B`;
-         if (rawText[matchIndex - 1] !== ' ') {
-            const finalSpaceBeforeMatch = rawText.lastIndexOf(' ', matchIndex);
-            const wordBeforeMatch = rawText.substring(
-               finalSpaceBeforeMatch === -1 ? 0 : finalSpaceBeforeMatch,
-               matchIndex
-            );
-            const urls = wordBeforeMatch.match(urlFinder);
-            if (urls != null) {
-               return wholeMatch;
-            }
-            return `\u200B${newText}`;
-         }
-         return newText;
-      }
-   );
-};
+// return rawText.replace(
+//    mentionSearchString,
+//    (wholeMatch, groupOne, matchIndex, wholeString, groups) => {
+//       const newText = `${
+//          wholeMatch[0] === ' ' ? ' ' : '' // Our regex for browsers that don't support negative lookarounds might match a space at the beginning of the username. If it did, we need to add it back in before the link here
+//       }https://twitter.com/${groups.username}\u200B`;
+//       if (rawText[matchIndex - 1] !== ' ') {
+//          const finalSpaceBeforeMatch = rawText.lastIndexOf(' ', matchIndex);
+//          const wordBeforeMatch = rawText.substring(
+//             finalSpaceBeforeMatch === -1 ? 0 : finalSpaceBeforeMatch,
+//             matchIndex
+//          );
+//          const urls = wordBeforeMatch.match(urlFinder);
+//          if (urls != null) {
+//             return wholeMatch;
+//          }
+//          return `\u200B${newText}`;
+//       }
+//       return newText;
+//    }
+// );
 export { replaceTwitterMentions };
 
 const replaceEmails = rawText => {
@@ -101,9 +100,10 @@ const decodeHTML = text => {
 };
 export { decodeHTML };
 
-const styleTagSearchString = testBrowserForNegativeLookarounds()
-   ? /(?:(?<style><style="(?<styleObjectRaw>.+)">(?<styleTextContent>.+)<\/style>)|(?<stars>\*\*(?<starsTextContent>[^*]*(?:\*[^*]+)*)\*\*)|(?<bars>__(?<barsTextContent>[^_]*(?:\_[^_]+)*)__)|(?<pounds>##(?<poundsTextContent>[^#]*(?:#[^#]+)*)##)|(?<slashes>\/\/(?<slashesTextContent>((?:(?!\/\/)|https:\/\/|http:\/\/|ftp:\/\/).)*)(?<!https:|http:|ftp:)\/\/)|(?<quote><(?<quoteTextContent>".+")>)|(?<summary>>>(?<summarizedText>(?!.*>>).+)<<(\((?<summaryText>(?!.*>>).+)\))?))/gis
-   : /(?:(?<style><style="(?<styleObjectRaw>.+)">(?<styleTextContent>.+)<\/style>)|(?<stars>\*\*(?<starsTextContent>[^*]*(?:\*[^*]+)*)\*\*)|(?<bars>__(?<barsTextContent>[^_]*(?:\_[^_]+)*)__)|(?<pounds>##(?<poundsTextContent>[^#]*(?:#[^#]+)*)##)|(?<slashes>\/\/(?<slashesTextContent>((?:https:\/\/|http:\/\/|ftp:\/\/).)*)(?<!https:|http:|ftp:)\/\/)|(?<quote><(?<quoteTextContent>".+")>)|(?<summary>>>(?<summarizedText>.+)<<(\((?<summaryText>.+)\))?))/gis;
+const styleTagSearchString = /adsfaweafwewefefaefdfeg/gi;
+// const styleTagSearchString = testBrowserForNegativeLookarounds()
+//    ? /(?:(?<style><style="(?<styleObjectRaw>.+)">(?<styleTextContent>.+)<\/style>)|(?<stars>\*\*(?<starsTextContent>[^*]*(?:\*[^*]+)*)\*\*)|(?<bars>__(?<barsTextContent>[^_]*(?:\_[^_]+)*)__)|(?<pounds>##(?<poundsTextContent>[^#]*(?:#[^#]+)*)##)|(?<slashes>\/\/(?<slashesTextContent>((?:(?!\/\/)|https:\/\/|http:\/\/|ftp:\/\/).)*)(?<!https:|http:|ftp:)\/\/)|(?<quote><(?<quoteTextContent>".+")>)|(?<summary>>>(?<summarizedText>(?!.*>>).+)<<(\((?<summaryText>(?!.*>>).+)\))?))/gis
+//    : /(?:(?<style><style="(?<styleObjectRaw>.+)">(?<styleTextContent>.+)<\/style>)|(?<stars>\*\*(?<starsTextContent>[^*]*(?:\*[^*]+)*)\*\*)|(?<bars>__(?<barsTextContent>[^_]*(?:\_[^_]+)*)__)|(?<pounds>##(?<poundsTextContent>[^#]*(?:#[^#]+)*)##)|(?<slashes>\/\/(?<slashesTextContent>((?:https:\/\/|http:\/\/|ftp:\/\/).)*)(?<!https:|http:|ftp:)\/\/)|(?<quote><(?<quoteTextContent>".+")>)|(?<summary>>>(?<summarizedText>.+)<<(\((?<summaryText>.+)\))?))/gis;
 export { styleTagSearchString };
 
 const stringToObject = (string, splitSearch) => {
