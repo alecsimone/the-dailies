@@ -18,7 +18,6 @@ import {
 import { urlFinder } from '../lib/UrlHandling';
 
 const RichText = ({ text, priorText, nextText, matchCount = 0 }) => {
-   return text;
    let fixedText = replaceReddit(replaceEmails(replaceTwitterMentions(text)));
 
    if (
