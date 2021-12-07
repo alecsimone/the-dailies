@@ -434,10 +434,13 @@ const makePermanentStickingData = block => {
       }
    }
 
-   const commentsStyles = window.getComputedStyle(comments);
+   let commentMargin = 0;
+   if (comments != null) {
+      const commentsStyles = window.getComputedStyle(comments);
 
-   const commentMarginRaw = commentsStyles.marginTop;
-   const commentMargin = getIntPxFromStyleString(commentMarginRaw);
+      const commentMarginRaw = commentsStyles.marginTop;
+      commentMargin = getIntPxFromStyleString(commentMarginRaw);
+   }
 
    const theActualContentHeight = theActualContent.offsetHeight;
 
