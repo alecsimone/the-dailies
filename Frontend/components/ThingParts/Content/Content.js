@@ -13,6 +13,7 @@ import {
 } from '../../../lib/ContentHandling';
 import { SINGLE_TAX_QUERY } from '../../../pages/tag';
 import { SINGLE_THING_QUERY } from '../../../pages/thing';
+import useStickifier from '../../../Stickifier/useStickifier';
 import { dynamicallyResizeElement, getOneRem } from '../../../styles/functions';
 import StyledContent from '../../../styles/StyledContent';
 import ArrowIcon from '../../Icons/Arrow';
@@ -197,6 +198,8 @@ const Content = ({ contentType, canEdit, linkedPiece, stuffID, type }) => {
    // This ref will be passed down to the RichTextArea that sits at the bottom of content and allows members to add a new content piece, and we'll use it to get the value for our sendNewContentPiece mutation
    const inputRef = useRef(null);
 
+   const stickifierIDRef = useRef(useStickifier(thisComponentRef.current));
+
    const sendNewContentPieceHandler = () => {
       sendNewContentPiece(
          inputRef,
@@ -380,17 +383,24 @@ const Content = ({ contentType, canEdit, linkedPiece, stuffID, type }) => {
          <div className="contentSectionWrapper">
             {contentElements}
             {canEdit && showingAddContentForm && (
-               <RichTextArea
-                  text=""
-                  postText={sendNewContentPieceHandler}
-                  placeholder="Add content"
-                  buttonText="add"
-                  id={`${stuffID}-content`}
-                  inputRef={inputRef}
-                  unsavedChangesHandler={unsavedChangesHandler}
-                  unsavedContent={unsavedNewContent}
-                  alwaysShowExtras={false}
-               />
+               <div
+                  className="contentBlock toplevel"
+                  data-stickifierid={stickifierIDRef.current}
+               >
+                  <div className="contentWrapper">
+                     <RichTextArea
+                        text=""
+                        postText={sendNewContentPieceHandler}
+                        placeholder="Add content"
+                        buttonText="add"
+                        id={`${stuffID}-content`}
+                        inputRef={inputRef}
+                        unsavedChangesHandler={unsavedChangesHandler}
+                        unsavedContent={unsavedNewContent}
+                        alwaysShowExtras={false}
+                     />
+                  </div>
+               </div>
             )}
             <div className="expansionControls">
                {canEdit && (

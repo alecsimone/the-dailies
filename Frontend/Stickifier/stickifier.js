@@ -183,6 +183,8 @@ const stickifyComments = (
       theActualContentHeight
    } = computedStickingData;
 
+   if (comments == null) return;
+
    const commentsHeight = comments.offsetHeight;
    if (commentsHeight === 0) return; // We run this function even on comments that are currently hidden. If they are, they'll have a height of 0, and they don't need to be stickified.
 
@@ -283,6 +285,9 @@ const stickifyStyleButtons = (
    const textAreaRect = textArea.getBoundingClientRect();
    const textAreaBottom = textAreaRect.bottom;
 
+   // Let's also get the width of the styleButtons so we can set it on them to keep them from changing widths when they change positioning
+   const styleButtonsWidth = styleButtons.getBoundingClientRect().width;
+
    // If the top of the block (after the blockPaddingTop) is above the top of the screen, but the bottom of the textarea is below the top of the screen by more than the height of the style buttons plus an 8rem buffer, we'll put the buttons at the top of the screen
    if (
       computedStickingData.blockTop + computedStickingData.blockPaddingTop <
@@ -297,6 +302,7 @@ const stickifyStyleButtons = (
       styleButtons.style.top = `${-1 * blockRect.top +
          headerHeight +
          computedStickingData.topDifference}px`;
+      styleButtons.style.width = `${styleButtonsWidth}px`;
    } else if (
       // If the bottom of the textarea is below the top of the screen by less than the height of the buttons plus an 8rem buffer, put the style buttons 8rem above the bottom of the textarea
       textAreaBottom - styleButtonsHeight - 8 * oneRem <=
@@ -311,10 +317,12 @@ const stickifyStyleButtons = (
          computedStickingData.blockPaddingTop +
          computedStickingData.topDifference -
          7 * oneRem}px`;
+      styleButtons.style.width = `${styleButtonsWidth}px`;
    } else {
       // Otherwise put the buttons back where they started
       styleButtons.style.position = 'relative';
       styleButtons.style.top = 'initial';
+      styleButtons.style.width = `${styleButtonsWidth}px`;
 
       styleButtonsPlaceholder.style.height = '0';
       styleButtonsPlaceholder.style.marginBottom = '0';
@@ -357,22 +365,28 @@ const makePermanentStickingData = block => {
          buttons = buttonsTest;
       }
    }
-   const buttonsStyle = window.getComputedStyle(buttons);
-   const buttonsMarginLeftRaw = buttonsStyle.marginLeft;
-   const buttonsMarginLeft = getIntPxFromStyleString(buttonsMarginLeftRaw);
 
+   let buttonsMarginTop = 0;
+   let buttonsMarginLeft = 0;
+   let buttonsHeight = 0;
    let buttonsPlaceholder;
-   const buttonsPlaceholderArray = block.querySelectorAll(
-      '.buttonsPlaceholder'
-   );
-   for (const buttonsPlaceholderTest of buttonsPlaceholderArray) {
-      if (buttonsPlaceholderTest.closest('.contentBlock') === block) {
-         buttonsPlaceholder = buttonsPlaceholderTest;
-      }
-   }
+   if (buttons) {
+      const buttonsStyle = window.getComputedStyle(buttons);
+      const buttonsMarginLeftRaw = buttonsStyle.marginLeft;
+      buttonsMarginLeft = getIntPxFromStyleString(buttonsMarginLeftRaw);
 
-   const buttonsHeight = getElementHeight(buttons);
-   const buttonsMarginTop = parseFloat(buttonsStyle.marginTop);
+      const buttonsPlaceholderArray = block.querySelectorAll(
+         '.buttonsPlaceholder'
+      );
+      for (const buttonsPlaceholderTest of buttonsPlaceholderArray) {
+         if (buttonsPlaceholderTest.closest('.contentBlock') === block) {
+            buttonsPlaceholder = buttonsPlaceholderTest;
+         }
+      }
+
+      buttonsHeight = getElementHeight(buttons);
+      buttonsMarginTop = parseFloat(buttonsStyle.marginTop);
+   }
 
    const scroller = getScrollingParent(block);
 
@@ -442,7 +456,8 @@ const makePermanentStickingData = block => {
       commentMargin = getIntPxFromStyleString(commentMarginRaw);
    }
 
-   const theActualContentHeight = theActualContent.offsetHeight;
+   const theActualContentHeight =
+      theActualContent != null ? theActualContent.offsetHeight : 0;
 
    return {
       blockPaddingTop,
@@ -479,17 +494,19 @@ const makeEphemeralStickingData = (block, permanentStickingData) => {
       }
    }
 
-   let transformedAncestor = buttons.parentNode;
    let transformedAncestorRect;
-   while (
-      transformedAncestor != null &&
-      transformedAncestor.style != null &&
-      transformedAncestor.style.transform === ''
-   ) {
-      transformedAncestor = transformedAncestor.parentNode;
-   }
-   if (transformedAncestor != null && transformedAncestor.style != null) {
-      transformedAncestorRect = transformedAncestor.getBoundingClientRect();
+   if (buttons != null) {
+      let transformedAncestor = buttons.parentNode;
+      while (
+         transformedAncestor != null &&
+         transformedAncestor.style != null &&
+         transformedAncestor.style.transform === ''
+      ) {
+         transformedAncestor = transformedAncestor.parentNode;
+      }
+      if (transformedAncestor != null && transformedAncestor.style != null) {
+         transformedAncestorRect = transformedAncestor.getBoundingClientRect();
+      }
    }
 
    const blockHeight = block.offsetHeight;

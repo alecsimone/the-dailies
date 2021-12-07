@@ -23,18 +23,20 @@ const useStickifier = block => {
    const dispatch = useDispatch();
    // If we're passed a block as a parameter, that means the contentPiece is already mounted and is just re-rendering and we don't need to handle it again. If we're not, that means we've got a new content piece and we do need to handle it.
    if (block == null) {
-      let newStickifierID = getRandomString(32);
+      const newStickifierID = getRandomString(32);
 
       // Just in case we somehow randomly generated the same ID twice, let's check to make sure there's no element that already has this stickifierID
-      let existingElementWithID = document.querySelector(
-         `[data-stickifierid='${newStickifierID}']`
-      );
-      while (existingElementWithID != null) {
-         newStickifierID = getRandomString(32);
-         existingElementWithID = document.querySelector(
-            `[data-stickifierid='${newStickifierID}'`
-         );
-      }
+      // if (document != null) {
+      //    let existingElementWithID = document.querySelector(
+      //       `[data-stickifierid='${newStickifierID}']`
+      //    );
+      //    while (existingElementWithID != null) {
+      //       newStickifierID = getRandomString(32);
+      //       existingElementWithID = document.querySelector(
+      //          `[data-stickifierid='${newStickifierID}'`
+      //       );
+      //    }
+      // }
 
       dispatch(addBlock(newStickifierID));
       return newStickifierID;

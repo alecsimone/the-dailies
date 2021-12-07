@@ -39,6 +39,12 @@ const StyledContent = styled.section`
             flex-wrap: wrap;
             padding: 0 3rem;
          }
+         &.toplevel {
+            border-bottom: none;
+            ${props => props.theme.desktopBreakpoint} {
+               display: block;
+            }
+         }
          &.highlighted {
             background: ${props => setAlpha(props.theme.lowContrastGrey, 0.2)};
          }
