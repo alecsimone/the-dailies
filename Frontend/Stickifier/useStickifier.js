@@ -27,7 +27,7 @@ const useStickifier = block => {
 
       // Just in case we somehow randomly generated the same ID twice, let's check to make sure there's no element that already has this stickifierID
       let existingElementWithID = document.querySelector(
-         `[data-stickifierid='${newStickifierID}'`
+         `[data-stickifierid='${newStickifierID}']`
       );
       while (existingElementWithID != null) {
          newStickifierID = getRandomString(32);
