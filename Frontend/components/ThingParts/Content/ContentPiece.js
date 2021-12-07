@@ -1,6 +1,7 @@
 import { useMutation } from '@apollo/react-hooks';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import { useDispatch } from 'react-redux';
 import { minimumTranslationDistance } from '../../../config';
 import {
    changeContentButKeepInFrame,
@@ -30,6 +31,11 @@ import { stickifyBlock } from '../../../Stickifier/stickifier';
 import useMe from '../../Account/useMe';
 import { basicMemberFields } from '../../../lib/CardInterfaces';
 import Swiper from '../Swiper';
+import { getRandomString } from '../../../lib/TextHandling';
+import {
+   addBlockToScroller,
+   addScroller
+} from '../../../Stickifier/stickifierSlice';
 
 const ContentPiece = ({
    contentType,
@@ -84,7 +90,29 @@ const ContentPiece = ({
 
    const contentContainerRef = useRef(null);
 
-   useStickifier();
+   const stickifierIDRef = useRef(useStickifier(contentContainerRef.current));
+
+   const dispatch = useDispatch();
+   useEffect(() => {
+      const scrollingParent = getScrollingParent(contentContainerRef.current);
+      if (scrollingParent.dataset.stickifierid == null) {
+         let newStickifierID = getRandomString(32);
+         // Just in case we somehow randomly generated the same ID twice, let's check to make sure there's no element that already has this stickifierID
+         let existingElementWithID = document.querySelectorAll(
+            `[data-stickifierid='${newStickifierID}'`
+         );
+         while (existingElementWithID.length > 0) {
+            newStickifierID = getRandomString(32);
+            existingElementWithID = document.querySelectorAll(
+               `[data-stickifierid='${newStickifierID}'`
+            );
+         }
+
+         scrollingParent.setAttribute('data-stickifierID', newStickifierID);
+
+         dispatch(addScroller(newStickifierID));
+      }
+   }, [dispatch]);
 
    const postContent = async () => {
       const inputRef = editContentInputRef.current;
@@ -585,6 +613,7 @@ const ContentPiece = ({
          }}
          style={{ zIndex }} // We need to reverse the stacking context order so that each content piece is below the one before it, otherwise the next content piece will cover up the addToInterface, or anything else we might have pop out of the buttons
          ref={contentContainerRef}
+         data-stickifierid={stickifierIDRef.current}
       >
          <div className="contentArea" onMouseDown={handleMouseDown}>
             <div

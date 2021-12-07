@@ -65,7 +65,6 @@ const TruncCont = ({
             <ArrowIcon
                pointing={truncContExpanded ? 'up' : 'down'}
                onClick={() => {
-                  console.log(setTruncContExpanded, truncContExpanded);
                   if (setTruncContExpanded != null) {
                      setTruncContExpanded(!truncContExpanded);
                   }

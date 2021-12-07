@@ -15,6 +15,7 @@ import NavSidebar from './NavSidebar';
 import MyThings from './Archives/MyThings';
 import ThingsSubscriptionManager from '../stuffStore/ThingsSubscriptionManager';
 import GlobalStyle, { theme } from '../styles/globalStyle';
+import StickifierHost from '../Stickifier/StickifierHost';
 
 const StyledPage = styled.div`
    position: relative;
@@ -99,6 +100,7 @@ const Page = ({ children, pageProps }) => {
                   <BottomBar />
                </StyledPage>
                <ToastContainer className="dailiesStyle" />
+               <StickifierHost />
             </ModalProvider>
          </ThemeProvider>
       </MemberProvider>
