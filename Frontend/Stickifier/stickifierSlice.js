@@ -34,6 +34,12 @@ export const stuffSlice = createSlice({
                scrollerID
             ].blocks.filter(id => id !== blockID);
          }
+      },
+      addStickingDataToBlock: (state, action) => {
+         const { blockID, stickingData } = action.payload;
+         if (state.blocks[blockID] != null) {
+            state.blocks[blockID] = stickingData;
+         }
       }
    }
 });
@@ -42,7 +48,8 @@ export const {
    addBlock,
    addScroller,
    addBlockToScroller,
-   removeBlockFromScroller
+   removeBlockFromScroller,
+   addStickingDataToBlock
 } = stuffSlice.actions;
 
 export default stuffSlice.reducer;
