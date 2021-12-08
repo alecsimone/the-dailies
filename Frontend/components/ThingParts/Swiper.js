@@ -125,16 +125,16 @@ const Swiper = ({
       <div
          className="overflowWrapper"
          onTouchStart={e => {
-            e.stopPropagation();
+            // e.stopPropagation();
             setTouchStart(e.touches[0].clientX);
             setTouchEnd(e.touches[0].clientX);
          }}
          onTouchMove={e => {
-            e.stopPropagation();
+            // e.stopPropagation();
             setTouchEnd(e.touches[0].clientX);
          }}
          onTouchEnd={e => {
-            e.stopPropagation();
+            // e.stopPropagation();
             if (touchEnd - touchStart > swipeThreshold) {
                if (previousElementExists) {
                   setCurrentPosition(currentPosition - 1);
