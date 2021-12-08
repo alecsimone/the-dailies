@@ -79,7 +79,7 @@ const useSingleThingData = id => {
       state => state.stuff[`Thing:${id}`]?.summary
    );
    singleThingData.authorName = useSelector(
-      state => state.stuff[`Thing:${id}`]?.author?.displayname
+      state => state.stuff[`Thing:${id}`]?.author?.displayName
    );
    singleThingData.score = useSelector(
       state => state.stuff[`Thing:${id}`]?.score
@@ -198,7 +198,7 @@ const SingleThing = ({ query }) => {
             />
             <meta
                property="og:title"
-               content={data ? compiledData.title : 'Ouryou'}
+               content={compiledData != null ? compiledData.title : 'Ouryou'}
             />
          </Head>
          {content}
