@@ -221,7 +221,7 @@ const ExplodingLink = ({
       );
    }
 
-   // Things on OurDailies
+   // Things on OurYou
    if (
       lowerCaseURL.includes(`${homeNoHTTP}/thing?id=`) &&
       bracketMatchCheck == null
