@@ -33,6 +33,9 @@ const StyledTaxBox = styled.section`
          font-size: ${props => props.theme.smallText};
          line-height: 1;
          border-radius: 0;
+         &:focus {
+            min-width: 40rem;
+         }
       }
    }
 `;

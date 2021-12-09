@@ -32,7 +32,6 @@ const Meta = () => (
       <link rel="shortcut icon" href="/favicon.ico?v=2" />
       <meta name="msapplication-TileColor" content="#030303" />
       <meta name="theme-color" content="#0066cc" />
-
       <link rel="stylesheet" type="text/css" href="/nprogress.css" />
       <link rel="stylesheet" href="https://use.typekit.net/iwq0uru.css" />
       <title>Ouryou</title>

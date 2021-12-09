@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 import styled from 'styled-components';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useMutation, useLazyQuery } from '@apollo/react-hooks';
 import { useCombobox } from 'downshift';
 import debounce from 'lodash.debounce';
@@ -112,6 +112,8 @@ const TaxInput = ({ id, tags, stacks, personal, thingData, containerRef }) => {
       '__typename id displayName'
    );
 
+   const taxInputRef = useRef(null);
+
    const [taxInput, setTaxInput] = useState(''); // Controls the input for the add tax box
    const [
       searchTaxes,
@@ -148,6 +150,7 @@ const TaxInput = ({ id, tags, stacks, personal, thingData, containerRef }) => {
       // Our onChange handler. Updates the value of the input and generates the search results (the auto complete), which is debounced
       setTaxInput(inputValue);
       debouncedAutocomplete(generateAutocomplete, inputValue);
+      taxInputRef.current.style.width = `${inputValue.length + 1}ch`;
    };
 
    const {
@@ -388,7 +391,7 @@ const TaxInput = ({ id, tags, stacks, personal, thingData, containerRef }) => {
                   name: personal ? 'addStack' : 'addTag',
                   placeholder,
                   value: taxInput,
-                  className: `addTax`,
+                  className: `addTax ${isOpen ? 'open' : 'closed'}`,
                   onKeyDown: e => {
                      e.persist();
                      handleKeyDown(e);
@@ -396,7 +399,12 @@ const TaxInput = ({ id, tags, stacks, personal, thingData, containerRef }) => {
                   onKeyUp: e => {
                      e.persist();
                      resizeInput(e);
-                  }
+                  },
+                  onBlur: e => {
+                     e.persist();
+                     resizeInput(e);
+                  },
+                  ref: taxInputRef
                })}
             />
          </form>
