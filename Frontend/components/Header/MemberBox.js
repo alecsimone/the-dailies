@@ -79,8 +79,9 @@ const MemberBox = () => {
          isHome &&
          !thingsSidebarIsOpen &&
          window.outerWidth > mobileBPWidthRaw
-      )
+      ) {
          return;
+      }
       if (navSidebarIsOpen === true && thingsSidebarIsOpen === false) {
          setNavSidebarIsOpen(false);
       }

@@ -142,7 +142,7 @@ const Comments = ({ id, type, linkedComment }) => {
 
    if (comments && comments.length > 0) {
       const topLevelComments = comments.filter(
-         comment => comment.replyTo == null
+         comment => comment && comment.replyTo == null
       );
 
       commentElements = topLevelComments.map(comment => (

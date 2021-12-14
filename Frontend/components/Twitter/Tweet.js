@@ -189,6 +189,12 @@ const Tweet = props => {
          });
       }
    }
+
+   let showLinkCards = true;
+   if (entities.length > 0) {
+      showLinkCards = false;
+   }
+
    const quotedTweetContainer = [];
    if (quotedTweet != null) {
       quotedTweetContainer.push(
@@ -352,7 +358,7 @@ const Tweet = props => {
          )}
          {tcoReplacedText != null && tcoReplacedText !== '' && (
             <p>
-               <RichText text={tcoReplacedText} />
+               <RichText text={tcoReplacedText} showLinkCards={showLinkCards} />
             </p>
          )}
          {quotedTweetContainer.length > 0 && quotedTweetContainer}

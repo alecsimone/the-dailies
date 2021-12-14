@@ -1,5 +1,6 @@
 const { AuthenticationError } = require('apollo-server-express');
 const LoginWithTwitter = require('login-with-twitter');
+const ogs = require('open-graph-scraper');
 const {
    cipherString,
    decipherString,
@@ -204,3 +205,43 @@ async function getTweetsForList(parent, { listID: requestedList }, ctx, info) {
    return { message };
 }
 exports.getTweetsForList = getTweetsForList;
+
+const getLinkData = async (parent, { url }, ctx, info) => {
+   if (url.includes('bloomberg.com/news')) return null; // Bloomberg links don't let non-humans scrape them
+
+   let linkData = await ctx.db.query.link(
+      {
+         where: {
+            url
+         }
+      },
+      info
+   );
+
+   if (linkData == null) {
+      linkData = {
+         url
+      };
+      const options = { url };
+      await ogs(options, (error, results, response) => {
+         linkData.title = results.ogTitle;
+         linkData.description = results.ogDescription;
+         linkData.video = results.ogVideo ? results.ogVideo.url : null;
+         linkData.image = results.ogImage ? results.ogImage.url : null;
+         linkData.icon = results.favicon;
+         linkData.siteName = results.ogSiteName;
+         linkData.ogURL = results.ogUrl;
+
+         linkData = ctx.db.mutation.createLink({
+            data: linkData
+         });
+      });
+   }
+
+   if (linkData.id == null) {
+      linkData.id = 'newLink';
+   }
+
+   return linkData;
+};
+exports.getLinkData = getLinkData;

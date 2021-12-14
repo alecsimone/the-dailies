@@ -19,6 +19,7 @@ import TweetGetter from './Twitter/TweetGetter';
 import LoadingRing from './LoadingRing';
 import RichText from './RichText';
 import TikTok from './ThingParts/TikTok';
+import LinkCard from './LinkCard';
 
 const ExplodingLink = ({
    url,
@@ -26,7 +27,8 @@ const ExplodingLink = ({
    alt,
    className,
    priorText,
-   nextText
+   nextText,
+   showLinkCards
 }) => {
    if (url == null) return null;
    const lowerCaseURL = url.toLowerCase();
@@ -272,7 +274,25 @@ const ExplodingLink = ({
       }
    }
 
-   // General Links
+   // General Links. If they are the end of a line (or alone on that line) they get a LinkCard. Otherwise they're just a ShortLink.
+   let zwslessNextText = nextText;
+   if (nextText != null) {
+      // Sometimes we use zero width spaces to delineate strings, so we'll remove those here to check if there's actually any significant nextText
+      zwslessNextText = nextText.replace('\u200b', '');
+   }
+   if (
+      showLinkCards !== false &&
+      (nextText == null ||
+         zwslessNextText.trim() === '' ||
+         zwslessNextText.startsWith('\n'))
+   ) {
+      return (
+         <>
+            <ShortLink link={url} limit={80} />
+            <LinkCard link={url} />
+         </>
+      );
+   }
    return <ShortLink link={url} limit={80} />;
 };
 ExplodingLink.propTypes = {

@@ -22,6 +22,10 @@ type AggregateContentPiece {
   count: Int!
 }
 
+type AggregateLink {
+  count: Int!
+}
+
 type AggregateMember {
   count: Int!
 }
@@ -1044,6 +1048,7 @@ type Comment {
   onTag: Tag
   votes(where: VoteWhereInput, orderBy: VoteOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Vote!]
   score: Int
+  links(where: LinkWhereInput, orderBy: LinkOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Link!]
 }
 
 type CommentConnection {
@@ -1063,6 +1068,7 @@ input CommentCreateInput {
   onTag: TagCreateOneWithoutCommentsInput
   votes: VoteCreateManyWithoutOnCommentInput
   score: Int
+  links: LinkCreateManyWithoutOnCommentInput
 }
 
 input CommentCreateManyInput {
@@ -1095,6 +1101,11 @@ input CommentCreateManyWithoutRepliesInput {
   connect: [CommentWhereUniqueInput!]
 }
 
+input CommentCreateOneWithoutLinksInput {
+  create: CommentCreateWithoutLinksInput
+  connect: CommentWhereUniqueInput
+}
+
 input CommentCreateOneWithoutReplyToInput {
   create: CommentCreateWithoutReplyToInput
   connect: CommentWhereUniqueInput
@@ -1115,6 +1126,20 @@ input CommentCreateWithoutAuthorInput {
   onTag: TagCreateOneWithoutCommentsInput
   votes: VoteCreateManyWithoutOnCommentInput
   score: Int
+  links: LinkCreateManyWithoutOnCommentInput
+}
+
+input CommentCreateWithoutLinksInput {
+  id: ID
+  author: MemberCreateOneWithoutCommentsInput!
+  comment: String!
+  onThing: ThingCreateOneWithoutCommentsInput
+  onContentPiece: ContentPieceCreateOneWithoutCommentsInput
+  replies: CommentCreateManyWithoutRepliesInput
+  replyTo: CommentCreateOneWithoutReplyToInput
+  onTag: TagCreateOneWithoutCommentsInput
+  votes: VoteCreateManyWithoutOnCommentInput
+  score: Int
 }
 
 input CommentCreateWithoutOnContentPieceInput {
@@ -1127,6 +1152,7 @@ input CommentCreateWithoutOnContentPieceInput {
   onTag: TagCreateOneWithoutCommentsInput
   votes: VoteCreateManyWithoutOnCommentInput
   score: Int
+  links: LinkCreateManyWithoutOnCommentInput
 }
 
 input CommentCreateWithoutOnTagInput {
@@ -1139,6 +1165,7 @@ input CommentCreateWithoutOnTagInput {
   replyTo: CommentCreateOneWithoutReplyToInput
   votes: VoteCreateManyWithoutOnCommentInput
   score: Int
+  links: LinkCreateManyWithoutOnCommentInput
 }
 
 input CommentCreateWithoutOnThingInput {
@@ -1151,6 +1178,7 @@ input CommentCreateWithoutOnThingInput {
   onTag: TagCreateOneWithoutCommentsInput
   votes: VoteCreateManyWithoutOnCommentInput
   score: Int
+  links: LinkCreateManyWithoutOnCommentInput
 }
 
 input CommentCreateWithoutRepliesInput {
@@ -1163,6 +1191,7 @@ input CommentCreateWithoutRepliesInput {
   onTag: TagCreateOneWithoutCommentsInput
   votes: VoteCreateManyWithoutOnCommentInput
   score: Int
+  links: LinkCreateManyWithoutOnCommentInput
 }
 
 input CommentCreateWithoutReplyToInput {
@@ -1175,6 +1204,7 @@ input CommentCreateWithoutReplyToInput {
   onTag: TagCreateOneWithoutCommentsInput
   votes: VoteCreateManyWithoutOnCommentInput
   score: Int
+  links: LinkCreateManyWithoutOnCommentInput
 }
 
 input CommentCreateWithoutVotesInput {
@@ -1187,6 +1217,7 @@ input CommentCreateWithoutVotesInput {
   replyTo: CommentCreateOneWithoutReplyToInput
   onTag: TagCreateOneWithoutCommentsInput
   score: Int
+  links: LinkCreateManyWithoutOnCommentInput
 }
 
 type CommentEdge {
@@ -1301,6 +1332,7 @@ input CommentUpdateDataInput {
   onTag: TagUpdateOneWithoutCommentsInput
   votes: VoteUpdateManyWithoutOnCommentInput
   score: Int
+  links: LinkUpdateManyWithoutOnCommentInput
 }
 
 input CommentUpdateInput {
@@ -1313,6 +1345,7 @@ input CommentUpdateInput {
   onTag: TagUpdateOneWithoutCommentsInput
   votes: VoteUpdateManyWithoutOnCommentInput
   score: Int
+  links: LinkUpdateManyWithoutOnCommentInput
 }
 
 input CommentUpdateManyDataInput {
@@ -1402,6 +1435,15 @@ input CommentUpdateManyWithWhereNestedInput {
   data: CommentUpdateManyDataInput!
 }
 
+input CommentUpdateOneWithoutLinksInput {
+  create: CommentCreateWithoutLinksInput
+  update: CommentUpdateWithoutLinksDataInput
+  upsert: CommentUpsertWithoutLinksInput
+  delete: Boolean
+  disconnect: Boolean
+  connect: CommentWhereUniqueInput
+}
+
 input CommentUpdateOneWithoutReplyToInput {
   create: CommentCreateWithoutReplyToInput
   update: CommentUpdateWithoutReplyToDataInput
@@ -1429,6 +1471,19 @@ input CommentUpdateWithoutAuthorDataInput {
   onTag: TagUpdateOneWithoutCommentsInput
   votes: VoteUpdateManyWithoutOnCommentInput
   score: Int
+  links: LinkUpdateManyWithoutOnCommentInput
+}
+
+input CommentUpdateWithoutLinksDataInput {
+  author: MemberUpdateOneRequiredWithoutCommentsInput
+  comment: String
+  onThing: ThingUpdateOneWithoutCommentsInput
+  onContentPiece: ContentPieceUpdateOneWithoutCommentsInput
+  replies: CommentUpdateManyWithoutRepliesInput
+  replyTo: CommentUpdateOneWithoutReplyToInput
+  onTag: TagUpdateOneWithoutCommentsInput
+  votes: VoteUpdateManyWithoutOnCommentInput
+  score: Int
 }
 
 input CommentUpdateWithoutOnContentPieceDataInput {
@@ -1440,6 +1495,7 @@ input CommentUpdateWithoutOnContentPieceDataInput {
   onTag: TagUpdateOneWithoutCommentsInput
   votes: VoteUpdateManyWithoutOnCommentInput
   score: Int
+  links: LinkUpdateManyWithoutOnCommentInput
 }
 
 input CommentUpdateWithoutOnTagDataInput {
@@ -1451,6 +1507,7 @@ input CommentUpdateWithoutOnTagDataInput {
   replyTo: CommentUpdateOneWithoutReplyToInput
   votes: VoteUpdateManyWithoutOnCommentInput
   score: Int
+  links: LinkUpdateManyWithoutOnCommentInput
 }
 
 input CommentUpdateWithoutOnThingDataInput {
@@ -1462,6 +1519,7 @@ input CommentUpdateWithoutOnThingDataInput {
   onTag: TagUpdateOneWithoutCommentsInput
   votes: VoteUpdateManyWithoutOnCommentInput
   score: Int
+  links: LinkUpdateManyWithoutOnCommentInput
 }
 
 input CommentUpdateWithoutRepliesDataInput {
@@ -1473,6 +1531,7 @@ input CommentUpdateWithoutRepliesDataInput {
   onTag: TagUpdateOneWithoutCommentsInput
   votes: VoteUpdateManyWithoutOnCommentInput
   score: Int
+  links: LinkUpdateManyWithoutOnCommentInput
 }
 
 input CommentUpdateWithoutReplyToDataInput {
@@ -1484,6 +1543,7 @@ input CommentUpdateWithoutReplyToDataInput {
   onTag: TagUpdateOneWithoutCommentsInput
   votes: VoteUpdateManyWithoutOnCommentInput
   score: Int
+  links: LinkUpdateManyWithoutOnCommentInput
 }
 
 input CommentUpdateWithoutVotesDataInput {
@@ -1495,6 +1555,7 @@ input CommentUpdateWithoutVotesDataInput {
   replyTo: CommentUpdateOneWithoutReplyToInput
   onTag: TagUpdateOneWithoutCommentsInput
   score: Int
+  links: LinkUpdateManyWithoutOnCommentInput
 }
 
 input CommentUpdateWithWhereUniqueNestedInput {
@@ -1525,6 +1586,11 @@ input CommentUpdateWithWhereUniqueWithoutOnThingInput {
 input CommentUpdateWithWhereUniqueWithoutRepliesInput {
   where: CommentWhereUniqueInput!
   data: CommentUpdateWithoutRepliesDataInput!
+}
+
+input CommentUpsertWithoutLinksInput {
+  update: CommentUpdateWithoutLinksDataInput!
+  create: CommentCreateWithoutLinksInput!
 }
 
 input CommentUpsertWithoutReplyToInput {
@@ -1637,6 +1703,9 @@ input CommentWhereInput {
   score_lte: Int
   score_gt: Int
   score_gte: Int
+  links_every: LinkWhereInput
+  links_some: LinkWhereInput
+  links_none: LinkWhereInput
   AND: [CommentWhereInput!]
   OR: [CommentWhereInput!]
   NOT: [CommentWhereInput!]
@@ -1984,6 +2053,7 @@ type ContentPiece {
   score: Int!
   privacy: PrivacySetting
   individualViewPermissions(where: MemberWhereInput, orderBy: MemberOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Member!]
+  links(where: LinkWhereInput, orderBy: LinkOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Link!]
 }
 
 type ContentPieceConnection {
@@ -2005,6 +2075,7 @@ input ContentPieceCreateInput {
   score: Int
   privacy: PrivacySetting
   individualViewPermissions: MemberCreateManyWithoutIndividualContentPieceViewPermissionsInput
+  links: LinkCreateManyWithoutOnContentPieceInput
 }
 
 input ContentPieceCreateManyInput {
@@ -2037,6 +2108,11 @@ input ContentPieceCreateOneWithoutCommentsInput {
   connect: ContentPieceWhereUniqueInput
 }
 
+input ContentPieceCreateOneWithoutLinksInput {
+  create: ContentPieceCreateWithoutLinksInput
+  connect: ContentPieceWhereUniqueInput
+}
+
 input ContentPieceCreateOneWithoutVotesInput {
   create: ContentPieceCreateWithoutVotesInput
   connect: ContentPieceWhereUniqueInput
@@ -2054,6 +2130,7 @@ input ContentPieceCreateWithoutCommentsInput {
   score: Int
   privacy: PrivacySetting
   individualViewPermissions: MemberCreateManyWithoutIndividualContentPieceViewPermissionsInput
+  links: LinkCreateManyWithoutOnContentPieceInput
 }
 
 input ContentPieceCreateWithoutCopiedToThingsInput {
@@ -2068,6 +2145,7 @@ input ContentPieceCreateWithoutCopiedToThingsInput {
   score: Int
   privacy: PrivacySetting
   individualViewPermissions: MemberCreateManyWithoutIndividualContentPieceViewPermissionsInput
+  links: LinkCreateManyWithoutOnContentPieceInput
 }
 
 input ContentPieceCreateWithoutIndividualViewPermissionsInput {
@@ -2082,6 +2160,22 @@ input ContentPieceCreateWithoutIndividualViewPermissionsInput {
   votes: VoteCreateManyWithoutOnContentPieceInput
   score: Int
   privacy: PrivacySetting
+  links: LinkCreateManyWithoutOnContentPieceInput
+}
+
+input ContentPieceCreateWithoutLinksInput {
+  id: ID
+  content: String!
+  unsavedNewContent: String
+  summary: String
+  comments: CommentCreateManyWithoutOnContentPieceInput
+  onThing: ThingCreateOneWithoutContentInput
+  copiedToThings: ThingCreateManyWithoutCopiedInContentInput
+  onTag: TagCreateOneWithoutContentInput
+  votes: VoteCreateManyWithoutOnContentPieceInput
+  score: Int
+  privacy: PrivacySetting
+  individualViewPermissions: MemberCreateManyWithoutIndividualContentPieceViewPermissionsInput
 }
 
 input ContentPieceCreateWithoutOnTagInput {
@@ -2096,6 +2190,7 @@ input ContentPieceCreateWithoutOnTagInput {
   score: Int
   privacy: PrivacySetting
   individualViewPermissions: MemberCreateManyWithoutIndividualContentPieceViewPermissionsInput
+  links: LinkCreateManyWithoutOnContentPieceInput
 }
 
 input ContentPieceCreateWithoutOnThingInput {
@@ -2110,6 +2205,7 @@ input ContentPieceCreateWithoutOnThingInput {
   score: Int
   privacy: PrivacySetting
   individualViewPermissions: MemberCreateManyWithoutIndividualContentPieceViewPermissionsInput
+  links: LinkCreateManyWithoutOnContentPieceInput
 }
 
 input ContentPieceCreateWithoutVotesInput {
@@ -2124,6 +2220,7 @@ input ContentPieceCreateWithoutVotesInput {
   score: Int
   privacy: PrivacySetting
   individualViewPermissions: MemberCreateManyWithoutIndividualContentPieceViewPermissionsInput
+  links: LinkCreateManyWithoutOnContentPieceInput
 }
 
 type ContentPieceEdge {
@@ -2259,6 +2356,7 @@ input ContentPieceUpdateDataInput {
   score: Int
   privacy: PrivacySetting
   individualViewPermissions: MemberUpdateManyWithoutIndividualContentPieceViewPermissionsInput
+  links: LinkUpdateManyWithoutOnContentPieceInput
 }
 
 input ContentPieceUpdateInput {
@@ -2273,6 +2371,7 @@ input ContentPieceUpdateInput {
   score: Int
   privacy: PrivacySetting
   individualViewPermissions: MemberUpdateManyWithoutIndividualContentPieceViewPermissionsInput
+  links: LinkUpdateManyWithoutOnContentPieceInput
 }
 
 input ContentPieceUpdateManyDataInput {
@@ -2365,6 +2464,15 @@ input ContentPieceUpdateOneWithoutCommentsInput {
   connect: ContentPieceWhereUniqueInput
 }
 
+input ContentPieceUpdateOneWithoutLinksInput {
+  create: ContentPieceCreateWithoutLinksInput
+  update: ContentPieceUpdateWithoutLinksDataInput
+  upsert: ContentPieceUpsertWithoutLinksInput
+  delete: Boolean
+  disconnect: Boolean
+  connect: ContentPieceWhereUniqueInput
+}
+
 input ContentPieceUpdateOneWithoutVotesInput {
   create: ContentPieceCreateWithoutVotesInput
   update: ContentPieceUpdateWithoutVotesDataInput
@@ -2385,6 +2493,7 @@ input ContentPieceUpdateWithoutCommentsDataInput {
   score: Int
   privacy: PrivacySetting
   individualViewPermissions: MemberUpdateManyWithoutIndividualContentPieceViewPermissionsInput
+  links: LinkUpdateManyWithoutOnContentPieceInput
 }
 
 input ContentPieceUpdateWithoutCopiedToThingsDataInput {
@@ -2398,6 +2507,7 @@ input ContentPieceUpdateWithoutCopiedToThingsDataInput {
   score: Int
   privacy: PrivacySetting
   individualViewPermissions: MemberUpdateManyWithoutIndividualContentPieceViewPermissionsInput
+  links: LinkUpdateManyWithoutOnContentPieceInput
 }
 
 input ContentPieceUpdateWithoutIndividualViewPermissionsDataInput {
@@ -2411,6 +2521,21 @@ input ContentPieceUpdateWithoutIndividualViewPermissionsDataInput {
   votes: VoteUpdateManyWithoutOnContentPieceInput
   score: Int
   privacy: PrivacySetting
+  links: LinkUpdateManyWithoutOnContentPieceInput
+}
+
+input ContentPieceUpdateWithoutLinksDataInput {
+  content: String
+  unsavedNewContent: String
+  summary: String
+  comments: CommentUpdateManyWithoutOnContentPieceInput
+  onThing: ThingUpdateOneWithoutContentInput
+  copiedToThings: ThingUpdateManyWithoutCopiedInContentInput
+  onTag: TagUpdateOneWithoutContentInput
+  votes: VoteUpdateManyWithoutOnContentPieceInput
+  score: Int
+  privacy: PrivacySetting
+  individualViewPermissions: MemberUpdateManyWithoutIndividualContentPieceViewPermissionsInput
 }
 
 input ContentPieceUpdateWithoutOnTagDataInput {
@@ -2424,6 +2549,7 @@ input ContentPieceUpdateWithoutOnTagDataInput {
   score: Int
   privacy: PrivacySetting
   individualViewPermissions: MemberUpdateManyWithoutIndividualContentPieceViewPermissionsInput
+  links: LinkUpdateManyWithoutOnContentPieceInput
 }
 
 input ContentPieceUpdateWithoutOnThingDataInput {
@@ -2437,6 +2563,7 @@ input ContentPieceUpdateWithoutOnThingDataInput {
   score: Int
   privacy: PrivacySetting
   individualViewPermissions: MemberUpdateManyWithoutIndividualContentPieceViewPermissionsInput
+  links: LinkUpdateManyWithoutOnContentPieceInput
 }
 
 input ContentPieceUpdateWithoutVotesDataInput {
@@ -2450,6 +2577,7 @@ input ContentPieceUpdateWithoutVotesDataInput {
   score: Int
   privacy: PrivacySetting
   individualViewPermissions: MemberUpdateManyWithoutIndividualContentPieceViewPermissionsInput
+  links: LinkUpdateManyWithoutOnContentPieceInput
 }
 
 input ContentPieceUpdateWithWhereUniqueNestedInput {
@@ -2480,6 +2608,11 @@ input ContentPieceUpdateWithWhereUniqueWithoutOnThingInput {
 input ContentPieceUpsertWithoutCommentsInput {
   update: ContentPieceUpdateWithoutCommentsDataInput!
   create: ContentPieceCreateWithoutCommentsInput!
+}
+
+input ContentPieceUpsertWithoutLinksInput {
+  update: ContentPieceUpdateWithoutLinksDataInput!
+  create: ContentPieceCreateWithoutLinksInput!
 }
 
 input ContentPieceUpsertWithoutVotesInput {
@@ -2600,6 +2733,9 @@ input ContentPieceWhereInput {
   individualViewPermissions_every: MemberWhereInput
   individualViewPermissions_some: MemberWhereInput
   individualViewPermissions_none: MemberWhereInput
+  links_every: LinkWhereInput
+  links_some: LinkWhereInput
+  links_none: LinkWhereInput
   AND: [ContentPieceWhereInput!]
   OR: [ContentPieceWhereInput!]
   NOT: [ContentPieceWhereInput!]
@@ -2612,6 +2748,576 @@ input ContentPieceWhereUniqueInput {
 scalar DateTime
 
 scalar Json
+
+type Link {
+  id: ID!
+  title: String
+  description: String
+  video: String
+  image: String
+  icon: String
+  siteName: String
+  url: String
+  ogURL: String
+  onContentPiece: ContentPiece
+  onComment: Comment
+  onTweet: Tweet
+}
+
+type LinkConnection {
+  pageInfo: PageInfo!
+  edges: [LinkEdge]!
+  aggregate: AggregateLink!
+}
+
+input LinkCreateInput {
+  id: ID
+  title: String
+  description: String
+  video: String
+  image: String
+  icon: String
+  siteName: String
+  url: String
+  ogURL: String
+  onContentPiece: ContentPieceCreateOneWithoutLinksInput
+  onComment: CommentCreateOneWithoutLinksInput
+  onTweet: TweetCreateOneWithoutLinksInput
+}
+
+input LinkCreateManyWithoutOnCommentInput {
+  create: [LinkCreateWithoutOnCommentInput!]
+  connect: [LinkWhereUniqueInput!]
+}
+
+input LinkCreateManyWithoutOnContentPieceInput {
+  create: [LinkCreateWithoutOnContentPieceInput!]
+  connect: [LinkWhereUniqueInput!]
+}
+
+input LinkCreateManyWithoutOnTweetInput {
+  create: [LinkCreateWithoutOnTweetInput!]
+  connect: [LinkWhereUniqueInput!]
+}
+
+input LinkCreateWithoutOnCommentInput {
+  id: ID
+  title: String
+  description: String
+  video: String
+  image: String
+  icon: String
+  siteName: String
+  url: String
+  ogURL: String
+  onContentPiece: ContentPieceCreateOneWithoutLinksInput
+  onTweet: TweetCreateOneWithoutLinksInput
+}
+
+input LinkCreateWithoutOnContentPieceInput {
+  id: ID
+  title: String
+  description: String
+  video: String
+  image: String
+  icon: String
+  siteName: String
+  url: String
+  ogURL: String
+  onComment: CommentCreateOneWithoutLinksInput
+  onTweet: TweetCreateOneWithoutLinksInput
+}
+
+input LinkCreateWithoutOnTweetInput {
+  id: ID
+  title: String
+  description: String
+  video: String
+  image: String
+  icon: String
+  siteName: String
+  url: String
+  ogURL: String
+  onContentPiece: ContentPieceCreateOneWithoutLinksInput
+  onComment: CommentCreateOneWithoutLinksInput
+}
+
+type LinkEdge {
+  node: Link!
+  cursor: String!
+}
+
+enum LinkOrderByInput {
+  id_ASC
+  id_DESC
+  title_ASC
+  title_DESC
+  description_ASC
+  description_DESC
+  video_ASC
+  video_DESC
+  image_ASC
+  image_DESC
+  icon_ASC
+  icon_DESC
+  siteName_ASC
+  siteName_DESC
+  url_ASC
+  url_DESC
+  ogURL_ASC
+  ogURL_DESC
+}
+
+type LinkPreviousValues {
+  id: ID!
+  title: String
+  description: String
+  video: String
+  image: String
+  icon: String
+  siteName: String
+  url: String
+  ogURL: String
+}
+
+input LinkScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  title: String
+  title_not: String
+  title_in: [String!]
+  title_not_in: [String!]
+  title_lt: String
+  title_lte: String
+  title_gt: String
+  title_gte: String
+  title_contains: String
+  title_not_contains: String
+  title_starts_with: String
+  title_not_starts_with: String
+  title_ends_with: String
+  title_not_ends_with: String
+  description: String
+  description_not: String
+  description_in: [String!]
+  description_not_in: [String!]
+  description_lt: String
+  description_lte: String
+  description_gt: String
+  description_gte: String
+  description_contains: String
+  description_not_contains: String
+  description_starts_with: String
+  description_not_starts_with: String
+  description_ends_with: String
+  description_not_ends_with: String
+  video: String
+  video_not: String
+  video_in: [String!]
+  video_not_in: [String!]
+  video_lt: String
+  video_lte: String
+  video_gt: String
+  video_gte: String
+  video_contains: String
+  video_not_contains: String
+  video_starts_with: String
+  video_not_starts_with: String
+  video_ends_with: String
+  video_not_ends_with: String
+  image: String
+  image_not: String
+  image_in: [String!]
+  image_not_in: [String!]
+  image_lt: String
+  image_lte: String
+  image_gt: String
+  image_gte: String
+  image_contains: String
+  image_not_contains: String
+  image_starts_with: String
+  image_not_starts_with: String
+  image_ends_with: String
+  image_not_ends_with: String
+  icon: String
+  icon_not: String
+  icon_in: [String!]
+  icon_not_in: [String!]
+  icon_lt: String
+  icon_lte: String
+  icon_gt: String
+  icon_gte: String
+  icon_contains: String
+  icon_not_contains: String
+  icon_starts_with: String
+  icon_not_starts_with: String
+  icon_ends_with: String
+  icon_not_ends_with: String
+  siteName: String
+  siteName_not: String
+  siteName_in: [String!]
+  siteName_not_in: [String!]
+  siteName_lt: String
+  siteName_lte: String
+  siteName_gt: String
+  siteName_gte: String
+  siteName_contains: String
+  siteName_not_contains: String
+  siteName_starts_with: String
+  siteName_not_starts_with: String
+  siteName_ends_with: String
+  siteName_not_ends_with: String
+  url: String
+  url_not: String
+  url_in: [String!]
+  url_not_in: [String!]
+  url_lt: String
+  url_lte: String
+  url_gt: String
+  url_gte: String
+  url_contains: String
+  url_not_contains: String
+  url_starts_with: String
+  url_not_starts_with: String
+  url_ends_with: String
+  url_not_ends_with: String
+  ogURL: String
+  ogURL_not: String
+  ogURL_in: [String!]
+  ogURL_not_in: [String!]
+  ogURL_lt: String
+  ogURL_lte: String
+  ogURL_gt: String
+  ogURL_gte: String
+  ogURL_contains: String
+  ogURL_not_contains: String
+  ogURL_starts_with: String
+  ogURL_not_starts_with: String
+  ogURL_ends_with: String
+  ogURL_not_ends_with: String
+  AND: [LinkScalarWhereInput!]
+  OR: [LinkScalarWhereInput!]
+  NOT: [LinkScalarWhereInput!]
+}
+
+type LinkSubscriptionPayload {
+  mutation: MutationType!
+  node: Link
+  updatedFields: [String!]
+  previousValues: LinkPreviousValues
+}
+
+input LinkSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: LinkWhereInput
+  AND: [LinkSubscriptionWhereInput!]
+  OR: [LinkSubscriptionWhereInput!]
+  NOT: [LinkSubscriptionWhereInput!]
+}
+
+input LinkUpdateInput {
+  title: String
+  description: String
+  video: String
+  image: String
+  icon: String
+  siteName: String
+  url: String
+  ogURL: String
+  onContentPiece: ContentPieceUpdateOneWithoutLinksInput
+  onComment: CommentUpdateOneWithoutLinksInput
+  onTweet: TweetUpdateOneWithoutLinksInput
+}
+
+input LinkUpdateManyDataInput {
+  title: String
+  description: String
+  video: String
+  image: String
+  icon: String
+  siteName: String
+  url: String
+  ogURL: String
+}
+
+input LinkUpdateManyMutationInput {
+  title: String
+  description: String
+  video: String
+  image: String
+  icon: String
+  siteName: String
+  url: String
+  ogURL: String
+}
+
+input LinkUpdateManyWithoutOnCommentInput {
+  create: [LinkCreateWithoutOnCommentInput!]
+  delete: [LinkWhereUniqueInput!]
+  connect: [LinkWhereUniqueInput!]
+  set: [LinkWhereUniqueInput!]
+  disconnect: [LinkWhereUniqueInput!]
+  update: [LinkUpdateWithWhereUniqueWithoutOnCommentInput!]
+  upsert: [LinkUpsertWithWhereUniqueWithoutOnCommentInput!]
+  deleteMany: [LinkScalarWhereInput!]
+  updateMany: [LinkUpdateManyWithWhereNestedInput!]
+}
+
+input LinkUpdateManyWithoutOnContentPieceInput {
+  create: [LinkCreateWithoutOnContentPieceInput!]
+  delete: [LinkWhereUniqueInput!]
+  connect: [LinkWhereUniqueInput!]
+  set: [LinkWhereUniqueInput!]
+  disconnect: [LinkWhereUniqueInput!]
+  update: [LinkUpdateWithWhereUniqueWithoutOnContentPieceInput!]
+  upsert: [LinkUpsertWithWhereUniqueWithoutOnContentPieceInput!]
+  deleteMany: [LinkScalarWhereInput!]
+  updateMany: [LinkUpdateManyWithWhereNestedInput!]
+}
+
+input LinkUpdateManyWithoutOnTweetInput {
+  create: [LinkCreateWithoutOnTweetInput!]
+  delete: [LinkWhereUniqueInput!]
+  connect: [LinkWhereUniqueInput!]
+  set: [LinkWhereUniqueInput!]
+  disconnect: [LinkWhereUniqueInput!]
+  update: [LinkUpdateWithWhereUniqueWithoutOnTweetInput!]
+  upsert: [LinkUpsertWithWhereUniqueWithoutOnTweetInput!]
+  deleteMany: [LinkScalarWhereInput!]
+  updateMany: [LinkUpdateManyWithWhereNestedInput!]
+}
+
+input LinkUpdateManyWithWhereNestedInput {
+  where: LinkScalarWhereInput!
+  data: LinkUpdateManyDataInput!
+}
+
+input LinkUpdateWithoutOnCommentDataInput {
+  title: String
+  description: String
+  video: String
+  image: String
+  icon: String
+  siteName: String
+  url: String
+  ogURL: String
+  onContentPiece: ContentPieceUpdateOneWithoutLinksInput
+  onTweet: TweetUpdateOneWithoutLinksInput
+}
+
+input LinkUpdateWithoutOnContentPieceDataInput {
+  title: String
+  description: String
+  video: String
+  image: String
+  icon: String
+  siteName: String
+  url: String
+  ogURL: String
+  onComment: CommentUpdateOneWithoutLinksInput
+  onTweet: TweetUpdateOneWithoutLinksInput
+}
+
+input LinkUpdateWithoutOnTweetDataInput {
+  title: String
+  description: String
+  video: String
+  image: String
+  icon: String
+  siteName: String
+  url: String
+  ogURL: String
+  onContentPiece: ContentPieceUpdateOneWithoutLinksInput
+  onComment: CommentUpdateOneWithoutLinksInput
+}
+
+input LinkUpdateWithWhereUniqueWithoutOnCommentInput {
+  where: LinkWhereUniqueInput!
+  data: LinkUpdateWithoutOnCommentDataInput!
+}
+
+input LinkUpdateWithWhereUniqueWithoutOnContentPieceInput {
+  where: LinkWhereUniqueInput!
+  data: LinkUpdateWithoutOnContentPieceDataInput!
+}
+
+input LinkUpdateWithWhereUniqueWithoutOnTweetInput {
+  where: LinkWhereUniqueInput!
+  data: LinkUpdateWithoutOnTweetDataInput!
+}
+
+input LinkUpsertWithWhereUniqueWithoutOnCommentInput {
+  where: LinkWhereUniqueInput!
+  update: LinkUpdateWithoutOnCommentDataInput!
+  create: LinkCreateWithoutOnCommentInput!
+}
+
+input LinkUpsertWithWhereUniqueWithoutOnContentPieceInput {
+  where: LinkWhereUniqueInput!
+  update: LinkUpdateWithoutOnContentPieceDataInput!
+  create: LinkCreateWithoutOnContentPieceInput!
+}
+
+input LinkUpsertWithWhereUniqueWithoutOnTweetInput {
+  where: LinkWhereUniqueInput!
+  update: LinkUpdateWithoutOnTweetDataInput!
+  create: LinkCreateWithoutOnTweetInput!
+}
+
+input LinkWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  title: String
+  title_not: String
+  title_in: [String!]
+  title_not_in: [String!]
+  title_lt: String
+  title_lte: String
+  title_gt: String
+  title_gte: String
+  title_contains: String
+  title_not_contains: String
+  title_starts_with: String
+  title_not_starts_with: String
+  title_ends_with: String
+  title_not_ends_with: String
+  description: String
+  description_not: String
+  description_in: [String!]
+  description_not_in: [String!]
+  description_lt: String
+  description_lte: String
+  description_gt: String
+  description_gte: String
+  description_contains: String
+  description_not_contains: String
+  description_starts_with: String
+  description_not_starts_with: String
+  description_ends_with: String
+  description_not_ends_with: String
+  video: String
+  video_not: String
+  video_in: [String!]
+  video_not_in: [String!]
+  video_lt: String
+  video_lte: String
+  video_gt: String
+  video_gte: String
+  video_contains: String
+  video_not_contains: String
+  video_starts_with: String
+  video_not_starts_with: String
+  video_ends_with: String
+  video_not_ends_with: String
+  image: String
+  image_not: String
+  image_in: [String!]
+  image_not_in: [String!]
+  image_lt: String
+  image_lte: String
+  image_gt: String
+  image_gte: String
+  image_contains: String
+  image_not_contains: String
+  image_starts_with: String
+  image_not_starts_with: String
+  image_ends_with: String
+  image_not_ends_with: String
+  icon: String
+  icon_not: String
+  icon_in: [String!]
+  icon_not_in: [String!]
+  icon_lt: String
+  icon_lte: String
+  icon_gt: String
+  icon_gte: String
+  icon_contains: String
+  icon_not_contains: String
+  icon_starts_with: String
+  icon_not_starts_with: String
+  icon_ends_with: String
+  icon_not_ends_with: String
+  siteName: String
+  siteName_not: String
+  siteName_in: [String!]
+  siteName_not_in: [String!]
+  siteName_lt: String
+  siteName_lte: String
+  siteName_gt: String
+  siteName_gte: String
+  siteName_contains: String
+  siteName_not_contains: String
+  siteName_starts_with: String
+  siteName_not_starts_with: String
+  siteName_ends_with: String
+  siteName_not_ends_with: String
+  url: String
+  url_not: String
+  url_in: [String!]
+  url_not_in: [String!]
+  url_lt: String
+  url_lte: String
+  url_gt: String
+  url_gte: String
+  url_contains: String
+  url_not_contains: String
+  url_starts_with: String
+  url_not_starts_with: String
+  url_ends_with: String
+  url_not_ends_with: String
+  ogURL: String
+  ogURL_not: String
+  ogURL_in: [String!]
+  ogURL_not_in: [String!]
+  ogURL_lt: String
+  ogURL_lte: String
+  ogURL_gt: String
+  ogURL_gte: String
+  ogURL_contains: String
+  ogURL_not_contains: String
+  ogURL_starts_with: String
+  ogURL_not_starts_with: String
+  ogURL_ends_with: String
+  ogURL_not_ends_with: String
+  onContentPiece: ContentPieceWhereInput
+  onComment: CommentWhereInput
+  onTweet: TweetWhereInput
+  AND: [LinkWhereInput!]
+  OR: [LinkWhereInput!]
+  NOT: [LinkWhereInput!]
+}
+
+input LinkWhereUniqueInput {
+  id: ID
+  url: String
+}
 
 scalar Long
 
@@ -5066,6 +5772,12 @@ type Mutation {
   upsertContentPiece(where: ContentPieceWhereUniqueInput!, create: ContentPieceCreateInput!, update: ContentPieceUpdateInput!): ContentPiece!
   deleteContentPiece(where: ContentPieceWhereUniqueInput!): ContentPiece
   deleteManyContentPieces(where: ContentPieceWhereInput): BatchPayload!
+  createLink(data: LinkCreateInput!): Link!
+  updateLink(data: LinkUpdateInput!, where: LinkWhereUniqueInput!): Link
+  updateManyLinks(data: LinkUpdateManyMutationInput!, where: LinkWhereInput): BatchPayload!
+  upsertLink(where: LinkWhereUniqueInput!, create: LinkCreateInput!, update: LinkUpdateInput!): Link!
+  deleteLink(where: LinkWhereUniqueInput!): Link
+  deleteManyLinks(where: LinkWhereInput): BatchPayload!
   createMember(data: MemberCreateInput!): Member!
   updateMember(data: MemberUpdateInput!, where: MemberWhereUniqueInput!): Member
   updateManyMembers(data: MemberUpdateManyMutationInput!, where: MemberWhereInput): BatchPayload!
@@ -5596,6 +6308,9 @@ type Query {
   contentPiece(where: ContentPieceWhereUniqueInput!): ContentPiece
   contentPieces(where: ContentPieceWhereInput, orderBy: ContentPieceOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ContentPiece]!
   contentPiecesConnection(where: ContentPieceWhereInput, orderBy: ContentPieceOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ContentPieceConnection!
+  link(where: LinkWhereUniqueInput!): Link
+  links(where: LinkWhereInput, orderBy: LinkOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Link]!
+  linksConnection(where: LinkWhereInput, orderBy: LinkOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): LinkConnection!
   member(where: MemberWhereUniqueInput!): Member
   members(where: MemberWhereInput, orderBy: MemberOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Member]!
   membersConnection(where: MemberWhereInput, orderBy: MemberOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): MemberConnection!
@@ -6017,6 +6732,7 @@ type Subscription {
   comment(where: CommentSubscriptionWhereInput): CommentSubscriptionPayload
   connection(where: ConnectionSubscriptionWhereInput): ConnectionSubscriptionPayload
   contentPiece(where: ContentPieceSubscriptionWhereInput): ContentPieceSubscriptionPayload
+  link(where: LinkSubscriptionWhereInput): LinkSubscriptionPayload
   member(where: MemberSubscriptionWhereInput): MemberSubscriptionPayload
   notification(where: NotificationSubscriptionWhereInput): NotificationSubscriptionPayload
   pass(where: PassSubscriptionWhereInput): PassSubscriptionPayload
@@ -8262,6 +8978,7 @@ type Tweet {
   localID: ID!
   id_str: String!
   tweetJson: Json!
+  links(where: LinkWhereInput, orderBy: LinkOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Link!]
 }
 
 type TweetConnection {
@@ -8271,6 +8988,18 @@ type TweetConnection {
 }
 
 input TweetCreateInput {
+  localID: ID
+  id_str: String!
+  tweetJson: Json!
+  links: LinkCreateManyWithoutOnTweetInput
+}
+
+input TweetCreateOneWithoutLinksInput {
+  create: TweetCreateWithoutLinksInput
+  connect: TweetWhereUniqueInput
+}
+
+input TweetCreateWithoutLinksInput {
   localID: ID
   id_str: String!
   tweetJson: Json!
@@ -8317,11 +9046,31 @@ input TweetSubscriptionWhereInput {
 input TweetUpdateInput {
   id_str: String
   tweetJson: Json
+  links: LinkUpdateManyWithoutOnTweetInput
 }
 
 input TweetUpdateManyMutationInput {
   id_str: String
   tweetJson: Json
+}
+
+input TweetUpdateOneWithoutLinksInput {
+  create: TweetCreateWithoutLinksInput
+  update: TweetUpdateWithoutLinksDataInput
+  upsert: TweetUpsertWithoutLinksInput
+  delete: Boolean
+  disconnect: Boolean
+  connect: TweetWhereUniqueInput
+}
+
+input TweetUpdateWithoutLinksDataInput {
+  id_str: String
+  tweetJson: Json
+}
+
+input TweetUpsertWithoutLinksInput {
+  update: TweetUpdateWithoutLinksDataInput!
+  create: TweetCreateWithoutLinksInput!
 }
 
 input TweetWhereInput {
@@ -8353,6 +9102,9 @@ input TweetWhereInput {
   id_str_not_starts_with: String
   id_str_ends_with: String
   id_str_not_ends_with: String
+  links_every: LinkWhereInput
+  links_some: LinkWhereInput
+  links_none: LinkWhereInput
   AND: [TweetWhereInput!]
   OR: [TweetWhereInput!]
   NOT: [TweetWhereInput!]

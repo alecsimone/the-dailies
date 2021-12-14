@@ -17,7 +17,13 @@ import {
 } from '../lib/TextHandling';
 import { urlFinder } from '../lib/UrlHandling';
 
-const RichText = ({ text, priorText, nextText, matchCount = 0 }) => {
+const RichText = ({
+   text,
+   priorText,
+   nextText,
+   matchCount = 0,
+   showLinkCards
+}) => {
    let fixedText = replaceReddit(replaceEmails(replaceTwitterMentions(text)));
 
    if (
@@ -59,7 +65,8 @@ const RichText = ({ text, priorText, nextText, matchCount = 0 }) => {
                stoppedAtIndex,
                match.index + tag.index,
                fixedText,
-               matchCount
+               matchCount,
+               showLinkCards
             );
             elementsArray.push(startingTextElement);
 
@@ -70,7 +77,8 @@ const RichText = ({ text, priorText, nextText, matchCount = 0 }) => {
                const [tagElement, newStoppedAtIndex] = getStyleTagElement(
                   tag,
                   matchCount,
-                  stoppedAtIndex
+                  stoppedAtIndex,
+                  showLinkCards
                );
                elementsArray.push(tagElement);
                if (newStoppedAtIndex != null) {
@@ -93,7 +101,8 @@ const RichText = ({ text, priorText, nextText, matchCount = 0 }) => {
                const starsElement = getStyledSpan(
                   { fontWeight: 700, color: 'white' },
                   tag.groups.starsTextContent,
-                  matchCount
+                  matchCount,
+                  showLinkCards
                );
                elementsArray.push(starsElement);
             }
@@ -102,7 +111,8 @@ const RichText = ({ text, priorText, nextText, matchCount = 0 }) => {
                const barsElement = getStyledSpan(
                   { textDecoration: 'underline' },
                   tag.groups.barsTextContent,
-                  matchCount
+                  matchCount,
+                  showLinkCards
                );
                elementsArray.push(barsElement);
             }
@@ -111,7 +121,8 @@ const RichText = ({ text, priorText, nextText, matchCount = 0 }) => {
                const slashesElement = getStyledSpan(
                   { fontStyle: 'italic' },
                   tag.groups.slashesTextContent,
-                  matchCount
+                  matchCount,
+                  showLinkCards
                );
                elementsArray.push(slashesElement);
             }
@@ -120,7 +131,8 @@ const RichText = ({ text, priorText, nextText, matchCount = 0 }) => {
                const poundsElement = getStyledSpan(
                   { fontSize: '2em', fontWeight: '700' },
                   tag.groups.poundsTextContent,
-                  matchCount
+                  matchCount,
+                  showLinkCards
                );
                elementsArray.push(poundsElement);
             }
@@ -128,7 +140,8 @@ const RichText = ({ text, priorText, nextText, matchCount = 0 }) => {
             if (tag.groups.quote != null) {
                const [quoteElement, newStoppedAtIndex] = getQuoteTagElement(
                   tag,
-                  matchCount
+                  matchCount,
+                  showLinkCards
                );
                trimEndingText = true;
                elementsArray.push(quoteElement);
@@ -143,7 +156,8 @@ const RichText = ({ text, priorText, nextText, matchCount = 0 }) => {
                   : match.index + tag.index + tag[0].length,
                fixedText,
                trimEndingText,
-               matchCount
+               matchCount,
+               showLinkCards
             );
             elementsArray.push(endingTextElement);
 
@@ -161,7 +175,8 @@ const RichText = ({ text, priorText, nextText, matchCount = 0 }) => {
                stoppedAtIndex,
                match.index + url.index,
                fixedText,
-               matchCount
+               matchCount,
+               showLinkCards
             );
             elementsArray.push(startingTextElement);
 
@@ -188,6 +203,7 @@ const RichText = ({ text, priorText, nextText, matchCount = 0 }) => {
                      key={matchCount}
                      priorText={priorText}
                      nextText={endingText || nextText}
+                     showLinkCards={showLinkCards}
                   />
                );
                elementsArray.push(link);
@@ -196,7 +212,8 @@ const RichText = ({ text, priorText, nextText, matchCount = 0 }) => {
                   stoppedAtIndex,
                   fixedText,
                   trimEndingText,
-                  matchCount
+                  matchCount,
+                  showLinkCards
                );
                elementsArray.push(endingTextElement);
 
@@ -213,7 +230,8 @@ const RichText = ({ text, priorText, nextText, matchCount = 0 }) => {
                stoppedAtIndex,
                fixedText,
                trimEndingText,
-               matchCount
+               matchCount,
+               showLinkCards
             );
             elementsArray.push(linkSkipEndingText);
             return elementsArray;
@@ -230,7 +248,8 @@ const RichText = ({ text, priorText, nextText, matchCount = 0 }) => {
       //          stoppedAtIndex,
       //          match.index + list.index,
       //          fixedText,
-      //          matchCount
+      //          matchCount,
+      //          showLinkCards
       //       );
       //       elementsArray.push(startingTextElement);
 
@@ -249,7 +268,8 @@ const RichText = ({ text, priorText, nextText, matchCount = 0 }) => {
       //             endingPoint,
       //             fixedText,
       //             trimEndingText,
-      //             matchCount
+      //             matchCount,
+      //             showLinkCards
       //          );
       //          elementsArray.push(endingTextElement);
 

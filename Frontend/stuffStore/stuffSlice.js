@@ -21,12 +21,15 @@ const makeNewDataObject = (newData, oldData) => {
 };
 
 const upsertNewData = (state, stuffData) => {
-   // First we get the id out of the thingData
-   const newStuffID = stuffData.id;
+   // First we get the id and type out of the thingData
    const newStuffType = stuffData.__typename;
+   // const newStuffID = stuffData.id;
+   const newStuffID = newStuffType === 'Link' ? stuffData.url : stuffData.id;
 
    // Then we check if the thing is already in the store
    const existingStuff = state[`${newStuffType}:${newStuffID}`];
+
+   // if (newStuffType === 'Link') return;
 
    if (existingStuff == null) {
       // If it isn't, we add it
@@ -77,11 +80,19 @@ const upsertNewData = (state, stuffData) => {
       } else if (newStuffType === 'ContentPiece') {
          // If it's a thing, we upsert every comment and then upsert the content piece itself with an array of references to the contentPieces in state
          const commentReferences = [];
+         const linkReferences = [];
          stuffData.comments.forEach(comment => {
             upsertNewData(state, comment);
             commentReferences.push(state[`Comment:${comment.id}`]);
          });
+         if (stuffData.links != null) {
+            stuffData.links.forEach(link => {
+               upsertNewData(state, link);
+               linkReferences.push(state[`Link:${link.url}`]);
+            });
+         }
          stuffData.comments = commentReferences;
+         stuffData.links = linkReferences;
          state[`ContentPiece:${newStuffID}`] = stuffData;
       } else if (newStuffType === 'Vote') {
          // If it's a vote, we have to find what it's a vote on and then upsert that
@@ -94,6 +105,16 @@ const upsertNewData = (state, stuffData) => {
          if (stuffData.onComment != null) {
             upsertNewData(state, stuffData.onComment);
          }
+      } else if (newStuffType === 'Comment') {
+         const linkReferences = [];
+         if (stuffData.links != null) {
+            stuffData.links.forEach(link => {
+               upsertNewData(state, link);
+               linkReferences.push(state[`Link:${link.url}`]);
+            });
+         }
+         stuffData.links = linkReferences;
+         state[`Comment:${newStuffID}`] = stuffData;
       } else {
          state[`${newStuffType}:${newStuffID}`] = stuffData;
       }
@@ -113,6 +134,12 @@ const upsertNewData = (state, stuffData) => {
             upsertNewData(state, comment)
          );
       }
+
+      // if (newStuffData.links != null) {
+      //    newStuffData.links.forEach(link => {
+      //       upsertNewData(state, link);
+      //    });
+      // }
 
       if (newStuffData.content != null && newStuffType !== 'ContentPiece') {
          // ContentPieces have a content field too, but it's just the content of the piece, not an array of ContentPieces, which is what this block is expecting
@@ -140,8 +167,8 @@ export const stuffSlice = createSlice({
       },
       upsertStuffArray: (state, action) => {
          // Take an array of objects containing data for things, and check if we already have them in the store. If we do, update them. If not, add them.
-         action.payload.forEach(thingUpdate => {
-            upsertNewData(state, thingUpdate);
+         action.payload.forEach(stuffData => {
+            upsertNewData(state, stuffData);
          });
       },
       removeThing: (state, action) => {

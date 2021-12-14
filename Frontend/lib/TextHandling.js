@@ -138,7 +138,13 @@ const isUpperCase = string =>
    string.toUpperCase() === string && string.toLowerCase() !== string;
 export { isUpperCase };
 
-const getStartingTextElement = (startpoint, endpoint, text, matchCount) => {
+const getStartingTextElement = (
+   startpoint,
+   endpoint,
+   text,
+   matchCount,
+   showLinkCards
+) => {
    const startingText = text.substring(startpoint, endpoint);
    if (startingText !== '' && startingText !== ' ') {
       return (
@@ -146,6 +152,7 @@ const getStartingTextElement = (startpoint, endpoint, text, matchCount) => {
             text={startingText}
             key={startingText}
             matchCount={matchCount + 1}
+            showLinkCards={showLinkCards}
          />
       );
    }
@@ -153,7 +160,7 @@ const getStartingTextElement = (startpoint, endpoint, text, matchCount) => {
 };
 export { getStartingTextElement };
 
-const getStyleTagElement = (tag, matchCount, stoppedAtIndex) => {
+const getStyleTagElement = (tag, matchCount, stoppedAtIndex, showLinkCards) => {
    if (tag.groups.styleObjectRaw.includes('</style>')) {
       // I couldn't work out the regex to match only those style tags that didn't include style tags themselves, so we're dealing with it here.
       const allTags = tag.groups.style;
@@ -165,6 +172,7 @@ const getStyleTagElement = (tag, matchCount, stoppedAtIndex) => {
             text={firstTagText}
             key={firstTagText}
             matchCount={matchCount + 1}
+            showLinkCards={showLinkCards}
          />
       );
       // The +8 on that substring is because we need to include the </style> that was our indexOf search
@@ -179,6 +187,7 @@ const getStyleTagElement = (tag, matchCount, stoppedAtIndex) => {
             text={tag.groups.styleTextContent}
             key={tag.groups.styleTextContent}
             matchCount={matchCount + 1}
+            showLinkCards={showLinkCards}
          />
       </span>
    );
@@ -186,14 +195,19 @@ const getStyleTagElement = (tag, matchCount, stoppedAtIndex) => {
 };
 export { getStyleTagElement };
 
-const getStyledSpan = (style, text, matchCount) => (
+const getStyledSpan = (style, text, matchCount, showLinkCards) => (
    <span style={style}>
-      <RichText text={text} key={text} matchCount={matchCount + 1} />
+      <RichText
+         text={text}
+         key={text}
+         matchCount={matchCount + 1}
+         showLinkCards={showLinkCards}
+      />
    </span>
 );
 export { getStyledSpan };
 
-const getQuoteTagElement = (tag, matchCount) => {
+const getQuoteTagElement = (tag, matchCount, showLinkCards) => {
    if (tag.groups.quoteTextContent.includes('">')) {
       // I couldn't work out the regex to match only those <""> tags that didn't include <""> tags themselves, so we're dealing with it here.
       const allQuotes = tag.groups.quoteTextContent;
@@ -210,6 +224,7 @@ const getQuoteTagElement = (tag, matchCount) => {
                text={firstQuoteText}
                key={firstQuoteText}
                matchCount={matchCount + 1}
+               showLinkCards={showLinkCards}
             />
          </blockquote>
       );
@@ -225,6 +240,7 @@ const getQuoteTagElement = (tag, matchCount) => {
             )}
             key={tag.groups.quoteTextContent}
             matchCount={matchCount + 1}
+            showLinkCards={showLinkCards}
          />
       </blockquote>,
       null
@@ -236,7 +252,8 @@ const getEndingTextElement = (
    startPoint,
    fixedText,
    trimEndingText,
-   matchCount
+   matchCount,
+   showLinkCards
 ) => {
    let endingText = fixedText.substring(startPoint);
    if (trimEndingText === true) {
@@ -248,6 +265,7 @@ const getEndingTextElement = (
             text={endingText}
             key={endingText}
             matchCount={matchCount + 1}
+            showLinkCards={showLinkCards}
          />
       );
    }

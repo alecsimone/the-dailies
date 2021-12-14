@@ -21,6 +21,7 @@ type Query {
    getCollections: Member,
    moreMemberThings(memberID: String!, cursor: String, count: Int): [Thing]
    moreMemberVotes(memberID: String!, cursor: String, count: Int): [Vote]
+   getLinkData(url: String!): Link
 }
 
 type Mutation {

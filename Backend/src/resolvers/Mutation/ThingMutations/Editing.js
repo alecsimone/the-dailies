@@ -14,6 +14,7 @@ const {
    canEditThing
 } = require('../../../utils/Authentication');
 const {fullMemberFields, smallThingCardFields, fullThingFields} = require('../../../utils/CardInterfaces');
+const { getLinksToCard } = require('../../../utils/TextHandling');
 
 async function addTaxToThing(taxTitle, thingID, ctx, personal) {
    // Note: there's an addTaxToThingHandler shoved in between the client and this function. This is the function shared by other backend operations.
@@ -250,10 +251,16 @@ async function addContentPiece(parent, { content, id, type }, ctx, info) {
       console.log(err);
    });
 
+   const [connect, create] = await getLinksToCard(content, ctx);
+
    const dataObj = {
       content: {
          create: {
-            content
+            content,
+            links: {
+               connect,
+               create
+            }
          }
       },
       unsavedNewContent: null
@@ -344,6 +351,8 @@ async function editContentPiece(
       console.log(err);
    });
 
+   const [connect, create] = await getLinksToCard(content, ctx);
+
    const dataObj = {
       content: {
          update: {
@@ -352,7 +361,11 @@ async function editContentPiece(
             },
             data: {
                content,
-               unsavedNewContent: null
+               unsavedNewContent: null,
+               links: {
+                  connect,
+                  create
+               }
             }
          }
       }
@@ -581,6 +594,8 @@ async function addComment(parent, {comment, id, type, replyToID}, ctx, info) {
       console.log(err);
    });
 
+   const [connect, create] = await getLinksToCard(comment, ctx);
+
    const dataObj = {
       comments: {
          create:{
@@ -589,6 +604,10 @@ async function addComment(parent, {comment, id, type, replyToID}, ctx, info) {
                connect: {
                   id: ctx.req.memberId
                }
+            },
+            links: {
+               connect,
+               create
             }
          }
       }
@@ -658,6 +677,8 @@ async function editComment(parent, { commentID, stuffID, type, newComment}, ctx,
       console.log(err);
    });
 
+   const [connect, create] = await getLinksToCard(newComment, ctx);
+
    const dataObj = {
       comments: {
          update: {
@@ -665,7 +686,11 @@ async function editComment(parent, { commentID, stuffID, type, newComment}, ctx,
                id: commentID
             },
             data: {
-               comment: newComment
+               comment: newComment,
+               links: {
+                  connect,
+                  create
+               }
             }
          }
       }

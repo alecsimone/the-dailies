@@ -1,3 +1,16 @@
+const linkFields = `
+   id
+      title
+      description
+      icon
+      video
+      image
+      siteName
+      url
+      ogURL
+`;
+export { linkFields };
+
 const commentFields = `
    __typename
    id
@@ -134,6 +147,9 @@ const commentFields = `
    score
    createdAt
    updatedAt
+   links {
+      ${linkFields}
+   }
 `;
 export { commentFields };
 
@@ -197,6 +213,9 @@ const contentPieceFields = `
       id
       displayName
       avatar
+   }
+   links {
+      ${linkFields}
    }
 `;
 export { contentPieceFields };

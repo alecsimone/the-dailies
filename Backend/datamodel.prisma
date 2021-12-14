@@ -41,6 +41,7 @@ type ContentPiece {
    score: Int! @default(value: 0)
    privacy: PrivacySetting @default(value: Public)
    individualViewPermissions: [Member] @relation(name: "IndividualContentPieceViewers")
+   links: [Link] @scalarList(strategy: RELATION)
 }
 
 type Tag {
@@ -87,6 +88,7 @@ type Comment {
   onTag: Tag
   votes: [Vote]
   score: Int
+  links: [Link] @scalarList(strategy: RELATION)
 }
 
 type Vote {
@@ -165,6 +167,7 @@ type Tweet {
    localID: ID! @id @unique
    id_str: String! @unique
    tweetJson: Json!
+   links: [Link] @scalarList(strategy: RELATION)
 }
 
 type CollectionGroup {
@@ -217,6 +220,21 @@ type Connection {
    relationship: String!
    strength: Int! @default(value: 0)
    createdAt: DateTime! @createdAt
+}
+
+type Link {
+   id: ID! @id @unique
+   title: String
+   description: String
+   video: String
+   image: String
+   icon: String
+   siteName: String
+   url: String @unique
+   ogURL: String
+   onContentPiece: ContentPiece
+   onComment: Comment
+   onTweet: Tweet
 }
 
 enum Role {
