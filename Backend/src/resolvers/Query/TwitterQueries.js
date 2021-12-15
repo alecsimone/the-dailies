@@ -207,7 +207,7 @@ async function getTweetsForList(parent, { listID: requestedList }, ctx, info) {
 exports.getTweetsForList = getTweetsForList;
 
 const getLinkData = async (parent, { url }, ctx, info) => {
-   if (url.includes('bloomberg.com/news')) return null; // Bloomberg links don't let non-humans scrape them
+   if (url.includes('bloomberg.com')) return null; // Bloomberg links don't let non-humans scrape them
 
    let linkData = await ctx.db.query.link(
       {
