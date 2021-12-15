@@ -298,3 +298,12 @@ const isValidJSON = text => {
    return true;
 };
 export { isValidJSON };
+
+const provisionallyReplaceTextTag = text => {
+   const textCopy = `${text}`;
+   return textCopy.replace(
+      /<text>(?!<text>)(.+)<\/text>/gim,
+      '<"Awaiting converted text...">'
+   );
+};
+export { provisionallyReplaceTextTag };

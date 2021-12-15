@@ -11,6 +11,7 @@ import {
    sendNewContentPiece,
    STORE_UNSAVED_CONTENT_MUTATION
 } from '../../../lib/ContentHandling';
+import { provisionallyReplaceTextTag } from '../../../lib/TextHandling';
 import { SINGLE_TAX_QUERY } from '../../../pages/tag';
 import { SINGLE_THING_QUERY } from '../../../pages/thing';
 import useStickifier from '../../../Stickifier/useStickifier';
@@ -137,7 +138,10 @@ const Content = ({ contentType, canEdit, linkedPiece, stuffID, type }) => {
 
       const thisPiece = contentCopy[indexOfEditedContentPiece];
 
-      contentCopy[indexOfEditedContentPiece].content = newContent;
+      const provisionalContent = provisionallyReplaceTextTag(newContent);
+      console.log(provisionalContent);
+
+      contentCopy[indexOfEditedContentPiece].content = provisionalContent;
 
       let thisPieceStuffID;
       if (thisPiece.onThing != null) {

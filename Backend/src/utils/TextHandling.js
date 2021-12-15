@@ -115,3 +115,53 @@ const getLinksToCard = async (text, ctx) => {
    return [connect, create];
 };
 exports.getLinksToCard = getLinksToCard;
+
+const replaceLinkWithText = async text => {
+   // First we need to search the text to see if there are any image tags in it
+   const textTagMatches = text.matchAll(
+      /<text>(?!<text>)(?<url>.+)<\/text>/gim
+   );
+
+   // We're using OCR Space's Free OCR API https://ocr.space/ocrapi
+   const conversionURL = 'https://api.ocr.space/parse/imageurl?apikey=';
+   for (const match of textTagMatches) {
+      const matchedURL = match.groups.url;
+      const wholeMatch = match[0];
+      if (
+         matchedURL.includes('.png') ||
+         matchedURL.includes('.jpg') ||
+         matchedURL.includes('.jpeg') ||
+         matchedURL.includes('.gif') ||
+         matchedURL.includes('.tif') ||
+         matchedURL.includes('.tiff') ||
+         matchedURL.includes('.bmp')
+      ) {
+         console.log('fetching');
+         const response = await fetch(
+            `${conversionURL}${process.env.OCR_API_KEY}&url=${matchedURL}`
+         );
+         const responseJSON = await response.json();
+         console.log('fetched');
+         if (
+            responseJSON != null &&
+            responseJSON.ParsedResults != null &&
+            responseJSON.ParsedResults[0] != null &&
+            responseJSON.ParsedResults[0].ParsedText != null
+         ) {
+            const convertedText = responseJSON.ParsedResults[0].ParsedText;
+            const fixedConvertedText = convertedText.replace(/\r\n/gim, ' ');
+            text = text.replace(wholeMatch, `<"${fixedConvertedText}">`);
+         } else {
+            console.log(responseJSON);
+            throw new Error('Something has gone wrong');
+         }
+      } else {
+         throw new Error(
+            'The url you provided does not contain a valid image file type. The supported types are .png, .jpg, .jpeg, .gif, .tif, .tiff, and .bmp. Please try again.'
+         );
+      }
+   }
+
+   return text;
+};
+exports.replaceLinkWithText = replaceLinkWithText;

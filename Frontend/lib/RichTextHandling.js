@@ -109,51 +109,74 @@ const autoCloseBracketLink = e => {
 export { autoCloseBracketLink };
 
 const wrapTextWithTag = (target, tag) => {
+   // First we need to focus on the input, find out where the cursor/selection is, and find out what text is already in the input
    target.focus();
    const { selectionStart, selectionEnd } = target;
    const initialText = target.value;
 
-   // Check if the text is already wrapped with the tag, and if so, remove it
-   const fourCharactersSurroundingStart = initialText.substring(
-      selectionStart - 2,
-      selectionStart + 2
+   let endTag = tag;
+   if (tag === '<"') {
+      endTag = '">';
+   } else if (tag === '<text>') {
+      endTag = '</text>';
+   }
+
+   // Then we need to figure out if the text is already wrapped in the tag or not, because if it is we want to remove the tags, if it's not we want to add them
+   const charactersSurroundingStart = initialText.substring(
+      selectionStart - tag.length,
+      selectionStart + tag.length
    );
-   const fourCharactersSurroundingEnd = initialText.substring(
-      selectionEnd - 2,
-      selectionEnd + 2
+   const charactersSurroundingEnd = initialText.substring(
+      selectionEnd - endTag.length,
+      selectionEnd + endTag.length
    );
 
    let newSelectionStart;
    let newSelectionEnd;
    if (
-      (fourCharactersSurroundingStart.includes(tag) &&
-         fourCharactersSurroundingEnd.includes(tag)) ||
-      (tag === '<"' &&
-         (fourCharactersSurroundingStart.includes(tag) ||
-            fourCharactersSurroundingEnd.includes('">')))
+      charactersSurroundingStart.includes(tag) &&
+      charactersSurroundingEnd.includes(endTag)
    ) {
-      // If the text is already surrounded by the tag, we need to remove it
-      // So what we're gonna do here is take the text up to two characters before the selection, the selection minus the two characters on either end, and the text starting two characters after the end of the selection. This will leave us with a four character gap on either side of the selection, which will be filled in by our de-tagged fourCharacters from earlier
+      // If the text is already surrounded by the tag, we need to remove it. We start by selecting and then deleting the starting tag
 
-      const indexOfStartTag = fourCharactersSurroundingStart.indexOf(tag);
-      const startAdjustment = indexOfStartTag - 2;
-      const properSelectionStart = selectionStart + startAdjustment;
+      // First we figure out where the tag starts relative to the selection, as it might be inside the selection or just outside of it
+      const indexOfStartTag = charactersSurroundingStart.indexOf(tag);
 
+      // We'll need to move our selection to surround the start tag. By subtracting the length of the tag, we move the cursor to the beginning of our charactersSurroundingStart string, and then we add the indexOfStartTag to move the cursor to the start of the tag.
+      let properSelectionStart = selectionStart - tag.length + indexOfStartTag;
+
+      if (charactersSurroundingStart.length < 2 * tag.length) {
+         // However, there may not have been enough characters at the start of the input for our charactersSurroundingStart to have started where we'd expect it to, so we'll check for that.
+         const charactersMissingFromSurroundingStartString =
+            2 * tag.length - charactersSurroundingStart.length;
+
+         // Our properSelectionStart will be off by the number of characters missing, so we just add them in here
+         properSelectionStart += charactersMissingFromSurroundingStartString;
+      }
+
+      // Then we set our new selection, starting where we just determined the start of the tag was, and ending as many characters as the tag is after that
       target.setSelectionRange(
          properSelectionStart,
          properSelectionStart + tag.length
       );
+
+      // and we delete the selected tag
       document.execCommand('delete', false);
 
-      const indexOfEndTag = fourCharactersSurroundingEnd.indexOf(
-         tag === '<"' ? '">' : tag
-      );
-      const endAdjustment = indexOfEndTag - 2;
-      const properSelectionEnd = selectionEnd + endAdjustment - tag.length; // we subtract tag.length to account for the tag deleted from the start
+      // Now we need to do the same thing with the end tag
+
+      // First we figure out where the tag starts relative to the selection, as it might be inside the selection or just outside of it
+      const indexOfEndTag = charactersSurroundingEnd.indexOf(endTag);
+
+      // We'll need to move our selection to surround the end tag. By subtracting the length of the tag, we move the cursor to the beginning of our charactersSurroundingEnd string, and then we add the indexOfEndTag to move the cursor to the start of the tag. Then we also have to account for the lenght of the deleted start tag
+      const properSelectionEnd =
+         selectionEnd - endTag.length + indexOfEndTag - tag.length;
+
+      // We don't need to adjust the end position the way we adjusted the start position to account for a truncated charactersSurrounding string, because the end tag will always be able to start at the assumed point, which is all that matters.
 
       target.setSelectionRange(
          properSelectionEnd,
-         properSelectionEnd + tag.length
+         properSelectionEnd + endTag.length
       );
       document.execCommand('delete', false);
 
@@ -166,11 +189,7 @@ const wrapTextWithTag = (target, tag) => {
          selectionEnd + tag.length,
          selectionEnd + tag.length
       );
-      if (tag === '<"') {
-         document.execCommand('insertText', false, '">');
-      } else {
-         document.execCommand('insertText', false, tag);
-      }
+      document.execCommand('insertText', false, endTag);
 
       newSelectionStart = selectionStart + tag.length;
       newSelectionEnd = selectionEnd + tag.length;

@@ -14,7 +14,7 @@ const {
    canEditThing
 } = require('../../../utils/Authentication');
 const {fullMemberFields, smallThingCardFields, fullThingFields} = require('../../../utils/CardInterfaces');
-const { getLinksToCard } = require('../../../utils/TextHandling');
+const { getLinksToCard, replaceLinkWithText } = require('../../../utils/TextHandling');
 
 async function addTaxToThing(taxTitle, thingID, ctx, personal) {
    // Note: there's an addTaxToThingHandler shoved in between the client and this function. This is the function shared by other backend operations.
@@ -253,6 +253,8 @@ async function addContentPiece(parent, { content, id, type }, ctx, info) {
 
    const [connect, create] = await getLinksToCard(content, ctx);
 
+   content = await replaceLinkWithText(content);
+
    const dataObj = {
       content: {
          create: {
@@ -352,6 +354,8 @@ async function editContentPiece(
    });
 
    const [connect, create] = await getLinksToCard(content, ctx);
+
+   content = await replaceLinkWithText(content);
 
    const dataObj = {
       content: {

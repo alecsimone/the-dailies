@@ -66,6 +66,9 @@ const StyledWrapper = styled.div`
                opacity: 0.8;
             }
          }
+         &.imageToText {
+            font-family: serif;
+         }
          &:first-of-type {
             margin: 0 0.5rem 0 0;
          }
@@ -622,6 +625,17 @@ const RichTextArea = ({
                      }}
                   >
                      <LinkIcon />
+                  </button>
+                  <button
+                     type="button"
+                     className="stylingButton imageToText"
+                     onClick={e => {
+                        e.preventDefault();
+                        wrapTextWithTag(inputRef.current, '<text>');
+                        inputRef.current.focus();
+                     }}
+                  >
+                     T
                   </button>
                </div>
             )}
