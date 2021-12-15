@@ -243,6 +243,34 @@ const Styling = props => (
                </p>
             </li>
             <li>
+               <h4>Image Transcription</h4>
+               <p>
+                  If you enclose a link to an image file in {'<text></text>'}{' '}
+                  tags,{' '}
+                  <span className="emphasis">{'<text>like_so.jpg</text>'}</span>
+                  , we'll transcribe the text in the image and replace that tag
+                  with the transcribed text as a blockquote.
+               </p>
+               <p>
+                  The supported file types are .png, .jpg, .jpeg, .gif, .tif,
+                  .tiff, and .bmp. If you've taken a picture you want
+                  transcribed (say, if you're reading a physical book and want
+                  to clip a quote from it at length), I'd recommend uploading
+                  the image to{' '}
+                  <a href="https://imgur.com/upload" target="_blank">
+                     imgur
+                  </a>{' '}
+                  and then using their link to the picture.
+               </p>
+               <p>
+                  One day we'll probably support uploading your own images (for
+                  posting directly as well, of course), but for right now
+                  hosting images is a little beyond the scope of this project,
+                  and we're just going to piggyback off of everyone else who's
+                  already doing it so incredibly well.
+               </p>
+            </li>
+            <li>
                <h4>Reddit Links</h4>
                <p>
                   We also support linking to a subreddit by just typing{' '}

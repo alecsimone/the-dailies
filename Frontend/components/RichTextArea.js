@@ -552,6 +552,7 @@ const RichTextArea = ({
                   <button
                      type="button"
                      className="stylingButton bold"
+                     title="Bold"
                      onClick={e => {
                         e.preventDefault();
                         wrapTextWithTag(inputRef.current, '**');
@@ -563,6 +564,7 @@ const RichTextArea = ({
                   <button
                      type="button"
                      className="stylingButton italic"
+                     title="Italics"
                      onClick={e => {
                         e.preventDefault();
                         wrapTextWithTag(inputRef.current, '//');
@@ -574,6 +576,7 @@ const RichTextArea = ({
                   <button
                      type="button"
                      className="stylingButton underline"
+                     title="Underline"
                      onClick={e => {
                         e.preventDefault();
                         wrapTextWithTag(inputRef.current, '__');
@@ -585,6 +588,7 @@ const RichTextArea = ({
                   <button
                      type="button"
                      className="stylingButton header"
+                     title="Header"
                      onClick={e => {
                         e.preventDefault();
                         wrapTextWithTag(inputRef.current, '##');
@@ -596,6 +600,7 @@ const RichTextArea = ({
                   <button
                      type="button"
                      className="stylingButton summary"
+                     title="Summary"
                      onClick={e => {
                         e.preventDefault();
                         addSummaryTagsToText(inputRef.current);
@@ -607,6 +612,7 @@ const RichTextArea = ({
                   <button
                      type="button"
                      className="stylingButton blockQuote"
+                     title="Blockquote"
                      onClick={e => {
                         e.preventDefault();
                         wrapTextWithTag(inputRef.current, '<"');
@@ -618,6 +624,7 @@ const RichTextArea = ({
                   <button
                      type="button"
                      className="stylingButton link"
+                     title="Link"
                      onClick={e => {
                         e.preventDefault();
                         linkifyText(inputRef.current);
@@ -629,6 +636,7 @@ const RichTextArea = ({
                   <button
                      type="button"
                      className="stylingButton imageToText"
+                     title="Image to Text"
                      onClick={e => {
                         e.preventDefault();
                         wrapTextWithTag(inputRef.current, '<text>');
