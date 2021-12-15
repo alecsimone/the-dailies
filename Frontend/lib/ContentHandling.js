@@ -441,54 +441,20 @@ const sendNewContentPiece = async (
    // setFullThingToLoading(id);
    dynamicallyResizeElement(inputRef.current);
 
-   const optimisticResponse = {
-      __typename: 'Mutation',
-      addContentPiece: {
-         __typename: type,
-         id,
-         content: contentCopy
-      }
-   };
-   console.log(optimisticResponse);
-
    await addContentPiece({
       variables: {
          content: newContentPiece,
          id,
          type
       },
-      optimisticResponse
-      // update: (client, { data }) => {
-      //    if (data.__typename == null) {
-      //       // Our optimistic response includes a typename for the mutation, but the server's data doesn't
-      //       let query;
-      //       switch (data.addContentPiece.__typename) {
-      //          case 'Thing':
-      //             query = SINGLE_THING_QUERY;
-      //             break;
-      //          case 'Tag':
-      //             query = SINGLE_TAX_QUERY;
-      //             break;
-      //          case 'Stack':
-      //             query = SINGLE_TAX_QUERY;
-      //             break;
-      //          default:
-      //             console.log('Unknown stuff type');
-      //             return;
-      //       }
-      //       const oldData = client.readQuery({
-      //          query,
-      //          variables: { id }
-      //       });
-      //       oldData[data.addContentPiece.__typename.toLowerCase()].content =
-      //          data.addContentPiece.content;
-      //       client.writeQuery({
-      //          query,
-      //          variables: { id },
-      //          data: oldData
-      //       });
-      //    }
-      // }
+      optimisticResponse: {
+         __typename: 'Mutation',
+         addContentPiece: {
+            __typename: type,
+            id,
+            content: contentCopy
+         }
+      }
    }).catch(err => {
       alert(err.message);
    });
