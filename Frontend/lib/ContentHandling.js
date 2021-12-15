@@ -2,6 +2,7 @@ import gql from 'graphql-tag';
 import { useRef } from 'react';
 import { commentFields, contentPieceFields } from './CardInterfaces';
 import { getOneRem, midScreenBreakpointPx } from '../styles/functions';
+import { provisionallyReplaceTextTag } from './TextHandling';
 
 const ADD_CONTENTPIECE_MUTATION = gql`
    mutation ADD_CONTENTPIECE_MUTATION(
@@ -409,9 +410,11 @@ const sendNewContentPiece = async (
 
    const contentCopy = JSON.parse(JSON.stringify(content));
 
+   const provisionalContent = provisionallyReplaceTextTag(newContentPiece);
+
    contentCopy.push({
       __typename: 'ContentPiece',
-      content: newContentPiece,
+      content: provisionalContent,
       id: 'temporaryID',
       comments: [],
       unsavedNewContent: null,
@@ -433,7 +436,7 @@ const sendNewContentPiece = async (
          addContentPiece: {
             __typename: type,
             id,
-            content: contentCopy,
+            content: provisionalContent,
             comments: [],
             unsavedNewContent: null,
             onThing: [],

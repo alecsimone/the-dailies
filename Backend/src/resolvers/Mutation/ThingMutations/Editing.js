@@ -306,8 +306,6 @@ async function deleteContentPiece(
    });
    fullMemberGate(ctx.req.member);
 
-   console.log(type, id);
-
    const {contentOrder: oldContentOrder} = await ctx.db.query[type.toLowerCase()](
       {
          where: {

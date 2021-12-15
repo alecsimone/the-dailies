@@ -123,7 +123,7 @@ const replaceLinkWithText = async text => {
    );
 
    // We're using OCR Space's Free OCR API https://ocr.space/ocrapi
-   const conversionURL = 'https://api.ocr.space/parse/imageurl?apikey=';
+   const conversionURL = 'https://apipro1.ocr.space/parse/imageurl?apikey=';
    for (const match of textTagMatches) {
       const matchedURL = match.groups.url;
       const wholeMatch = match[0];
