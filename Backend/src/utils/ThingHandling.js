@@ -802,3 +802,7 @@ const supplementFilteredQuery = async (
    return supplementaryItems;
 };
 exports.supplementFilteredQuery = supplementFilteredQuery;
+
+// use with await sleep(ms);
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+exports.sleep = sleep;

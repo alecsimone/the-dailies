@@ -72,7 +72,8 @@ const Content = ({ contentType, canEdit, linkedPiece, stuffID, type }) => {
    };
 
    const [addContentPiece] = useMutation(ADD_CONTENTPIECE_MUTATION, {
-      onError: err => alert(err.message)
+      onError: err => alert(err.message),
+      onCompleted: data => console.log(data)
    });
 
    const [deleteContentPiece] = useMutation(DELETE_CONTENTPIECE_MUTATION, {
@@ -139,7 +140,6 @@ const Content = ({ contentType, canEdit, linkedPiece, stuffID, type }) => {
       const thisPiece = contentCopy[indexOfEditedContentPiece];
 
       const provisionalContent = provisionallyReplaceTextTag(newContent);
-      console.log(provisionalContent);
 
       contentCopy[indexOfEditedContentPiece].content = provisionalContent;
 
