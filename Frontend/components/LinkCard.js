@@ -41,8 +41,10 @@ const StyledLinkCard = styled.div`
       display: flex;
       align-items: center;
       width: 10rem;
+      max-width: 12rem;
       ${props => props.theme.mobileBreakpoint} {
          width: 20rem;
+         max-width: 22rem;
       }
       overflow: hidden;
       img {
@@ -128,6 +130,11 @@ const LinkCard = ({ link }) => {
             .trim()}...`;
       }
 
+      let hasProperIcon = true;
+      if (!icon.includes('http://') && !icon.includes('https://')) {
+         hasProperIcon = false;
+      }
+
       return (
          <StyledLinkCard
             className={`linkCard ${
@@ -151,7 +158,7 @@ const LinkCard = ({ link }) => {
                <div className="title">{title}</div>
                <div className="description">{trimmedDescription}</div>
             </div>
-            {image == null && video == null && icon != null && (
+            {image == null && video == null && icon != null && hasProperIcon && (
                <div className="linkCardLogo">
                   <img src={icon} />
                </div>
