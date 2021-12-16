@@ -110,7 +110,7 @@ const StyledTweets = styled.section`
             width: 100%;
             flex-grow: 1;
             min-width: 45rem;
-            max-width: 100rem;
+            /* max-width: 100rem; */
             height: 100%;
             overflow: hidden;
             border: 2px solid ${props => setAlpha(props.theme.midBlack, 0.25)};
