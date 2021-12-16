@@ -14,14 +14,14 @@ const StyledTweets = styled.section`
    bottom: 0;
    left: 0%;
    width: 100%;
-   ${props => props.theme.mobileBreakpoint} {
+   ${props => props.theme.midScreenBreakpoint} {
       left: 2%;
       width: 96%;
    }
    padding: 0;
    .tweets {
       height: 100%;
-      ${props => props.theme.mobileBreakpoint} {
+      ${props => props.theme.midScreenBreakpoint} {
          height: calc(
             100% - 1.5rem
          ); /* we need to take off 2rem for the margin on .remainingCounters, which pushes .tweets down */
@@ -94,7 +94,7 @@ const StyledTweets = styled.section`
             ${props => props.theme.scroll};
             min-height: 100%; // We need a min-height on mobile because it looks weird if it doesn't fill up the screen
             height: 100%;
-            ${props => props.theme.mobileBreakpoint} {
+            ${props => props.theme.midScreenBreakpoint} {
                min-height: initial;
                align-items: baseline;
             }
@@ -162,7 +162,7 @@ const StyledTweets = styled.section`
                }
                .bottom {
                   font-size: ${props => props.theme.miniText};
-                  ${props => props.theme.mobileBreakpoint} {
+                  ${props => props.theme.desktopBreakpoint} {
                      font-size: ${props => props.theme.tinyText};
                   }
                   font-weight: 300;
@@ -196,7 +196,7 @@ const StyledTweets = styled.section`
                ); /* the 2.25rem * 1.6 is for the list info bar, which has a font size of 2.25rem and a line height of 1.6. I can't currently explain the extra 3.75rem we had to take off */
                .tweetsContainer {
                   padding: 0;
-                  ${props => props.theme.mobileBreakpoint} {
+                  ${props => props.theme.midScreenBreakpoint} {
                      padding: 0 1rem;
                   }
                }
