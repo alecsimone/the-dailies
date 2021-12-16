@@ -102,10 +102,10 @@ const StyledTweets = styled.section`
             ${props => props.theme.scroll};
             min-height: 100%; // We need a min-height on mobile because it looks weird if it doesn't fill up the screen
             height: 100%;
-            ${props => props.theme.midScreenBreakpoint} {
+            ${props => props.theme.desktopBreakpoint} {
                min-height: initial;
                align-items: baseline;
-               height: calc(100% - var(--tweeter-header-height));
+               max-height: calc(100% - var(--tweeter-header-height));
             }
          }
          .tweeterColumn {
@@ -128,7 +128,8 @@ const StyledTweets = styled.section`
                ${props => setAlpha(props.theme.deepBlack, 0.4)};
             &.column1 {
                display: none;
-               ${props => props.theme.bigScreenBreakpoint} {
+               @media screen and (min-width: 2120px) {
+                  /* Forgive the arbitrary break point, that's just the size it seems to start to look good at */
                   display: block;
                }
             }
