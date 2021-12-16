@@ -107,6 +107,9 @@ const StyledTweets = styled.section`
                align-items: baseline;
                max-height: calc(100% - var(--tweeter-header-height));
             }
+            ${props => props.theme.midScreenBreakpoint} {
+               max-height: 100%;
+            }
          }
          .tweeterColumn {
             margin: 0;
