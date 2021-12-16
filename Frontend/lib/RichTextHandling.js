@@ -1,4 +1,6 @@
 import { useState, useRef } from 'react';
+import { getElementHeight } from '../Stickifier/stickifier';
+import { getScrollingParent } from '../Stickifier/useStickifier';
 import { dynamicallyResizeElement, getOneRem } from '../styles/functions';
 
 const getCursorXY = (input, selectionPoint) => {
@@ -46,34 +48,67 @@ const getCursorXY = (input, selectionPoint) => {
 export { getCursorXY };
 
 const keepCaretAboveStickyButtons = el => {
-   // Mobile is real weird with all the screen size changes and whatnot, so let's just skip it
-   const windowHeight = window.innerWidth;
-   if (window.innerWidth < 600) return;
+   // Because we've added an element at the bottom of the screen that covers our textareas, we need a function to adjust our scroll position to make sure our cursor stays higher up than those buttons. Effectively, we need to figure out where our cursor is, figure out where those buttons are, and then adjust our scroll position accordingly.
 
+   // Before we go any further, let's make sure this textarea is part of a content block, and that it has sticky buttons, because if it doesn't, we don't need to bother with any of this
+   const parentBlock = el.closest('.contentBlock');
+   if (parentBlock == null) return;
+
+   const buttons = parentBlock.querySelector('.newcontentButtons');
+   if (buttons == null) return;
+
+   // First we have to figure out how far from the top of the textarea the cursor is. We'll use a function I found online for that, which needs the current position of the cursor. We'll use the selection end because we're trying to stay above the bottom of the screen, so we want the lowest relevant part of the selection.
    const cursorPosition = el.selectionEnd;
    const cursorXY = getCursorXY(el, cursorPosition);
-   const oneRem = getOneRem();
-   const cursorDepth = cursorXY.y - el.offsetTop + 3 * oneRem + 1; // getCursorXY includes the offset of the element, so we're removing it here. I don't really know where the 3 rem comes from, but the 1px I think is for the border
 
-   const parentBlock = el.closest('.contentBlock');
-   if (parentBlock == null) return; // If this input isn't part of a contentBlock, then there aren't going to be stickbuttons, so we're done here
-   const stickyButtons = parentBlock.querySelector('.newcontentButtons');
-   if (stickyButtons == null) return; // If there are no sticky buttons in this block for some reason, then we're also good
+   // Then we have to figure out how far the top of the textarea is from the top of the scrolling element
+   let totalOffset = 0; // Normally we'd start with the element's offsetTop, but that's already included in our getCursorXY function, which we'll be adding the total offset to, so we'll just skip it here
+   let parent = el.offsetParent;
+   while (parent != null) {
+      totalOffset += parent.offsetTop;
+      parent = parent.offsetParent;
+   }
 
-   const textAreaRect = el.getBoundingClientRect();
-   const stickyButtonsRect = stickyButtons.getBoundingClientRect();
+   // Then we'll also have to add the height of a line of text so we can get the bottom of the cursor instead of the top of it
+   const elStyle = window.getComputedStyle(el);
+   const elLineHeight = parseInt(elStyle.lineHeight);
 
-   const totalCursorDepth = textAreaRect.top + cursorDepth;
+   // So the position of the bottom of the cursor is equal to its Y position as calculated by our helper function, plus the total offset of all its parent elements, plus the height of a line of text
+   const cursorBottom = cursorXY.y + totalOffset + elLineHeight;
 
-   if (stickyButtonsRect.top < totalCursorDepth) {
-      const scrollAdjustment =
-         stickyButtonsRect.top - (totalCursorDepth + 0.5 * oneRem); // Adding the 0.5rem just for some breathing room beneath the cursor
-      // newScrollTop = oldScrollTop - scrollAdjustment;
+   // Next we need to figure out where the bottom of the screen is
+   const scrollingParent = getScrollingParent(el);
+   const windowHeight = window.innerHeight;
 
+   // If there's a bottom bar (ie, if we're on mobile), we'll need to adjust for that
+   const bottomBar = document.querySelector('.bottomBar');
+   const bottomBarHeight = bottomBar != null ? bottomBar.offsetHeight : 0;
+
+   // Same for our sticky buttons
+   const buttonsHeight = getElementHeight(buttons);
+
+   // So the visible bottom is equal to the scrollTop of our scroller, plus the height of the window, minus the height of the bottom bar and the sticky buttons
+   const visibleBottom =
+      scrollingParent.scrollTop +
+      windowHeight -
+      bottomBarHeight -
+      buttonsHeight;
+
+   // However, the bottom of the screen is simply equal to the scrollingParent's scrollTop plus the height of the window
+   const screenBottom = scrollingParent.scrollTop + windowHeight;
+
+   // If the screen bottom is above the cursor bottom, the browser will adjust to correct for that, so we just need to adjust for the height of the sticky buttons
+   if (screenBottom < cursorBottom) {
+      const scrollAdjustment = buttonsHeight;
       window.setTimeout(() => {
-         const mainSection = document.querySelector('.mainSection');
-         mainSection.scrollTop -= scrollAdjustment;
+         scrollingParent.scrollTop += scrollAdjustment;
       }, 1);
+   } else if (visibleBottom < cursorBottom) {
+      // If the screen bottom is below the cursor bottom, the browser won't adjust for us, so we need to adjust by the difference between the cursorBottom and the visibleBottom
+      const scrollAdjustment = cursorBottom - visibleBottom;
+      window.setTimeout(() => {
+         scrollingParent.scrollTop += scrollAdjustment;
+      }, 1); // I know this is exactly the same as the timeout code in the block above, but if we pull it out of the conditional, then it runs even when no adjustment is needed (at least I think that's what's happening. The scrolling definitely goes crazy if you do that.)
    }
 };
 export { keepCaretAboveStickyButtons };

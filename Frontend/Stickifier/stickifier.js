@@ -22,6 +22,7 @@ const getElementHeight = element => {
    elementHeight += elementMargin;
    return elementHeight;
 };
+export { getElementHeight };
 
 const describeViewport = (scroller, headerHeight, bottomBarHeight) => {
    const viewableTop = scroller.scrollTop + headerHeight;
