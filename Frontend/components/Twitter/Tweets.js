@@ -21,7 +21,7 @@ const StyledTweets = styled.section`
    padding: 0;
    .tweets {
       height: 100%;
-      ${props => props.theme.midScreenBreakpoint} {
+      ${props => props.theme.desktopBreakpoint} {
          height: calc(
             100% - 1.5rem
          ); /* we need to take off 2rem for the margin on .remainingCounters, which pushes .tweets down */
@@ -88,6 +88,14 @@ const StyledTweets = styled.section`
             }
          }
          .tweeterColumnsContainer {
+            --tweeter-header-height: calc(
+               7.5625rem + 2px
+            ); /* On mobile, tweeterHeader has a padding of 1rem on either side and a border of 2px on the bottom. It gets its height from the (currently unnamed) div containing the handle and name, which have font sizes of 2.75rem and 1.7rem respectively and line heights of 1.25, for a total of 4.45 * 1.25 or 5.5625rem. Thus we get 7.5625rem + 2px */
+            ${props => props.theme.mobileBreakpoint} {
+               --tweeter-header-height: calc(
+                  8.4rem + 2px
+               ); /* On desktop, tweeterHeader has a padding of 1rem on either side and a border of 2px on the bottom. It gets its height from the (currently unnamed) div containing the handle and name, which have font sizes of 2.75rem and 1.25rem respectively and line heights of 1.6, for a total of 4 * 1.6 or 6.4rem. Thus we get 8.4rem + 2px   */
+            }
             display: flex;
             overflow-x: auto;
             max-width: 100%;
@@ -97,6 +105,7 @@ const StyledTweets = styled.section`
             ${props => props.theme.midScreenBreakpoint} {
                min-height: initial;
                align-items: baseline;
+               height: calc(100% - var(--tweeter-header-height));
             }
          }
          .tweeterColumn {
@@ -123,13 +132,7 @@ const StyledTweets = styled.section`
                   display: block;
                }
             }
-            --tweeter-header-height: calc(
-               7.5625rem + 2px
-            ); /* On mobile, tweeterHeader has a padding of 1rem on either side and a border of 2px on the bottom. It gets its height from the (currently unnamed) div containing the handle and name, which have font sizes of 2.75rem and 1.7rem respectively and line heights of 1.25, for a total of 4.45 * 1.25 or 5.5625rem. Thus we get 7.5625rem + 2px */
             ${props => props.theme.mobileBreakpoint} {
-               --tweeter-header-height: calc(
-                  8.4rem + 2px
-               ); /* On desktop, tweeterHeader has a padding of 1rem on either side and a border of 2px on the bottom. It gets its height from the (currently unnamed) div containing the handle and name, which have font sizes of 2.75rem and 1.25rem respectively and line heights of 1.6, for a total of 4 * 1.6 or 6.4rem. Thus we get 8.4rem + 2px   */
                height: auto;
                max-height: 100%;
             }
@@ -192,7 +195,7 @@ const StyledTweets = styled.section`
                ${props => props.theme.scroll};
                max-height: calc(
                   100vh - var(--tweeter-header-height) - var(--header-height) -
-                     2.25rem * 1.6 - 3.75rem - 1rem
+                     2.25rem * 1.6
                ); /* the 2.25rem * 1.6 is for the list info bar, which has a font size of 2.25rem and a line height of 1.6. I can't currently explain the extra 3.75rem we had to take off */
                .tweetsContainer {
                   padding: 0;
