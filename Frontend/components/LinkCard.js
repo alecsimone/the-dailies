@@ -130,10 +130,17 @@ const LinkCard = ({ link }) => {
             .trim()}...`;
       }
 
-      let hasProperIcon = true;
-      if (!icon.includes('http://') && !icon.includes('https://')) {
-         hasProperIcon = false;
+      let hasProperIcon = false;
+      if (
+         icon != null &&
+         (icon.includes('http://') || icon.includes('https://'))
+      ) {
+         hasProperIcon = true;
       }
+      // let hasProperIcon = true;
+      // if (!icon.includes('http://') && !icon.includes('https://')) {
+      //    hasProperIcon = false;
+      // }
 
       return (
          <StyledLinkCard
