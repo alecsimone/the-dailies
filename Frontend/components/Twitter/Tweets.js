@@ -28,7 +28,7 @@ const StyledTweets = styled.section`
       }
       .tweeters {
          height: 100%;
-         ${props => props.theme.mobileBreakpoint} {
+         ${props => props.theme.midScreenBreakpoint} {
             display: grid;
             grid-template-rows: auto 1fr;
             align-items: start;
