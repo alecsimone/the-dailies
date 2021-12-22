@@ -202,7 +202,7 @@ const StyledTweets = styled.section`
                      2.25rem * 1.6
                ); /* the 2.25rem * 1.6 is for the list info bar, which has a font size of 2.25rem and a line height of 1.6. I can't currently explain the extra 3.75rem we had to take off */
                .tweetsContainer {
-                  padding: 0;
+                  padding: 0 0 5rem;
                   ${props => props.theme.midScreenBreakpoint} {
                      padding: 0 1rem;
                   }
