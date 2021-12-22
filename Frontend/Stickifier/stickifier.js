@@ -3,6 +3,7 @@ import { getOneRem } from '../styles/functions';
 import { getScrollingParent } from './useStickifier';
 
 const getIntPxFromStyleString = rawString => {
+   if (rawString == null) return null;
    if (rawString.includes('px')) {
       const fixedString = rawString.substring(0, rawString.length - 2);
       return parseInt(fixedString);
