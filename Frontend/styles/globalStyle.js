@@ -331,7 +331,10 @@ const GlobalStyle = createGlobalStyle`
          margin: 0;
          overflow: hidden;
          width: 100%;
-         height: calc(100% - 13.5rem - 3px); /* 6.75rem is the height of each of the header and bottom bar. The header has a 1px border, the bottom bar 2px */
+         height: calc(100% - 13.5rem - 3px); /*  6.75rem is the height of each of the header and bottom bar. The header has a 1px border, the bottom bar 2px */
+         ${props => props.theme.mobileBreakpoint} {
+            height: 100%;
+         }
          top: calc(6.75rem + 1px);
          z-index: 99;
          ${props => props.theme.scroll};
@@ -391,7 +394,10 @@ const GlobalStyle = createGlobalStyle`
          margin: 0;
          overflow: hidden;
          width: 100%;
-         height: calc(100% - 13.5rem - 3px); /* 6.75rem is the height of each of the header and bottom bar. The header has a 1px border, the bottom bar 2px */
+         height: calc(100% - 13.5rem - 3px); /*  6.75rem is the height of each of the header and bottom bar. The header has a 1px border, the bottom bar 2px */
+         ${props => props.theme.mobileBreakpoint} {
+            height: 100%;
+         }
          top: calc(6.75rem + 1px);
          right: 0;
          z-index: 99;
