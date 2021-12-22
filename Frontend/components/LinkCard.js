@@ -152,7 +152,7 @@ const LinkCard = ({ link }) => {
          >
             <div
                className={`linkCardInfo ${
-                  image == null && video == null && icon != null
+                  image == null && video == null && hasProperIcon
                      ? 'icon'
                      : 'poster'
                }`}
