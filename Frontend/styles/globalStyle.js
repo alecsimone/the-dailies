@@ -343,7 +343,7 @@ const GlobalStyle = createGlobalStyle`
             transform: translateX(-100%);
          }
          ${props => props.theme.mobileBreakpoint} {
-            width: 10%;
+            width: 50%;
          }
          ${props => props.theme.midScreenBreakpoint} {
             width: 20%;

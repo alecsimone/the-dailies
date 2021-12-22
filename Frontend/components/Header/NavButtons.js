@@ -10,11 +10,21 @@ import { setAlpha, setLightness, setSaturation } from '../../styles/functions';
 import X from '../Icons/X';
 import { ALL_THINGS_QUERY } from '../../lib/ThingHandling';
 import { myThingsQueryCount, MY_THINGS_QUERY } from '../Archives/MyThings';
+import { ModalContext } from '../ModalProvider';
+import HamburgerIcon from '../Icons/Hamburger';
 
 const StyledNav = styled.nav`
    display: flex;
    align-items: center;
    flex-grow: 1;
+   svg.hamburgerIcon {
+      width: ${props => props.theme.bigText};
+      cursor: pointer;
+      margin-right: 2rem;
+      ${props => props.theme.desktopBreakpoint} {
+         display: none;
+      }
+   }
    a {
       line-height: 0;
       img, svg {
@@ -72,8 +82,24 @@ const NavButtons = ({ showSearch, setShowSearch, search }) => {
       }
    });
    const { lowContrastGrey } = useContext(ThemeContext);
+   const {
+      thingsSidebarIsOpen,
+      setThingsSidebarIsOpen,
+      navSidebarIsOpen,
+      setNavSidebarIsOpen
+   } = useContext(ModalContext);
+
    return (
       <StyledNav className="navButtons">
+         <HamburgerIcon
+            onClick={e => {
+               e.preventDefault();
+               if (thingsSidebarIsOpen === true && navSidebarIsOpen === false) {
+                  setThingsSidebarIsOpen(false);
+               }
+               setNavSidebarIsOpen(!navSidebarIsOpen);
+            }}
+         />
          <Link href="/new">
             <a
                id="newPostButton"

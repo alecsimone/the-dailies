@@ -57,12 +57,6 @@ const StyledNavSidebar = styled.section`
       padding: 2rem 1.5rem;
       transition: all 0.2s;
       ${props => props.theme.mobileBreakpoint} {
-         justify-content: space-around;
-         .navLabel {
-            display: none;
-         }
-      }
-      ${props => props.theme.midScreenBreakpoint} {
          justify-content: stretch;
          .navLabel {
             display: block;

@@ -44,7 +44,7 @@ const MemberBox = () => {
       loggedInUserID,
       memberFields: { rep, displayName, avatar }
    } = useMe('MemberBox', 'rep displayName avatar');
-   const { mobileBPWidthRaw } = useContext(ThemeContext);
+   const { desktopBPWidthRaw } = useContext(ThemeContext);
    const {
       thingsSidebarIsOpen,
       setThingsSidebarIsOpen,
@@ -78,7 +78,7 @@ const MemberBox = () => {
       if (
          isHome &&
          !thingsSidebarIsOpen &&
-         window.outerWidth > mobileBPWidthRaw
+         window.outerWidth > desktopBPWidthRaw
       ) {
          return;
       }
