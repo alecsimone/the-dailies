@@ -26,9 +26,9 @@ const HamburgerIcon = ({
          onClick={onClick}
       >
          <title>{titleText != null ? titleText : 'Menu'}</title>
-         <rect y="150" width="200" height="40" rx="15" fill={computedColor} />
-         <rect y="80" width="200" height="40" rx="15" fill={computedColor} />
-         <rect y="10" width="200" height="40" rx="15" fill={computedColor} />
+         <rect y="180" width="200" height="50" rx="15" fill={computedColor} />
+         <rect y="90" width="200" height="50" rx="15" fill={computedColor} />
+         <rect width="200" height="50" rx="15" fill={computedColor} />
       </svg>
    );
 };

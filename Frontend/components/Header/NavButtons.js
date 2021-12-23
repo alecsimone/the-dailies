@@ -19,6 +19,7 @@ const StyledNav = styled.nav`
    flex-grow: 1;
    svg.hamburgerIcon {
       width: ${props => props.theme.bigText};
+      height: ${props => props.theme.bigText};
       cursor: pointer;
       margin-right: 2rem;
       ${props => props.theme.desktopBreakpoint} {

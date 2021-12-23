@@ -57,7 +57,7 @@ const StyledHeader = styled.div`
          display: none;
       }
       ${props => props.theme.mobileBreakpoint} {
-         padding: 0 4rem;
+         padding: 0 2rem;
          grid-template-columns: 1fr auto 1fr;
          &.showSearch {
             grid-template-columns: 1fr;
