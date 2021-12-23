@@ -69,6 +69,10 @@ const StyledContent = styled.section`
             .newcontentButtons {
                width: 100%;
                ${props => props.theme.mobileBreakpoint} {
+                  width: calc(100% + 2rem);
+                  margin-left: -1rem;
+               }
+               ${props => props.theme.desktopBreakpoint} {
                   width: calc(100% + 6rem);
                   margin-left: -3rem;
                }
