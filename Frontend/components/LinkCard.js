@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { linkFields } from '../lib/CardInterfaces';
 import useQueryAndStoreIt from '../stuffStore/useQueryAndStoreIt';
-import { setAlpha } from '../styles/functions';
+import { setAlpha, setLightness } from '../styles/functions';
 import LoadingRing from './LoadingRing';
 
 const LINK_DATA_QUERY = gql`
@@ -21,6 +21,24 @@ const StyledLinkCard = styled.div`
    display: flex;
    border-radius: 4px;
    margin-top: 0.5rem;
+   a,
+   a:visited {
+      display: block;
+      width: 100%;
+      color: ${props => props.theme.mainText};
+      &:hover {
+         text-decoration: none;
+      }
+   }
+   .siteName a,
+   .siteName a:visited {
+      display: inline;
+      width: auto;
+      color: ${props => setLightness(props.theme.majorColor, 75)};
+      &:hover {
+         text-decoration: underline;
+      }
+   }
    &.poster {
       flex-wrap: wrap;
    }
@@ -58,7 +76,7 @@ const StyledLinkCard = styled.div`
       margin-top: 0.5rem;
       img {
          width: 100%;
-         max-height: 32rem;
+         max-height: 36rem;
          object-fit: cover;
          object-position: center center;
       }
@@ -150,31 +168,36 @@ const LinkCard = ({ link }) => {
                   : 'poster'
             }`}
          >
-            <div
-               className={`linkCardInfo ${
-                  image == null && video == null && hasProperIcon
-                     ? 'icon'
-                     : 'poster'
-               }`}
-            >
-               <div className="siteName">
-                  <a href={ogURL} target="_blank">
-                     {siteName}
-                  </a>
+            <a href={ogURL} target="_blank" rel="noopener noreferrer">
+               <div
+                  className={`linkCardInfo ${
+                     image == null && video == null && hasProperIcon
+                        ? 'icon'
+                        : 'poster'
+                  }`}
+               >
+                  <div className="siteName">
+                     <a href={ogURL} target="_blank">
+                        {siteName}
+                     </a>
+                  </div>
+                  <div className="title">{title}</div>
+                  <div className="description">{trimmedDescription}</div>
                </div>
-               <div className="title">{title}</div>
-               <div className="description">{trimmedDescription}</div>
-            </div>
-            {image == null && video == null && icon != null && hasProperIcon && (
-               <div className="linkCardLogo">
-                  <img src={icon} />
-               </div>
-            )}
-            {image != null && video == null && (
-               <div className="linkCardPoster">
-                  <img src={image} />
-               </div>
-            )}
+               {image == null &&
+                  video == null &&
+                  icon != null &&
+                  hasProperIcon && (
+                     <div className="linkCardLogo">
+                        <img src={icon} />
+                     </div>
+                  )}
+               {image != null && video == null && (
+                  <div className="linkCardPoster">
+                     <img src={image} />
+                  </div>
+               )}
+            </a>
          </StyledLinkCard>
       );
    }
