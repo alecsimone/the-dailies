@@ -103,6 +103,7 @@ const StyledNavSidebar = styled.section`
       }
       .navIcon {
          width: 8rem;
+         min-width: 8rem;
          height: ${props => props.theme.bigText};
          display: inline-flex;
          align-items: center;
@@ -115,6 +116,7 @@ const StyledNavSidebar = styled.section`
          margin-left: 2rem;
          transition: all 0.2s;
          line-height: 1;
+         white-space: nowrap;
          &:hover {
             text-decoration: none;
          }
