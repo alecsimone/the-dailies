@@ -331,9 +331,11 @@ const GlobalStyle = createGlobalStyle`
          margin: 0;
          overflow: hidden;
          width: 100%;
+         flex: 1 0 auto;
          height: calc(100% - 13.5rem - 3px); /*  6.75rem is the height of each of the header and bottom bar. The header has a 1px border, the bottom bar 2px */
          ${props => props.theme.mobileBreakpoint} {
             height: 100%;
+            width: auto;
          }
          top: calc(6.75rem + 1px);
          z-index: 99;
@@ -344,12 +346,6 @@ const GlobalStyle = createGlobalStyle`
          }
          &.hidden {
             transform: translateX(-100%);
-         }
-         ${props => props.theme.mobileBreakpoint} {
-            width: 50%;
-         }
-         ${props => props.theme.midScreenBreakpoint} {
-            width: 20%;
          }
       }
       .mainSection {
@@ -375,9 +371,6 @@ const GlobalStyle = createGlobalStyle`
                transform: translateX(calc(-100% + ${props =>
                   props.theme
                      .smallHead} + 2rem)); // The 2rem is for the 1rem of padding on either side, and the icon is smallHead
-            }
-            ${props => props.theme.midScreenBreakpoint} {
-               min-width: 320px;
             }
          }
          .mainSection {

@@ -54,7 +54,7 @@ const StyledNavSidebar = styled.section`
       display: flex;
       align-items: center;
       cursor: pointer;
-      padding: 2rem 1.5rem;
+      padding: 2rem 4rem 2rem 1rem;
       transition: all 0.2s;
       ${props => props.theme.mobileBreakpoint} {
          justify-content: stretch;
