@@ -72,8 +72,7 @@ const Content = ({ contentType, canEdit, linkedPiece, stuffID, type }) => {
    };
 
    const [addContentPiece] = useMutation(ADD_CONTENTPIECE_MUTATION, {
-      onError: err => alert(err.message),
-      onCompleted: data => console.log(data)
+      onError: err => alert(err.message)
    });
 
    const [deleteContentPiece] = useMutation(DELETE_CONTENTPIECE_MUTATION, {

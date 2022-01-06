@@ -60,9 +60,9 @@ const untagCard = (thingID, things, tagID, removeTaxFromThing) => {
 
 export { untagCard };
 
-const ungroupCard = () => {
-   console.log("let's ungroup that card!");
-};
+// const ungroupCard = () => {
+//    console.log("let's ungroup that card!");
+// };
 
 export { ungroupCard };
 

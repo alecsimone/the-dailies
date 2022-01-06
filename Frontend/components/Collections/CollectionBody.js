@@ -100,9 +100,7 @@ const CollectionBody = ({ activeCollection, fetchMoreButton }) => {
 
    const [moveCardToGroup] = useMutation(MOVE_CARD_TO_GROUP_MUTATION);
 
-   const [addTaxToThingById] = useMutation(ADD_TAX_BY_ID_MUTATION, {
-      onCompleted: addTaxData => console.log(addTaxData)
-   });
+   const [addTaxToThingById] = useMutation(ADD_TAX_BY_ID_MUTATION);
 
    const [deleteGroupFromCollection] = useMutation(
       DELETE_GROUP_FROM_COLLECTION_MUTATION,

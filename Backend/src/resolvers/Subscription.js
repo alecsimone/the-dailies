@@ -13,6 +13,9 @@ const Subscription = {
          (payload, variables) => variables.IDs.includes(payload.things.node.id)
       )
    },
+   // things: {
+   //    subscribe: (parent, args, ctx, info) => ctx.pubsub.asyncIterator('things')
+   // },
    tag: {
       subscribe: (parent, args, ctx, info) => ctx.pubsub.asyncIterator('tag')
    },

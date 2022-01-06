@@ -1,7 +1,8 @@
 import { useSubscription } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { fullThingFields } from '../lib/CardInterfaces';
+import { upsertStuff } from './stuffSlice';
 
 const MANY_THINGS_SUBSCRIPTION = gql`
    subscription MANY_THINGS_SUBSCRIPTION($IDs: [ID!]) {
@@ -31,9 +32,12 @@ const ThingsSubscriptionManager = ({ children }) => {
       }
    );
 
+   const dispatch = useDispatch();
+
    const { data, loading } = useSubscription(MANY_THINGS_SUBSCRIPTION, {
       variables: { IDs: thingIDs },
-      onCompleted: newData => console.log(newData)
+      onSubscriptionData: ({ subscriptionData }) =>
+         dispatch(upsertStuff(subscriptionData.data.things.node))
    });
 
    return null;

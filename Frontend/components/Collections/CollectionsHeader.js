@@ -20,7 +20,6 @@ const getShortestColumnID = columnData => {
    let lowestHeightID;
 
    // Then we need to loop through each column
-   console.log(columnData);
    columnData.forEach((data, index) => {
       // We need to get the height for each column. First we grab the column container, but these will all have the same height
       const thisContainer = document.querySelector(`#id-${data.id}`);
