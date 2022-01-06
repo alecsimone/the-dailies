@@ -416,15 +416,23 @@ const StyledContent = styled.section`
             height: 0px;
          }
          .newcontentButtons {
-            width: calc(60% + 2.5rem);
+            margin-left: 0;
+            width: 60%;
             position: relative;
             background: ${props => props.theme.midBlack};
             --votersHeight: 4rem;
             z-index: 2;
-            ${props => props.theme.midScreenBreakpoint} {
+            ${props => props.theme.mobileBreakpoint} {
+               margin-left: -1rem;
+               width: calc(60% + 0.6rem)
+            }
+            ${props => props.theme.desktopBreakpoint} {
                --votersHeight: 5rem;
-               width: calc(60% + 3rem);
+               width: calc(60% + 2.5rem);
                margin-left: -3rem; /* At this screen width, contentBlock has 3rem of padding, so we need to make up for that */
+            }
+            ${props => props.theme.midScreenBreakpoint} {
+               width: calc(60% + 3rem);
             }
             &.withVoters {
                margin-top: var(--votersHeight, 4rem);
