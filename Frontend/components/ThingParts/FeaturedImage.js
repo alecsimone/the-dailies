@@ -8,6 +8,7 @@ import { disabledCodewords } from '../../lib/ThingHandling';
 import { isExplodingLink, isVideo } from '../../lib/UrlHandling';
 import ExplodingLink from '../ExplodingLink';
 import EditThis from '../Icons/EditThis';
+import { home } from '../../config';
 
 const SET_FEATURED_IMAGE_MUTATION = gql`
    mutation SET_FEATURED_IMAGE_MUTATION(
@@ -119,7 +120,9 @@ const FlexibleFeaturedImage = ({ canEdit, id, type }) => {
          <Head>
             <meta
                property={isVideo(featuredImage) ? 'og:video' : 'og:image'}
-               content={featuredImage != null ? featuredImage : '/logo.png'}
+               content={
+                  featuredImage != null ? featuredImage : `${home}/logo.png`
+               }
             />
          </Head>
          {featuredImage != null &&

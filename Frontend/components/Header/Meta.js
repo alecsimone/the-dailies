@@ -34,7 +34,7 @@ const Meta = () => (
       <meta property="og:type" content="website" key="ogType" />
       <meta property="og:site_name" content="Ouryou" />
       <meta property="og:description" content="What will you learn today?" />
-      <meta property="og:icon" content={`$${home}/logo.png`} />
+      <meta property="og:icon" content={`${home}/logo.png`} />
    </Head>
 );
 Meta.propTypes = {};
