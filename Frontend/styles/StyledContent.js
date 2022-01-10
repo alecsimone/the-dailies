@@ -249,6 +249,9 @@ const StyledContent = styled.section`
                            img {
                               max-width: 100%;
                            }
+                           article {
+                              margin-bottom: 0;
+                           }
                            padding: 1rem;
                            ${props => props.theme.midScreenBreakpoint} {
                               padding: 3rem 0;
