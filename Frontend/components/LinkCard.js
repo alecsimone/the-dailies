@@ -130,6 +130,17 @@ const LinkCard = ({ link }) => {
          icon
       } = computedData;
 
+      let computedURL = ogURL;
+      if (computedURL == null) {
+         computedURL = link;
+      } else if (
+         !computedURL.includes('http://') &&
+         !computedURL.includes('https://') &&
+         !computedURL.includes('ftp://')
+      ) {
+         computedURL = link;
+      }
+
       if (
          siteName == null &&
          title == null &&
@@ -168,7 +179,7 @@ const LinkCard = ({ link }) => {
                   : 'poster'
             }`}
          >
-            <a href={ogURL} target="_blank" rel="noopener noreferrer">
+            <a href={computedURL} target="_blank" rel="noopener noreferrer">
                <div
                   className={`linkCardInfo ${
                      image == null && video == null && hasProperIcon
@@ -177,7 +188,7 @@ const LinkCard = ({ link }) => {
                   }`}
                >
                   <div className="siteName">
-                     <a href={ogURL} target="_blank">
+                     <a href={computedURL} target="_blank">
                         {siteName}
                      </a>
                   </div>
