@@ -57,6 +57,14 @@ const keepCaretAboveStickyButtons = el => {
    const buttons = parentBlock.querySelector('.newcontentButtons');
    if (buttons == null) return;
 
+   // We also want to check if we're in a comments section and if that has content buttons, because if it doesn't, we don't need to do any of this either
+   const commentsContainer = el.closest('.commentsContainer');
+   const commentsButtons = commentsContainer.querySelector(
+      '.newcontentBUttons'
+   );
+   if (commentsButtons == null) console.log('yeah no buttons here');
+   if (commentsButtons == null) return;
+
    // First we have to figure out how far from the top of the textarea the cursor is. We'll use a function I found online for that, which needs the current position of the cursor. We'll use the selection end because we're trying to stay above the bottom of the screen, so we want the lowest relevant part of the selection.
    const cursorPosition = el.selectionEnd;
    const cursorXY = getCursorXY(el, cursorPosition);
