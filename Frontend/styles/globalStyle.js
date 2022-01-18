@@ -10,9 +10,9 @@ import {
    massiveScreenBreakpointPx
 } from './functions';
 
-const lightBlack = 'hsl(210, 20%, 8%)';
-const deepBlack = 'hsl(30, 1%, 1%)';
-const lowContrastGrey = 'hsl(210, 10%, 30%)';
+const lightBlack = 'hsl(210, 20%, 8%)'; // #101418
+const deepBlack = 'hsl(30, 1%, 1%)'; // #030303
+const lowContrastGrey = 'hsl(210, 10%, 30%)'; // #454d54
 
 const theme = {
    tinyText: '1.25rem',
@@ -22,18 +22,18 @@ const theme = {
    smallHead: '4rem',
    bigHead: '5rem',
 
-   deepBlack,
-   midBlack: 'hsl(30, 1%, 4%)',
-   lightBlack,
+   deepBlack, // #030303
+   midBlack: 'hsl(30, 1%, 4%)', // #0a0a0a
+   lightBlack, // #101418
 
-   mainText: 'hsl(210, 3%, 90%)',
-   lowContrastGrey,
+   mainText: 'hsl(210, 3%, 90%)', // #e5e6e6
+   lowContrastGrey, // #454d54
    highContrastGrey: 'hsl(30, 10%, 60%)',
 
-   majorColor: 'hsl(210, 100%, 40%)',
-   primaryAccent: 'hsl(120, 100%, 25%)',
-   secondaryAccent: 'hsl(42, 79%, 64%)',
-   warning: 'hsl(0, 75%, 50%)',
+   majorColor: 'hsl(210, 100%, 40%)', // #0066cc
+   primaryAccent: 'hsl(120, 100%, 25%)', // #008000
+   secondaryAccent: 'hsl(42, 79%, 64%)', // #ecc05b
+   warning: 'hsl(0, 75%, 50%)', // #df2020
 
    mobileBPWidth: `${mobileBreakpointPx}px`,
    mobileBPWidthRaw: mobileBreakpointPx,

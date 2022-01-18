@@ -28,6 +28,7 @@ const StyledLinkCard = styled.div`
       color: ${props => props.theme.mainText};
       &:hover {
          text-decoration: none;
+         color: ${props => props.theme.mainText};
       }
    }
    .siteName a,
