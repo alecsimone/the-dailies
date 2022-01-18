@@ -19,31 +19,7 @@ import { ModalContext } from '../ModalProvider';
 import { setAlpha } from '../../styles/functions';
 import LockIcon from '../Icons/Lock';
 import PrivacyInterface from './PrivacyInterface';
-
-const StyledSaveOrDiscardContentInterface = styled.div`
-   .responses {
-      margin-top: 3rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-around;
-      button {
-         padding: 1rem;
-         font-size: ${props => props.theme.bigText};
-         &.save {
-            background: ${props => setAlpha(props.theme.primaryAccent, 0.75)};
-            &:hover {
-               background: ${props => props.theme.primaryAccent};
-            }
-         }
-         &.discard {
-            background: ${props => setAlpha(props.theme.warning, 0.75)};
-            &:hover {
-               background: ${props => props.theme.warning};
-            }
-         }
-      }
-   }
-`;
+import SaveOrDiscardContentInterface from '../SaveOrDiscardContentInterface';
 
 const ContentPieceButtons = ({
    canEdit,
@@ -94,36 +70,6 @@ const ContentPieceButtons = ({
    });
 
    const { setContent } = useContext(ModalContext);
-
-   const saveOrDiscardContentInterface = (
-      <StyledSaveOrDiscardContentInterface>
-         <div className="prompt">
-            Would you like to save or discard your changes?
-         </div>
-         <div className="responses">
-            <button
-               className="save"
-               onClick={() => {
-                  postContent();
-                  setContent(false);
-               }}
-            >
-               save
-            </button>
-            <button
-               className="discard"
-               onClick={() => {
-                  clearUnsavedContentPieceChanges();
-                  setUnsavedNewContent(null);
-                  setEditableHandler(!editable);
-                  setContent(false);
-               }}
-            >
-               discard
-            </button>
-         </div>
-      </StyledSaveOrDiscardContentInterface>
-   );
 
    return (
       <div
@@ -334,7 +280,16 @@ const ContentPieceButtons = ({
                      return;
                   }
                   if (rawContentString !== editContentInputRef.current.value) {
-                     setContent(saveOrDiscardContentInterface);
+                     setContent(
+                        <SaveOrDiscardContentInterface
+                           postContent={postContent}
+                           clearUnsavedContentPieceChanges={
+                              clearUnsavedContentPieceChanges
+                           }
+                           setUnsavedNewContent={setUnsavedNewContent}
+                           setEditable={setEditableHandler}
+                        />
+                     );
                      return;
                   }
                   clearUnsavedContentPieceChanges();

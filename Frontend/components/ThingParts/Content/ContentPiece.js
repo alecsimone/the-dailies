@@ -313,6 +313,8 @@ const ContentPiece = ({
             key={pieceID}
             inputRef={editContentInputRef}
             unsavedChangesHandler={unsavedChangesHandler}
+            clearUnsavedContentPieceChanges={clearUnsavedContentPieceChanges}
+            setUnsavedNewContent={setUnsavedNewContent}
          />
       );
    }

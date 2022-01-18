@@ -19,6 +19,8 @@ import {
    insertLineAbove
 } from '../lib/RichTextHandling';
 import LinkIcon from './Icons/Link';
+import { ModalContext } from './ModalProvider';
+import SaveOrDiscardContentInterface from './SaveOrDiscardContentInterface';
 
 const StyledWrapper = styled.div`
    width: 100%;
@@ -122,7 +124,9 @@ const RichTextArea = ({
    inputRef,
    unsavedChangesHandler,
    unsavedContent,
-   alwaysShowExtras = true
+   alwaysShowExtras = true,
+   clearUnsavedContentPieceChanges,
+   setUnsavedNewContent
 }) => {
    const originalText = useRef(text); // We use this to check if there have been any changes to the text, because if there haven't been, we don't need to ask for confirmation before cancelling editing.
 
@@ -144,15 +148,26 @@ const RichTextArea = ({
       dynamicallyResizeElement(inputRef.current);
    }, [inputRef]);
 
+   const { setContent } = useContext(ModalContext);
+
    const secondMiddleOrRightClickListener = e => {
       if (inputRef.current == null) return;
       if (e.button === 1 || e.button === 2) {
          if (originalText.current !== inputRef.current.value) {
-            if (!confirm('Discard changes?')) {
-               return;
-            }
+            setContent(
+               <SaveOrDiscardContentInterface
+                  postContent={rawUpdateText}
+                  clearUnsavedContentPieceChanges={
+                     clearUnsavedContentPieceChanges
+                  }
+                  setUnsavedNewContent={setUnsavedNewContent}
+                  setEditable={setEditable}
+                  editable
+               />
+            );
+         } else {
+            setEditable(false);
          }
-         setEditable(false);
       }
    };
 
