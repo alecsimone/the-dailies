@@ -380,6 +380,7 @@ async function editContentPiece(
 exports.editContentPiece = editContentPiece;
 
 async function storeUnsavedContentPieceChanges(parent, {pieceId, thingId, unsavedContent}, ctx, info) {
+   console.log("storing unsaved content piece changes");
    await loggedInGate(ctx).catch(() => {
       throw new AuthenticationError('You must be logged in to do that!');
    });
@@ -434,6 +435,7 @@ async function storeUnsavedContentPieceChanges(parent, {pieceId, thingId, unsave
 exports.storeUnsavedContentPieceChanges = storeUnsavedContentPieceChanges;
 
 async function clearUnsavedContentPieceChanges(parent, {pieceId, thingId}, ctx, info) {
+   console.log("clearing unsaved content piece changes");
    await loggedInGate(ctx).catch(() => {
       throw new AuthenticationError('You must be logged in to do that!');
    });

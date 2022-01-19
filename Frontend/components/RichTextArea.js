@@ -108,7 +108,10 @@ const StyledWrapper = styled.div`
 const debouncedUnsavedChangesHandler = debounce(
    (handler, e) => handler(e),
    3000,
-   false
+   {
+      leading: true,
+      trailing: true
+   }
 );
 
 const RichTextArea = ({
