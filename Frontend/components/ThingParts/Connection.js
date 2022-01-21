@@ -1,5 +1,6 @@
 import { useMutation } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
+import { useState } from 'react';
 import styled from 'styled-components';
 import { setAlpha } from '../../styles/functions';
 import X from '../Icons/X';
@@ -77,10 +78,29 @@ const Connection = ({
          onError: err => alert(err.message)
       }
    );
+
+   const [alreadyLoggedConnections, setAlreadyLoggedConnections] = useState([]);
+
+   const logConnectionClick = (e, id) => {
+      // We only want to run this once per connection per pageload
+      if (alreadyLoggedConnections.includes(id)) return;
+      setAlreadyLoggedConnections(prev => [...prev, id]);
+
+      if (connectionID === 'new') {
+         console.log('we need to add a new connection with strength 1');
+         return;
+      }
+
+      console.log(`we need to strengthen connection ${connectionID}`);
+   };
+
    return (
       <StyledConnection>
          {subjectID !== parentThingID && (
-            <div className="subject">
+            <div
+               className="subject"
+               onClick={e => logConnectionClick(e, subjectID)}
+            >
                <CardGenerator id={subjectID} cardType="small" />
             </div>
          )}
@@ -97,7 +117,10 @@ const Connection = ({
             />
          </div>
          {objectID !== parentThingID && (
-            <div className="object">
+            <div
+               className="object"
+               onClick={e => logConnectionClick(e, objectID)}
+            >
                <CardGenerator id={objectID} cardType="small" />
             </div>
          )}

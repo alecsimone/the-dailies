@@ -510,7 +510,7 @@ const FlexibleThingCard = ({
    const [expansion, setExpansion] = useState({
       content: expanded && (canEdit || contentCount > 0),
       taxes: expanded && tagCount > 0,
-      connections: expanded && connectionCount > 0,
+      connections: expanded,
       comments: expanded && commentCount > 0,
       privacy: false,
       colors: false,

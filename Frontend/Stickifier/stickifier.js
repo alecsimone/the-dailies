@@ -411,19 +411,21 @@ const makePermanentStickingData = block => {
    let uncleButtonsHeight = 0;
    if (grandParentThing != null) {
       const grandParentBlock = block.parentElement.closest('.contentBlock');
-      let uncleButtons;
-      const uncleButtonsArray = grandParentBlock.querySelectorAll(
-         ':scope .newcontentButtons'
-      );
-      for (const uncleButtonsTest of uncleButtonsArray) {
-         if (
-            uncleButtonsTest.parentElement.closest('.contentBlock') ===
-            grandParentBlock
-         ) {
-            uncleButtons = uncleButtonsTest;
+      if (grandParentBlock != null) {
+         let uncleButtons;
+         const uncleButtonsArray = grandParentBlock.querySelectorAll(
+            ':scope .newcontentButtons'
+         );
+         for (const uncleButtonsTest of uncleButtonsArray) {
+            if (
+               uncleButtonsTest.parentElement.closest('.contentBlock') ===
+               grandParentBlock
+            ) {
+               uncleButtons = uncleButtonsTest;
+            }
          }
+         uncleButtonsHeight = getElementHeight(uncleButtons);
       }
-      uncleButtonsHeight = getElementHeight(uncleButtons);
    }
 
    let sidebarIsTransformed = false;

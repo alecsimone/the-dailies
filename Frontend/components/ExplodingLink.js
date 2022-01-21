@@ -21,6 +21,9 @@ import RichText from './RichText';
 import TikTok from './ThingParts/TikTok';
 import LinkCard from './LinkCard';
 
+const bracketCheck = /\[(?<text>.+)\]\((?<href>.+)\)/gi;
+export { bracketCheck };
+
 const ExplodingLink = ({
    url,
    keyString,
@@ -34,7 +37,6 @@ const ExplodingLink = ({
    const lowerCaseURL = url.toLowerCase();
 
    // Bracket Links
-   const bracketCheck = /\[(?<text>.+)\]\((?<href>.+)\)/gi;
    const bracketMatchCheck = url.match(bracketCheck);
    if (bracketMatchCheck != null && process.browser) {
       const bracketMatch = url.matchAll(bracketCheck);

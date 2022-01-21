@@ -326,6 +326,10 @@ const fullThingFields = `
             id
          }
       }
+      createdThings(first: 4, orderBy: score_DESC) {
+         __typename
+         id
+      }
       rep
    }
    featuredImage
@@ -349,6 +353,10 @@ const fullThingFields = `
          displayName
          avatar
          rep
+      }
+      connectedThings(first: 3, orderBy: manualUpdatedAt_DESC) {
+         __typename
+         id
       }
    }
    color

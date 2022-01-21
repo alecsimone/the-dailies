@@ -3,8 +3,11 @@ import gql from 'graphql-tag';
 import { useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
+import { homeNoHTTP } from '../../config';
 import { fullThingFields } from '../../lib/CardInterfaces';
+import { getThingIdFromLink, urlFinder } from '../../lib/UrlHandling';
 import useMe from '../Account/useMe';
+import { bracketCheck } from '../ExplodingLink';
 import X from '../Icons/X';
 import Connection from './Connection';
 import ThingSearchInput from './ThingSearchInput';
@@ -52,14 +55,15 @@ const ADD_CONNECTION_MUTATION = gql`
 
 const StyledConnectionsInterface = styled.div`
    padding-bottom: 2rem;
+   margin: 2rem 0;
    .existingConnections {
-      display: flex;
-      align-items: center;
-      justify-content: space-around;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(42rem, 1fr));
+      gap: 2rem;
+      /* align-items: center; */
+      /* justify-content: space-around; */
       > * {
-         flex-grow: 1;
-         margin: 1rem;
+         /* margin: 1rem; */
          svg.x {
             opacity: 0.4;
             &:hover {
@@ -171,6 +175,65 @@ const StyledConnectionsInterface = styled.div`
    }
 `;
 
+const getLinksFromContent = contentArray => {
+   // If there's no content, we don't need to do anything
+   if (contentArray == null || contentArray.length === 0) return [];
+
+   // If we're not in a browser (ie, we're in a server side render), let's get out, because the matchAll won't work
+   if (!process.browser) return [];
+
+   // First we're going to make a giant string out of all the content in all the content pieces
+   let giantContentString = '';
+   contentArray.forEach(piece => (giantContentString += piece.content));
+
+   const linkedThingIDs = []; // Our array for holding the ids of any linked things we find
+
+   // Then we're going to check it for links to a thing
+   const linkMatches = giantContentString.matchAll(urlFinder);
+   for (const linkMatch of linkMatches) {
+      const link = linkMatch[0];
+      const lowerCaseURL = link.toLowerCase();
+      if (link != null) {
+         const bracketMatchCheck = link.match(bracketCheck);
+         if (bracketMatchCheck != null) {
+            const bracketMatch = link.matchAll(bracketCheck);
+            for (const match of bracketMatch) {
+               const { href } = match.groups;
+
+               // First, support for a legacy link system we did, where you could use a few codes to insert a link to a thing
+               const cleanText = match.groups.text.trim().toLowerCase();
+
+               if (
+                  cleanText.toLowerCase().startsWith('c:') ||
+                  cleanText.toLowerCase().startsWith('p:') ||
+                  cleanText.toLowerCase().startsWith('t:')
+               ) {
+                  linkedThingIDs.push(href);
+               }
+
+               const linkCheck = href.match(urlFinder);
+               if (linkCheck == null) {
+                  // if the link is not a link, that probably means it's just the id of a thing
+                  linkedThingIDs.push(href);
+               }
+
+               if (href.includes(homeNoHTTP)) {
+                  linkedThingIDs.push(getThingIdFromLink(href));
+               }
+            }
+         }
+
+         if (
+            lowerCaseURL.includes(`${homeNoHTTP}/thing?id=`) &&
+            bracketMatchCheck == null
+         ) {
+            linkedThingIDs.push(getThingIdFromLink(link));
+         }
+      }
+   }
+   return linkedThingIDs;
+};
+
 const useConnectionsData = thingID => {
    const connectionsData = {};
    connectionsData.thingTitle = useSelector(
@@ -182,6 +245,36 @@ const useConnectionsData = thingID => {
    connectionsData.objectConnections = useSelector(
       state => state.stuff[`Thing:${thingID}`].objectConnections
    );
+   connectionsData.fullContent = useSelector(state => {
+      const { content } = state.stuff[`Thing:${thingID}`];
+      const { copiedInContent } = state.stuff[`Thing:${thingID}`];
+
+      const fullContent = content.concat(copiedInContent);
+      return fullContent;
+   });
+   connectionsData.copiedInContent = useSelector(
+      state => state.stuff[`Thing:${thingID}`].copiedInContent
+   );
+   connectionsData.authorThings = useSelector(
+      state => state.stuff[`Thing:${thingID}`].author.createdThings
+   );
+   connectionsData.tagThings = useSelector(state => {
+      const tags = state.stuff[`Thing:${thingID}`].partOfTags;
+
+      if (tags == null || tags.length === 0) return [];
+
+      const tagThings = [];
+
+      tags.forEach(tag => {
+         // tagThings = tagThings.concat(tag.connectedThings);
+         tagThings.push({
+            tag: tag.title,
+            things: tag.connectedThings
+         });
+      });
+
+      return tagThings;
+   });
    return connectionsData;
 };
 
@@ -189,10 +282,13 @@ const ConnectionsInterface = ({ thingID }) => {
    const {
       thingTitle,
       subjectConnections,
-      objectConnections
+      objectConnections,
+      fullContent,
+      authorThings,
+      tagThings
    } = useConnectionsData(thingID);
 
-   const allThingData = useSelector(state => state.stuff[`Thing:${thingID}`]);
+   // const allThingData = useSelector(state => state.stuff[`Thing:${thingID}`]);
 
    const loggedInUserID = useMe();
 
@@ -209,9 +305,10 @@ const ConnectionsInterface = ({ thingID }) => {
 
    const otherThingDataRef = useRef({});
 
-   const [showingForm, setShowingForm] = useState(
-      subjectConnections.length === 0 && objectConnections.length === 0
-   );
+   // const [showingForm, setShowingForm] = useState(
+   //    subjectConnections.length === 0 && objectConnections.length === 0
+   // );
+   const [showingForm, setShowingForm] = useState(false);
 
    const [addConnection, { loading: addConnectionLoading }] = useMutation(
       ADD_CONNECTION_MUTATION,
@@ -334,7 +431,104 @@ const ConnectionsInterface = ({ thingID }) => {
       otherThingDataRef.current = thingData;
    };
 
-   const allConnections = subjectConnections.concat(objectConnections);
+   const contentLinkIDs = getLinksFromContent(fullContent);
+   const contentRelations = contentLinkIDs.map(id => ({
+      id,
+      type: 'link'
+   }));
+
+   const authorRelations = authorThings.map(thing => ({
+      id: thing.id,
+      type: 'author'
+   }));
+
+   const tagRelations = [];
+   tagThings.forEach(tagThingObj => {
+      let maxThingsPerTag = Math.round(15 / tagThings.length);
+
+      if (maxThingsPerTag < 1) {
+         maxThingsPerTag = 1;
+      }
+
+      let thingsSoFar = 0;
+      tagThingObj.things.forEach(thing => {
+         if (thingsSoFar < maxThingsPerTag) {
+            tagRelations.push({
+               id: thing.id,
+               type: 'tag',
+               tagName: tagThingObj.tag
+            });
+            thingsSoFar += 1;
+         }
+      });
+   });
+
+   const allRelations = contentRelations.concat(authorRelations, tagRelations);
+
+   const unfilteredRelationConnections = allRelations.map(relationObject => {
+      const { id, type } = relationObject;
+
+      const [isAlreadySubject] = subjectConnections.filter(
+         connection => connection.id === id
+      );
+      const [isAlreadyObject] = objectConnections.filter(
+         connection => connection.id === id
+      );
+
+      if (isAlreadySubject) return isAlreadySubject;
+      if (isAlreadyObject) return isAlreadyObject;
+
+      let relationship = '';
+      if (type === 'link') {
+         relationship = 'links to';
+      } else if (type === 'author') {
+         relationship = 'written by the same author as';
+      } else if (type === 'tag') {
+         relationship = `shares the tag "${
+            relationObject.tagName != null ? relationObject.tagName : '[ERROR]'
+         }" with`;
+      }
+
+      return {
+         id: 'new',
+         subject: {
+            id: thingID
+         },
+         object: {
+            id
+         },
+         relationship,
+         strength: 0
+      };
+   });
+
+   let allConnections = subjectConnections.concat(objectConnections);
+
+   const relationConnections = unfilteredRelationConnections.filter(
+      (relation, index) => {
+         // If the relation is to the thing we're currently viewing, we don't want it
+         if (relation.object.id === thingID) return false;
+
+         // If the relation is to a thing that we already have a manual connection for, we don't want it
+         allConnections.forEach(existingConnection => {
+            if (existingConnection.subject.id === relation.object.id)
+               return false;
+            if (existingConnection.object.id === relation.object.id)
+               return false;
+         });
+
+         // If this is the second time this relation has appeared in our array, we don't want it
+         const dupeIndexCheck = unfilteredRelationConnections.findIndex(
+            item => item.object.id === relation.object.id
+         );
+         if (dupeIndexCheck !== index) return false;
+
+         return true;
+      }
+   );
+
+   allConnections = allConnections.concat(relationConnections);
+
    const connectionElements = allConnections.map(connection => (
       <Connection
          connectionID={connection.id}
