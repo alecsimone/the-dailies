@@ -7,7 +7,8 @@ const {
    publicThings,
    search,
    allThings,
-   getCollections
+   getCollections,
+   getRelationsForThing
 } = require('./Query/PageQueries');
 const {
    finishSignup,
@@ -47,7 +48,8 @@ const Query = {
    moreMemberVotes,
    allThings,
    getCollections,
-   getLinkData
+   getLinkData,
+   getRelationsForThing
 };
 
 module.exports = Query;

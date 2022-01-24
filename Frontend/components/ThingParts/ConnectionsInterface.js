@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import { homeNoHTTP } from '../../config';
 import { fullThingFields } from '../../lib/CardInterfaces';
 import { getThingIdFromLink, urlFinder } from '../../lib/UrlHandling';
+import useQueryAndStoreIt from '../../stuffStore/useQueryAndStoreIt';
 import useMe from '../Account/useMe';
 import { bracketCheck } from '../ExplodingLink';
 import X from '../Icons/X';
@@ -49,6 +50,24 @@ const ADD_CONNECTION_MUTATION = gql`
             strength
             createdAt
          }
+      }
+   }
+`;
+
+const GET_RELATIONS_QUERY = gql`
+   query GET_RELATIONS_QUERY($thingID: ID!, $totalCount: Int) {
+      getRelationsForThing(thingID: $thingID, totalCount: $totalCount) {
+         __typename
+         id
+         subject {
+            ${fullThingFields}
+         }
+         object {
+            ${fullThingFields}
+         }
+         relationship
+         strength
+         createdAt
       }
    }
 `;
@@ -255,26 +274,6 @@ const useConnectionsData = thingID => {
    connectionsData.copiedInContent = useSelector(
       state => state.stuff[`Thing:${thingID}`].copiedInContent
    );
-   connectionsData.authorThings = useSelector(
-      state => state.stuff[`Thing:${thingID}`].author.createdThings
-   );
-   connectionsData.tagThings = useSelector(state => {
-      const tags = state.stuff[`Thing:${thingID}`].partOfTags;
-
-      if (tags == null || tags.length === 0) return [];
-
-      const tagThings = [];
-
-      tags.forEach(tag => {
-         // tagThings = tagThings.concat(tag.connectedThings);
-         tagThings.push({
-            tag: tag.title,
-            things: tag.connectedThings
-         });
-      });
-
-      return tagThings;
-   });
    return connectionsData;
 };
 
@@ -283,14 +282,21 @@ const ConnectionsInterface = ({ thingID }) => {
       thingTitle,
       subjectConnections,
       objectConnections,
-      fullContent,
-      authorThings,
-      tagThings
+      fullContent
    } = useConnectionsData(thingID);
 
    // const allThingData = useSelector(state => state.stuff[`Thing:${thingID}`]);
 
    const loggedInUserID = useMe();
+
+   const { loading, error, data } = useQueryAndStoreIt(GET_RELATIONS_QUERY, {
+      variables: { thingID }
+      // onCompleted: data => console.log(data)
+   });
+   let relations = [];
+   if (data != null) {
+      relations = data.getRelationsForThing;
+   }
 
    const defaultState = {
       subject: thingTitle,
@@ -432,42 +438,8 @@ const ConnectionsInterface = ({ thingID }) => {
    };
 
    const contentLinkIDs = getLinksFromContent(fullContent);
-   const contentRelations = contentLinkIDs.map(id => ({
-      id,
-      type: 'link'
-   }));
 
-   const authorRelations = authorThings.map(thing => ({
-      id: thing.id,
-      type: 'author'
-   }));
-
-   const tagRelations = [];
-   tagThings.forEach(tagThingObj => {
-      let maxThingsPerTag = Math.round(15 / tagThings.length);
-
-      if (maxThingsPerTag < 1) {
-         maxThingsPerTag = 1;
-      }
-
-      let thingsSoFar = 0;
-      tagThingObj.things.forEach(thing => {
-         if (thingsSoFar < maxThingsPerTag) {
-            tagRelations.push({
-               id: thing.id,
-               type: 'tag',
-               tagName: tagThingObj.tag
-            });
-            thingsSoFar += 1;
-         }
-      });
-   });
-
-   const allRelations = contentRelations.concat(authorRelations, tagRelations);
-
-   const unfilteredRelationConnections = allRelations.map(relationObject => {
-      const { id, type } = relationObject;
-
+   const unfilteredLinkConnections = contentLinkIDs.map(id => {
       const [isAlreadySubject] = subjectConnections.filter(
          connection => connection.id === id
       );
@@ -478,17 +450,6 @@ const ConnectionsInterface = ({ thingID }) => {
       if (isAlreadySubject) return isAlreadySubject;
       if (isAlreadyObject) return isAlreadyObject;
 
-      let relationship = '';
-      if (type === 'link') {
-         relationship = 'links to';
-      } else if (type === 'author') {
-         relationship = 'written by the same author as';
-      } else if (type === 'tag') {
-         relationship = `shares the tag "${
-            relationObject.tagName != null ? relationObject.tagName : '[ERROR]'
-         }" with`;
-      }
-
       return {
          id: 'new',
          subject: {
@@ -497,14 +458,14 @@ const ConnectionsInterface = ({ thingID }) => {
          object: {
             id
          },
-         relationship,
+         relationship: 'links to',
          strength: 0
       };
    });
 
    let allConnections = subjectConnections.concat(objectConnections);
 
-   const relationConnections = unfilteredRelationConnections.filter(
+   const linkConnections = unfilteredLinkConnections.filter(
       (relation, index) => {
          // If the relation is to the thing we're currently viewing, we don't want it
          if (relation.object.id === thingID) return false;
@@ -518,7 +479,7 @@ const ConnectionsInterface = ({ thingID }) => {
          });
 
          // If this is the second time this relation has appeared in our array, we don't want it
-         const dupeIndexCheck = unfilteredRelationConnections.findIndex(
+         const dupeIndexCheck = unfilteredLinkConnections.findIndex(
             item => item.object.id === relation.object.id
          );
          if (dupeIndexCheck !== index) return false;
@@ -527,7 +488,7 @@ const ConnectionsInterface = ({ thingID }) => {
       }
    );
 
-   allConnections = allConnections.concat(relationConnections);
+   allConnections = allConnections.concat(linkConnections, relations);
 
    const connectionElements = allConnections.map(connection => (
       <Connection
