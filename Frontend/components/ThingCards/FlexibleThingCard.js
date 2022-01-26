@@ -21,7 +21,7 @@ import { smallThingCardFields } from '../../lib/CardInterfaces';
 import { ALL_THINGS_QUERY, disabledCodewords } from '../../lib/ThingHandling';
 import FeaturedImage from '../ThingParts/FeaturedImage';
 import { isVideo } from '../../lib/UrlHandling';
-import ContentIcon from '../Icons/Content';
+import ContentIcon from '../Icons/ContentIcon';
 import ImageIcon from '../Icons/ImageIcon';
 import LockIcon from '../Icons/Lock';
 import Content from '../ThingParts/Content/Content';
