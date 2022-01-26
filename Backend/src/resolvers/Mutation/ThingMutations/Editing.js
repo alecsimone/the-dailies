@@ -972,7 +972,7 @@ async function unlinkContentPiece(parent, {contentPieceID, thingID}, ctx, info) 
 }
 exports.unlinkContentPiece = unlinkContentPiece;
 
-async function addConnection(parent, { subjectID, objectID, relationship }, ctx, info) {
+async function addConnection(parent, { subjectID, objectID, relationship, strength = 0 }, ctx, info) {
    await loggedInGate(ctx).catch(() => {
       throw new AuthenticationError('You must be logged in to do that!');
    });
@@ -982,15 +982,16 @@ async function addConnection(parent, { subjectID, objectID, relationship }, ctx,
       throw new Error("You can't connect a thing to itself.");
    }
 
-   // First we have to get the data for the two things so we can check that one of them was created by the current user
+   // First we have to get the data for the two things
    const things = await ctx.db.query.things({
       where: {
          id_in: [subjectID, objectID]
       }
    }, `{author {id}}`);
-   if (things[0].author.id !== ctx.req.memberId && things[1].author.id !== ctx.req.memberId) {
-      throw new AuthenticationError('You must be the author of at least one of the things in a connection, sorry.');
-   }
+   // Changed my mind, now anyone can create connections between things
+   // if (things[0].author.id !== ctx.req.memberId && things[1].author.id !== ctx.req.memberId) {
+   //    throw new AuthenticationError('You must be the author of at least one of the things in a connection, sorry.');
+   // }
 
    if (things[0] == null || things[1] == null) {
       throw new Error(`Thing not found`);
@@ -1019,7 +1020,20 @@ async function addConnection(parent, { subjectID, objectID, relationship }, ctx,
       throw new Error("That connection already exists.");
    }
 
-   // If one of the two provided things was created by our user, we create a connection and connect it to both things
+   // Next, we create a connection and connect it to both things
+
+   // If we're creating a connection with a strength of 1, that means it's a relation that's been clicked on and the creator is actually null. Otherwise, the creator is the current member.
+   let creator;
+   if (strength === 1) {
+      creator = null;
+   } else {
+      creator = {
+         connect: {
+            id: ctx.req.memberId
+         }
+      }
+   }
+
    const dataObj = {
       relationship,
       subject: {
@@ -1032,11 +1046,8 @@ async function addConnection(parent, { subjectID, objectID, relationship }, ctx,
             id: objectID
          }
       },
-      creator: {
-         connect: {
-            id: ctx.req.memberId
-         }
-      }
+      creator,
+      strength
    };
 
    // Then, since it's not a normal stuff update, we're going to manually write the changes to the db and publish an update to the things channel
@@ -1112,3 +1123,40 @@ async function deleteConnection(parent, { connectionID }, ctx, info) {
    return [deletedConnection.subject, deletedConnection.object];
 }
 exports.deleteConnection = deleteConnection;
+
+async function strengthenConnection(parent, {connectionID}, ctx, info) {
+   // First we need to make sure the request is coming from a full member
+   await loggedInGate(ctx).catch(() => {
+      throw new AuthenticationError('You must be logged in to do that!');
+   });
+   fullMemberGate(ctx.req.member);
+
+   // Then we need to get the connection so we can know its current score
+   const connection = await ctx.db.query.connection(
+      {
+         where: {
+            id: connectionID
+         }
+      },
+      `{strength}`
+   );
+
+   if (connection == null) {
+      throw new Error("Connection not found");
+   }
+
+   // Then we increase the score
+   const updatedConnection = await ctx.db.mutation.updateConnection(
+      {
+         where: {
+            id: connectionID
+         },
+         data: {
+            strength: connection.strength + 1
+         }
+      }
+   );
+
+   return updatedConnection;
+}
+exports.strengthenConnection = strengthenConnection;

@@ -467,6 +467,7 @@ const FlexibleThingCard = ({
    noPic
 }) => {
    // return <div>Card!</div>;
+   // console.log(`thing ${thingID} card render`);
    const {
       createdAt,
       color,

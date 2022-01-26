@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { setAlpha } from '../../styles/functions';
 import X from '../Icons/X';
 import CardGenerator from '../ThingCards/CardGenerator';
+import { ADD_CONNECTION_MUTATION } from './ConnectionsInterface';
 
 const DELETE_CONNECTION_MUTATION = gql`
    mutation DELETE_CONNECTION_MUTATION($connectionID: ID!) {
@@ -19,6 +20,16 @@ const DELETE_CONNECTION_MUTATION = gql`
             __typename
             id
          }
+      }
+   }
+`;
+
+const STRENGTHEN_CONNECTION_MUTATION = gql`
+   mutation STRENGTHEN_CONNECTION_MUTATION($connectionID: ID!) {
+      strengthenConnection(connectionID: $connectionID) {
+         __typename
+         id
+         strength
       }
    }
 `;
@@ -79,6 +90,24 @@ const Connection = ({
       }
    );
 
+   const [strengthenConnection] = useMutation(STRENGTHEN_CONNECTION_MUTATION, {
+      variables: {
+         connectionID
+      },
+      onError: err => alert(err.message),
+      onCompleted: data => console.log(data)
+   });
+
+   const [addConnection] = useMutation(ADD_CONNECTION_MUTATION, {
+      variables: {
+         subjectID,
+         objectID,
+         relationship,
+         strength: 1
+      },
+      onError: err => alert(err.message)
+   });
+
    const [alreadyLoggedConnections, setAlreadyLoggedConnections] = useState([]);
 
    const logConnectionClick = (e, id) => {
@@ -86,12 +115,12 @@ const Connection = ({
       if (alreadyLoggedConnections.includes(id)) return;
       setAlreadyLoggedConnections(prev => [...prev, id]);
 
-      if (connectionID === 'new') {
-         console.log('we need to add a new connection with strength 1');
+      if (connectionID.startsWith('new')) {
+         addConnection();
          return;
       }
 
-      console.log(`we need to strengthen connection ${connectionID}`);
+      strengthenConnection();
    };
 
    return (

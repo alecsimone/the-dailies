@@ -18,11 +18,13 @@ const ADD_CONNECTION_MUTATION = gql`
       $subjectID: ID!
       $objectID: ID!
       $relationship: String!
+      $strength: Int
    ) {
       addConnection(
          subjectID: $subjectID
          objectID: $objectID
          relationship: $relationship
+         strength: $strength
       ) {
          __typename
          id
@@ -53,6 +55,7 @@ const ADD_CONNECTION_MUTATION = gql`
       }
    }
 `;
+export { ADD_CONNECTION_MUTATION };
 
 const GET_RELATIONS_QUERY = gql`
    query GET_RELATIONS_QUERY($thingID: ID!, $totalCount: Int) {
@@ -264,13 +267,30 @@ const useConnectionsData = thingID => {
    connectionsData.objectConnections = useSelector(
       state => state.stuff[`Thing:${thingID}`].objectConnections
    );
-   connectionsData.fullContent = useSelector(state => {
-      const { content } = state.stuff[`Thing:${thingID}`];
-      const { copiedInContent } = state.stuff[`Thing:${thingID}`];
+   connectionsData.fullContent = useSelector(
+      state => {
+         const { content } = state.stuff[`Thing:${thingID}`];
+         const { copiedInContent } = state.stuff[`Thing:${thingID}`];
 
-      const fullContent = content.concat(copiedInContent);
-      return fullContent;
-   });
+         const fullContent = content.concat(copiedInContent);
+         return fullContent;
+      },
+      (a, b) => {
+         // The concatenated array seems to be causing unnecessary re-renders, so we'll write a custom comparison function
+         let skipRerender = true;
+
+         // Right out the gate we can just check if they're different lengths and skip all the other logic if they aren't
+         if (a.length !== b.length) return false;
+
+         for (let i = 0; i < a.length; i += 1) {
+            if (a[i].content !== b[i].content) {
+               skipRerender = false;
+            }
+         }
+
+         return skipRerender;
+      }
+   );
    connectionsData.copiedInContent = useSelector(
       state => state.stuff[`Thing:${thingID}`].copiedInContent
    );
@@ -278,6 +298,7 @@ const useConnectionsData = thingID => {
 };
 
 const ConnectionsInterface = ({ thingID }) => {
+   // console.log(`connections interface on ${thingID} render`);
    const {
       thingTitle,
       subjectConnections,
@@ -489,6 +510,8 @@ const ConnectionsInterface = ({ thingID }) => {
    );
 
    allConnections = allConnections.concat(linkConnections, relations);
+
+   allConnections.sort((a, b) => b.strength - a.strength);
 
    const connectionElements = allConnections.map(connection => (
       <Connection

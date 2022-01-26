@@ -556,6 +556,7 @@ async function getRelationsForThing(
       },
       `{${fullThingFields}}`
    );
+
    const individualCount = Math.floor(
       totalCount / (theThingToRelate.partOfTags.length + 1)
    );
@@ -576,8 +577,19 @@ async function getRelationsForThing(
 
    const authorFilterFunction = async authorThing => {
       if (canSeeThing(ctx, authorThing)) {
-         // If they can see the thing, we want to only let it through if it's not the original thing
-         return authorThing.id !== thingID;
+         // We don't want to let the thing through if it's the same as the original thing
+         if (authorThing.id === thingID) return false;
+
+         // We also don't want to let it through if it's already connected to the thing
+         theThingToRelate.subjectConnections.forEach(connection => {
+            if (connection.object.id === authorThing.id) return false;
+         });
+         theThingToRelate.objectConnections.forEach(connection => {
+            if (connection.subject.id === authorThing.id) return false;
+         });
+
+         // Otherwise, we'll let it through
+         return true;
       }
       // If they can't see the thing, don't let it through
       return false;
@@ -643,8 +655,19 @@ async function getRelationsForThing(
 
       const tagFilterFunction = async tagThing => {
          if (canSeeThing(ctx, tagThing)) {
-            // If they can see the thing, we want to only let it through if it's not the original thing or one of our author things
-            return !alreadyRelatedThingIDs.includes(tagThing.id);
+            // We don't want to let the thing through if it's the original thing or one of our author things
+            if (alreadyRelatedThingIDs.includes(tagThing.id)) return false;
+
+            // We also don't want to let it through if it's already connected to the thing
+            let shouldKeep = true;
+            theThingToRelate.subjectConnections.forEach(connection => {
+               if (connection.object.id === tagThing.id) shouldKeep = false;
+            });
+            theThingToRelate.objectConnections.forEach(connection => {
+               if (connection.subject.id === tagThing.id) shouldKeep = false;
+            });
+
+            return shouldKeep;
          }
          // If they can't see the thing, don't let it through
          return false;
@@ -696,7 +719,6 @@ async function getRelationsForThing(
    const relationsArray = [];
 
    const createdAt = new Date().toISOString();
-   console.log(safeAuthorThings.length);
    for (const authorThing of safeAuthorThings) {
       const relation = {
          id: `new-${authorThing.id}`,
@@ -711,7 +733,6 @@ async function getRelationsForThing(
 
    for (const tagObj of tagObjects) {
       const { tagID, things } = tagObj;
-      console.log(things.length);
 
       const tagIndexInOriginalThing = theThingToRelate.partOfTags.findIndex(
          tag => tag.id === tagID

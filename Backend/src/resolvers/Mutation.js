@@ -42,7 +42,8 @@ const {
    copyContentPiece,
    unlinkContentPiece,
    addConnection,
-   deleteConnection
+   deleteConnection,
+   strengthenConnection
 } = require('./Mutation/ThingMutations/Editing');
 const {
    initiateTwitterLogin,
@@ -145,7 +146,8 @@ const Mutations = {
    setColumnOrder,
    handleCardExpansion,
    addConnection,
-   deleteConnection
+   deleteConnection,
+   strengthenConnection
 };
 
 module.exports = Mutations;
