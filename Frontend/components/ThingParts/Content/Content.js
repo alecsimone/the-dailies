@@ -46,6 +46,7 @@ const useContentData = (thingID, type) => {
 };
 
 const Content = ({ contentType, canEdit, linkedPiece, stuffID, type }) => {
+   // console.log('content render');
    const {
       content,
       copiedInContent,

@@ -220,12 +220,14 @@ const TaxInput = ({ id, tags, stacks, personal, thingData, containerRef }) => {
    const [addTaxToThing, { loading: addTaxLoading }] = useMutation(
       ADD_TAX_MUTATION,
       {
+         onCompleted: data => console.log(data),
          onError: err => alert(err.message)
       }
    );
 
    const [addTaxesToThings] = useMutation(ADD_TAXES_TO_THINGS_MUTATION, {
       onCompleted: data => {
+         console.log(data);
          if (containerRef == null) return;
          successFlash(containerRef);
       }
@@ -273,10 +275,11 @@ const TaxInput = ({ id, tags, stacks, personal, thingData, containerRef }) => {
       if (Array.isArray(newTaxObj)) {
          title = '';
          newTaxObj.forEach((taxObj, index) => {
-            if (index === newTaxObj.length + 1) {
+            if (index === newTaxObj.length - 1) {
                title += taxObj.title;
+            } else {
+               title += `${taxObj.title}, `;
             }
-            title += `${taxObj.title}, `;
          });
       } else {
          title = newTaxObj.title;
@@ -288,37 +291,50 @@ const TaxInput = ({ id, tags, stacks, personal, thingData, containerRef }) => {
       if (title.includes(',')) {
          const titleArray = title.split(',');
          titleArray.forEach(thisTitle => {
-            const objectToAdd = { ...newTaxObj };
-            objectToAdd.title = thisTitle.trim();
-            objectToAdd.__typename = personal ? 'Stack' : 'Tag';
-            objectToAdd.id = newTaxObj.id == null ? 'unknownID' : newTaxObj.id;
-            objectToAdd.author =
-               newTaxObj.author == null ? memberFields : newTaxObj.author;
-            // if (personal) {
-            // newStacks.push(objectToAdd);
-            // } else {
+            let thisTagObj;
+            if (Array.isArray(newTaxObj)) {
+               [thisTagObj] = newTaxObj.filter(
+                  taxObj => taxObj.title === thisTitle.trim()
+               );
+            }
+            let objectToAdd = {};
+            if (thisTagObj != null) {
+               objectToAdd = { ...thisTagObj };
+            }
+            if (objectToAdd.title == null) {
+               objectToAdd.title = thisTitle.trim();
+            }
+            if (objectToAdd.__typename == null) {
+               objectToAdd.__typename = 'Tag';
+            }
+            if (objectToAdd.id == null) {
+               objectToAdd.id = `unknownID-${thisTitle}`;
+            }
+            if (objectToAdd.author == null) {
+               objectToAdd.author = memberFields;
+            }
             newTags.push(objectToAdd);
-            // }
          });
       } else {
-         newTaxObj.__typename = personal ? 'Stack' : 'Tag';
-         if (newTaxObj.id == null) {
-            newTaxObj.id = 'unknownID';
+         const objectToAdd = { ...newTaxObj };
+         if (objectToAdd.title == null) {
+            objectToAdd.title = title.trim();
          }
-         // Optimistic response breaks if we don't provide an author for the tag we're creating
-         if (newTaxObj.author == null) {
-            newTaxObj.author = memberFields;
+         if (objectToAdd.__typename == null) {
+            objectToAdd.__typename = 'Tag';
          }
-
-         // if (personal) {
-         // newStacks.push(newTaxObj);
-         // } else {
-         newTags.push(newTaxObj);
-         // }
+         if (objectToAdd.id == null) {
+            objectToAdd.id = 'unknownID';
+         }
+         if (objectToAdd.author == null) {
+            objectToAdd.author = memberFields;
+         }
+         newTags.push(objectToAdd);
       }
       window.setTimeout(() => setTaxInput(''), 1); // We need this setTaxInput to hit after the handleTaxInput hits, so we set a timeout
 
       if (Array.isArray(id)) {
+         // I believe this is for collections, where we're adding tags to an array of things
          const responseData = [];
          id.forEach(thingID => {
             const [thisThing] = thingData.filter(
@@ -351,11 +367,10 @@ const TaxInput = ({ id, tags, stacks, personal, thingData, containerRef }) => {
             __typename: 'Thing',
             id
          };
-         // if (personal) {
-         // responseData.partOfStacks = newStacks;
-         // } else {
+
          responseData.partOfTags = newTags;
-         // }
+         console.log(responseData);
+
          await addTaxToThing({
             variables: {
                tax: title,

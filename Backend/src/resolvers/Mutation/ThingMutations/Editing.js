@@ -16,7 +16,7 @@ const {
 const {fullMemberFields, smallThingCardFields, fullThingFields} = require('../../../utils/CardInterfaces');
 const { getLinksToCard, replaceLinkWithText } = require('../../../utils/TextHandling');
 
-async function addTaxToThing(taxTitle, thingID, ctx, personal) {
+async function addTaxToThing(taxTitle, thingID, ctx, personal, finalTax = true) {
    // Note: there's an addTaxToThingHandler shoved in between the client and this function. This is the function shared by other backend operations.
 
    const typeToQuery = personal ? 'stacks' : 'tags';
@@ -61,9 +61,25 @@ async function addTaxToThing(taxTitle, thingID, ctx, personal) {
          }
       };
    }
-   const updatedThing = await properUpdateStuff(dataObj, thingID, 'Thing', ctx).catch(err => {
-      console.log(err);
-   });
+
+   // If we're adding multiple tags, we only want to trigger the subscription update on the final one
+   let updatedThing
+   if (finalTax) {
+      updatedThing = await properUpdateStuff(dataObj, thingID, 'Thing', ctx).catch(err => {
+         console.log(err);
+      });
+   } else {
+      updatedThing = await ctx.db.mutation.updateThing(
+         {
+            where: {
+               id: thingID
+            },
+            data: dataObj
+         },
+         `{${fullThingFields}}`
+      );
+   }
+
    return updatedThing;
 }
 async function addTaxToThingHandler(parent, { tax, thingID, personal }, ctx, info) {
@@ -77,8 +93,8 @@ async function addTaxToThingHandler(parent, { tax, thingID, personal }, ctx, inf
 
    if (tax.includes(',')) {
       const taxArray = tax.split(',');
-      addTaxesToThing(taxArray, thingID, ctx, personal);
-      return;
+      const updatedThing = await addTaxesToThing(taxArray, thingID, ctx, personal);
+      return updatedThing;
    }
    const updatedThing = await addTaxToThing(tax, thingID, ctx, personal).catch(err => {
       console.log(err);
@@ -88,11 +104,18 @@ async function addTaxToThingHandler(parent, { tax, thingID, personal }, ctx, inf
 exports.addTaxToThingHandler = addTaxToThingHandler;
 
 async function addTaxesToThing(taxTitleArray, thingID, ctx, personal) {
-   taxTitleArray.forEach(tagTitle => {
-      if (tagTitle !== '') {
-         addTaxToThing(tagTitle.trim(), thingID, ctx, personal);
+   let updatedThing;
+
+   // We need to let the addTaxToThing function know if this is the last tax we're adding, or else it will trigger a subscription update for each tag, and that'll override our response causing the tags to show up one at a time.
+   let i = 1;
+   let totalTaxesCount = taxTitleArray.length;
+   for (const taxTitle of taxTitleArray) {
+      if (taxTitle != '') {
+         updatedThing = await addTaxToThing(taxTitle.trim(), thingID, ctx, personal, i === totalTaxesCount);
       }
-   });
+      i += 1;
+   }
+   return updatedThing;
 }
 
 async function addTaxToThings(taxTitle, thingIDs, ctx, personal) {
