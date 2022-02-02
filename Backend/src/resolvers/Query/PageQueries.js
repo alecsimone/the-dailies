@@ -11,7 +11,8 @@ const {
    properUpdateStuff,
    calculateRelevancyScore,
    filterContentPiecesForPrivacy,
-   supplementFilteredQuery
+   supplementFilteredQuery,
+   getLinksFromContent
 } = require('../../utils/ThingHandling');
 
 async function searchTaxes(parent, { searchTerm, personal }, ctx, info) {
@@ -561,6 +562,12 @@ async function getRelationsForThing(
       totalCount / (theThingToRelate.partOfTags.length + 1)
    );
 
+   // Then we need to get all the links in the thing
+   const fullContent = theThingToRelate.content.concat(
+      theThingToRelate.copiedInContent
+   );
+   const contentLinkIDs = getLinksFromContent(fullContent);
+
    // Then we want to get the most recent things by the author of the thing
    const authorThings = await ctx.db.query.things(
       {
@@ -587,6 +594,9 @@ async function getRelationsForThing(
          theThingToRelate.objectConnections.forEach(connection => {
             if (connection.subject.id === authorThing.id) return false;
          });
+
+         // Nor do we want to let it through if it's linked in the thing
+         if (contentLinkIDs.includes(authorThing.id)) return false;
 
          // Otherwise, we'll let it through
          return true;
@@ -666,6 +676,9 @@ async function getRelationsForThing(
             theThingToRelate.objectConnections.forEach(connection => {
                if (connection.subject.id === tagThing.id) shouldKeep = false;
             });
+
+            // Nor do we want to let it through if it's linked in the thing
+            if (contentLinkIDs.includes(tagThing.id)) return false;
 
             return shouldKeep;
          }

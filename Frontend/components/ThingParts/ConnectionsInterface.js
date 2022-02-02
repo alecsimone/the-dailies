@@ -206,7 +206,7 @@ const getLinksFromContent = contentArray => {
 
    // First we're going to make a giant string out of all the content in all the content pieces
    let giantContentString = '';
-   contentArray.forEach(piece => (giantContentString += piece.content));
+   contentArray.forEach(piece => (giantContentString += `${piece.content}\n`));
 
    const linkedThingIDs = []; // Our array for holding the ids of any linked things we find
 
@@ -460,16 +460,18 @@ const ConnectionsInterface = ({ thingID }) => {
 
    const contentLinkIDs = getLinksFromContent(fullContent);
 
+   console.log(subjectConnections, objectConnections);
    const unfilteredLinkConnections = contentLinkIDs.map(id => {
+      console.log(id);
       const [isAlreadySubject] = subjectConnections.filter(
-         connection => connection.id === id
+         connection => connection.object.id === id
       );
       const [isAlreadyObject] = objectConnections.filter(
-         connection => connection.id === id
+         connection => connection.subject.id === id
       );
 
-      if (isAlreadySubject) return isAlreadySubject;
-      if (isAlreadyObject) return isAlreadyObject;
+      if (isAlreadySubject) return { id: null, object: { id: null } };
+      if (isAlreadyObject) return { id: null, object: { id: null } };
 
       return {
          id: 'new',
@@ -488,6 +490,7 @@ const ConnectionsInterface = ({ thingID }) => {
 
    const linkConnections = unfilteredLinkConnections.filter(
       (relation, index) => {
+         if (relation.id == null) return false;
          // If the relation is to the thing we're currently viewing, we don't want it
          if (relation.object.id === thingID) return false;
 

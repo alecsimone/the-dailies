@@ -806,3 +806,120 @@ exports.supplementFilteredQuery = supplementFilteredQuery;
 // use with await sleep(ms);
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 exports.sleep = sleep;
+
+const getThingIdFromLink = url => {
+   if (!url.includes(process.env.FRONTEND_URL_NOHTTP)) return;
+
+   const lowerCasedURL = url.toLowerCase();
+
+   const idStartPos = lowerCasedURL.indexOf('id=');
+   const allParamsAfterAndIncludingID = lowerCasedURL.substring(idStartPos);
+   let wholeIDParam;
+   if (allParamsAfterAndIncludingID.includes('&')) {
+      wholeIDParam = allParamsAfterAndIncludingID.substring(
+         0,
+         allParamsAfterAndIncludingID.indexOf('&')
+      );
+   } else {
+      wholeIDParam = allParamsAfterAndIncludingID;
+   }
+
+   const id = wholeIDParam.substring(3);
+   return id;
+};
+exports.getThingIdFromLink = getThingIdFromLink;
+
+const urlAcceptableCharacters = '[-a-z0-9%&?=.,;|$()@_~:<>!*/^+#@]';
+const topLevelDomains =
+   'com|org|net|tv|gg|us|uk|co\\.uk|edu|gov|mil|biz|info|mobi|ly|tech|xyz|ca|cn|fr|au|in|de|jp|ru|br|es|se|ch|nl|int|jobs|name|tel|email|codes|pizza|am|fm|cx|gs|ms|al';
+
+const urlFinderParts = {
+   bracketFinder: new RegExp(/\[[^()]+\]\(\S+\)/, 'gim'),
+   protocolFinder: new RegExp(
+      `(?:http[s]?:\\/\\/|ftp:\\/\\/|mailto:[-a-z0-9:?.=/_@]+)${urlAcceptableCharacters}*`,
+      'gim'
+   ),
+   tldFinder: new RegExp(
+      `(${urlAcceptableCharacters}+)\\.(?:${topLevelDomains})(?:(?=\\s|[,.;]|$)|\\/${urlAcceptableCharacters}*)`,
+      'gim'
+   ),
+   localHostFinder: new RegExp(
+      `(?:localhost:)${urlAcceptableCharacters}*`,
+      'gim'
+   )
+};
+
+const urlFinderPartList = Object.keys(urlFinderParts);
+let urlFinderSource = '';
+urlFinderPartList.forEach((part, index) => {
+   urlFinderSource +=
+      index < urlFinderPartList.length - 1
+         ? `${urlFinderParts[part].source}|`
+         : urlFinderParts[part].source;
+});
+
+const urlFinder = new RegExp(urlFinderSource, 'gim');
+
+const bracketCheck = /\[(?<text>.+)\]\((?<href>.+)\)/gi;
+
+const getLinksFromContent = contentArray => {
+   // If there's no content, we don't need to do anything
+   if (contentArray == null || contentArray.length === 0) return [];
+
+   // If we're not in a browser (ie, we're in a server side render), let's get out, because the matchAll won't work
+   // if (!process.browser) return [];
+
+   // First we're going to make a giant string out of all the content in all the content pieces
+   let giantContentString = '';
+   contentArray.forEach(piece => (giantContentString += `${piece.content}\n`));
+
+   const linkedThingIDs = []; // Our array for holding the ids of any linked things we find
+
+   // Then we're going to check it for links to a thing
+   const linkMatches = giantContentString.matchAll(urlFinder);
+   for (const linkMatch of linkMatches) {
+      const link = linkMatch[0];
+      const lowerCaseURL = link.toLowerCase();
+      if (link != null) {
+         const bracketMatchCheck = link.match(bracketCheck);
+         if (bracketMatchCheck != null) {
+            const bracketMatch = link.matchAll(bracketCheck);
+            for (const match of bracketMatch) {
+               const { href } = match.groups;
+
+               // First, support for a legacy link system we did, where you could use a few codes to insert a link to a thing
+               const cleanText = match.groups.text.trim().toLowerCase();
+
+               if (
+                  cleanText.toLowerCase().startsWith('c:') ||
+                  cleanText.toLowerCase().startsWith('p:') ||
+                  cleanText.toLowerCase().startsWith('t:')
+               ) {
+                  linkedThingIDs.push(href);
+               }
+
+               const linkCheck = href.match(urlFinder);
+               if (linkCheck == null) {
+                  // if the link is not a link, that probably means it's just the id of a thing
+                  linkedThingIDs.push(href);
+               }
+
+               if (href.includes(process.env.FRONTEND_URL_NOHTTP)) {
+                  linkedThingIDs.push(getThingIdFromLink(href));
+               }
+            }
+         }
+
+         if (
+            lowerCaseURL.includes(
+               `${process.env.FRONTEND_URL_NOHTTP}/thing?id=`
+            ) &&
+            bracketMatchCheck == null
+         ) {
+            linkedThingIDs.push(getThingIdFromLink(link));
+         }
+      }
+   }
+   return linkedThingIDs;
+};
+exports.getLinksFromContent = getLinksFromContent;
