@@ -31,7 +31,9 @@ const StyledCopyContentInterface = styled.div`
    width: 100%;
    height: auto;
    left: 0;
-   top: 100%;
+   bottom: 100%;
+   max-height: 60vh;
+   ${props => props.theme.scroll};
    background: ${props => props.theme.lightBlack};
    border: 3px solid ${props => setAlpha(props.theme.highContrastGrey, 0.8)};
    z-index: 2;
