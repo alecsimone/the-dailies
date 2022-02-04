@@ -903,14 +903,6 @@ const FlexibleThingCard = ({
             expansion.featuredImage ||
             expansion.connections) && (
             <div className="body">
-               {expansion.featuredImage && (
-                  <FeaturedImage
-                     canEdit={canEdit}
-                     id={thingID}
-                     type="Thing"
-                     key={`featured-image-${thingID}`}
-                  />
-               )}
                {expansion.colors && canEdit && (
                   <ColorSelector
                      type="Thing"
@@ -924,6 +916,14 @@ const FlexibleThingCard = ({
                      id={thingID}
                      type="Thing"
                      key={`privacy-${thingID}`}
+                  />
+               )}
+               {expansion.featuredImage && (
+                  <FeaturedImage
+                     canEdit={canEdit}
+                     id={thingID}
+                     type="Thing"
+                     key={`featured-image-${thingID}`}
                   />
                )}
                {expansion.taxes && (
