@@ -583,7 +583,7 @@ async function getRelationsForThing(
    );
 
    const authorFilterFunction = async authorThing => {
-      if (canSeeThing(ctx, authorThing)) {
+      if (await canSeeThing(ctx, authorThing)) {
          // We don't want to let the thing through if it's the same as the original thing
          if (authorThing.id === thingID) return false;
 
@@ -664,7 +664,7 @@ async function getRelationsForThing(
       );
 
       const tagFilterFunction = async tagThing => {
-         if (canSeeThing(ctx, tagThing)) {
+         if (await canSeeThing(ctx, tagThing)) {
             // We don't want to let the thing through if it's the original thing or one of our author things
             if (alreadyRelatedThingIDs.includes(tagThing.id)) return false;
 
