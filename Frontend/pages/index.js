@@ -90,6 +90,7 @@ const Home = () => {
             things={data.allThings}
             cardSize="regular"
             displayType="list"
+            hideConnections
          />
       );
       if (data.allThings && data.allThings.length > 0) {
