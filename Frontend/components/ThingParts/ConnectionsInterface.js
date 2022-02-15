@@ -460,9 +460,7 @@ const ConnectionsInterface = ({ thingID }) => {
 
    const contentLinkIDs = getLinksFromContent(fullContent);
 
-   console.log(subjectConnections, objectConnections);
    const unfilteredLinkConnections = contentLinkIDs.map(id => {
-      console.log(id);
       const [isAlreadySubject] = subjectConnections.filter(
          connection => connection.object.id === id
       );

@@ -39,22 +39,11 @@ export { ThingContext };
 const StyledSingleThing = styled.section`
    position: relative;
    padding: 0;
-   ${props => props.theme.mobileBreakpoint} {
-      padding: 0 1rem;
-   }
    article,
    article.placeholderThing {
-      max-width: 1920px;
       width: 100%;
-      margin: 0 auto 6rem;
-      ${props => props.theme.mobileBreakpoint} {
-         margin: 3rem auto 6rem;
-      }
-      &:first-child {
-         ${props => props.theme.mobileBreakpoint} {
-            margin-top: 3rem;
-         }
-      }
+      margin: 0;
+      margin-top: 0;
    }
    article.placeholderThing .placeholderFeaturedImage {
       height: 75rem;
