@@ -4,6 +4,7 @@ const {
    fullThingFields,
    fullCollectionFields
 } = require('../../utils/CardInterfaces');
+const { getRandomString } = require('../../utils/TextHandling');
 const {
    searchAvailableTaxes,
    canSeeThingGate,
@@ -734,7 +735,7 @@ async function getRelationsForThing(
    const createdAt = new Date().toISOString();
    for (const authorThing of safeAuthorThings) {
       const relation = {
-         id: `new-${authorThing.id}`,
+         id: `new-${getRandomString(32)}`,
          subject: theThingToRelate,
          object: authorThing,
          relationship: `also written by ${theThingToRelate.author.displayName}`,
@@ -755,7 +756,7 @@ async function getRelationsForThing(
 
       things.forEach(tagThing => {
          const relation = {
-            id: `new-${tagThing.id}`,
+            id: `new-${getRandomString(32)}`,
             subject: theThingToRelate,
             object: tagThing,
             relationship: `shares the tag "${tagName}" with`,

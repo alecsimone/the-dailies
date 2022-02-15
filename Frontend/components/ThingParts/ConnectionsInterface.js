@@ -317,6 +317,7 @@ const ConnectionsInterface = ({ thingID }) => {
    let relations = [];
    if (data != null) {
       relations = data.getRelationsForThing;
+      console.log(data.getRelationsForThing);
    }
 
    const defaultState = {

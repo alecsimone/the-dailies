@@ -954,7 +954,7 @@ const FlexibleThingCard = ({
                   />
                )}
                {expansion.connections && (
-                  <ConnectionsInterface thingID={thingID} />
+                  <ConnectionsInterface thingID={thingID} key={thingID} />
                )}
             </div>
          )}
