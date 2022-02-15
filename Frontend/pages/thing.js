@@ -44,6 +44,7 @@ const StyledSingleThing = styled.section`
       width: 100%;
       margin: 0;
       margin-top: 0;
+      max-width: none;
    }
    article.placeholderThing .placeholderFeaturedImage {
       height: 75rem;
