@@ -51,7 +51,8 @@ const Things = ({
    cardSize = 'regular',
    contentType = 'single',
    noPic,
-   borderSide
+   borderSide,
+   hideConnections
 }) => {
    const { desktopBPWidthRaw, bigScreenBPWidthRaw } = useContext(ThemeContext);
 
@@ -75,6 +76,7 @@ const Things = ({
       <CardGenerator
          id={thing.id}
          cardType={cardSize}
+         hideConnections={hideConnections}
          contentType={contentType}
          noPic={noPic}
          borderSide={borderSide}

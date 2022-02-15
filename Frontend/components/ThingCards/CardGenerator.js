@@ -3,7 +3,14 @@ import { useSelector } from 'react-redux';
 import FlexibleThingCard from './FlexibleThingCard';
 import CardFetcher from './CardFetcher';
 
-const CardGenerator = ({ id, cardType, borderSide, contentType, noPic }) => {
+const CardGenerator = ({
+   id,
+   cardType,
+   hideConnections,
+   borderSide,
+   contentType,
+   noPic
+}) => {
    const hasData = useSelector(state => state.stuff[`Thing:${id}`] != null);
 
    let computedContentType = 'full';
@@ -18,6 +25,7 @@ const CardGenerator = ({ id, cardType, borderSide, contentType, noPic }) => {
          <CardFetcher
             thingID={id}
             cardType={cardType}
+            hideConnections={hideConnections}
             contentType={computedContentType}
             borderSide={borderSide}
             noPic={noPic}
@@ -29,6 +37,7 @@ const CardGenerator = ({ id, cardType, borderSide, contentType, noPic }) => {
       <FlexibleThingCard
          key={id}
          expanded={cardType === 'regular'}
+         hideConnections={hideConnections}
          thingID={id}
          contentType={computedContentType}
          titleLink

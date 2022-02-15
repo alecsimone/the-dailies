@@ -5,7 +5,14 @@ import FlexibleThingCard from './FlexibleThingCard';
 import Error from '../ErrorMessage';
 import PlaceholderThings from '../PlaceholderThings';
 
-const CardFetcher = ({ thingID, cardType, borderSide, noPic, contentType }) => {
+const CardFetcher = ({
+   thingID,
+   cardType,
+   hideConnections,
+   borderSide,
+   noPic,
+   contentType
+}) => {
    const { data, loading, error } = useQueryAndStoreIt(SINGLE_THING_QUERY, {
       variables: {
          id: thingID
@@ -29,6 +36,7 @@ const CardFetcher = ({ thingID, cardType, borderSide, noPic, contentType }) => {
          <FlexibleThingCard
             key={thingID}
             expanded={cardType === 'regular'}
+            hideConnections={hideConnections}
             thingID={thingID}
             contentType={contentType}
             titleLink

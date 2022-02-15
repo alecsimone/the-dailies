@@ -219,6 +219,7 @@ const SearchResults = ({ string }) => {
                scrollingParentSelector=".mainSection"
                perPage={perPage}
                {...displayProps}
+               hideConnections
             />
          );
       } else {

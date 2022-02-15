@@ -459,6 +459,7 @@ const StyledFlexibleThingCard = styled.article`
 const FlexibleThingCard = ({
    thingID,
    expanded = false,
+   hideConnections,
    contentType = 'full',
    linkedPiece,
    linkedComment,
@@ -511,7 +512,7 @@ const FlexibleThingCard = ({
    const [expansion, setExpansion] = useState({
       content: expanded && (canEdit || contentCount > 0),
       taxes: expanded && tagCount > 0,
-      connections: expanded,
+      connections: expanded && hideConnections !== true,
       comments: expanded && commentCount > 0,
       privacy: false,
       colors: false,
