@@ -41,7 +41,6 @@ const StyledConnection = styled.div`
    padding: 1rem 2rem;
    border: 1px solid ${props => setAlpha(props.theme.lowContrastGrey, 0.1)};
    border-radius: 0.75rem;
-   /* box-shadow: 0 4px 4px ${props => setAlpha(props.theme.deepBlack, 0.2)}; */
    .relationship {
       text-align: center;
       font-weight: 300;

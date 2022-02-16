@@ -80,7 +80,7 @@ const StyledFlexibleThingCard = styled.article`
    padding: 0;
    border: none;
    ${props => props.theme.mobileBreakpoint} {
-      padding: 1rem 3rem 1.5rem;
+      padding: 1rem 5rem 1.5rem;
       ${props =>
          props.theme
             .thingColors}; /* Feels kinda janky to just put the thingColors in again, but we don't want a border on mobile and this seems like the simplest way to achieve that */
@@ -189,12 +189,12 @@ const StyledFlexibleThingCard = styled.article`
       padding: 1rem;
       margin: 0;
       ${props => props.theme.mobileBreakpoint} {
-         padding: 1rem 2rem 1.5rem;
-         margin: -1rem -3rem -1.5rem;
+         padding: 1rem 3rem 1.5rem;
+         margin: -1rem -5rem -1.5rem;
       }
-      max-width: calc(100% + 2rem); /* I believe what's happening here is that we need to add 2rem to make up for the negative margin on this element?  */
+      max-width: calc(100% + 2rem); /* We need to add 2rem to make up for the negative margin  */
       ${props => props.theme.mobileBreakpoint} {
-         max-width: calc(100% + 6rem);
+         max-width: calc(100% + 10rem);
       }
       .headerTop {
          display: flex;
@@ -438,7 +438,8 @@ const StyledFlexibleThingCard = styled.article`
          margin-top: -1rem;
       }
       .content {
-         margin: 5rem 1rem 1rem 1rem;
+         margin-top: 5rem;
+         margin-bottom: 1rem;
          padding: 0;
       }
       .commentsSection {
