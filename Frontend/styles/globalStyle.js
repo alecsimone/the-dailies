@@ -58,7 +58,7 @@ const theme = {
    tweetHead: 'hsl(30, 15%, 2.5%)',
 
    thingColors: {
-      background: lightBlack,
+      background: `${setSaturation(lightBlack, 25)}`,
       border: `2px solid ${setAlpha(lowContrastGrey, 0.15)}`,
       boxShadow: `0 4px 4px ${setAlpha(deepBlack, 0.2)}`
    },

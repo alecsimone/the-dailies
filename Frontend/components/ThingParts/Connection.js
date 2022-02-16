@@ -35,7 +35,7 @@ const STRENGTHEN_CONNECTION_MUTATION = gql`
 `;
 
 const StyledConnection = styled.div`
-   background: ${props => setAlpha(props.theme.midBlack, 0.6)};
+   background: ${props => setAlpha(props.theme.midBlack, 0.75)};
    min-width: 42rem;
    max-width: 60rem;
    padding: 1rem 2rem;
@@ -48,7 +48,6 @@ const StyledConnection = styled.div`
       font-size: ${props => props.theme.miniText};
       position: relative;
       padding-right: calc(1em + 1rem);
-      padding-top: 0.5rem;
       padding-bottom: 0.5rem;
       line-height: 1.6;
       color: ${props => setAlpha(props.theme.mainText, 0.8)};

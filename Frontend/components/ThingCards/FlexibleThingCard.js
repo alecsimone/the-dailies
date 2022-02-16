@@ -438,8 +438,7 @@ const StyledFlexibleThingCard = styled.article`
          margin-top: -1rem;
       }
       .content {
-         margin-top: 3rem;
-         margin-bottom: 1rem;
+         margin: 5rem 1rem 1rem 1rem;
          padding: 0;
       }
       .commentsSection {
