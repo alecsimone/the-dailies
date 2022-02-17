@@ -143,7 +143,6 @@ const Connection = ({
       if (relationship === 'links to') {
          modifiedRelationship = 'linked to';
       }
-      modifiedRelationship += ' this thing';
    }
 
    return (
