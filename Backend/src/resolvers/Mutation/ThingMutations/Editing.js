@@ -1111,7 +1111,7 @@ async function deleteConnection(parent, { connectionID }, ctx, info) {
       where: {
          id: connectionID
       }
-   }, `{id subject {${fullThingFields}} object {${fullThingFields}} creator {id}}`);
+   }, `{id subject {${fullThingFields}} object {${fullThingFields}} creator {id} relationship}`);
 
    if (connection == null) {
       throw new Error("No connection found for that ID");
@@ -1125,6 +1125,31 @@ async function deleteConnection(parent, { connectionID }, ctx, info) {
       ) {
       throw new AuthenticationError("You don't have permission to delete that connection");
    }
+
+   if (connection.relationship === 'links to') {
+      const updatedConnection = await ctx.db.mutation.updateConnection({
+         where: {
+            id: connectionID
+         },
+         data: {
+            isBlocked: true
+         }
+      }, `{subject {${fullThingFields}} object {${fullThingFields}}}`);
+
+      ctx.pubsub.publish('things', {
+         things: {
+            node: updatedConnection.subject
+         }
+      });
+      ctx.pubsub.publish('things', {
+         things: {
+            node: updatedConnection.object
+         }
+      });
+
+      return [updatedConnection.subject, updatedConnection.object];
+   }
+   return;
 
    const deletedConnection = await ctx.db.mutation.deleteConnection({
       where: {

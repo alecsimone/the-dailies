@@ -1722,6 +1722,7 @@ type Connection {
   object: Thing!
   relationship: String!
   strength: Int!
+  isBlocked: Boolean
   createdAt: DateTime!
 }
 
@@ -1738,6 +1739,7 @@ input ConnectionCreateInput {
   object: ThingCreateOneWithoutObjectConnectionsInput!
   relationship: String!
   strength: Int
+  isBlocked: Boolean
 }
 
 input ConnectionCreateManyWithoutCreatorInput {
@@ -1761,6 +1763,7 @@ input ConnectionCreateWithoutCreatorInput {
   object: ThingCreateOneWithoutObjectConnectionsInput!
   relationship: String!
   strength: Int
+  isBlocked: Boolean
 }
 
 input ConnectionCreateWithoutObjectInput {
@@ -1769,6 +1772,7 @@ input ConnectionCreateWithoutObjectInput {
   subject: ThingCreateOneWithoutSubjectConnectionsInput!
   relationship: String!
   strength: Int
+  isBlocked: Boolean
 }
 
 input ConnectionCreateWithoutSubjectInput {
@@ -1777,6 +1781,7 @@ input ConnectionCreateWithoutSubjectInput {
   object: ThingCreateOneWithoutObjectConnectionsInput!
   relationship: String!
   strength: Int
+  isBlocked: Boolean
 }
 
 type ConnectionEdge {
@@ -1791,6 +1796,8 @@ enum ConnectionOrderByInput {
   relationship_DESC
   strength_ASC
   strength_DESC
+  isBlocked_ASC
+  isBlocked_DESC
   createdAt_ASC
   createdAt_DESC
 }
@@ -1799,6 +1806,7 @@ type ConnectionPreviousValues {
   id: ID!
   relationship: String!
   strength: Int!
+  isBlocked: Boolean
   createdAt: DateTime!
 }
 
@@ -1839,6 +1847,8 @@ input ConnectionScalarWhereInput {
   strength_lte: Int
   strength_gt: Int
   strength_gte: Int
+  isBlocked: Boolean
+  isBlocked_not: Boolean
   createdAt: DateTime
   createdAt_not: DateTime
   createdAt_in: [DateTime!]
@@ -1876,16 +1886,19 @@ input ConnectionUpdateInput {
   object: ThingUpdateOneRequiredWithoutObjectConnectionsInput
   relationship: String
   strength: Int
+  isBlocked: Boolean
 }
 
 input ConnectionUpdateManyDataInput {
   relationship: String
   strength: Int
+  isBlocked: Boolean
 }
 
 input ConnectionUpdateManyMutationInput {
   relationship: String
   strength: Int
+  isBlocked: Boolean
 }
 
 input ConnectionUpdateManyWithoutCreatorInput {
@@ -1934,6 +1947,7 @@ input ConnectionUpdateWithoutCreatorDataInput {
   object: ThingUpdateOneRequiredWithoutObjectConnectionsInput
   relationship: String
   strength: Int
+  isBlocked: Boolean
 }
 
 input ConnectionUpdateWithoutObjectDataInput {
@@ -1941,6 +1955,7 @@ input ConnectionUpdateWithoutObjectDataInput {
   subject: ThingUpdateOneRequiredWithoutSubjectConnectionsInput
   relationship: String
   strength: Int
+  isBlocked: Boolean
 }
 
 input ConnectionUpdateWithoutSubjectDataInput {
@@ -1948,6 +1963,7 @@ input ConnectionUpdateWithoutSubjectDataInput {
   object: ThingUpdateOneRequiredWithoutObjectConnectionsInput
   relationship: String
   strength: Int
+  isBlocked: Boolean
 }
 
 input ConnectionUpdateWithWhereUniqueWithoutCreatorInput {
@@ -2023,6 +2039,8 @@ input ConnectionWhereInput {
   strength_lte: Int
   strength_gt: Int
   strength_gte: Int
+  isBlocked: Boolean
+  isBlocked_not: Boolean
   createdAt: DateTime
   createdAt_not: DateTime
   createdAt_in: [DateTime!]

@@ -589,12 +589,20 @@ async function getRelationsForThing(
          if (authorThing.id === thingID) return false;
 
          // We also don't want to let it through if it's already connected to the thing
+         let isAlreadyConnected = false;
          theThingToRelate.subjectConnections.forEach(connection => {
-            if (connection.object.id === authorThing.id) return false;
+            if (connection.object.id === authorThing.id) {
+               isAlreadyConnected = true;
+            }
          });
+         if (isAlreadyConnected) return false;
+
          theThingToRelate.objectConnections.forEach(connection => {
-            if (connection.subject.id === authorThing.id) return false;
+            if (connection.subject.id === authorThing.id) {
+               isAlreadyConnected = true;
+            }
          });
+         if (isAlreadyConnected) return false;
 
          // Nor do we want to let it through if it's linked in the thing
          if (contentLinkIDs.includes(authorThing.id)) return false;
@@ -670,18 +678,21 @@ async function getRelationsForThing(
             if (alreadyRelatedThingIDs.includes(tagThing.id)) return false;
 
             // We also don't want to let it through if it's already connected to the thing
-            let shouldKeep = true;
+            let isAlreadyConnected = false;
             theThingToRelate.subjectConnections.forEach(connection => {
-               if (connection.object.id === tagThing.id) shouldKeep = false;
+               if (connection.object.id === tagThing.id)
+                  isAlreadyConnected = true;
             });
+            if (isAlreadyConnected) return false;
+
             theThingToRelate.objectConnections.forEach(connection => {
-               if (connection.subject.id === tagThing.id) shouldKeep = false;
+               if (connection.subject.id === tagThing.id)
+                  isAlreadyConnected = true;
             });
+            if (isAlreadyConnected) return false;
 
             // Nor do we want to let it through if it's linked in the thing
             if (contentLinkIDs.includes(tagThing.id)) return false;
-
-            return shouldKeep;
          }
          // If they can't see the thing, don't let it through
          return false;

@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { homeNoHTTP } from '../../config';
 import { fullThingFields } from '../../lib/CardInterfaces';
+import { getRandomString } from '../../lib/TextHandling';
 import { getThingIdFromLink, urlFinder } from '../../lib/UrlHandling';
 import useQueryAndStoreIt from '../../stuffStore/useQueryAndStoreIt';
 import useMe from '../Account/useMe';
@@ -84,8 +85,11 @@ const StyledConnectionsInterface = styled.div`
       gap: 2rem;
       /* align-items: center; */
       /* justify-content: space-around; */
-      > * {
+      .connectionWrapper {
          /* margin: 1rem; */
+         display: inline-grid;
+         justify-content: stretch;
+         align-items: stretch;
          svg.x {
             opacity: 0.4;
             &:hover {
@@ -331,6 +335,7 @@ const ConnectionsInterface = ({ thingID }) => {
    const [formData, setFormData] = useState(defaultState);
 
    const otherThingDataRef = useRef({});
+   const foundLinkIDs = useRef([]);
 
    // const [showingForm, setShowingForm] = useState(
    //    subjectConnections.length === 0 && objectConnections.length === 0
@@ -471,6 +476,41 @@ const ConnectionsInterface = ({ thingID }) => {
       if (isAlreadySubject) return { id: null, object: { id: null } };
       if (isAlreadyObject) return { id: null, object: { id: null } };
 
+      if (!foundLinkIDs.current.includes(id)) {
+         console.log(`We have a new link to ${id}`);
+
+         const optimisticResponse = {
+            __typename: 'Thing',
+            id: thingID,
+            subjectConnections: JSON.parse(JSON.stringify(subjectConnections)),
+            objectConnections: JSON.parse(JSON.stringify(objectConnections))
+         };
+
+         optimisticResponse.subjectConnections.push({
+            id: `new-${thingID}-${getRandomString(12)}`,
+            subject: {
+               thingID
+            },
+            object: {
+               id
+            },
+            relationship: 'links to',
+            strength: 0,
+            createdAt: Date.now
+         });
+
+         addConnection({
+            variables: {
+               subjectID: thingID,
+               objectID: id,
+               relationship: 'links to'
+            },
+            optimisticResponse
+         });
+
+         foundLinkIDs.current.push(id);
+      }
+
       return {
          id: 'new',
          subject: {
@@ -512,16 +552,22 @@ const ConnectionsInterface = ({ thingID }) => {
 
    allConnections = allConnections.concat(linkConnections, relations);
 
+   allConnections = allConnections.filter(
+      possiblyBlockedConnection => !possiblyBlockedConnection.isBlocked
+   );
+
    allConnections.sort((a, b) => b.strength - a.strength);
 
    const connectionElements = allConnections.map(connection => (
-      <Connection
-         connectionID={connection.id}
-         subjectID={connection.subject.id}
-         objectID={connection.object.id}
-         relationship={connection.relationship}
-         parentThingID={thingID}
-      />
+      <div className="connectionWrapper">
+         <Connection
+            connectionID={connection.id}
+            subjectID={connection.subject.id}
+            objectID={connection.object.id}
+            relationship={connection.relationship}
+            parentThingID={thingID}
+         />
+      </div>
    ));
 
    return (

@@ -219,6 +219,7 @@ type Connection {
    object: Thing! @relation(name: "IsObject")
    relationship: String!
    strength: Int! @default(value: 0)
+   isBlocked: Boolean @default(value: false)
    createdAt: DateTime! @createdAt
 }
 

@@ -325,6 +325,7 @@ const fullThingFields = `
       }
       relationship
       strength
+      isBlocked
       createdAt
    }
    objectConnections {
@@ -337,6 +338,7 @@ const fullThingFields = `
       }
       relationship
       strength
+      isBlocked
       createdAt
    }
    createdAt

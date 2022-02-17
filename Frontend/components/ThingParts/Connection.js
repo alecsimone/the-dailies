@@ -2,7 +2,7 @@ import { useMutation } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 import { useState } from 'react';
 import styled from 'styled-components';
-import { setAlpha } from '../../styles/functions';
+import { setAlpha, setLightness, setSaturation } from '../../styles/functions';
 import X from '../Icons/X';
 import CardGenerator from '../ThingCards/CardGenerator';
 import { ADD_CONNECTION_MUTATION } from './ConnectionsInterface';
@@ -38,9 +38,15 @@ const StyledConnection = styled.div`
    background: ${props => setAlpha(props.theme.midBlack, 0.75)};
    min-width: 42rem;
    max-width: 60rem;
-   padding: 1rem 2rem;
+   padding: 1.6rem;
    border: 1px solid ${props => setAlpha(props.theme.lowContrastGrey, 0.1)};
    border-radius: 0.75rem;
+   display: flex;
+   justify-content: stretch;
+   align-items: center;
+   .flexWrapper {
+      width: 100%;
+   }
    .relationship {
       text-align: center;
       font-weight: 300;
@@ -48,8 +54,19 @@ const StyledConnection = styled.div`
       position: relative;
       padding-right: calc(1em + 1rem);
       padding-bottom: 0.5rem;
+      padding-top: 0.5rem;
       line-height: 1.6;
       color: ${props => setAlpha(props.theme.mainText, 0.8)};
+      /* background: ${props => props.theme.lightBlack}; */
+      background: ${props =>
+         setLightness(setSaturation(props.theme.majorColor, 66), 8)};
+      border: 2px solid ${props => setAlpha(props.theme.lowContrastGrey, 0.15)};
+      &.object {
+         border-top: none;
+      }
+      &.subject {
+         border-bottom: none;
+      }
       svg.x {
          transform: rotate(0);
          position: absolute;
@@ -57,7 +74,7 @@ const StyledConnection = styled.div`
          top: calc(
             1em * 0.3 + 0.5rem
          ); /* this is to make up for the line-height padding on the relationship line */
-         right: 0;
+         right: 1rem;
          margin: 0;
          &.loading {
             ${props => props.theme.spin};
@@ -121,36 +138,59 @@ const Connection = ({
       strengthenConnection();
    };
 
+   let modifiedRelationship = `${relationship}`;
+   if (subjectID !== parentThingID) {
+      if (relationship === 'links to') {
+         modifiedRelationship = 'linked to';
+      }
+      modifiedRelationship += ' this thing';
+   }
+
    return (
       <StyledConnection>
-         {subjectID !== parentThingID && (
+         <div className="flexWrapper">
+            {subjectID !== parentThingID && (
+               <div
+                  className="subject"
+                  onClick={e => logConnectionClick(e, subjectID)}
+               >
+                  <CardGenerator id={subjectID} cardType="small" />
+               </div>
+            )}
             <div
-               className="subject"
-               onClick={e => logConnectionClick(e, subjectID)}
-            >
-               <CardGenerator id={subjectID} cardType="small" />
-            </div>
-         )}
-         <div className="relationship">
-            {relationship}
-            <X
-               className={`deleteConnection${
-                  deleteConnectionLoading ? ' loading' : ''
+               className={`relationship ${
+                  subjectID !== parentThingID ? 'object' : 'subject'
                }`}
-               onClick={() => {
-                  if (deleteConnectionLoading) return;
-                  deleteConnection();
-               }}
-            />
-         </div>
-         {objectID !== parentThingID && (
-            <div
-               className="object"
-               onClick={e => logConnectionClick(e, objectID)}
             >
-               <CardGenerator id={objectID} cardType="small" />
+               {modifiedRelationship}
+               <X
+                  className={`deleteConnection${
+                     deleteConnectionLoading ? ' loading' : ''
+                  }`}
+                  onClick={() => {
+                     if (deleteConnectionLoading) return;
+                     if (relationship === 'links to') {
+                        if (
+                           !confirm(
+                              'Are you sure you would like to block that link connection? This cannot be undone, but if you change your mind you can always manually create a new connection to the other thing, although it will have to have a different relationship.'
+                           )
+                        ) {
+                           return;
+                        }
+                     }
+                     deleteConnection();
+                  }}
+               />
             </div>
-         )}
+            {objectID !== parentThingID && (
+               <div
+                  className="object"
+                  onClick={e => logConnectionClick(e, objectID)}
+               >
+                  <CardGenerator id={objectID} cardType="small" />
+               </div>
+            )}
+         </div>
       </StyledConnection>
    );
 };
