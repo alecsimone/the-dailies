@@ -378,7 +378,7 @@ const collectionGroupFields = `
    id
    title
    things {
-      ${smallThingCardFields}
+      ${fullThingFields}
    }
    order
    createdAt

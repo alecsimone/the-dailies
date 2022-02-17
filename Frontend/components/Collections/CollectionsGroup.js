@@ -16,6 +16,7 @@ import X from '../Icons/X';
 import { getUniversalTags, groupSort } from './cardHandling';
 import TaxInput from '../ThingParts/TaxInput';
 import { CollectionsThingsContext } from '../../pages/collections';
+import useMe from '../Account/useMe';
 
 const StyledCardList = styled.div``;
 
@@ -32,7 +33,7 @@ const CollectionsGroup = ({
    const {
       loggedInUserID,
       memberFields: { displayName }
-   } = useContext('CollectionsGroup', 'displayName');
+   } = useMe('CollectionsGroup', 'displayName');
 
    const { things: fullThingData } = useContext(CollectionsThingsContext);
 
