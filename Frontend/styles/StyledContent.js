@@ -274,9 +274,20 @@ const StyledContent = styled.section`
                                  font-size: ${props => props.theme.miniText};
                                  margin-bottom: 1rem;
                               }
-                              button {
-                                 display: block;
-                                 margin: 2rem auto 0;
+                              .buttons {
+                                 display: flex;
+                                 flex-wrap: wrap;
+                                 align-items: center;
+                                 justify-content: space-around;
+                                 max-width: 24rem;
+                                 margin: auto;
+                                 button.save {
+                                    background: ${props =>
+                                       setAlpha(
+                                          props.theme.primaryAccent,
+                                          0.75
+                                       )};
+                                 }
                               }
                            }
                            .flexibleThingCard {

@@ -128,6 +128,7 @@ const ContentPiece = ({
       setEditableHandler(false);
       await editContentPiece(pieceID, editedContent);
       successFlash(contentContainerRef.current);
+      setUnsavedNewContent(null);
    };
 
    const [storeUnsavedContentPieceChanges] = useMutation(
@@ -414,16 +415,33 @@ const ContentPiece = ({
                      <h4>Unsaved Changes</h4>
                      <div className="visibilityInfo">(visible only to you)</div>
                      {unsavedNewContent}
-                     <button
-                        onClick={() => {
-                           if (!confirm('Discard these unsaved changes?'))
-                              return;
-                           clearUnsavedContentPieceChanges();
-                           setUnsavedNewContent(null);
-                        }}
-                     >
-                        discard
-                     </button>
+                     <div className="buttons">
+                        <button
+                           className="save"
+                           onClick={async () => {
+                              if (!confirm('Save these changes?')) return;
+                              await editContentPiece(
+                                 pieceID,
+                                 unsavedNewContent
+                              );
+                              successFlash(contentContainerRef.current);
+                              setUnsavedNewContent(null);
+                           }}
+                        >
+                           save
+                        </button>
+                        <button
+                           className="discard"
+                           onClick={() => {
+                              if (!confirm('Discard these unsaved changes?'))
+                                 return;
+                              clearUnsavedContentPieceChanges();
+                              setUnsavedNewContent(null);
+                           }}
+                        >
+                           discard
+                        </button>
+                     </div>
                   </div>
                )}
          </div>
