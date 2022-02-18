@@ -460,7 +460,7 @@ const fullMemberFields = `
       rep
       role
       createdThings {
-         ${smallThingCardFields}
+         ${fullThingFields}
       }
       friends {
          __typename
@@ -469,7 +469,7 @@ const fullMemberFields = `
          avatar
          rep
          createdThings {
-            ${smallThingCardFields}
+            ${fullThingFields}
          }
       }
    }
@@ -514,13 +514,13 @@ const fullMemberFields = `
       __typename
       id
       onThing {
-         ${smallThingCardFields}
+         ${fullThingFields}
       }
       value
       createdAt
    }
    createdThings {
-      ${smallThingCardFields}
+      ${fullThingFields}
    }
    defaultPrivacy
    defaultExpansion
