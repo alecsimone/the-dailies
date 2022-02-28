@@ -18,6 +18,7 @@ import { CURRENT_MEMBER_QUERY } from './Account/MemberProvider';
 import ArrowIcon from './Icons/Arrow';
 import { myThingsQueryCount, MY_THINGS_QUERY } from './Archives/MyThings';
 import useMe from './Account/useMe';
+import LinkIcon from './Icons/Link';
 
 const LOGOUT_MUTATION = gql`
    mutation LOG_OUT_MUTATION {
@@ -130,6 +131,11 @@ const StyledNavSidebar = styled.section`
          }
          &.homeIcon {
             fill: ${props => props.theme.lowContrastGrey};
+         }
+         &.linkIcon {
+            path {
+               fill: ${props => props.theme.lowContrastGrey};
+            }
          }
          &.navNewPost {
             transform: rotate(45deg);
@@ -323,6 +329,18 @@ const NavSidebar = () => {
                            <StackIcon />
                         </span>
                         <span className="navLabel">Collections</span>
+                     </div>
+                  </a>
+               </Link>
+            )}
+            {loggedInUserID && (
+               <Link href="/links">
+                  <a onClick={() => setNavSidebarIsOpen(false)} title="Links">
+                     <div className="navLine">
+                        <span className="navIcon">
+                           <LinkIcon />
+                        </span>
+                        <span className="navLabel">Links</span>
                      </div>
                   </a>
                </Link>
