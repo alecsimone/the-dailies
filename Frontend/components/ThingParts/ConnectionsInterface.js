@@ -476,6 +476,8 @@ const ConnectionsInterface = ({ thingID }) => {
       if (isAlreadySubject) return { id: null, object: { id: null } };
       if (isAlreadyObject) return { id: null, object: { id: null } };
 
+      if (id === thingID) return { id: null, object: { id: null } };
+
       if (!foundLinkIDs.current.includes(id)) {
          console.log(`We have a new link to ${id}`);
 

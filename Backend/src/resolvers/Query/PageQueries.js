@@ -693,6 +693,9 @@ async function getRelationsForThing(
 
             // Nor do we want to let it through if it's linked in the thing
             if (contentLinkIDs.includes(tagThing.id)) return false;
+
+            // If we don't have any reason not to let it through, then we let it through
+            return true;
          }
          // If they can't see the thing, don't let it through
          return false;
