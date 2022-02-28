@@ -227,7 +227,6 @@ const TaxInput = ({ id, tags, stacks, personal, thingData, containerRef }) => {
 
    const [addTaxesToThings] = useMutation(ADD_TAXES_TO_THINGS_MUTATION, {
       onCompleted: data => {
-         console.log(data);
          if (containerRef == null) return;
          successFlash(containerRef);
       }
@@ -369,7 +368,6 @@ const TaxInput = ({ id, tags, stacks, personal, thingData, containerRef }) => {
          };
 
          responseData.partOfTags = newTags;
-         console.log(responseData);
 
          await addTaxToThing({
             variables: {
