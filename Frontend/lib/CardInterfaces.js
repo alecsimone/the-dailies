@@ -634,6 +634,24 @@ const profileFields = `
 `;
 export { profileFields };
 
+const fullPersonalLinkFields = `
+   __typename
+   id
+   url
+   owner {
+      id
+   }
+   title
+   description
+   partOfTags {
+      id
+      title
+   }
+   createdAt
+   updatedAt
+`;
+export { fullPersonalLinkFields };
+
 const fullMemberFields = `
    __typename
    id
@@ -753,6 +771,9 @@ const fullMemberFields = `
    }
    role
    twitterUserName
+   ownedLinks {
+      ${fullPersonalLinkFields}
+   }
    createdAt
 `;
 export { fullMemberFields };

@@ -443,6 +443,24 @@ const fullCollectionFields = `
 `;
 exports.fullCollectionFields = fullCollectionFields;
 
+const fullPersonalLinkFields = `
+   __typename
+   id
+   url
+   owner {
+      id
+   }
+   title
+   description
+   partOfTags {
+      id
+      title
+   }
+   createdAt
+   updatedAt
+`;
+exports.fullPersonalLinkFields = fullPersonalLinkFields;
+
 const fullMemberFields = `
    __typename
    id
@@ -559,6 +577,9 @@ const fullMemberFields = `
    }
    role
    twitterUserName
+   ownedLinks {
+      ${fullPersonalLinkFields}
+   }
    createdAt
 `;
 exports.fullMemberFields = fullMemberFields;

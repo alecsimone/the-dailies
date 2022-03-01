@@ -18,9 +18,11 @@ const LINK_DATA_QUERY = gql`
 const StyledLinkCard = styled.div`
    border: 1px solid ${props => setAlpha(props.theme.lowContrastGrey, 0.6)};
    padding: 1rem;
-   display: flex;
    border-radius: 4px;
    margin-top: 0.5rem;
+   a.wrapperLink {
+      display: flex;
+   }
    a,
    a:visited {
       display: block;
@@ -180,7 +182,12 @@ const LinkCard = ({ link }) => {
                   : 'poster'
             }`}
          >
-            <a href={computedURL} target="_blank" rel="noopener noreferrer">
+            <a
+               href={computedURL}
+               target="_blank"
+               rel="noopener noreferrer"
+               className="wrapperLink"
+            >
                <div
                   className={`linkCardInfo ${
                      image == null && video == null && hasProperIcon

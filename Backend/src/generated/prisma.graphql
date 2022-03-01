@@ -26,6 +26,10 @@ type AggregateLink {
   count: Int!
 }
 
+type AggregateLinkTag {
+  count: Int!
+}
+
 type AggregateMember {
   count: Int!
 }
@@ -35,6 +39,10 @@ type AggregateNotification {
 }
 
 type AggregatePass {
+  count: Int!
+}
+
+type AggregatePersonalLink {
   count: Int!
 }
 
@@ -3048,6 +3056,424 @@ input LinkSubscriptionWhereInput {
   NOT: [LinkSubscriptionWhereInput!]
 }
 
+type LinkTag {
+  id: ID!
+  owner: Member!
+  title: String!
+  description: String
+  connectedLinks(where: PersonalLinkWhereInput, orderBy: PersonalLinkOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [PersonalLink!]
+  parentTags(where: LinkTagWhereInput, orderBy: LinkTagOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [LinkTag!]
+  childTags(where: LinkTagWhereInput, orderBy: LinkTagOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [LinkTag!]
+  createdAt: DateTime!
+  updatedAt: DateTime
+}
+
+type LinkTagConnection {
+  pageInfo: PageInfo!
+  edges: [LinkTagEdge]!
+  aggregate: AggregateLinkTag!
+}
+
+input LinkTagCreateInput {
+  id: ID
+  owner: MemberCreateOneWithoutOwnedLinkTagsInput!
+  title: String!
+  description: String
+  connectedLinks: PersonalLinkCreateManyWithoutPartOfTagsInput
+  parentTags: LinkTagCreateManyWithoutChildTagsInput
+  childTags: LinkTagCreateManyWithoutParentTagsInput
+}
+
+input LinkTagCreateManyWithoutChildTagsInput {
+  create: [LinkTagCreateWithoutChildTagsInput!]
+  connect: [LinkTagWhereUniqueInput!]
+}
+
+input LinkTagCreateManyWithoutConnectedLinksInput {
+  create: [LinkTagCreateWithoutConnectedLinksInput!]
+  connect: [LinkTagWhereUniqueInput!]
+}
+
+input LinkTagCreateManyWithoutOwnerInput {
+  create: [LinkTagCreateWithoutOwnerInput!]
+  connect: [LinkTagWhereUniqueInput!]
+}
+
+input LinkTagCreateManyWithoutParentTagsInput {
+  create: [LinkTagCreateWithoutParentTagsInput!]
+  connect: [LinkTagWhereUniqueInput!]
+}
+
+input LinkTagCreateWithoutChildTagsInput {
+  id: ID
+  owner: MemberCreateOneWithoutOwnedLinkTagsInput!
+  title: String!
+  description: String
+  connectedLinks: PersonalLinkCreateManyWithoutPartOfTagsInput
+  parentTags: LinkTagCreateManyWithoutChildTagsInput
+}
+
+input LinkTagCreateWithoutConnectedLinksInput {
+  id: ID
+  owner: MemberCreateOneWithoutOwnedLinkTagsInput!
+  title: String!
+  description: String
+  parentTags: LinkTagCreateManyWithoutChildTagsInput
+  childTags: LinkTagCreateManyWithoutParentTagsInput
+}
+
+input LinkTagCreateWithoutOwnerInput {
+  id: ID
+  title: String!
+  description: String
+  connectedLinks: PersonalLinkCreateManyWithoutPartOfTagsInput
+  parentTags: LinkTagCreateManyWithoutChildTagsInput
+  childTags: LinkTagCreateManyWithoutParentTagsInput
+}
+
+input LinkTagCreateWithoutParentTagsInput {
+  id: ID
+  owner: MemberCreateOneWithoutOwnedLinkTagsInput!
+  title: String!
+  description: String
+  connectedLinks: PersonalLinkCreateManyWithoutPartOfTagsInput
+  childTags: LinkTagCreateManyWithoutParentTagsInput
+}
+
+type LinkTagEdge {
+  node: LinkTag!
+  cursor: String!
+}
+
+enum LinkTagOrderByInput {
+  id_ASC
+  id_DESC
+  title_ASC
+  title_DESC
+  description_ASC
+  description_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+type LinkTagPreviousValues {
+  id: ID!
+  title: String!
+  description: String
+  createdAt: DateTime!
+  updatedAt: DateTime
+}
+
+input LinkTagScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  title: String
+  title_not: String
+  title_in: [String!]
+  title_not_in: [String!]
+  title_lt: String
+  title_lte: String
+  title_gt: String
+  title_gte: String
+  title_contains: String
+  title_not_contains: String
+  title_starts_with: String
+  title_not_starts_with: String
+  title_ends_with: String
+  title_not_ends_with: String
+  description: String
+  description_not: String
+  description_in: [String!]
+  description_not_in: [String!]
+  description_lt: String
+  description_lte: String
+  description_gt: String
+  description_gte: String
+  description_contains: String
+  description_not_contains: String
+  description_starts_with: String
+  description_not_starts_with: String
+  description_ends_with: String
+  description_not_ends_with: String
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  AND: [LinkTagScalarWhereInput!]
+  OR: [LinkTagScalarWhereInput!]
+  NOT: [LinkTagScalarWhereInput!]
+}
+
+type LinkTagSubscriptionPayload {
+  mutation: MutationType!
+  node: LinkTag
+  updatedFields: [String!]
+  previousValues: LinkTagPreviousValues
+}
+
+input LinkTagSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: LinkTagWhereInput
+  AND: [LinkTagSubscriptionWhereInput!]
+  OR: [LinkTagSubscriptionWhereInput!]
+  NOT: [LinkTagSubscriptionWhereInput!]
+}
+
+input LinkTagUpdateInput {
+  owner: MemberUpdateOneRequiredWithoutOwnedLinkTagsInput
+  title: String
+  description: String
+  connectedLinks: PersonalLinkUpdateManyWithoutPartOfTagsInput
+  parentTags: LinkTagUpdateManyWithoutChildTagsInput
+  childTags: LinkTagUpdateManyWithoutParentTagsInput
+}
+
+input LinkTagUpdateManyDataInput {
+  title: String
+  description: String
+}
+
+input LinkTagUpdateManyMutationInput {
+  title: String
+  description: String
+}
+
+input LinkTagUpdateManyWithoutChildTagsInput {
+  create: [LinkTagCreateWithoutChildTagsInput!]
+  delete: [LinkTagWhereUniqueInput!]
+  connect: [LinkTagWhereUniqueInput!]
+  set: [LinkTagWhereUniqueInput!]
+  disconnect: [LinkTagWhereUniqueInput!]
+  update: [LinkTagUpdateWithWhereUniqueWithoutChildTagsInput!]
+  upsert: [LinkTagUpsertWithWhereUniqueWithoutChildTagsInput!]
+  deleteMany: [LinkTagScalarWhereInput!]
+  updateMany: [LinkTagUpdateManyWithWhereNestedInput!]
+}
+
+input LinkTagUpdateManyWithoutConnectedLinksInput {
+  create: [LinkTagCreateWithoutConnectedLinksInput!]
+  delete: [LinkTagWhereUniqueInput!]
+  connect: [LinkTagWhereUniqueInput!]
+  set: [LinkTagWhereUniqueInput!]
+  disconnect: [LinkTagWhereUniqueInput!]
+  update: [LinkTagUpdateWithWhereUniqueWithoutConnectedLinksInput!]
+  upsert: [LinkTagUpsertWithWhereUniqueWithoutConnectedLinksInput!]
+  deleteMany: [LinkTagScalarWhereInput!]
+  updateMany: [LinkTagUpdateManyWithWhereNestedInput!]
+}
+
+input LinkTagUpdateManyWithoutOwnerInput {
+  create: [LinkTagCreateWithoutOwnerInput!]
+  delete: [LinkTagWhereUniqueInput!]
+  connect: [LinkTagWhereUniqueInput!]
+  set: [LinkTagWhereUniqueInput!]
+  disconnect: [LinkTagWhereUniqueInput!]
+  update: [LinkTagUpdateWithWhereUniqueWithoutOwnerInput!]
+  upsert: [LinkTagUpsertWithWhereUniqueWithoutOwnerInput!]
+  deleteMany: [LinkTagScalarWhereInput!]
+  updateMany: [LinkTagUpdateManyWithWhereNestedInput!]
+}
+
+input LinkTagUpdateManyWithoutParentTagsInput {
+  create: [LinkTagCreateWithoutParentTagsInput!]
+  delete: [LinkTagWhereUniqueInput!]
+  connect: [LinkTagWhereUniqueInput!]
+  set: [LinkTagWhereUniqueInput!]
+  disconnect: [LinkTagWhereUniqueInput!]
+  update: [LinkTagUpdateWithWhereUniqueWithoutParentTagsInput!]
+  upsert: [LinkTagUpsertWithWhereUniqueWithoutParentTagsInput!]
+  deleteMany: [LinkTagScalarWhereInput!]
+  updateMany: [LinkTagUpdateManyWithWhereNestedInput!]
+}
+
+input LinkTagUpdateManyWithWhereNestedInput {
+  where: LinkTagScalarWhereInput!
+  data: LinkTagUpdateManyDataInput!
+}
+
+input LinkTagUpdateWithoutChildTagsDataInput {
+  owner: MemberUpdateOneRequiredWithoutOwnedLinkTagsInput
+  title: String
+  description: String
+  connectedLinks: PersonalLinkUpdateManyWithoutPartOfTagsInput
+  parentTags: LinkTagUpdateManyWithoutChildTagsInput
+}
+
+input LinkTagUpdateWithoutConnectedLinksDataInput {
+  owner: MemberUpdateOneRequiredWithoutOwnedLinkTagsInput
+  title: String
+  description: String
+  parentTags: LinkTagUpdateManyWithoutChildTagsInput
+  childTags: LinkTagUpdateManyWithoutParentTagsInput
+}
+
+input LinkTagUpdateWithoutOwnerDataInput {
+  title: String
+  description: String
+  connectedLinks: PersonalLinkUpdateManyWithoutPartOfTagsInput
+  parentTags: LinkTagUpdateManyWithoutChildTagsInput
+  childTags: LinkTagUpdateManyWithoutParentTagsInput
+}
+
+input LinkTagUpdateWithoutParentTagsDataInput {
+  owner: MemberUpdateOneRequiredWithoutOwnedLinkTagsInput
+  title: String
+  description: String
+  connectedLinks: PersonalLinkUpdateManyWithoutPartOfTagsInput
+  childTags: LinkTagUpdateManyWithoutParentTagsInput
+}
+
+input LinkTagUpdateWithWhereUniqueWithoutChildTagsInput {
+  where: LinkTagWhereUniqueInput!
+  data: LinkTagUpdateWithoutChildTagsDataInput!
+}
+
+input LinkTagUpdateWithWhereUniqueWithoutConnectedLinksInput {
+  where: LinkTagWhereUniqueInput!
+  data: LinkTagUpdateWithoutConnectedLinksDataInput!
+}
+
+input LinkTagUpdateWithWhereUniqueWithoutOwnerInput {
+  where: LinkTagWhereUniqueInput!
+  data: LinkTagUpdateWithoutOwnerDataInput!
+}
+
+input LinkTagUpdateWithWhereUniqueWithoutParentTagsInput {
+  where: LinkTagWhereUniqueInput!
+  data: LinkTagUpdateWithoutParentTagsDataInput!
+}
+
+input LinkTagUpsertWithWhereUniqueWithoutChildTagsInput {
+  where: LinkTagWhereUniqueInput!
+  update: LinkTagUpdateWithoutChildTagsDataInput!
+  create: LinkTagCreateWithoutChildTagsInput!
+}
+
+input LinkTagUpsertWithWhereUniqueWithoutConnectedLinksInput {
+  where: LinkTagWhereUniqueInput!
+  update: LinkTagUpdateWithoutConnectedLinksDataInput!
+  create: LinkTagCreateWithoutConnectedLinksInput!
+}
+
+input LinkTagUpsertWithWhereUniqueWithoutOwnerInput {
+  where: LinkTagWhereUniqueInput!
+  update: LinkTagUpdateWithoutOwnerDataInput!
+  create: LinkTagCreateWithoutOwnerInput!
+}
+
+input LinkTagUpsertWithWhereUniqueWithoutParentTagsInput {
+  where: LinkTagWhereUniqueInput!
+  update: LinkTagUpdateWithoutParentTagsDataInput!
+  create: LinkTagCreateWithoutParentTagsInput!
+}
+
+input LinkTagWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  owner: MemberWhereInput
+  title: String
+  title_not: String
+  title_in: [String!]
+  title_not_in: [String!]
+  title_lt: String
+  title_lte: String
+  title_gt: String
+  title_gte: String
+  title_contains: String
+  title_not_contains: String
+  title_starts_with: String
+  title_not_starts_with: String
+  title_ends_with: String
+  title_not_ends_with: String
+  description: String
+  description_not: String
+  description_in: [String!]
+  description_not_in: [String!]
+  description_lt: String
+  description_lte: String
+  description_gt: String
+  description_gte: String
+  description_contains: String
+  description_not_contains: String
+  description_starts_with: String
+  description_not_starts_with: String
+  description_ends_with: String
+  description_not_ends_with: String
+  connectedLinks_every: PersonalLinkWhereInput
+  connectedLinks_some: PersonalLinkWhereInput
+  connectedLinks_none: PersonalLinkWhereInput
+  parentTags_every: LinkTagWhereInput
+  parentTags_some: LinkTagWhereInput
+  parentTags_none: LinkTagWhereInput
+  childTags_every: LinkTagWhereInput
+  childTags_some: LinkTagWhereInput
+  childTags_none: LinkTagWhereInput
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  AND: [LinkTagWhereInput!]
+  OR: [LinkTagWhereInput!]
+  NOT: [LinkTagWhereInput!]
+}
+
+input LinkTagWhereUniqueInput {
+  id: ID
+}
+
 input LinkUpdateInput {
   title: String
   description: String
@@ -3381,6 +3807,8 @@ type Member {
   twitterListsObject: String
   twitterSeenIDs: [String!]!
   createdConnections(where: ConnectionWhereInput, orderBy: ConnectionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Connection!]
+  ownedLinks(where: PersonalLinkWhereInput, orderBy: PersonalLinkOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [PersonalLink!]
+  ownedLinkTags(where: LinkTagWhereInput, orderBy: LinkTagOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [LinkTag!]
   createdAt: DateTime!
   updatedAt: DateTime
 }
@@ -3433,6 +3861,8 @@ input MemberCreateInput {
   twitterListsObject: String
   twitterSeenIDs: MemberCreatetwitterSeenIDsInput
   createdConnections: ConnectionCreateManyWithoutCreatorInput
+  ownedLinks: PersonalLinkCreateManyWithoutOwnerInput
+  ownedLinkTags: LinkTagCreateManyWithoutOwnerInput
 }
 
 input MemberCreateManyWithoutFriendRequestsInput {
@@ -3487,6 +3917,16 @@ input MemberCreateOneWithoutCreatedThingsInput {
 
 input MemberCreateOneWithoutNotificationsInput {
   create: MemberCreateWithoutNotificationsInput
+  connect: MemberWhereUniqueInput
+}
+
+input MemberCreateOneWithoutOwnedLinksInput {
+  create: MemberCreateWithoutOwnedLinksInput
+  connect: MemberWhereUniqueInput
+}
+
+input MemberCreateOneWithoutOwnedLinkTagsInput {
+  create: MemberCreateWithoutOwnedLinkTagsInput
   connect: MemberWhereUniqueInput
 }
 
@@ -3554,6 +3994,8 @@ input MemberCreateWithoutCollectionsInput {
   twitterListsObject: String
   twitterSeenIDs: MemberCreatetwitterSeenIDsInput
   createdConnections: ConnectionCreateManyWithoutCreatorInput
+  ownedLinks: PersonalLinkCreateManyWithoutOwnerInput
+  ownedLinkTags: LinkTagCreateManyWithoutOwnerInput
 }
 
 input MemberCreateWithoutCommentsInput {
@@ -3597,6 +4039,8 @@ input MemberCreateWithoutCommentsInput {
   twitterListsObject: String
   twitterSeenIDs: MemberCreatetwitterSeenIDsInput
   createdConnections: ConnectionCreateManyWithoutCreatorInput
+  ownedLinks: PersonalLinkCreateManyWithoutOwnerInput
+  ownedLinkTags: LinkTagCreateManyWithoutOwnerInput
 }
 
 input MemberCreateWithoutCreatedConnectionsInput {
@@ -3640,6 +4084,8 @@ input MemberCreateWithoutCreatedConnectionsInput {
   twitterUserTokenSecret: String
   twitterListsObject: String
   twitterSeenIDs: MemberCreatetwitterSeenIDsInput
+  ownedLinks: PersonalLinkCreateManyWithoutOwnerInput
+  ownedLinkTags: LinkTagCreateManyWithoutOwnerInput
 }
 
 input MemberCreateWithoutCreatedThingsInput {
@@ -3683,6 +4129,8 @@ input MemberCreateWithoutCreatedThingsInput {
   twitterListsObject: String
   twitterSeenIDs: MemberCreatetwitterSeenIDsInput
   createdConnections: ConnectionCreateManyWithoutCreatorInput
+  ownedLinks: PersonalLinkCreateManyWithoutOwnerInput
+  ownedLinkTags: LinkTagCreateManyWithoutOwnerInput
 }
 
 input MemberCreateWithoutFriendRequestsInput {
@@ -3726,6 +4174,8 @@ input MemberCreateWithoutFriendRequestsInput {
   twitterListsObject: String
   twitterSeenIDs: MemberCreatetwitterSeenIDsInput
   createdConnections: ConnectionCreateManyWithoutCreatorInput
+  ownedLinks: PersonalLinkCreateManyWithoutOwnerInput
+  ownedLinkTags: LinkTagCreateManyWithoutOwnerInput
 }
 
 input MemberCreateWithoutFriendsInput {
@@ -3769,6 +4219,8 @@ input MemberCreateWithoutFriendsInput {
   twitterListsObject: String
   twitterSeenIDs: MemberCreatetwitterSeenIDsInput
   createdConnections: ConnectionCreateManyWithoutCreatorInput
+  ownedLinks: PersonalLinkCreateManyWithoutOwnerInput
+  ownedLinkTags: LinkTagCreateManyWithoutOwnerInput
 }
 
 input MemberCreateWithoutIgnoredFriendRequestsInput {
@@ -3812,6 +4264,8 @@ input MemberCreateWithoutIgnoredFriendRequestsInput {
   twitterListsObject: String
   twitterSeenIDs: MemberCreatetwitterSeenIDsInput
   createdConnections: ConnectionCreateManyWithoutCreatorInput
+  ownedLinks: PersonalLinkCreateManyWithoutOwnerInput
+  ownedLinkTags: LinkTagCreateManyWithoutOwnerInput
 }
 
 input MemberCreateWithoutIndividualContentPieceViewPermissionsInput {
@@ -3855,6 +4309,8 @@ input MemberCreateWithoutIndividualContentPieceViewPermissionsInput {
   twitterListsObject: String
   twitterSeenIDs: MemberCreatetwitterSeenIDsInput
   createdConnections: ConnectionCreateManyWithoutCreatorInput
+  ownedLinks: PersonalLinkCreateManyWithoutOwnerInput
+  ownedLinkTags: LinkTagCreateManyWithoutOwnerInput
 }
 
 input MemberCreateWithoutIndividualViewPermissionsInput {
@@ -3898,6 +4354,8 @@ input MemberCreateWithoutIndividualViewPermissionsInput {
   twitterListsObject: String
   twitterSeenIDs: MemberCreatetwitterSeenIDsInput
   createdConnections: ConnectionCreateManyWithoutCreatorInput
+  ownedLinks: PersonalLinkCreateManyWithoutOwnerInput
+  ownedLinkTags: LinkTagCreateManyWithoutOwnerInput
 }
 
 input MemberCreateWithoutNotificationsInput {
@@ -3941,6 +4399,98 @@ input MemberCreateWithoutNotificationsInput {
   twitterListsObject: String
   twitterSeenIDs: MemberCreatetwitterSeenIDsInput
   createdConnections: ConnectionCreateManyWithoutCreatorInput
+  ownedLinks: PersonalLinkCreateManyWithoutOwnerInput
+  ownedLinkTags: LinkTagCreateManyWithoutOwnerInput
+}
+
+input MemberCreateWithoutOwnedLinksInput {
+  id: ID
+  displayName: String!
+  name: String
+  avatar: String
+  rep: Int
+  points: Int
+  giveableRep: Int
+  color: String
+  friends: MemberCreateManyWithoutFriendsInput
+  friendRequests: MemberCreateManyWithoutFriendRequestsInput
+  ignoredFriendRequests: MemberCreateManyWithoutIgnoredFriendRequestsInput
+  notifications: NotificationCreateManyWithoutRecipientInput
+  twitchName: String
+  email: String!
+  votes: VoteCreateManyWithoutVoterInput
+  passes: PassCreateManyWithoutPasserInput
+  createdThings: ThingCreateManyWithoutAuthorInput
+  ownedTags: TagCreateManyWithoutAuthorInput
+  defaultPrivacy: PrivacySetting
+  individualViewPermissions: ThingCreateManyWithoutIndividualViewPermissionsInput
+  individualContentPieceViewPermissions: ContentPieceCreateManyWithoutIndividualViewPermissionsInput
+  defaultExpansion: Boolean
+  broadcastView: Boolean
+  collections: CollectionCreateManyWithoutAuthorInput
+  lastActiveCollection: CollectionCreateOneInput
+  comments: CommentCreateManyWithoutAuthorInput
+  password: String!
+  roles: MemberCreaterolesInput
+  role: Role
+  verificationToken: String
+  verificationTokenExpiry: Float
+  resetToken: String
+  resetTokenExpiry: Float
+  twitterTokenSecret: String
+  twitterUserName: String
+  twitterUserID: String
+  twitterUserToken: String
+  twitterUserTokenSecret: String
+  twitterListsObject: String
+  twitterSeenIDs: MemberCreatetwitterSeenIDsInput
+  createdConnections: ConnectionCreateManyWithoutCreatorInput
+  ownedLinkTags: LinkTagCreateManyWithoutOwnerInput
+}
+
+input MemberCreateWithoutOwnedLinkTagsInput {
+  id: ID
+  displayName: String!
+  name: String
+  avatar: String
+  rep: Int
+  points: Int
+  giveableRep: Int
+  color: String
+  friends: MemberCreateManyWithoutFriendsInput
+  friendRequests: MemberCreateManyWithoutFriendRequestsInput
+  ignoredFriendRequests: MemberCreateManyWithoutIgnoredFriendRequestsInput
+  notifications: NotificationCreateManyWithoutRecipientInput
+  twitchName: String
+  email: String!
+  votes: VoteCreateManyWithoutVoterInput
+  passes: PassCreateManyWithoutPasserInput
+  createdThings: ThingCreateManyWithoutAuthorInput
+  ownedTags: TagCreateManyWithoutAuthorInput
+  defaultPrivacy: PrivacySetting
+  individualViewPermissions: ThingCreateManyWithoutIndividualViewPermissionsInput
+  individualContentPieceViewPermissions: ContentPieceCreateManyWithoutIndividualViewPermissionsInput
+  defaultExpansion: Boolean
+  broadcastView: Boolean
+  collections: CollectionCreateManyWithoutAuthorInput
+  lastActiveCollection: CollectionCreateOneInput
+  comments: CommentCreateManyWithoutAuthorInput
+  password: String!
+  roles: MemberCreaterolesInput
+  role: Role
+  verificationToken: String
+  verificationTokenExpiry: Float
+  resetToken: String
+  resetTokenExpiry: Float
+  twitterTokenSecret: String
+  twitterUserName: String
+  twitterUserID: String
+  twitterUserToken: String
+  twitterUserTokenSecret: String
+  twitterListsObject: String
+  twitterSeenIDs: MemberCreatetwitterSeenIDsInput
+  createdConnections: ConnectionCreateManyWithoutCreatorInput
+  ownedLinks: PersonalLinkCreateManyWithoutOwnerInput
 }
 
 input MemberCreateWithoutOwnedTagsInput {
@@ -3984,6 +4534,8 @@ input MemberCreateWithoutOwnedTagsInput {
   twitterListsObject: String
   twitterSeenIDs: MemberCreatetwitterSeenIDsInput
   createdConnections: ConnectionCreateManyWithoutCreatorInput
+  ownedLinks: PersonalLinkCreateManyWithoutOwnerInput
+  ownedLinkTags: LinkTagCreateManyWithoutOwnerInput
 }
 
 input MemberCreateWithoutPassesInput {
@@ -4027,6 +4579,8 @@ input MemberCreateWithoutPassesInput {
   twitterListsObject: String
   twitterSeenIDs: MemberCreatetwitterSeenIDsInput
   createdConnections: ConnectionCreateManyWithoutCreatorInput
+  ownedLinks: PersonalLinkCreateManyWithoutOwnerInput
+  ownedLinkTags: LinkTagCreateManyWithoutOwnerInput
 }
 
 input MemberCreateWithoutVotesInput {
@@ -4070,6 +4624,8 @@ input MemberCreateWithoutVotesInput {
   twitterListsObject: String
   twitterSeenIDs: MemberCreatetwitterSeenIDsInput
   createdConnections: ConnectionCreateManyWithoutCreatorInput
+  ownedLinks: PersonalLinkCreateManyWithoutOwnerInput
+  ownedLinkTags: LinkTagCreateManyWithoutOwnerInput
 }
 
 type MemberEdge {
@@ -4523,6 +5079,8 @@ input MemberUpdateDataInput {
   twitterListsObject: String
   twitterSeenIDs: MemberUpdatetwitterSeenIDsInput
   createdConnections: ConnectionUpdateManyWithoutCreatorInput
+  ownedLinks: PersonalLinkUpdateManyWithoutOwnerInput
+  ownedLinkTags: LinkTagUpdateManyWithoutOwnerInput
 }
 
 input MemberUpdateInput {
@@ -4566,6 +5124,8 @@ input MemberUpdateInput {
   twitterListsObject: String
   twitterSeenIDs: MemberUpdatetwitterSeenIDsInput
   createdConnections: ConnectionUpdateManyWithoutCreatorInput
+  ownedLinks: PersonalLinkUpdateManyWithoutOwnerInput
+  ownedLinkTags: LinkTagUpdateManyWithoutOwnerInput
 }
 
 input MemberUpdateManyDataInput {
@@ -4726,6 +5286,20 @@ input MemberUpdateOneRequiredWithoutNotificationsInput {
   connect: MemberWhereUniqueInput
 }
 
+input MemberUpdateOneRequiredWithoutOwnedLinksInput {
+  create: MemberCreateWithoutOwnedLinksInput
+  update: MemberUpdateWithoutOwnedLinksDataInput
+  upsert: MemberUpsertWithoutOwnedLinksInput
+  connect: MemberWhereUniqueInput
+}
+
+input MemberUpdateOneRequiredWithoutOwnedLinkTagsInput {
+  create: MemberCreateWithoutOwnedLinkTagsInput
+  update: MemberUpdateWithoutOwnedLinkTagsDataInput
+  upsert: MemberUpsertWithoutOwnedLinkTagsInput
+  connect: MemberWhereUniqueInput
+}
+
 input MemberUpdateOneRequiredWithoutOwnedTagsInput {
   create: MemberCreateWithoutOwnedTagsInput
   update: MemberUpdateWithoutOwnedTagsDataInput
@@ -4804,6 +5378,8 @@ input MemberUpdateWithoutCollectionsDataInput {
   twitterListsObject: String
   twitterSeenIDs: MemberUpdatetwitterSeenIDsInput
   createdConnections: ConnectionUpdateManyWithoutCreatorInput
+  ownedLinks: PersonalLinkUpdateManyWithoutOwnerInput
+  ownedLinkTags: LinkTagUpdateManyWithoutOwnerInput
 }
 
 input MemberUpdateWithoutCommentsDataInput {
@@ -4846,6 +5422,8 @@ input MemberUpdateWithoutCommentsDataInput {
   twitterListsObject: String
   twitterSeenIDs: MemberUpdatetwitterSeenIDsInput
   createdConnections: ConnectionUpdateManyWithoutCreatorInput
+  ownedLinks: PersonalLinkUpdateManyWithoutOwnerInput
+  ownedLinkTags: LinkTagUpdateManyWithoutOwnerInput
 }
 
 input MemberUpdateWithoutCreatedConnectionsDataInput {
@@ -4888,6 +5466,8 @@ input MemberUpdateWithoutCreatedConnectionsDataInput {
   twitterUserTokenSecret: String
   twitterListsObject: String
   twitterSeenIDs: MemberUpdatetwitterSeenIDsInput
+  ownedLinks: PersonalLinkUpdateManyWithoutOwnerInput
+  ownedLinkTags: LinkTagUpdateManyWithoutOwnerInput
 }
 
 input MemberUpdateWithoutCreatedThingsDataInput {
@@ -4930,6 +5510,8 @@ input MemberUpdateWithoutCreatedThingsDataInput {
   twitterListsObject: String
   twitterSeenIDs: MemberUpdatetwitterSeenIDsInput
   createdConnections: ConnectionUpdateManyWithoutCreatorInput
+  ownedLinks: PersonalLinkUpdateManyWithoutOwnerInput
+  ownedLinkTags: LinkTagUpdateManyWithoutOwnerInput
 }
 
 input MemberUpdateWithoutFriendRequestsDataInput {
@@ -4972,6 +5554,8 @@ input MemberUpdateWithoutFriendRequestsDataInput {
   twitterListsObject: String
   twitterSeenIDs: MemberUpdatetwitterSeenIDsInput
   createdConnections: ConnectionUpdateManyWithoutCreatorInput
+  ownedLinks: PersonalLinkUpdateManyWithoutOwnerInput
+  ownedLinkTags: LinkTagUpdateManyWithoutOwnerInput
 }
 
 input MemberUpdateWithoutFriendsDataInput {
@@ -5014,6 +5598,8 @@ input MemberUpdateWithoutFriendsDataInput {
   twitterListsObject: String
   twitterSeenIDs: MemberUpdatetwitterSeenIDsInput
   createdConnections: ConnectionUpdateManyWithoutCreatorInput
+  ownedLinks: PersonalLinkUpdateManyWithoutOwnerInput
+  ownedLinkTags: LinkTagUpdateManyWithoutOwnerInput
 }
 
 input MemberUpdateWithoutIgnoredFriendRequestsDataInput {
@@ -5056,6 +5642,8 @@ input MemberUpdateWithoutIgnoredFriendRequestsDataInput {
   twitterListsObject: String
   twitterSeenIDs: MemberUpdatetwitterSeenIDsInput
   createdConnections: ConnectionUpdateManyWithoutCreatorInput
+  ownedLinks: PersonalLinkUpdateManyWithoutOwnerInput
+  ownedLinkTags: LinkTagUpdateManyWithoutOwnerInput
 }
 
 input MemberUpdateWithoutIndividualContentPieceViewPermissionsDataInput {
@@ -5098,6 +5686,8 @@ input MemberUpdateWithoutIndividualContentPieceViewPermissionsDataInput {
   twitterListsObject: String
   twitterSeenIDs: MemberUpdatetwitterSeenIDsInput
   createdConnections: ConnectionUpdateManyWithoutCreatorInput
+  ownedLinks: PersonalLinkUpdateManyWithoutOwnerInput
+  ownedLinkTags: LinkTagUpdateManyWithoutOwnerInput
 }
 
 input MemberUpdateWithoutIndividualViewPermissionsDataInput {
@@ -5140,6 +5730,8 @@ input MemberUpdateWithoutIndividualViewPermissionsDataInput {
   twitterListsObject: String
   twitterSeenIDs: MemberUpdatetwitterSeenIDsInput
   createdConnections: ConnectionUpdateManyWithoutCreatorInput
+  ownedLinks: PersonalLinkUpdateManyWithoutOwnerInput
+  ownedLinkTags: LinkTagUpdateManyWithoutOwnerInput
 }
 
 input MemberUpdateWithoutNotificationsDataInput {
@@ -5182,6 +5774,96 @@ input MemberUpdateWithoutNotificationsDataInput {
   twitterListsObject: String
   twitterSeenIDs: MemberUpdatetwitterSeenIDsInput
   createdConnections: ConnectionUpdateManyWithoutCreatorInput
+  ownedLinks: PersonalLinkUpdateManyWithoutOwnerInput
+  ownedLinkTags: LinkTagUpdateManyWithoutOwnerInput
+}
+
+input MemberUpdateWithoutOwnedLinksDataInput {
+  displayName: String
+  name: String
+  avatar: String
+  rep: Int
+  points: Int
+  giveableRep: Int
+  color: String
+  friends: MemberUpdateManyWithoutFriendsInput
+  friendRequests: MemberUpdateManyWithoutFriendRequestsInput
+  ignoredFriendRequests: MemberUpdateManyWithoutIgnoredFriendRequestsInput
+  notifications: NotificationUpdateManyWithoutRecipientInput
+  twitchName: String
+  email: String
+  votes: VoteUpdateManyWithoutVoterInput
+  passes: PassUpdateManyWithoutPasserInput
+  createdThings: ThingUpdateManyWithoutAuthorInput
+  ownedTags: TagUpdateManyWithoutAuthorInput
+  defaultPrivacy: PrivacySetting
+  individualViewPermissions: ThingUpdateManyWithoutIndividualViewPermissionsInput
+  individualContentPieceViewPermissions: ContentPieceUpdateManyWithoutIndividualViewPermissionsInput
+  defaultExpansion: Boolean
+  broadcastView: Boolean
+  collections: CollectionUpdateManyWithoutAuthorInput
+  lastActiveCollection: CollectionUpdateOneInput
+  comments: CommentUpdateManyWithoutAuthorInput
+  password: String
+  roles: MemberUpdaterolesInput
+  role: Role
+  verificationToken: String
+  verificationTokenExpiry: Float
+  resetToken: String
+  resetTokenExpiry: Float
+  twitterTokenSecret: String
+  twitterUserName: String
+  twitterUserID: String
+  twitterUserToken: String
+  twitterUserTokenSecret: String
+  twitterListsObject: String
+  twitterSeenIDs: MemberUpdatetwitterSeenIDsInput
+  createdConnections: ConnectionUpdateManyWithoutCreatorInput
+  ownedLinkTags: LinkTagUpdateManyWithoutOwnerInput
+}
+
+input MemberUpdateWithoutOwnedLinkTagsDataInput {
+  displayName: String
+  name: String
+  avatar: String
+  rep: Int
+  points: Int
+  giveableRep: Int
+  color: String
+  friends: MemberUpdateManyWithoutFriendsInput
+  friendRequests: MemberUpdateManyWithoutFriendRequestsInput
+  ignoredFriendRequests: MemberUpdateManyWithoutIgnoredFriendRequestsInput
+  notifications: NotificationUpdateManyWithoutRecipientInput
+  twitchName: String
+  email: String
+  votes: VoteUpdateManyWithoutVoterInput
+  passes: PassUpdateManyWithoutPasserInput
+  createdThings: ThingUpdateManyWithoutAuthorInput
+  ownedTags: TagUpdateManyWithoutAuthorInput
+  defaultPrivacy: PrivacySetting
+  individualViewPermissions: ThingUpdateManyWithoutIndividualViewPermissionsInput
+  individualContentPieceViewPermissions: ContentPieceUpdateManyWithoutIndividualViewPermissionsInput
+  defaultExpansion: Boolean
+  broadcastView: Boolean
+  collections: CollectionUpdateManyWithoutAuthorInput
+  lastActiveCollection: CollectionUpdateOneInput
+  comments: CommentUpdateManyWithoutAuthorInput
+  password: String
+  roles: MemberUpdaterolesInput
+  role: Role
+  verificationToken: String
+  verificationTokenExpiry: Float
+  resetToken: String
+  resetTokenExpiry: Float
+  twitterTokenSecret: String
+  twitterUserName: String
+  twitterUserID: String
+  twitterUserToken: String
+  twitterUserTokenSecret: String
+  twitterListsObject: String
+  twitterSeenIDs: MemberUpdatetwitterSeenIDsInput
+  createdConnections: ConnectionUpdateManyWithoutCreatorInput
+  ownedLinks: PersonalLinkUpdateManyWithoutOwnerInput
 }
 
 input MemberUpdateWithoutOwnedTagsDataInput {
@@ -5224,6 +5906,8 @@ input MemberUpdateWithoutOwnedTagsDataInput {
   twitterListsObject: String
   twitterSeenIDs: MemberUpdatetwitterSeenIDsInput
   createdConnections: ConnectionUpdateManyWithoutCreatorInput
+  ownedLinks: PersonalLinkUpdateManyWithoutOwnerInput
+  ownedLinkTags: LinkTagUpdateManyWithoutOwnerInput
 }
 
 input MemberUpdateWithoutPassesDataInput {
@@ -5266,6 +5950,8 @@ input MemberUpdateWithoutPassesDataInput {
   twitterListsObject: String
   twitterSeenIDs: MemberUpdatetwitterSeenIDsInput
   createdConnections: ConnectionUpdateManyWithoutCreatorInput
+  ownedLinks: PersonalLinkUpdateManyWithoutOwnerInput
+  ownedLinkTags: LinkTagUpdateManyWithoutOwnerInput
 }
 
 input MemberUpdateWithoutVotesDataInput {
@@ -5308,6 +5994,8 @@ input MemberUpdateWithoutVotesDataInput {
   twitterListsObject: String
   twitterSeenIDs: MemberUpdatetwitterSeenIDsInput
   createdConnections: ConnectionUpdateManyWithoutCreatorInput
+  ownedLinks: PersonalLinkUpdateManyWithoutOwnerInput
+  ownedLinkTags: LinkTagUpdateManyWithoutOwnerInput
 }
 
 input MemberUpdateWithWhereUniqueWithoutFriendRequestsInput {
@@ -5363,6 +6051,16 @@ input MemberUpsertWithoutCreatedThingsInput {
 input MemberUpsertWithoutNotificationsInput {
   update: MemberUpdateWithoutNotificationsDataInput!
   create: MemberCreateWithoutNotificationsInput!
+}
+
+input MemberUpsertWithoutOwnedLinksInput {
+  update: MemberUpdateWithoutOwnedLinksDataInput!
+  create: MemberCreateWithoutOwnedLinksInput!
+}
+
+input MemberUpsertWithoutOwnedLinkTagsInput {
+  update: MemberUpdateWithoutOwnedLinkTagsDataInput!
+  create: MemberCreateWithoutOwnedLinkTagsInput!
 }
 
 input MemberUpsertWithoutOwnedTagsInput {
@@ -5727,6 +6425,12 @@ input MemberWhereInput {
   createdConnections_every: ConnectionWhereInput
   createdConnections_some: ConnectionWhereInput
   createdConnections_none: ConnectionWhereInput
+  ownedLinks_every: PersonalLinkWhereInput
+  ownedLinks_some: PersonalLinkWhereInput
+  ownedLinks_none: PersonalLinkWhereInput
+  ownedLinkTags_every: LinkTagWhereInput
+  ownedLinkTags_some: LinkTagWhereInput
+  ownedLinkTags_none: LinkTagWhereInput
   createdAt: DateTime
   createdAt_not: DateTime
   createdAt_in: [DateTime!]
@@ -5796,6 +6500,12 @@ type Mutation {
   upsertLink(where: LinkWhereUniqueInput!, create: LinkCreateInput!, update: LinkUpdateInput!): Link!
   deleteLink(where: LinkWhereUniqueInput!): Link
   deleteManyLinks(where: LinkWhereInput): BatchPayload!
+  createLinkTag(data: LinkTagCreateInput!): LinkTag!
+  updateLinkTag(data: LinkTagUpdateInput!, where: LinkTagWhereUniqueInput!): LinkTag
+  updateManyLinkTags(data: LinkTagUpdateManyMutationInput!, where: LinkTagWhereInput): BatchPayload!
+  upsertLinkTag(where: LinkTagWhereUniqueInput!, create: LinkTagCreateInput!, update: LinkTagUpdateInput!): LinkTag!
+  deleteLinkTag(where: LinkTagWhereUniqueInput!): LinkTag
+  deleteManyLinkTags(where: LinkTagWhereInput): BatchPayload!
   createMember(data: MemberCreateInput!): Member!
   updateMember(data: MemberUpdateInput!, where: MemberWhereUniqueInput!): Member
   updateManyMembers(data: MemberUpdateManyMutationInput!, where: MemberWhereInput): BatchPayload!
@@ -5813,6 +6523,12 @@ type Mutation {
   upsertPass(where: PassWhereUniqueInput!, create: PassCreateInput!, update: PassUpdateInput!): Pass!
   deletePass(where: PassWhereUniqueInput!): Pass
   deleteManyPasses(where: PassWhereInput): BatchPayload!
+  createPersonalLink(data: PersonalLinkCreateInput!): PersonalLink!
+  updatePersonalLink(data: PersonalLinkUpdateInput!, where: PersonalLinkWhereUniqueInput!): PersonalLink
+  updateManyPersonalLinks(data: PersonalLinkUpdateManyMutationInput!, where: PersonalLinkWhereInput): BatchPayload!
+  upsertPersonalLink(where: PersonalLinkWhereUniqueInput!, create: PersonalLinkCreateInput!, update: PersonalLinkUpdateInput!): PersonalLink!
+  deletePersonalLink(where: PersonalLinkWhereUniqueInput!): PersonalLink
+  deleteManyPersonalLinks(where: PersonalLinkWhereInput): BatchPayload!
   createStack(data: StackCreateInput!): Stack!
   updateStack(data: StackUpdateInput!, where: StackWhereUniqueInput!): Stack
   updateManyStacks(data: StackUpdateManyMutationInput!, where: StackWhereInput): BatchPayload!
@@ -6300,6 +7016,354 @@ input PassWhereUniqueInput {
   id: ID
 }
 
+type PersonalLink {
+  id: ID!
+  url: String!
+  owner: Member!
+  title: String
+  description: String
+  partOfTags(where: LinkTagWhereInput, orderBy: LinkTagOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [LinkTag!]
+  createdAt: DateTime!
+  updatedAt: DateTime
+}
+
+type PersonalLinkConnection {
+  pageInfo: PageInfo!
+  edges: [PersonalLinkEdge]!
+  aggregate: AggregatePersonalLink!
+}
+
+input PersonalLinkCreateInput {
+  id: ID
+  url: String!
+  owner: MemberCreateOneWithoutOwnedLinksInput!
+  title: String
+  description: String
+  partOfTags: LinkTagCreateManyWithoutConnectedLinksInput
+}
+
+input PersonalLinkCreateManyWithoutOwnerInput {
+  create: [PersonalLinkCreateWithoutOwnerInput!]
+  connect: [PersonalLinkWhereUniqueInput!]
+}
+
+input PersonalLinkCreateManyWithoutPartOfTagsInput {
+  create: [PersonalLinkCreateWithoutPartOfTagsInput!]
+  connect: [PersonalLinkWhereUniqueInput!]
+}
+
+input PersonalLinkCreateWithoutOwnerInput {
+  id: ID
+  url: String!
+  title: String
+  description: String
+  partOfTags: LinkTagCreateManyWithoutConnectedLinksInput
+}
+
+input PersonalLinkCreateWithoutPartOfTagsInput {
+  id: ID
+  url: String!
+  owner: MemberCreateOneWithoutOwnedLinksInput!
+  title: String
+  description: String
+}
+
+type PersonalLinkEdge {
+  node: PersonalLink!
+  cursor: String!
+}
+
+enum PersonalLinkOrderByInput {
+  id_ASC
+  id_DESC
+  url_ASC
+  url_DESC
+  title_ASC
+  title_DESC
+  description_ASC
+  description_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+type PersonalLinkPreviousValues {
+  id: ID!
+  url: String!
+  title: String
+  description: String
+  createdAt: DateTime!
+  updatedAt: DateTime
+}
+
+input PersonalLinkScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  url: String
+  url_not: String
+  url_in: [String!]
+  url_not_in: [String!]
+  url_lt: String
+  url_lte: String
+  url_gt: String
+  url_gte: String
+  url_contains: String
+  url_not_contains: String
+  url_starts_with: String
+  url_not_starts_with: String
+  url_ends_with: String
+  url_not_ends_with: String
+  title: String
+  title_not: String
+  title_in: [String!]
+  title_not_in: [String!]
+  title_lt: String
+  title_lte: String
+  title_gt: String
+  title_gte: String
+  title_contains: String
+  title_not_contains: String
+  title_starts_with: String
+  title_not_starts_with: String
+  title_ends_with: String
+  title_not_ends_with: String
+  description: String
+  description_not: String
+  description_in: [String!]
+  description_not_in: [String!]
+  description_lt: String
+  description_lte: String
+  description_gt: String
+  description_gte: String
+  description_contains: String
+  description_not_contains: String
+  description_starts_with: String
+  description_not_starts_with: String
+  description_ends_with: String
+  description_not_ends_with: String
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  AND: [PersonalLinkScalarWhereInput!]
+  OR: [PersonalLinkScalarWhereInput!]
+  NOT: [PersonalLinkScalarWhereInput!]
+}
+
+type PersonalLinkSubscriptionPayload {
+  mutation: MutationType!
+  node: PersonalLink
+  updatedFields: [String!]
+  previousValues: PersonalLinkPreviousValues
+}
+
+input PersonalLinkSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: PersonalLinkWhereInput
+  AND: [PersonalLinkSubscriptionWhereInput!]
+  OR: [PersonalLinkSubscriptionWhereInput!]
+  NOT: [PersonalLinkSubscriptionWhereInput!]
+}
+
+input PersonalLinkUpdateInput {
+  url: String
+  owner: MemberUpdateOneRequiredWithoutOwnedLinksInput
+  title: String
+  description: String
+  partOfTags: LinkTagUpdateManyWithoutConnectedLinksInput
+}
+
+input PersonalLinkUpdateManyDataInput {
+  url: String
+  title: String
+  description: String
+}
+
+input PersonalLinkUpdateManyMutationInput {
+  url: String
+  title: String
+  description: String
+}
+
+input PersonalLinkUpdateManyWithoutOwnerInput {
+  create: [PersonalLinkCreateWithoutOwnerInput!]
+  delete: [PersonalLinkWhereUniqueInput!]
+  connect: [PersonalLinkWhereUniqueInput!]
+  set: [PersonalLinkWhereUniqueInput!]
+  disconnect: [PersonalLinkWhereUniqueInput!]
+  update: [PersonalLinkUpdateWithWhereUniqueWithoutOwnerInput!]
+  upsert: [PersonalLinkUpsertWithWhereUniqueWithoutOwnerInput!]
+  deleteMany: [PersonalLinkScalarWhereInput!]
+  updateMany: [PersonalLinkUpdateManyWithWhereNestedInput!]
+}
+
+input PersonalLinkUpdateManyWithoutPartOfTagsInput {
+  create: [PersonalLinkCreateWithoutPartOfTagsInput!]
+  delete: [PersonalLinkWhereUniqueInput!]
+  connect: [PersonalLinkWhereUniqueInput!]
+  set: [PersonalLinkWhereUniqueInput!]
+  disconnect: [PersonalLinkWhereUniqueInput!]
+  update: [PersonalLinkUpdateWithWhereUniqueWithoutPartOfTagsInput!]
+  upsert: [PersonalLinkUpsertWithWhereUniqueWithoutPartOfTagsInput!]
+  deleteMany: [PersonalLinkScalarWhereInput!]
+  updateMany: [PersonalLinkUpdateManyWithWhereNestedInput!]
+}
+
+input PersonalLinkUpdateManyWithWhereNestedInput {
+  where: PersonalLinkScalarWhereInput!
+  data: PersonalLinkUpdateManyDataInput!
+}
+
+input PersonalLinkUpdateWithoutOwnerDataInput {
+  url: String
+  title: String
+  description: String
+  partOfTags: LinkTagUpdateManyWithoutConnectedLinksInput
+}
+
+input PersonalLinkUpdateWithoutPartOfTagsDataInput {
+  url: String
+  owner: MemberUpdateOneRequiredWithoutOwnedLinksInput
+  title: String
+  description: String
+}
+
+input PersonalLinkUpdateWithWhereUniqueWithoutOwnerInput {
+  where: PersonalLinkWhereUniqueInput!
+  data: PersonalLinkUpdateWithoutOwnerDataInput!
+}
+
+input PersonalLinkUpdateWithWhereUniqueWithoutPartOfTagsInput {
+  where: PersonalLinkWhereUniqueInput!
+  data: PersonalLinkUpdateWithoutPartOfTagsDataInput!
+}
+
+input PersonalLinkUpsertWithWhereUniqueWithoutOwnerInput {
+  where: PersonalLinkWhereUniqueInput!
+  update: PersonalLinkUpdateWithoutOwnerDataInput!
+  create: PersonalLinkCreateWithoutOwnerInput!
+}
+
+input PersonalLinkUpsertWithWhereUniqueWithoutPartOfTagsInput {
+  where: PersonalLinkWhereUniqueInput!
+  update: PersonalLinkUpdateWithoutPartOfTagsDataInput!
+  create: PersonalLinkCreateWithoutPartOfTagsInput!
+}
+
+input PersonalLinkWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  url: String
+  url_not: String
+  url_in: [String!]
+  url_not_in: [String!]
+  url_lt: String
+  url_lte: String
+  url_gt: String
+  url_gte: String
+  url_contains: String
+  url_not_contains: String
+  url_starts_with: String
+  url_not_starts_with: String
+  url_ends_with: String
+  url_not_ends_with: String
+  owner: MemberWhereInput
+  title: String
+  title_not: String
+  title_in: [String!]
+  title_not_in: [String!]
+  title_lt: String
+  title_lte: String
+  title_gt: String
+  title_gte: String
+  title_contains: String
+  title_not_contains: String
+  title_starts_with: String
+  title_not_starts_with: String
+  title_ends_with: String
+  title_not_ends_with: String
+  description: String
+  description_not: String
+  description_in: [String!]
+  description_not_in: [String!]
+  description_lt: String
+  description_lte: String
+  description_gt: String
+  description_gte: String
+  description_contains: String
+  description_not_contains: String
+  description_starts_with: String
+  description_not_starts_with: String
+  description_ends_with: String
+  description_not_ends_with: String
+  partOfTags_every: LinkTagWhereInput
+  partOfTags_some: LinkTagWhereInput
+  partOfTags_none: LinkTagWhereInput
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  AND: [PersonalLinkWhereInput!]
+  OR: [PersonalLinkWhereInput!]
+  NOT: [PersonalLinkWhereInput!]
+}
+
+input PersonalLinkWhereUniqueInput {
+  id: ID
+}
+
 enum PrivacySetting {
   Public
   Private
@@ -6329,6 +7393,9 @@ type Query {
   link(where: LinkWhereUniqueInput!): Link
   links(where: LinkWhereInput, orderBy: LinkOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Link]!
   linksConnection(where: LinkWhereInput, orderBy: LinkOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): LinkConnection!
+  linkTag(where: LinkTagWhereUniqueInput!): LinkTag
+  linkTags(where: LinkTagWhereInput, orderBy: LinkTagOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [LinkTag]!
+  linkTagsConnection(where: LinkTagWhereInput, orderBy: LinkTagOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): LinkTagConnection!
   member(where: MemberWhereUniqueInput!): Member
   members(where: MemberWhereInput, orderBy: MemberOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Member]!
   membersConnection(where: MemberWhereInput, orderBy: MemberOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): MemberConnection!
@@ -6338,6 +7405,9 @@ type Query {
   pass(where: PassWhereUniqueInput!): Pass
   passes(where: PassWhereInput, orderBy: PassOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Pass]!
   passesConnection(where: PassWhereInput, orderBy: PassOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): PassConnection!
+  personalLink(where: PersonalLinkWhereUniqueInput!): PersonalLink
+  personalLinks(where: PersonalLinkWhereInput, orderBy: PersonalLinkOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [PersonalLink]!
+  personalLinksConnection(where: PersonalLinkWhereInput, orderBy: PersonalLinkOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): PersonalLinkConnection!
   stack(where: StackWhereUniqueInput!): Stack
   stacks(where: StackWhereInput, orderBy: StackOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Stack]!
   stacksConnection(where: StackWhereInput, orderBy: StackOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): StackConnection!
@@ -6751,9 +7821,11 @@ type Subscription {
   connection(where: ConnectionSubscriptionWhereInput): ConnectionSubscriptionPayload
   contentPiece(where: ContentPieceSubscriptionWhereInput): ContentPieceSubscriptionPayload
   link(where: LinkSubscriptionWhereInput): LinkSubscriptionPayload
+  linkTag(where: LinkTagSubscriptionWhereInput): LinkTagSubscriptionPayload
   member(where: MemberSubscriptionWhereInput): MemberSubscriptionPayload
   notification(where: NotificationSubscriptionWhereInput): NotificationSubscriptionPayload
   pass(where: PassSubscriptionWhereInput): PassSubscriptionPayload
+  personalLink(where: PersonalLinkSubscriptionWhereInput): PersonalLinkSubscriptionPayload
   stack(where: StackSubscriptionWhereInput): StackSubscriptionPayload
   tag(where: TagSubscriptionWhereInput): TagSubscriptionPayload
   tagOrder(where: TagOrderSubscriptionWhereInput): TagOrderSubscriptionPayload

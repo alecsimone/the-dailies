@@ -77,6 +77,11 @@ const {
    handleCardExpansion
 } = require('./Mutation/CollectionMutations');
 
+const {
+   addLinkToArchive,
+   addTagToPersonalLink
+} = require('./Mutation/LinkArchiveMutations');
+
 const Mutations = {
    startSignup,
    login,
@@ -147,7 +152,9 @@ const Mutations = {
    handleCardExpansion,
    addConnection,
    deleteConnection,
-   strengthenConnection
+   strengthenConnection,
+   addLinkToArchive,
+   addTagToPersonalLink
 };
 
 module.exports = Mutations;

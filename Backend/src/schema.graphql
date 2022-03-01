@@ -23,6 +23,7 @@ type Query {
    moreMemberVotes(memberID: String!, cursor: String, count: Int): [Vote]
    getLinkData(url: String!): Link
    getRelationsForThing(thingID: ID!, totalCount: Int): [Connection]
+   getLinkArchive: Member
 }
 
 type Mutation {
@@ -102,6 +103,8 @@ type Mutation {
   addConnection(subjectID: ID!, objectID: ID!, relationship: String!, strength: Int): [Thing!]
   deleteConnection(connectionID: ID!): [Thing!],
   strengthenConnection(connectionID: ID!): Connection!
+  addLinkToArchive(url: String!, tags: String): Member
+  addTagToPersonalLink(linkID: ID!, tagToAdd: String!): PersonalLink
 }
 
 union Stuff = Thing | Tag | Stack | Comment | ContentPiece

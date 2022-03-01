@@ -26,6 +26,7 @@ const {
    getTweetsForList,
    getLinkData
 } = require('./Query/TwitterQueries');
+const { getLinkArchive } = require('./query/pageQueries');
 
 const Query = {
    finishSignup,
@@ -49,7 +50,8 @@ const Query = {
    allThings,
    getCollections,
    getLinkData,
-   getRelationsForThing
+   getRelationsForThing,
+   getLinkArchive
 };
 
 module.exports = Query;

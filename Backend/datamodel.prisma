@@ -150,6 +150,8 @@ type Member {
   twitterListsObject: String
   twitterSeenIDs: [String] @scalarList(strategy: RELATION)
   createdConnections: [Connection] @scalarList(strategy: RELATION)
+  ownedLinks: [PersonalLink]
+  ownedLinkTags: [LinkTag]
   createdAt: DateTime! @createdAt
   updatedAt: DateTime @updatedAt
 }
@@ -236,6 +238,29 @@ type Link {
    onContentPiece: ContentPiece
    onComment: Comment
    onTweet: Tweet
+}
+
+type PersonalLink {
+   id: ID! @id @unique
+   url: String!
+   owner: Member!
+   title: String
+   description: String
+   partOfTags: [LinkTag]
+   createdAt: DateTime! @createdAt
+   updatedAt: DateTime @updatedAt
+}
+
+type LinkTag {
+   id: ID! @id @unique
+   owner: Member!
+   title: String!
+   description: String
+   connectedLinks: [PersonalLink]
+   parentTags: [LinkTag] @relation(name: "Parent")
+   childTags: [LinkTag] @relation(name: "Parent")
+   createdAt: DateTime! @createdAt
+   updatedAt: DateTime @updatedAt
 }
 
 enum Role {

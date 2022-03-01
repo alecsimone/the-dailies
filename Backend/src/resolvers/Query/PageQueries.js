@@ -2,7 +2,8 @@ const { AuthenticationError } = require('apollo-server-express');
 const { loggedInGate, fullMemberGate } = require('../../utils/Authentication');
 const {
    fullThingFields,
-   fullCollectionFields
+   fullCollectionFields,
+   fullPersonalLinkFields
 } = require('../../utils/CardInterfaces');
 const { getRandomString } = require('../../utils/TextHandling');
 const {
@@ -784,3 +785,22 @@ async function getRelationsForThing(
    return relationsArray;
 }
 exports.getRelationsForThing = getRelationsForThing;
+
+async function getLinkArchive(parent, args, ctx, info) {
+   await loggedInGate(ctx).catch(() => {
+      throw new AuthenticationError('You must be logged in to do that!');
+   });
+   fullMemberGate(ctx.req.member);
+
+   const member = await ctx.db.query.member(
+      {
+         where: {
+            id: ctx.req.memberId
+         }
+      },
+      `{id ownedLinks {${fullPersonalLinkFields}}}`
+   );
+
+   return member;
+}
+exports.getLinkArchive = getLinkArchive;
