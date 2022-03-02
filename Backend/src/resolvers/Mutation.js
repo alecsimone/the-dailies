@@ -79,7 +79,8 @@ const {
 
 const {
    addLinkToArchive,
-   addTagToPersonalLink
+   addTagToPersonalLink,
+   editPersonalLink
 } = require('./Mutation/LinkArchiveMutations');
 
 const Mutations = {
@@ -154,7 +155,8 @@ const Mutations = {
    deleteConnection,
    strengthenConnection,
    addLinkToArchive,
-   addTagToPersonalLink
+   addTagToPersonalLink,
+   editPersonalLink
 };
 
 module.exports = Mutations;

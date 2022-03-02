@@ -31,7 +31,8 @@ const ExplodingLink = ({
    className,
    priorText,
    nextText,
-   showLinkCards
+   showLinkCards,
+   hideCardShortlink
 }) => {
    if (url == null) return null;
    const lowerCaseURL = url.toLowerCase();
@@ -290,7 +291,7 @@ const ExplodingLink = ({
    ) {
       return (
          <>
-            <ShortLink link={url} limit={80} />
+            {!hideCardShortlink && <ShortLink link={url} limit={80} />}
             <LinkCard link={url} />
          </>
       );

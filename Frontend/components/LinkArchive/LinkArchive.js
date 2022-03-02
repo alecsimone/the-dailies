@@ -22,9 +22,12 @@ const ADD_LINK_MUTATION = gql`
 
 const StyledLinkArchive = styled.div`
    padding: 0 3rem;
-   .addLinkWrapper {
-      text-align: center;
-      margin-top: 2rem;
+   .inputsBar {
+      max-width: 120rem;
+      margin: 2rem auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
       input {
          font-size: ${props => props.theme.bigText};
          text-align: center;
@@ -52,10 +55,11 @@ const StyledLinkArchive = styled.div`
          h3.personalLinkTitle {
             margin: 0;
             font-weight: 500;
-            font-size: ${props => props.theme.bigText};
+            font-size: ${props => props.theme.smallText};
          }
          .description {
             font-weight: 300;
+            font-size: ${props => props.theme.miniText};
          }
          .personalLinkWrapper {
             .linkCard {
@@ -79,6 +83,28 @@ const StyledLinkArchive = styled.div`
                color: ${props => props.theme.primaryAccent};
                font-weight: bold;
                margin-right: 0.5rem;
+            }
+         }
+         .inputsWrapper {
+            display: flex;
+            align-items: center;
+            margin-top: 1rem;
+            svg.contentIcon {
+               height: calc(
+                  ${props => props.theme.miniText} + 0.5rem
+               ); // This is the height of the input's font plus its padding
+               margin-left: 1rem;
+               cursor: pointer;
+               opacity: 0.4;
+               &:hover {
+                  opacity: 0.7;
+               }
+               &.showing {
+                  opacity: 1;
+                  &:hover {
+                     opacity: 0.7;
+                  }
+               }
             }
          }
          input.addTag {
@@ -160,8 +186,13 @@ const LinkArchive = ({ links }) => {
    ));
    return (
       <StyledLinkArchive>
-         <div className="addLinkWrapper">
-            <AddLinkInput addLinkHandler={addLinkHandler} />
+         <div className="inputsBar">
+            <div className="addLinkWrapper">
+               <AddLinkInput addLinkHandler={addLinkHandler} />
+            </div>
+            <div className="filterLinksWrapper">
+               <input type="text" placeholder="filter links" />
+            </div>
          </div>
          <div className="links">{linkElements}</div>
       </StyledLinkArchive>

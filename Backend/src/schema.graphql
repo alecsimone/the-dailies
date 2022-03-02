@@ -105,6 +105,7 @@ type Mutation {
   strengthenConnection(connectionID: ID!): Connection!
   addLinkToArchive(url: String!, tags: String): Member
   addTagToPersonalLink(linkID: ID!, tagToAdd: String!): PersonalLink
+  editPersonalLink(linkID: ID!, title: String, description: String): PersonalLink
 }
 
 union Stuff = Thing | Tag | Stack | Comment | ContentPiece

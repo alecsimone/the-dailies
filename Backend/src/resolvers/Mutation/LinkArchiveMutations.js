@@ -187,3 +187,39 @@ async function addTagToPersonalLink(parent, { linkID, tagToAdd }, ctx, info) {
    return updatedLink;
 }
 exports.addTagToPersonalLink = addTagToPersonalLink;
+
+async function editPersonalLink(
+   parent,
+   { linkID, title, description },
+   ctx,
+   info
+) {
+   await loggedInGate(ctx).catch(() => {
+      throw new AuthenticationError('You must be logged in to do that!');
+   });
+   fullMemberGate(ctx.req.member);
+
+   const dataObj = {};
+
+   if (title != null) {
+      dataObj.title = title;
+   }
+   if (description != null) {
+      dataObj.description = description;
+   }
+
+   if (title == null && description == null) return null;
+
+   const updatedLink = await ctx.db.mutation.updatePersonalLink(
+      {
+         where: {
+            id: linkID
+         },
+         data: dataObj
+      },
+      `{${fullPersonalLinkFields}}`
+   );
+
+   return updatedLink;
+}
+exports.editPersonalLink = editPersonalLink;
