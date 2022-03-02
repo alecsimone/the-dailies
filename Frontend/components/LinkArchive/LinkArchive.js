@@ -1,5 +1,6 @@
 import { useMutation } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
+import { useState } from 'react';
 import styled from 'styled-components';
 import { fullPersonalLinkFields } from '../../lib/CardInterfaces';
 import { getRandomString } from '../../lib/TextHandling';
@@ -117,6 +118,8 @@ const StyledLinkArchive = styled.div`
 `;
 
 const LinkArchive = ({ links }) => {
+   const [filterString, setFilterString] = useState('');
+
    const [addLink] = useMutation(ADD_LINK_MUTATION, {
       onError: err => alert(err.message)
    });
@@ -170,7 +173,41 @@ const LinkArchive = ({ links }) => {
       });
    };
 
-   const sortedLinks = JSON.parse(JSON.stringify(links));
+   const sortedLinks = links.filter(link => {
+      if (filterString === '') return true;
+
+      const lowerCasedFilterString = filterString.toLowerCase();
+
+      if (
+         link.url != null &&
+         link.url.toLowerCase().includes(lowerCasedFilterString)
+      )
+         return true;
+      if (
+         link.title != null &&
+         link.title.toLowerCase().includes(lowerCasedFilterString)
+      )
+         return true;
+      if (
+         link.description != null &&
+         link.description.toLowerCase().includes(lowerCasedFilterString)
+      )
+         return true;
+
+      let tagMatches = false;
+      if (link.partOfTags != null && link.partOfTags.length > 0) {
+         link.partOfTags.forEach(tag => {
+            if (
+               tag.title != null &&
+               tag.title.toLowerCase().includes(lowerCasedFilterString)
+            ) {
+               tagMatches = true;
+            }
+         });
+      }
+
+      return tagMatches;
+   });
    sortedLinks.sort((a, b) => {
       const aDate = new Date(a.createdAt);
       const bDate = new Date(b.createdAt);
@@ -191,7 +228,12 @@ const LinkArchive = ({ links }) => {
                <AddLinkInput addLinkHandler={addLinkHandler} />
             </div>
             <div className="filterLinksWrapper">
-               <input type="text" placeholder="filter links" />
+               <input
+                  type="text"
+                  placeholder="filter links"
+                  value={filterString}
+                  onChange={e => setFilterString(e.target.value)}
+               />
             </div>
          </div>
          <div className="links">{linkElements}</div>
