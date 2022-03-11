@@ -44,6 +44,8 @@ const Columnizer = ({ items, columnOrders, draggingGroup }) => {
       return () => window.removeEventListener('resize', resizeHandler);
    }, [resizeHandler]);
 
+   if (items.length === 0) return null;
+
    // If we have more columnOrders than the current columnCount, we need to distribute the groups from the excess columns into the necessary columns
    const necessaryOrders = [...columnOrders];
    if (

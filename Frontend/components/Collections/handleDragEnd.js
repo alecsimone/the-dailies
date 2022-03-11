@@ -11,7 +11,6 @@ const handleDragEnd = ({
    rawDraggableId,
    type,
    things,
-   groupByTag,
    removeTaxFromThing,
    reorderGroups,
    reorderTags,

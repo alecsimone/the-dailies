@@ -1,7 +1,5 @@
 import { useMutation } from '@apollo/react-hooks';
-import { useContext, useState } from 'react';
-import { DragDropContext } from 'react-beautiful-dnd';
-import { CollectionsThingsContext } from '../../pages/collections';
+import { useState } from 'react';
 import Columnizer, { getColumnCount } from '../Columnizer';
 import { groupSort, makeGroups } from './cardHandling';
 import handleDragEnd from './handleDragEnd';
@@ -16,6 +14,7 @@ import {
    SET_COLUMN_ORDER_MUTATION
 } from './queriesAndMutations';
 import { getRandomString } from '../../lib/TextHandling';
+import CollectionsGroup from './CollectionsGroup';
 
 const getItemForID = (id, items) => {
    const [element] = items.filter(
@@ -79,14 +78,11 @@ const CollectionBody = ({ activeCollection, fetchMoreButton }) => {
       hiddenGroups,
       hiddenTags,
       hiddenThings,
-      groupByTag,
       ungroupedThingsOrder,
       tagColumnOrders,
       columnOrders,
       expandedCards
    } = activeCollection;
-
-   const { things } = useContext(CollectionsThingsContext);
 
    const [removeTaxFromThing] = useMutation(REMOVE_TAX_MUTATION);
 
@@ -142,55 +138,53 @@ const CollectionBody = ({ activeCollection, fetchMoreButton }) => {
       });
    };
 
-   const groupElements = makeGroups(
-      things,
-      userGroups,
-      hiddenGroups,
-      hiddenTags,
-      groupByTag,
-      id,
-      hiddenThings,
-      ungroupedThingsOrder,
-      tagOrders,
-      deleteGroupHandler,
-      expandedCards
-   );
+   const groupElements = userGroups.map(groupObj => (
+      <CollectionsGroup
+         groupObj={groupObj}
+         key={groupObj.id}
+         collectionID={id}
+         userGroups={userGroups}
+         hiddenGroups={hiddenGroups}
+         hiddenThings={hiddenThings}
+         deleteGroupHandler={deleteGroupHandler}
+         expandedCards={expandedCards}
+      />
+   ));
 
-   const dragEndHelper = ({
-      destination,
-      source,
-      draggableId: rawDraggableId,
-      type
-   }) => {
-      handleDragEnd({
-         collectionID: id,
-         destination,
-         source,
-         rawDraggableId,
-         type,
-         things,
-         groupByTag,
-         removeTaxFromThing,
-         reorderGroups,
-         reorderTags,
-         reorderUngroupedThings,
-         moveCardToGroup,
-         addTaxToThingById,
-         setColumnOrder,
-         columnOrders,
-         tagColumnOrders,
-         tagOrders,
-         groupSort,
-         groupElements
-      });
-      setDraggingGroup(false);
-   };
+   // const dragEndHelper = ({
+   //    destination,
+   //    source,
+   //    draggableId: rawDraggableId,
+   //    type
+   // }) => {
+   //    handleDragEnd({
+   //       collectionID: id,
+   //       destination,
+   //       source,
+   //       rawDraggableId,
+   //       type,
+   //       things: [],
+   //       removeTaxFromThing,
+   //       reorderGroups,
+   //       reorderTags,
+   //       reorderUngroupedThings,
+   //       moveCardToGroup,
+   //       addTaxToThingById,
+   //       setColumnOrder,
+   //       columnOrders,
+   //       tagColumnOrders,
+   //       tagOrders,
+   //       groupSort,
+   //       groupElements
+   //    });
+   //    setDraggingGroup(false);
+   // };
 
    // First we need to figure out how many columns we're expecting to have
    const columnCount = getColumnCount();
 
    // Then we need to create a variable to hold the current order, whether it be tagColumnOrders or columnOrders
-   const currentColumnOrder = groupByTag ? tagColumnOrders : columnOrders;
+   const currentColumnOrder = columnOrders;
 
    if (currentColumnOrder == null || currentColumnOrder.length === 0) {
       // If we have no column orders, we need to make them. First we're going to make sure we have an array of the proper length, which is full of objects with id and order properties
@@ -289,24 +283,14 @@ const CollectionBody = ({ activeCollection, fetchMoreButton }) => {
 
    return (
       <section className="collectionBody">
-         <DragDropContext
-            onDragEnd={dragEndHelper}
-            onDragStart={({ type }) => {
-               if (type === 'group') {
-                  setDraggingGroup(true);
-               }
-            }}
-         >
-            <div className="groupsWrapper">
-               <Columnizer
-                  items={groupElements}
-                  collectionID={id}
-                  columnOrders={currentColumnOrder}
-                  isTagOrder={groupByTag}
-                  draggingGroup={draggingGroup}
-               />
-            </div>
-         </DragDropContext>
+         <div className="groupsWrapper">
+            <Columnizer
+               items={groupElements}
+               collectionID={id}
+               columnOrders={currentColumnOrder}
+               draggingGroup={draggingGroup}
+            />
+         </div>
          {fetchMoreButton != null && fetchMoreButton}
       </section>
    );

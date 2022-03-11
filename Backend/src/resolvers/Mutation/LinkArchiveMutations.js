@@ -6,6 +6,65 @@ const { sleep } = require('../../utils/ThingHandling');
 const { getLinkData } = require('../Query/TwitterQueries');
 const { publishMeUpdate } = require('./MemberMutations');
 
+const simpleAddLink = async (ctx, url, tags = []) => {
+   const dataObj = {
+      owner: {
+         connect: {
+            id: ctx.req.memberId
+         }
+      },
+      url
+   };
+
+   // We also need to get any OG data it might have attached to it
+   let ogLinkData = await ctx.db.query.link(
+      {
+         where: {
+            url
+         }
+      },
+      `{title description}`
+   );
+
+   if (ogLinkData == null) {
+      ogLinkData = {
+         url
+      };
+      const options = { url };
+      await ogs(options, (error, results, response) => {
+         ogLinkData.title = results.ogTitle;
+         ogLinkData.description = results.ogDescription;
+         ogLinkData.video = results.ogVideo ? results.ogVideo.url : null;
+         ogLinkData.image = results.ogImage ? results.ogImage.url : null;
+         ogLinkData.icon = results.favicon;
+         ogLinkData.siteName = results.ogSiteName;
+         ogLinkData.ogURL = results.ogUrl;
+
+         // ogLinkData = ctx.db.mutation.createLink({
+         //    data: ogLinkData
+         // });
+      });
+   }
+
+   if (ogLinkData.description != null) {
+      dataObj.description = ogLinkData.description;
+   }
+   if (ogLinkData.title != null) {
+      dataObj.title = ogLinkData.title;
+   }
+
+   if (tags != null) {
+      // Check if there's more than one tag
+      // Run each tag through a function that determines whether it needs to be connected or created
+      // Add those tags to the data object
+   }
+   const newLink = await ctx.db.mutation.createPersonalLink({
+      data: dataObj
+   });
+   return newLink;
+};
+exports.simpleAddLink = simpleAddLink;
+
 async function addLinkToArchive(parent, { url, tags }, ctx, info) {
    await loggedInGate(ctx).catch(() => {
       throw new AuthenticationError('You must be logged in to do that!');
@@ -34,61 +93,7 @@ async function addLinkToArchive(parent, { url, tags }, ctx, info) {
       );
    }
 
-   // If they haven't, then we'll add it for them
-   const dataObj = {
-      owner: {
-         connect: {
-            id: ctx.req.memberId
-         }
-      },
-      url
-   };
-
-   // We also need to get any OG data it might have attached to it
-   let ogLinkData = await ctx.db.query.link(
-      {
-         where: {
-            url
-         }
-      },
-      `{title description}`
-   );
-
-   if (ogLinkData == null) {
-      ogLinkData = {
-         url
-      };
-      const options = { url };
-      await ogs(options, (error, results, response) => {
-         ogLinkData.title = results.ogTitle;
-         ogLinkData.description = results.ogDescription;
-         // ogLinkData.video = results.ogVideo ? results.ogVideo.url : null;
-         // ogLinkData.image = results.ogImage ? results.ogImage.url : null;
-         // ogLinkData.icon = results.favicon;
-         // ogLinkData.siteName = results.ogSiteName;
-         // ogLinkData.ogURL = results.ogUrl;
-
-         // ogLinkData = ctx.db.mutation.createLink({
-         //    data: ogLinkData
-         // });
-      });
-   }
-
-   if (ogLinkData.description != null) {
-      dataObj.description = ogLinkData.description;
-   }
-   if (ogLinkData.title != null) {
-      dataObj.title = ogLinkData.title;
-   }
-
-   if (tags != null) {
-      // Check if there's more than one tag
-      // Run each tag through a function that determines whether it needs to be connected or created
-      // Add those tags to the data object
-   }
-   const newLink = await ctx.db.mutation.createPersonalLink({
-      data: dataObj
-   });
+   await simpleAddLink(ctx, url, tags);
 
    const newMe = await publishMeUpdate(ctx);
    return newMe;

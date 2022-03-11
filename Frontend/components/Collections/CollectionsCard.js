@@ -2,6 +2,8 @@ import { useMutation } from '@apollo/react-hooks';
 import { useState } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
 import useMe from '../Account/useMe';
+import ExplodingLink from '../ExplodingLink';
+import X from '../Icons/X';
 import FlexibleThingCard from '../ThingCards/FlexibleThingCard';
 import {
    COPY_THING_TO_GROUP_MUTATION,
@@ -40,7 +42,7 @@ const CollectionsCard = ({
 
    if (data == null) return null;
 
-   const { id } = data;
+   const { id, url } = data;
 
    const expandCard = newValue => {
       handleCardExpansion({
@@ -143,15 +145,7 @@ const CollectionsCard = ({
                ref={provided.innerRef}
                key={`${groupID}-${id}`}
             >
-               <FlexibleThingCard
-                  key={id}
-                  expanded={isExpanded}
-                  thingID={data.id}
-                  contentType="single"
-                  titleLink
-                  borderSide="top"
-                  noPic
-               />
+               <ExplodingLink url={url} hideCardShortlink />
                <div
                   className={
                      filteredGroups.length > 0
@@ -160,8 +154,7 @@ const CollectionsCard = ({
                   }
                >
                   {filteredGroups.length > 0 && copyInterface}
-                  <button
-                     type="button"
+                  <X
                      onClick={() => {
                         if (groupsContainingThingCount > 1) {
                            const newUserGroups = [...userGroups];
@@ -191,11 +184,7 @@ const CollectionsCard = ({
                            hideThingHandler(id);
                         }
                      }}
-                  >
-                     {groupsContainingThingCount > 1
-                        ? 'remove from group'
-                        : 'hide'}
-                  </button>
+                  />
                </div>
             </StyledCard>
          )}

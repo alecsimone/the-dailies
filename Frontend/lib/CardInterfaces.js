@@ -479,12 +479,30 @@ const basicMemberFields = `
 `;
 export { basicMemberFields };
 
+const fullPersonalLinkFields = `
+   __typename
+   id
+   url
+   owner {
+      id
+   }
+   title
+   description
+   partOfTags {
+      id
+      title
+   }
+   createdAt
+   updatedAt
+`;
+export { fullPersonalLinkFields };
+
 const collectionGroupFields = `
    __typename
    id
    title
-   things {
-      ${fullThingFields}
+   includedLinks {
+      ${fullPersonalLinkFields}
    }
    order
    createdAt
@@ -506,7 +524,6 @@ const fullCollectionFields = `
       __typename
       id
    }
-   groupByTag
    hiddenTags {
       __typename
       id
@@ -633,24 +650,6 @@ const profileFields = `
    createdAt
 `;
 export { profileFields };
-
-const fullPersonalLinkFields = `
-   __typename
-   id
-   url
-   owner {
-      id
-   }
-   title
-   description
-   partOfTags {
-      id
-      title
-   }
-   createdAt
-   updatedAt
-`;
-export { fullPersonalLinkFields };
 
 const fullMemberFields = `
    __typename

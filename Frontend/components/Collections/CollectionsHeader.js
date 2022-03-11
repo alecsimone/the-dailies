@@ -58,7 +58,6 @@ const CollectionsHeader = ({
    const collectionTitleRef = useRef(null);
 
    const {
-      groupByTag,
       id,
       title,
       userGroups,
@@ -74,24 +73,6 @@ const CollectionsHeader = ({
 
    const debounceKey = id;
    const [renameCollection] = useMutation(RENAME_COLLECTION_MUTATION, {
-      context: {
-         debounceKey
-      }
-   });
-
-   const [setCollectionGroupByTag] = useMutation(SET_GROUP_BY_TAG_MUTATION, {
-      variables: {
-         collectionID: id,
-         groupByTag: !groupByTag
-      },
-      optimisticResponse: {
-         __typename: 'Mutation',
-         setCollectionGroupByTag: {
-            __typename: 'Collection',
-            id,
-            groupByTag: !groupByTag
-         }
-      },
       context: {
          debounceKey
       }
@@ -204,12 +185,6 @@ const CollectionsHeader = ({
       </button>
    );
 
-   const groupByTagButton = (
-      <button type="button" onClick={setCollectionGroupByTag}>
-         {groupByTag ? 'group manually' : 'group by tag'}
-      </button>
-   );
-
    const addGroupButton = (
       <button
          type="button"
@@ -235,6 +210,8 @@ const CollectionsHeader = ({
                   order: [newGroupID]
                });
             }
+            console.log('everything ok?');
+            return;
             addGroupToCollection({
                variables: {
                   collectionID: id,
@@ -335,13 +312,9 @@ const CollectionsHeader = ({
             <div className="headerButtons">
                <AddCollectionButton />
                {deleteCollectionButton}
-               {groupByTagButton}
-               {!groupByTag &&
-                  hiddenGroups.length > 0 &&
-                  showHiddenGroupsButton}
-               {groupByTag && hiddenTags.length > 0 && showHiddenTagsButton}
+               {hiddenGroups.length > 0 && showHiddenGroupsButton}
                {hiddenThings.length > 0 && showHiddenThingsButton}
-               {!groupByTag && addGroupButton}
+               {addGroupButton}
             </div>
          </div>
       </header>

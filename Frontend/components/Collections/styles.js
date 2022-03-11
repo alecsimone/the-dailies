@@ -113,6 +113,7 @@ export { StyledCollection };
 
 const StyledGroup = styled.div`
    width: 100%;
+   max-width: 64rem;
    display: inline-block;
    padding: 0 2rem;
    border-radius: 6px;
@@ -172,9 +173,12 @@ const StyledGroup = styled.div`
       margin-bottom: 2rem;
       text-align: center;
    }
-   input.addTax {
-      font-size: ${props => props.theme.smallText};
-      margin-bottom: 2rem;
+   footer {
+      input {
+         width: 40rem;
+         font-size: ${props => props.theme.smallText};
+         margin-bottom: 2rem;
+      }
    }
 `;
 export { StyledGroup };
@@ -195,6 +199,9 @@ const StyledCard = styled.div`
          opacity: 1;
       }
    }
+   img {
+      width: 100%;
+   }
    .cardManagementBar {
       display: flex;
       justify-content: space-between;
@@ -205,11 +212,13 @@ const StyledCard = styled.div`
       font-size: ${props => props.theme.miniText};
       padding: 1rem;
       line-height: 1;
-      button {
-         opacity: 0.6;
+      svg.x {
+         height: ${props => props.theme.smallHead};
+         opacity: 0.4;
          padding: 0.5rem;
+         cursor: pointer;
          &:hover {
-            opacity: 1;
+            opacity: 0.8;
          }
       }
       .copyInterface {

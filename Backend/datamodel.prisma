@@ -176,7 +176,7 @@ type CollectionGroup {
    id: ID! @id @unique
    title: String! @default(value: "Untitled Group")
    inCollection: Collection @relation(name: "ConnectedGroups")
-   things: [Thing] @scalarList(strategy: RELATION)
+   includedLinks: [PersonalLink] @scalarList(strategy: RELATION)
    order: [String] @scalarList(strategy: RELATION)
    createdAt: DateTime! @createdAt
    updatedAt: DateTime @updatedAt
@@ -200,7 +200,6 @@ type Collection {
    author: Member! @relation(name: "Collector")
    filterString: String
    hiddenThings: [Thing] @scalarList(strategy: RELATION)
-   groupByTag: Boolean! @default(value: false)
    hiddenTags: [Tag] @scalarList(strategy: RELATION)
    hiddenGroups: [CollectionGroup] @scalarList(strategy: RELATION) @relation(name: "HiddenGroups")
    userGroups: [CollectionGroup] @scalarList(strategy: RELATION) @relation(name: "ConnectedGroups")
@@ -247,6 +246,7 @@ type PersonalLink {
    title: String
    description: String
    partOfTags: [LinkTag]
+   inCollectionGroups: [CollectionGroup] @scalarList(strategy: RELATION)
    createdAt: DateTime! @createdAt
    updatedAt: DateTime @updatedAt
 }

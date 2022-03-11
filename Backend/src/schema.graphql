@@ -91,6 +91,7 @@ type Mutation {
   showHiddenTagsOnCollection(collectionID: ID!): Collection
   renameGroupOnCollection(collectionID: ID!, groupID: String!, newTitle: String!): Collection
   copyThingToCollectionGroup(collectionID: ID!, thingID: ID!, targetGroupID: String!): Collection
+  addLinkToCollectionGroup(url: String!, groupID: ID!): CollectionGroup
   removeThingFromCollectionGroup(collectionID: ID!, thingID: ID!, groupID: String!): Collection
   hideThingOnCollection(collectionID: ID!, thingID: ID!): Collection
   showHiddenThingsOnCollection(collectionID: ID!): Collection

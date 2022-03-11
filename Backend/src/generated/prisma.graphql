@@ -206,7 +206,7 @@ type CollectionGroup {
   id: ID!
   title: String!
   inCollection: Collection
-  things(where: ThingWhereInput, orderBy: ThingOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Thing!]
+  includedLinks(where: PersonalLinkWhereInput, orderBy: PersonalLinkOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [PersonalLink!]
   order: [String!]!
   createdAt: DateTime!
   updatedAt: DateTime
@@ -222,12 +222,17 @@ input CollectionGroupCreateInput {
   id: ID
   title: String
   inCollection: CollectionCreateOneWithoutUserGroupsInput
-  things: ThingCreateManyInput
+  includedLinks: PersonalLinkCreateManyWithoutInCollectionGroupsInput
   order: CollectionGroupCreateorderInput
 }
 
 input CollectionGroupCreateManyInput {
   create: [CollectionGroupCreateInput!]
+  connect: [CollectionGroupWhereUniqueInput!]
+}
+
+input CollectionGroupCreateManyWithoutIncludedLinksInput {
+  create: [CollectionGroupCreateWithoutIncludedLinksInput!]
   connect: [CollectionGroupWhereUniqueInput!]
 }
 
@@ -240,10 +245,17 @@ input CollectionGroupCreateorderInput {
   set: [String!]
 }
 
+input CollectionGroupCreateWithoutIncludedLinksInput {
+  id: ID
+  title: String
+  inCollection: CollectionCreateOneWithoutUserGroupsInput
+  order: CollectionGroupCreateorderInput
+}
+
 input CollectionGroupCreateWithoutInCollectionInput {
   id: ID
   title: String
-  things: ThingCreateManyInput
+  includedLinks: PersonalLinkCreateManyWithoutInCollectionGroupsInput
   order: CollectionGroupCreateorderInput
 }
 
@@ -342,14 +354,14 @@ input CollectionGroupSubscriptionWhereInput {
 input CollectionGroupUpdateDataInput {
   title: String
   inCollection: CollectionUpdateOneWithoutUserGroupsInput
-  things: ThingUpdateManyInput
+  includedLinks: PersonalLinkUpdateManyWithoutInCollectionGroupsInput
   order: CollectionGroupUpdateorderInput
 }
 
 input CollectionGroupUpdateInput {
   title: String
   inCollection: CollectionUpdateOneWithoutUserGroupsInput
-  things: ThingUpdateManyInput
+  includedLinks: PersonalLinkUpdateManyWithoutInCollectionGroupsInput
   order: CollectionGroupUpdateorderInput
 }
 
@@ -375,6 +387,18 @@ input CollectionGroupUpdateManyMutationInput {
   order: CollectionGroupUpdateorderInput
 }
 
+input CollectionGroupUpdateManyWithoutIncludedLinksInput {
+  create: [CollectionGroupCreateWithoutIncludedLinksInput!]
+  delete: [CollectionGroupWhereUniqueInput!]
+  connect: [CollectionGroupWhereUniqueInput!]
+  set: [CollectionGroupWhereUniqueInput!]
+  disconnect: [CollectionGroupWhereUniqueInput!]
+  update: [CollectionGroupUpdateWithWhereUniqueWithoutIncludedLinksInput!]
+  upsert: [CollectionGroupUpsertWithWhereUniqueWithoutIncludedLinksInput!]
+  deleteMany: [CollectionGroupScalarWhereInput!]
+  updateMany: [CollectionGroupUpdateManyWithWhereNestedInput!]
+}
+
 input CollectionGroupUpdateManyWithoutInCollectionInput {
   create: [CollectionGroupCreateWithoutInCollectionInput!]
   delete: [CollectionGroupWhereUniqueInput!]
@@ -396,15 +420,26 @@ input CollectionGroupUpdateorderInput {
   set: [String!]
 }
 
+input CollectionGroupUpdateWithoutIncludedLinksDataInput {
+  title: String
+  inCollection: CollectionUpdateOneWithoutUserGroupsInput
+  order: CollectionGroupUpdateorderInput
+}
+
 input CollectionGroupUpdateWithoutInCollectionDataInput {
   title: String
-  things: ThingUpdateManyInput
+  includedLinks: PersonalLinkUpdateManyWithoutInCollectionGroupsInput
   order: CollectionGroupUpdateorderInput
 }
 
 input CollectionGroupUpdateWithWhereUniqueNestedInput {
   where: CollectionGroupWhereUniqueInput!
   data: CollectionGroupUpdateDataInput!
+}
+
+input CollectionGroupUpdateWithWhereUniqueWithoutIncludedLinksInput {
+  where: CollectionGroupWhereUniqueInput!
+  data: CollectionGroupUpdateWithoutIncludedLinksDataInput!
 }
 
 input CollectionGroupUpdateWithWhereUniqueWithoutInCollectionInput {
@@ -416,6 +451,12 @@ input CollectionGroupUpsertWithWhereUniqueNestedInput {
   where: CollectionGroupWhereUniqueInput!
   update: CollectionGroupUpdateDataInput!
   create: CollectionGroupCreateInput!
+}
+
+input CollectionGroupUpsertWithWhereUniqueWithoutIncludedLinksInput {
+  where: CollectionGroupWhereUniqueInput!
+  update: CollectionGroupUpdateWithoutIncludedLinksDataInput!
+  create: CollectionGroupCreateWithoutIncludedLinksInput!
 }
 
 input CollectionGroupUpsertWithWhereUniqueWithoutInCollectionInput {
@@ -454,9 +495,9 @@ input CollectionGroupWhereInput {
   title_ends_with: String
   title_not_ends_with: String
   inCollection: CollectionWhereInput
-  things_every: ThingWhereInput
-  things_some: ThingWhereInput
-  things_none: ThingWhereInput
+  includedLinks_every: PersonalLinkWhereInput
+  includedLinks_some: PersonalLinkWhereInput
+  includedLinks_none: PersonalLinkWhereInput
   createdAt: DateTime
   createdAt_not: DateTime
   createdAt_in: [DateTime!]
@@ -7023,6 +7064,7 @@ type PersonalLink {
   title: String
   description: String
   partOfTags(where: LinkTagWhereInput, orderBy: LinkTagOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [LinkTag!]
+  inCollectionGroups(where: CollectionGroupWhereInput, orderBy: CollectionGroupOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [CollectionGroup!]
   createdAt: DateTime!
   updatedAt: DateTime
 }
@@ -7040,6 +7082,12 @@ input PersonalLinkCreateInput {
   title: String
   description: String
   partOfTags: LinkTagCreateManyWithoutConnectedLinksInput
+  inCollectionGroups: CollectionGroupCreateManyWithoutIncludedLinksInput
+}
+
+input PersonalLinkCreateManyWithoutInCollectionGroupsInput {
+  create: [PersonalLinkCreateWithoutInCollectionGroupsInput!]
+  connect: [PersonalLinkWhereUniqueInput!]
 }
 
 input PersonalLinkCreateManyWithoutOwnerInput {
@@ -7052,12 +7100,22 @@ input PersonalLinkCreateManyWithoutPartOfTagsInput {
   connect: [PersonalLinkWhereUniqueInput!]
 }
 
+input PersonalLinkCreateWithoutInCollectionGroupsInput {
+  id: ID
+  url: String!
+  owner: MemberCreateOneWithoutOwnedLinksInput!
+  title: String
+  description: String
+  partOfTags: LinkTagCreateManyWithoutConnectedLinksInput
+}
+
 input PersonalLinkCreateWithoutOwnerInput {
   id: ID
   url: String!
   title: String
   description: String
   partOfTags: LinkTagCreateManyWithoutConnectedLinksInput
+  inCollectionGroups: CollectionGroupCreateManyWithoutIncludedLinksInput
 }
 
 input PersonalLinkCreateWithoutPartOfTagsInput {
@@ -7066,6 +7124,7 @@ input PersonalLinkCreateWithoutPartOfTagsInput {
   owner: MemberCreateOneWithoutOwnedLinksInput!
   title: String
   description: String
+  inCollectionGroups: CollectionGroupCreateManyWithoutIncludedLinksInput
 }
 
 type PersonalLinkEdge {
@@ -7199,6 +7258,7 @@ input PersonalLinkUpdateInput {
   title: String
   description: String
   partOfTags: LinkTagUpdateManyWithoutConnectedLinksInput
+  inCollectionGroups: CollectionGroupUpdateManyWithoutIncludedLinksInput
 }
 
 input PersonalLinkUpdateManyDataInput {
@@ -7211,6 +7271,18 @@ input PersonalLinkUpdateManyMutationInput {
   url: String
   title: String
   description: String
+}
+
+input PersonalLinkUpdateManyWithoutInCollectionGroupsInput {
+  create: [PersonalLinkCreateWithoutInCollectionGroupsInput!]
+  delete: [PersonalLinkWhereUniqueInput!]
+  connect: [PersonalLinkWhereUniqueInput!]
+  set: [PersonalLinkWhereUniqueInput!]
+  disconnect: [PersonalLinkWhereUniqueInput!]
+  update: [PersonalLinkUpdateWithWhereUniqueWithoutInCollectionGroupsInput!]
+  upsert: [PersonalLinkUpsertWithWhereUniqueWithoutInCollectionGroupsInput!]
+  deleteMany: [PersonalLinkScalarWhereInput!]
+  updateMany: [PersonalLinkUpdateManyWithWhereNestedInput!]
 }
 
 input PersonalLinkUpdateManyWithoutOwnerInput {
@@ -7242,11 +7314,20 @@ input PersonalLinkUpdateManyWithWhereNestedInput {
   data: PersonalLinkUpdateManyDataInput!
 }
 
+input PersonalLinkUpdateWithoutInCollectionGroupsDataInput {
+  url: String
+  owner: MemberUpdateOneRequiredWithoutOwnedLinksInput
+  title: String
+  description: String
+  partOfTags: LinkTagUpdateManyWithoutConnectedLinksInput
+}
+
 input PersonalLinkUpdateWithoutOwnerDataInput {
   url: String
   title: String
   description: String
   partOfTags: LinkTagUpdateManyWithoutConnectedLinksInput
+  inCollectionGroups: CollectionGroupUpdateManyWithoutIncludedLinksInput
 }
 
 input PersonalLinkUpdateWithoutPartOfTagsDataInput {
@@ -7254,6 +7335,12 @@ input PersonalLinkUpdateWithoutPartOfTagsDataInput {
   owner: MemberUpdateOneRequiredWithoutOwnedLinksInput
   title: String
   description: String
+  inCollectionGroups: CollectionGroupUpdateManyWithoutIncludedLinksInput
+}
+
+input PersonalLinkUpdateWithWhereUniqueWithoutInCollectionGroupsInput {
+  where: PersonalLinkWhereUniqueInput!
+  data: PersonalLinkUpdateWithoutInCollectionGroupsDataInput!
 }
 
 input PersonalLinkUpdateWithWhereUniqueWithoutOwnerInput {
@@ -7264,6 +7351,12 @@ input PersonalLinkUpdateWithWhereUniqueWithoutOwnerInput {
 input PersonalLinkUpdateWithWhereUniqueWithoutPartOfTagsInput {
   where: PersonalLinkWhereUniqueInput!
   data: PersonalLinkUpdateWithoutPartOfTagsDataInput!
+}
+
+input PersonalLinkUpsertWithWhereUniqueWithoutInCollectionGroupsInput {
+  where: PersonalLinkWhereUniqueInput!
+  update: PersonalLinkUpdateWithoutInCollectionGroupsDataInput!
+  create: PersonalLinkCreateWithoutInCollectionGroupsInput!
 }
 
 input PersonalLinkUpsertWithWhereUniqueWithoutOwnerInput {
@@ -7339,6 +7432,9 @@ input PersonalLinkWhereInput {
   partOfTags_every: LinkTagWhereInput
   partOfTags_some: LinkTagWhereInput
   partOfTags_none: LinkTagWhereInput
+  inCollectionGroups_every: CollectionGroupWhereInput
+  inCollectionGroups_some: CollectionGroupWhereInput
+  inCollectionGroups_none: CollectionGroupWhereInput
   createdAt: DateTime
   createdAt_not: DateTime
   createdAt_in: [DateTime!]

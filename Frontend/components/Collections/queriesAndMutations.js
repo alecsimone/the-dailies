@@ -77,23 +77,6 @@ const RENAME_COLLECTION_MUTATION = gql`
 `;
 export { RENAME_COLLECTION_MUTATION };
 
-const SET_GROUP_BY_TAG_MUTATION = gql`
-   mutation SET_GROUP_BY_TAG_MUTATION(
-      $collectionID: ID!
-      $groupByTag: Boolean!
-   ) {
-      setCollectionGroupByTag(
-         collectionID: $collectionID
-         groupByTag: $groupByTag
-      ) {
-         __typename
-         id
-         groupByTag
-      }
-   }
-`;
-export { SET_GROUP_BY_TAG_MUTATION };
-
 const ADD_GROUP_TO_COLLECTION_MUTATION = gql`
    mutation ADD_GROUP_TO_COLLECTION_MUTATION(
       $collectionID: ID!
@@ -241,6 +224,15 @@ const COPY_THING_TO_GROUP_MUTATION = gql`
    }
 `;
 export { COPY_THING_TO_GROUP_MUTATION };
+
+const ADD_LINK_TO_GROUP_MUTATION = gql`
+   mutation ADD_LINK_TO_GROUP_MUTATION($url: String!, $groupID: ID!) {
+      addLinkToCollectionGroup(url: $url, groupID: $groupID) {
+         ${collectionGroupFields}
+      }
+   }
+`;
+export { ADD_LINK_TO_GROUP_MUTATION };
 
 const REMOVE_THING_FROM_GROUP_MUTATION = gql`
    mutation REMOVE_THING_FROM_GROUP_MUTATION($collectionID: ID!, $thingID: ID!, $groupID: String!) {

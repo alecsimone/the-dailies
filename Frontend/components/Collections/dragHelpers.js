@@ -464,20 +464,10 @@ const prepareProvidedData = (
 
    if (source != null && type === 'group') {
       // We need to add the order for the source group to its object here
-
-      if (groupByTag) {
-         // If we're grouped by tag, we want the relevant tag order
-         const thisOrderIndex = tagColumnOrders.findIndex(
-            orderObj => orderObj.id === source.droppableId
-         );
-         source.order = tagColumnOrders[thisOrderIndex].order;
-      } else {
-         // Otherwise we want the relevant regular column order
-         const thisOrderIndex = columnOrders.findIndex(
-            orderObj => orderObj.id === source.droppableId
-         );
-         source.order = columnOrders[thisOrderIndex].order;
-      }
+      const thisOrderIndex = columnOrders.findIndex(
+         orderObj => orderObj.id === source.droppableId
+      );
+      source.order = columnOrders[thisOrderIndex].order;
    }
 
    if (destination != null && type === 'card') {
@@ -491,20 +481,10 @@ const prepareProvidedData = (
 
    if (destination != null && type === 'group') {
       // We need to add the order for the destination group to its object here
-
-      if (groupByTag) {
-         // If we're grouped by tag, we want the relevant tag order
-         const thisOrderIndex = tagColumnOrders.findIndex(
-            orderObj => orderObj.id === destination.droppableId
-         );
-         destination.order = tagColumnOrders[thisOrderIndex].order;
-      } else {
-         // Otherwise we want the relevant regular column order
-         const thisOrderIndex = columnOrders.findIndex(
-            orderObj => orderObj.id === destination.droppableId
-         );
-         destination.order = columnOrders[thisOrderIndex].order;
-      }
+      const thisOrderIndex = columnOrders.findIndex(
+         orderObj => orderObj.id === destination.droppableId
+      );
+      destination.order = columnOrders[thisOrderIndex].order;
    }
 
    const draggableId = getDraggableId(rawDraggableId);
@@ -553,7 +533,7 @@ const reorderColumnsHandler = (
       collectionID
    };
 
-   const currentColumnOrder = groupByTag ? tagColumnOrders : columnOrders;
+   const currentColumnOrder = columnOrders;
 
    // We're going to update columnOrders directly instead of doing an optimistic response, but only for the source group for now
    const sourceIndex = currentColumnOrder.findIndex(
@@ -628,49 +608,27 @@ const reorderCardsHandler = (
       groupByTag && source.droppableId !== destination.droppableId
    );
 
-   if (groupByTag) {
-      reorderTagsHandler(
-         source,
-         newSourceOrder,
-         destination,
-         newDestinationOrder,
-         reorderTags,
-         collectionID,
-         addTaxToThingById,
-         tagOrders
-      );
-   } else {
-      reorderGroupsHandler(
-         source,
-         newSourceOrder,
-         destination,
-         newDestinationOrder,
-         reorderGroups,
-         collectionID,
-         reorderUngroupedThings
-      );
-   }
+   reorderGroupsHandler(
+      source,
+      newSourceOrder,
+      destination,
+      newDestinationOrder,
+      reorderGroups,
+      collectionID,
+      reorderUngroupedThings
+   );
 
    // If the thing was dragged onto a different group from where it started, add it to that group, and if it's a manual group, remove it from the original group
    if (
       destination.droppableId !== source.droppableId &&
       destination.droppableId !== 'untagged'
    ) {
-      if (groupByTag === true) {
-         addTagToCard(
-            addTaxToThingById,
-            draggableId,
-            source.groupObj,
-            destination.groupObj
-         );
-      } else {
-         moveCardToGroupHandler(
-            moveCardToGroup,
-            draggableId,
-            source.groupObj,
-            destination.groupObj
-         );
-      }
+      moveCardToGroupHandler(
+         moveCardToGroup,
+         draggableId,
+         source.groupObj,
+         destination.groupObj
+      );
    }
 };
 

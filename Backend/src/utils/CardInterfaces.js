@@ -373,12 +373,30 @@ const tagFields = `
 `;
 exports.tagFields = tagFields;
 
+const fullPersonalLinkFields = `
+   __typename
+   id
+   url
+   owner {
+      id
+   }
+   title
+   description
+   partOfTags {
+      id
+      title
+   }
+   createdAt
+   updatedAt
+`;
+exports.fullPersonalLinkFields = fullPersonalLinkFields;
+
 const collectionGroupFields = `
    __typename
    id
    title
-   things {
-      ${fullThingFields}
+   includedLinks {
+      ${fullPersonalLinkFields}
    }
    order
    createdAt
@@ -442,24 +460,6 @@ const fullCollectionFields = `
    updatedAt
 `;
 exports.fullCollectionFields = fullCollectionFields;
-
-const fullPersonalLinkFields = `
-   __typename
-   id
-   url
-   owner {
-      id
-   }
-   title
-   description
-   partOfTags {
-      id
-      title
-   }
-   createdAt
-   updatedAt
-`;
-exports.fullPersonalLinkFields = fullPersonalLinkFields;
 
 const fullMemberFields = `
    __typename

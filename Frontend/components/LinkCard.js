@@ -43,7 +43,13 @@ const StyledLinkCard = styled.div`
       }
    }
    &.poster {
-      flex-wrap: wrap;
+      padding: 0;
+      a.wrapperLink {
+         flex-wrap: wrap;
+         .linkCardInfo {
+            padding: 1rem;
+         }
+      }
    }
    .linkCardInfo {
       padding-right: 1rem;
@@ -77,11 +83,14 @@ const StyledLinkCard = styled.div`
    .linkCardPoster {
       width: 100%;
       margin-top: 0.5rem;
+      display: flex;
+      align-items: center;
       img {
          width: 100%;
          max-height: 36rem;
-         object-fit: cover;
+         object-fit: contain;
          object-position: center center;
+         border-radius: 0 0 4px 4px;
       }
    }
 `;
@@ -211,7 +220,7 @@ const LinkCard = ({ link }) => {
                         <img src={icon} />
                      </div>
                   )}
-               {image != null && video == null && (
+               {image != null && (
                   <div className="linkCardPoster">
                      <img src={image} />
                   </div>

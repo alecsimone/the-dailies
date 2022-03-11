@@ -33,6 +33,7 @@ const StyledNavSidebar = styled.section`
    border-right: 3px solid
       ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
    text-align: center;
+   min-width: 27rem;
    .container {
       max-height: 800px;
       height: 100%;

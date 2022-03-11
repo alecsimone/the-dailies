@@ -2,8 +2,11 @@ const { AuthenticationError } = require('apollo-server-express');
 const { loggedInGate, fullMemberGate } = require('../../utils/Authentication');
 const {
    collectionGroupFields,
-   smallThingCardFields
+   smallThingCardFields,
+   fullPersonalLinkFields,
+   fullCollectionFields
 } = require('../../utils/CardInterfaces');
+const { simpleAddLink } = require('./LinkArchiveMutations');
 const { publishMeUpdate } = require('./MemberMutations');
 
 async function addCollection(parent, args, ctx, info) {
@@ -12,7 +15,16 @@ async function addCollection(parent, args, ctx, info) {
    });
    fullMemberGate(ctx.req.member);
 
-   // First we want to create a new collection
+   // First we want to create a new collection. We'll need to seed it with a starting group, so let's make a new group first. We have to make it separately so we can pass its id to columnOrders.
+
+   const newGroup = await ctx.db.mutation.createCollectionGroup(
+      {
+         data: {
+            title: 'Untitled Group'
+         }
+      },
+      `{id}`
+   );
    const newCollection = await ctx.db.mutation
       .createCollection(
          {
@@ -22,10 +34,15 @@ async function addCollection(parent, args, ctx, info) {
                      id: ctx.req.memberId
                   }
                },
+               userGroups: {
+                  connect: {
+                     id: newGroup.id
+                  }
+               },
                columnOrders: {
                   create: {
                      order: {
-                        set: ['ungrouped']
+                        set: [newGroup.id]
                      }
                   }
                }
@@ -520,6 +537,61 @@ async function copyThingToCollectionGroup(
    return updatedCollection;
 }
 exports.copyThingToCollectionGroup = copyThingToCollectionGroup;
+
+async function addLinkToCollectionGroup(parent, { url, groupID }, ctx, info) {
+   await loggedInGate(ctx).catch(() => {
+      throw new AuthenticationError('You must be logged in to do that!');
+   });
+   fullMemberGate(ctx.req.member);
+
+   // First we need to check if the member has already added this link, and if not, we need to create a new personal link
+   const existingLink = await ctx.db.query.personalLinks(
+      {
+         where: {
+            AND: [
+               {
+                  owner: {
+                     id: ctx.req.memberId
+                  }
+               },
+               {
+                  url
+               }
+            ]
+         }
+      },
+      `{${fullPersonalLinkFields}}`
+   );
+
+   let linkObject;
+   if (existingLink != null && existingLink.length > 0) {
+      linkObject = existingLink;
+   } else {
+      linkObject = await simpleAddLink(ctx, url);
+   }
+
+   // Then we add that link to the CollectionGroup
+   const updatedGroup = await ctx.db.mutation.updateCollectionGroup(
+      {
+         where: {
+            id: groupID
+         },
+         data: {
+            includedLinks: {
+               connect: {
+                  id: linkObject.id
+               }
+            }
+         }
+      },
+      `{${collectionGroupFields}}`
+   );
+   return updatedGroup;
+
+   // And return the collection that it's part of
+   // return updatedGroup.inCollection;
+}
+exports.addLinkToCollectionGroup = addLinkToCollectionGroup;
 
 async function removeThingFromCollectionGroup(
    parent,

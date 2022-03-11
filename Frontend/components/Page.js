@@ -16,6 +16,7 @@ import MyThings from './Archives/MyThings';
 import ThingsSubscriptionManager from '../stuffStore/ThingsSubscriptionManager';
 import GlobalStyle, { theme } from '../styles/globalStyle';
 import StickifierHost from '../Stickifier/StickifierHost';
+import DragAndDropProvider from './Collections/DragAndDropProvider';
 
 const StyledPage = styled.div`
    position: relative;
@@ -71,36 +72,38 @@ const Page = ({ children, pageProps }) => {
                setNavSidebarIsOpen={setNavSidebarIsOpen}
                isHome={isHome}
             >
-               <StyledPage id="page">
-                  <Meta />
-                  <Header pageProps={pageProps} />
-                  <>
-                     <GlobalStyle />
-                     <section className="threeColumns">
-                        <NavSidebar />
-                        <div className="mainSection">{children}</div>
-                        <div
-                           className={
-                              thingsSidebarIsOpen
-                                 ? 'myThingsBar visible'
-                                 : 'myThingsBar hidden'
-                           }
-                        >
-                           <MyThings
-                              setShowingSidebar={setThingsSidebarIsOpen}
-                              scrollingSelector=".myThingsBar"
-                              borderSide="left"
-                           />
-                        </div>
-                     </section>
-                     <Modal />
-                     <HeartPopUp />
-                     <ThingsSubscriptionManager />
-                  </>
-                  <BottomBar />
-               </StyledPage>
-               <ToastContainer className="dailiesStyle" />
-               <StickifierHost />
+               <DragAndDropProvider>
+                  <StyledPage id="page">
+                     <Meta />
+                     <Header pageProps={pageProps} />
+                     <>
+                        <GlobalStyle />
+                        <section className="threeColumns">
+                           <NavSidebar />
+                           <div className="mainSection">{children}</div>
+                           <div
+                              className={
+                                 thingsSidebarIsOpen
+                                    ? 'myThingsBar visible'
+                                    : 'myThingsBar hidden'
+                              }
+                           >
+                              <MyThings
+                                 setShowingSidebar={setThingsSidebarIsOpen}
+                                 scrollingSelector=".myThingsBar"
+                                 borderSide="left"
+                              />
+                           </div>
+                        </section>
+                        <Modal />
+                        <HeartPopUp />
+                        <ThingsSubscriptionManager />
+                     </>
+                     <BottomBar />
+                  </StyledPage>
+                  <ToastContainer className="dailiesStyle" />
+                  <StickifierHost />
+               </DragAndDropProvider>
             </ModalProvider>
          </ThemeProvider>
       </MemberProvider>
