@@ -538,7 +538,12 @@ async function copyThingToCollectionGroup(
 }
 exports.copyThingToCollectionGroup = copyThingToCollectionGroup;
 
-async function addLinkToCollectionGroup(parent, { url, groupID }, ctx, info) {
+async function addLinkToCollectionGroup(
+   parent,
+   { url, groupID, position },
+   ctx,
+   info
+) {
    await loggedInGate(ctx).catch(() => {
       throw new AuthenticationError('You must be logged in to do that!');
    });
@@ -570,6 +575,22 @@ async function addLinkToCollectionGroup(parent, { url, groupID }, ctx, info) {
       linkObject = await simpleAddLink(ctx, url);
    }
 
+   const oldGroupData = await ctx.db.query.collectionGroup(
+      {
+         where: {
+            id: groupID
+         }
+      },
+      `{order}`
+   );
+
+   const { order } = oldGroupData;
+   if (position != null) {
+      order.splice(position, 0, linkObject.id);
+   } else {
+      order.push(linkObject.id);
+   }
+
    // Then we add that link to the CollectionGroup
    const updatedGroup = await ctx.db.mutation.updateCollectionGroup(
       {
@@ -581,6 +602,9 @@ async function addLinkToCollectionGroup(parent, { url, groupID }, ctx, info) {
                connect: {
                   id: linkObject.id
                }
+            },
+            order: {
+               set: order
             }
          }
       },
@@ -894,7 +918,7 @@ exports.reorderUngroupedThings = reorderUngroupedThings;
 
 async function moveCardToGroup(
    parent,
-   { thingID, fromGroupID, toGroupID },
+   { linkID, sourceGroupID, destinationGroupID, newPosition },
    ctx,
    info
 ) {
@@ -904,42 +928,76 @@ async function moveCardToGroup(
    fullMemberGate(ctx.req.member);
    const updatedGroupsArray = [];
 
-   // If we got a toGroupID, then we get disconnect the thing from the fromGroup
-   if (fromGroupID != null) {
+   // If we got a sourceGroupID, then we disconnect the thing from the sourceGroup
+   if (sourceGroupID != null) {
+      const oldSourceGroupData = await ctx.db.query.collectionGroup(
+         {
+            where: {
+               id: sourceGroupID
+            }
+         },
+         `{order}`
+      );
+
+      const { order: sourceOrder } = oldSourceGroupData;
+      const newSourceOrder = sourceOrder.filter(
+         existingID => existingID !== linkID
+      );
       const updatedFromGroup = await ctx.db.mutation.updateCollectionGroup(
          {
             where: {
-               id: fromGroupID
+               id: sourceGroupID
             },
             data: {
-               things: {
+               includedLinks: {
                   disconnect: {
-                     id: thingID
+                     id: linkID
                   }
+               },
+               order: {
+                  set: newSourceOrder
                }
             }
          },
-         `{__typename id things {${smallThingCardFields}}}`
+         `{${collectionGroupFields}}`
       );
       updatedGroupsArray.push(updatedFromGroup);
    }
 
    // If we got a toGroupID, then we connect the thing to the toGroup
-   if (toGroupID != null) {
+   if (destinationGroupID != null) {
+      const oldDestinationGroupData = await ctx.db.query.collectionGroup(
+         {
+            where: {
+               id: destinationGroupID
+            }
+         },
+         `{order}`
+      );
+
+      const { order: destinationOrder } = oldDestinationGroupData;
+      if (newPosition != null) {
+         destinationOrder.splice(newPosition, 0, linkID);
+      } else {
+         destinationOrder.push(linkID);
+      }
       const updatedGroupTwo = await ctx.db.mutation.updateCollectionGroup(
          {
             where: {
-               id: toGroupID
+               id: destinationGroupID
             },
             data: {
-               things: {
+               includedLinks: {
                   connect: {
-                     id: thingID
+                     id: linkID
                   }
+               },
+               order: {
+                  set: destinationOrder
                }
             }
          },
-         `{__typename id things {${smallThingCardFields}}}`
+         `{${collectionGroupFields}}`
       );
       updatedGroupsArray.push(updatedGroupTwo);
    }
@@ -947,6 +1005,173 @@ async function moveCardToGroup(
    return updatedGroupsArray;
 }
 exports.moveCardToGroup = moveCardToGroup;
+
+async function moveGroupToColumn(
+   parent,
+   { groupID, sourceColumnID, destinationColumnID, newPosition },
+   ctx,
+   info
+) {
+   await loggedInGate(ctx).catch(() => {
+      throw new AuthenticationError('You must be logged in to do that!');
+   });
+   fullMemberGate(ctx.req.member);
+   const updatedColumnsArray = [];
+
+   if (sourceColumnID != null) {
+      const oldSourceOrderData = await ctx.db.query.columnOrder(
+         {
+            where: {
+               id: sourceColumnID
+            }
+         },
+         `{order}`
+      );
+
+      const { order: sourceOrder } = oldSourceOrderData;
+      const newSourceOrder = sourceOrder.filter(
+         existingID => existingID !== groupID
+      );
+
+      const updatedSourceOrder = await ctx.db.mutation.updateColumnOrder(
+         {
+            where: {
+               id: sourceColumnID
+            },
+            data: {
+               order: {
+                  set: newSourceOrder
+               }
+            }
+         },
+         info
+      );
+      updatedColumnsArray.push(updatedSourceOrder);
+   }
+
+   if (destinationColumnID != null) {
+      const oldDestinationOrderData = await ctx.db.query.columnOrder(
+         {
+            where: {
+               id: destinationColumnID
+            }
+         },
+         `{order}`
+      );
+
+      const { order: destinationOrder } = oldDestinationOrderData;
+      if (newPosition != null) {
+         destinationOrder.splice(newPosition, 0, groupID);
+      } else {
+         destinationOrder.push(groupID);
+      }
+
+      const updatedDestinationOrder = await ctx.db.mutation.updateColumnOrder(
+         {
+            where: {
+               id: destinationColumnID
+            },
+            data: {
+               order: {
+                  set: destinationOrder
+               }
+            }
+         },
+         info
+      );
+      updatedColumnsArray.push(updatedDestinationOrder);
+   }
+   return updatedColumnsArray;
+}
+exports.moveGroupToColumn = moveGroupToColumn;
+
+async function reorderGroup(
+   parent,
+   { groupID, linkID, newPosition },
+   ctx,
+   info
+) {
+   await loggedInGate(ctx).catch(() => {
+      throw new AuthenticationError('You must be logged in to do that!');
+   });
+   fullMemberGate(ctx.req.member);
+
+   const groupObj = await ctx.db.query.collectionGroup(
+      {
+         where: {
+            id: groupID
+         }
+      },
+      `{order}`
+   );
+
+   const oldPosition = groupObj.order.indexOf(linkID);
+
+   const newGroupObj = JSON.parse(JSON.stringify(groupObj));
+
+   newGroupObj.order.splice(oldPosition, 1);
+   newGroupObj.order.splice(newPosition, 0, linkID);
+
+   const updatedGroup = await ctx.db.mutation.updateCollectionGroup(
+      {
+         where: {
+            id: groupID
+         },
+         data: {
+            order: {
+               set: newGroupObj.order
+            }
+         }
+      },
+      `{${collectionGroupFields}}`
+   );
+   return updatedGroup;
+}
+exports.reorderGroup = reorderGroup;
+
+async function reorderColumn(
+   parent,
+   { columnID, groupID, newPosition },
+   ctx,
+   info
+) {
+   await loggedInGate(ctx).catch(() => {
+      throw new AuthenticationError('You must be logged in to do that!');
+   });
+   fullMemberGate(ctx.req.member);
+
+   const orderObj = await ctx.db.query.columnOrder(
+      {
+         where: {
+            id: columnID
+         }
+      },
+      `{order}`
+   );
+
+   const oldPosition = orderObj.order.indexOf(groupID);
+
+   const newOrderObj = JSON.parse(JSON.stringify(orderObj));
+
+   newOrderObj.order.splice(oldPosition, 1);
+   newOrderObj.order.splice(newPosition, 0, groupID);
+
+   const updatedOrderObj = await ctx.db.mutation.updateColumnOrder(
+      {
+         where: {
+            id: columnID
+         },
+         data: {
+            order: {
+               set: newOrderObj.order
+            }
+         }
+      },
+      `{id order}`
+   );
+   return updatedOrderObj;
+}
+exports.reorderColumn = reorderColumn;
 
 async function setColumnOrder(
    parent,

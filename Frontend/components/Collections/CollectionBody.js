@@ -70,16 +70,12 @@ const getShortestColumnIndex = (columnData, groups, isTagOrder) => {
 };
 export { getShortestColumnIndex };
 
-const CollectionBody = ({ activeCollection, fetchMoreButton }) => {
+const CollectionBody = ({ activeCollection }) => {
    const {
       id,
       userGroups,
-      tagOrders,
       hiddenGroups,
-      hiddenTags,
       hiddenThings,
-      ungroupedThingsOrder,
-      tagColumnOrders,
       columnOrders,
       expandedCards
    } = activeCollection;
@@ -87,12 +83,6 @@ const CollectionBody = ({ activeCollection, fetchMoreButton }) => {
    const [removeTaxFromThing] = useMutation(REMOVE_TAX_MUTATION);
 
    const [reorderGroups] = useMutation(REORDER_GROUPS_MUTATION);
-
-   const [reorderTags] = useMutation(REORDER_TAGS_MUTATION);
-
-   const [reorderUngroupedThings] = useMutation(
-      REORDER_UNGROUPED_THINGS_MUTATION
-   );
 
    const [moveCardToGroup] = useMutation(MOVE_CARD_TO_GROUP_MUTATION);
 
@@ -117,7 +107,7 @@ const CollectionBody = ({ activeCollection, fetchMoreButton }) => {
       const newUserGroups = userGroups.filter(
          thisGroupObj => thisGroupObj.id !== groupID
       );
-      currentColumnOrder.forEach(columnOrderObj => {
+      columnOrders.forEach(columnOrderObj => {
          columnOrderObj.order = columnOrderObj.order.filter(
             thisID => thisID !== groupID
          );
@@ -151,45 +141,13 @@ const CollectionBody = ({ activeCollection, fetchMoreButton }) => {
       />
    ));
 
-   // const dragEndHelper = ({
-   //    destination,
-   //    source,
-   //    draggableId: rawDraggableId,
-   //    type
-   // }) => {
-   //    handleDragEnd({
-   //       collectionID: id,
-   //       destination,
-   //       source,
-   //       rawDraggableId,
-   //       type,
-   //       things: [],
-   //       removeTaxFromThing,
-   //       reorderGroups,
-   //       reorderTags,
-   //       reorderUngroupedThings,
-   //       moveCardToGroup,
-   //       addTaxToThingById,
-   //       setColumnOrder,
-   //       columnOrders,
-   //       tagColumnOrders,
-   //       tagOrders,
-   //       groupSort,
-   //       groupElements
-   //    });
-   //    setDraggingGroup(false);
-   // };
-
    // First we need to figure out how many columns we're expecting to have
    const columnCount = getColumnCount();
 
-   // Then we need to create a variable to hold the current order, whether it be tagColumnOrders or columnOrders
-   const currentColumnOrder = columnOrders;
-
-   if (currentColumnOrder == null || currentColumnOrder.length === 0) {
+   if (columnOrders == null || columnOrders.length === 0) {
       // If we have no column orders, we need to make them. First we're going to make sure we have an array of the proper length, which is full of objects with id and order properties
       for (let i = 0; i < columnCount && i < groupElements.length; i += 1) {
-         currentColumnOrder.push({
+         columnOrders.push({
             id: getRandomString(24),
             order: []
          });
@@ -198,36 +156,36 @@ const CollectionBody = ({ activeCollection, fetchMoreButton }) => {
       // Then we're going to loop through all our groups, adding each one to the shortest column
       groupElements.forEach(groupElement => {
          const shortestColumn = getShortestColumnIndex(
-            currentColumnOrder,
+            columnOrders,
             groupElements
          );
-         if (currentColumnOrder[shortestColumn])
-            currentColumnOrder[shortestColumn].order.push(
+         if (columnOrders[shortestColumn])
+            columnOrders[shortestColumn].order.push(
                groupElement.props.groupObj.id
             );
       });
 
       // Then we'll send off the update
-      const columnIDs = currentColumnOrder.map(orderObj => orderObj.id);
-      const newOrders = currentColumnOrder.map(orderObj => orderObj.order);
+      const columnIDs = columnOrders.map(orderObj => orderObj.id);
+      const newOrders = columnOrders.map(orderObj => orderObj.order);
    } else if (
-      currentColumnOrder != null &&
-      currentColumnOrder.length < columnCount &&
-      currentColumnOrder.length < groupElements.length
+      columnOrders != null &&
+      columnOrders.length < columnCount &&
+      columnOrders.length < groupElements.length
    ) {
-      // If we have some columns, but not enough, we have to make up the difference. First we add order objects to our currentColumnOrder array to make up the difference
+      // If we have some columns, but not enough, we have to make up the difference. First we add order objects to our columnOrders array to make up the difference
       for (
-         let i = currentColumnOrder.length;
+         let i = columnOrders.length;
          i < columnCount && i < groupElements.length;
          i += 1
       ) {
-         currentColumnOrder.push({ id: getRandomString(24), order: [] });
+         columnOrders.push({ id: getRandomString(24), order: [] });
       }
 
       // Then we need to find the groups that don't have columns
       const unColumnedElements = groupElements.filter(element => {
          let isColumned = false;
-         currentColumnOrder.forEach(orderObj => {
+         columnOrders.forEach(orderObj => {
             if (orderObj.order.includes(element.props.groupObj.id)) {
                isColumned = true;
             }
@@ -238,23 +196,23 @@ const CollectionBody = ({ activeCollection, fetchMoreButton }) => {
       // Then we're going to loop through all those groups, adding each one to the shortest column
       unColumnedElements.forEach(groupElement => {
          const shortestColumn = getShortestColumnIndex(
-            currentColumnOrder,
+            columnOrders,
             groupElements
          );
-         if (currentColumnOrder[shortestColumn])
-            currentColumnOrder[shortestColumn].order.push(
+         if (columnOrders[shortestColumn])
+            columnOrders[shortestColumn].order.push(
                groupElement.props.groupObj.id
             );
       });
 
       // Then we'll send off the update
-      const columnIDs = currentColumnOrder.map(orderObj => orderObj.id);
-      const newOrders = currentColumnOrder.map(orderObj => orderObj.order);
+      const columnIDs = columnOrders.map(orderObj => orderObj.id);
+      const newOrders = columnOrders.map(orderObj => orderObj.order);
    } else {
       // If we have as many columnOrders as we do columns, we just need to check if every group is in a column. If it's not, we add it to one and then update the order
       const unColumnedElements = groupElements.filter(element => {
          let isColumned = false;
-         currentColumnOrder.forEach(orderObj => {
+         columnOrders.forEach(orderObj => {
             if (orderObj.order.includes(element.props.groupObj.id)) {
                isColumned = true;
             }
@@ -265,19 +223,19 @@ const CollectionBody = ({ activeCollection, fetchMoreButton }) => {
       // Then we're going to loop through all those groups, adding each one to the shortest column
       unColumnedElements.forEach(groupElement => {
          const shortestColumn = getShortestColumnIndex(
-            currentColumnOrder,
+            columnOrders,
             groupElements
          );
-         if (currentColumnOrder[shortestColumn])
-            currentColumnOrder[shortestColumn].order.push(
+         if (columnOrders[shortestColumn])
+            columnOrders[shortestColumn].order.push(
                groupElement.props.groupObj.id
             );
       });
 
       if (unColumnedElements.length > 0) {
          // Then we'll send off the update
-         const columnIDs = currentColumnOrder.map(orderObj => orderObj.id);
-         const newOrders = currentColumnOrder.map(orderObj => orderObj.order);
+         const columnIDs = columnOrders.map(orderObj => orderObj.id);
+         const newOrders = columnOrders.map(orderObj => orderObj.order);
       }
    }
 
@@ -287,11 +245,10 @@ const CollectionBody = ({ activeCollection, fetchMoreButton }) => {
             <Columnizer
                items={groupElements}
                collectionID={id}
-               columnOrders={currentColumnOrder}
+               columnOrders={columnOrders}
                draggingGroup={draggingGroup}
             />
          </div>
-         {fetchMoreButton != null && fetchMoreButton}
       </section>
    );
 };

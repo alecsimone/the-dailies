@@ -38,6 +38,7 @@ type Mutation {
   logout: SuccessMessage
   requestReset(email: String!): Member
   changePassword(id: String!, code: String!, password: String!): Member!
+
   addContentPiece(content: String, id: ID!, type: String!): Stuff
   storeUnsavedThingChanges(id: ID!, unsavedContent: String!): Stuff
   deleteContentPiece(contentPieceID: ID!, id: ID!, type: String!): Stuff
@@ -45,6 +46,9 @@ type Mutation {
   storeUnsavedContentPieceChanges(pieceId: ID!, thingId: ID!, unsavedContent: String!): Stuff
   clearUnsavedContentPieceChanges(pieceId: ID!, thingId: ID!): Stuff
   reorderContent(id: ID!, type: String!, oldPosition: Int!, newPosition: Int!): Stuff
+  copyContentPiece(contentPieceID: ID!, newThingID: ID!): Thing
+  unlinkContentPiece(contentPieceID: ID!, thingID: ID!): Thing
+
   setStuffPrivacy(privacySetting: PrivacySetting!, stuffID: ID!, type: String): Stuff
   addTaxToThing(tax: String!, thingID: ID!, personal: Boolean): Thing
   addTaxToThingById(tax: ID!, thingID: ID!, personal: Boolean): Thing
@@ -53,31 +57,35 @@ type Mutation {
   setFeaturedImage(featuredImage: String!, id: ID!, type: String!): Stuff
   setStuffTitle(title: String!, id: ID!, type: String!): Stuff,
   setPublicity(public: Boolean!, id: ID!, type: String!): Stuff
+  editLink(link: String!, id: ID!): Thing
+  deleteThing(id: ID!): Thing
+  newBlankThing: Thing
+  deleteTax(id: ID!, personal: Boolean!): Tax
+  setColor(color: String!, id: ID!, type: String!): Stuff
+  editSummary(summary: String!, id: ID!, type: String!): Stuff
+  addViewerToStuff(stuffID: ID!, memberID: ID!, type: String): Stuff
+  removeViewerFromStuff(stuffID: ID!, memberID: ID!, type: String): Stuff
+
   addComment(comment: String!, id: ID!, type: String!, replyToID: ID): Stuff
   editComment(commentID: ID!, stuffID: ID!, type: String!, newComment: String!): Stuff
   deleteComment(commentID: ID!, stuffID: ID!, type: String!): Stuff
-  editLink(link: String!, id: ID!): Thing
+
   initiateTwitterLogin: SuccessMessage
   likeTweet(tweetID: String!, alreadyLiked: String!): SuccessMessage,
   markTweetsSeen(listID: String!, tweetIDs: [String]!, lastTweeter: Boolean): Member
+  saveTweet(tweetURL: String!, tweeter: String!, tweetText: String): Thing
+
   editProfile(id: ID!, avatar: String, displayName: String, email: String, twitchName: String, defaultPrivacy: String, defaultExpansion: String): Member
   sendFriendRequest(id: ID!): Member
   confirmFriendRequest(id: ID!): Member
   ignoreFriendRequest(id: ID!): Member
-  saveTweet(tweetURL: String!, tweeter: String!, tweetText: String): Thing
-  deleteThing(id: ID!): Thing
   readNotifications(ids: [ID]!): Member
-  newBlankThing: Thing
-  deleteTax(id: ID!, personal: Boolean!): Tax
-  setColor(color: String!, id: ID!, type: String!): Stuff
-  vote(id: ID!, type: String!, isFreshVote: Boolean!): Stuff
   toggleBroadcastView(newState: Boolean!): Member
-  editSummary(summary: String!, id: ID!, type: String!): Stuff
-  copyContentPiece(contentPieceID: ID!, newThingID: ID!): Thing
-  unlinkContentPiece(contentPieceID: ID!, thingID: ID!): Thing
-  addViewerToStuff(stuffID: ID!, memberID: ID!, type: String): Stuff
-  removeViewerFromStuff(stuffID: ID!, memberID: ID!, type: String): Stuff
+
+  vote(id: ID!, type: String!, isFreshVote: Boolean!): Stuff
+
   storeOrganizeState(state: String!): Member
+
   addCollection: Member
   deleteCollection(collectionID: ID!): Member
   setActiveCollection(collectionID: ID!): Member
@@ -91,19 +99,24 @@ type Mutation {
   showHiddenTagsOnCollection(collectionID: ID!): Collection
   renameGroupOnCollection(collectionID: ID!, groupID: String!, newTitle: String!): Collection
   copyThingToCollectionGroup(collectionID: ID!, thingID: ID!, targetGroupID: String!): Collection
-  addLinkToCollectionGroup(url: String!, groupID: ID!): CollectionGroup
+  addLinkToCollectionGroup(url: String!, groupID: ID!, position: Int): CollectionGroup
   removeLinkFromCollectionGroup(linkID: ID!, groupID: ID!): CollectionGroup
   hideThingOnCollection(collectionID: ID!, thingID: ID!): Collection
   showHiddenThingsOnCollection(collectionID: ID!): Collection
   reorderGroups(groupOneID: ID, newOrderOne: [String!], groupTwoID: ID, newOrderTwo: [String!]): [CollectionGroup!]
   reorderTags(groupOneID: String, tagOneID: ID, newOrderOne: [String!], groupTwoID: String, tagTwoID: ID, newOrderTwo: [String!], collectionID: ID!): [TagOrder]
   reorderUngroupedThings(collectionID: ID!, newOrder: [String!]!): Collection
-  moveCardToGroup(thingID: ID!, fromGroupID: ID, toGroupID: ID): [CollectionGroup!]
+  moveCardToGroup(linkID: ID!, sourceGroupID: ID, destinationGroupID: ID, newPosition: Int): [CollectionGroup!]
+  moveGroupToColumn(groupID: ID!, sourceColumnID: ID, destinationColumnID: ID, newPosition: Int): [ColumnOrder!]
+  reorderGroup(groupID: ID!, linkID: ID!, newPosition: Int!): CollectionGroup
+  reorderColumn(columnID: ID!, groupID: ID!, newPosition: Int!): ColumnOrder
   setColumnOrder(columnIDs: [String!]!, newOrders: [[String!]]!, collectionID: String!, isTagOrder: Boolean): Collection
   handleCardExpansion(thingID: ID!, collectionID: ID!, newValue: Boolean!): Collection
+
   addConnection(subjectID: ID!, objectID: ID!, relationship: String!, strength: Int): [Thing!]
   deleteConnection(connectionID: ID!): [Thing!],
   strengthenConnection(connectionID: ID!): Connection!
+
   addLinkToArchive(url: String!, tags: String): Member
   addTagToPersonalLink(linkID: ID!, tagToAdd: String!): PersonalLink
   editPersonalLink(linkID: ID!, title: String, description: String): PersonalLink

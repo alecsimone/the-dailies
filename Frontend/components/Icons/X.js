@@ -1,7 +1,13 @@
 import { useContext } from 'react';
 import { ThemeContext } from 'styled-components';
 
-const X = ({ color = 'warning', onClick, className, onMouseDown }) => {
+const X = ({
+   color = 'warning',
+   onClick,
+   className,
+   onMouseDown,
+   titleText
+}) => {
    const theme = useContext(ThemeContext);
    let computedColor;
    if (theme[color] != null) {
@@ -20,6 +26,7 @@ const X = ({ color = 'warning', onClick, className, onMouseDown }) => {
          onClick={onClick}
          onMouseDown={onMouseDown}
       >
+         {titleText != null && <title>{titleText}</title>}
          <rect
             x="73.73"
             y="-15.06"

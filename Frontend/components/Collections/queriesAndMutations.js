@@ -226,8 +226,8 @@ const COPY_THING_TO_GROUP_MUTATION = gql`
 export { COPY_THING_TO_GROUP_MUTATION };
 
 const ADD_LINK_TO_GROUP_MUTATION = gql`
-   mutation ADD_LINK_TO_GROUP_MUTATION($url: String!, $groupID: ID!) {
-      addLinkToCollectionGroup(url: $url, groupID: $groupID) {
+   mutation ADD_LINK_TO_GROUP_MUTATION($url: String!, $groupID: ID!, $position: Int) {
+      addLinkToCollectionGroup(url: $url, groupID: $groupID, position: $position) {
          ${collectionGroupFields}
       }
    }
@@ -338,24 +338,69 @@ export { REORDER_UNGROUPED_THINGS_MUTATION };
 
 const MOVE_CARD_TO_GROUP_MUTATION = gql`
    mutation MOVE_CARD_TO_GROUP_MUTATION(
-      $thingID: ID!
-      $fromGroupID: ID
-      $toGroupID: ID
+      $linkID: ID!
+      $sourceGroupID: ID
+      $destinationGroupID: ID
    ) {
       moveCardToGroup(
-         thingID: $thingID
-         fromGroupID: $fromGroupID
-         toGroupID: $toGroupID
+         linkID: $linkID
+         sourceGroupID: $sourceGroupID
+         destinationGroupID: $destinationGroupID
       ) {
-         __typename
-         id
-         things {
-            ${smallThingCardFields}
-         }
+         ${collectionGroupFields}
       }
    }
 `;
 export { MOVE_CARD_TO_GROUP_MUTATION };
+
+const MOVE_GROUP_TO_COLUMN_MUTATION = gql`
+   mutation MOVE_GROUP_TO_COLUMN_MUTATION(
+      $groupID: ID!
+      $sourceColumnID: ID
+      $destinationColumnID: ID
+      $newPosition: Int
+   ) {
+      moveGroupToColumn(
+         groupID: $groupID
+         sourceColumnID: $sourceColumnID
+         destinationColumnID: $destinationColumnID
+         newPosition: $newPosition
+      ) {
+         __typename
+         id
+         order
+      }
+   }
+`;
+export { MOVE_GROUP_TO_COLUMN_MUTATION };
+
+const REORDER_GROUP_MUTATION = gql`
+   mutation REORDER_GROUP_MUTATION($groupID: ID!, $linkID: ID!, $newPosition: Int!) {
+      reorderGroup(groupID: $groupID, linkID: $linkID, newPosition: $newPosition) {
+         ${collectionGroupFields}
+      }
+   }
+`;
+export { REORDER_GROUP_MUTATION };
+
+const REORDER_COLUMN_MUTATION = gql`
+   mutation REORDER_COLUMN_MUTATION(
+      $columnID: ID!
+      $groupID: ID!
+      $newPosition: Int!
+   ) {
+      reorderColumn(
+         columnID: $columnID
+         groupID: $groupID
+         newPosition: $newPosition
+      ) {
+         __typename
+         id
+         order
+      }
+   }
+`;
+export { REORDER_COLUMN_MUTATION };
 
 const ADD_TAX_BY_ID_MUTATION = gql`
    mutation ADD_TAX_BY_ID_MUTATION($tax: ID!, $thingID: ID!, $personal: Boolean) {

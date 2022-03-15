@@ -229,6 +229,7 @@ const CollectionsCard = ({
                >
                   {filteredGroups.length > 0 && copyInterface}
                   <X
+                     titleText="Remove Link"
                      onClick={() => {
                         const [thisGroup] = userGroups.filter(
                            groupObj => groupObj.id === groupID

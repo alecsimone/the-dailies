@@ -197,6 +197,7 @@ const CollectionsHeader = ({
             if (columnOrders.length >= columnCount) {
                // If we do, we find the shortest column and add the new group to it
                columnToAddToID = getShortestColumnID(columnOrders);
+
                const columnIndex = columnOrders.findIndex(
                   columnData => columnData.id === columnToAddToID
                );
@@ -210,54 +211,43 @@ const CollectionsHeader = ({
                   order: [newGroupID]
                });
             }
+
+            const now = new Date();
+            const optimisticResponse = {
+               __typename: 'Mutation',
+               addGroupToCollection: {
+                  __typename: 'Collection',
+                  id,
+                  userGroups: [
+                     ...userGroups,
+                     {
+                        __typename: 'CollectionGroup',
+                        id: newGroupID,
+                        title: 'Untitled Group',
+                        includedLinks: [],
+                        inCollection: {
+                           __typename: 'Collection',
+                           id
+                        },
+                        order: [],
+                        createdAt: now.toISOString(),
+                        updatedAt: now.toISOString()
+                     }
+                  ],
+                  columnOrders
+               }
+            };
             addGroupToCollection({
                variables: {
                   collectionID: id,
                   newGroupID,
                   columnID: columnToAddToID
                },
-               optimisticResponse: {
-                  __typename: 'Mutation',
-                  addGroupToCollection: {
-                     __typename: 'Collection',
-                     id,
-                     userGroups: [
-                        ...userGroups,
-                        {
-                           __typename: 'CollectionGroup',
-                           id: newGroupID,
-                           title: 'Untitled Group',
-                           things: [],
-                           order: [],
-                           createdAt: Date.now,
-                           updatedAt: Date.now
-                        }
-                     ]
-                  },
-                  columnOrders
-               }
+               optimisticResponse
             });
          }}
       >
          add group
-      </button>
-   );
-
-   const showHiddenGroupsButton = (
-      <button type="button" onClick={showHiddenGroupsOnCollection}>
-         show hidden groups
-      </button>
-   );
-
-   const showHiddenTagsButton = (
-      <button type="button" onClick={showHiddenTagsOnCollection}>
-         show hidden tags
-      </button>
-   );
-
-   const showHiddenThingsButton = (
-      <button type="button" onClick={showHiddenThingsOnCollection}>
-         show hidden things
       </button>
    );
 
@@ -310,8 +300,6 @@ const CollectionsHeader = ({
             <div className="headerButtons">
                <AddCollectionButton />
                {deleteCollectionButton}
-               {hiddenGroups.length > 0 && showHiddenGroupsButton}
-               {hiddenThings.length > 0 && showHiddenThingsButton}
                {addGroupButton}
             </div>
          </div>

@@ -30,13 +30,11 @@ const CollectionsGroup = ({
    deleteGroupHandler,
    expandedCards
 }) => {
-   const { id, includedLinks, title, type } = groupObj;
+   const { id, includedLinks, title, type, order } = groupObj;
    const {
       loggedInUserID,
       memberFields: { displayName }
    } = useMe('CollectionsGroup', 'displayName');
-
-   const fullThingData = [];
 
    const [groupTitle, setGroupTitle] = useState(title);
    const titleRef = useRef(null);
@@ -151,7 +149,8 @@ const CollectionsGroup = ({
    //    />
    // ));
 
-   const linkElements = includedLinks.map((link, index) => (
+   const sortedLinks = groupSort(includedLinks, order);
+   const linkElements = sortedLinks.map((link, index) => (
       <CollectionsCard
          data={link}
          index={index}
@@ -211,69 +210,10 @@ const CollectionsGroup = ({
                }}
             />
             <div className="buttons">
-               {type === 'manual' && (
-                  <button
-                     type="button"
-                     onClick={() => {
-                        const newHiddenGroups = [...hiddenGroups, groupObj];
-                        hideGroupOnCollection({
-                           variables: {
-                              collectionID,
-                              groupID: id
-                           },
-                           optimisticResponse: {
-                              __typename: 'Mutation',
-                              hideGroupOnCollection: {
-                                 __typename: 'Collection',
-                                 id: collectionID,
-                                 hiddenGroups: newHiddenGroups
-                              }
-                           }
-                        });
-                     }}
-                  >
-                     hide
-                  </button>
-               )}
-               {type === 'tag' && (
-                  <button
-                     type="button"
-                     onClick={() => {
-                        const optimisticResponseAcceptableGroupObj = {
-                           __typename: 'Tag',
-                           id,
-                           author: {
-                              __typename: 'Member',
-                              displayName,
-                              id: loggedInUserID
-                           }
-                        }; // The store won't update unless we provide an author for the tags
-                        const newHiddenTags = [
-                           ...hiddenGroups,
-                           optimisticResponseAcceptableGroupObj
-                        ];
-                        hideTagOnCollection({
-                           variables: {
-                              collectionID,
-                              tagID: id
-                           },
-                           optimisticResponse: {
-                              __typename: 'Mutation',
-                              hideTagOnCollection: {
-                                 __typename: 'Collection',
-                                 id: collectionID,
-                                 hiddenTags: newHiddenTags
-                              }
-                           }
-                        });
-                     }}
-                  >
-                     hide
-                  </button>
-               )}
-               {type === 'manual' && id !== 'ungrouped' && (
-                  <X onClick={() => deleteGroupHandler(title, id)} />
-               )}
+               <X
+                  titleText="Delete Group"
+                  onClick={() => deleteGroupHandler(title, id)}
+               />
             </div>
          </header>
          <Droppable droppableId={id} key={id} type="card">

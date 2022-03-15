@@ -398,6 +398,9 @@ const collectionGroupFields = `
    includedLinks {
       ${fullPersonalLinkFields}
    }
+   inCollection {
+      id
+   }
    order
    createdAt
    updatedAt
