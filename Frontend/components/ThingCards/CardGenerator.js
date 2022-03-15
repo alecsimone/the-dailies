@@ -9,7 +9,10 @@ const CardGenerator = ({
    hideConnections,
    borderSide,
    contentType,
-   noPic
+   noPic,
+   draggable,
+   groupName,
+   index
 }) => {
    const hasData = useSelector(state => state.stuff[`Thing:${id}`] != null);
 
@@ -29,6 +32,9 @@ const CardGenerator = ({
             contentType={computedContentType}
             borderSide={borderSide}
             noPic={noPic}
+            draggable={draggable}
+            groupName={groupName}
+            index={index}
          />
       );
    }
@@ -43,6 +49,9 @@ const CardGenerator = ({
          titleLink
          borderSide={borderSide}
          noPic={noPic}
+         draggable={draggable}
+         groupName={groupName}
+         index={index}
       />
    );
 };

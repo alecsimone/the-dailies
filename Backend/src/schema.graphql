@@ -92,7 +92,7 @@ type Mutation {
   renameGroupOnCollection(collectionID: ID!, groupID: String!, newTitle: String!): Collection
   copyThingToCollectionGroup(collectionID: ID!, thingID: ID!, targetGroupID: String!): Collection
   addLinkToCollectionGroup(url: String!, groupID: ID!): CollectionGroup
-  removeThingFromCollectionGroup(collectionID: ID!, thingID: ID!, groupID: String!): Collection
+  removeLinkFromCollectionGroup(linkID: ID!, groupID: ID!): CollectionGroup
   hideThingOnCollection(collectionID: ID!, thingID: ID!): Collection
   showHiddenThingsOnCollection(collectionID: ID!): Collection
   reorderGroups(groupOneID: ID, newOrderOne: [String!], groupTwoID: ID, newOrderTwo: [String!]): [CollectionGroup!]

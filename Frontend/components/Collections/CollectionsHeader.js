@@ -210,8 +210,6 @@ const CollectionsHeader = ({
                   order: [newGroupID]
                });
             }
-            console.log('everything ok?');
-            return;
             addGroupToCollection({
                variables: {
                   collectionID: id,

@@ -234,18 +234,14 @@ const ADD_LINK_TO_GROUP_MUTATION = gql`
 `;
 export { ADD_LINK_TO_GROUP_MUTATION };
 
-const REMOVE_THING_FROM_GROUP_MUTATION = gql`
-   mutation REMOVE_THING_FROM_GROUP_MUTATION($collectionID: ID!, $thingID: ID!, $groupID: String!) {
-      removeThingFromCollectionGroup(collectionID: $collectionID, thingID: $thingID, groupID: $groupID) {
-         __typename
-         id
-         userGroups {
-            ${collectionGroupFields}
-         }
+const REMOVE_LINK_FROM_COLLECTION_GROUP = gql`
+   mutation REMOVE_LINK_FROM_COLLECTION_GROUP($linkID: ID!, $groupID: ID!) {
+      removeLinkFromCollectionGroup(linkID: $linkID, groupID: $groupID) {
+         ${collectionGroupFields}
       }
    }
 `;
-export { REMOVE_THING_FROM_GROUP_MUTATION };
+export { REMOVE_LINK_FROM_COLLECTION_GROUP };
 
 const HIDE_THING_ON_COLLECTION_MUTATION = gql`
    mutation HIDE_THING_ON_COLLECTION_MUTATION(

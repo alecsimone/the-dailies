@@ -5,6 +5,7 @@ import { useMutation } from '@apollo/react-hooks';
 import Router from 'next/router';
 import Link from 'next/link';
 import { useSelector } from 'react-redux';
+import { Draggable } from 'react-beautiful-dnd';
 import TitleBar from '../ThingParts/TitleBar';
 import AuthorLink from '../ThingParts/AuthorLink';
 import { setAlpha, setLightness, setSaturation } from '../../styles/functions';
@@ -30,6 +31,7 @@ import HashtagIcon from '../Icons/Hashtag';
 import ConnectionsInterface from '../ThingParts/ConnectionsInterface';
 import ConnectionsIcon from '../Icons/Connections';
 import useMe from '../Account/useMe';
+import { getRandomString } from '../../lib/TextHandling';
 
 const DELETE_THING_MUTATION = gql`
    mutation DELETE_THING_MUTATION($id: ID!) {
@@ -77,8 +79,8 @@ const useCardData = thingID => {
 const StyledFlexibleThingCard = styled.article`
    width: 100%;
    ${props => props.theme.thingColors};
-   padding: 0;
    border: none;
+   padding: 0;
    ${props => props.theme.mobileBreakpoint} {
       padding: 1rem 5rem 1.5rem;
       ${props =>
@@ -92,7 +94,7 @@ const StyledFlexibleThingCard = styled.article`
    &.small {
       border-radius: 0;
       padding: 0;
-      ${props => props.theme.midScreenBreakpoint} {
+      ${props => props.theme.mobileBreakpoint} {
          padding: 1rem 2rem 1.5rem;
       }
       header.flexibleThingHeader {
@@ -465,7 +467,10 @@ const FlexibleThingCard = ({
    linkedComment,
    titleLink,
    borderSide = 'top',
-   noPic
+   noPic,
+   draggable,
+   groupName,
+   index
 }) => {
    // return <div>Card!</div>;
    // console.log(`thing ${thingID} card render`);
@@ -633,7 +638,7 @@ const FlexibleThingCard = ({
       styleObj.borderTop = 'none';
    }
 
-   return (
+   const theActualCard = (
       <StyledFlexibleThingCard
          style={styleObj}
          className={`flexibleThingCard ${
@@ -654,7 +659,10 @@ const FlexibleThingCard = ({
                   )}
                   {titleLink && (
                      <Link
-                        href={{ pathname: '/thing', query: { id: thingID } }}
+                        href={{
+                           pathname: '/thing',
+                           query: { id: thingID }
+                        }}
                      >
                         <a>
                            <TitleBar
@@ -961,6 +969,30 @@ const FlexibleThingCard = ({
          )}
       </StyledFlexibleThingCard>
    );
+
+   if (draggable) {
+      return (
+         <Draggable
+            key={`thingCard-${thingID}`}
+            key={`thingCard-${getRandomString(8)}-${groupName}-${thingID}`}
+            draggableId={`thingCard-${groupName}-${thingID}`}
+            index={index != null ? index : 1}
+         >
+            {provided => (
+               <div
+                  className="dragWrapper"
+                  {...provided.draggableProps}
+                  {...provided.dragHandleProps}
+                  ref={provided.innerRef}
+               >
+                  {theActualCard}
+               </div>
+            )}
+         </Draggable>
+      );
+   }
+
+   return theActualCard;
 };
 
 export default React.memo(FlexibleThingCard);

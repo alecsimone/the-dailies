@@ -92,6 +92,7 @@ const StyledCollection = styled.section`
          width: auto;
          margin-left: -2rem;
          .column {
+            max-width: 64rem;
             padding-left: 2rem;
             flex-grow: 1;
             .dragging {
@@ -113,7 +114,6 @@ export { StyledCollection };
 
 const StyledGroup = styled.div`
    width: 100%;
-   max-width: 64rem;
    display: inline-block;
    padding: 0 2rem;
    border-radius: 6px;

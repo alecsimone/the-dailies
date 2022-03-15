@@ -1,5 +1,6 @@
 import { useMutation, useQuery } from '@apollo/react-hooks';
 import React, { useEffect, useRef, useState } from 'react';
+import { Droppable } from 'react-beautiful-dnd';
 import { useSelector } from 'react-redux';
 import Reorder from 'react-reorder';
 import {
@@ -11,7 +12,10 @@ import {
    sendNewContentPiece,
    STORE_UNSAVED_CONTENT_MUTATION
 } from '../../../lib/ContentHandling';
-import { provisionallyReplaceTextTag } from '../../../lib/TextHandling';
+import {
+   getRandomString,
+   provisionallyReplaceTextTag
+} from '../../../lib/TextHandling';
 import { SINGLE_TAX_QUERY } from '../../../pages/tag';
 import { SINGLE_THING_QUERY } from '../../../pages/thing';
 import useStickifier from '../../../Stickifier/useStickifier';
@@ -383,8 +387,8 @@ const Content = ({ contentType, canEdit, linkedPiece, stuffID, type }) => {
    }
 
    return (
-      <StyledContent className="content" ref={thisComponentRef}>
-         <div className="contentSectionWrapper">
+      <StyledContent className="content">
+         <div className="contentSectionWrapper" ref={thisComponentRef}>
             {contentElements}
             {canEdit && showingAddContentForm && (
                <div

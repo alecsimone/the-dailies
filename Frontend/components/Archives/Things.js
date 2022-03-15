@@ -2,10 +2,12 @@ import styled, { ThemeContext } from 'styled-components';
 import PropTypes from 'prop-types';
 import Masonry from 'react-masonry-css';
 import { useContext } from 'react';
+import { Droppable } from 'react-beautiful-dnd';
 import { setAlpha } from '../../styles/functions';
 import FlexibleThingCard from '../ThingCards/FlexibleThingCard';
 import useMe from '../Account/useMe';
 import CardGenerator from '../ThingCards/CardGenerator';
+import { getRandomString } from '../../lib/TextHandling';
 
 const StyledThings = styled.div`
    margin: auto;
@@ -52,7 +54,9 @@ const Things = ({
    contentType = 'single',
    noPic,
    borderSide,
-   hideConnections
+   hideConnections,
+   draggable = false,
+   groupName = 'unnamed'
 }) => {
    const { desktopBPWidthRaw, bigScreenBPWidthRaw } = useContext(ThemeContext);
 
@@ -72,7 +76,7 @@ const Things = ({
    //       noPic={noPic}
    //    />
    // ));
-   const thingCards = things.map(thing => (
+   const thingCards = things.map((thing, index) => (
       <CardGenerator
          id={thing.id}
          cardType={cardSize}
@@ -80,6 +84,9 @@ const Things = ({
          contentType={contentType}
          noPic={noPic}
          borderSide={borderSide}
+         draggable={draggable}
+         groupName={groupName}
+         index={index}
       />
    ));
    if (displayType === 'grid') {
@@ -101,9 +108,17 @@ const Things = ({
       );
    }
    return (
-      <StyledThings className={`things ${displayType}`}>
-         {thingCards}
-      </StyledThings>
+      <Droppable droppableId={groupName} type="card">
+         {provided => (
+            <StyledThings
+               className={`things ${displayType}`}
+               ref={provided.innerRef}
+               {...provided.droppableProps}
+            >
+               {thingCards}
+            </StyledThings>
+         )}
+      </Droppable>
    );
 };
 Things.propTypes = {

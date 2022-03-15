@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { useQuery } from '@apollo/react-hooks';
 import { useContext } from 'react';
 import Link from 'next/link';
+import router from 'next/router';
 import Things from './Things';
 import LoadingRing from '../LoadingRing';
 import ErrorMessage from '../ErrorMessage';
@@ -137,6 +138,8 @@ const MyThings = ({ setShowingSidebar, scrollingSelector, borderSide }) => {
                   displayType="list"
                   scrollingParentSelector={scrollingSelector}
                   perPage={sidebarPerPage}
+                  draggable={router.pathname === '/collections'}
+                  groupName="MyThings"
                   {...displayProps}
                />
                <LoadMoreButton

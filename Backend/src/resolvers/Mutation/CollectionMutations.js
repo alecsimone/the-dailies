@@ -565,7 +565,7 @@ async function addLinkToCollectionGroup(parent, { url, groupID }, ctx, info) {
 
    let linkObject;
    if (existingLink != null && existingLink.length > 0) {
-      linkObject = existingLink;
+      [linkObject] = existingLink;
    } else {
       linkObject = await simpleAddLink(ctx, url);
    }
@@ -593,9 +593,9 @@ async function addLinkToCollectionGroup(parent, { url, groupID }, ctx, info) {
 }
 exports.addLinkToCollectionGroup = addLinkToCollectionGroup;
 
-async function removeThingFromCollectionGroup(
+async function removeLinkFromCollectionGroup(
    parent,
-   { collectionID, thingID, groupID },
+   { linkID, groupID },
    ctx,
    info
 ) {
@@ -604,32 +604,24 @@ async function removeThingFromCollectionGroup(
    });
    fullMemberGate(ctx.req.member);
 
-   // first we need to disconnect the thing from the provided group
-   await ctx.db.mutation.updateCollectionGroup({
-      where: {
-         id: groupID
-      },
-      data: {
-         things: {
-            disconnect: {
-               id: thingID
-            }
-         }
-      }
-   });
-
-   // Then we need to return the selected collection
-   const updatedCollection = await ctx.db.query.collection(
+   const updatedGroup = await ctx.db.mutation.updateCollectionGroup(
       {
          where: {
-            id: collectionID
+            id: groupID
+         },
+         data: {
+            includedLinks: {
+               disconnect: {
+                  id: linkID
+               }
+            }
          }
       },
-      `{id userGroups {${collectionGroupFields}}}`
+      `{${collectionGroupFields}}`
    );
-   return updatedCollection;
+   return updatedGroup;
 }
-exports.removeThingFromCollectionGroup = removeThingFromCollectionGroup;
+exports.removeLinkFromCollectionGroup = removeLinkFromCollectionGroup;
 
 async function hideThingOnCollection(
    parent,
