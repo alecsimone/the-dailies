@@ -207,10 +207,13 @@ const DragAndDropProvider = ({ children }) => {
                   }`
             });
 
+            const newPosition = destination.index;
+
             const variables = {
                linkID,
                sourceGroupID,
-               destinationGroupID
+               destinationGroupID,
+               newPosition
             };
 
             const optimisticResponse = {
@@ -233,7 +236,7 @@ const DragAndDropProvider = ({ children }) => {
                JSON.stringify(destinationGroupObj)
             );
             newDestinationGroupObj.includedLinks.push(linkObj);
-            newDestinationGroupObj.order.splice(destination.index, 0, linkID);
+            newDestinationGroupObj.order.splice(newPosition, 0, linkID);
             optimisticResponse.moveCardToGroup.push(newDestinationGroupObj);
 
             moveCardToGroup({

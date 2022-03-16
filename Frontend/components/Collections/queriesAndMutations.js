@@ -341,11 +341,13 @@ const MOVE_CARD_TO_GROUP_MUTATION = gql`
       $linkID: ID!
       $sourceGroupID: ID
       $destinationGroupID: ID
+      $newPosition: Int
    ) {
       moveCardToGroup(
          linkID: $linkID
          sourceGroupID: $sourceGroupID
          destinationGroupID: $destinationGroupID
+         newPosition: $newPosition
       ) {
          ${collectionGroupFields}
       }
