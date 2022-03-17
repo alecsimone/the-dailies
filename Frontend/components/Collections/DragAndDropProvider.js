@@ -115,6 +115,17 @@ const DragAndDropProvider = ({ children }) => {
                   }`
             });
 
+            let linkAlreadyIncluded = false;
+            groupObj.includedLinks.forEach(linkData => {
+               if (linkData.url === url) {
+                  linkAlreadyIncluded = true;
+               }
+            });
+            if (linkAlreadyIncluded) {
+               alert("You've already added that link to that group.");
+               return;
+            }
+
             const now = new Date();
             const newGroupObj = JSON.parse(JSON.stringify(groupObj));
 
@@ -206,6 +217,17 @@ const DragAndDropProvider = ({ children }) => {
                      ${collectionGroupFields}
                   }`
             });
+
+            let linkAlreadyIncluded = false;
+            destinationGroupObj.includedLinks.forEach(linkData => {
+               if (linkData.url === linkObj.url) {
+                  linkAlreadyIncluded = true;
+               }
+            });
+            if (linkAlreadyIncluded) {
+               alert("You've already added that link to that group.");
+               return;
+            }
 
             const newPosition = destination.index;
 

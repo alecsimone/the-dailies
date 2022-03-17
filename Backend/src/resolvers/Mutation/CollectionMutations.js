@@ -575,14 +575,25 @@ async function addLinkToCollectionGroup(
       linkObject = await simpleAddLink(ctx, url);
    }
 
+   // Then we need to check if the link is already in the group. And while we're doing that, we might as well grab the order of the group, because we'll need that next.
    const oldGroupData = await ctx.db.query.collectionGroup(
       {
          where: {
             id: groupID
          }
       },
-      `{order}`
+      `{includedLinks {url} order}`
    );
+
+   let linkAlreadyIncluded = false;
+   oldGroupData.includedLinks.forEach(linkData => {
+      if (linkData.url === url) {
+         linkAlreadyIncluded = true;
+      }
+   });
+   if (linkAlreadyIncluded) {
+      throw new Error("You've already added that link to that group.");
+   }
 
    const { order } = oldGroupData;
    if (position != null) {
