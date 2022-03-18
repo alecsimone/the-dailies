@@ -507,6 +507,10 @@ const collectionGroupFields = `
    inCollection {
       id
    }
+   notes {
+      id
+      content
+   }
    order
    createdAt
    updatedAt

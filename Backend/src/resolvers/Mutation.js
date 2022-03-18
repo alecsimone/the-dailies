@@ -78,7 +78,10 @@ const {
    reorderColumn,
    reorderUngroupedThings,
    setColumnOrder,
-   handleCardExpansion
+   handleCardExpansion,
+   addNoteToGroup,
+   deleteNote,
+   editNote
 } = require('./Mutation/CollectionMutations');
 
 const {
@@ -164,7 +167,10 @@ const Mutations = {
    strengthenConnection,
    addLinkToArchive,
    addTagToPersonalLink,
-   editPersonalLink
+   editPersonalLink,
+   addNoteToGroup,
+   deleteNote,
+   editNote
 };
 
 module.exports = Mutations;

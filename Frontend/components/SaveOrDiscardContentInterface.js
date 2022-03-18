@@ -45,9 +45,15 @@ const SaveOrDiscardContentInterface = ({
             <button
                className="save"
                onClick={() => {
-                  postContent();
-                  setContent(false);
-                  setEditable(false);
+                  if (postContent != null) {
+                     postContent();
+                  }
+                  if (setContent != null) {
+                     setContent(false);
+                  }
+                  if (setEditable != null) {
+                     setEditable(false);
+                  }
                }}
             >
                save
@@ -55,10 +61,18 @@ const SaveOrDiscardContentInterface = ({
             <button
                className="discard"
                onClick={() => {
-                  clearUnsavedContentPieceChanges();
-                  setUnsavedNewContent(null);
-                  setEditable(false);
-                  setContent(false);
+                  if (clearUnsavedContentPieceChanges != null) {
+                     clearUnsavedContentPieceChanges();
+                  }
+                  if (setUnsavedNewContent != null) {
+                     setUnsavedNewContent(null);
+                  }
+                  if (setEditable != null) {
+                     setEditable(false);
+                  }
+                  if (setContent != null) {
+                     setContent(false);
+                  }
                }}
             >
                discard

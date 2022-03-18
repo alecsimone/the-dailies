@@ -401,6 +401,10 @@ const collectionGroupFields = `
    inCollection {
       id
    }
+   notes {
+      id
+      content
+   }
    order
    createdAt
    updatedAt
@@ -421,7 +425,6 @@ const fullCollectionFields = `
       __typename
       id
    }
-   groupByTag
    hiddenTags {
       __typename
       id

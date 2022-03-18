@@ -177,6 +177,7 @@ type CollectionGroup {
    title: String! @default(value: "Untitled Group")
    inCollection: Collection @relation(name: "ConnectedGroups")
    includedLinks: [PersonalLink] @scalarList(strategy: RELATION)
+   notes: [Note] @scalarList(strategy: RELATION)
    order: [String] @scalarList(strategy: RELATION)
    createdAt: DateTime! @createdAt
    updatedAt: DateTime @updatedAt
@@ -260,6 +261,15 @@ type LinkTag {
    parentTags: [LinkTag] @relation(name: "Parent")
    childTags: [LinkTag] @relation(name: "Parent")
    createdAt: DateTime! @createdAt
+   updatedAt: DateTime @updatedAt
+}
+
+type Note {
+   id: ID! @id @unique
+   author: Member!
+   content: String @default(value: "New note")
+   onCollectionGroup: CollectionGroup
+   createdAt: DateTime @createdAt
    updatedAt: DateTime @updatedAt
 }
 

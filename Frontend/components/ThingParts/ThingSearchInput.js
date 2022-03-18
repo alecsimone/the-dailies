@@ -110,10 +110,11 @@ const ThingSearchInput = ({
    // We'll need a ref to keep track of this component, so we can put listeners on it to allow users to navigate the results with their keyboard
    const thisInterfaceRef = useRef(null);
 
-   useEffect(() => {
-      const thisBox = thisInterfaceRef.current;
-      thisBox.addEventListener('keydown', navigateResultsRef.current);
-   }, []);
+   // For some reason, I originally added navigateResults via this listener instead of just putting it in an onKeyDown. Preserving this here just in case that was actually right and I can't remember why right now. If I do add it back, I need to be sure to turn back on the removeEventListener in closeResults as well.
+   // useEffect(() => {
+   //    const thisBox = thisInterfaceRef.current;
+   //    thisBox.addEventListener('keydown', navigateResultsRef.current);
+   // }, []);
 
    // Then we need the query that will perform the search
    const [search, { loading: searchLoading }] = useLazyQueryAndStoreIt(
@@ -165,7 +166,7 @@ const ThingSearchInput = ({
 
       const thisBox = thisInterfaceRef.current;
       if (thisBox != null) {
-         thisBox.removeEventListener('keydown', navigateResultsRef.current);
+         // thisBox.removeEventListener('keydown', navigateResultsRef.current);
       }
       if (setShowing != null) {
          setShowing(false);
@@ -229,12 +230,14 @@ const ThingSearchInput = ({
          chooseResult();
       }
    };
-   const navigateResultsRef = useRef(navigateResults);
+   // const navigateResultsRef = useRef(navigateResults);
 
    // Then we need to turn the results into elements we can show
    let postSearchResultElements;
    if (searchLoading) {
-      postSearchResultElements = <div>Searching posts...</div>;
+      postSearchResultElements = (
+         <div className="searchingPosts">Searching posts...</div>
+      );
    } else if (postSearchResults.length > 0) {
       postSearchResultElements = postSearchResults.map((result, index) => (
          <div
@@ -253,7 +256,9 @@ const ThingSearchInput = ({
          </div>
       ));
    } else if (postSearchResults.length === 0) {
-      postSearchResultElements = <div>No posts found</div>;
+      postSearchResultElements = (
+         <div className="noResults">No posts found</div>
+      );
    }
 
    return (
@@ -270,6 +275,7 @@ const ThingSearchInput = ({
                placeholder={placeholder || 'Search Things'}
                onChange={handleSetSearchTerm}
                onKeyUp={handleKeyUp}
+               onKeyDown={navigateResults}
             />
          </div>
          {handledSearchTerm.length > 0 &&

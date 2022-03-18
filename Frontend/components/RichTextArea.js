@@ -156,6 +156,7 @@ const RichTextArea = ({
    const secondMiddleOrRightClickListener = e => {
       if (inputRef.current == null) return;
       if (e.button === 1 || e.button === 2) {
+         console.log(originalText.current, inputRef.current.value);
          if (originalText.current !== inputRef.current.value) {
             setContent(
                <SaveOrDiscardContentInterface

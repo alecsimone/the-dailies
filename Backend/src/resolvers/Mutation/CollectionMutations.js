@@ -6,6 +6,7 @@ const {
    fullPersonalLinkFields,
    fullCollectionFields
 } = require('../../utils/CardInterfaces');
+const { getRandomString } = require('../../utils/TextHandling');
 const { simpleAddLink } = require('./LinkArchiveMutations');
 const { publishMeUpdate } = require('./MemberMutations');
 
@@ -929,7 +930,7 @@ exports.reorderUngroupedThings = reorderUngroupedThings;
 
 async function moveCardToGroup(
    parent,
-   { linkID, sourceGroupID, destinationGroupID, newPosition },
+   { linkID, cardType, sourceGroupID, destinationGroupID, newPosition },
    ctx,
    info
 ) {
@@ -954,21 +955,33 @@ async function moveCardToGroup(
       const newSourceOrder = sourceOrder.filter(
          existingID => existingID !== linkID
       );
+
+      const data = {
+         order: {
+            set: newSourceOrder
+         }
+      };
+
+      if (cardType === 'note') {
+         data.notes = {
+            disconnect: {
+               id: linkID
+            }
+         };
+      } else {
+         data.includedLinks = {
+            disconnect: {
+               id: linkID
+            }
+         };
+      }
+
       const updatedFromGroup = await ctx.db.mutation.updateCollectionGroup(
          {
             where: {
                id: sourceGroupID
             },
-            data: {
-               includedLinks: {
-                  disconnect: {
-                     id: linkID
-                  }
-               },
-               order: {
-                  set: newSourceOrder
-               }
-            }
+            data
          },
          `{${collectionGroupFields}}`
       );
@@ -992,21 +1005,33 @@ async function moveCardToGroup(
       } else {
          destinationOrder.push(linkID);
       }
+
+      const data = {
+         order: {
+            set: destinationOrder
+         }
+      };
+
+      if (cardType === 'note') {
+         data.notes = {
+            connect: {
+               id: linkID
+            }
+         };
+      } else {
+         data.includedLinks = {
+            connect: {
+               id: linkID
+            }
+         };
+      }
+
       const updatedGroupTwo = await ctx.db.mutation.updateCollectionGroup(
          {
             where: {
                id: destinationGroupID
             },
-            data: {
-               includedLinks: {
-                  connect: {
-                     id: linkID
-                  }
-               },
-               order: {
-                  set: destinationOrder
-               }
-            }
+            data
          },
          `{${collectionGroupFields}}`
       );
@@ -1297,3 +1322,118 @@ async function handleCardExpansion(
    return updatedCollection;
 }
 exports.handleCardExpansion = handleCardExpansion;
+
+async function addNoteToGroup(parent, { groupID, position }, ctx, info) {
+   await loggedInGate(ctx).catch(() => {
+      throw new AuthenticationError('You must be logged in to do that!');
+   });
+   fullMemberGate(ctx.req.member);
+
+   const oldGroup = await ctx.db.query.collectionGroup(
+      {
+         where: {
+            id: groupID
+         }
+      },
+      `{order}`
+   );
+
+   const { order } = oldGroup;
+
+   const newID = getRandomString(24);
+
+   if (position != null) {
+      order.splice(position, 0, newID);
+   } else {
+      order.push(newID);
+   }
+
+   const updatedGroup = await ctx.db.mutation.updateCollectionGroup(
+      {
+         where: {
+            id: groupID
+         },
+         data: {
+            notes: {
+               create: {
+                  id: newID,
+                  author: {
+                     connect: {
+                        id: ctx.req.memberId
+                     }
+                  }
+               }
+            },
+            order: {
+               set: order
+            }
+         }
+      },
+      `{${collectionGroupFields}}`
+   );
+   return updatedGroup;
+}
+exports.addNoteToGroup = addNoteToGroup;
+
+async function deleteNote(parent, { noteID }, ctx, info) {
+   await loggedInGate(ctx).catch(() => {
+      throw new AuthenticationError('You must be logged in to do that!');
+   });
+   fullMemberGate(ctx.req.member);
+
+   const noteData = await ctx.db.query.note(
+      {
+         where: {
+            id: noteID
+         }
+      },
+      `{onCollectionGroup {id order}}`
+   );
+
+   const groupID = noteData.onCollectionGroup.id;
+   let { order } = noteData.onCollectionGroup;
+
+   order = order.filter(id => id !== noteID);
+
+   const updatedGroup = await ctx.db.mutation.updateCollectionGroup(
+      {
+         where: {
+            id: groupID
+         },
+         data: {
+            notes: {
+               delete: {
+                  id: noteID
+               }
+            },
+            order: {
+               set: order
+            }
+         }
+      },
+      `{${collectionGroupFields}}`
+   );
+   return updatedGroup;
+}
+exports.deleteNote = deleteNote;
+
+async function editNote(parent, { noteID, newContent }, ctx, info) {
+   await loggedInGate(ctx).catch(() => {
+      throw new AuthenticationError('You must be logged in to do that!');
+   });
+   fullMemberGate(ctx.req.member);
+
+   const updatedNote = await ctx.db.mutation.updateNote(
+      {
+         where: {
+            id: noteID
+         },
+         data: {
+            content: newContent
+         }
+      },
+      `{__typename id content}`
+   );
+   return updatedNote;
+}
+exports.editNote = editNote;

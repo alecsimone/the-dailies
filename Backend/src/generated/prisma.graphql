@@ -34,6 +34,10 @@ type AggregateMember {
   count: Int!
 }
 
+type AggregateNote {
+  count: Int!
+}
+
 type AggregateNotification {
   count: Int!
 }
@@ -80,7 +84,6 @@ type Collection {
   author: Member!
   filterString: String
   hiddenThings(where: ThingWhereInput, orderBy: ThingOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Thing!]
-  groupByTag: Boolean!
   hiddenTags(where: TagWhereInput, orderBy: TagOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Tag!]
   hiddenGroups(where: CollectionGroupWhereInput, orderBy: CollectionGroupOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [CollectionGroup!]
   userGroups(where: CollectionGroupWhereInput, orderBy: CollectionGroupOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [CollectionGroup!]
@@ -110,7 +113,6 @@ input CollectionCreateInput {
   author: MemberCreateOneWithoutCollectionsInput!
   filterString: String
   hiddenThings: ThingCreateManyInput
-  groupByTag: Boolean
   hiddenTags: TagCreateManyInput
   hiddenGroups: CollectionGroupCreateManyInput
   userGroups: CollectionGroupCreateManyWithoutInCollectionInput
@@ -151,7 +153,6 @@ input CollectionCreateWithoutAuthorInput {
   title: String
   filterString: String
   hiddenThings: ThingCreateManyInput
-  groupByTag: Boolean
   hiddenTags: TagCreateManyInput
   hiddenGroups: CollectionGroupCreateManyInput
   userGroups: CollectionGroupCreateManyWithoutInCollectionInput
@@ -169,7 +170,6 @@ input CollectionCreateWithoutTagOrdersInput {
   author: MemberCreateOneWithoutCollectionsInput!
   filterString: String
   hiddenThings: ThingCreateManyInput
-  groupByTag: Boolean
   hiddenTags: TagCreateManyInput
   hiddenGroups: CollectionGroupCreateManyInput
   userGroups: CollectionGroupCreateManyWithoutInCollectionInput
@@ -186,7 +186,6 @@ input CollectionCreateWithoutUserGroupsInput {
   author: MemberCreateOneWithoutCollectionsInput!
   filterString: String
   hiddenThings: ThingCreateManyInput
-  groupByTag: Boolean
   hiddenTags: TagCreateManyInput
   hiddenGroups: CollectionGroupCreateManyInput
   ungroupedThingsOrder: CollectionCreateungroupedThingsOrderInput
@@ -207,6 +206,7 @@ type CollectionGroup {
   title: String!
   inCollection: Collection
   includedLinks(where: PersonalLinkWhereInput, orderBy: PersonalLinkOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [PersonalLink!]
+  notes(where: NoteWhereInput, orderBy: NoteOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Note!]
   order: [String!]!
   createdAt: DateTime!
   updatedAt: DateTime
@@ -223,6 +223,7 @@ input CollectionGroupCreateInput {
   title: String
   inCollection: CollectionCreateOneWithoutUserGroupsInput
   includedLinks: PersonalLinkCreateManyWithoutInCollectionGroupsInput
+  notes: NoteCreateManyWithoutOnCollectionGroupInput
   order: CollectionGroupCreateorderInput
 }
 
@@ -241,6 +242,11 @@ input CollectionGroupCreateManyWithoutInCollectionInput {
   connect: [CollectionGroupWhereUniqueInput!]
 }
 
+input CollectionGroupCreateOneWithoutNotesInput {
+  create: CollectionGroupCreateWithoutNotesInput
+  connect: CollectionGroupWhereUniqueInput
+}
+
 input CollectionGroupCreateorderInput {
   set: [String!]
 }
@@ -249,12 +255,22 @@ input CollectionGroupCreateWithoutIncludedLinksInput {
   id: ID
   title: String
   inCollection: CollectionCreateOneWithoutUserGroupsInput
+  notes: NoteCreateManyWithoutOnCollectionGroupInput
   order: CollectionGroupCreateorderInput
 }
 
 input CollectionGroupCreateWithoutInCollectionInput {
   id: ID
   title: String
+  includedLinks: PersonalLinkCreateManyWithoutInCollectionGroupsInput
+  notes: NoteCreateManyWithoutOnCollectionGroupInput
+  order: CollectionGroupCreateorderInput
+}
+
+input CollectionGroupCreateWithoutNotesInput {
+  id: ID
+  title: String
+  inCollection: CollectionCreateOneWithoutUserGroupsInput
   includedLinks: PersonalLinkCreateManyWithoutInCollectionGroupsInput
   order: CollectionGroupCreateorderInput
 }
@@ -355,6 +371,7 @@ input CollectionGroupUpdateDataInput {
   title: String
   inCollection: CollectionUpdateOneWithoutUserGroupsInput
   includedLinks: PersonalLinkUpdateManyWithoutInCollectionGroupsInput
+  notes: NoteUpdateManyWithoutOnCollectionGroupInput
   order: CollectionGroupUpdateorderInput
 }
 
@@ -362,6 +379,7 @@ input CollectionGroupUpdateInput {
   title: String
   inCollection: CollectionUpdateOneWithoutUserGroupsInput
   includedLinks: PersonalLinkUpdateManyWithoutInCollectionGroupsInput
+  notes: NoteUpdateManyWithoutOnCollectionGroupInput
   order: CollectionGroupUpdateorderInput
 }
 
@@ -416,6 +434,15 @@ input CollectionGroupUpdateManyWithWhereNestedInput {
   data: CollectionGroupUpdateManyDataInput!
 }
 
+input CollectionGroupUpdateOneWithoutNotesInput {
+  create: CollectionGroupCreateWithoutNotesInput
+  update: CollectionGroupUpdateWithoutNotesDataInput
+  upsert: CollectionGroupUpsertWithoutNotesInput
+  delete: Boolean
+  disconnect: Boolean
+  connect: CollectionGroupWhereUniqueInput
+}
+
 input CollectionGroupUpdateorderInput {
   set: [String!]
 }
@@ -423,11 +450,20 @@ input CollectionGroupUpdateorderInput {
 input CollectionGroupUpdateWithoutIncludedLinksDataInput {
   title: String
   inCollection: CollectionUpdateOneWithoutUserGroupsInput
+  notes: NoteUpdateManyWithoutOnCollectionGroupInput
   order: CollectionGroupUpdateorderInput
 }
 
 input CollectionGroupUpdateWithoutInCollectionDataInput {
   title: String
+  includedLinks: PersonalLinkUpdateManyWithoutInCollectionGroupsInput
+  notes: NoteUpdateManyWithoutOnCollectionGroupInput
+  order: CollectionGroupUpdateorderInput
+}
+
+input CollectionGroupUpdateWithoutNotesDataInput {
+  title: String
+  inCollection: CollectionUpdateOneWithoutUserGroupsInput
   includedLinks: PersonalLinkUpdateManyWithoutInCollectionGroupsInput
   order: CollectionGroupUpdateorderInput
 }
@@ -445,6 +481,11 @@ input CollectionGroupUpdateWithWhereUniqueWithoutIncludedLinksInput {
 input CollectionGroupUpdateWithWhereUniqueWithoutInCollectionInput {
   where: CollectionGroupWhereUniqueInput!
   data: CollectionGroupUpdateWithoutInCollectionDataInput!
+}
+
+input CollectionGroupUpsertWithoutNotesInput {
+  update: CollectionGroupUpdateWithoutNotesDataInput!
+  create: CollectionGroupCreateWithoutNotesInput!
 }
 
 input CollectionGroupUpsertWithWhereUniqueNestedInput {
@@ -498,6 +539,9 @@ input CollectionGroupWhereInput {
   includedLinks_every: PersonalLinkWhereInput
   includedLinks_some: PersonalLinkWhereInput
   includedLinks_none: PersonalLinkWhereInput
+  notes_every: NoteWhereInput
+  notes_some: NoteWhereInput
+  notes_none: NoteWhereInput
   createdAt: DateTime
   createdAt_not: DateTime
   createdAt_in: [DateTime!]
@@ -530,8 +574,6 @@ enum CollectionOrderByInput {
   title_DESC
   filterString_ASC
   filterString_DESC
-  groupByTag_ASC
-  groupByTag_DESC
   thingQueryCursor_ASC
   thingQueryCursor_DESC
   createdAt_ASC
@@ -544,7 +586,6 @@ type CollectionPreviousValues {
   id: ID!
   title: String!
   filterString: String
-  groupByTag: Boolean!
   ungroupedThingsOrder: [String!]!
   expandedCards: [String!]!
   thingQueryCursor: String
@@ -595,8 +636,6 @@ input CollectionScalarWhereInput {
   filterString_not_starts_with: String
   filterString_ends_with: String
   filterString_not_ends_with: String
-  groupByTag: Boolean
-  groupByTag_not: Boolean
   thingQueryCursor: String
   thingQueryCursor_not: String
   thingQueryCursor_in: [String!]
@@ -655,7 +694,6 @@ input CollectionUpdateDataInput {
   author: MemberUpdateOneRequiredWithoutCollectionsInput
   filterString: String
   hiddenThings: ThingUpdateManyInput
-  groupByTag: Boolean
   hiddenTags: TagUpdateManyInput
   hiddenGroups: CollectionGroupUpdateManyInput
   userGroups: CollectionGroupUpdateManyWithoutInCollectionInput
@@ -676,7 +714,6 @@ input CollectionUpdateInput {
   author: MemberUpdateOneRequiredWithoutCollectionsInput
   filterString: String
   hiddenThings: ThingUpdateManyInput
-  groupByTag: Boolean
   hiddenTags: TagUpdateManyInput
   hiddenGroups: CollectionGroupUpdateManyInput
   userGroups: CollectionGroupUpdateManyWithoutInCollectionInput
@@ -691,7 +728,6 @@ input CollectionUpdateInput {
 input CollectionUpdateManyDataInput {
   title: String
   filterString: String
-  groupByTag: Boolean
   ungroupedThingsOrder: CollectionUpdateungroupedThingsOrderInput
   expandedCards: CollectionUpdateexpandedCardsInput
   thingQueryCursor: String
@@ -700,7 +736,6 @@ input CollectionUpdateManyDataInput {
 input CollectionUpdateManyMutationInput {
   title: String
   filterString: String
-  groupByTag: Boolean
   ungroupedThingsOrder: CollectionUpdateungroupedThingsOrderInput
   expandedCards: CollectionUpdateexpandedCardsInput
   thingQueryCursor: String
@@ -758,7 +793,6 @@ input CollectionUpdateWithoutAuthorDataInput {
   title: String
   filterString: String
   hiddenThings: ThingUpdateManyInput
-  groupByTag: Boolean
   hiddenTags: TagUpdateManyInput
   hiddenGroups: CollectionGroupUpdateManyInput
   userGroups: CollectionGroupUpdateManyWithoutInCollectionInput
@@ -775,7 +809,6 @@ input CollectionUpdateWithoutTagOrdersDataInput {
   author: MemberUpdateOneRequiredWithoutCollectionsInput
   filterString: String
   hiddenThings: ThingUpdateManyInput
-  groupByTag: Boolean
   hiddenTags: TagUpdateManyInput
   hiddenGroups: CollectionGroupUpdateManyInput
   userGroups: CollectionGroupUpdateManyWithoutInCollectionInput
@@ -791,7 +824,6 @@ input CollectionUpdateWithoutUserGroupsDataInput {
   author: MemberUpdateOneRequiredWithoutCollectionsInput
   filterString: String
   hiddenThings: ThingUpdateManyInput
-  groupByTag: Boolean
   hiddenTags: TagUpdateManyInput
   hiddenGroups: CollectionGroupUpdateManyInput
   ungroupedThingsOrder: CollectionUpdateungroupedThingsOrderInput
@@ -875,8 +907,6 @@ input CollectionWhereInput {
   hiddenThings_every: ThingWhereInput
   hiddenThings_some: ThingWhereInput
   hiddenThings_none: ThingWhereInput
-  groupByTag: Boolean
-  groupByTag_not: Boolean
   hiddenTags_every: TagWhereInput
   hiddenTags_some: TagWhereInput
   hiddenTags_none: TagWhereInput
@@ -6553,6 +6583,12 @@ type Mutation {
   upsertMember(where: MemberWhereUniqueInput!, create: MemberCreateInput!, update: MemberUpdateInput!): Member!
   deleteMember(where: MemberWhereUniqueInput!): Member
   deleteManyMembers(where: MemberWhereInput): BatchPayload!
+  createNote(data: NoteCreateInput!): Note!
+  updateNote(data: NoteUpdateInput!, where: NoteWhereUniqueInput!): Note
+  updateManyNotes(data: NoteUpdateManyMutationInput!, where: NoteWhereInput): BatchPayload!
+  upsertNote(where: NoteWhereUniqueInput!, create: NoteCreateInput!, update: NoteUpdateInput!): Note!
+  deleteNote(where: NoteWhereUniqueInput!): Note
+  deleteManyNotes(where: NoteWhereInput): BatchPayload!
   createNotification(data: NotificationCreateInput!): Notification!
   updateNotification(data: NotificationUpdateInput!, where: NotificationWhereUniqueInput!): Notification
   updateManyNotifications(data: NotificationUpdateManyMutationInput!, where: NotificationWhereInput): BatchPayload!
@@ -6616,6 +6652,233 @@ enum MutationType {
 
 interface Node {
   id: ID!
+}
+
+type Note {
+  id: ID!
+  author: Member!
+  content: String
+  onCollectionGroup: CollectionGroup
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+type NoteConnection {
+  pageInfo: PageInfo!
+  edges: [NoteEdge]!
+  aggregate: AggregateNote!
+}
+
+input NoteCreateInput {
+  id: ID
+  author: MemberCreateOneInput!
+  content: String
+  onCollectionGroup: CollectionGroupCreateOneWithoutNotesInput
+}
+
+input NoteCreateManyWithoutOnCollectionGroupInput {
+  create: [NoteCreateWithoutOnCollectionGroupInput!]
+  connect: [NoteWhereUniqueInput!]
+}
+
+input NoteCreateWithoutOnCollectionGroupInput {
+  id: ID
+  author: MemberCreateOneInput!
+  content: String
+}
+
+type NoteEdge {
+  node: Note!
+  cursor: String!
+}
+
+enum NoteOrderByInput {
+  id_ASC
+  id_DESC
+  content_ASC
+  content_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+type NotePreviousValues {
+  id: ID!
+  content: String
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+input NoteScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  content: String
+  content_not: String
+  content_in: [String!]
+  content_not_in: [String!]
+  content_lt: String
+  content_lte: String
+  content_gt: String
+  content_gte: String
+  content_contains: String
+  content_not_contains: String
+  content_starts_with: String
+  content_not_starts_with: String
+  content_ends_with: String
+  content_not_ends_with: String
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  AND: [NoteScalarWhereInput!]
+  OR: [NoteScalarWhereInput!]
+  NOT: [NoteScalarWhereInput!]
+}
+
+type NoteSubscriptionPayload {
+  mutation: MutationType!
+  node: Note
+  updatedFields: [String!]
+  previousValues: NotePreviousValues
+}
+
+input NoteSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: NoteWhereInput
+  AND: [NoteSubscriptionWhereInput!]
+  OR: [NoteSubscriptionWhereInput!]
+  NOT: [NoteSubscriptionWhereInput!]
+}
+
+input NoteUpdateInput {
+  author: MemberUpdateOneRequiredInput
+  content: String
+  onCollectionGroup: CollectionGroupUpdateOneWithoutNotesInput
+}
+
+input NoteUpdateManyDataInput {
+  content: String
+}
+
+input NoteUpdateManyMutationInput {
+  content: String
+}
+
+input NoteUpdateManyWithoutOnCollectionGroupInput {
+  create: [NoteCreateWithoutOnCollectionGroupInput!]
+  delete: [NoteWhereUniqueInput!]
+  connect: [NoteWhereUniqueInput!]
+  set: [NoteWhereUniqueInput!]
+  disconnect: [NoteWhereUniqueInput!]
+  update: [NoteUpdateWithWhereUniqueWithoutOnCollectionGroupInput!]
+  upsert: [NoteUpsertWithWhereUniqueWithoutOnCollectionGroupInput!]
+  deleteMany: [NoteScalarWhereInput!]
+  updateMany: [NoteUpdateManyWithWhereNestedInput!]
+}
+
+input NoteUpdateManyWithWhereNestedInput {
+  where: NoteScalarWhereInput!
+  data: NoteUpdateManyDataInput!
+}
+
+input NoteUpdateWithoutOnCollectionGroupDataInput {
+  author: MemberUpdateOneRequiredInput
+  content: String
+}
+
+input NoteUpdateWithWhereUniqueWithoutOnCollectionGroupInput {
+  where: NoteWhereUniqueInput!
+  data: NoteUpdateWithoutOnCollectionGroupDataInput!
+}
+
+input NoteUpsertWithWhereUniqueWithoutOnCollectionGroupInput {
+  where: NoteWhereUniqueInput!
+  update: NoteUpdateWithoutOnCollectionGroupDataInput!
+  create: NoteCreateWithoutOnCollectionGroupInput!
+}
+
+input NoteWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  author: MemberWhereInput
+  content: String
+  content_not: String
+  content_in: [String!]
+  content_not_in: [String!]
+  content_lt: String
+  content_lte: String
+  content_gt: String
+  content_gte: String
+  content_contains: String
+  content_not_contains: String
+  content_starts_with: String
+  content_not_starts_with: String
+  content_ends_with: String
+  content_not_ends_with: String
+  onCollectionGroup: CollectionGroupWhereInput
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  AND: [NoteWhereInput!]
+  OR: [NoteWhereInput!]
+  NOT: [NoteWhereInput!]
+}
+
+input NoteWhereUniqueInput {
+  id: ID
 }
 
 type Notification {
@@ -7495,6 +7758,9 @@ type Query {
   member(where: MemberWhereUniqueInput!): Member
   members(where: MemberWhereInput, orderBy: MemberOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Member]!
   membersConnection(where: MemberWhereInput, orderBy: MemberOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): MemberConnection!
+  note(where: NoteWhereUniqueInput!): Note
+  notes(where: NoteWhereInput, orderBy: NoteOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Note]!
+  notesConnection(where: NoteWhereInput, orderBy: NoteOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): NoteConnection!
   notification(where: NotificationWhereUniqueInput!): Notification
   notifications(where: NotificationWhereInput, orderBy: NotificationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Notification]!
   notificationsConnection(where: NotificationWhereInput, orderBy: NotificationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): NotificationConnection!
@@ -7919,6 +8185,7 @@ type Subscription {
   link(where: LinkSubscriptionWhereInput): LinkSubscriptionPayload
   linkTag(where: LinkTagSubscriptionWhereInput): LinkTagSubscriptionPayload
   member(where: MemberSubscriptionWhereInput): MemberSubscriptionPayload
+  note(where: NoteSubscriptionWhereInput): NoteSubscriptionPayload
   notification(where: NotificationSubscriptionWhereInput): NotificationSubscriptionPayload
   pass(where: PassSubscriptionWhereInput): PassSubscriptionPayload
   personalLink(where: PersonalLinkSubscriptionWhereInput): PersonalLinkSubscriptionPayload

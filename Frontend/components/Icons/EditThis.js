@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import { ThemeContext } from 'styled-components';
 import { setLightness } from '../../styles/functions';
 
-const EditThis = ({ onClick, className, onMouseDown }) => {
+const EditThis = ({ onClick, className, onMouseDown, titleText }) => {
    const { majorColor } = useContext(ThemeContext);
    return (
       <svg
@@ -14,6 +14,7 @@ const EditThis = ({ onClick, className, onMouseDown }) => {
          onClick={onClick}
          onMouseDown={onMouseDown}
       >
+         <title>{titleText != null ? titleText : 'Edit This'}</title>
          {/* Tip */}
          <path
             d="M4.79,198.43l46.92-7.12a3,3,0,0,0,1.67-5.09L13.59,146.44a3,3,0,0,0-5.09,1.67L1.38,195A3,3,0,0,0,4.79,198.43Z"

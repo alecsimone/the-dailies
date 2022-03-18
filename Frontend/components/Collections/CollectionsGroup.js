@@ -11,13 +11,19 @@ import {
    RENAME_GROUP_MUTATION,
    HIDE_THING_ON_COLLECTION_MUTATION,
    SET_COLUMN_ORDER_MUTATION,
-   ADD_LINK_TO_GROUP_MUTATION
+   ADD_LINK_TO_GROUP_MUTATION,
+   ADD_NOTE_MUTATION
 } from './queriesAndMutations';
 import X from '../Icons/X';
+import LinkIcon from '../Icons/Link';
+import SearchIcon from '../Icons/Search';
 import { getUniversalTags, groupSort } from './cardHandling';
 import TaxInput from '../ThingParts/TaxInput';
 import useMe from '../Account/useMe';
 import { getRandomString } from '../../lib/TextHandling';
+import ThingSearchInput from '../ThingParts/ThingSearchInput';
+import { home } from '../../config';
+import ContentIcon from '../Icons/ContentIcon';
 
 const StyledCardList = styled.div``;
 
@@ -30,7 +36,7 @@ const CollectionsGroup = ({
    deleteGroupHandler,
    expandedCards
 }) => {
-   const { id, includedLinks, title, type, order } = groupObj;
+   const { id, includedLinks, notes, title, type, order } = groupObj;
    const {
       loggedInUserID,
       memberFields: { displayName }
@@ -38,6 +44,8 @@ const CollectionsGroup = ({
 
    const [groupTitle, setGroupTitle] = useState(title);
    const titleRef = useRef(null);
+
+   const [searchingThings, setSearchingThings] = useState(false);
 
    const [linkToAdd, setLinkToAdd] = useState('');
 
@@ -68,6 +76,10 @@ const CollectionsGroup = ({
    );
 
    const [addLinkToCollectionGroup] = useMutation(ADD_LINK_TO_GROUP_MUTATION, {
+      onError: err => alert(err.message)
+   });
+
+   const [addNoteToGroup] = useMutation(ADD_NOTE_MUTATION, {
       onError: err => alert(err.message)
    });
 
@@ -149,12 +161,14 @@ const CollectionsGroup = ({
    //    />
    // ));
 
-   const sortedLinks = groupSort(includedLinks, order);
-   const linkElements = sortedLinks.map((link, index) => (
+   const linksAndNotes = includedLinks.concat(notes);
+
+   const sortedItems = groupSort(linksAndNotes, order);
+   const linkElements = sortedItems.map((item, index) => (
       <CollectionsCard
-         data={link}
+         data={item}
          index={index}
-         key={link.id}
+         key={item.id}
          userGroups={userGroups}
          hiddenGroups={hiddenGroups}
          groupType={type}
@@ -167,9 +181,8 @@ const CollectionsGroup = ({
 
    return (
       <StyledGroup ref={groupRef} id={groupObj.id} className="collectionGroup">
-         <header>
+         <header className="groupHeader">
             <input
-               type="text"
                className="groupTitle"
                placeholder="Group Title"
                ref={titleRef}
@@ -235,13 +248,102 @@ const CollectionsGroup = ({
             )}
          </Droppable>
          <footer className="collectionsGroupFooter">
-            <input
-               type="url"
-               placeholder="add link to group"
-               value={linkToAdd}
-               onChange={e => setLinkToAdd(e.target.value)}
-               onKeyDown={handleLinkInputKeydown}
-            />
+            {!searchingThings && (
+               <input
+                  type="url"
+                  placeholder="add link to group"
+                  value={linkToAdd}
+                  onChange={e => setLinkToAdd(e.target.value)}
+                  onKeyDown={handleLinkInputKeydown}
+               />
+            )}
+            {searchingThings && (
+               <ThingSearchInput
+                  placeholder="search things to add"
+                  onChosenResult={selectedPost => {
+                     const thingID = selectedPost.id;
+                     const url = `${home}/thing?id=${thingID}`;
+
+                     const newGroupObj = JSON.parse(JSON.stringify(groupObj));
+
+                     const now = new Date();
+                     const temporaryID = `temporary-${getRandomString(12)}`;
+
+                     newGroupObj.includedLinks.push({
+                        __typename: 'PersonalLink',
+                        id: temporaryID,
+                        url,
+                        owner: {
+                           __typename: 'Member',
+                           id: loggedInUserID
+                        },
+                        title: null,
+                        description: null,
+                        partOfTags: [],
+                        createdAt: now.toISOString(),
+                        updatedAt: now.toISOString()
+                     });
+
+                     newGroupObj.order.push(temporaryID);
+
+                     addLinkToCollectionGroup({
+                        variables: {
+                           url,
+                           groupID: id
+                        },
+                        optimisticResponse: {
+                           __typename: 'Mutation',
+                           addLinkToCollectionGroup: newGroupObj
+                        }
+                     });
+                  }}
+                  additionalResultsFilter={thingData => {
+                     let isAlreadyIncluded = false;
+                     includedLinks.forEach(includedLink => {
+                        if (includedLink.url.includes(thingData.id)) {
+                           isAlreadyIncluded = true;
+                        }
+                     });
+                     return !isAlreadyIncluded;
+                  }}
+               />
+            )}
+            <div className="buttons">
+               {!searchingThings && (
+                  <SearchIcon onClick={() => setSearchingThings(true)} />
+               )}
+               {searchingThings && (
+                  <LinkIcon onClick={() => setSearchingThings(false)} />
+               )}
+               <div
+                  className="contentIconWrapper"
+                  onClick={() => {
+                     const newGroupObj = JSON.parse(JSON.stringify(groupObj));
+
+                     const temporaryID = `note-${getRandomString(12)}`;
+
+                     newGroupObj.notes.push({
+                        __typename: 'Note',
+                        id: temporaryID,
+                        content: 'New note'
+                     });
+                     newGroupObj.order.push(temporaryID);
+
+                     addNoteToGroup({
+                        variables: {
+                           groupID: id
+                        },
+                        optimisticResponse: {
+                           __typename: 'Mutation',
+                           addNoteToGroup: newGroupObj
+                        }
+                     });
+                  }}
+               >
+                  <ContentIcon />
+                  <div className="badge">+</div>
+               </div>
+            </div>
          </footer>
       </StyledGroup>
    );

@@ -106,12 +106,15 @@ type Mutation {
   reorderGroups(groupOneID: ID, newOrderOne: [String!], groupTwoID: ID, newOrderTwo: [String!]): [CollectionGroup!]
   reorderTags(groupOneID: String, tagOneID: ID, newOrderOne: [String!], groupTwoID: String, tagTwoID: ID, newOrderTwo: [String!], collectionID: ID!): [TagOrder]
   reorderUngroupedThings(collectionID: ID!, newOrder: [String!]!): Collection
-  moveCardToGroup(linkID: ID!, sourceGroupID: ID, destinationGroupID: ID, newPosition: Int): [CollectionGroup!]
+  moveCardToGroup(linkID: ID!, cardType: String, sourceGroupID: ID, destinationGroupID: ID, newPosition: Int): [CollectionGroup!]
   moveGroupToColumn(groupID: ID!, sourceColumnID: ID, destinationColumnID: ID, newPosition: Int): [ColumnOrder!]
   reorderGroup(groupID: ID!, linkID: ID!, newPosition: Int!): CollectionGroup
   reorderColumn(columnID: ID!, groupID: ID!, newPosition: Int!): ColumnOrder
   setColumnOrder(columnIDs: [String!]!, newOrders: [[String!]]!, collectionID: String!, isTagOrder: Boolean): Collection
   handleCardExpansion(thingID: ID!, collectionID: ID!, newValue: Boolean!): Collection
+  addNoteToGroup(groupID: ID!, position: Int): CollectionGroup
+  deleteNote(noteID: ID!): CollectionGroup
+  editNote(noteID: ID!, newContent: String!): Note
 
   addConnection(subjectID: ID!, objectID: ID!, relationship: String!, strength: Int): [Thing!]
   deleteConnection(connectionID: ID!): [Thing!],

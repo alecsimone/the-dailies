@@ -339,12 +339,14 @@ export { REORDER_UNGROUPED_THINGS_MUTATION };
 const MOVE_CARD_TO_GROUP_MUTATION = gql`
    mutation MOVE_CARD_TO_GROUP_MUTATION(
       $linkID: ID!
+      $cardType: String
       $sourceGroupID: ID
       $destinationGroupID: ID
       $newPosition: Int
    ) {
       moveCardToGroup(
          linkID: $linkID
+         cardType: $cardType
          sourceGroupID: $sourceGroupID
          destinationGroupID: $destinationGroupID
          newPosition: $newPosition
@@ -461,3 +463,32 @@ const HANDLE_CARD_EXPANSION_MUTATION = gql`
    }
 `;
 export { HANDLE_CARD_EXPANSION_MUTATION };
+
+const ADD_NOTE_MUTATION = gql`
+   mutation ADD_NOTE_MUTATION($groupID: ID!, $position: Int) {
+      addNoteToGroup(groupID: $groupID, position: $position) {
+         ${collectionGroupFields}
+      }
+   }
+`;
+export { ADD_NOTE_MUTATION };
+
+const DELETE_NOTE_MUTATION = gql`
+   mutation DELETE_NOTE_MUTATION($noteID: ID!) {
+      deleteNote(noteID: $noteID) {
+         ${collectionGroupFields}
+      }
+   }
+`;
+export { DELETE_NOTE_MUTATION };
+
+const EDIT_NOTE_MUTATION = gql`
+   mutation EDIT_NOTE_MUTATION($noteID: ID!, $newContent: String!) {
+      editNote(noteID: $noteID, newContent: $newContent) {
+         __typename
+         id
+         content
+      }
+   }
+`;
+export { EDIT_NOTE_MUTATION };

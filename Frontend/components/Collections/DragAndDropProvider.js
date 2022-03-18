@@ -52,18 +52,10 @@ const DragAndDropProvider = ({ children }) => {
    );
 
    const dragEndHelper = ({ source, destination, draggableId, type }) => {
-      console.log(source, destination, draggableId);
-
       const dashLocation = draggableId.lastIndexOf('-');
       const itemID = draggableId.substring(dashLocation + 1);
 
       if (type === 'card') {
-         let cardType;
-         if (draggableId.startsWith('thingCard')) {
-            cardType = 'thing';
-         } else {
-            cardType = 'link';
-         }
          if (destination == null) {
             const linkID = itemID;
 
@@ -192,13 +184,28 @@ const DragAndDropProvider = ({ children }) => {
             });
          } else {
             const linkID = itemID;
-            const linkObj = client.readFragment({
-               id: `PersonalLink:${linkID}`,
-               fragment: gql`
-                  fragment LinkToMove on PersonalLink {
-                     ${fullPersonalLinkFields}
-                  }`
-            });
+            const cardType = draggableId.includes('-note-') ? 'note' : 'link';
+
+            let linkObj;
+            if (cardType === 'link') {
+               linkObj = client.readFragment({
+                  id: `PersonalLink:${linkID}`,
+                  fragment: gql`
+                     fragment LinkToMove on PersonalLink {
+                        ${fullPersonalLinkFields}
+                     }`
+               });
+            } else if (cardType === 'note') {
+               linkObj = client.readFragment({
+                  id: `Note:${linkID}`,
+                  fragment: gql`
+                     fragment NoteToMove on Note {
+                        id
+                        content
+                     }
+                  `
+               });
+            }
 
             const sourceGroupID = source.droppableId;
             const sourceGroupObj = client.readFragment({
@@ -220,12 +227,18 @@ const DragAndDropProvider = ({ children }) => {
 
             let linkAlreadyIncluded = false;
             destinationGroupObj.includedLinks.forEach(linkData => {
-               if (linkData.url === linkObj.url) {
-                  linkAlreadyIncluded = true;
+               if (cardType === 'link') {
+                  if (linkData.url === linkObj.url) {
+                     linkAlreadyIncluded = true;
+                  }
+               } else if (cardType === 'note') {
+                  if (linkData.id === itemID) {
+                     linkAlreadyIncluded = true;
+                  }
                }
             });
             if (linkAlreadyIncluded) {
-               alert("You've already added that link to that group.");
+               alert(`You've already added that ${cardType} to that group.`);
                return;
             }
 
@@ -233,6 +246,7 @@ const DragAndDropProvider = ({ children }) => {
 
             const variables = {
                linkID,
+               cardType,
                sourceGroupID,
                destinationGroupID,
                newPosition
@@ -246,9 +260,15 @@ const DragAndDropProvider = ({ children }) => {
             const newSourceGroupObj = JSON.parse(
                JSON.stringify(sourceGroupObj)
             );
-            newSourceGroupObj.includedLinks = newSourceGroupObj.includedLinks.filter(
-               linkObj => linkObj.id !== linkID
-            );
+            if (cardType === 'link') {
+               newSourceGroupObj.includedLinks = newSourceGroupObj.includedLinks.filter(
+                  linkObj => linkObj.id !== linkID
+               );
+            } else if (cardType === 'note') {
+               newSourceGroupObj.notes = newSourceGroupObj.notes.filter(
+                  noteObj => noteObj.id !== linkID
+               );
+            }
             newSourceGroupObj.order = newSourceGroupObj.order.filter(
                existingID => existingID !== linkID
             );
@@ -257,7 +277,11 @@ const DragAndDropProvider = ({ children }) => {
             const newDestinationGroupObj = JSON.parse(
                JSON.stringify(destinationGroupObj)
             );
-            newDestinationGroupObj.includedLinks.push(linkObj);
+            if (cardType === 'link') {
+               newDestinationGroupObj.includedLinks.push(linkObj);
+            } else if (cardType === 'note') {
+               newDestinationGroupObj.notes.push(linkObj);
+            }
             newDestinationGroupObj.order.splice(newPosition, 0, linkID);
             optimisticResponse.moveCardToGroup.push(newDestinationGroupObj);
 
@@ -267,7 +291,6 @@ const DragAndDropProvider = ({ children }) => {
             });
          }
       } else if (type === 'group') {
-         console.log(`you dragged a group with ID ${itemID}`);
          if (destination == null) {
             if (!confirm('Are you sure you want to delete that group?')) return;
 
@@ -397,7 +420,6 @@ const DragAndDropProvider = ({ children }) => {
             newDestinationOrderObj.order.splice(destination.index, 0, groupID);
             optimisticResponse.moveGroupToColumn.push(newDestinationOrderObj);
 
-            console.log(optimisticResponse);
             moveGroupToColumn({
                variables,
                optimisticResponse

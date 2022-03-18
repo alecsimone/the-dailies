@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { setAlpha } from '../../styles/functions';
+import { setAlpha, setSaturation } from '../../styles/functions';
 
 const StyledNoCollections = styled.section`
    margin-top: 6rem;
@@ -123,7 +123,7 @@ const StyledGroup = styled.div`
       padding: 2rem;
       text-align: center;
    }
-   header {
+   header.groupHeader {
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -173,11 +173,66 @@ const StyledGroup = styled.div`
       margin-bottom: 2rem;
       text-align: center;
    }
-   footer {
+   footer.collectionsGroupFooter {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      .thingSearchInput {
+         width: 40rem;
+         position: relative;
+         flex-grow: 1;
+         .postSearchResults {
+            background: ${props => props.theme.lightBlack};
+            position: absolute;
+            width: 100%;
+            .noResults,
+            .searchingPosts {
+               padding: 2rem;
+               text-align: center;
+            }
+         }
+      }
       input {
          width: 40rem;
+         flex-grow: 1;
          font-size: ${props => props.theme.smallText};
-         margin-bottom: 2rem;
+      }
+      .buttons {
+         margin-left: 3rem;
+         padding-top: 1rem;
+         display: flex;
+         align-items: center;
+         svg {
+            width: ${props => props.theme.bigText};
+            height: auto;
+            cursor: pointer;
+            &.linkIcon {
+               path {
+                  fill: ${props => props.theme.lowContrastGrey};
+               }
+            }
+         }
+         .contentIconWrapper {
+            margin-left: 2rem;
+            line-height: 0;
+            position: relative;
+            cursor: pointer;
+            .badge {
+               position: absolute;
+               right: 0;
+               bottom: calc(${props => props.theme.miniText} * -0.25);
+               right: calc(${props => props.theme.miniText} * -0.25);
+               border-radius: 100%;
+               background: ${props =>
+                  setSaturation(props.theme.majorColor, 50)};
+               font-size: ${props => props.theme.miniText};
+               height: ${props => props.theme.miniText};
+               width: ${props => props.theme.miniText};
+               text-align: center;
+               line-height: 1;
+            }
+         }
       }
    }
 `;
@@ -237,3 +292,53 @@ const StyledCard = styled.div`
    }
 `;
 export { StyledCard };
+
+const StyledNote = styled.div`
+   margin-bottom: 2rem;
+   background: ${props => props.theme.midBlack};
+   width: 100%;
+   .postButtonWrapper {
+      display: flex;
+      justify-content: space-between;
+      padding: 0 1.5rem;
+      margin: 1rem 0;
+      button.post {
+         padding: 0.6rem;
+         font-size: ${props => props.theme.smallText};
+         font-weight: 500;
+         background: ${props => setAlpha(props.theme.majorColor, 0.8)};
+      }
+   }
+   .textWrapper {
+      padding: 1rem;
+      border-bottom: 2px solid
+         ${props => setAlpha(props.theme.lowContrastGrey, 0.2)};
+      white-space: pre-wrap;
+   }
+   textarea {
+      width: 100%;
+      height: 6.5rem;
+      border: none;
+      resize: none;
+      border-bottom: 2px solid
+         ${props => setAlpha(props.theme.lowContrastGrey, 0.2)};
+   }
+   footer {
+      display: flex;
+      justify-content: flex-end;
+      padding: 1rem;
+      svg {
+         height: ${props => props.theme.smallHead};
+         opacity: 0.4;
+         padding: 0.5rem;
+         cursor: pointer;
+         &:hover {
+            opacity: 0.8;
+         }
+         &.x {
+            margin-left: 1.5rem;
+         }
+      }
+   }
+`;
+export { StyledNote };

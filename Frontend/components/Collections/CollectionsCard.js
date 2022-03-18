@@ -1,19 +1,26 @@
 import { useMutation } from '@apollo/react-hooks';
-import { useState } from 'react';
+import debounce from 'lodash.debounce';
+import { useRef, useState } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
 import { getRandomString } from '../../lib/TextHandling';
+import { dynamicallyResizeElement, successFlash } from '../../styles/functions';
 import useMe from '../Account/useMe';
 import ExplodingLink from '../ExplodingLink';
 import X from '../Icons/X';
+import RichTextArea from '../RichTextArea';
+import RichText from '../RichText';
 import {
    ADD_LINK_TO_GROUP_MUTATION,
    COPY_THING_TO_GROUP_MUTATION,
+   DELETE_NOTE_MUTATION,
+   EDIT_NOTE_MUTATION,
    HANDLE_CARD_EXPANSION_MUTATION,
    REMOVE_LINK_FROM_COLLECTION_GROUP
 } from './queriesAndMutations';
-import { StyledCard } from './styles';
+import { StyledCard, StyledNote } from './styles';
+import EditThis from '../Icons/EditThis';
 
 const StyledButton = styled.button`
    font-size: ${props => props.theme.smallText};
@@ -24,6 +31,11 @@ const StyledButton = styled.button`
       background: none;
    }
 `;
+
+const debouncedNoteChangesHandler = debounce((handler, e) => handler(e), 2000, {
+   leading: false,
+   trailing: true
+});
 
 const CollectionsCard = ({
    data,
@@ -43,6 +55,9 @@ const CollectionsCard = ({
 
    const [showingCopyTargets, setShowingCopyTargets] = useState(false);
 
+   const noteRef = useRef(null);
+   const [editingNote, setEditingNote] = useState(false);
+
    const [removeLinkFromGroup] = useMutation(
       REMOVE_LINK_FROM_COLLECTION_GROUP,
       {
@@ -60,7 +75,148 @@ const CollectionsCard = ({
 
    const [handleCardExpansion] = useMutation(HANDLE_CARD_EXPANSION_MUTATION);
 
+   const [deleteNote] = useMutation(DELETE_NOTE_MUTATION, {
+      onError: err => alert(err.message)
+   });
+
+   const [editNote] = useMutation(EDIT_NOTE_MUTATION, {
+      onError: err => alert(err.message)
+   });
+
    if (data == null) return null;
+
+   if (data.__typename === 'Note') {
+      const noteID = data.id;
+
+      const rawUpdateText = () => {
+         if (noteRef.current == null) return;
+
+         editNote({
+            variables: {
+               noteID,
+               newContent: noteRef.current.value
+            }
+         });
+      };
+
+      const postText = () => {
+         rawUpdateText();
+         setEditingNote(false);
+      };
+
+      const secondMiddleOrRightClickListener = e => {
+         if (editingNote) return; // rich text areas have this functionality already, so we don't need to do anything if we're editing the note
+         if (e.button === 1 || e.button === 2) {
+            setEditingNote(!editingNote);
+         }
+      };
+
+      return (
+         <Draggable
+            draggableId={`${groupID}-note-${noteID}`}
+            index={index}
+            key={`${groupID}-${noteID}`}
+         >
+            {provided => (
+               <StyledNote
+                  className="noteWrapper"
+                  ref={provided.innerRef}
+                  {...provided.draggableProps}
+                  {...provided.dragHandleProps}
+                  onMouseDown={e => {
+                     if (editingNote) return; // rich text areas have this functionality already, so we don't need to do anything if we're editing the note
+                     if (e.button === 1 || e.button === 2) {
+                        e.stopPropagation();
+
+                        const card = noteRef.current.closest('.noteWrapper');
+
+                        window.setTimeout(
+                           () =>
+                              card.addEventListener(
+                                 'mousedown',
+                                 secondMiddleOrRightClickListener
+                              ),
+                           1
+                        );
+                        window.setTimeout(() => {
+                           if (card != null) {
+                              card.removeEventListener(
+                                 'mousedown',
+                                 secondMiddleOrRightClickListener
+                              );
+                           }
+                        }, 500);
+                     }
+                  }}
+               >
+                  {editingNote && (
+                     <RichTextArea
+                        text={data.content}
+                        postText={postText}
+                        setEditable={setEditingNote}
+                        rawUpdateText={rawUpdateText}
+                        unsavedChangesHandler={rawUpdateText}
+                        placeholder="Add note"
+                        buttonText="save"
+                        inputRef={noteRef}
+                     />
+                  )}
+                  {!editingNote && (
+                     <div className="textWrapper" ref={noteRef}>
+                        <RichText text={data.content} />
+                     </div>
+                  )}
+                  <footer>
+                     <div className="buttons">
+                        {!editingNote && (
+                           <EditThis
+                              titleText="Edit Note"
+                              onClick={() => setEditingNote(true)}
+                           />
+                        )}
+                        <X
+                           titleText="Delete Note"
+                           onClick={() => {
+                              if (
+                                 !confirm(
+                                    'Are you sure you want to delete that note?'
+                                 )
+                              )
+                                 return;
+
+                              const [thisGroup] = userGroups.filter(
+                                 groupObj => groupObj.id === groupID
+                              );
+
+                              const newGroupObj = JSON.parse(
+                                 JSON.stringify(thisGroup)
+                              );
+
+                              newGroupObj.notes = newGroupObj.notes.filter(
+                                 noteObj => noteObj.id !== noteID
+                              );
+                              newGroupObj.order = newGroupObj.order.filter(
+                                 id => id !== noteID
+                              );
+
+                              deleteNote({
+                                 variables: {
+                                    noteID
+                                 },
+                                 optimisticResponse: {
+                                    __typename: 'Mutation',
+                                    deleteNote: newGroupObj
+                                 }
+                              });
+                           }}
+                        />
+                     </div>
+                  </footer>
+               </StyledNote>
+            )}
+         </Draggable>
+      );
+   }
 
    const { id, url } = data;
 
