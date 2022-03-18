@@ -257,6 +257,9 @@ const StyledCard = styled.div`
    img {
       width: 100%;
    }
+   .linkCard {
+      margin-top: 0;
+   }
    .cardManagementBar {
       display: flex;
       justify-content: space-between;
