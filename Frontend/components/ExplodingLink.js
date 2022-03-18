@@ -292,7 +292,7 @@ const ExplodingLink = ({
       return (
          <>
             {!hideCardShortlink && <ShortLink link={url} limit={80} />}
-            <LinkCard link={url} />
+            <LinkCard link={url} shortlinkHidden={hideCardShortlink} />
          </>
       );
    }

@@ -6,6 +6,7 @@ import { linkFields } from '../lib/CardInterfaces';
 import useQueryAndStoreIt from '../stuffStore/useQueryAndStoreIt';
 import { setAlpha, setLightness } from '../styles/functions';
 import LoadingRing from './LoadingRing';
+import ShortLink from './ThingParts/ShortLink';
 
 const LINK_DATA_QUERY = gql`
    query LINK_DATA_QUERY($url: String!) {
@@ -97,7 +98,7 @@ const StyledLinkCard = styled.div`
 
 const useLinkData = link => useSelector(state => state.stuff[`Link:${link}`]);
 
-const LinkCard = ({ link }) => {
+const LinkCard = ({ link, shortlinkHidden }) => {
    const hasData = useSelector(state => state.stuff[`Link:${link}`] != null);
 
    const storedLinkData = useLinkData(link);
@@ -161,6 +162,13 @@ const LinkCard = ({ link }) => {
          video == null &&
          description == null
       ) {
+         if (shortlinkHidden) {
+            return (
+               <StyledLinkCard className="linkCard">
+                  <ShortLink link={link} limit={80} />
+               </StyledLinkCard>
+            );
+         }
          return null;
       }
 
