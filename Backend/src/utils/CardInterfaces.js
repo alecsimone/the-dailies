@@ -724,6 +724,14 @@ const basicMemberFields = `
       __typename
       id
    }
+   lastActiveCollection {
+      ${fullCollectionFields}
+   }
+   collections {
+      __typename
+      id
+      title
+   }
    defaultExpansion
    defaultPrivacy
    role

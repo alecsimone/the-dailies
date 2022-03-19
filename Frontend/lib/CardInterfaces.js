@@ -434,51 +434,6 @@ const taxFields = `
 `;
 export { taxFields };
 
-const basicMemberFields = `
-   __typename
-   id
-   displayName
-   avatar
-   rep
-   friends {
-      __typename
-      id
-   }
-   broadcastView
-   notifications {
-      __typename
-      id
-      kind
-      initiator {
-         __typename
-         id
-         avatar
-         rep
-         displayName
-         role
-         friends {
-            __typename
-            id
-         }
-      }
-      unread
-      linkQuery
-   }
-   friendRequests {
-      __typename
-      id
-   }
-   ignoredFriendRequests {
-      __typename
-      id
-   }
-   defaultExpansion
-   defaultPrivacy
-   role
-   twitterUserName
-`;
-export { basicMemberFields };
-
 const fullPersonalLinkFields = `
    __typename
    id
@@ -794,3 +749,56 @@ const fullMemberFields = `
    createdAt
 `;
 export { fullMemberFields };
+
+const basicMemberFields = `
+   __typename
+   id
+   displayName
+   avatar
+   rep
+   friends {
+      __typename
+      id
+   }
+   broadcastView
+   notifications {
+      __typename
+      id
+      kind
+      initiator {
+         __typename
+         id
+         avatar
+         rep
+         displayName
+         role
+         friends {
+            __typename
+            id
+         }
+      }
+      unread
+      linkQuery
+   }
+   friendRequests {
+      __typename
+      id
+   }
+   ignoredFriendRequests {
+      __typename
+      id
+   }
+   lastActiveCollection {
+      ${fullCollectionFields}
+   }
+   collections {
+      __typename
+      id
+      title
+   }
+   defaultExpansion
+   defaultPrivacy
+   role
+   twitterUserName
+`;
+export { basicMemberFields };
