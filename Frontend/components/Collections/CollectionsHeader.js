@@ -99,6 +99,7 @@ const CollectionsHeader = ({
             collectionID: id
          },
          onCompleted: data => {
+            console.log('deleted');
             const destination = {
                pathname: '/collections'
             };
