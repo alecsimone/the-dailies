@@ -109,7 +109,12 @@ const CollectionsHeader = ({
                };
             }
 
-            router.push(destination);
+            if (
+               router?.query?.id !==
+               data.deleteCollection.lastActiveCollection.id
+            ) {
+               router.push(destination);
+            }
          }
       }
    );

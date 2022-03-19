@@ -8,12 +8,14 @@ const AddCollectionButton = () => {
    const [addCollection, { loading }] = useMutation(ADD_COLLECTION_MUTATION, {
       onCompleted: data => {
          const newCollectionID = data.addCollection.lastActiveCollection.id;
-         router.push({
-            pathname: '/collections',
-            query: {
-               id: newCollectionID
-            }
-         });
+         if (router.query.id !== newCollectionID) {
+            router.push({
+               pathname: '/collections',
+               query: {
+                  id: newCollectionID
+               }
+            });
+         }
       }
    });
 

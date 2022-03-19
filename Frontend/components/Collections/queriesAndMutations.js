@@ -3,9 +3,7 @@ import {
    basicMemberFields,
    collectionGroupFields,
    fullCollectionFields,
-   fullMemberFields,
    fullThingFields,
-   smallThingCardFields,
    thingCardFields
 } from '../../lib/CardInterfaces';
 
