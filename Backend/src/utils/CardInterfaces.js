@@ -420,6 +420,17 @@ const fullCollectionFields = `
       id
       displayName
    }
+   editors {
+      __typename
+      id
+      displayName
+   }
+   viewers {
+      __typename
+      id
+      displayName
+   }
+   privacy
    filterString
    hiddenThings {
       __typename

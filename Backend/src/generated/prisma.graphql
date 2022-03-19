@@ -82,6 +82,9 @@ type Collection {
   id: ID!
   title: String!
   author: Member!
+  editors(where: MemberWhereInput, orderBy: MemberOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Member!]
+  viewers(where: MemberWhereInput, orderBy: MemberOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Member!]
+  privacy: PrivacySetting
   filterString: String
   hiddenThings(where: ThingWhereInput, orderBy: ThingOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Thing!]
   hiddenTags(where: TagWhereInput, orderBy: TagOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Tag!]
@@ -111,6 +114,9 @@ input CollectionCreateInput {
   id: ID
   title: String
   author: MemberCreateOneWithoutCollectionsInput!
+  editors: MemberCreateManyWithoutCollectionsCanEditInput
+  viewers: MemberCreateManyWithoutCollectionsCanViewInput
+  privacy: PrivacySetting
   filterString: String
   hiddenThings: ThingCreateManyInput
   hiddenTags: TagCreateManyInput
@@ -126,6 +132,16 @@ input CollectionCreateInput {
 
 input CollectionCreateManyWithoutAuthorInput {
   create: [CollectionCreateWithoutAuthorInput!]
+  connect: [CollectionWhereUniqueInput!]
+}
+
+input CollectionCreateManyWithoutEditorsInput {
+  create: [CollectionCreateWithoutEditorsInput!]
+  connect: [CollectionWhereUniqueInput!]
+}
+
+input CollectionCreateManyWithoutViewersInput {
+  create: [CollectionCreateWithoutViewersInput!]
   connect: [CollectionWhereUniqueInput!]
 }
 
@@ -151,6 +167,28 @@ input CollectionCreateungroupedThingsOrderInput {
 input CollectionCreateWithoutAuthorInput {
   id: ID
   title: String
+  editors: MemberCreateManyWithoutCollectionsCanEditInput
+  viewers: MemberCreateManyWithoutCollectionsCanViewInput
+  privacy: PrivacySetting
+  filterString: String
+  hiddenThings: ThingCreateManyInput
+  hiddenTags: TagCreateManyInput
+  hiddenGroups: CollectionGroupCreateManyInput
+  userGroups: CollectionGroupCreateManyWithoutInCollectionInput
+  ungroupedThingsOrder: CollectionCreateungroupedThingsOrderInput
+  tagOrders: TagOrderCreateManyWithoutForCollectionInput
+  expandedCards: CollectionCreateexpandedCardsInput
+  columnOrders: ColumnOrderCreateManyInput
+  tagColumnOrders: ColumnOrderCreateManyInput
+  thingQueryCursor: String
+}
+
+input CollectionCreateWithoutEditorsInput {
+  id: ID
+  title: String
+  author: MemberCreateOneWithoutCollectionsInput!
+  viewers: MemberCreateManyWithoutCollectionsCanViewInput
+  privacy: PrivacySetting
   filterString: String
   hiddenThings: ThingCreateManyInput
   hiddenTags: TagCreateManyInput
@@ -168,6 +206,9 @@ input CollectionCreateWithoutTagOrdersInput {
   id: ID
   title: String
   author: MemberCreateOneWithoutCollectionsInput!
+  editors: MemberCreateManyWithoutCollectionsCanEditInput
+  viewers: MemberCreateManyWithoutCollectionsCanViewInput
+  privacy: PrivacySetting
   filterString: String
   hiddenThings: ThingCreateManyInput
   hiddenTags: TagCreateManyInput
@@ -184,10 +225,32 @@ input CollectionCreateWithoutUserGroupsInput {
   id: ID
   title: String
   author: MemberCreateOneWithoutCollectionsInput!
+  editors: MemberCreateManyWithoutCollectionsCanEditInput
+  viewers: MemberCreateManyWithoutCollectionsCanViewInput
+  privacy: PrivacySetting
   filterString: String
   hiddenThings: ThingCreateManyInput
   hiddenTags: TagCreateManyInput
   hiddenGroups: CollectionGroupCreateManyInput
+  ungroupedThingsOrder: CollectionCreateungroupedThingsOrderInput
+  tagOrders: TagOrderCreateManyWithoutForCollectionInput
+  expandedCards: CollectionCreateexpandedCardsInput
+  columnOrders: ColumnOrderCreateManyInput
+  tagColumnOrders: ColumnOrderCreateManyInput
+  thingQueryCursor: String
+}
+
+input CollectionCreateWithoutViewersInput {
+  id: ID
+  title: String
+  author: MemberCreateOneWithoutCollectionsInput!
+  editors: MemberCreateManyWithoutCollectionsCanEditInput
+  privacy: PrivacySetting
+  filterString: String
+  hiddenThings: ThingCreateManyInput
+  hiddenTags: TagCreateManyInput
+  hiddenGroups: CollectionGroupCreateManyInput
+  userGroups: CollectionGroupCreateManyWithoutInCollectionInput
   ungroupedThingsOrder: CollectionCreateungroupedThingsOrderInput
   tagOrders: TagOrderCreateManyWithoutForCollectionInput
   expandedCards: CollectionCreateexpandedCardsInput
@@ -572,6 +635,8 @@ enum CollectionOrderByInput {
   id_DESC
   title_ASC
   title_DESC
+  privacy_ASC
+  privacy_DESC
   filterString_ASC
   filterString_DESC
   thingQueryCursor_ASC
@@ -585,6 +650,7 @@ enum CollectionOrderByInput {
 type CollectionPreviousValues {
   id: ID!
   title: String!
+  privacy: PrivacySetting
   filterString: String
   ungroupedThingsOrder: [String!]!
   expandedCards: [String!]!
@@ -622,6 +688,10 @@ input CollectionScalarWhereInput {
   title_not_starts_with: String
   title_ends_with: String
   title_not_ends_with: String
+  privacy: PrivacySetting
+  privacy_not: PrivacySetting
+  privacy_in: [PrivacySetting!]
+  privacy_not_in: [PrivacySetting!]
   filterString: String
   filterString_not: String
   filterString_in: [String!]
@@ -692,6 +762,9 @@ input CollectionSubscriptionWhereInput {
 input CollectionUpdateDataInput {
   title: String
   author: MemberUpdateOneRequiredWithoutCollectionsInput
+  editors: MemberUpdateManyWithoutCollectionsCanEditInput
+  viewers: MemberUpdateManyWithoutCollectionsCanViewInput
+  privacy: PrivacySetting
   filterString: String
   hiddenThings: ThingUpdateManyInput
   hiddenTags: TagUpdateManyInput
@@ -712,6 +785,9 @@ input CollectionUpdateexpandedCardsInput {
 input CollectionUpdateInput {
   title: String
   author: MemberUpdateOneRequiredWithoutCollectionsInput
+  editors: MemberUpdateManyWithoutCollectionsCanEditInput
+  viewers: MemberUpdateManyWithoutCollectionsCanViewInput
+  privacy: PrivacySetting
   filterString: String
   hiddenThings: ThingUpdateManyInput
   hiddenTags: TagUpdateManyInput
@@ -727,6 +803,7 @@ input CollectionUpdateInput {
 
 input CollectionUpdateManyDataInput {
   title: String
+  privacy: PrivacySetting
   filterString: String
   ungroupedThingsOrder: CollectionUpdateungroupedThingsOrderInput
   expandedCards: CollectionUpdateexpandedCardsInput
@@ -735,6 +812,7 @@ input CollectionUpdateManyDataInput {
 
 input CollectionUpdateManyMutationInput {
   title: String
+  privacy: PrivacySetting
   filterString: String
   ungroupedThingsOrder: CollectionUpdateungroupedThingsOrderInput
   expandedCards: CollectionUpdateexpandedCardsInput
@@ -749,6 +827,30 @@ input CollectionUpdateManyWithoutAuthorInput {
   disconnect: [CollectionWhereUniqueInput!]
   update: [CollectionUpdateWithWhereUniqueWithoutAuthorInput!]
   upsert: [CollectionUpsertWithWhereUniqueWithoutAuthorInput!]
+  deleteMany: [CollectionScalarWhereInput!]
+  updateMany: [CollectionUpdateManyWithWhereNestedInput!]
+}
+
+input CollectionUpdateManyWithoutEditorsInput {
+  create: [CollectionCreateWithoutEditorsInput!]
+  delete: [CollectionWhereUniqueInput!]
+  connect: [CollectionWhereUniqueInput!]
+  set: [CollectionWhereUniqueInput!]
+  disconnect: [CollectionWhereUniqueInput!]
+  update: [CollectionUpdateWithWhereUniqueWithoutEditorsInput!]
+  upsert: [CollectionUpsertWithWhereUniqueWithoutEditorsInput!]
+  deleteMany: [CollectionScalarWhereInput!]
+  updateMany: [CollectionUpdateManyWithWhereNestedInput!]
+}
+
+input CollectionUpdateManyWithoutViewersInput {
+  create: [CollectionCreateWithoutViewersInput!]
+  delete: [CollectionWhereUniqueInput!]
+  connect: [CollectionWhereUniqueInput!]
+  set: [CollectionWhereUniqueInput!]
+  disconnect: [CollectionWhereUniqueInput!]
+  update: [CollectionUpdateWithWhereUniqueWithoutViewersInput!]
+  upsert: [CollectionUpsertWithWhereUniqueWithoutViewersInput!]
   deleteMany: [CollectionScalarWhereInput!]
   updateMany: [CollectionUpdateManyWithWhereNestedInput!]
 }
@@ -791,6 +893,27 @@ input CollectionUpdateungroupedThingsOrderInput {
 
 input CollectionUpdateWithoutAuthorDataInput {
   title: String
+  editors: MemberUpdateManyWithoutCollectionsCanEditInput
+  viewers: MemberUpdateManyWithoutCollectionsCanViewInput
+  privacy: PrivacySetting
+  filterString: String
+  hiddenThings: ThingUpdateManyInput
+  hiddenTags: TagUpdateManyInput
+  hiddenGroups: CollectionGroupUpdateManyInput
+  userGroups: CollectionGroupUpdateManyWithoutInCollectionInput
+  ungroupedThingsOrder: CollectionUpdateungroupedThingsOrderInput
+  tagOrders: TagOrderUpdateManyWithoutForCollectionInput
+  expandedCards: CollectionUpdateexpandedCardsInput
+  columnOrders: ColumnOrderUpdateManyInput
+  tagColumnOrders: ColumnOrderUpdateManyInput
+  thingQueryCursor: String
+}
+
+input CollectionUpdateWithoutEditorsDataInput {
+  title: String
+  author: MemberUpdateOneRequiredWithoutCollectionsInput
+  viewers: MemberUpdateManyWithoutCollectionsCanViewInput
+  privacy: PrivacySetting
   filterString: String
   hiddenThings: ThingUpdateManyInput
   hiddenTags: TagUpdateManyInput
@@ -807,6 +930,9 @@ input CollectionUpdateWithoutAuthorDataInput {
 input CollectionUpdateWithoutTagOrdersDataInput {
   title: String
   author: MemberUpdateOneRequiredWithoutCollectionsInput
+  editors: MemberUpdateManyWithoutCollectionsCanEditInput
+  viewers: MemberUpdateManyWithoutCollectionsCanViewInput
+  privacy: PrivacySetting
   filterString: String
   hiddenThings: ThingUpdateManyInput
   hiddenTags: TagUpdateManyInput
@@ -822,6 +948,9 @@ input CollectionUpdateWithoutTagOrdersDataInput {
 input CollectionUpdateWithoutUserGroupsDataInput {
   title: String
   author: MemberUpdateOneRequiredWithoutCollectionsInput
+  editors: MemberUpdateManyWithoutCollectionsCanEditInput
+  viewers: MemberUpdateManyWithoutCollectionsCanViewInput
+  privacy: PrivacySetting
   filterString: String
   hiddenThings: ThingUpdateManyInput
   hiddenTags: TagUpdateManyInput
@@ -834,9 +963,37 @@ input CollectionUpdateWithoutUserGroupsDataInput {
   thingQueryCursor: String
 }
 
+input CollectionUpdateWithoutViewersDataInput {
+  title: String
+  author: MemberUpdateOneRequiredWithoutCollectionsInput
+  editors: MemberUpdateManyWithoutCollectionsCanEditInput
+  privacy: PrivacySetting
+  filterString: String
+  hiddenThings: ThingUpdateManyInput
+  hiddenTags: TagUpdateManyInput
+  hiddenGroups: CollectionGroupUpdateManyInput
+  userGroups: CollectionGroupUpdateManyWithoutInCollectionInput
+  ungroupedThingsOrder: CollectionUpdateungroupedThingsOrderInput
+  tagOrders: TagOrderUpdateManyWithoutForCollectionInput
+  expandedCards: CollectionUpdateexpandedCardsInput
+  columnOrders: ColumnOrderUpdateManyInput
+  tagColumnOrders: ColumnOrderUpdateManyInput
+  thingQueryCursor: String
+}
+
 input CollectionUpdateWithWhereUniqueWithoutAuthorInput {
   where: CollectionWhereUniqueInput!
   data: CollectionUpdateWithoutAuthorDataInput!
+}
+
+input CollectionUpdateWithWhereUniqueWithoutEditorsInput {
+  where: CollectionWhereUniqueInput!
+  data: CollectionUpdateWithoutEditorsDataInput!
+}
+
+input CollectionUpdateWithWhereUniqueWithoutViewersInput {
+  where: CollectionWhereUniqueInput!
+  data: CollectionUpdateWithoutViewersDataInput!
 }
 
 input CollectionUpsertNestedInput {
@@ -858,6 +1015,18 @@ input CollectionUpsertWithWhereUniqueWithoutAuthorInput {
   where: CollectionWhereUniqueInput!
   update: CollectionUpdateWithoutAuthorDataInput!
   create: CollectionCreateWithoutAuthorInput!
+}
+
+input CollectionUpsertWithWhereUniqueWithoutEditorsInput {
+  where: CollectionWhereUniqueInput!
+  update: CollectionUpdateWithoutEditorsDataInput!
+  create: CollectionCreateWithoutEditorsInput!
+}
+
+input CollectionUpsertWithWhereUniqueWithoutViewersInput {
+  where: CollectionWhereUniqueInput!
+  update: CollectionUpdateWithoutViewersDataInput!
+  create: CollectionCreateWithoutViewersInput!
 }
 
 input CollectionWhereInput {
@@ -890,6 +1059,16 @@ input CollectionWhereInput {
   title_ends_with: String
   title_not_ends_with: String
   author: MemberWhereInput
+  editors_every: MemberWhereInput
+  editors_some: MemberWhereInput
+  editors_none: MemberWhereInput
+  viewers_every: MemberWhereInput
+  viewers_some: MemberWhereInput
+  viewers_none: MemberWhereInput
+  privacy: PrivacySetting
+  privacy_not: PrivacySetting
+  privacy_in: [PrivacySetting!]
+  privacy_not_in: [PrivacySetting!]
   filterString: String
   filterString_not: String
   filterString_in: [String!]
@@ -3861,6 +4040,8 @@ type Member {
   defaultExpansion: Boolean
   broadcastView: Boolean
   collections(where: CollectionWhereInput, orderBy: CollectionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Collection!]
+  collectionsCanEdit(where: CollectionWhereInput, orderBy: CollectionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Collection!]
+  collectionsCanView(where: CollectionWhereInput, orderBy: CollectionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Collection!]
   lastActiveCollection: Collection
   comments(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Comment!]
   password: String!
@@ -3915,6 +4096,8 @@ input MemberCreateInput {
   defaultExpansion: Boolean
   broadcastView: Boolean
   collections: CollectionCreateManyWithoutAuthorInput
+  collectionsCanEdit: CollectionCreateManyWithoutEditorsInput
+  collectionsCanView: CollectionCreateManyWithoutViewersInput
   lastActiveCollection: CollectionCreateOneInput
   comments: CommentCreateManyWithoutAuthorInput
   password: String!
@@ -3934,6 +4117,16 @@ input MemberCreateInput {
   createdConnections: ConnectionCreateManyWithoutCreatorInput
   ownedLinks: PersonalLinkCreateManyWithoutOwnerInput
   ownedLinkTags: LinkTagCreateManyWithoutOwnerInput
+}
+
+input MemberCreateManyWithoutCollectionsCanEditInput {
+  create: [MemberCreateWithoutCollectionsCanEditInput!]
+  connect: [MemberWhereUniqueInput!]
+}
+
+input MemberCreateManyWithoutCollectionsCanViewInput {
+  create: [MemberCreateWithoutCollectionsCanViewInput!]
+  connect: [MemberWhereUniqueInput!]
 }
 
 input MemberCreateManyWithoutFriendRequestsInput {
@@ -4024,6 +4217,100 @@ input MemberCreatetwitterSeenIDsInput {
   set: [String!]
 }
 
+input MemberCreateWithoutCollectionsCanEditInput {
+  id: ID
+  displayName: String!
+  name: String
+  avatar: String
+  rep: Int
+  points: Int
+  giveableRep: Int
+  color: String
+  friends: MemberCreateManyWithoutFriendsInput
+  friendRequests: MemberCreateManyWithoutFriendRequestsInput
+  ignoredFriendRequests: MemberCreateManyWithoutIgnoredFriendRequestsInput
+  notifications: NotificationCreateManyWithoutRecipientInput
+  twitchName: String
+  email: String!
+  votes: VoteCreateManyWithoutVoterInput
+  passes: PassCreateManyWithoutPasserInput
+  createdThings: ThingCreateManyWithoutAuthorInput
+  ownedTags: TagCreateManyWithoutAuthorInput
+  defaultPrivacy: PrivacySetting
+  individualViewPermissions: ThingCreateManyWithoutIndividualViewPermissionsInput
+  individualContentPieceViewPermissions: ContentPieceCreateManyWithoutIndividualViewPermissionsInput
+  defaultExpansion: Boolean
+  broadcastView: Boolean
+  collections: CollectionCreateManyWithoutAuthorInput
+  collectionsCanView: CollectionCreateManyWithoutViewersInput
+  lastActiveCollection: CollectionCreateOneInput
+  comments: CommentCreateManyWithoutAuthorInput
+  password: String!
+  roles: MemberCreaterolesInput
+  role: Role
+  verificationToken: String
+  verificationTokenExpiry: Float
+  resetToken: String
+  resetTokenExpiry: Float
+  twitterTokenSecret: String
+  twitterUserName: String
+  twitterUserID: String
+  twitterUserToken: String
+  twitterUserTokenSecret: String
+  twitterListsObject: String
+  twitterSeenIDs: MemberCreatetwitterSeenIDsInput
+  createdConnections: ConnectionCreateManyWithoutCreatorInput
+  ownedLinks: PersonalLinkCreateManyWithoutOwnerInput
+  ownedLinkTags: LinkTagCreateManyWithoutOwnerInput
+}
+
+input MemberCreateWithoutCollectionsCanViewInput {
+  id: ID
+  displayName: String!
+  name: String
+  avatar: String
+  rep: Int
+  points: Int
+  giveableRep: Int
+  color: String
+  friends: MemberCreateManyWithoutFriendsInput
+  friendRequests: MemberCreateManyWithoutFriendRequestsInput
+  ignoredFriendRequests: MemberCreateManyWithoutIgnoredFriendRequestsInput
+  notifications: NotificationCreateManyWithoutRecipientInput
+  twitchName: String
+  email: String!
+  votes: VoteCreateManyWithoutVoterInput
+  passes: PassCreateManyWithoutPasserInput
+  createdThings: ThingCreateManyWithoutAuthorInput
+  ownedTags: TagCreateManyWithoutAuthorInput
+  defaultPrivacy: PrivacySetting
+  individualViewPermissions: ThingCreateManyWithoutIndividualViewPermissionsInput
+  individualContentPieceViewPermissions: ContentPieceCreateManyWithoutIndividualViewPermissionsInput
+  defaultExpansion: Boolean
+  broadcastView: Boolean
+  collections: CollectionCreateManyWithoutAuthorInput
+  collectionsCanEdit: CollectionCreateManyWithoutEditorsInput
+  lastActiveCollection: CollectionCreateOneInput
+  comments: CommentCreateManyWithoutAuthorInput
+  password: String!
+  roles: MemberCreaterolesInput
+  role: Role
+  verificationToken: String
+  verificationTokenExpiry: Float
+  resetToken: String
+  resetTokenExpiry: Float
+  twitterTokenSecret: String
+  twitterUserName: String
+  twitterUserID: String
+  twitterUserToken: String
+  twitterUserTokenSecret: String
+  twitterListsObject: String
+  twitterSeenIDs: MemberCreatetwitterSeenIDsInput
+  createdConnections: ConnectionCreateManyWithoutCreatorInput
+  ownedLinks: PersonalLinkCreateManyWithoutOwnerInput
+  ownedLinkTags: LinkTagCreateManyWithoutOwnerInput
+}
+
 input MemberCreateWithoutCollectionsInput {
   id: ID
   displayName: String!
@@ -4048,6 +4335,8 @@ input MemberCreateWithoutCollectionsInput {
   individualContentPieceViewPermissions: ContentPieceCreateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
+  collectionsCanEdit: CollectionCreateManyWithoutEditorsInput
+  collectionsCanView: CollectionCreateManyWithoutViewersInput
   lastActiveCollection: CollectionCreateOneInput
   comments: CommentCreateManyWithoutAuthorInput
   password: String!
@@ -4094,6 +4383,8 @@ input MemberCreateWithoutCommentsInput {
   defaultExpansion: Boolean
   broadcastView: Boolean
   collections: CollectionCreateManyWithoutAuthorInput
+  collectionsCanEdit: CollectionCreateManyWithoutEditorsInput
+  collectionsCanView: CollectionCreateManyWithoutViewersInput
   lastActiveCollection: CollectionCreateOneInput
   password: String!
   roles: MemberCreaterolesInput
@@ -4139,6 +4430,8 @@ input MemberCreateWithoutCreatedConnectionsInput {
   defaultExpansion: Boolean
   broadcastView: Boolean
   collections: CollectionCreateManyWithoutAuthorInput
+  collectionsCanEdit: CollectionCreateManyWithoutEditorsInput
+  collectionsCanView: CollectionCreateManyWithoutViewersInput
   lastActiveCollection: CollectionCreateOneInput
   comments: CommentCreateManyWithoutAuthorInput
   password: String!
@@ -4183,6 +4476,8 @@ input MemberCreateWithoutCreatedThingsInput {
   defaultExpansion: Boolean
   broadcastView: Boolean
   collections: CollectionCreateManyWithoutAuthorInput
+  collectionsCanEdit: CollectionCreateManyWithoutEditorsInput
+  collectionsCanView: CollectionCreateManyWithoutViewersInput
   lastActiveCollection: CollectionCreateOneInput
   comments: CommentCreateManyWithoutAuthorInput
   password: String!
@@ -4228,6 +4523,8 @@ input MemberCreateWithoutFriendRequestsInput {
   defaultExpansion: Boolean
   broadcastView: Boolean
   collections: CollectionCreateManyWithoutAuthorInput
+  collectionsCanEdit: CollectionCreateManyWithoutEditorsInput
+  collectionsCanView: CollectionCreateManyWithoutViewersInput
   lastActiveCollection: CollectionCreateOneInput
   comments: CommentCreateManyWithoutAuthorInput
   password: String!
@@ -4273,6 +4570,8 @@ input MemberCreateWithoutFriendsInput {
   defaultExpansion: Boolean
   broadcastView: Boolean
   collections: CollectionCreateManyWithoutAuthorInput
+  collectionsCanEdit: CollectionCreateManyWithoutEditorsInput
+  collectionsCanView: CollectionCreateManyWithoutViewersInput
   lastActiveCollection: CollectionCreateOneInput
   comments: CommentCreateManyWithoutAuthorInput
   password: String!
@@ -4318,6 +4617,8 @@ input MemberCreateWithoutIgnoredFriendRequestsInput {
   defaultExpansion: Boolean
   broadcastView: Boolean
   collections: CollectionCreateManyWithoutAuthorInput
+  collectionsCanEdit: CollectionCreateManyWithoutEditorsInput
+  collectionsCanView: CollectionCreateManyWithoutViewersInput
   lastActiveCollection: CollectionCreateOneInput
   comments: CommentCreateManyWithoutAuthorInput
   password: String!
@@ -4363,6 +4664,8 @@ input MemberCreateWithoutIndividualContentPieceViewPermissionsInput {
   defaultExpansion: Boolean
   broadcastView: Boolean
   collections: CollectionCreateManyWithoutAuthorInput
+  collectionsCanEdit: CollectionCreateManyWithoutEditorsInput
+  collectionsCanView: CollectionCreateManyWithoutViewersInput
   lastActiveCollection: CollectionCreateOneInput
   comments: CommentCreateManyWithoutAuthorInput
   password: String!
@@ -4408,6 +4711,8 @@ input MemberCreateWithoutIndividualViewPermissionsInput {
   defaultExpansion: Boolean
   broadcastView: Boolean
   collections: CollectionCreateManyWithoutAuthorInput
+  collectionsCanEdit: CollectionCreateManyWithoutEditorsInput
+  collectionsCanView: CollectionCreateManyWithoutViewersInput
   lastActiveCollection: CollectionCreateOneInput
   comments: CommentCreateManyWithoutAuthorInput
   password: String!
@@ -4453,6 +4758,8 @@ input MemberCreateWithoutNotificationsInput {
   defaultExpansion: Boolean
   broadcastView: Boolean
   collections: CollectionCreateManyWithoutAuthorInput
+  collectionsCanEdit: CollectionCreateManyWithoutEditorsInput
+  collectionsCanView: CollectionCreateManyWithoutViewersInput
   lastActiveCollection: CollectionCreateOneInput
   comments: CommentCreateManyWithoutAuthorInput
   password: String!
@@ -4499,6 +4806,8 @@ input MemberCreateWithoutOwnedLinksInput {
   defaultExpansion: Boolean
   broadcastView: Boolean
   collections: CollectionCreateManyWithoutAuthorInput
+  collectionsCanEdit: CollectionCreateManyWithoutEditorsInput
+  collectionsCanView: CollectionCreateManyWithoutViewersInput
   lastActiveCollection: CollectionCreateOneInput
   comments: CommentCreateManyWithoutAuthorInput
   password: String!
@@ -4544,6 +4853,8 @@ input MemberCreateWithoutOwnedLinkTagsInput {
   defaultExpansion: Boolean
   broadcastView: Boolean
   collections: CollectionCreateManyWithoutAuthorInput
+  collectionsCanEdit: CollectionCreateManyWithoutEditorsInput
+  collectionsCanView: CollectionCreateManyWithoutViewersInput
   lastActiveCollection: CollectionCreateOneInput
   comments: CommentCreateManyWithoutAuthorInput
   password: String!
@@ -4588,6 +4899,8 @@ input MemberCreateWithoutOwnedTagsInput {
   defaultExpansion: Boolean
   broadcastView: Boolean
   collections: CollectionCreateManyWithoutAuthorInput
+  collectionsCanEdit: CollectionCreateManyWithoutEditorsInput
+  collectionsCanView: CollectionCreateManyWithoutViewersInput
   lastActiveCollection: CollectionCreateOneInput
   comments: CommentCreateManyWithoutAuthorInput
   password: String!
@@ -4633,6 +4946,8 @@ input MemberCreateWithoutPassesInput {
   defaultExpansion: Boolean
   broadcastView: Boolean
   collections: CollectionCreateManyWithoutAuthorInput
+  collectionsCanEdit: CollectionCreateManyWithoutEditorsInput
+  collectionsCanView: CollectionCreateManyWithoutViewersInput
   lastActiveCollection: CollectionCreateOneInput
   comments: CommentCreateManyWithoutAuthorInput
   password: String!
@@ -4678,6 +4993,8 @@ input MemberCreateWithoutVotesInput {
   defaultExpansion: Boolean
   broadcastView: Boolean
   collections: CollectionCreateManyWithoutAuthorInput
+  collectionsCanEdit: CollectionCreateManyWithoutEditorsInput
+  collectionsCanView: CollectionCreateManyWithoutViewersInput
   lastActiveCollection: CollectionCreateOneInput
   comments: CommentCreateManyWithoutAuthorInput
   password: String!
@@ -5133,6 +5450,8 @@ input MemberUpdateDataInput {
   defaultExpansion: Boolean
   broadcastView: Boolean
   collections: CollectionUpdateManyWithoutAuthorInput
+  collectionsCanEdit: CollectionUpdateManyWithoutEditorsInput
+  collectionsCanView: CollectionUpdateManyWithoutViewersInput
   lastActiveCollection: CollectionUpdateOneInput
   comments: CommentUpdateManyWithoutAuthorInput
   password: String
@@ -5178,6 +5497,8 @@ input MemberUpdateInput {
   defaultExpansion: Boolean
   broadcastView: Boolean
   collections: CollectionUpdateManyWithoutAuthorInput
+  collectionsCanEdit: CollectionUpdateManyWithoutEditorsInput
+  collectionsCanView: CollectionUpdateManyWithoutViewersInput
   lastActiveCollection: CollectionUpdateOneInput
   comments: CommentUpdateManyWithoutAuthorInput
   password: String
@@ -5255,6 +5576,30 @@ input MemberUpdateManyMutationInput {
   twitterUserTokenSecret: String
   twitterListsObject: String
   twitterSeenIDs: MemberUpdatetwitterSeenIDsInput
+}
+
+input MemberUpdateManyWithoutCollectionsCanEditInput {
+  create: [MemberCreateWithoutCollectionsCanEditInput!]
+  delete: [MemberWhereUniqueInput!]
+  connect: [MemberWhereUniqueInput!]
+  set: [MemberWhereUniqueInput!]
+  disconnect: [MemberWhereUniqueInput!]
+  update: [MemberUpdateWithWhereUniqueWithoutCollectionsCanEditInput!]
+  upsert: [MemberUpsertWithWhereUniqueWithoutCollectionsCanEditInput!]
+  deleteMany: [MemberScalarWhereInput!]
+  updateMany: [MemberUpdateManyWithWhereNestedInput!]
+}
+
+input MemberUpdateManyWithoutCollectionsCanViewInput {
+  create: [MemberCreateWithoutCollectionsCanViewInput!]
+  delete: [MemberWhereUniqueInput!]
+  connect: [MemberWhereUniqueInput!]
+  set: [MemberWhereUniqueInput!]
+  disconnect: [MemberWhereUniqueInput!]
+  update: [MemberUpdateWithWhereUniqueWithoutCollectionsCanViewInput!]
+  upsert: [MemberUpsertWithWhereUniqueWithoutCollectionsCanViewInput!]
+  deleteMany: [MemberScalarWhereInput!]
+  updateMany: [MemberUpdateManyWithWhereNestedInput!]
 }
 
 input MemberUpdateManyWithoutFriendRequestsInput {
@@ -5409,6 +5754,98 @@ input MemberUpdatetwitterSeenIDsInput {
   set: [String!]
 }
 
+input MemberUpdateWithoutCollectionsCanEditDataInput {
+  displayName: String
+  name: String
+  avatar: String
+  rep: Int
+  points: Int
+  giveableRep: Int
+  color: String
+  friends: MemberUpdateManyWithoutFriendsInput
+  friendRequests: MemberUpdateManyWithoutFriendRequestsInput
+  ignoredFriendRequests: MemberUpdateManyWithoutIgnoredFriendRequestsInput
+  notifications: NotificationUpdateManyWithoutRecipientInput
+  twitchName: String
+  email: String
+  votes: VoteUpdateManyWithoutVoterInput
+  passes: PassUpdateManyWithoutPasserInput
+  createdThings: ThingUpdateManyWithoutAuthorInput
+  ownedTags: TagUpdateManyWithoutAuthorInput
+  defaultPrivacy: PrivacySetting
+  individualViewPermissions: ThingUpdateManyWithoutIndividualViewPermissionsInput
+  individualContentPieceViewPermissions: ContentPieceUpdateManyWithoutIndividualViewPermissionsInput
+  defaultExpansion: Boolean
+  broadcastView: Boolean
+  collections: CollectionUpdateManyWithoutAuthorInput
+  collectionsCanView: CollectionUpdateManyWithoutViewersInput
+  lastActiveCollection: CollectionUpdateOneInput
+  comments: CommentUpdateManyWithoutAuthorInput
+  password: String
+  roles: MemberUpdaterolesInput
+  role: Role
+  verificationToken: String
+  verificationTokenExpiry: Float
+  resetToken: String
+  resetTokenExpiry: Float
+  twitterTokenSecret: String
+  twitterUserName: String
+  twitterUserID: String
+  twitterUserToken: String
+  twitterUserTokenSecret: String
+  twitterListsObject: String
+  twitterSeenIDs: MemberUpdatetwitterSeenIDsInput
+  createdConnections: ConnectionUpdateManyWithoutCreatorInput
+  ownedLinks: PersonalLinkUpdateManyWithoutOwnerInput
+  ownedLinkTags: LinkTagUpdateManyWithoutOwnerInput
+}
+
+input MemberUpdateWithoutCollectionsCanViewDataInput {
+  displayName: String
+  name: String
+  avatar: String
+  rep: Int
+  points: Int
+  giveableRep: Int
+  color: String
+  friends: MemberUpdateManyWithoutFriendsInput
+  friendRequests: MemberUpdateManyWithoutFriendRequestsInput
+  ignoredFriendRequests: MemberUpdateManyWithoutIgnoredFriendRequestsInput
+  notifications: NotificationUpdateManyWithoutRecipientInput
+  twitchName: String
+  email: String
+  votes: VoteUpdateManyWithoutVoterInput
+  passes: PassUpdateManyWithoutPasserInput
+  createdThings: ThingUpdateManyWithoutAuthorInput
+  ownedTags: TagUpdateManyWithoutAuthorInput
+  defaultPrivacy: PrivacySetting
+  individualViewPermissions: ThingUpdateManyWithoutIndividualViewPermissionsInput
+  individualContentPieceViewPermissions: ContentPieceUpdateManyWithoutIndividualViewPermissionsInput
+  defaultExpansion: Boolean
+  broadcastView: Boolean
+  collections: CollectionUpdateManyWithoutAuthorInput
+  collectionsCanEdit: CollectionUpdateManyWithoutEditorsInput
+  lastActiveCollection: CollectionUpdateOneInput
+  comments: CommentUpdateManyWithoutAuthorInput
+  password: String
+  roles: MemberUpdaterolesInput
+  role: Role
+  verificationToken: String
+  verificationTokenExpiry: Float
+  resetToken: String
+  resetTokenExpiry: Float
+  twitterTokenSecret: String
+  twitterUserName: String
+  twitterUserID: String
+  twitterUserToken: String
+  twitterUserTokenSecret: String
+  twitterListsObject: String
+  twitterSeenIDs: MemberUpdatetwitterSeenIDsInput
+  createdConnections: ConnectionUpdateManyWithoutCreatorInput
+  ownedLinks: PersonalLinkUpdateManyWithoutOwnerInput
+  ownedLinkTags: LinkTagUpdateManyWithoutOwnerInput
+}
+
 input MemberUpdateWithoutCollectionsDataInput {
   displayName: String
   name: String
@@ -5432,6 +5869,8 @@ input MemberUpdateWithoutCollectionsDataInput {
   individualContentPieceViewPermissions: ContentPieceUpdateManyWithoutIndividualViewPermissionsInput
   defaultExpansion: Boolean
   broadcastView: Boolean
+  collectionsCanEdit: CollectionUpdateManyWithoutEditorsInput
+  collectionsCanView: CollectionUpdateManyWithoutViewersInput
   lastActiveCollection: CollectionUpdateOneInput
   comments: CommentUpdateManyWithoutAuthorInput
   password: String
@@ -5477,6 +5916,8 @@ input MemberUpdateWithoutCommentsDataInput {
   defaultExpansion: Boolean
   broadcastView: Boolean
   collections: CollectionUpdateManyWithoutAuthorInput
+  collectionsCanEdit: CollectionUpdateManyWithoutEditorsInput
+  collectionsCanView: CollectionUpdateManyWithoutViewersInput
   lastActiveCollection: CollectionUpdateOneInput
   password: String
   roles: MemberUpdaterolesInput
@@ -5521,6 +5962,8 @@ input MemberUpdateWithoutCreatedConnectionsDataInput {
   defaultExpansion: Boolean
   broadcastView: Boolean
   collections: CollectionUpdateManyWithoutAuthorInput
+  collectionsCanEdit: CollectionUpdateManyWithoutEditorsInput
+  collectionsCanView: CollectionUpdateManyWithoutViewersInput
   lastActiveCollection: CollectionUpdateOneInput
   comments: CommentUpdateManyWithoutAuthorInput
   password: String
@@ -5564,6 +6007,8 @@ input MemberUpdateWithoutCreatedThingsDataInput {
   defaultExpansion: Boolean
   broadcastView: Boolean
   collections: CollectionUpdateManyWithoutAuthorInput
+  collectionsCanEdit: CollectionUpdateManyWithoutEditorsInput
+  collectionsCanView: CollectionUpdateManyWithoutViewersInput
   lastActiveCollection: CollectionUpdateOneInput
   comments: CommentUpdateManyWithoutAuthorInput
   password: String
@@ -5608,6 +6053,8 @@ input MemberUpdateWithoutFriendRequestsDataInput {
   defaultExpansion: Boolean
   broadcastView: Boolean
   collections: CollectionUpdateManyWithoutAuthorInput
+  collectionsCanEdit: CollectionUpdateManyWithoutEditorsInput
+  collectionsCanView: CollectionUpdateManyWithoutViewersInput
   lastActiveCollection: CollectionUpdateOneInput
   comments: CommentUpdateManyWithoutAuthorInput
   password: String
@@ -5652,6 +6099,8 @@ input MemberUpdateWithoutFriendsDataInput {
   defaultExpansion: Boolean
   broadcastView: Boolean
   collections: CollectionUpdateManyWithoutAuthorInput
+  collectionsCanEdit: CollectionUpdateManyWithoutEditorsInput
+  collectionsCanView: CollectionUpdateManyWithoutViewersInput
   lastActiveCollection: CollectionUpdateOneInput
   comments: CommentUpdateManyWithoutAuthorInput
   password: String
@@ -5696,6 +6145,8 @@ input MemberUpdateWithoutIgnoredFriendRequestsDataInput {
   defaultExpansion: Boolean
   broadcastView: Boolean
   collections: CollectionUpdateManyWithoutAuthorInput
+  collectionsCanEdit: CollectionUpdateManyWithoutEditorsInput
+  collectionsCanView: CollectionUpdateManyWithoutViewersInput
   lastActiveCollection: CollectionUpdateOneInput
   comments: CommentUpdateManyWithoutAuthorInput
   password: String
@@ -5740,6 +6191,8 @@ input MemberUpdateWithoutIndividualContentPieceViewPermissionsDataInput {
   defaultExpansion: Boolean
   broadcastView: Boolean
   collections: CollectionUpdateManyWithoutAuthorInput
+  collectionsCanEdit: CollectionUpdateManyWithoutEditorsInput
+  collectionsCanView: CollectionUpdateManyWithoutViewersInput
   lastActiveCollection: CollectionUpdateOneInput
   comments: CommentUpdateManyWithoutAuthorInput
   password: String
@@ -5784,6 +6237,8 @@ input MemberUpdateWithoutIndividualViewPermissionsDataInput {
   defaultExpansion: Boolean
   broadcastView: Boolean
   collections: CollectionUpdateManyWithoutAuthorInput
+  collectionsCanEdit: CollectionUpdateManyWithoutEditorsInput
+  collectionsCanView: CollectionUpdateManyWithoutViewersInput
   lastActiveCollection: CollectionUpdateOneInput
   comments: CommentUpdateManyWithoutAuthorInput
   password: String
@@ -5828,6 +6283,8 @@ input MemberUpdateWithoutNotificationsDataInput {
   defaultExpansion: Boolean
   broadcastView: Boolean
   collections: CollectionUpdateManyWithoutAuthorInput
+  collectionsCanEdit: CollectionUpdateManyWithoutEditorsInput
+  collectionsCanView: CollectionUpdateManyWithoutViewersInput
   lastActiveCollection: CollectionUpdateOneInput
   comments: CommentUpdateManyWithoutAuthorInput
   password: String
@@ -5873,6 +6330,8 @@ input MemberUpdateWithoutOwnedLinksDataInput {
   defaultExpansion: Boolean
   broadcastView: Boolean
   collections: CollectionUpdateManyWithoutAuthorInput
+  collectionsCanEdit: CollectionUpdateManyWithoutEditorsInput
+  collectionsCanView: CollectionUpdateManyWithoutViewersInput
   lastActiveCollection: CollectionUpdateOneInput
   comments: CommentUpdateManyWithoutAuthorInput
   password: String
@@ -5917,6 +6376,8 @@ input MemberUpdateWithoutOwnedLinkTagsDataInput {
   defaultExpansion: Boolean
   broadcastView: Boolean
   collections: CollectionUpdateManyWithoutAuthorInput
+  collectionsCanEdit: CollectionUpdateManyWithoutEditorsInput
+  collectionsCanView: CollectionUpdateManyWithoutViewersInput
   lastActiveCollection: CollectionUpdateOneInput
   comments: CommentUpdateManyWithoutAuthorInput
   password: String
@@ -5960,6 +6421,8 @@ input MemberUpdateWithoutOwnedTagsDataInput {
   defaultExpansion: Boolean
   broadcastView: Boolean
   collections: CollectionUpdateManyWithoutAuthorInput
+  collectionsCanEdit: CollectionUpdateManyWithoutEditorsInput
+  collectionsCanView: CollectionUpdateManyWithoutViewersInput
   lastActiveCollection: CollectionUpdateOneInput
   comments: CommentUpdateManyWithoutAuthorInput
   password: String
@@ -6004,6 +6467,8 @@ input MemberUpdateWithoutPassesDataInput {
   defaultExpansion: Boolean
   broadcastView: Boolean
   collections: CollectionUpdateManyWithoutAuthorInput
+  collectionsCanEdit: CollectionUpdateManyWithoutEditorsInput
+  collectionsCanView: CollectionUpdateManyWithoutViewersInput
   lastActiveCollection: CollectionUpdateOneInput
   comments: CommentUpdateManyWithoutAuthorInput
   password: String
@@ -6048,6 +6513,8 @@ input MemberUpdateWithoutVotesDataInput {
   defaultExpansion: Boolean
   broadcastView: Boolean
   collections: CollectionUpdateManyWithoutAuthorInput
+  collectionsCanEdit: CollectionUpdateManyWithoutEditorsInput
+  collectionsCanView: CollectionUpdateManyWithoutViewersInput
   lastActiveCollection: CollectionUpdateOneInput
   comments: CommentUpdateManyWithoutAuthorInput
   password: String
@@ -6067,6 +6534,16 @@ input MemberUpdateWithoutVotesDataInput {
   createdConnections: ConnectionUpdateManyWithoutCreatorInput
   ownedLinks: PersonalLinkUpdateManyWithoutOwnerInput
   ownedLinkTags: LinkTagUpdateManyWithoutOwnerInput
+}
+
+input MemberUpdateWithWhereUniqueWithoutCollectionsCanEditInput {
+  where: MemberWhereUniqueInput!
+  data: MemberUpdateWithoutCollectionsCanEditDataInput!
+}
+
+input MemberUpdateWithWhereUniqueWithoutCollectionsCanViewInput {
+  where: MemberWhereUniqueInput!
+  data: MemberUpdateWithoutCollectionsCanViewDataInput!
 }
 
 input MemberUpdateWithWhereUniqueWithoutFriendRequestsInput {
@@ -6147,6 +6624,18 @@ input MemberUpsertWithoutPassesInput {
 input MemberUpsertWithoutVotesInput {
   update: MemberUpdateWithoutVotesDataInput!
   create: MemberCreateWithoutVotesInput!
+}
+
+input MemberUpsertWithWhereUniqueWithoutCollectionsCanEditInput {
+  where: MemberWhereUniqueInput!
+  update: MemberUpdateWithoutCollectionsCanEditDataInput!
+  create: MemberCreateWithoutCollectionsCanEditInput!
+}
+
+input MemberUpsertWithWhereUniqueWithoutCollectionsCanViewInput {
+  where: MemberWhereUniqueInput!
+  update: MemberUpdateWithoutCollectionsCanViewDataInput!
+  create: MemberCreateWithoutCollectionsCanViewInput!
 }
 
 input MemberUpsertWithWhereUniqueWithoutFriendRequestsInput {
@@ -6343,6 +6832,12 @@ input MemberWhereInput {
   collections_every: CollectionWhereInput
   collections_some: CollectionWhereInput
   collections_none: CollectionWhereInput
+  collectionsCanEdit_every: CollectionWhereInput
+  collectionsCanEdit_some: CollectionWhereInput
+  collectionsCanEdit_none: CollectionWhereInput
+  collectionsCanView_every: CollectionWhereInput
+  collectionsCanView_some: CollectionWhereInput
+  collectionsCanView_none: CollectionWhereInput
   lastActiveCollection: CollectionWhereInput
   comments_every: CommentWhereInput
   comments_some: CommentWhereInput

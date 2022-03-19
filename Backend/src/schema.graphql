@@ -90,31 +90,21 @@ type Mutation {
   deleteCollection(collectionID: ID!): Member
   setActiveCollection(collectionID: ID!): Member
   renameCollection(collectionID: ID! newTitle: String!): Collection
-  setCollectionGroupByTag(collectionID: ID! groupByTag: Boolean!): Collection
   addGroupToCollection(collectionID: ID!, newGroupID: String!, columnID: String!): Collection
   deleteGroupFromCollection(collectionID: ID! groupID: String!): Collection
-  hideGroupOnCollection(collectionID: ID! groupID: String!): Collection
-  showHiddenGroupsOnCollection(collectionID: ID!): Collection
-  hideTagOnCollection(collectionID: ID! tagID: String!): Collection
-  showHiddenTagsOnCollection(collectionID: ID!): Collection
   renameGroupOnCollection(collectionID: ID!, groupID: String!, newTitle: String!): Collection
   copyThingToCollectionGroup(collectionID: ID!, thingID: ID!, targetGroupID: String!): Collection
   addLinkToCollectionGroup(url: String!, groupID: ID!, position: Int): CollectionGroup
   removeLinkFromCollectionGroup(linkID: ID!, groupID: ID!): CollectionGroup
-  hideThingOnCollection(collectionID: ID!, thingID: ID!): Collection
-  showHiddenThingsOnCollection(collectionID: ID!): Collection
   reorderGroups(groupOneID: ID, newOrderOne: [String!], groupTwoID: ID, newOrderTwo: [String!]): [CollectionGroup!]
-  reorderTags(groupOneID: String, tagOneID: ID, newOrderOne: [String!], groupTwoID: String, tagTwoID: ID, newOrderTwo: [String!], collectionID: ID!): [TagOrder]
-  reorderUngroupedThings(collectionID: ID!, newOrder: [String!]!): Collection
   moveCardToGroup(linkID: ID!, cardType: String, sourceGroupID: ID, destinationGroupID: ID, newPosition: Int): [CollectionGroup!]
   moveGroupToColumn(groupID: ID!, sourceColumnID: ID, destinationColumnID: ID, newPosition: Int): [ColumnOrder!]
   reorderGroup(groupID: ID!, linkID: ID!, newPosition: Int!): CollectionGroup
   reorderColumn(columnID: ID!, groupID: ID!, newPosition: Int!): ColumnOrder
-  setColumnOrder(columnIDs: [String!]!, newOrders: [[String!]]!, collectionID: String!, isTagOrder: Boolean): Collection
-  handleCardExpansion(thingID: ID!, collectionID: ID!, newValue: Boolean!): Collection
   addNoteToGroup(groupID: ID!, position: Int): CollectionGroup
   deleteNote(noteID: ID!): CollectionGroup
   editNote(noteID: ID!, newContent: String!): Note
+  setCollectionPrivacy(collectionID: ID!, privacy: PrivacySetting!): Collection
 
   addConnection(subjectID: ID!, objectID: ID!, relationship: String!, strength: Int): [Thing!]
   deleteConnection(connectionID: ID!): [Thing!],

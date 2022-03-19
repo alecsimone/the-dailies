@@ -133,6 +133,8 @@ type Member {
   defaultExpansion: Boolean @default(value: false)
   broadcastView: Boolean @default(value: false)
   collections: [Collection] @relation(name: "Collector")
+  collectionsCanEdit: [Collection] @relation(name: "CollectionEditor")
+  collectionsCanView: [Collection] @relation(name: "CollectionViewer")
   lastActiveCollection: Collection @relation(name:"LastActiveCollection")
   comments: [Comment]
   password: String!
@@ -199,6 +201,9 @@ type Collection {
    id: ID! @id @unique
    title: String! @default(value: "New Collection")
    author: Member! @relation(name: "Collector")
+   editors: [Member] @relation(name: "CollectionEditor")
+   viewers: [Member] @relation(name:"CollectionViewer")
+   privacy: PrivacySetting @default(value: Private)
    filterString: String
    hiddenThings: [Thing] @scalarList(strategy: RELATION)
    hiddenTags: [Tag] @scalarList(strategy: RELATION)

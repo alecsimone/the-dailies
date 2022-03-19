@@ -2,14 +2,11 @@ import { useMutation } from '@apollo/react-hooks';
 import { useState } from 'react';
 import Columnizer, { getColumnCount } from '../Columnizer';
 import { groupSort, makeGroups } from './cardHandling';
-import handleDragEnd from './handleDragEnd';
 import { REMOVE_TAX_MUTATION } from '../ThingParts/Taxes';
 import {
    ADD_TAX_BY_ID_MUTATION,
    MOVE_CARD_TO_GROUP_MUTATION,
    REORDER_GROUPS_MUTATION,
-   REORDER_TAGS_MUTATION,
-   REORDER_UNGROUPED_THINGS_MUTATION,
    DELETE_GROUP_FROM_COLLECTION_MUTATION,
    SET_COLUMN_ORDER_MUTATION
 } from './queriesAndMutations';
@@ -96,8 +93,6 @@ const CollectionBody = ({ activeCollection }) => {
          }
       }
    );
-
-   const [setColumnOrder] = useMutation(SET_COLUMN_ORDER_MUTATION);
 
    const [draggingGroup, setDraggingGroup] = useState(false);
 

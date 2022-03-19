@@ -55,25 +55,11 @@ const CollectionsGroup = ({
       setGroupTitle(title);
    }, [title]);
 
-   const [hideGroupOnCollection] = useMutation(
-      HIDE_GROUP_ON_COLLECTION_MUTATION
-   );
-
-   const [hideTagOnCollection] = useMutation(HIDE_TAG_ON_COLLECTION_MUTATION);
-
    const [renameGroupOnCollection] = useMutation(RENAME_GROUP_MUTATION, {
       context: {
          debounceKey: collectionID
       }
    });
-
-   const [setColumnOrder] = useMutation(SET_COLUMN_ORDER_MUTATION, {
-      onCompleted: data => console.log(data)
-   });
-
-   const [hideThingOnCollection] = useMutation(
-      HIDE_THING_ON_COLLECTION_MUTATION
-   );
 
    const [addLinkToCollectionGroup] = useMutation(ADD_LINK_TO_GROUP_MUTATION, {
       onError: err => alert(err.message)
@@ -117,24 +103,6 @@ const CollectionsGroup = ({
 
       setLinkToAdd('');
    };
-
-   // const hideThingHandler = thingID => {
-   //    const [thingData] = things.filter(thing => thing.id === thingID);
-   //    hideThingOnCollection({
-   //       variables: {
-   //          collectionID,
-   //          thingID
-   //       },
-   //       optimisticResponse: {
-   //          __typename: 'Mutation',
-   //          hideThingOnCollection: {
-   //             __typename: 'Collection',
-   //             id: collectionID,
-   //             hiddenThings: [...hiddenThings, thingData]
-   //          }
-   //       }
-   //    });
-   // };
 
    // filteredThings = groupSort(filteredThings, groupObj.order);
 

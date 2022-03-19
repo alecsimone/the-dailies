@@ -142,7 +142,6 @@ const LinkCard = ({ link, shortlinkHidden }) => {
          video,
          icon
       } = computedData;
-      console.log(computedData);
 
       let computedURL = ogURL;
       if (computedURL == null) {

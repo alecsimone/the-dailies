@@ -1,9 +1,13 @@
 import { useMutation } from '@apollo/react-hooks';
 import { useState, useRef, useEffect } from 'react';
 import { getRandomString } from '../../lib/TextHandling';
+import useMe from '../Account/useMe';
 import { getColumnCount } from '../Columnizer';
+import LockIcon from '../Icons/Lock';
+import PrivacyInterface from '../ThingParts/PrivacyInterface';
 import AddCollectionButton from './AddCollectionButton';
 import { getShortestColumnIndex } from './CollectionBody';
+import CollectionPrivacyInterface from './CollectionPrivacyInterface';
 import {
    ADD_GROUP_TO_COLLECTION_MUTATION,
    DELETE_COLLECTION_MUTATION,
@@ -55,16 +59,24 @@ const CollectionsHeader = ({
    const [collectionTitle, setCollectionTitle] = useState(
       activeCollection.title
    );
+
+   const [showingPrivacyInterface, setShowingPrivacyInterface] = useState(
+      false
+   );
+
+   const { loggedInUserID } = useMe();
+
    const collectionTitleRef = useRef(null);
 
    const {
       id,
       title,
       userGroups,
-      hiddenGroups,
-      hiddenTags,
-      hiddenThings,
-      columnOrders
+      privacy,
+      viewers,
+      editors,
+      columnOrders,
+      author
    } = activeCollection;
 
    useEffect(() => {
@@ -85,66 +97,6 @@ const CollectionsHeader = ({
       {
          variables: {
             collectionID: id
-         }
-      }
-   );
-
-   const [showHiddenGroupsOnCollection] = useMutation(
-      SHOW_HIDDEN_GROUPS_ON_COLLECTION_MUTATION,
-      {
-         variables: {
-            collectionID: id
-         },
-         optimisticResponse: {
-            __typename: 'Mutation',
-            showHiddenGroupsOnCollection: {
-               __typename: 'Collection',
-               id,
-               hiddenGroups: []
-            }
-         },
-         context: {
-            debounceKey
-         }
-      }
-   );
-
-   const [showHiddenTagsOnCollection] = useMutation(
-      SHOW_HIDDEN_TAGS_ON_COLLECTION_MUTATION,
-      {
-         variables: {
-            collectionID: id
-         },
-         optimisticResponse: {
-            __typename: 'Mutation',
-            showHiddenTagsOnCollection: {
-               __typename: 'Collection',
-               id,
-               hiddenTags: []
-            }
-         },
-         context: {
-            debounceKey
-         }
-      }
-   );
-
-   const [showHiddenThingsOnCollection] = useMutation(
-      SHOW_HIDDEN_THINGS_ON_COLLECTION_MUTATION,
-      {
-         variables: {
-            collectionID: id
-         },
-         optimisticResponse: {
-            __typename: 'Mutation',
-            showHiddenThingsOnCollection: {
-               __typename: 'Collection',
-               id,
-               hiddenThings: []
-            }
-         },
-         context: {
-            debounceKey
          }
       }
    );
@@ -229,6 +181,7 @@ const CollectionsHeader = ({
                            __typename: 'Collection',
                            id
                         },
+                        notes: [],
                         order: [],
                         createdAt: now.toISOString(),
                         updatedAt: now.toISOString()
@@ -301,8 +254,25 @@ const CollectionsHeader = ({
                <AddCollectionButton />
                {deleteCollectionButton}
                {addGroupButton}
+               <LockIcon
+                  privacy={privacy}
+                  onClick={() => {
+                     if (author.id !== loggedInUserID) return;
+                     setShowingPrivacyInterface(!showingPrivacyInterface);
+                  }}
+               />
             </div>
          </div>
+         {showingPrivacyInterface && (
+            <div className="privacyInterfaceWrapper">
+               <CollectionPrivacyInterface
+                  collectionID={id}
+                  initialPrivacy={privacy}
+                  viewers={viewers}
+                  editors={editors}
+               />
+            </div>
+         )}
       </header>
    );
 };

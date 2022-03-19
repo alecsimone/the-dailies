@@ -10,6 +10,122 @@ const { getRandomString } = require('../../utils/TextHandling');
 const { simpleAddLink } = require('./LinkArchiveMutations');
 const { publishMeUpdate } = require('./MemberMutations');
 
+const getFriends = friendsArray => friendsArray.map(friendObj => friendObj.id);
+
+const getFriendsOfFriends = friendsArray => {
+   let friendsOfFriends = [];
+   friendsArray.forEach(friendObj => {
+      const newFriendsOfFriends = friendObj.friends.map(
+         friendOfFriendObj => friendOfFriendObj.id
+      );
+      friendsOfFriends = friendsOfFriends.concat(newFriendsOfFriends);
+   });
+   return friendsOfFriends;
+};
+
+async function checkCollectionPermissions(id, type, action, ctx) {
+   // First let's just make sure it doesn't matter how they've cased their type input
+   let properlyCasedType;
+   if (type.toLowerCase() === 'collection') {
+      properlyCasedType = 'collection';
+   } else if (type.toLowerCase() === 'collectiongroup') {
+      properlyCasedType = 'collectionGroup';
+   } else if (type.toLowerCase() === 'note') {
+      properlyCasedType = 'note';
+   }
+
+   // Also let's do that for the action
+   const lowerCasedAction = action.toLowerCase();
+
+   // Then let's figure out which fields we're going to need
+   let fields;
+   if (properlyCasedType === 'collection') {
+      fields = `{privacy author {id} editors {id} viewers {id}}`;
+   } else if (properlyCasedType === 'collectionGroup') {
+      fields = `{inCollection {privacy author {id} editors {id} viewers {id}}}`;
+   } else if (properlyCasedType === 'note') {
+      fields = `{onCollectionGroup {inCollection {privacy author {id} editors {id} viewers {id}}}}`;
+   }
+
+   // And get the data for the item we're checking
+   const dataObj = await ctx.db.query[properlyCasedType](
+      {
+         where: {
+            id
+         }
+      },
+      fields
+   );
+
+   // Next we need to extract the privacy setting, as well as the allowed viewers, editors, and author from our data
+   let privacy;
+   let viewers;
+   let editors;
+   let author;
+   if (type === 'collection') {
+      ({ privacy, viewers, editors, author } = dataObj);
+   } else if (type === 'collectionGroup') {
+      ({ privacy, viewers, editors, author } = dataObj.inCollection);
+   } else if (type === 'note') {
+      ({
+         privacy,
+         viewers,
+         editors,
+         author
+      } = dataObj.onCollectionGroup.inCollection);
+   }
+
+   const viewerIDs = viewers.map(viewerObj => viewerObj.id);
+   const editorIDs = editors.map(editorObj => editorObj.id);
+   const authorID = author.id;
+   const currentMemberID = ctx.req.memberId;
+
+   // Authors can always view and edit their own collections, so let's get that out of the way first
+   if (authorID === currentMemberID) return true;
+
+   // If they're trying to edit something, they have to be specifically listed as an editor and the privacy doesn't matter. So we can handle those cases easily too.
+   if (lowerCasedAction === 'edit') {
+      if (editorIDs.includes(currentMemberID)) return true;
+      return false;
+   }
+
+   // If it's public, that's easy, they can view it.
+   if (privacy === 'Public') return true;
+
+   // If it's private, we don't need to do the member query because all we need is the viewers from the original dataObj. So let's get those possibilities out of the way before we do that query
+   if (privacy === 'Private') {
+      if (viewerIDs.includes(currentMemberID)) return true;
+      return false;
+   }
+
+   // If it's not public or private, then we're going to need to get the member's friends and friends of friends to determine if they can see it
+   const memberObj = await ctx.db.query.member(
+      {
+         where: {
+            id: currentMemberID
+         }
+      },
+      `{friends {id friends {id}}}`
+   );
+
+   const friends = getFriends(memberObj.friends);
+   const friendsOfFriends = getFriendsOfFriends(memberObj.friends);
+
+   if (privacy === 'Friends') {
+      if (friends.includes(currentMemberID)) return true;
+      return false;
+   }
+
+   if (privacy === 'FriendsOfFriends') {
+      if (friendsOfFriends.includes(currentMemberID)) return true;
+      return false;
+   }
+
+   throw new Error(
+      'Something has gone wrong with your authorization. Please try again.'
+   );
+}
+
 async function addCollection(parent, args, ctx, info) {
    await loggedInGate(ctx).catch(() => {
       throw new AuthenticationError('You must be logged in to do that!');
@@ -93,6 +209,17 @@ async function deleteCollection(parent, { collectionID }, ctx, info) {
       `{collections {id} }`
    );
    const { collections } = originalMemberData;
+
+   // Only the original author of a collection can delete it, so let's make sure this is that member first
+   const [thisCollection] = collections.filter(
+      collection => collection.id === collectionID
+   );
+   if (thisCollection == null) {
+      throw new AuthenticationError(
+         'Only the original author of a collection can delete it, sorry.'
+      );
+   }
+
    const filteredCollections = collections.filter(
       collection => collection.id !== collectionID
    );
@@ -158,6 +285,18 @@ async function renameCollection(parent, { collectionID, newTitle }, ctx, info) {
    });
    fullMemberGate(ctx.req.member);
 
+   const canEdit = await checkCollectionPermissions(
+      collectionID,
+      'collection',
+      'edit',
+      ctx
+   );
+   if (!canEdit) {
+      throw new AuthenticationError(
+         "You don't have permission to edit this collection."
+      );
+   }
+
    // We just need to update the title of the provided collection
    const updatedCollection = await ctx.db.mutation.updateCollection({
       where: {
@@ -172,31 +311,6 @@ async function renameCollection(parent, { collectionID, newTitle }, ctx, info) {
 }
 exports.renameCollection = renameCollection;
 
-async function setCollectionGroupByTag(
-   parent,
-   { collectionID, groupByTag },
-   ctx,
-   info
-) {
-   await loggedInGate(ctx).catch(() => {
-      throw new AuthenticationError('You must be logged in to do that!');
-   });
-   fullMemberGate(ctx.req.member);
-
-   // We just need to update the groupByTag property of the provided collection
-   const updatedCollection = await ctx.db.mutation.updateCollection({
-      where: {
-         id: collectionID
-      },
-      data: {
-         groupByTag
-      }
-   });
-
-   return updatedCollection;
-}
-exports.setCollectionGroupByTag = setCollectionGroupByTag;
-
 async function addGroupToCollection(
    parent,
    { collectionID, newGroupID, columnID },
@@ -207,6 +321,18 @@ async function addGroupToCollection(
       throw new AuthenticationError('You must be logged in to do that!');
    });
    fullMemberGate(ctx.req.member);
+
+   const canEdit = await checkCollectionPermissions(
+      collectionID,
+      'collection',
+      'edit',
+      ctx
+   );
+   if (!canEdit) {
+      throw new AuthenticationError(
+         "You don't have permission to edit this collection."
+      );
+   }
 
    // First we need to get the old order for the provided column
    const oldColumnOrder = await ctx.db.query.columnOrder(
@@ -276,6 +402,18 @@ async function deleteGroupFromCollection(
    });
    fullMemberGate(ctx.req.member);
 
+   const canEdit = await checkCollectionPermissions(
+      collectionID,
+      'collection',
+      'edit',
+      ctx
+   );
+   if (!canEdit) {
+      throw new AuthenticationError(
+         "You don't have permission to edit this collection."
+      );
+   }
+
    const data = {};
    // First we need to remove the group's ID from any columns it might be in
    const originalCollection = await ctx.db.query.collection(
@@ -324,120 +462,6 @@ async function deleteGroupFromCollection(
 }
 exports.deleteGroupFromCollection = deleteGroupFromCollection;
 
-async function hideGroupOnCollection(
-   parent,
-   { collectionID, groupID },
-   ctx,
-   info
-) {
-   await loggedInGate(ctx).catch(() => {
-      throw new AuthenticationError('You must be logged in to do that!');
-   });
-   fullMemberGate(ctx.req.member);
-
-   // We just need to add the provided group to the hiddenGroups property of the provided collection
-   const updatedCollection = await ctx.db.mutation.updateCollection(
-      {
-         where: {
-            id: collectionID
-         },
-         data: {
-            hiddenGroups: {
-               connect: {
-                  id: groupID
-               }
-            }
-         }
-      },
-      `{id hiddenGroups {${collectionGroupFields}}}`
-   );
-
-   return updatedCollection;
-}
-exports.hideGroupOnCollection = hideGroupOnCollection;
-
-async function showHiddenGroupsOnCollection(
-   parent,
-   { collectionID },
-   ctx,
-   info
-) {
-   await loggedInGate(ctx).catch(() => {
-      throw new AuthenticationError('You must be logged in to do that!');
-   });
-   fullMemberGate(ctx.req.member);
-
-   // We just need to reset the hiddenGroups property of the provided collection
-   const updatedCollection = await ctx.db.mutation.updateCollection(
-      {
-         where: {
-            id: collectionID
-         },
-         data: {
-            hiddenGroups: {
-               set: []
-            }
-         }
-      },
-      `{id hiddenGroups {${collectionGroupFields}}}`
-   );
-
-   return updatedCollection;
-}
-exports.showHiddenGroupsOnCollection = showHiddenGroupsOnCollection;
-
-async function hideTagOnCollection(parent, { collectionID, tagID }, ctx, info) {
-   await loggedInGate(ctx).catch(() => {
-      throw new AuthenticationError('You must be logged in to do that!');
-   });
-   fullMemberGate(ctx.req.member);
-
-   // We just need to add the provided tag to the hiddenTags property of the provided collection
-   const updatedCollection = await ctx.db.mutation.updateCollection(
-      {
-         where: {
-            id: collectionID
-         },
-         data: {
-            hiddenTags: {
-               connect: {
-                  id: tagID
-               }
-            }
-         }
-      },
-      `{id hiddenTags {__typename id author {__typename id displayName}}}`
-   );
-
-   return updatedCollection;
-}
-exports.hideTagOnCollection = hideTagOnCollection;
-
-async function showHiddenTagsOnCollection(parent, { collectionID }, ctx, info) {
-   await loggedInGate(ctx).catch(() => {
-      throw new AuthenticationError('You must be logged in to do that!');
-   });
-   fullMemberGate(ctx.req.member);
-
-   // We just need to reset the hiddenTags property of the provided collection
-   const updatedCollection = await ctx.db.mutation.updateCollection(
-      {
-         where: {
-            id: collectionID
-         },
-         data: {
-            hiddenTags: {
-               set: []
-            }
-         }
-      },
-      `{id hiddenTags {__typename id}}`
-   );
-
-   return updatedCollection;
-}
-exports.showHiddenTagsOnCollection = showHiddenTagsOnCollection;
-
 async function renameGroupOnCollection(
    parent,
    { collectionID, groupID, newTitle },
@@ -448,6 +472,18 @@ async function renameGroupOnCollection(
       throw new AuthenticationError('You must be logged in to do that!');
    });
    fullMemberGate(ctx.req.member);
+
+   const canEdit = await checkCollectionPermissions(
+      collectionID,
+      'collection',
+      'edit',
+      ctx
+   );
+   if (!canEdit) {
+      throw new AuthenticationError(
+         "You don't have permission to edit this collection."
+      );
+   }
 
    // first we need to change the title of the provided group
    await ctx.db.mutation.updateCollectionGroup({
@@ -482,6 +518,18 @@ async function copyThingToCollectionGroup(
       throw new AuthenticationError('You must be logged in to do that!');
    });
    fullMemberGate(ctx.req.member);
+
+   const canEdit = await checkCollectionPermissions(
+      collectionID,
+      'collection',
+      'edit',
+      ctx
+   );
+   if (!canEdit) {
+      throw new AuthenticationError(
+         "You don't have permission to edit this collection."
+      );
+   }
 
    // First we need to pull the provided group so we can get its order array
    const oldGroup = await ctx.db.query.collectionGroup(
@@ -549,6 +597,18 @@ async function addLinkToCollectionGroup(
       throw new AuthenticationError('You must be logged in to do that!');
    });
    fullMemberGate(ctx.req.member);
+
+   const canEdit = await checkCollectionPermissions(
+      groupID,
+      'collectionGroup',
+      'edit',
+      ctx
+   );
+   if (!canEdit) {
+      throw new AuthenticationError(
+         "You don't have permission to edit this collection."
+      );
+   }
 
    // First we need to check if the member has already added this link, and if not, we need to create a new personal link
    const existingLink = await ctx.db.query.personalLinks(
@@ -640,6 +700,18 @@ async function removeLinkFromCollectionGroup(
    });
    fullMemberGate(ctx.req.member);
 
+   const canEdit = await checkCollectionPermissions(
+      groupID,
+      'collectionGroup',
+      'edit',
+      ctx
+   );
+   if (!canEdit) {
+      throw new AuthenticationError(
+         "You don't have permission to edit this collection."
+      );
+   }
+
    const updatedGroup = await ctx.db.mutation.updateCollectionGroup(
       {
          where: {
@@ -659,67 +731,6 @@ async function removeLinkFromCollectionGroup(
 }
 exports.removeLinkFromCollectionGroup = removeLinkFromCollectionGroup;
 
-async function hideThingOnCollection(
-   parent,
-   { collectionID, thingID },
-   ctx,
-   info
-) {
-   await loggedInGate(ctx).catch(() => {
-      throw new AuthenticationError('You must be logged in to do that!');
-   });
-   fullMemberGate(ctx.req.member);
-
-   // We just need to add the thing to the hiddenThings property of the provided collection
-   const updatedCollection = await ctx.db.mutation.updateCollection(
-      {
-         where: {
-            id: collectionID
-         },
-         data: {
-            hiddenThings: {
-               connect: {
-                  id: thingID
-               }
-            }
-         }
-      },
-      `{id hiddenThings {__typename id}}`
-   );
-   return updatedCollection;
-}
-exports.hideThingOnCollection = hideThingOnCollection;
-
-async function showHiddenThingsOnCollection(
-   parent,
-   { collectionID },
-   ctx,
-   info
-) {
-   await loggedInGate(ctx).catch(() => {
-      throw new AuthenticationError('You must be logged in to do that!');
-   });
-   fullMemberGate(ctx.req.member);
-
-   // We just need to reset the hiddenThings property of the provided collection
-   const updatedCollection = await ctx.db.mutation.updateCollection(
-      {
-         where: {
-            id: collectionID
-         },
-         data: {
-            hiddenThings: {
-               set: []
-            }
-         }
-      },
-      `{id hiddenThings {__typename id}}`
-   );
-
-   return updatedCollection;
-}
-exports.showHiddenThingsOnCollection = showHiddenThingsOnCollection;
-
 async function reorderGroups(
    parent,
    { groupOneID, newOrderOne, groupTwoID, newOrderTwo },
@@ -730,6 +741,18 @@ async function reorderGroups(
       throw new AuthenticationError('You must be logged in to do that!');
    });
    fullMemberGate(ctx.req.member);
+
+   const canEdit = await checkCollectionPermissions(
+      groupOneID != null ? groupOneID : groupTwoID,
+      'collectionGroup',
+      'edit',
+      ctx
+   );
+   if (!canEdit) {
+      throw new AuthenticationError(
+         "You don't have permission to edit this collection."
+      );
+   }
 
    const updatedGroupsArray = [];
 
@@ -773,161 +796,6 @@ async function reorderGroups(
 }
 exports.reorderGroups = reorderGroups;
 
-const updateTagOrder = async (
-   tagID,
-   collectionID,
-   groupID,
-   newOrder,
-   tagOrders,
-   ctx
-) => {
-   const [thisTagOrder] = tagOrders.filter(orderObj => orderObj.id === groupID);
-
-   let updatedGroup;
-   if (thisTagOrder != null) {
-      // If that TagOrder already exists, we just update its order property
-      updatedGroup = await ctx.db.mutation.updateTagOrder(
-         {
-            where: {
-               id: thisTagOrder.id
-            },
-            data: {
-               order: {
-                  set: newOrder
-               }
-            }
-         },
-         `{id order}`
-      );
-   } else {
-      // If that TagOrder doesn't exist, we create it, making sure to give it the provided ID
-      updatedGroup = await ctx.db.mutation.createTagOrder(
-         {
-            data: {
-               id: groupID,
-               tag: {
-                  connect: {
-                     id: tagID
-                  }
-               },
-               order: {
-                  set: newOrder
-               },
-               forCollection: {
-                  connect: {
-                     id: collectionID
-                  }
-               }
-            }
-         },
-         `{id order}`
-      );
-   }
-   return updatedGroup;
-};
-
-async function reorderTags(
-   parent,
-   {
-      groupOneID,
-      tagOneID,
-      newOrderOne,
-      groupTwoID,
-      tagTwoID,
-      newOrderTwo,
-      collectionID
-   },
-   ctx,
-   info
-) {
-   await loggedInGate(ctx).catch(() => {
-      throw new AuthenticationError('You must be logged in to do that!');
-   });
-   fullMemberGate(ctx.req.member);
-
-   const updatedGroupsArray = [];
-
-   // First we need to pull the provided collection so we can look through the TagOrders connected to it
-   const collectionData = await ctx.db.query.collection(
-      {
-         where: {
-            id: collectionID
-         }
-      },
-      `{tagOrders {id}}`
-   );
-
-   const { tagOrders } = collectionData;
-
-   // If we got a groupOneID and a newOrderOne, we check to see if groupOneID represents a TagOrder that already exists on the collection
-   if (groupOneID != null && newOrderOne != null) {
-      const updatedGroupOne = await updateTagOrder(
-         tagOneID,
-         collectionID,
-         groupOneID,
-         newOrderOne,
-         tagOrders,
-         ctx
-      );
-      if (updatedGroupOne != null) {
-         updatedGroupsArray.push(updatedGroupOne);
-      }
-   }
-
-   // If we got a groupTwoID and a newOrderTwo, we check to see if groupTwoID represents a TagOrder that already exists on the collection
-   if (groupTwoID != null && newOrderTwo != null) {
-      const [thisTagOrder] = tagOrders.filter(
-         orderObj => orderObj.id === groupTwoID
-      );
-
-      const updatedGroupTwo = await updateTagOrder(
-         tagTwoID,
-         collectionID,
-         groupTwoID,
-         newOrderTwo,
-         tagOrders,
-         ctx
-      );
-
-      if (updatedGroupTwo != null) {
-         updatedGroupsArray.push(updatedGroupTwo);
-      }
-   }
-
-   return updatedGroupsArray;
-}
-exports.reorderTags = reorderTags;
-
-async function reorderUngroupedThings(
-   parent,
-   { collectionID, newOrder },
-   ctx,
-   info
-) {
-   await loggedInGate(ctx).catch(() => {
-      throw new AuthenticationError('You must be logged in to do that!');
-   });
-   fullMemberGate(ctx.req.member);
-
-   // We just need to set a new order for the ungroupedThingsOrder property
-   const updatedCollection = await ctx.db.mutation.updateCollection(
-      {
-         where: {
-            id: collectionID
-         },
-         data: {
-            ungroupedThingsOrder: {
-               set: newOrder
-            }
-         }
-      },
-      `{id ungroupedThingsOrder}`
-   );
-
-   return updatedCollection;
-}
-exports.reorderUngroupedThings = reorderUngroupedThings;
-
 async function moveCardToGroup(
    parent,
    { linkID, cardType, sourceGroupID, destinationGroupID, newPosition },
@@ -938,6 +806,19 @@ async function moveCardToGroup(
       throw new AuthenticationError('You must be logged in to do that!');
    });
    fullMemberGate(ctx.req.member);
+
+   const canEdit = await checkCollectionPermissions(
+      sourceGroupID != null ? sourceGroupID : destinationGroupID,
+      'collectionGroup',
+      'edit',
+      ctx
+   );
+   if (!canEdit) {
+      throw new AuthenticationError(
+         "You don't have permission to edit this collection."
+      );
+   }
+
    const updatedGroupsArray = [];
 
    // If we got a sourceGroupID, then we disconnect the thing from the sourceGroup
@@ -1052,6 +933,19 @@ async function moveGroupToColumn(
       throw new AuthenticationError('You must be logged in to do that!');
    });
    fullMemberGate(ctx.req.member);
+
+   const canEdit = await checkCollectionPermissions(
+      groupID,
+      'collectionGroup',
+      'edit',
+      ctx
+   );
+   if (!canEdit) {
+      throw new AuthenticationError(
+         "You don't have permission to edit this collection."
+      );
+   }
+
    const updatedColumnsArray = [];
 
    if (sourceColumnID != null) {
@@ -1132,6 +1026,18 @@ async function reorderGroup(
    });
    fullMemberGate(ctx.req.member);
 
+   const canEdit = await checkCollectionPermissions(
+      groupID,
+      'collectionGroup',
+      'edit',
+      ctx
+   );
+   if (!canEdit) {
+      throw new AuthenticationError(
+         "You don't have permission to edit this collection."
+      );
+   }
+
    const groupObj = await ctx.db.query.collectionGroup(
       {
          where: {
@@ -1176,6 +1082,18 @@ async function reorderColumn(
    });
    fullMemberGate(ctx.req.member);
 
+   const canEdit = await checkCollectionPermissions(
+      groupID,
+      'collectionGroup',
+      'edit',
+      ctx
+   );
+   if (!canEdit) {
+      throw new AuthenticationError(
+         "You don't have permission to edit this collection."
+      );
+   }
+
    const orderObj = await ctx.db.query.columnOrder(
       {
          where: {
@@ -1209,125 +1127,23 @@ async function reorderColumn(
 }
 exports.reorderColumn = reorderColumn;
 
-async function setColumnOrder(
-   parent,
-   { columnIDs, newOrders, collectionID, isTagOrder },
-   ctx,
-   info
-) {
-   await loggedInGate(ctx).catch(() => {
-      throw new AuthenticationError('You must be logged in to do that!');
-   });
-   fullMemberGate(ctx.req.member);
-
-   if (columnIDs.length !== newOrders.length) {
-      throw new Error(
-         'You must provide the same number of columnIDs and newOrders'
-      );
-   }
-
-   // We just need to upsert the new order to the columnOrders or tagColumnOrders property of the provided collection
-
-   const property = isTagOrder ? 'tagColumnOrders' : 'columnOrders';
-
-   const requestedFields = isTagOrder
-      ? `{__typename id tagColumnOrders { __typename id order }}`
-      : `{__typename id columnOrders { __typename id order }}`;
-
-   let i = 0;
-   let updatedCollection;
-   for (const id of columnIDs) {
-      updatedCollection = await ctx.db.mutation.updateCollection(
-         {
-            where: {
-               id: collectionID
-            },
-            data: {
-               [property]: {
-                  upsert: {
-                     where: {
-                        id
-                     },
-                     create: {
-                        id,
-                        order: {
-                           set: newOrders[i]
-                        }
-                     },
-                     update: {
-                        order: {
-                           set: newOrders[i]
-                        }
-                     }
-                  }
-               }
-            }
-         },
-         requestedFields
-      );
-      i += 1;
-   }
-
-   return updatedCollection;
-}
-exports.setColumnOrder = setColumnOrder;
-
-async function handleCardExpansion(
-   parent,
-   { thingID, collectionID, newValue },
-   ctx,
-   info
-) {
-   await loggedInGate(ctx).catch(() => {
-      throw new AuthenticationError('You must be logged in to do that!');
-   });
-   fullMemberGate(ctx.req.member);
-
-   // First we need to get the old list of expanded cards
-   const oldCollection = await ctx.db.query.collection(
-      {
-         where: {
-            id: collectionID
-         }
-      },
-      `{expandedCards}`
-   );
-
-   let newExpandedCards;
-   if (newValue) {
-      // If we're expanding, we add the given ID to the list
-      newExpandedCards = [...oldCollection.expandedCards, thingID];
-   } else {
-      // If we're collapsing, we remove the given ID from the list
-      newExpandedCards = oldCollection.expandedCards.filter(
-         id => id !== thingID
-      );
-   }
-
-   // Then we update the collection with the new order
-   const updatedCollection = await ctx.db.mutation.updateCollection(
-      {
-         where: {
-            id: collectionID
-         },
-         data: {
-            expandedCards: {
-               set: newExpandedCards
-            }
-         }
-      },
-      `{id expandedCards}`
-   );
-
-   return updatedCollection;
-}
-exports.handleCardExpansion = handleCardExpansion;
-
 async function addNoteToGroup(parent, { groupID, position }, ctx, info) {
    await loggedInGate(ctx).catch(() => {
       throw new AuthenticationError('You must be logged in to do that!');
    });
    fullMemberGate(ctx.req.member);
+
+   const canEdit = await checkCollectionPermissions(
+      groupID,
+      'collectionGroup',
+      'edit',
+      ctx
+   );
+   if (!canEdit) {
+      throw new AuthenticationError(
+         "You don't have permission to edit this collection."
+      );
+   }
 
    const oldGroup = await ctx.db.query.collectionGroup(
       {
@@ -1381,6 +1197,18 @@ async function deleteNote(parent, { noteID }, ctx, info) {
    });
    fullMemberGate(ctx.req.member);
 
+   const canEdit = await checkCollectionPermissions(
+      noteID,
+      'note',
+      'edit',
+      ctx
+   );
+   if (!canEdit) {
+      throw new AuthenticationError(
+         "You don't have permission to edit this collection."
+      );
+   }
+
    const noteData = await ctx.db.query.note(
       {
          where: {
@@ -1423,6 +1251,18 @@ async function editNote(parent, { noteID, newContent }, ctx, info) {
    });
    fullMemberGate(ctx.req.member);
 
+   const canEdit = await checkCollectionPermissions(
+      noteID,
+      'note',
+      'edit',
+      ctx
+   );
+   if (!canEdit) {
+      throw new AuthenticationError(
+         "You don't have permission to edit this collection."
+      );
+   }
+
    const updatedNote = await ctx.db.mutation.updateNote(
       {
          where: {
@@ -1437,3 +1277,41 @@ async function editNote(parent, { noteID, newContent }, ctx, info) {
    return updatedNote;
 }
 exports.editNote = editNote;
+
+async function setCollectionPrivacy(
+   parent,
+   { collectionID, privacy },
+   ctx,
+   info
+) {
+   await loggedInGate(ctx).catch(() => {
+      throw new AuthenticationError('You must be logged in to do that!');
+   });
+   fullMemberGate(ctx.req.member);
+
+   const canEdit = await checkCollectionPermissions(
+      collectionID,
+      'collection',
+      'edit',
+      ctx
+   );
+   if (!canEdit) {
+      throw new AuthenticationError(
+         "You don't have permission to edit this collection."
+      );
+   }
+
+   const updatedCollection = ctx.db.mutation.updateCollection(
+      {
+         where: {
+            id: collectionID
+         },
+         data: {
+            privacy
+         }
+      },
+      `{id privacy}`
+   );
+   return updatedCollection;
+}
+exports.setCollectionPrivacy = setCollectionPrivacy;

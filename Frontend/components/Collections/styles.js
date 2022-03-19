@@ -25,6 +25,7 @@ const StyledCollection = styled.section`
    }
    header {
       margin-bottom: 2rem;
+      position: relative;
       input.collectionTitle {
          display: block;
          text-align: center;
@@ -68,6 +69,8 @@ const StyledCollection = styled.section`
             }
          }
          .headerButtons {
+            display: flex;
+            align-items: center;
             button {
                font-size: ${props => props.theme.smallText};
                padding: 0.5rem;
@@ -76,6 +79,43 @@ const StyledCollection = styled.section`
                &:hover {
                   opacity: 1;
                }
+            }
+            svg {
+               height: ${props => props.theme.smallHead};
+               margin-left: 1.5rem;
+               cursor: pointer;
+               background: ${props => props.theme.lightBlack};
+               padding: 0.5rem 1rem;
+               border-radius: 4px;
+            }
+         }
+      }
+      .privacyInterfaceWrapper {
+         text-align: center;
+         margin-top: 1rem;
+         position: absolute;
+         z-index: 2;
+         right: 0;
+         width: 50rem;
+         max-width: 40%;
+         .privacyInterface {
+            width: 100%;
+            display: inline-block;
+            padding: 2rem 4rem;
+            background: ${props => props.theme.lightBlack};
+            border: 2px solid ${props => props.theme.lowContrastGrey};
+            border-radius: 3px;
+            box-shadow: 0 0 3px black;
+            .privacySelectorGroup {
+               span {
+                  margin-right: 2rem;
+               }
+            }
+            input {
+               display: block;
+               font-size: ${props => props.theme.smallText};
+               margin: 2rem 0;
+               width: 100%;
             }
          }
       }
@@ -259,6 +299,9 @@ const StyledCard = styled.div`
    }
    .linkCard {
       margin-top: 0;
+      border: none;
+      border-bottom: 2px solid
+         ${props => setAlpha(props.theme.lowContrastGrey, 0.2)};
    }
    .cardManagementBar {
       display: flex;

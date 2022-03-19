@@ -73,8 +73,6 @@ const CollectionsCard = ({
       COPY_THING_TO_GROUP_MUTATION
    );
 
-   const [handleCardExpansion] = useMutation(HANDLE_CARD_EXPANSION_MUTATION);
-
    const [deleteNote] = useMutation(DELETE_NOTE_MUTATION, {
       onError: err => alert(err.message)
    });
@@ -219,16 +217,6 @@ const CollectionsCard = ({
    }
 
    const { id, url } = data;
-
-   const expandCard = newValue => {
-      handleCardExpansion({
-         variables: {
-            thingID: data.id,
-            collectionID,
-            newValue
-         }
-      });
-   };
 
    // We need to make the options for the copy to group interface. You can't copy to a group that the thing is already in, so first we need to filter those groups out of the master groups list
    let filteredGroups = [];
