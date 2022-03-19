@@ -13,6 +13,7 @@ import { getShortestColumnIndex } from './Collections/CollectionBody';
 import { getShortestColumnID } from './Collections/CollectionsHeader';
 
 const getColumnCount = () => {
+   if (!process.browser) return 1;
    let columnCount = 1;
    if (window != null) {
       if (window.innerWidth >= bigScreenBreakpointPx) {
@@ -32,7 +33,7 @@ const getItemForID = (id, items) => {
    return element;
 };
 
-const Columnizer = ({ items, columnOrders, draggingGroup }) => {
+const Columnizer = ({ items, columnOrders, draggingGroup, canEdit }) => {
    const [columnCount, setColumnCount] = useState(getColumnCount());
 
    const resizeHandler = () => setColumnCount(getColumnCount());
@@ -94,7 +95,12 @@ const Columnizer = ({ items, columnOrders, draggingGroup }) => {
          style={{ width: `${100 / columnCount}%` }}
          key={`columnizerColumn-${index}`}
       >
-         <Droppable droppableId={columnOrderObj.id} key={index} type="group">
+         <Droppable
+            droppableId={columnOrderObj.id}
+            isDropDisabled={!canEdit}
+            key={index}
+            type="group"
+         >
             {provided => (
                <div
                   ref={provided.innerRef}
@@ -119,6 +125,7 @@ const Columnizer = ({ items, columnOrders, draggingGroup }) => {
                            draggableId={`${index}-${
                               itemElement.props.groupObj.id
                            }`}
+                           isDragDisabled={!canEdit}
                            index={itemIndex}
                            key={`${index}-${itemElement.props.groupObj.id}`}
                         >

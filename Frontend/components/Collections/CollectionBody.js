@@ -67,7 +67,7 @@ const getShortestColumnIndex = (columnData, groups, isTagOrder) => {
 };
 export { getShortestColumnIndex };
 
-const CollectionBody = ({ activeCollection }) => {
+const CollectionBody = ({ activeCollection, canEdit }) => {
    const {
       id,
       userGroups,
@@ -133,6 +133,7 @@ const CollectionBody = ({ activeCollection }) => {
          hiddenThings={hiddenThings}
          deleteGroupHandler={deleteGroupHandler}
          expandedCards={expandedCards}
+         canEdit={canEdit}
       />
    ));
 
@@ -242,6 +243,7 @@ const CollectionBody = ({ activeCollection }) => {
                collectionID={id}
                columnOrders={columnOrders}
                draggingGroup={draggingGroup}
+               canEdit={canEdit}
             />
          </div>
       </section>

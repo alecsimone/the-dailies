@@ -5,7 +5,12 @@ import LoadingRing from '../LoadingRing';
 import { StyledCollection } from './styles';
 import CollectionBody from './CollectionBody';
 
-const Collections = ({ fetchMoreButton, activeCollection, allCollections, setThingFilterString }) => {
+const Collections = ({
+   activeCollection,
+   allCollections,
+   setThingFilterString,
+   canEdit
+}) => {
    const [setActiveCollection, { loading }] = useMutation(
       SET_ACTIVE_COLLECTION_MUTATION
    );
@@ -26,10 +31,11 @@ const Collections = ({ fetchMoreButton, activeCollection, allCollections, setThi
             allCollections={allCollections}
             activeCollection={activeCollection}
             setThingFilterString={setThingFilterString}
+            canEdit={canEdit}
          />
          <CollectionBody
             activeCollection={activeCollection}
-            fetchMoreButton={fetchMoreButton}
+            canEdit={canEdit}
          />
       </StyledCollection>
    );

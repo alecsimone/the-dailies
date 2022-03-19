@@ -26,6 +26,15 @@ const COLLECTIONS_PAGE_QUERY = gql`
 `;
 export { COLLECTIONS_PAGE_QUERY };
 
+const SPECIFIC_COLLECTION_QUERY = gql`
+   query SPECIFIC_COLLECTION_QUERY($id: ID!) {
+      getCollection(id: $id) {
+         ${fullCollectionFields}
+      }
+   }
+`;
+export { SPECIFIC_COLLECTION_QUERY };
+
 const MY_BIG_THINGS_QUERY = gql`
    query MY_THINGS_QUERY($cursor: String, $forCollection: ID) {
       myThings(cursor: $cursor, forCollection: $forCollection) {

@@ -1,4 +1,5 @@
 import { useMutation } from '@apollo/react-hooks';
+import Router from 'next/router';
 import { useState, useRef, useEffect } from 'react';
 import { getRandomString } from '../../lib/TextHandling';
 import useMe from '../Account/useMe';
@@ -11,17 +12,14 @@ import CollectionPrivacyInterface from './CollectionPrivacyInterface';
 import {
    ADD_GROUP_TO_COLLECTION_MUTATION,
    DELETE_COLLECTION_MUTATION,
-   RENAME_COLLECTION_MUTATION,
-   SET_GROUP_BY_TAG_MUTATION,
-   SHOW_HIDDEN_GROUPS_ON_COLLECTION_MUTATION,
-   SHOW_HIDDEN_TAGS_ON_COLLECTION_MUTATION,
-   SHOW_HIDDEN_THINGS_ON_COLLECTION_MUTATION
+   RENAME_COLLECTION_MUTATION
 } from './queriesAndMutations';
 
 const getShortestColumnID = columnData => {
    // First we need two placeholder variables
    let lowestHeight = 0;
    let lowestHeightID;
+   if (!process.browser) return columnData[0].id;
 
    // Then we need to loop through each column
    columnData.forEach((data, index) => {
@@ -54,7 +52,8 @@ const CollectionsHeader = ({
    setActiveCollection,
    allCollections,
    activeCollection,
-   setThingFilterString
+   setThingFilterString,
+   canEdit
 }) => {
    const [collectionTitle, setCollectionTitle] = useState(
       activeCollection.title
@@ -97,6 +96,19 @@ const CollectionsHeader = ({
       {
          variables: {
             collectionID: id
+         },
+         onCompleted: data => {
+            const destination = {
+               pathname: '/collections'
+            };
+
+            if (data.deleteCollection.lastActiveCollection != null) {
+               destination.query = {
+                  id: data.deleteCollection.lastActiveCollection.id
+               };
+            }
+
+            Router.push(destination);
          }
       }
    );
@@ -116,6 +128,12 @@ const CollectionsHeader = ({
                setActiveCollection({
                   variables: {
                      collectionID: e.target.value
+                  }
+               });
+               Router.push({
+                  pathname: '/collections',
+                  query: {
+                     id: e.target.value
                   }
                });
             }}
@@ -206,41 +224,44 @@ const CollectionsHeader = ({
 
    return (
       <header>
-         <input
-            type="text"
-            className="collectionTitle"
-            ref={collectionTitleRef}
-            value={collectionTitle}
-            onChange={e => {
-               setCollectionTitle(e.target.value);
-               if (e.target.value.trim() === '') return;
-               renameCollection({
-                  variables: {
-                     collectionID: id,
-                     newTitle: e.target.value
-                  },
-                  optimisticResponse: {
-                     __typename: 'Mutation',
-                     renameCollection: {
-                        __typename: 'Collection',
-                        id,
-                        title: e.target.value
+         {!canEdit && <h3 className="collectionTitle">{collectionTitle}</h3>}
+         {canEdit && (
+            <input
+               type="text"
+               className="collectionTitle"
+               ref={collectionTitleRef}
+               value={collectionTitle}
+               onChange={e => {
+                  setCollectionTitle(e.target.value);
+                  if (e.target.value.trim() === '') return;
+                  renameCollection({
+                     variables: {
+                        collectionID: id,
+                        newTitle: e.target.value
+                     },
+                     optimisticResponse: {
+                        __typename: 'Mutation',
+                        renameCollection: {
+                           __typename: 'Collection',
+                           id,
+                           title: e.target.value
+                        }
                      }
+                  });
+               }}
+               onKeyDown={e => {
+                  if (e.key === 'Enter') {
+                     collectionTitleRef.current.blur();
                   }
-               });
-            }}
-            onKeyDown={e => {
-               if (e.key === 'Enter') {
-                  collectionTitleRef.current.blur();
-               }
-            }}
-            onBlur={e => {
-               if (e.target.value.trim() === '') {
-                  e.preventDefault();
-                  alert('Please enter a name for this collection');
-               }
-            }}
-         />
+               }}
+               onBlur={e => {
+                  if (e.target.value.trim() === '') {
+                     e.preventDefault();
+                     alert('Please enter a name for this collection');
+                  }
+               }}
+            />
+         )}
          <div className="headerOptions">
             <div className="left">
                {collectionSelector}
@@ -252,11 +273,12 @@ const CollectionsHeader = ({
             </div>
             <div className="headerButtons">
                <AddCollectionButton />
-               {deleteCollectionButton}
-               {addGroupButton}
+               {canEdit && deleteCollectionButton}
+               {canEdit && addGroupButton}
                <LockIcon
                   privacy={privacy}
                   onClick={() => {
+                     if (!canEdit) return;
                      if (author.id !== loggedInUserID) return;
                      setShowingPrivacyInterface(!showingPrivacyInterface);
                   }}

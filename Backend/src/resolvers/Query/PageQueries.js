@@ -16,6 +16,9 @@ const {
    supplementFilteredQuery,
    getLinksFromContent
 } = require('../../utils/ThingHandling');
+const {
+   checkCollectionPermissions
+} = require('../Mutation/CollectionMutations');
 
 async function searchTaxes(parent, { searchTerm, personal }, ctx, info) {
    const availableTags = await searchAvailableTaxes(
@@ -533,12 +536,70 @@ async function getCollections(parent, args, ctx, info) {
             id: ctx.req.memberId
          }
       },
-      `{id lastActiveCollection {${fullCollectionFields}} collections {id title} }`
+      `{id lastActiveCollection {${fullCollectionFields}} collections {id title createdAt} }`
    );
+
+   if (
+      myCollections.lastActiveCollection == null &&
+      myCollections.collections.length > 0
+   ) {
+      // If they have collections, but the lastActiveCollection is null for some reason, let's set one of their collections to be last active
+      const { collections } = myCollections;
+      collections.sort((a, b) => {
+         const aDate = new Date(a.createdAt);
+         const bDate = new Date(b.createdAt);
+         return bDate - aDate;
+      });
+
+      const updatedMember = await ctx.db.mutation.updateMember(
+         {
+            where: {
+               id: ctx.req.memberId
+            },
+            data: {
+               lastActiveCollection: {
+                  connect: {
+                     id: collections[0].id
+                  }
+               }
+            }
+         },
+         `{id lastActiveCollection {${fullCollectionFields}} collections {id title createdAt} }`
+      );
+      return updatedMember;
+   }
 
    return myCollections;
 }
 exports.getCollections = getCollections;
+
+async function getCollection(parent, { id }, ctx, info) {
+   const canView = await checkCollectionPermissions(
+      id,
+      'collection',
+      'view',
+      ctx
+   ).catch(error => {
+      throw new Error(error);
+   });
+   if (!canView) {
+      throw new AuthenticationError(
+         "You don't have permission to see this collection."
+      );
+   }
+
+   const collectionData = await ctx.db.query.collection(
+      {
+         where: {
+            id
+         }
+      },
+      `{${fullCollectionFields}}`
+   );
+
+   return collectionData;
+}
+exports.getCollection = getCollection;
 
 async function getRelationsForThing(
    parent,

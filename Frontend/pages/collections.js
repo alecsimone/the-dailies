@@ -1,6 +1,10 @@
 import { useQuery } from '@apollo/react-hooks';
+import Router from 'next/router';
 import SignupOrLogin from '../components/Account/SignupOrLogin';
-import { COLLECTIONS_PAGE_QUERY } from '../components/Collections/queriesAndMutations';
+import {
+   COLLECTIONS_PAGE_QUERY,
+   SPECIFIC_COLLECTION_QUERY
+} from '../components/Collections/queriesAndMutations';
 import LoadingRing from '../components/LoadingRing';
 import Error from '../components/ErrorMessage';
 import AddCollectionButton from '../components/Collections/AddCollectionButton';
@@ -19,10 +23,39 @@ const CollectionsPage = ({ query }) => {
       skip: loggedInUserID == null
    });
 
+   const {
+      data: specificCollectionData,
+      loading: specificCollectionLoading,
+      error: specificCollectionError
+   } = useQuery(SPECIFIC_COLLECTION_QUERY, {
+      variables: {
+         id: query.id
+      },
+      skip: query.id == null
+   });
+
    if (loggedInUserID == null) return <SignupOrLogin explanation styled />;
    if (memberLoading) return <LoadingRing />;
 
-   if (collectionsData) {
+   if (specificCollectionData) {
+      return (
+         <Collections
+            activeCollection={specificCollectionData.getCollection}
+            canEdit={specificCollectionData.getCollection.author.id}
+            allCollections={
+               collectionsData != null
+                  ? collectionsData.getCollections.collections
+                  : []
+            }
+         />
+      );
+   }
+
+   if (specificCollectionError) {
+      return <Error error={specificCollectionError} />;
+   }
+
+   if (query.id == null && collectionsData) {
       const {
          lastActiveCollection: activeCollection,
          collections
@@ -40,15 +73,24 @@ const CollectionsPage = ({ query }) => {
          );
       }
 
+      if (query.id == null && process.browser) {
+         window.history.pushState(
+            'Collections',
+            '',
+            `/collections?id=${activeCollection.id}`
+         );
+      }
+
       return (
          <Collections
             activeCollection={activeCollection}
+            canEdit={activeCollection.author.id}
             allCollections={collections}
          />
       );
    }
 
-   if (collectionsLoading) {
+   if (collectionsLoading || specificCollectionLoading) {
       return <LoadingRing />;
    }
 
@@ -57,5 +99,7 @@ const CollectionsPage = ({ query }) => {
    }
    return <div>Something went terribly wrong</div>;
 };
+
+CollectionsPage.getInitialProps = async ctx => ({ query: ctx.query });
 
 export default CollectionsPage;

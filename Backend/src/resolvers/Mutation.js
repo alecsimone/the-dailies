@@ -71,7 +71,9 @@ const {
    addNoteToGroup,
    deleteNote,
    editNote,
-   setCollectionPrivacy
+   setCollectionPrivacy,
+   addIndividualPermissionToCollection,
+   removeIndividualPermissionFromCollection
 } = require('./Mutation/CollectionMutations');
 
 const {
@@ -150,7 +152,9 @@ const Mutations = {
    addNoteToGroup,
    deleteNote,
    editNote,
-   setCollectionPrivacy
+   setCollectionPrivacy,
+   addIndividualPermissionToCollection,
+   removeIndividualPermissionFromCollection
 };
 
 module.exports = Mutations;

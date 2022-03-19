@@ -8,7 +8,9 @@ const {
    search,
    allThings,
    getCollections,
-   getRelationsForThing
+   getCollection,
+   getRelationsForThing,
+   getLinkArchive
 } = require('./Query/PageQueries');
 const {
    finishSignup,
@@ -26,7 +28,6 @@ const {
    getTweetsForList,
    getLinkData
 } = require('./Query/TwitterQueries');
-const { getLinkArchive } = require('./query/pageQueries');
 
 const Query = {
    finishSignup,
@@ -49,6 +50,7 @@ const Query = {
    moreMemberVotes,
    allThings,
    getCollections,
+   getCollection,
    getLinkData,
    getRelationsForThing,
    getLinkArchive

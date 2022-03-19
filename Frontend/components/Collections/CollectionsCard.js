@@ -46,7 +46,8 @@ const CollectionsCard = ({
    collectionID,
    groupID,
    hideThingHandler,
-   isExpanded
+   isExpanded,
+   canEdit
 }) => {
    const {
       loggedInUserID,
@@ -112,6 +113,7 @@ const CollectionsCard = ({
       return (
          <Draggable
             draggableId={`${groupID}-note-${noteID}`}
+            isDragDisabled={!canEdit}
             index={index}
             key={`${groupID}-${noteID}`}
          >
@@ -164,52 +166,54 @@ const CollectionsCard = ({
                         <RichText text={data.content} />
                      </div>
                   )}
-                  <footer>
-                     <div className="buttons">
-                        {!editingNote && (
-                           <EditThis
-                              titleText="Edit Note"
-                              onClick={() => setEditingNote(true)}
-                           />
-                        )}
-                        <X
-                           titleText="Delete Note"
-                           onClick={() => {
-                              if (
-                                 !confirm(
-                                    'Are you sure you want to delete that note?'
+                  {canEdit && (
+                     <footer>
+                        <div className="buttons">
+                           {!editingNote && (
+                              <EditThis
+                                 titleText="Edit Note"
+                                 onClick={() => setEditingNote(true)}
+                              />
+                           )}
+                           <X
+                              titleText="Delete Note"
+                              onClick={() => {
+                                 if (
+                                    !confirm(
+                                       'Are you sure you want to delete that note?'
+                                    )
                                  )
-                              )
-                                 return;
+                                    return;
 
-                              const [thisGroup] = userGroups.filter(
-                                 groupObj => groupObj.id === groupID
-                              );
+                                 const [thisGroup] = userGroups.filter(
+                                    groupObj => groupObj.id === groupID
+                                 );
 
-                              const newGroupObj = JSON.parse(
-                                 JSON.stringify(thisGroup)
-                              );
+                                 const newGroupObj = JSON.parse(
+                                    JSON.stringify(thisGroup)
+                                 );
 
-                              newGroupObj.notes = newGroupObj.notes.filter(
-                                 noteObj => noteObj.id !== noteID
-                              );
-                              newGroupObj.order = newGroupObj.order.filter(
-                                 id => id !== noteID
-                              );
+                                 newGroupObj.notes = newGroupObj.notes.filter(
+                                    noteObj => noteObj.id !== noteID
+                                 );
+                                 newGroupObj.order = newGroupObj.order.filter(
+                                    id => id !== noteID
+                                 );
 
-                              deleteNote({
-                                 variables: {
-                                    noteID
-                                 },
-                                 optimisticResponse: {
-                                    __typename: 'Mutation',
-                                    deleteNote: newGroupObj
-                                 }
-                              });
-                           }}
-                        />
-                     </div>
-                  </footer>
+                                 deleteNote({
+                                    variables: {
+                                       noteID
+                                    },
+                                    optimisticResponse: {
+                                       __typename: 'Mutation',
+                                       deleteNote: newGroupObj
+                                    }
+                                 });
+                              }}
+                           />
+                        </div>
+                     </footer>
+                  )}
                </StyledNote>
             )}
          </Draggable>
@@ -352,58 +356,61 @@ const CollectionsCard = ({
    return (
       <Draggable
          draggableId={`${groupID}-${id}`}
+         isDragDisabled={!canEdit}
          index={index}
          key={`${groupID}-${id}`}
       >
          {provided => (
             <StyledCard
-               className="cardWrapper"
+               className={canEdit ? 'cardWrapper' : 'cardWrapper noEdit'}
                {...provided.draggableProps}
                {...provided.dragHandleProps}
                ref={provided.innerRef}
                key={`${groupID}-${id}`}
             >
                <ExplodingLink url={url} hideCardShortlink />
-               <div
-                  className={
-                     filteredGroups.length > 0
-                        ? 'cardManagementBar'
-                        : 'cardManagementBar noCopy'
-                  }
-               >
-                  {filteredGroups.length > 0 && copyInterface}
-                  <X
-                     titleText="Remove Link"
-                     onClick={() => {
-                        const [thisGroup] = userGroups.filter(
-                           groupObj => groupObj.id === groupID
-                        );
+               {canEdit && (
+                  <div
+                     className={
+                        filteredGroups.length > 0
+                           ? 'cardManagementBar'
+                           : 'cardManagementBar noCopy'
+                     }
+                  >
+                     {filteredGroups.length > 0 && copyInterface}
+                     <X
+                        titleText="Remove Link"
+                        onClick={() => {
+                           const [thisGroup] = userGroups.filter(
+                              groupObj => groupObj.id === groupID
+                           );
 
-                        const thisGroupWithoutThisLink = JSON.parse(
-                           JSON.stringify(thisGroup)
-                        );
-                        thisGroupWithoutThisLink.includedLinks = thisGroupWithoutThisLink.includedLinks.filter(
-                           linkObj => linkObj.id !== id
-                        );
+                           const thisGroupWithoutThisLink = JSON.parse(
+                              JSON.stringify(thisGroup)
+                           );
+                           thisGroupWithoutThisLink.includedLinks = thisGroupWithoutThisLink.includedLinks.filter(
+                              linkObj => linkObj.id !== id
+                           );
 
-                        removeLinkFromGroup({
-                           variables: {
-                              linkID: id,
-                              groupID
-                           },
-                           optimisticResponse: {
-                              __typename: 'Mutation',
-                              removeLinkFromCollectionGroup: thisGroupWithoutThisLink
-                           }
-                        });
+                           removeLinkFromGroup({
+                              variables: {
+                                 linkID: id,
+                                 groupID
+                              },
+                              optimisticResponse: {
+                                 __typename: 'Mutation',
+                                 removeLinkFromCollectionGroup: thisGroupWithoutThisLink
+                              }
+                           });
 
-                        toast(<UndoButton url={url} groupID={groupID} />, {
-                           position: 'bottom-center',
-                           autoClose: 3000
-                        });
-                     }}
-                  />
-               </div>
+                           toast(<UndoButton url={url} groupID={groupID} />, {
+                              position: 'bottom-center',
+                              autoClose: 3000
+                           });
+                        }}
+                     />
+                  </div>
+               )}
             </StyledCard>
          )}
       </Draggable>

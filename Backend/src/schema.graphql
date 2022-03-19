@@ -19,6 +19,7 @@ type Query {
    search(string: String!, isTitleOnly: Boolean, cursor: String, count: Int): [Thing]!
    searchMembers(string: String!): [Member]
    getCollections: Member,
+   getCollection(id: ID!): Collection
    moreMemberThings(memberID: String!, cursor: String, count: Int): [Thing]
    moreMemberVotes(memberID: String!, cursor: String, count: Int): [Vote]
    getLinkData(url: String!): Link
@@ -105,6 +106,8 @@ type Mutation {
   deleteNote(noteID: ID!): CollectionGroup
   editNote(noteID: ID!, newContent: String!): Note
   setCollectionPrivacy(collectionID: ID!, privacy: PrivacySetting!): Collection
+  addIndividualPermissionToCollection(collectionID: ID!, memberID: ID!, permissionType: String!): Collection
+  removeIndividualPermissionFromCollection(collectionID: ID!, memberID: ID!, permissionType: String!): Collection
 
   addConnection(subjectID: ID!, objectID: ID!, relationship: String!, strength: Int): [Thing!]
   deleteConnection(connectionID: ID!): [Thing!],

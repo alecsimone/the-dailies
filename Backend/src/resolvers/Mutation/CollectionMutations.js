@@ -57,6 +57,10 @@ async function checkCollectionPermissions(id, type, action, ctx) {
       fields
    );
 
+   if (dataObj == null) {
+      throw new Error('No collection found for that ID');
+   }
+
    // Next we need to extract the privacy setting, as well as the allowed viewers, editors, and author from our data
    let privacy;
    let viewers;
@@ -125,6 +129,7 @@ async function checkCollectionPermissions(id, type, action, ctx) {
       'Something has gone wrong with your authorization. Please try again.'
    );
 }
+exports.checkCollectionPermissions = checkCollectionPermissions;
 
 async function addCollection(parent, args, ctx, info) {
    await loggedInGate(ctx).catch(() => {
@@ -206,9 +211,9 @@ async function deleteCollection(parent, { collectionID }, ctx, info) {
             id: ctx.req.memberId
          }
       },
-      `{collections {id} }`
+      `{lastActiveCollection {id} collections {id} }`
    );
-   const { collections } = originalMemberData;
+   const { lastActiveCollection, collections } = originalMemberData;
 
    // Only the original author of a collection can delete it, so let's make sure this is that member first
    const [thisCollection] = collections.filter(
@@ -232,7 +237,10 @@ async function deleteCollection(parent, { collectionID }, ctx, info) {
       }
    };
 
-   if (filteredCollections.length > 0) {
+   if (
+      filteredCollections.length > 0 &&
+      lastActiveCollection.id === thisCollection.id
+   ) {
       data.lastActiveCollection = {
          connect: {
             id: filteredCollections[filteredCollections.length - 1].id
@@ -1315,3 +1323,87 @@ async function setCollectionPrivacy(
    return updatedCollection;
 }
 exports.setCollectionPrivacy = setCollectionPrivacy;
+
+async function addIndividualPermissionToCollection(
+   parent,
+   { collectionID, memberID, permissionType },
+   ctx,
+   info
+) {
+   await loggedInGate(ctx).catch(() => {
+      throw new AuthenticationError('You must be logged in to do that!');
+   });
+   fullMemberGate(ctx.req.member);
+
+   const canEdit = await checkCollectionPermissions(
+      collectionID,
+      'collection',
+      'edit',
+      ctx
+   );
+   if (!canEdit) {
+      throw new AuthenticationError(
+         "You don't have permission to edit this collection."
+      );
+   }
+
+   const updatedCollection = await ctx.db.mutation.updateCollection(
+      {
+         where: {
+            id: collectionID
+         },
+         data: {
+            [permissionType]: {
+               connect: {
+                  id: memberID
+               }
+            }
+         }
+      },
+      info
+   );
+   return updatedCollection;
+}
+exports.addIndividualPermissionToCollection = addIndividualPermissionToCollection;
+
+async function removeIndividualPermissionFromCollection(
+   parent,
+   { collectionID, memberID, permissionType },
+   ctx,
+   info
+) {
+   await loggedInGate(ctx).catch(() => {
+      throw new AuthenticationError('You must be logged in to do that!');
+   });
+   fullMemberGate(ctx.req.member);
+
+   const canEdit = await checkCollectionPermissions(
+      collectionID,
+      'collection',
+      'edit',
+      ctx
+   );
+   if (!canEdit) {
+      throw new AuthenticationError(
+         "You don't have permission to edit this collection."
+      );
+   }
+
+   const updatedCollection = await ctx.db.mutation.updateCollection(
+      {
+         where: {
+            id: collectionID
+         },
+         data: {
+            [permissionType]: {
+               disconnect: {
+                  id: memberID
+               }
+            }
+         }
+      },
+      info
+   );
+   return updatedCollection;
+}
+exports.removeIndividualPermissionFromCollection = removeIndividualPermissionFromCollection;

@@ -26,7 +26,8 @@ const StyledCollection = styled.section`
    header {
       margin-bottom: 2rem;
       position: relative;
-      input.collectionTitle {
+      input.collectionTitle,
+      h3.collectionTitle {
          display: block;
          text-align: center;
          border: none;
@@ -71,6 +72,11 @@ const StyledCollection = styled.section`
          .headerButtons {
             display: flex;
             align-items: center;
+            > * {
+               background: ${props => setAlpha(props.theme.lightBlack, 0.8)};
+               border: 1px solid
+                  ${props => setAlpha(props.theme.mainText, 0.25)};
+            }
             button {
                font-size: ${props => props.theme.smallText};
                padding: 0.5rem;
@@ -84,9 +90,16 @@ const StyledCollection = styled.section`
                height: ${props => props.theme.smallHead};
                margin-left: 1.5rem;
                cursor: pointer;
-               background: ${props => props.theme.lightBlack};
                padding: 0.5rem 1rem;
                border-radius: 4px;
+               > * {
+                  opacity: 0.8;
+               }
+               &:hover {
+                  > * {
+                     opacity: 1;
+                  }
+               }
             }
          }
       }
@@ -96,7 +109,7 @@ const StyledCollection = styled.section`
          position: absolute;
          z-index: 2;
          right: 0;
-         width: 50rem;
+         width: 60rem;
          max-width: 40%;
          .privacyInterface {
             width: 100%;
@@ -114,8 +127,61 @@ const StyledCollection = styled.section`
             input {
                display: block;
                font-size: ${props => props.theme.smallText};
-               margin: 2rem 0;
                width: 100%;
+            }
+            .addPeopleBox {
+               .permissionLine {
+                  margin: 2rem 0;
+                  display: flex;
+                  align-items: center;
+                  justify-content: space-between;
+                  .existingCount {
+                     width: 15rem;
+                     cursor: pointer;
+                  }
+                  .searchBox {
+                     position: relative;
+                     width: 100%;
+                     flex-grow: 1;
+                     .searchResults {
+                        z-index: 2;
+                        position: absolute;
+                        width: 100%;
+                        top: 100%;
+                        background: ${props => props.theme.lightBlack};
+                        .memberSearchResult {
+                           padding: 1rem 0;
+                           border: 1px solid
+                              ${props => props.theme.lowContrastGrey};
+                           cursor: pointer;
+                           &.highlighted,
+                           &:hover {
+                              background: ${props => props.theme.majorColor};
+                           }
+                           &:last-child {
+                              border-bottom: 2px solid
+                                 ${props => props.theme.lowContrastGrey};
+                           }
+                        }
+                     }
+                  }
+               }
+               .extraPerson {
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  margin: 1rem 0;
+                  svg {
+                     height: ${props => props.theme.smallText};
+                     margin-left: 2rem;
+                     padding-top: 3px;
+                     opacity: 0.6;
+                     cursor: pointer;
+                     &:hover {
+                        opacity: 0.85;
+                     }
+                  }
+               }
             }
          }
       }
@@ -168,7 +234,7 @@ const StyledGroup = styled.div`
       align-items: center;
       justify-content: space-between;
       margin-bottom: 0;
-      h3,
+      h4.groupTitle,
       input.groupTitle {
          font-size: ${props => props.theme.bigText};
          font-weight: bold;
@@ -302,6 +368,14 @@ const StyledCard = styled.div`
       border: none;
       border-bottom: 2px solid
          ${props => setAlpha(props.theme.lowContrastGrey, 0.2)};
+   }
+   &.noEdit {
+      .linkCard {
+         border-bottom: none;
+      }
+      article {
+         border-bottom: none;
+      }
    }
    .cardManagementBar {
       display: flex;

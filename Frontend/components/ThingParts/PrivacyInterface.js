@@ -21,6 +21,7 @@ const SEARCH_MEMBERS_QUERY = gql`
       }
    }
 `;
+export { SEARCH_MEMBERS_QUERY };
 
 const ADD_VIEWER_TO_STUFF_MUTATION = gql`
    mutation ADD_VIEWER_TO_STUFF_MUTATION(
@@ -206,7 +207,10 @@ const StyledPrivacyInterface = styled.div`
 const debouncedMemberSearch = debounce(
    (memberSearch, searchTerm) => memberSearch(searchTerm),
    200,
-   true
+   {
+      leading: false,
+      trailing: true
+   }
 );
 
 const PrivacyInterface = ({ canEdit, id, type }) => {
