@@ -1,7 +1,6 @@
 const {
    fullThingFields,
    tagFields,
-   fullMemberFields,
    commentFields,
    contentPieceFields
 } = require('./CardInterfaces');

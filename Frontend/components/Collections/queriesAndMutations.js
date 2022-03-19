@@ -1,5 +1,6 @@
 import gql from 'graphql-tag';
 import {
+   basicMemberFields,
    collectionGroupFields,
    fullCollectionFields,
    fullMemberFields,
@@ -47,7 +48,7 @@ export { MY_BIG_THINGS_QUERY };
 const ADD_COLLECTION_MUTATION = gql`
    mutation ADD_COLLECTION_MUTATION {
       addCollection {
-         ${fullMemberFields}
+         ${basicMemberFields}
       }
    }
 `;
@@ -56,7 +57,7 @@ export { ADD_COLLECTION_MUTATION };
 const DELETE_COLLECTION_MUTATION = gql`
    mutation DELETE_COLLECTION_MUTATION($collectionID: ID!) {
       deleteCollection(collectionID: $collectionID) {
-         ${fullMemberFields}
+         ${basicMemberFields}
       }
    }
 `;

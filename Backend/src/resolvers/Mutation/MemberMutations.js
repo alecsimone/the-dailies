@@ -4,7 +4,10 @@ const { promisify } = require('util');
 const jwt = require('jsonwebtoken');
 const { AuthenticationError } = require('apollo-server-express');
 const { loggedInGate, fullMemberGate } = require('../../utils/Authentication');
-const { fullMemberFields } = require('../../utils/CardInterfaces');
+const {
+   basicMemberFields,
+   profileFields
+} = require('../../utils/CardInterfaces');
 const SibApiV3Sdk = require('sib-api-v3-sdk');
 
 async function publishMeUpdate(ctx) {
@@ -15,7 +18,7 @@ async function publishMeUpdate(ctx) {
                id: ctx.req.memberId
             }
          },
-         `{${fullMemberFields}}`
+         `{${basicMemberFields}}`
       )
       .catch(err => {
          console.log(err);
@@ -323,7 +326,7 @@ async function properEditMe(dataObj, id, ctx) {
             },
             data: dataObj
          },
-         `{${fullMemberFields}}`
+         `{${profileFields}}`
       )
       .catch(err => {
          console.log(err);

@@ -478,6 +478,91 @@ const fullCollectionFields = `
 `;
 exports.fullCollectionFields = fullCollectionFields;
 
+const profileFields = `
+   __typename
+   id
+   displayName
+   avatar
+   rep
+   points
+   giveableRep
+   friends {
+      __typename
+      id
+      displayName
+      avatar
+      rep
+      role
+      friends {
+         __typename
+         id
+         displayName
+         avatar
+         rep
+      }
+   }
+   friendRequests {
+      __typename
+      id
+      avatar
+      rep
+      displayName
+      role
+      friends {
+         __typename
+         id
+      }
+   }
+   ignoredFriendRequests {
+      __typename
+      id
+   }
+   notifications {
+      __typename
+      id
+      kind
+      initiator {
+         __typename
+         id
+         avatar
+         rep
+         displayName
+         role
+         friends {
+            __typename
+            id
+         }
+      }
+      unread
+      linkQuery
+   }
+   twitchName
+   email
+   votes(last: 2) {
+      __typename
+      id
+      onThing {
+         ${fullThingFields}
+      }
+      onComment {
+         ${commentFields}
+      }
+      onContentPiece {
+         ${contentPieceFields}
+      }
+      value
+      createdAt
+   }
+   createdThings(last: 2) {
+      ${fullThingFields}
+   }
+   defaultPrivacy
+   role
+   twitterUserName
+   createdAt
+`;
+exports.profileFields = profileFields;
+
 const fullMemberFields = `
    __typename
    id
@@ -600,3 +685,48 @@ const fullMemberFields = `
    createdAt
 `;
 exports.fullMemberFields = fullMemberFields;
+
+const basicMemberFields = `
+   __typename
+   id
+   displayName
+   avatar
+   rep
+   friends {
+      __typename
+      id
+   }
+   broadcastView
+   notifications {
+      __typename
+      id
+      kind
+      initiator {
+         __typename
+         id
+         avatar
+         rep
+         displayName
+         role
+         friends {
+            __typename
+            id
+         }
+      }
+      unread
+      linkQuery
+   }
+   friendRequests {
+      __typename
+      id
+   }
+   ignoredFriendRequests {
+      __typename
+      id
+   }
+   defaultExpansion
+   defaultPrivacy
+   role
+   twitterUserName
+`;
+exports.basicMemberFields = basicMemberFields;

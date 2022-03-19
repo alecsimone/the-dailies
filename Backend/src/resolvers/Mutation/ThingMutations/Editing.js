@@ -13,7 +13,7 @@ const {
    fullMemberGate,
    canEditThing
 } = require('../../../utils/Authentication');
-const {fullMemberFields, smallThingCardFields, fullThingFields} = require('../../../utils/CardInterfaces');
+const {smallThingCardFields, fullThingFields} = require('../../../utils/CardInterfaces');
 const { getLinksToCard, replaceLinkWithText } = require('../../../utils/TextHandling');
 
 async function addTaxToThing(taxTitle, thingID, ctx, personal, finalTax = true) {

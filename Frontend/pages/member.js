@@ -7,7 +7,7 @@ import Error from '../components/ErrorMessage';
 import LoadingRing from '../components/LoadingRing';
 import ProfileSidebar from '../components/Profile/ProfileSidebar';
 import ProfileContent from '../components/Profile/ProfileContent';
-import { fullMemberFields, profileFields } from '../lib/CardInterfaces';
+import { profileFields } from '../lib/CardInterfaces';
 import useMe from '../components/Account/useMe';
 import useQueryAndStoreIt from '../stuffStore/useQueryAndStoreIt';
 

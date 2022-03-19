@@ -132,6 +132,7 @@ async function checkCollectionPermissions(id, type, action, ctx) {
 exports.checkCollectionPermissions = checkCollectionPermissions;
 
 async function addCollection(parent, args, ctx, info) {
+   console.log('step 1');
    await loggedInGate(ctx).catch(() => {
       throw new AuthenticationError('You must be logged in to do that!');
    });
@@ -139,6 +140,7 @@ async function addCollection(parent, args, ctx, info) {
 
    // First we want to create a new collection. We'll need to seed it with a starting group, so let's make a new group first. We have to make it separately so we can pass its id to columnOrders.
 
+   console.log('step 2');
    const newGroup = await ctx.db.mutation.createCollectionGroup(
       {
          data: {
@@ -147,6 +149,7 @@ async function addCollection(parent, args, ctx, info) {
       },
       `{id}`
    );
+   console.log('step 3');
    const newCollection = await ctx.db.mutation
       .createCollection(
          {
@@ -177,6 +180,7 @@ async function addCollection(parent, args, ctx, info) {
       });
 
    // Then we want to set the lastActiveCollection of the current member to that collection
+   console.log('step 4');
    const updatedMember = await ctx.db.mutation.updateMember({
       where: {
          id: ctx.req.memberId
@@ -191,7 +195,9 @@ async function addCollection(parent, args, ctx, info) {
    });
 
    // Then we return the current member
+   console.log('step 5');
    const newMe = await publishMeUpdate(ctx);
+   console.log('step 6');
    return newMe;
 }
 exports.addCollection = addCollection;
