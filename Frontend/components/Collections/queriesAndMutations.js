@@ -302,3 +302,14 @@ const EDIT_NOTE_MUTATION = gql`
    }
 `;
 export { EDIT_NOTE_MUTATION };
+
+const COLLECTION_SUBSCRIPTION = gql`
+   subscription COLLECTION_SUBSCRIPTION($id: ID) {
+      collection(id: $id) {
+         node {
+            ${fullCollectionFields}
+         }
+      }
+   }
+`;
+export { COLLECTION_SUBSCRIPTION };

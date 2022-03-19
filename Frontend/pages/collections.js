@@ -1,5 +1,4 @@
 import { useQuery } from '@apollo/react-hooks';
-import Router from 'next/router';
 import SignupOrLogin from '../components/Account/SignupOrLogin';
 import {
    COLLECTIONS_PAGE_QUERY,

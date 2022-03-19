@@ -36,6 +36,12 @@ const Subscription = {
             payload.myThings.node != null &&
             ctx.connection.context.memberId === payload.myThings.node.author.id
       )
+   },
+   collection: {
+      subscribe: withFilter(
+         (parent, { id }, ctx, info) => ctx.pubsub.asyncIterator('collection'),
+         (payload, variables) => variables.id == payload.collection.node.id
+      )
    }
 };
 

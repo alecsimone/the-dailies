@@ -131,8 +131,80 @@ async function checkCollectionPermissions(id, type, action, ctx) {
 }
 exports.checkCollectionPermissions = checkCollectionPermissions;
 
+async function publishCollectionUpdate(collectionID, ctx) {
+   const collectionData = await ctx.db.query.collection(
+      {
+         where: {
+            id: collectionID
+         }
+      },
+      `{${fullCollectionFields}}`
+   );
+
+   ctx.pubsub.publish('collection', {
+      collection: {
+         node: collectionData
+      }
+   });
+
+   // We're also going to use this opportunity to update the lastActiveCollection of the current member
+   ctx.db.mutation.updateMember({
+      where: {
+         id: ctx.req.memberId
+      },
+      data: {
+         lastActiveCollection: {
+            connect: {
+               id: collectionID
+            }
+         }
+      }
+   });
+}
+
+async function findParentCollectionAndPublishUpdate(dataObj, ctx) {
+   if (dataObj.__typename === 'CollectionGroup') {
+      if (dataObj.inCollection != null && dataObj.inCollection.id != null) {
+         publishCollectionUpdate(dataObj.inCollection.id, ctx);
+      } else {
+         const collectionGroupObj = await ctx.db.query.collectionGroup(
+            {
+               where: {
+                  id: dataObj.id
+               }
+            },
+            `{inCollection {id}}`
+         );
+         publishCollectionUpdate(collectionGroupObj.inCollection.id, ctx);
+      }
+   } else if (dataObj.__typename === 'Note') {
+      if (
+         dataObj.onCollectionGroup != null &&
+         dataObj.onCollectionGroup.inCollection != null &&
+         dataObj.onCollectionGroup.inCollection.id != null
+      ) {
+         publishCollectionUpdate(
+            dataObj.onCollectionGroup.inCollection.id,
+            ctx
+         );
+      } else {
+         const noteObj = await ctx.db.query.note(
+            {
+               where: {
+                  id: dataObj.id
+               }
+            },
+            `{onCollectionGroup {inCollection {id}}}`
+         );
+         publishCollectionUpdate(
+            noteObj.onCollectionGroup.inCollection.id,
+            ctx
+         );
+      }
+   }
+}
+
 async function addCollection(parent, args, ctx, info) {
-   console.log('step 1');
    await loggedInGate(ctx).catch(() => {
       throw new AuthenticationError('You must be logged in to do that!');
    });
@@ -140,7 +212,6 @@ async function addCollection(parent, args, ctx, info) {
 
    // First we want to create a new collection. We'll need to seed it with a starting group, so let's make a new group first. We have to make it separately so we can pass its id to columnOrders.
 
-   console.log('step 2');
    const newGroup = await ctx.db.mutation.createCollectionGroup(
       {
          data: {
@@ -149,7 +220,6 @@ async function addCollection(parent, args, ctx, info) {
       },
       `{id}`
    );
-   console.log('step 3');
    const newCollection = await ctx.db.mutation
       .createCollection(
          {
@@ -180,7 +250,6 @@ async function addCollection(parent, args, ctx, info) {
       });
 
    // Then we want to set the lastActiveCollection of the current member to that collection
-   console.log('step 4');
    const updatedMember = await ctx.db.mutation.updateMember({
       where: {
          id: ctx.req.memberId
@@ -195,9 +264,7 @@ async function addCollection(parent, args, ctx, info) {
    });
 
    // Then we return the current member
-   console.log('step 5');
    const newMe = await publishMeUpdate(ctx);
-   console.log('step 6');
    return newMe;
 }
 exports.addCollection = addCollection;
@@ -321,6 +388,7 @@ async function renameCollection(parent, { collectionID, newTitle }, ctx, info) {
       }
    });
 
+   publishCollectionUpdate(collectionID, ctx);
    return updatedCollection;
 }
 exports.renameCollection = renameCollection;
@@ -401,6 +469,7 @@ async function addGroupToCollection(
       `{id userGroups {${collectionGroupFields}} columnOrders {__typename id order}}`
    );
 
+   publishCollectionUpdate(collectionID, ctx);
    return updatedCollection;
 }
 exports.addGroupToCollection = addGroupToCollection;
@@ -472,6 +541,7 @@ async function deleteGroupFromCollection(
       `{id userGroups {${collectionGroupFields}}}`
    );
 
+   publishCollectionUpdate(collectionID, ctx);
    return updatedCollection;
 }
 exports.deleteGroupFromCollection = deleteGroupFromCollection;
@@ -518,6 +588,7 @@ async function renameGroupOnCollection(
       },
       `{id userGroups {${collectionGroupFields}}}`
    );
+   publishCollectionUpdate(collectionID, ctx);
    return updatedCollection;
 }
 exports.renameGroupOnCollection = renameGroupOnCollection;
@@ -597,6 +668,7 @@ async function copyThingToCollectionGroup(
       },
       `{id userGroups {${collectionGroupFields}}}`
    );
+   publishCollectionUpdate(collectionID, ctx);
    return updatedCollection;
 }
 exports.copyThingToCollectionGroup = copyThingToCollectionGroup;
@@ -696,10 +768,8 @@ async function addLinkToCollectionGroup(
       },
       `{${collectionGroupFields}}`
    );
+   findParentCollectionAndPublishUpdate(updatedGroup, ctx);
    return updatedGroup;
-
-   // And return the collection that it's part of
-   // return updatedGroup.inCollection;
 }
 exports.addLinkToCollectionGroup = addLinkToCollectionGroup;
 
@@ -741,6 +811,7 @@ async function removeLinkFromCollectionGroup(
       },
       `{${collectionGroupFields}}`
    );
+   findParentCollectionAndPublishUpdate(updatedGroup, ctx);
    return updatedGroup;
 }
 exports.removeLinkFromCollectionGroup = removeLinkFromCollectionGroup;
@@ -806,6 +877,7 @@ async function reorderGroups(
       updatedGroupsArray.push(updatedGroupTwo);
    }
 
+   findParentCollectionAndPublishUpdate(updatedGroupsArray[0], ctx);
    return updatedGroupsArray;
 }
 exports.reorderGroups = reorderGroups;
@@ -933,6 +1005,7 @@ async function moveCardToGroup(
       updatedGroupsArray.push(updatedGroupTwo);
    }
 
+   findParentCollectionAndPublishUpdate(updatedGroupsArray[0], ctx);
    return updatedGroupsArray;
 }
 exports.moveCardToGroup = moveCardToGroup;
@@ -1025,6 +1098,10 @@ async function moveGroupToColumn(
       );
       updatedColumnsArray.push(updatedDestinationOrder);
    }
+   findParentCollectionAndPublishUpdate(
+      { __typename: 'CollectionGroup', id: groupID },
+      ctx
+   );
    return updatedColumnsArray;
 }
 exports.moveGroupToColumn = moveGroupToColumn;
@@ -1081,6 +1158,7 @@ async function reorderGroup(
       },
       `{${collectionGroupFields}}`
    );
+   findParentCollectionAndPublishUpdate(updatedGroup, ctx);
    return updatedGroup;
 }
 exports.reorderGroup = reorderGroup;
@@ -1136,6 +1214,10 @@ async function reorderColumn(
          }
       },
       `{id order}`
+   );
+   findParentCollectionAndPublishUpdate(
+      { __typename: 'CollectionGroup', id: groupID },
+      ctx
    );
    return updatedOrderObj;
 }
@@ -1201,6 +1283,7 @@ async function addNoteToGroup(parent, { groupID, position }, ctx, info) {
       },
       `{${collectionGroupFields}}`
    );
+   findParentCollectionAndPublishUpdate(updatedGroup, ctx);
    return updatedGroup;
 }
 exports.addNoteToGroup = addNoteToGroup;
@@ -1255,6 +1338,7 @@ async function deleteNote(parent, { noteID }, ctx, info) {
       },
       `{${collectionGroupFields}}`
    );
+   findParentCollectionAndPublishUpdate(updatedGroup, ctx);
    return updatedGroup;
 }
 exports.deleteNote = deleteNote;
@@ -1288,6 +1372,7 @@ async function editNote(parent, { noteID, newContent }, ctx, info) {
       },
       `{__typename id content}`
    );
+   findParentCollectionAndPublishUpdate(updatedNote, ctx);
    return updatedNote;
 }
 exports.editNote = editNote;
@@ -1326,6 +1411,7 @@ async function setCollectionPrivacy(
       },
       `{id privacy}`
    );
+   publishCollectionUpdate(collectionID, ctx);
    return updatedCollection;
 }
 exports.setCollectionPrivacy = setCollectionPrivacy;
@@ -1368,6 +1454,7 @@ async function addIndividualPermissionToCollection(
       },
       info
    );
+   publishCollectionUpdate(collectionID, ctx);
    return updatedCollection;
 }
 exports.addIndividualPermissionToCollection = addIndividualPermissionToCollection;
@@ -1410,6 +1497,7 @@ async function removeIndividualPermissionFromCollection(
       },
       info
    );
+   publishCollectionUpdate(collectionID, ctx);
    return updatedCollection;
 }
 exports.removeIndividualPermissionFromCollection = removeIndividualPermissionFromCollection;

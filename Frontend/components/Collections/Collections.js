@@ -1,6 +1,9 @@
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation, useSubscription } from '@apollo/react-hooks';
 import CollectionsHeader from './CollectionsHeader';
-import { SET_ACTIVE_COLLECTION_MUTATION } from './queriesAndMutations';
+import {
+   COLLECTION_SUBSCRIPTION,
+   SET_ACTIVE_COLLECTION_MUTATION
+} from './queriesAndMutations';
 import LoadingRing from '../LoadingRing';
 import { StyledCollection } from './styles';
 import CollectionBody from './CollectionBody';
@@ -14,6 +17,15 @@ const Collections = ({
    const [setActiveCollection, { loading }] = useMutation(
       SET_ACTIVE_COLLECTION_MUTATION
    );
+
+   const {
+      data: subscriptionData,
+      loading: subscriptionLoading
+   } = useSubscription(COLLECTION_SUBSCRIPTION, {
+      variables: {
+         id: activeCollection.id
+      }
+   });
 
    if (loading) {
       return (
