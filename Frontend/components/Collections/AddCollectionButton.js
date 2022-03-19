@@ -1,12 +1,14 @@
 import { useMutation } from '@apollo/react-hooks';
-import Router from 'next/router';
+import { useRouter } from 'next/router';
 import { ADD_COLLECTION_MUTATION } from './queriesAndMutations';
 
 const AddCollectionButton = () => {
+   const router = useRouter();
+
    const [addCollection, { loading }] = useMutation(ADD_COLLECTION_MUTATION, {
       onCompleted: data => {
          const newCollectionID = data.addCollection.lastActiveCollection.id;
-         Router.push({
+         router.push({
             pathname: '/collections',
             query: {
                id: newCollectionID

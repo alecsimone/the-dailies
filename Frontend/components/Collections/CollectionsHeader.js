@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/react-hooks';
-import Router from 'next/router';
+import { useRouter } from 'next/router';
 import { useState, useRef, useEffect } from 'react';
 import { getRandomString } from '../../lib/TextHandling';
 import useMe from '../Account/useMe';
@@ -91,6 +91,7 @@ const CollectionsHeader = ({
 
    const [addGroupToCollection] = useMutation(ADD_GROUP_TO_COLLECTION_MUTATION);
 
+   const router = useRouter();
    const [deleteCollection, { loading: deletingCollection }] = useMutation(
       DELETE_COLLECTION_MUTATION,
       {
@@ -108,7 +109,7 @@ const CollectionsHeader = ({
                };
             }
 
-            Router.push(destination);
+            router.push(destination);
          }
       }
    );
