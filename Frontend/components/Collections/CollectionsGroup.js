@@ -147,7 +147,32 @@ const CollectionsGroup = ({
       />
    ));
 
-   // const universalTags = getUniversalTags(filteredFullThingData);
+   const sendNewGroupTitle = e => {
+      const newTitle = e.target.value;
+
+      const thisGroupIndex = userGroups.findIndex(
+         userGroupObj => userGroupObj.id === id
+      );
+
+      const copiedUserGroups = [...userGroups];
+      copiedUserGroups[thisGroupIndex].title = newTitle;
+
+      renameGroupOnCollection({
+         variables: {
+            collectionID,
+            groupID: id,
+            newTitle
+         },
+         optimisticResponse: {
+            __typename: 'Mutation',
+            renameGroupOnCollection: {
+               __typename: 'Collection',
+               id: collectionID,
+               userGroups: copiedUserGroups
+            }
+         }
+      });
+   };
 
    return (
       <StyledGroup ref={groupRef} id={groupObj.id} className="collectionGroup">
@@ -159,34 +184,8 @@ const CollectionsGroup = ({
                   placeholder="Group Title"
                   ref={titleRef}
                   value={groupTitle}
-                  onChange={e => {
-                     const newTitle = e.target.value;
-
-                     setGroupTitle(newTitle);
-
-                     const thisGroupIndex = userGroups.findIndex(
-                        userGroupObj => userGroupObj.id === id
-                     );
-
-                     const copiedUserGroups = [...userGroups];
-                     copiedUserGroups[thisGroupIndex].title = newTitle;
-
-                     renameGroupOnCollection({
-                        variables: {
-                           collectionID,
-                           groupID: id,
-                           newTitle
-                        },
-                        optimisticResponse: {
-                           __typename: 'Mutation',
-                           renameGroupOnCollection: {
-                              __typename: 'Collection',
-                              id: collectionID,
-                              userGroups: copiedUserGroups
-                           }
-                        }
-                     });
-                  }}
+                  onChange={e => setGroupTitle(e.target.value)}
+                  onBlur={sendNewGroupTitle}
                   onKeyDown={e => {
                      if (e.key === 'Enter') {
                         e.preventDefault();
