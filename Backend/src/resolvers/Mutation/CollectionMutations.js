@@ -96,9 +96,9 @@ async function checkCollectionPermissions(id, type, action, ctx) {
    // If it's public, that's easy, they can view it.
    if (privacy === 'Public') return true;
 
-   // If it's private, we don't need to do the member query because all we need is the viewers from the original dataObj. So let's get those possibilities out of the way before we do that query
+   // If it's private, we don't need to do the member query because all we need is the viewers from the original dataObj. And if the member is in the viewers list, we don't need to do the query either. So let's get those possibilities out of the way before we do that query
+   if (viewerIDs.includes(currentMemberID)) return true;
    if (privacy === 'Private') {
-      if (viewerIDs.includes(currentMemberID)) return true;
       return false;
    }
 

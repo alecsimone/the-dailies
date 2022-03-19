@@ -41,7 +41,9 @@ const CollectionsPage = ({ query }) => {
       return (
          <Collections
             activeCollection={specificCollectionData.getCollection}
-            canEdit={specificCollectionData.getCollection.author.id}
+            canEdit={
+               specificCollectionData.getCollection.author.id === loggedInUserID
+            }
             allCollections={
                collectionsData != null
                   ? collectionsData.getCollections.collections
@@ -84,7 +86,7 @@ const CollectionsPage = ({ query }) => {
       return (
          <Collections
             activeCollection={activeCollection}
-            canEdit={activeCollection.author.id}
+            canEdit={activeCollection.author.id === loggedInUserID}
             allCollections={collections}
          />
       );
