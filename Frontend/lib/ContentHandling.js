@@ -3,6 +3,7 @@ import { useRef } from 'react';
 import { commentFields, contentPieceFields } from './CardInterfaces';
 import { getOneRem, midScreenBreakpointPx } from '../styles/functions';
 import { provisionallyReplaceTextTag } from './TextHandling';
+import { getScrollingParent } from '../Stickifier/useStickifier';
 
 const ADD_CONTENTPIECE_MUTATION = gql`
    mutation ADD_CONTENTPIECE_MUTATION(
@@ -441,7 +442,7 @@ const sendNewContentPiece = async (
    // setFullThingToLoading(id);
    dynamicallyResizeElement(inputRef.current);
 
-   await addContentPiece({
+   addContentPiece({
       variables: {
          content: newContentPiece,
          id,
@@ -459,5 +460,27 @@ const sendNewContentPiece = async (
       alert(err.message);
    });
    inputElement.value = ''; // We need to clear the input after adding it
+
+   // Now we want to scroll to the top of the last content piece if it's not already in frame. NB: This function is only for adding new content pieces, so we're always scrolling to the last content piece
+   const contentPieces = document.querySelectorAll('.contentBlock');
+
+   if (contentPieces.length === 0) return;
+
+   const lastContentPiece = contentPieces[contentPieces.length - 1];
+   const lastPieceRect = lastContentPiece.getBoundingClientRect();
+   if (lastPieceRect.top > 0) return;
+
+   let parent = lastContentPiece.offsetParent;
+   let totalOffset = lastContentPiece.offsetTop;
+   while (parent != null) {
+      totalOffset += parent.offsetTop;
+      parent = parent.offsetParent;
+   }
+
+   const scroller = getScrollingParent(lastContentPiece);
+   const header = document.getElementById('header');
+   const headerHeight = header.offsetHeight;
+
+   scroller.scrollTop = totalOffset - headerHeight - 2 * getOneRem();
 };
 export { sendNewContentPiece };
