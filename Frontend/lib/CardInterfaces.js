@@ -329,6 +329,7 @@ const fullThingFields = `
       rep
    }
    featuredImage
+   poster
    link
    content {
       ${contentPieceFields}

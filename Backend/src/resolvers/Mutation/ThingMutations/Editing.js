@@ -1,4 +1,5 @@
 const { AuthenticationError } = require('apollo-server-express');
+const ogs = require('open-graph-scraper');
 const {
    properDeleteStuff,
    properUpdateStuff,
@@ -13,8 +14,8 @@ const {
    fullMemberGate,
    canEditThing
 } = require('../../../utils/Authentication');
-const {smallThingCardFields, fullThingFields} = require('../../../utils/CardInterfaces');
-const { getLinksToCard, replaceLinkWithText } = require('../../../utils/TextHandling');
+const {smallThingCardFields, fullThingFields, linkFields, fullPersonalLinkFields} = require('../../../utils/CardInterfaces');
+const { getLinksToCard, replaceLinkWithText, isVideo } = require('../../../utils/TextHandling');
 
 async function addTaxToThing(taxTitle, thingID, ctx, personal, finalTax = true) {
    // Note: there's an addTaxToThingHandler shoved in between the client and this function. This is the function shared by other backend operations.
@@ -569,6 +570,66 @@ async function setFeaturedImage(
    const dataObj = {
       featuredImage
    };
+
+   const url = featuredImage;
+   const existingPersonalLink = await ctx.db.query.personalLink(
+      {
+         where: {
+            url
+         }
+      },
+      `{${fullPersonalLinkFields}}`
+   );
+   if (existingPersonalLink == null) {
+      ctx.db.mutation.createPersonalLink(
+         {
+            data: {
+               url,
+               owner: {
+                  connect: {
+                     id: ctx.req.memberId
+                  }
+               }
+            }
+         }
+      )
+   }
+
+   const linkData = await ctx.db.query.link(
+      {
+         where: {
+            url
+         }
+      },
+      `{${linkFields}}`
+   );
+   if (linkData == null) {
+      ogLinkData = {
+         url
+      };
+      const options = { url };
+      await ogs(options, (error, results, response) => {
+         ogLinkData.title = results.ogTitle;
+         ogLinkData.description = results.ogDescription;
+         ogLinkData.video = results.ogVideo ? results.ogVideo.url : null;
+         ogLinkData.image = results.ogImage ? results.ogImage.url : null;
+         ogLinkData.icon = results.favicon;
+         ogLinkData.siteName = results.ogSiteName;
+         ogLinkData.ogURL = results.ogUrl;
+
+         ctx.db.mutation.createLink({
+            data: ogLinkData
+         });
+      });
+   }
+
+   if (isVideo(url)) {
+      if (ogLinkData.image != null) {
+         dataObj.poster = ogLinkData.image;
+      } else if (ogLinkData.icon != null) {
+         dataObj.poster = ogLinkData.icon;
+      }
+   }
 
    const updatedStuff = await properUpdateStuff(dataObj, id, type, ctx).catch(err => {
       console.log(err);

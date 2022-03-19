@@ -182,3 +182,22 @@ const getRandomString = count => {
    return randomString;
 };
 exports.getRandomString = getRandomString;
+
+const isVideo = url => {
+   if (url == null) return false;
+   const lowerCasedURL = url.toLowerCase();
+   if (
+      lowerCasedURL.includes('.mp4') ||
+      lowerCasedURL.includes('.webm') ||
+      lowerCasedURL.includes('gfycat.com/') ||
+      lowerCasedURL.includes('youtube.com/watch?v=') ||
+      lowerCasedURL.includes('youtu.be/') ||
+      (lowerCasedURL.includes('tiktok.com') &&
+         lowerCasedURL.includes('/video/')) ||
+      lowerCasedURL.includes('vm.tiktok.com/')
+   ) {
+      return true;
+   }
+   return false;
+};
+exports.isVideo = isVideo;

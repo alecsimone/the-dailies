@@ -1,14 +1,15 @@
 const linkFields = `
    id
-      title
-      description
-      icon
-      video
-      image
-      siteName
-      url
-      ogURL
+   title
+   description
+   icon
+   video
+   image
+   siteName
+   url
+   ogURL
 `;
+exports.linkFields = linkFields;
 
 const commentFields = `
    __typename
@@ -268,6 +269,7 @@ const fullThingFields = `
       rep
    }
    featuredImage
+   poster
    link
    content {
       ${contentPieceFields}

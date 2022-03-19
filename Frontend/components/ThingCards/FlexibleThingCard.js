@@ -68,6 +68,7 @@ const useCardData = thingID => {
    cardData.featuredImage = useSelector(
       state => state.stuff[propertyName].featuredImage
    );
+   cardData.poster = useSelector(state => state.stuff[propertyName].poster);
    cardData.score = useSelector(state => state.stuff[propertyName].score);
    cardData.privacy = useSelector(state => state.stuff[propertyName].privacy);
    cardData.authorID = useSelector(
@@ -483,6 +484,7 @@ const FlexibleThingCard = ({
       tagCount,
       connectionCount,
       featuredImage,
+      poster,
       score,
       privacy,
       authorID
@@ -626,7 +628,7 @@ const FlexibleThingCard = ({
       expansion.featuredImage ||
       featuredImage == null ||
       featuredImage === '' ||
-      isVideo(featuredImage) ||
+      (isVideo(featuredImage) && poster == null) ||
       disabledCodewords.includes(featuredImage.toLowerCase()) ||
       isTweet ||
       featuredImage.includes('instagram.com/p/')
@@ -681,7 +683,7 @@ const FlexibleThingCard = ({
                   <div className="thumbWrapper">
                      <img
                         className="thumb"
-                        src={featuredImage}
+                        src={isVideo(featuredImage) ? poster : featuredImage}
                         alt="thumbnail"
                         onClick={() => {
                            expansionHandler(

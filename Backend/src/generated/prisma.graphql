@@ -8216,6 +8216,7 @@ input PersonalLinkWhereInput {
 
 input PersonalLinkWhereUniqueInput {
   id: ID
+  url: String
 }
 
 enum PrivacySetting {
@@ -9477,6 +9478,7 @@ type Thing {
   title: String!
   author: Member!
   featuredImage: String
+  poster: String
   link: String
   content(where: ContentPieceWhereInput, orderBy: ContentPieceOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ContentPiece!]
   unsavedNewContent: String
@@ -9517,6 +9519,7 @@ input ThingCreateInput {
   title: String
   author: MemberCreateOneWithoutCreatedThingsInput!
   featuredImage: String
+  poster: String
   link: String
   content: ContentPieceCreateManyWithoutOnThingInput
   unsavedNewContent: String
@@ -9604,6 +9607,7 @@ input ThingCreateWithoutAuthorInput {
   id: ID
   title: String
   featuredImage: String
+  poster: String
   link: String
   content: ContentPieceCreateManyWithoutOnThingInput
   unsavedNewContent: String
@@ -9632,6 +9636,7 @@ input ThingCreateWithoutCommentsInput {
   title: String
   author: MemberCreateOneWithoutCreatedThingsInput!
   featuredImage: String
+  poster: String
   link: String
   content: ContentPieceCreateManyWithoutOnThingInput
   unsavedNewContent: String
@@ -9659,6 +9664,7 @@ input ThingCreateWithoutContentInput {
   title: String
   author: MemberCreateOneWithoutCreatedThingsInput!
   featuredImage: String
+  poster: String
   link: String
   unsavedNewContent: String
   copiedInContent: ContentPieceCreateManyWithoutCopiedToThingsInput
@@ -9686,6 +9692,7 @@ input ThingCreateWithoutCopiedInContentInput {
   title: String
   author: MemberCreateOneWithoutCreatedThingsInput!
   featuredImage: String
+  poster: String
   link: String
   content: ContentPieceCreateManyWithoutOnThingInput
   unsavedNewContent: String
@@ -9713,6 +9720,7 @@ input ThingCreateWithoutIndividualViewPermissionsInput {
   title: String
   author: MemberCreateOneWithoutCreatedThingsInput!
   featuredImage: String
+  poster: String
   link: String
   content: ContentPieceCreateManyWithoutOnThingInput
   unsavedNewContent: String
@@ -9740,6 +9748,7 @@ input ThingCreateWithoutObjectConnectionsInput {
   title: String
   author: MemberCreateOneWithoutCreatedThingsInput!
   featuredImage: String
+  poster: String
   link: String
   content: ContentPieceCreateManyWithoutOnThingInput
   unsavedNewContent: String
@@ -9767,6 +9776,7 @@ input ThingCreateWithoutPartOfStacksInput {
   title: String
   author: MemberCreateOneWithoutCreatedThingsInput!
   featuredImage: String
+  poster: String
   link: String
   content: ContentPieceCreateManyWithoutOnThingInput
   unsavedNewContent: String
@@ -9794,6 +9804,7 @@ input ThingCreateWithoutPartOfTagsInput {
   title: String
   author: MemberCreateOneWithoutCreatedThingsInput!
   featuredImage: String
+  poster: String
   link: String
   content: ContentPieceCreateManyWithoutOnThingInput
   unsavedNewContent: String
@@ -9821,6 +9832,7 @@ input ThingCreateWithoutPassesInput {
   title: String
   author: MemberCreateOneWithoutCreatedThingsInput!
   featuredImage: String
+  poster: String
   link: String
   content: ContentPieceCreateManyWithoutOnThingInput
   unsavedNewContent: String
@@ -9848,6 +9860,7 @@ input ThingCreateWithoutSubjectConnectionsInput {
   title: String
   author: MemberCreateOneWithoutCreatedThingsInput!
   featuredImage: String
+  poster: String
   link: String
   content: ContentPieceCreateManyWithoutOnThingInput
   unsavedNewContent: String
@@ -9875,6 +9888,7 @@ input ThingCreateWithoutVotesInput {
   title: String
   author: MemberCreateOneWithoutCreatedThingsInput!
   featuredImage: String
+  poster: String
   link: String
   content: ContentPieceCreateManyWithoutOnThingInput
   unsavedNewContent: String
@@ -9909,6 +9923,8 @@ enum ThingOrderByInput {
   title_DESC
   featuredImage_ASC
   featuredImage_DESC
+  poster_ASC
+  poster_DESC
   link_ASC
   link_DESC
   unsavedNewContent_ASC
@@ -9939,6 +9955,7 @@ type ThingPreviousValues {
   id: ID!
   title: String!
   featuredImage: String
+  poster: String
   link: String
   unsavedNewContent: String
   contentOrder: [String!]!
@@ -9997,6 +10014,20 @@ input ThingScalarWhereInput {
   featuredImage_not_starts_with: String
   featuredImage_ends_with: String
   featuredImage_not_ends_with: String
+  poster: String
+  poster_not: String
+  poster_in: [String!]
+  poster_not_in: [String!]
+  poster_lt: String
+  poster_lte: String
+  poster_gt: String
+  poster_gte: String
+  poster_contains: String
+  poster_not_contains: String
+  poster_starts_with: String
+  poster_not_starts_with: String
+  poster_ends_with: String
+  poster_not_ends_with: String
   link: String
   link_not: String
   link_in: [String!]
@@ -10138,6 +10169,7 @@ input ThingUpdateDataInput {
   title: String
   author: MemberUpdateOneRequiredWithoutCreatedThingsInput
   featuredImage: String
+  poster: String
   link: String
   content: ContentPieceUpdateManyWithoutOnThingInput
   unsavedNewContent: String
@@ -10165,6 +10197,7 @@ input ThingUpdateInput {
   title: String
   author: MemberUpdateOneRequiredWithoutCreatedThingsInput
   featuredImage: String
+  poster: String
   link: String
   content: ContentPieceUpdateManyWithoutOnThingInput
   unsavedNewContent: String
@@ -10191,6 +10224,7 @@ input ThingUpdateInput {
 input ThingUpdateManyDataInput {
   title: String
   featuredImage: String
+  poster: String
   link: String
   unsavedNewContent: String
   contentOrder: ThingUpdatecontentOrderInput
@@ -10219,6 +10253,7 @@ input ThingUpdateManyInput {
 input ThingUpdateManyMutationInput {
   title: String
   featuredImage: String
+  poster: String
   link: String
   unsavedNewContent: String
   contentOrder: ThingUpdatecontentOrderInput
@@ -10350,6 +10385,7 @@ input ThingUpdateOneWithoutVotesInput {
 input ThingUpdateWithoutAuthorDataInput {
   title: String
   featuredImage: String
+  poster: String
   link: String
   content: ContentPieceUpdateManyWithoutOnThingInput
   unsavedNewContent: String
@@ -10377,6 +10413,7 @@ input ThingUpdateWithoutCommentsDataInput {
   title: String
   author: MemberUpdateOneRequiredWithoutCreatedThingsInput
   featuredImage: String
+  poster: String
   link: String
   content: ContentPieceUpdateManyWithoutOnThingInput
   unsavedNewContent: String
@@ -10403,6 +10440,7 @@ input ThingUpdateWithoutContentDataInput {
   title: String
   author: MemberUpdateOneRequiredWithoutCreatedThingsInput
   featuredImage: String
+  poster: String
   link: String
   unsavedNewContent: String
   copiedInContent: ContentPieceUpdateManyWithoutCopiedToThingsInput
@@ -10429,6 +10467,7 @@ input ThingUpdateWithoutCopiedInContentDataInput {
   title: String
   author: MemberUpdateOneRequiredWithoutCreatedThingsInput
   featuredImage: String
+  poster: String
   link: String
   content: ContentPieceUpdateManyWithoutOnThingInput
   unsavedNewContent: String
@@ -10455,6 +10494,7 @@ input ThingUpdateWithoutIndividualViewPermissionsDataInput {
   title: String
   author: MemberUpdateOneRequiredWithoutCreatedThingsInput
   featuredImage: String
+  poster: String
   link: String
   content: ContentPieceUpdateManyWithoutOnThingInput
   unsavedNewContent: String
@@ -10481,6 +10521,7 @@ input ThingUpdateWithoutObjectConnectionsDataInput {
   title: String
   author: MemberUpdateOneRequiredWithoutCreatedThingsInput
   featuredImage: String
+  poster: String
   link: String
   content: ContentPieceUpdateManyWithoutOnThingInput
   unsavedNewContent: String
@@ -10507,6 +10548,7 @@ input ThingUpdateWithoutPartOfStacksDataInput {
   title: String
   author: MemberUpdateOneRequiredWithoutCreatedThingsInput
   featuredImage: String
+  poster: String
   link: String
   content: ContentPieceUpdateManyWithoutOnThingInput
   unsavedNewContent: String
@@ -10533,6 +10575,7 @@ input ThingUpdateWithoutPartOfTagsDataInput {
   title: String
   author: MemberUpdateOneRequiredWithoutCreatedThingsInput
   featuredImage: String
+  poster: String
   link: String
   content: ContentPieceUpdateManyWithoutOnThingInput
   unsavedNewContent: String
@@ -10559,6 +10602,7 @@ input ThingUpdateWithoutPassesDataInput {
   title: String
   author: MemberUpdateOneRequiredWithoutCreatedThingsInput
   featuredImage: String
+  poster: String
   link: String
   content: ContentPieceUpdateManyWithoutOnThingInput
   unsavedNewContent: String
@@ -10585,6 +10629,7 @@ input ThingUpdateWithoutSubjectConnectionsDataInput {
   title: String
   author: MemberUpdateOneRequiredWithoutCreatedThingsInput
   featuredImage: String
+  poster: String
   link: String
   content: ContentPieceUpdateManyWithoutOnThingInput
   unsavedNewContent: String
@@ -10611,6 +10656,7 @@ input ThingUpdateWithoutVotesDataInput {
   title: String
   author: MemberUpdateOneRequiredWithoutCreatedThingsInput
   featuredImage: String
+  poster: String
   link: String
   content: ContentPieceUpdateManyWithoutOnThingInput
   unsavedNewContent: String
@@ -10773,6 +10819,20 @@ input ThingWhereInput {
   featuredImage_not_starts_with: String
   featuredImage_ends_with: String
   featuredImage_not_ends_with: String
+  poster: String
+  poster_not: String
+  poster_in: [String!]
+  poster_not_in: [String!]
+  poster_lt: String
+  poster_lte: String
+  poster_gt: String
+  poster_gte: String
+  poster_contains: String
+  poster_not_contains: String
+  poster_starts_with: String
+  poster_not_starts_with: String
+  poster_ends_with: String
+  poster_not_ends_with: String
   link: String
   link_not: String
   link_in: [String!]
