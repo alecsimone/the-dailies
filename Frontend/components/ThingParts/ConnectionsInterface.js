@@ -11,7 +11,9 @@ import useQueryAndStoreIt from '../../stuffStore/useQueryAndStoreIt';
 import useMe from '../Account/useMe';
 import { bracketCheck } from '../ExplodingLink';
 import X from '../Icons/X';
+import PlaceholderThings from '../PlaceholderThings';
 import Connection from './Connection';
+import PlaceholderThing from './PlaceholderThing';
 import ThingSearchInput from './ThingSearchInput';
 
 const ADD_CONNECTION_MUTATION = gql`
@@ -199,6 +201,11 @@ const StyledConnectionsInterface = styled.div`
          transform: rotate(0);
       }
    }
+   .placeholderThings {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(42rem, 1fr));
+      gap: 2rem;
+   }
 `;
 
 const getLinksFromContent = contentArray => {
@@ -315,7 +322,8 @@ const ConnectionsInterface = ({ thingID }) => {
    const loggedInUserID = useMe();
 
    const { loading, error, data } = useQueryAndStoreIt(GET_RELATIONS_QUERY, {
-      variables: { thingID }
+      variables: { thingID },
+      ssr: false
       // onCompleted: data => console.log(data)
    });
    let relations = [];
@@ -572,89 +580,97 @@ const ConnectionsInterface = ({ thingID }) => {
       </div>
    ));
 
+   if (data) {
+      return (
+         <StyledConnectionsInterface>
+            {allConnections.length > 0 && (
+               <div className="existingConnections">{connectionElements}</div>
+            )}
+            {showingForm && (
+               <form
+                  className={`addConnection${
+                     addConnectionLoading ? ' loading' : ''
+                  }`}
+                  onSubmit={submitForm}
+               >
+                  <fieldset disabled={addConnectionLoading}>
+                     <div className="formBody">
+                        <div className="thingInput">
+                           <ThingSearchInput
+                              parentThingID={thingID}
+                              placeholder="subject"
+                              value={formData.subject}
+                              skipSearchTerm={thingTitle}
+                              setValue={handleFormChange}
+                              name="subject"
+                              onChosenResult={thingData => {
+                                 chooseResult(thingData, 'subject');
+                              }}
+                           />
+                           <div className="radioBlock">
+                              <input
+                                 type="radio"
+                                 name="thisThing"
+                                 value="subject"
+                                 id="subject"
+                                 checked={formData.thisThing === 'subject'}
+                                 onChange={handleFormChange}
+                              />
+                              <label htmlFor="subject">This Thing</label>
+                           </div>
+                        </div>
+                        <input
+                           type="text"
+                           placeholder="relationship"
+                           name="relationship"
+                           value={formData.relationship}
+                           onChange={handleFormChange}
+                        />
+                        <div className="thingInput">
+                           <ThingSearchInput
+                              parentThingID={thingID}
+                              placeholder="object"
+                              value={formData.object}
+                              skipSearchTerm={thingTitle}
+                              setValue={handleFormChange}
+                              name="object"
+                              onChosenResult={thingData => {
+                                 chooseResult(thingData, 'object');
+                              }}
+                           />
+                           <div className="radioBlock">
+                              <input
+                                 type="radio"
+                                 name="thisThing"
+                                 value="object"
+                                 id="object"
+                                 checked={formData.thisThing === 'object'}
+                                 onChange={handleFormChange}
+                              />
+                              <label htmlFor="object">This Thing</label>
+                           </div>
+                        </div>
+                     </div>
+                     <div className="formFooter">
+                        <button type="submit">add</button>
+                     </div>
+                  </fieldset>
+               </form>
+            )}
+            <X
+               onClick={() => setShowingForm(!showingForm)}
+               className={`showConnectionsForm ${
+                  showingForm ? 'collapse' : 'expand'
+               }`}
+               color="mainText"
+            />
+         </StyledConnectionsInterface>
+      );
+   }
+
    return (
       <StyledConnectionsInterface>
-         {allConnections.length > 0 && (
-            <div className="existingConnections">{connectionElements}</div>
-         )}
-         {showingForm && (
-            <form
-               className={`addConnection${
-                  addConnectionLoading ? ' loading' : ''
-               }`}
-               onSubmit={submitForm}
-            >
-               <fieldset disabled={addConnectionLoading}>
-                  <div className="formBody">
-                     <div className="thingInput">
-                        <ThingSearchInput
-                           parentThingID={thingID}
-                           placeholder="subject"
-                           value={formData.subject}
-                           skipSearchTerm={thingTitle}
-                           setValue={handleFormChange}
-                           name="subject"
-                           onChosenResult={thingData => {
-                              chooseResult(thingData, 'subject');
-                           }}
-                        />
-                        <div className="radioBlock">
-                           <input
-                              type="radio"
-                              name="thisThing"
-                              value="subject"
-                              id="subject"
-                              checked={formData.thisThing === 'subject'}
-                              onChange={handleFormChange}
-                           />
-                           <label htmlFor="subject">This Thing</label>
-                        </div>
-                     </div>
-                     <input
-                        type="text"
-                        placeholder="relationship"
-                        name="relationship"
-                        value={formData.relationship}
-                        onChange={handleFormChange}
-                     />
-                     <div className="thingInput">
-                        <ThingSearchInput
-                           parentThingID={thingID}
-                           placeholder="object"
-                           value={formData.object}
-                           skipSearchTerm={thingTitle}
-                           setValue={handleFormChange}
-                           name="object"
-                           onChosenResult={thingData => {
-                              chooseResult(thingData, 'object');
-                           }}
-                        />
-                        <div className="radioBlock">
-                           <input
-                              type="radio"
-                              name="thisThing"
-                              value="object"
-                              id="object"
-                              checked={formData.thisThing === 'object'}
-                              onChange={handleFormChange}
-                           />
-                           <label htmlFor="object">This Thing</label>
-                        </div>
-                     </div>
-                  </div>
-                  <div className="formFooter">
-                     <button type="submit">add</button>
-                  </div>
-               </fieldset>
-            </form>
-         )}
-         <X
-            onClick={() => setShowingForm(!showingForm)}
-            className={`showConnectionsForm ${
-               showingForm ? 'collapse' : 'expand'
-            }`}
-            color="mainText"
-         />
+         <PlaceholderThings count={12} />
       </StyledConnectionsInterface>
    );
 };

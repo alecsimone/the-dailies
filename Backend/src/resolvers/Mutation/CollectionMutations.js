@@ -298,6 +298,14 @@ async function deleteCollection(parent, { collectionID }, ctx, info) {
       );
    }
 
+   // First let's delete any groups in the collection
+   await ctx.db.mutation.deleteManyCollectionGroups({
+      where: {
+         inCollection: collectionID
+      }
+   });
+
+   // Then we delete the collection itself. We might need to set the last active collection to something different as well.
    const filteredCollections = collections.filter(
       collection => collection.id !== collectionID
    );

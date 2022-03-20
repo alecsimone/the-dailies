@@ -14,7 +14,8 @@ const {
    calculateRelevancyScore,
    filterContentPiecesForPrivacy,
    supplementFilteredQuery,
-   getLinksFromContent
+   getLinksFromContent,
+   getThingIdFromLink
 } = require('../../utils/ThingHandling');
 const {
    checkCollectionPermissions
@@ -630,7 +631,7 @@ async function getRelationsForThing(
    );
 
    const individualCount = Math.floor(
-      totalCount / (theThingToRelate.partOfTags.length + 1)
+      totalCount / (theThingToRelate.partOfTags.length + 1) // the +1 is to count same author as relations too
    );
 
    // Then we need to get all the links in the thing
@@ -775,6 +776,7 @@ async function getRelationsForThing(
       for (const tagThing of tagThings) {
          if (await tagFilterFunction(tagThing)) {
             safeTagThings.push(tagThing);
+            alreadyRelatedThingIDs.push(tagThing.id);
          }
       }
 
@@ -813,6 +815,151 @@ async function getRelationsForThing(
       }
    }
 
+   const collectionLinks = await ctx.db.query.personalLinks(
+      {
+         where: {
+            url_contains: `${
+               process.env.FRONTEND_URL_NOHTTP
+            }/thing?id=${thingID}`
+         }
+      },
+      `{
+         inCollectionGroups {
+            id
+            includedLinks {
+               url
+            }
+            inCollection {
+               id
+               userGroups {
+                  id
+                  includedLinks {
+                     url
+                  }
+               }
+            }
+         }
+      }`
+   );
+   const inCollectionGroupWithThings = [];
+   const inGroups = [];
+   const inCollectionWithThings = [];
+   collectionLinks.forEach(collectionLinkObj => {
+      if (collectionLinkObj == null) return;
+      if (collectionLinkObj.inCollectionGroups == null) return;
+      // We need to loop over all the groups that it's in
+      collectionLinkObj.inCollectionGroups.forEach(groupObj => {
+         if (groupObj == null) return;
+         if (inGroups.includes(groupObj.id)) return;
+         inGroups.push(groupObj.id);
+         // For each group, first we need to loop over the links that are in that group
+         if (groupObj.includedLinks != null) {
+            groupObj.includedLinks.forEach(linkObj => {
+               const linkThingID = getThingIdFromLink(linkObj.url);
+               if (
+                  linkThingID != null &&
+                  linkThingID !== thingID &&
+                  !inCollectionGroupWithThings.includes(linkThingID)
+               ) {
+                  inCollectionGroupWithThings.push(linkThingID);
+               }
+            });
+         }
+         // Then we need to loop over the collections that group is a part of
+         if (groupObj.inCollection != null) {
+            const collectionObj = groupObj.inCollection;
+            if (collectionObj == null) return;
+
+            collectionObj.userGroups.forEach(collectionGroupObj => {
+               if (collectionGroupObj == null) return;
+               if (collectionGroupObj.id == null) return;
+               if (inGroups.includes(collectionGroupObj.id)) return;
+
+               collectionGroupObj.includedLinks.forEach(
+                  collectionGroupLinkObj => {
+                     const linkThingID = getThingIdFromLink(
+                        collectionGroupLinkObj.url
+                     );
+                     if (
+                        linkThingID != null &&
+                        !inCollectionWithThings.includes(linkThingID)
+                     ) {
+                        inCollectionWithThings.push(linkThingID);
+                     }
+                  }
+               );
+            });
+         }
+      });
+   });
+   const groupFilterFunction = async groupThing => {
+      if (await canSeeThing(ctx, groupThing)) {
+         // We don't want to let the thing through if it's already related
+         if (alreadyRelatedThingIDs.includes(groupThing.id)) return false;
+
+         // We also don't want to let it through if it's already connected to the thing
+         let isAlreadyConnected = false;
+         theThingToRelate.subjectConnections.forEach(connection => {
+            if (connection.object.id === groupThing.id)
+               isAlreadyConnected = true;
+         });
+         if (isAlreadyConnected) return false;
+
+         theThingToRelate.objectConnections.forEach(connection => {
+            if (connection.subject.id === groupThing.id)
+               isAlreadyConnected = true;
+         });
+         if (isAlreadyConnected) return false;
+
+         // Nor do we want to let it through if it's linked in the thing
+         if (contentLinkIDs.includes(groupThing.id)) return false;
+
+         // If we don't have any reason not to let it through, then we let it through
+         return true;
+      }
+      // If they can't see the thing, don't let it through
+      return false;
+   };
+
+   const safeGroupThings = [];
+   for (const groupThingID of inCollectionGroupWithThings) {
+      if (await groupFilterFunction({ id: groupThingID })) {
+         const groupThingData = await ctx.db.query.thing(
+            {
+               where: {
+                  id: groupThingID
+               }
+            },
+            `{${fullThingFields}}`
+         );
+
+         safeGroupThings.push(groupThingData);
+         alreadyRelatedThingIDs.push(groupThingID.id);
+      }
+   }
+   const trimmedGroupThings = safeGroupThings.slice(0, individualCount);
+
+   const safeCollectionThings = [];
+   for (const collectionThingID of inCollectionWithThings) {
+      if (await groupFilterFunction({ id: collectionThingID })) {
+         const collectionThingData = await ctx.db.query.thing(
+            {
+               where: {
+                  id: collectionThingID
+               }
+            },
+            `{${fullThingFields}}`
+         );
+
+         safeCollectionThings.push(collectionThingData);
+         alreadyRelatedThingIDs.push(collectionThingID.id);
+      }
+   }
+   const trimmedCollectionThings = safeCollectionThings.slice(
+      0,
+      individualCount
+   );
+
    // Finally, we need to turn our found things into connections and return them
    const relationsArray = [];
 
@@ -849,6 +996,30 @@ async function getRelationsForThing(
          };
          relationsArray.push(relation);
       });
+   }
+
+   for (const groupThing of trimmedGroupThings) {
+      const relation = {
+         id: `new-${getRandomString(32)}`,
+         subject: theThingToRelate,
+         object: groupThing,
+         relationship: `in a collection group with`,
+         strength: 0,
+         createdAt
+      };
+      relationsArray.push(relation);
+   }
+
+   for (const collectionThing of trimmedCollectionThings) {
+      const relation = {
+         id: `new-${getRandomString(32)}`,
+         subject: theThingToRelate,
+         object: collectionThing,
+         relationship: `in a collection with`,
+         strength: 0,
+         createdAt
+      };
+      relationsArray.push(relation);
    }
 
    return relationsArray;

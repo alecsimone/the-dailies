@@ -179,6 +179,10 @@ const PlaceholderThings = ({
          />
       );
    }
-   return <StyledPlaceholderThings>{things}</StyledPlaceholderThings>;
+   return (
+      <StyledPlaceholderThings className="placeholderThings">
+         {things}
+      </StyledPlaceholderThings>
+   );
 };
 export default PlaceholderThings;
