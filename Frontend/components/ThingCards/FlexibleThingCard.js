@@ -700,8 +700,8 @@ const FlexibleThingCard = ({
                   type="Thing"
                   noPic={noPic}
                />
-               <div className="ago">
-                  <TimeAgo time={createdAt} key={`ago-${thingID}`} />
+               <div className="ago" onClick={() => console.log('hey')}>
+                  <TimeAgo toggleable time={createdAt} key={`ago-${thingID}`} />
                </div>
             </div>
             <div className="toolbar">
