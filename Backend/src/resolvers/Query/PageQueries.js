@@ -238,25 +238,33 @@ exports.myThings = myThings;
 
 async function myFriendsThings(
    parent,
-   { orderBy = 'manualUpdatedAt_DESC' },
+   { orderBy = 'manualUpdatedAt_DESC', cursor, count = 2 },
    ctx,
    info
 ) {
    if (ctx.req.memberId == null) {
       return [];
    }
+
+   const where = {
+      author: {
+         friends_some: {
+            id: ctx.req.memberId
+         }
+      },
+      privacy_in: ['Public', 'Friends']
+   };
+
+   if (cursor != null) {
+      where.manualUpdatedAt_lt = cursor;
+   }
+
    const things = await ctx.db.query
       .things(
          {
-            where: {
-               author: {
-                  friends_some: {
-                     id: ctx.req.memberId
-                  }
-               },
-               privacy_in: ['Public', 'Friends']
-            },
-            orderBy
+            where,
+            orderBy,
+            first: count
          },
          info
       )

@@ -25,6 +25,15 @@ const ALL_THINGS_QUERY = gql`
 `;
 export { ALL_THINGS_QUERY };
 
+const MY_FRIENDS_THINGS_QUERY = gql`
+   query MY_FRIENDS_THINGS_QUERY($orderBy: ThingOrderByInput, $cursor: String, $count: Int) {
+      myFriendsThings(orderBy: $orderBy, cursor: $cursor, count: $count) {
+         ${fullThingFields}
+      }
+   }
+`;
+export { MY_FRIENDS_THINGS_QUERY };
+
 const useInfiniteScroll = (fetchMore, scrollingChild, queryName) => {
    const scrollerRef = useRef(null);
 
