@@ -88,6 +88,7 @@ const Columnizer = ({ items, columnOrders, draggingGroup, canEdit }) => {
       });
    }
 
+   console.log(columnCount);
    const columns = necessaryOrders.map((columnOrderObj, index) => (
       <div
          id={`id-${columnOrderObj.id}`}

@@ -13,7 +13,9 @@ const StyledNoCollections = styled.section`
 export { StyledNoCollections };
 
 const StyledCollection = styled.section`
-   padding: 0 2rem;
+   ${props => props.theme.mobileBreakpoint} {
+      padding: 0 2rem;
+   }
    &.loadingCollection {
       .explanation {
          text-align: center;
@@ -26,6 +28,10 @@ const StyledCollection = styled.section`
    header {
       margin-bottom: 2rem;
       position: relative;
+      padding: 0 1rem;
+      ${props => props.theme.mobileBreakpoint} {
+         padding: 0;
+      }
       input.collectionTitle,
       h3.collectionTitle {
          display: block;
@@ -34,6 +40,7 @@ const StyledCollection = styled.section`
          margin: 2rem auto calc(1.5rem + 1px);
          font-size: ${props => props.theme.smallHead};
          font-weight: bold;
+         max-width: 100%;
          &:focus {
             border-bottom: 1px solid ${props => props.theme.mainText};
             outline: none;
@@ -45,6 +52,10 @@ const StyledCollection = styled.section`
          display: flex;
          justify-content: space-between;
          align-items: center;
+         flex-wrap: wrap;
+         ${props => props.theme.mobileBreakpoint} {
+            flex-wrap: nowrap;
+         }
          .left {
             display: flex;
             align-items: center;
@@ -66,7 +77,10 @@ const StyledCollection = styled.section`
                text-align: center;
                flex-grow: 1;
                max-width: 48rem;
-               margin: 0 3rem;
+               margin: 0 3rem 2rem;
+               ${props => props.theme.mobileBreakpoint} {
+                  margin: 0 3rem;
+               }
             }
          }
          .headerButtons {
@@ -195,11 +209,18 @@ const StyledCollection = styled.section`
       }
       .masonryContainer {
          display: flex;
-         width: auto;
-         margin-left: -2rem;
+         flex-wrap: wrap;
+         width: 100%;
+         ${props => props.theme.mobileBreakpoint} {
+            flex-wrap: nowrap;
+            width: auto;
+            margin-left: -2rem;
+         }
          .column {
             max-width: 64rem;
-            padding-left: 2rem;
+            ${props => props.theme.mobileBreakpoint} {
+               padding-left: 2rem;
+            }
             flex-grow: 1;
             .dragging {
                background: ${props => setAlpha(props.theme.lightBlack, 0.6)};
@@ -221,7 +242,10 @@ export { StyledCollection };
 const StyledGroup = styled.div`
    width: 100%;
    display: inline-block;
-   padding: 0 2rem;
+   padding: 0 1rem;
+   ${props => props.theme.mobileBreakpoint} {
+      padding: 0 2rem;
+   }
    border-radius: 6px;
    margin-bottom: 2rem;
    background: ${props => setAlpha(props.theme.lightBlack, 0.8)};
