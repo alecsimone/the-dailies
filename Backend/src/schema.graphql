@@ -22,7 +22,7 @@ type Query {
    getCollection(id: ID!): Collection
    moreMemberThings(memberID: String!, cursor: String, count: Int): [Thing]
    moreMemberVotes(memberID: String!, cursor: String, count: Int): [Vote]
-   getLinkData(url: String!): Link
+   getLinkData(url: String!, storePersonalLink: Boolean): Link
    getRelationsForThing(thingID: ID!, totalCount: Int): [Connection]
    getLinkArchive: Member
 }

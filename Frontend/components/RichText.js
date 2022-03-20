@@ -22,7 +22,8 @@ const RichText = ({
    priorText,
    nextText,
    matchCount = 0,
-   showLinkCards
+   showLinkCards,
+   textLocation
 }) => {
    let fixedText = replaceReddit(replaceEmails(replaceTwitterMentions(text)));
 
@@ -204,6 +205,7 @@ const RichText = ({
                      priorText={priorText}
                      nextText={endingText || nextText}
                      showLinkCards={showLinkCards}
+                     linkSource={textLocation}
                   />
                );
                elementsArray.push(link);

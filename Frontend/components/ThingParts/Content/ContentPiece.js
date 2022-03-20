@@ -293,7 +293,11 @@ const ContentPiece = ({
                setTruncContExpanded={setTruncContExpanded}
             />
          ) : (
-            <RichText text={rawContentString} key={pieceID} />
+            <RichText
+               text={rawContentString}
+               key={pieceID}
+               textLocation="ContentPiece"
+            />
          );
    } else {
       contentElement = (

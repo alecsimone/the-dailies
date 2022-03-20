@@ -9,8 +9,8 @@ import LoadingRing from './LoadingRing';
 import ShortLink from './ThingParts/ShortLink';
 
 const LINK_DATA_QUERY = gql`
-   query LINK_DATA_QUERY($url: String!) {
-      getLinkData(url: $url) {
+   query LINK_DATA_QUERY($url: String!, $storePersonalLink: Boolean) {
+      getLinkData(url: $url, storePersonalLink: $storePersonalLink) {
          ${linkFields}
       }
    }
@@ -98,7 +98,7 @@ const StyledLinkCard = styled.div`
 
 const useLinkData = link => useSelector(state => state.stuff[`Link:${link}`]);
 
-const LinkCard = ({ link, shortlinkHidden }) => {
+const LinkCard = ({ link, shortlinkHidden, storePersonalLink = false }) => {
    const hasData = useSelector(state => state.stuff[`Link:${link}`] != null);
 
    const storedLinkData = useLinkData(link);
@@ -106,7 +106,8 @@ const LinkCard = ({ link, shortlinkHidden }) => {
    const { data, loading, error } = useQueryAndStoreIt(LINK_DATA_QUERY, {
       // const { data, loading, error } = useQuery(LINK_DATA_QUERY, {
       variables: {
-         url: link
+         url: link,
+         storePersonalLink
       },
       skip: hasData || link == null
    });
