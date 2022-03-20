@@ -21,6 +21,38 @@ const ArrowIcon = ({ onClick, className, pointing = 'down', titleText }) => {
          style.transform = `rotate(-90deg) rotateX(0deg)`;
          break;
    }
+
+   return (
+      <svg
+         id="ArrowIcon"
+         className={className == null ? 'arrow' : `arrow ${className}`}
+         data-name="Layer 1"
+         xmlns="http://www.w3.org/2000/svg"
+         viewBox="0 0 200 200"
+         onClick={onClick}
+         style={style}
+      >
+         {titleText != null && <title>{titleText}</title>}
+         <rect
+            x="45.11"
+            y="35.05"
+            width="33.33"
+            height="141.41"
+            transform="translate(-56.68 74.66) rotate(-45)"
+            fill={mainText}
+         />
+         <rect
+            x="68"
+            y="89.14"
+            width="140.9"
+            height="33.21"
+            transform="translate(-34.22 128.87) rotate(-45)"
+            fill={mainText}
+         />
+      </svg>
+   );
+
+   // Old way with space around it
    return (
       <svg
          id="ArrowIcon"

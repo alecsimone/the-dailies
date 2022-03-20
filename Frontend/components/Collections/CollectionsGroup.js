@@ -5,25 +5,20 @@ import styled from 'styled-components';
 import { StyledGroup } from './styles';
 import CollectionsCard from './CollectionsCard';
 import {
-   DELETE_GROUP_FROM_COLLECTION_MUTATION,
-   HIDE_GROUP_ON_COLLECTION_MUTATION,
-   HIDE_TAG_ON_COLLECTION_MUTATION,
    RENAME_GROUP_MUTATION,
-   HIDE_THING_ON_COLLECTION_MUTATION,
-   SET_COLUMN_ORDER_MUTATION,
    ADD_LINK_TO_GROUP_MUTATION,
    ADD_NOTE_MUTATION
 } from './queriesAndMutations';
 import X from '../Icons/X';
 import LinkIcon from '../Icons/Link';
 import SearchIcon from '../Icons/Search';
-import { getUniversalTags, groupSort } from './cardHandling';
-import TaxInput from '../ThingParts/TaxInput';
+import { groupSort } from './cardHandling';
 import useMe from '../Account/useMe';
 import { getRandomString } from '../../lib/TextHandling';
 import ThingSearchInput from '../ThingParts/ThingSearchInput';
 import { home } from '../../config';
 import ContentIcon from '../Icons/ContentIcon';
+import ArrowIcon from '../Icons/Arrow';
 
 const StyledCardList = styled.div``;
 
@@ -42,6 +37,8 @@ const CollectionsGroup = ({
       loggedInUserID,
       memberFields: { displayName }
    } = useMe('CollectionsGroup', 'displayName');
+
+   const [showingCards, setShowingCards] = useState(true);
 
    const [groupTitle, setGroupTitle] = useState(title);
    const titleRef = useRef(null);
@@ -105,30 +102,8 @@ const CollectionsGroup = ({
       setLinkToAdd('');
    };
 
-   // filteredThings = groupSort(filteredThings, groupObj.order);
-
-   // Then we make a new array with the full data for each of our things
-   // let filteredFullThingData = filteredThings.map(thing => {
-   //    const [fullData] = fullThingData.filter(data => data.id === thing.id);
-   //    return fullData;
-   // });
    // Then we need to filter that array again, because some things that are part of the collection will have been removed by the Filter Things input in the CollectionHeader. Those will be undefined when they're converted to FullThingData, so we just remove any undefined items from the array
    // filteredFullThingData = filteredFullThingData.filter(data => data != null);
-
-   // const thingElements = filteredFullThingData.map((thing, index) => (
-   //    <CollectionsCard
-   //       data={thing}
-   //       index={index}
-   //       key={thing.id}
-   //       userGroups={userGroups}
-   //       hiddenGroups={hiddenGroups}
-   //       groupType={type}
-   //       collectionID={collectionID}
-   //       groupID={id}
-   //       hideThingHandler={hideThingHandler}
-   //       isExpanded={expandedCards.includes(thing.id)}
-   //    />
-   // ));
 
    const linksAndNotes = includedLinks.concat(notes);
 
@@ -196,6 +171,10 @@ const CollectionsGroup = ({
             )}
             {canEdit && (
                <div className="buttons">
+                  <ArrowIcon
+                     pointing={showingCards ? 'up' : 'down'}
+                     onClick={() => setShowingCards(!showingCards)}
+                  />
                   <X
                      titleText="Delete Group"
                      onClick={() => deleteGroupHandler(title, id)}
@@ -203,29 +182,31 @@ const CollectionsGroup = ({
                </div>
             )}
          </header>
-         <Droppable
-            droppableId={id}
-            isDropDisabled={!canEdit}
-            key={id}
-            type="card"
-         >
-            {provided => (
-               <StyledCardList
-                  className="droppableWrapper"
-                  ref={provided.innerRef}
-                  key={id}
-                  {...provided.droppableProps}
-               >
-                  {linkElements.length === 0 && (
-                     <div className="blankSpace">
-                        Drop cards here to add them to this group
-                     </div>
-                  )}
-                  {linkElements}
-                  {provided.placeholder}
-               </StyledCardList>
-            )}
-         </Droppable>
+         {showingCards && (
+            <Droppable
+               droppableId={id}
+               isDropDisabled={!canEdit}
+               key={id}
+               type="card"
+            >
+               {provided => (
+                  <StyledCardList
+                     className="droppableWrapper"
+                     ref={provided.innerRef}
+                     key={id}
+                     {...provided.droppableProps}
+                  >
+                     {linkElements.length === 0 && (
+                        <div className="blankSpace">
+                           Drop cards here to add them to this group
+                        </div>
+                     )}
+                     {linkElements}
+                     {provided.placeholder}
+                  </StyledCardList>
+               )}
+            </Droppable>
+         )}
          {canEdit && (
             <footer className="collectionsGroupFooter">
                {!searchingThings && (

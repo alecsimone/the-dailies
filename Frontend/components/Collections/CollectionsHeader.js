@@ -107,12 +107,14 @@ const CollectionsHeader = ({
                destination.query = {
                   id: data.deleteCollection.lastActiveCollection.id
                };
-            }
-
-            if (
-               router?.query?.id !==
-               data.deleteCollection.lastActiveCollection.id
-            ) {
+               if (
+                  router?.query.id != null &&
+                  router?.query?.id !==
+                     data.deleteCollection.lastActiveCollection.id
+               ) {
+                  router.push(destination);
+               }
+            } else {
                router.push(destination);
             }
          }
@@ -121,7 +123,7 @@ const CollectionsHeader = ({
 
    const collectionsOptions = allCollections.map(collectionObj => (
       <option value={collectionObj.id} key={collectionObj.id}>
-         {collectionObj.title}
+         {collectionObj.id === id ? collectionTitle : collectionObj.title}
       </option>
    ));
 
@@ -136,7 +138,7 @@ const CollectionsHeader = ({
                      collectionID: e.target.value
                   }
                });
-               Router.push({
+               router.push({
                   pathname: '/collections',
                   query: {
                      id: e.target.value
@@ -239,7 +241,18 @@ const CollectionsHeader = ({
                value={collectionTitle}
                onChange={e => {
                   setCollectionTitle(e.target.value);
-                  if (e.target.value.trim() === '') return;
+               }}
+               onKeyDown={e => {
+                  if (e.key === 'Enter') {
+                     collectionTitleRef.current.blur();
+                  }
+               }}
+               onBlur={e => {
+                  if (e.target.value.trim() === '') {
+                     e.preventDefault();
+                     alert('Please enter a name for this collection');
+                     return;
+                  }
                   renameCollection({
                      variables: {
                         collectionID: id,
@@ -254,17 +267,6 @@ const CollectionsHeader = ({
                         }
                      }
                   });
-               }}
-               onKeyDown={e => {
-                  if (e.key === 'Enter') {
-                     collectionTitleRef.current.blur();
-                  }
-               }}
-               onBlur={e => {
-                  if (e.target.value.trim() === '') {
-                     e.preventDefault();
-                     alert('Please enter a name for this collection');
-                  }
                }}
             />
          )}

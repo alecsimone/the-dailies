@@ -358,8 +358,6 @@ const StyledFlexibleThingCard = styled.article`
                   /* margin: 0; */
                }
                &.arrow {
-                  width: ${props => props.theme.bigText};
-                  height: auto;
                   opacity: 0.4;
                   &:hover {
                      opacity: 0.75;

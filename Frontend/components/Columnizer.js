@@ -84,11 +84,14 @@ const Columnizer = ({ items, columnOrders, draggingGroup, canEdit }) => {
          const shortestColumnIndex = necessaryOrders.findIndex(
             columnData => columnData.id === shortestColumnID
          );
-         necessaryOrders[shortestColumnIndex].order.push(item);
+         if (shortestColumnIndex === -1) {
+            necessaryOrders[0].order.push(item);
+         } else {
+            necessaryOrders[shortestColumnIndex].order.push(item);
+         }
       });
    }
 
-   console.log(columnCount);
    const columns = necessaryOrders.map((columnOrderObj, index) => (
       <div
          id={`id-${columnOrderObj.id}`}

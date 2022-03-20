@@ -279,21 +279,19 @@ const StyledGroup = styled.div`
       .buttons {
          display: flex;
          align-items: center;
-         button {
-            padding: 0.5rem 1rem;
-            font-size: ${props => props.theme.smallText};
-            border-radius: 6px;
-         }
-         svg.x {
+         svg {
             cursor: pointer;
-            height: calc(${props => props.theme.smallText} + 1rem);
-            opacity: 0.6;
+            height: ${props => props.theme.smallText};
+            opacity: 0.4;
             transition: all 0.2s;
+            flex-grow: 1;
             &:hover {
-               opacity: 1;
+               opacity: 0.8;
                transform: scale(1.1);
             }
-            margin-left: 2rem;
+            &:last-child {
+               margin-left: 2rem;
+            }
          }
       }
    }
@@ -307,7 +305,10 @@ const StyledGroup = styled.div`
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 2rem;
+      margin: 1.5rem 0 2rem;
+      ${props => props.theme.mobileBreakpoint} {
+         margin-top: 0;
+      }
       .thingSearchInput {
          width: 40rem;
          position: relative;
@@ -369,7 +370,9 @@ const StyledGroup = styled.div`
 export { StyledGroup };
 
 const StyledCard = styled.div`
-   margin-bottom: 2rem;
+   ${props => props.theme.mobileBreakpoint} {
+      margin-bottom: 2rem;
+   }
    background: ${props => props.theme.midBlack};
    width: 100%;
    article {
@@ -409,12 +412,11 @@ const StyledCard = styled.div`
       }
       align-items: center;
       font-size: ${props => props.theme.miniText};
-      padding: 1rem;
+      padding: 1.5rem 1rem;
       line-height: 1;
       svg.x {
-         height: ${props => props.theme.smallHead};
+         height: ${props => props.theme.smallText};
          opacity: 0.4;
-         padding: 0.5rem;
          cursor: pointer;
          &:hover {
             opacity: 0.8;
