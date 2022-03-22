@@ -204,7 +204,7 @@ async function properUpdateStuff(dataObj, id, type, ctx) {
       dataObj.content != null ||
       dataObj.copiedInContent != null ||
       dataObj.contentOrder != null ||
-      dataObj.partOfTags != null ||
+      dataObj.partOfTags != null
    ) {
       const now = new Date();
       const newUpdatedAt = now.toISOString();
