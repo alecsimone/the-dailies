@@ -66,10 +66,10 @@ const GET_RELATIONS_QUERY = gql`
          __typename
          id
          subject {
-            ${fullThingFields}
+            id
          }
          object {
-            ${fullThingFields}
+            id
          }
          relationship
          strength

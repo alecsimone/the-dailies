@@ -78,7 +78,7 @@ function createClient({ headers, initialState }) {
    );
 
    return new ApolloClient({
-      ssrMode: false,
+      ssrMode: typeof window === 'undefined', // got this fromt his random github issues response: https://github.com/apollographql/react-apollo/issues/3500#issuecomment-537542683
       link: ApolloLink.from([
          onError(({ graphQLErrors, networkError }) => {
             if (graphQLErrors)

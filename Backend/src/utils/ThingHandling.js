@@ -202,14 +202,9 @@ async function properUpdateStuff(dataObj, id, type, ctx) {
    if (
       dataObj.title != null ||
       dataObj.content != null ||
-      dataObj.featuredImage != null ||
       dataObj.copiedInContent != null ||
       dataObj.contentOrder != null ||
       dataObj.partOfTags != null ||
-      dataObj.color != null ||
-      dataObj.comments != null ||
-      dataObj.privacy != null ||
-      dataObj.individualViewPermissions != null
    ) {
       const now = new Date();
       const newUpdatedAt = now.toISOString();
@@ -296,6 +291,7 @@ const canSeeThing = async (ctx, thingData) => {
          (thingData.author.friends == null ||
             thingData.author.friends.some(friend => friend.friend == null)))
    ) {
+      console.log('we need more data');
       const queriedData = await ctx.db.query.thing(
          {
             where: {
@@ -769,12 +765,15 @@ const supplementFilteredQuery = async (
 
    // We're going to keep getting more items until we get the number we need or until we run out of items
    while (supplementaryItems.length < itemsToSupplementCount && !noMoreItems) {
+      // console.log('supplement lap');
       // First we need to add our cursor to the query
       queryObject.where.AND.push({
          [cursorType]: newCursor
       });
       // Then we need to update the query so it only asks for the number of items we still need
       queryObject.first -= supplementaryItems.length;
+      // But to make sure we don't have to run this query a bunch of times, we're going to quadruple that
+      queryObject.first *= 4;
 
       // we'll get as many new items as we still need to complete our count
       const newItems = await ctx.db.query[queryType](queryObject, queryFields);
@@ -798,6 +797,9 @@ const supplementFilteredQuery = async (
 
       newCursor = newItems[newItems.length - 1][cursorPropertyname];
    }
+   // Then we just trim down our supplementary items to the required number, in case we got too many
+   supplementaryItems = supplementaryItems.slice(0, itemsToSupplementCount);
+
    return supplementaryItems;
 };
 exports.supplementFilteredQuery = supplementFilteredQuery;

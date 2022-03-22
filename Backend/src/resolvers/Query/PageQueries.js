@@ -3,7 +3,8 @@ const { loggedInGate, fullMemberGate } = require('../../utils/Authentication');
 const {
    fullThingFields,
    fullCollectionFields,
-   fullPersonalLinkFields
+   fullPersonalLinkFields,
+   contentPieceFields
 } = require('../../utils/CardInterfaces');
 const { getRandomString } = require('../../utils/TextHandling');
 const {
@@ -616,6 +617,7 @@ async function getRelationsForThing(
    ctx,
    info
 ) {
+   // const start = new Date();
    // First we need to make sure the current user has permission to view this thing
    await canSeeThingGate({ id: thingID }, ctx);
 
@@ -627,7 +629,66 @@ async function getRelationsForThing(
             id: thingID
          }
       },
-      `{${fullThingFields}}`
+      `{
+         id
+         title
+         author {
+            id
+            displayName
+            createdThings(first: ${totalCount}, orderBy: manualUpdatedAt_DESC) {
+               id
+               author {
+                  id
+                  friends {
+                     id
+                     friends {
+                        id
+                     }
+                  }
+               }
+               individualViewPermissions {
+                  id
+               }
+               privacy
+            }
+         }
+         partOfTags {
+            id
+            title
+            connectedThings(first: ${totalCount}, orderBy: manualUpdatedAt_DESC) {
+               id
+               author {
+                  id
+                  friends {
+                     id
+                     friends {
+                        id
+                     }
+                  }
+               }
+               individualViewPermissions {
+                  id
+               }
+               privacy
+            }
+         }
+         copiedInContent {
+            content
+         }
+         content {
+            content
+         }
+         subjectConnections {
+            object {
+               id
+            }
+         }
+         objectConnections {
+            subject {
+               id
+            }
+         }
+      }`
    );
 
    const individualCount = Math.floor(
@@ -640,19 +701,7 @@ async function getRelationsForThing(
    );
    const contentLinkIDs = getLinksFromContent(fullContent);
 
-   // Then we want to get the most recent things by the author of the thing
-   const authorThings = await ctx.db.query.things(
-      {
-         where: {
-            author: {
-               id: theThingToRelate.author.id
-            }
-         },
-         first: individualCount,
-         orderBy: 'manualUpdatedAt_DESC'
-      },
-      `{${fullThingFields}}`
-   );
+   const authorThings = theThingToRelate.author.createdThings;
 
    const authorFilterFunction = async authorThing => {
       if (await canSeeThing(ctx, authorThing)) {
@@ -720,57 +769,55 @@ async function getRelationsForThing(
       );
 
       safeAuthorThings = safeAuthorThings.concat(supplementaryThings);
+   } else if (safeAuthorThings.length > individualCount) {
+      safeAuthorThings = safeAuthorThings.slice(0, individualCount);
    }
 
    // And the most recent things for each tag on the thing
-   // First let's make arrays for the tags we're going to get things from and the things we've already used that we're going to filter out
-   const tagIDs = theThingToRelate.partOfTags.map(tag => tag.id);
    let alreadyRelatedThingIDs = safeAuthorThings.map(thing => thing.id);
    alreadyRelatedThingIDs.push(thingID);
 
-   const tagObjects = [];
-   for (const tagID of tagIDs) {
-      const tagThings = await ctx.db.query.things(
-         {
-            where: {
-               partOfTags_some: {
-                  id: tagID
-               }
-            },
-            first: individualCount,
-            orderBy: 'manualUpdatedAt_DESC'
-         },
-         `{${fullThingFields}}`
-      );
+   const tags = theThingToRelate.partOfTags;
 
-      const tagFilterFunction = async tagThing => {
-         if (await canSeeThing(ctx, tagThing)) {
-            // We don't want to let the thing through if it's the original thing or one of our author things
-            if (alreadyRelatedThingIDs.includes(tagThing.id)) return false;
-
-            // We also don't want to let it through if it's already connected to the thing
-            let isAlreadyConnected = false;
-            theThingToRelate.subjectConnections.forEach(connection => {
-               if (connection.object.id === tagThing.id)
-                  isAlreadyConnected = true;
-            });
-            if (isAlreadyConnected) return false;
-
-            theThingToRelate.objectConnections.forEach(connection => {
-               if (connection.subject.id === tagThing.id)
-                  isAlreadyConnected = true;
-            });
-            if (isAlreadyConnected) return false;
-
-            // Nor do we want to let it through if it's linked in the thing
-            if (contentLinkIDs.includes(tagThing.id)) return false;
-
-            // If we don't have any reason not to let it through, then we let it through
-            return true;
+   const tagFilterFunction = async tagThing => {
+      if (await canSeeThing(ctx, tagThing)) {
+         // We don't want to let the thing through if it's the original thing or one of our author things
+         if (alreadyRelatedThingIDs.includes(tagThing.id)) {
+            return false;
          }
-         // If they can't see the thing, don't let it through
-         return false;
-      };
+
+         // We also don't want to let it through if it's already connected to the thing
+         let isAlreadyConnected = false;
+         theThingToRelate.subjectConnections.forEach(connection => {
+            if (connection.object.id === tagThing.id) isAlreadyConnected = true;
+         });
+         if (isAlreadyConnected) {
+            return false;
+         }
+
+         theThingToRelate.objectConnections.forEach(connection => {
+            if (connection.subject.id === tagThing.id)
+               isAlreadyConnected = true;
+         });
+         if (isAlreadyConnected) {
+            return false;
+         }
+
+         // Nor do we want to let it through if it's linked in the thing
+         if (contentLinkIDs.includes(tagThing.id)) {
+            return false;
+         }
+
+         // If we don't have any reason not to let it through, then we let it through
+         return true;
+      }
+      // If they can't see the thing, don't let it through
+      return false;
+   };
+
+   const tagObjects = [];
+   for (const tag of tags) {
+      const tagThings = tag.connectedThings;
 
       let safeTagThings = [];
       for (const tagThing of tagThings) {
@@ -786,7 +833,7 @@ async function getRelationsForThing(
                AND: [
                   {
                      partOfTags_some: {
-                        id: tagID
+                        id: tag.id
                      }
                   }
                ]
@@ -808,7 +855,13 @@ async function getRelationsForThing(
          );
 
          safeTagThings = safeTagThings.concat(supplementaryThings);
-         tagObjects.push({ tagID, things: safeTagThings });
+         tagObjects.push({ tagID: tag.id, things: safeTagThings });
+
+         const newUsedThings = safeTagThings.map(tagThing => tagThing.id);
+         alreadyRelatedThingIDs = alreadyRelatedThingIDs.concat(newUsedThings);
+      } else {
+         safeTagThings = safeTagThings.slice(0, individualCount);
+         tagObjects.push({ tagID: tag.id, things: safeTagThings });
 
          const newUsedThings = safeTagThings.map(tagThing => tagThing.id);
          alreadyRelatedThingIDs = alreadyRelatedThingIDs.concat(newUsedThings);
@@ -841,9 +894,11 @@ async function getRelationsForThing(
          }
       }`
    );
+
    const inCollectionGroupWithThings = [];
    const inGroups = [];
    const inCollectionWithThings = [];
+
    collectionLinks.forEach(collectionLinkObj => {
       if (collectionLinkObj == null) return;
       if (collectionLinkObj.inCollectionGroups == null) return;
@@ -921,38 +976,38 @@ async function getRelationsForThing(
       return false;
    };
 
+   const masterCollectionThingIDsArray = inCollectionGroupWithThings.concat(
+      inCollectionWithThings
+   );
+   const masterCollectionThingsArray = await ctx.db.query.things(
+      {
+         where: {
+            id_in: masterCollectionThingIDsArray
+         }
+      },
+      `{${fullThingFields}}`
+   );
+
    const safeGroupThings = [];
    for (const groupThingID of inCollectionGroupWithThings) {
-      if (await groupFilterFunction({ id: groupThingID })) {
-         const groupThingData = await ctx.db.query.thing(
-            {
-               where: {
-                  id: groupThingID
-               }
-            },
-            `{${fullThingFields}}`
-         );
-
+      const groupThingData = masterCollectionThingsArray.find(
+         thingObj => thingObj.id === groupThingID
+      );
+      if (await groupFilterFunction(groupThingData)) {
          safeGroupThings.push(groupThingData);
-         alreadyRelatedThingIDs.push(groupThingID.id);
+         alreadyRelatedThingIDs.push(groupThingID);
       }
    }
    const trimmedGroupThings = safeGroupThings.slice(0, individualCount);
 
    const safeCollectionThings = [];
    for (const collectionThingID of inCollectionWithThings) {
-      if (await groupFilterFunction({ id: collectionThingID })) {
-         const collectionThingData = await ctx.db.query.thing(
-            {
-               where: {
-                  id: collectionThingID
-               }
-            },
-            `{${fullThingFields}}`
-         );
-
+      const collectionThingData = masterCollectionThingsArray.find(
+         thingObj => thingObj.id === collectionThingID
+      );
+      if (await groupFilterFunction(collectionThingData)) {
          safeCollectionThings.push(collectionThingData);
-         alreadyRelatedThingIDs.push(collectionThingID.id);
+         alreadyRelatedThingIDs.push(collectionThingID);
       }
    }
    const trimmedCollectionThings = safeCollectionThings.slice(
@@ -1022,6 +1077,8 @@ async function getRelationsForThing(
       relationsArray.push(relation);
    }
 
+   // const end = new Date();
+   // console.log(`end: ${(end.getTime() - start.getTime()) / 1000}`);
    return relationsArray;
 }
 exports.getRelationsForThing = getRelationsForThing;
