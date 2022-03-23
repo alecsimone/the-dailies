@@ -5,6 +5,7 @@ import { getRandomString } from '../../lib/TextHandling';
 import useMe from '../Account/useMe';
 import { getColumnCount } from '../Columnizer';
 import LockIcon from '../Icons/Lock';
+import HamburgerIcon from '../Icons/Hamburger';
 import PrivacyInterface from '../ThingParts/PrivacyInterface';
 import AddCollectionButton from './AddCollectionButton';
 import { getShortestColumnIndex } from './CollectionBody';
@@ -58,6 +59,7 @@ const CollectionsHeader = ({
    const [collectionTitle, setCollectionTitle] = useState(
       activeCollection.title
    );
+   const [showingOptions, setShowingOptions] = useState(false);
 
    const [showingPrivacyInterface, setShowingPrivacyInterface] = useState(
       false
@@ -229,52 +231,62 @@ const CollectionsHeader = ({
 
    return (
       <header>
-         {!canEdit && <h3 className="collectionTitle">{collectionTitle}</h3>}
-         {canEdit && (
-            <input
-               type="text"
-               className="collectionTitle"
-               ref={collectionTitleRef}
-               value={collectionTitle}
-               onChange={e => {
-                  setCollectionTitle(e.target.value);
-               }}
-               onKeyDown={e => {
-                  if (e.key === 'Enter') {
-                     collectionTitleRef.current.blur();
-                  }
-               }}
-               onBlur={e => {
-                  if (e.target.value.trim() === '') {
-                     e.preventDefault();
-                     alert('Please enter a name for this collection');
-                     return;
-                  }
-                  renameCollection({
-                     variables: {
-                        collectionID: id,
-                        newTitle: e.target.value
-                     },
-                     optimisticResponse: {
-                        __typename: 'Mutation',
-                        renameCollection: {
-                           __typename: 'Collection',
-                           id,
-                           title: e.target.value
-                        }
+         <div className="top">
+            {!canEdit && <h3 className="collectionTitle">{collectionTitle}</h3>}
+            {canEdit && (
+               <input
+                  type="text"
+                  className="collectionTitle"
+                  ref={collectionTitleRef}
+                  value={collectionTitle}
+                  onChange={e => {
+                     setCollectionTitle(e.target.value);
+                  }}
+                  onKeyDown={e => {
+                     if (e.key === 'Enter') {
+                        collectionTitleRef.current.blur();
                      }
-                  });
-               }}
+                  }}
+                  onBlur={e => {
+                     if (e.target.value.trim() === '') {
+                        e.preventDefault();
+                        alert('Please enter a name for this collection');
+                        return;
+                     }
+                     renameCollection({
+                        variables: {
+                           collectionID: id,
+                           newTitle: e.target.value
+                        },
+                        optimisticResponse: {
+                           __typename: 'Mutation',
+                           renameCollection: {
+                              __typename: 'Collection',
+                              id,
+                              title: e.target.value
+                           }
+                        }
+                     });
+                  }}
+               />
+            )}
+            <HamburgerIcon
+               className={showingOptions ? 'showing' : 'hidden'}
+               onClick={() => setShowingOptions(!showingOptions)}
             />
-         )}
-         <div className="headerOptions">
+         </div>
+         <div
+            className={
+               showingOptions ? 'headerOptions showing' : 'headerOptions hidden'
+            }
+         >
             <div className="left">
                {collectionSelector}
                {/* <input
                   type="text"
                   placeholder="Filter Things"
                   onChange={e => setThingFilterString(e.target.value)}
-            /> */}
+               /> */}
             </div>
             <div className="headerButtons">
                <AddCollectionButton />

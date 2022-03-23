@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { setAlpha, setSaturation } from '../../styles/functions';
+import { setAlpha, setLightness, setSaturation } from '../../styles/functions';
 
 const StyledNoCollections = styled.section`
    margin-top: 6rem;
@@ -38,19 +38,40 @@ const StyledCollection = styled.section`
       ${props => props.theme.mobileBreakpoint} {
          padding: 0;
       }
-      input.collectionTitle,
-      h3.collectionTitle {
-         display: block;
-         text-align: center;
-         border: none;
-         margin: 2rem auto calc(1.5rem + 1px);
-         font-size: ${props => props.theme.smallHead};
-         font-weight: bold;
-         max-width: 100%;
-         &:focus {
-            border-bottom: 1px solid ${props => props.theme.mainText};
-            outline: none;
-            margin-bottom: 1.5rem;
+      .top {
+         display: flex;
+         align-items: center;
+         input.collectionTitle,
+         h3.collectionTitle {
+            display: block;
+            text-align: center;
+            border: none;
+            margin: 2rem auto calc(1.5rem + 1px);
+            font-size: ${props => props.theme.smallHead};
+            font-weight: bold;
+            max-width: 100%;
+            min-width: 0;
+            flex-shrink: 1;
+            &:focus {
+               border-bottom: 1px solid ${props => props.theme.mainText};
+               outline: none;
+               margin-bottom: 1.5rem;
+            }
+         }
+         svg {
+            height: ${props => props.theme.smallHead};
+            background: ${props => setAlpha(props.theme.lightBlack, 0.8)};
+            border: 1px solid ${props => setAlpha(props.theme.mainText, 0.25)};
+            padding: 0.75rem;
+            border-radius: 3px;
+            cursor: pointer;
+            flex-shrink: 0;
+            ${props => props.theme.desktopBreakpoint} {
+               display: none;
+            }
+            &.showing {
+               background: ${props => setAlpha(props.theme.lightBlack, 0.6)};
+            }
          }
       }
       .headerOptions {
@@ -61,6 +82,12 @@ const StyledCollection = styled.section`
          flex-wrap: wrap;
          ${props => props.theme.mobileBreakpoint} {
             flex-wrap: nowrap;
+         }
+         &.hidden {
+            display: none;
+            ${props => props.theme.desktopBreakpoint} {
+               display: flex;
+            }
          }
          .left {
             display: flex;
@@ -92,6 +119,7 @@ const StyledCollection = styled.section`
          .headerButtons {
             display: flex;
             align-items: center;
+            justify-content: end;
             > * {
                background: ${props => setAlpha(props.theme.lightBlack, 0.8)};
                border: 1px solid
@@ -130,7 +158,10 @@ const StyledCollection = styled.section`
          z-index: 2;
          right: 0;
          width: 60rem;
-         max-width: 40%;
+         max-width: 100%;
+         ${props => props.theme.desktopBreakpoint} {
+            max-width: 40%;
+         }
          .privacyInterface {
             width: 100%;
             display: inline-block;
