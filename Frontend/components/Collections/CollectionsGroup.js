@@ -175,6 +175,10 @@ const CollectionsGroup = ({
                         e.preventDefault();
                         titleRef.current.blur();
                      }
+                     if (e.key === 'Escape') {
+                        setGroupTitle(title);
+                        titleRef.current.blur();
+                     }
                   }}
                />
             )}

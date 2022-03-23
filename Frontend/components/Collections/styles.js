@@ -292,9 +292,9 @@ const StyledGroup = styled.div`
          border: none;
          margin: 0;
          &:focus {
-            border-bottom: 1px solid ${props => props.theme.mainText};
+            border: none;
             outline: none;
-            margin-bottom: 1.5rem;
+            box-shadow: none;
          }
       }
       .buttons {

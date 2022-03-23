@@ -270,11 +270,11 @@ const CollectionsHeader = ({
          <div className="headerOptions">
             <div className="left">
                {collectionSelector}
-               <input
+               {/* <input
                   type="text"
                   placeholder="Filter Things"
                   onChange={e => setThingFilterString(e.target.value)}
-               />
+            /> */}
             </div>
             <div className="headerButtons">
                <AddCollectionButton />
