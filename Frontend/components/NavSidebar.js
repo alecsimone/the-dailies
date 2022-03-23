@@ -159,7 +159,7 @@ const StyledNavSidebar = styled.section`
       display: none;
       ${props => props.theme.desktopBreakpoint} {
          display: inline-block;
-         height: ${props => props.theme.smallHead};
+         height: ${props => props.theme.bigText};
          position: absolute;
          right: 1rem;
          bottom: 1rem;
