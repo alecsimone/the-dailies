@@ -189,6 +189,7 @@ type CollectionGroup {
 type ColumnOrder {
    id: ID! @id @unique
    order: [String] @scalarList(strategy: RELATION)
+   inCollection: Collection  @relation(name: "ManualColumnOrders")
 }
 
 type TagOrder {

@@ -52,6 +52,15 @@ const DragAndDropProvider = ({ children }) => {
    );
 
    const dragEndHelper = ({ source, destination, draggableId, type }) => {
+      if (type === 'group') {
+         const allColumns = document.querySelectorAll(
+            '.collectionBody .column'
+         );
+         allColumns.forEach(column => {
+            column.classList.remove('dragging');
+         });
+      }
+
       const dashLocation = draggableId.lastIndexOf('-');
       const itemID = draggableId.substring(dashLocation + 1);
 
@@ -368,31 +377,42 @@ const DragAndDropProvider = ({ children }) => {
                id: `CollectionGroup:${groupID}`,
                fragment: gql`
                   fragment GroupToMove on CollectionGroup {
-                     ${collectionGroupFields}
-                  }`
+                     inCollection {
+                        id
+                     }
+                  }
+               `
+            });
+            const collectionID = groupObj.inCollection.id;
+
+            const collectionData = client.readFragment({
+               id: `Collection:${collectionID}`,
+               fragment: gql`
+                  fragment CollectionToMoveOn on Collection {
+                     __typename
+                     id
+                     columnOrders {
+                        __typename
+                        id
+                        order
+                     }
+                  }
+               `
             });
 
             const sourceColumnID = source.droppableId;
-            const sourceOrderObj = client.readFragment({
-               id: `ColumnOrder:${sourceColumnID}`,
-               fragment: gql`
-                  fragment SourceColumnForMoveGroup on ColumnOrder {
-                     id
-                     order
-                  }
-               `
-            });
+            const sourceOrderIndex = collectionData.columnOrders.findIndex(
+               orderObj => orderObj.id === sourceColumnID
+            );
+            const sourceOrderObj =
+               collectionData.columnOrders[sourceOrderIndex];
 
             const destinationColumnID = destination.droppableId;
-            const destinationOrderObj = client.readFragment({
-               id: `ColumnOrder:${destinationColumnID}`,
-               fragment: gql`
-                  fragment SourceColumnForMoveGroup on ColumnOrder {
-                     id
-                     order
-                  }
-               `
-            });
+            const destinationOrderIndex = collectionData.columnOrders.findIndex(
+               orderObj => orderObj.id === destinationColumnID
+            );
+            const destinationOrderObj =
+               collectionData.columnOrders[destinationOrderIndex];
 
             const variables = {
                groupID,
@@ -403,7 +423,7 @@ const DragAndDropProvider = ({ children }) => {
 
             const optimisticResponse = {
                __typename: 'Mutation',
-               moveGroupToColumn: []
+               moveGroupToColumn: collectionData
             };
 
             const newSourceOrderObj = JSON.parse(
@@ -412,13 +432,40 @@ const DragAndDropProvider = ({ children }) => {
             newSourceOrderObj.order = newSourceOrderObj.order.filter(
                existingID => existingID !== groupID
             );
-            optimisticResponse.moveGroupToColumn.push(newSourceOrderObj);
+            if (newSourceOrderObj.order.length === 0) {
+               optimisticResponse.moveGroupToColumn.columnOrders.splice(
+                  sourceOrderIndex,
+                  1
+               );
+            } else {
+               optimisticResponse.moveGroupToColumn.columnOrders[
+                  sourceOrderIndex
+               ] = newSourceOrderObj;
+            }
 
-            const newDestinationOrderObj = JSON.parse(
-               JSON.stringify(destinationOrderObj)
-            );
-            newDestinationOrderObj.order.splice(destination.index, 0, groupID);
-            optimisticResponse.moveGroupToColumn.push(newDestinationOrderObj);
+            let newDestinationOrderObj;
+            if (destination.droppableId === 'blankColumn') {
+               newDestinationOrderObj = {
+                  __typename: 'ColumnOrder',
+                  id: getRandomString(16),
+                  order: [groupID]
+               };
+               optimisticResponse.moveGroupToColumn.columnOrders.push(
+                  newDestinationOrderObj
+               );
+            } else {
+               newDestinationOrderObj = JSON.parse(
+                  JSON.stringify(destinationOrderObj)
+               );
+               newDestinationOrderObj.order.splice(
+                  destination.index,
+                  0,
+                  groupID
+               );
+               optimisticResponse.moveGroupToColumn.columnOrders[
+                  destinationOrderIndex
+               ] = newDestinationOrderObj;
+            }
 
             moveGroupToColumn({
                variables,
@@ -430,8 +477,21 @@ const DragAndDropProvider = ({ children }) => {
       }
    };
 
+   const dragStartHelper = ({ source, type, draggableId, mode }) => {
+      if (type === 'group') {
+         const allColumns = document.querySelectorAll(
+            '.collectionBody .column'
+         );
+         allColumns.forEach(column => {
+            column.classList.add('dragging');
+         });
+      }
+   };
+
    return (
-      <DragDropContext onDragEnd={dragEndHelper}>{children}</DragDropContext>
+      <DragDropContext onDragEnd={dragEndHelper} onDragStart={dragStartHelper}>
+         {children}
+      </DragDropContext>
    );
 };
 

@@ -99,7 +99,7 @@ type Mutation {
   removeLinkFromCollectionGroup(linkID: ID!, groupID: ID!): CollectionGroup
   reorderGroups(groupOneID: ID, newOrderOne: [String!], groupTwoID: ID, newOrderTwo: [String!]): [CollectionGroup!]
   moveCardToGroup(linkID: ID!, cardType: String, sourceGroupID: ID, destinationGroupID: ID, newPosition: Int): [CollectionGroup!]
-  moveGroupToColumn(groupID: ID!, sourceColumnID: ID, destinationColumnID: ID, newPosition: Int): [ColumnOrder!]
+  moveGroupToColumn(groupID: ID!, sourceColumnID: ID, destinationColumnID: ID, newPosition: Int): Collection
   reorderGroup(groupID: ID!, linkID: ID!, newPosition: Int!): CollectionGroup
   reorderColumn(columnID: ID!, groupID: ID!, newPosition: Int!): ColumnOrder
   addNoteToGroup(groupID: ID!, position: Int): CollectionGroup

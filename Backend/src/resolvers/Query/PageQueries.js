@@ -533,6 +533,66 @@ async function search(
 }
 exports.search = search;
 
+async function ensureColumnsAreOrdered(collectionObj, ctx) {
+   const { userGroups, columnOrders } = collectionObj;
+
+   let hasUnorderedGroups = false;
+   const newOrder = [];
+   userGroups.forEach(groupObj => {
+      let groupIsOrdered = false;
+      columnOrders.forEach(orderObj => {
+         if (groupIsOrdered) return;
+         if (orderObj.order.includes(groupObj.id)) {
+            groupIsOrdered = true;
+         }
+      });
+      if (!groupIsOrdered) {
+         hasUnorderedGroups = true;
+         if (columnOrders.length > 0) {
+            columnOrders[0].order.push(groupObj.id);
+         } else {
+            newOrder.push(groupObj.id);
+         }
+      }
+   });
+   if (!hasUnorderedGroups) return collectionObj;
+
+   let newCollectionObj;
+   if (newOrder.length > 0) {
+      newCollectionObj = await ctx.db.mutation.updateCollection(
+         {
+            where: {
+               id: collectionObj.id
+            },
+            data: {
+               columnOrders: {
+                  create: {
+                     order: {
+                        set: newOrder
+                     }
+                  }
+               }
+            }
+         },
+         `{${fullCollectionFields}}`
+      );
+   } else {
+      newCollectionObj = collectionObj;
+      await ctx.db.mutation.updateColumnOrder({
+         where: {
+            id: columnOrders[0].id
+         },
+         data: {
+            order: {
+               set: columnOrders[0].order
+            }
+         }
+      });
+   }
+
+   return newCollectionObj;
+}
+
 async function getCollections(parent, args, ctx, info) {
    await loggedInGate(ctx).catch(() => {
       throw new AuthenticationError('You must be logged in to do that!');
@@ -579,6 +639,11 @@ async function getCollections(parent, args, ctx, info) {
       return updatedMember;
    }
 
+   myCollections.lastActiveCollection = ensureColumnsAreOrdered(
+      myCollections.lastActiveCollection,
+      ctx
+   );
+
    return myCollections;
 }
 exports.getCollections = getCollections;
@@ -598,7 +663,7 @@ async function getCollection(parent, { id }, ctx, info) {
       );
    }
 
-   const collectionData = await ctx.db.query.collection(
+   let collectionData = await ctx.db.query.collection(
       {
          where: {
             id
@@ -606,6 +671,8 @@ async function getCollection(parent, { id }, ctx, info) {
       },
       `{${fullCollectionFields}}`
    );
+
+   collectionData = ensureColumnsAreOrdered(collectionData, ctx);
 
    return collectionData;
 }

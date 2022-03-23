@@ -231,7 +231,11 @@ const MOVE_GROUP_TO_COLUMN_MUTATION = gql`
       ) {
          __typename
          id
-         order
+         columnOrders {
+            __typename
+            id
+            order
+         }
       }
    }
 `;

@@ -539,15 +539,43 @@ async function deleteGroupFromCollection(
    };
 
    // Then we update the collection
-   const updatedCollection = await ctx.db.mutation.updateCollection(
+   let updatedCollection = await ctx.db.mutation.updateCollection(
       {
          where: {
             id: collectionID
          },
          data
       },
-      `{id userGroups {${collectionGroupFields}}}`
+      `{id columnOrders {id order} userGroups {${collectionGroupFields}}}`
    );
+
+   // We need to delete any blank column orders at the end of the array of column orders so we don't have a bunch of blank columns at the end of our collection
+   const columnOrdersToDelete = [];
+   let i = updatedCollection.columnOrders.length - 1;
+   let collectionOrder = updatedCollection.columnOrders[i].order;
+   while (collectionOrder != null && collectionOrder.length === 0 && i > 0) {
+      collectionOrder = updatedCollection.columnOrders[i].order;
+      if (collectionOrder.length === 0) {
+         columnOrdersToDelete.push(updatedCollection.columnOrders[i].id);
+      }
+
+      i -= 1;
+   }
+   if (columnOrdersToDelete.length > 0) {
+      await ctx.db.mutation.deleteManyColumnOrders({
+         where: {
+            id_in: columnOrdersToDelete
+         }
+      });
+      updatedCollection = await ctx.db.query.collection(
+         {
+            where: {
+               id: collectionID
+            }
+         },
+         info
+      );
+   }
 
    publishCollectionUpdate(collectionID, ctx);
    return updatedCollection;
@@ -1043,6 +1071,7 @@ async function moveGroupToColumn(
 
    const updatedColumnsArray = [];
 
+   let collectionID;
    if (sourceColumnID != null) {
       const oldSourceOrderData = await ctx.db.query.columnOrder(
          {
@@ -1050,8 +1079,9 @@ async function moveGroupToColumn(
                id: sourceColumnID
             }
          },
-         `{order}`
+         `{order inCollection {id}}`
       );
+      collectionID = oldSourceOrderData.inCollection.id;
 
       const { order: sourceOrder } = oldSourceOrderData;
       const newSourceOrder = sourceOrder.filter(
@@ -1075,42 +1105,96 @@ async function moveGroupToColumn(
    }
 
    if (destinationColumnID != null) {
-      const oldDestinationOrderData = await ctx.db.query.columnOrder(
-         {
-            where: {
-               id: destinationColumnID
-            }
-         },
-         `{order}`
-      );
-
-      const { order: destinationOrder } = oldDestinationOrderData;
-      if (newPosition != null) {
-         destinationOrder.splice(newPosition, 0, groupID);
+      if (destinationColumnID === 'blankColumn') {
+         const newColumnOrder = await ctx.db.mutation.createColumnOrder(
+            {
+               data: {
+                  order: {
+                     set: [groupID]
+                  },
+                  inCollection: {
+                     connect: {
+                        id: collectionID
+                     }
+                  }
+               }
+            },
+            info
+         );
+         updatedColumnsArray.push(newColumnOrder);
       } else {
-         destinationOrder.push(groupID);
+         const oldDestinationOrderData = await ctx.db.query.columnOrder(
+            {
+               where: {
+                  id: destinationColumnID
+               }
+            },
+            `{order}`
+         );
+
+         const { order: destinationOrder } = oldDestinationOrderData;
+         if (newPosition != null) {
+            destinationOrder.splice(newPosition, 0, groupID);
+         } else {
+            destinationOrder.push(groupID);
+         }
+
+         const updatedDestinationOrder = await ctx.db.mutation.updateColumnOrder(
+            {
+               where: {
+                  id: destinationColumnID
+               },
+               data: {
+                  order: {
+                     set: destinationOrder
+                  }
+               }
+            },
+            info
+         );
+         updatedColumnsArray.push(updatedDestinationOrder);
+      }
+   }
+
+   let updatedCollection = await ctx.db.query.collection(
+      {
+         where: {
+            id: collectionID
+         }
+      },
+      info
+   );
+
+   // We need to delete any blank column orders at the end of the array of column orders so we don't have a bunch of blank columns at the end of our collection
+   const columnOrdersToDelete = [];
+   let i = updatedCollection.columnOrders.length - 1;
+   let collectionOrder = updatedCollection.columnOrders[i].order;
+   while (collectionOrder != null && collectionOrder.length === 0 && i > 0) {
+      collectionOrder = updatedCollection.columnOrders[i].order;
+      if (collectionOrder.length === 0) {
+         columnOrdersToDelete.push(updatedCollection.columnOrders[i].id);
       }
 
-      const updatedDestinationOrder = await ctx.db.mutation.updateColumnOrder(
+      i -= 1;
+   }
+   if (columnOrdersToDelete.length > 0) {
+      await ctx.db.mutation.deleteManyColumnOrders({
+         where: {
+            id_in: columnOrdersToDelete
+         }
+      });
+      updatedCollection = await ctx.db.query.collection(
          {
             where: {
-               id: destinationColumnID
-            },
-            data: {
-               order: {
-                  set: destinationOrder
-               }
+               id: collectionID
             }
          },
          info
       );
-      updatedColumnsArray.push(updatedDestinationOrder);
    }
-   findParentCollectionAndPublishUpdate(
-      { __typename: 'CollectionGroup', id: groupID },
-      ctx
-   );
-   return updatedColumnsArray;
+
+   publishCollectionUpdate(collectionID, ctx);
+   return updatedCollection;
 }
 exports.moveGroupToColumn = moveGroupToColumn;
 

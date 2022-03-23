@@ -125,7 +125,7 @@ input CollectionCreateInput {
   ungroupedThingsOrder: CollectionCreateungroupedThingsOrderInput
   tagOrders: TagOrderCreateManyWithoutForCollectionInput
   expandedCards: CollectionCreateexpandedCardsInput
-  columnOrders: ColumnOrderCreateManyInput
+  columnOrders: ColumnOrderCreateManyWithoutInCollectionInput
   tagColumnOrders: ColumnOrderCreateManyInput
   thingQueryCursor: String
 }
@@ -147,6 +147,11 @@ input CollectionCreateManyWithoutViewersInput {
 
 input CollectionCreateOneInput {
   create: CollectionCreateInput
+  connect: CollectionWhereUniqueInput
+}
+
+input CollectionCreateOneWithoutColumnOrdersInput {
+  create: CollectionCreateWithoutColumnOrdersInput
   connect: CollectionWhereUniqueInput
 }
 
@@ -178,7 +183,26 @@ input CollectionCreateWithoutAuthorInput {
   ungroupedThingsOrder: CollectionCreateungroupedThingsOrderInput
   tagOrders: TagOrderCreateManyWithoutForCollectionInput
   expandedCards: CollectionCreateexpandedCardsInput
-  columnOrders: ColumnOrderCreateManyInput
+  columnOrders: ColumnOrderCreateManyWithoutInCollectionInput
+  tagColumnOrders: ColumnOrderCreateManyInput
+  thingQueryCursor: String
+}
+
+input CollectionCreateWithoutColumnOrdersInput {
+  id: ID
+  title: String
+  author: MemberCreateOneWithoutCollectionsInput!
+  editors: MemberCreateManyWithoutCollectionsCanEditInput
+  viewers: MemberCreateManyWithoutCollectionsCanViewInput
+  privacy: PrivacySetting
+  filterString: String
+  hiddenThings: ThingCreateManyInput
+  hiddenTags: TagCreateManyInput
+  hiddenGroups: CollectionGroupCreateManyInput
+  userGroups: CollectionGroupCreateManyWithoutInCollectionInput
+  ungroupedThingsOrder: CollectionCreateungroupedThingsOrderInput
+  tagOrders: TagOrderCreateManyWithoutForCollectionInput
+  expandedCards: CollectionCreateexpandedCardsInput
   tagColumnOrders: ColumnOrderCreateManyInput
   thingQueryCursor: String
 }
@@ -197,7 +221,7 @@ input CollectionCreateWithoutEditorsInput {
   ungroupedThingsOrder: CollectionCreateungroupedThingsOrderInput
   tagOrders: TagOrderCreateManyWithoutForCollectionInput
   expandedCards: CollectionCreateexpandedCardsInput
-  columnOrders: ColumnOrderCreateManyInput
+  columnOrders: ColumnOrderCreateManyWithoutInCollectionInput
   tagColumnOrders: ColumnOrderCreateManyInput
   thingQueryCursor: String
 }
@@ -216,7 +240,7 @@ input CollectionCreateWithoutTagOrdersInput {
   userGroups: CollectionGroupCreateManyWithoutInCollectionInput
   ungroupedThingsOrder: CollectionCreateungroupedThingsOrderInput
   expandedCards: CollectionCreateexpandedCardsInput
-  columnOrders: ColumnOrderCreateManyInput
+  columnOrders: ColumnOrderCreateManyWithoutInCollectionInput
   tagColumnOrders: ColumnOrderCreateManyInput
   thingQueryCursor: String
 }
@@ -235,7 +259,7 @@ input CollectionCreateWithoutUserGroupsInput {
   ungroupedThingsOrder: CollectionCreateungroupedThingsOrderInput
   tagOrders: TagOrderCreateManyWithoutForCollectionInput
   expandedCards: CollectionCreateexpandedCardsInput
-  columnOrders: ColumnOrderCreateManyInput
+  columnOrders: ColumnOrderCreateManyWithoutInCollectionInput
   tagColumnOrders: ColumnOrderCreateManyInput
   thingQueryCursor: String
 }
@@ -254,7 +278,7 @@ input CollectionCreateWithoutViewersInput {
   ungroupedThingsOrder: CollectionCreateungroupedThingsOrderInput
   tagOrders: TagOrderCreateManyWithoutForCollectionInput
   expandedCards: CollectionCreateexpandedCardsInput
-  columnOrders: ColumnOrderCreateManyInput
+  columnOrders: ColumnOrderCreateManyWithoutInCollectionInput
   tagColumnOrders: ColumnOrderCreateManyInput
   thingQueryCursor: String
 }
@@ -773,7 +797,7 @@ input CollectionUpdateDataInput {
   ungroupedThingsOrder: CollectionUpdateungroupedThingsOrderInput
   tagOrders: TagOrderUpdateManyWithoutForCollectionInput
   expandedCards: CollectionUpdateexpandedCardsInput
-  columnOrders: ColumnOrderUpdateManyInput
+  columnOrders: ColumnOrderUpdateManyWithoutInCollectionInput
   tagColumnOrders: ColumnOrderUpdateManyInput
   thingQueryCursor: String
 }
@@ -796,7 +820,7 @@ input CollectionUpdateInput {
   ungroupedThingsOrder: CollectionUpdateungroupedThingsOrderInput
   tagOrders: TagOrderUpdateManyWithoutForCollectionInput
   expandedCards: CollectionUpdateexpandedCardsInput
-  columnOrders: ColumnOrderUpdateManyInput
+  columnOrders: ColumnOrderUpdateManyWithoutInCollectionInput
   tagColumnOrders: ColumnOrderUpdateManyInput
   thingQueryCursor: String
 }
@@ -869,6 +893,15 @@ input CollectionUpdateOneInput {
   connect: CollectionWhereUniqueInput
 }
 
+input CollectionUpdateOneWithoutColumnOrdersInput {
+  create: CollectionCreateWithoutColumnOrdersInput
+  update: CollectionUpdateWithoutColumnOrdersDataInput
+  upsert: CollectionUpsertWithoutColumnOrdersInput
+  delete: Boolean
+  disconnect: Boolean
+  connect: CollectionWhereUniqueInput
+}
+
 input CollectionUpdateOneWithoutTagOrdersInput {
   create: CollectionCreateWithoutTagOrdersInput
   update: CollectionUpdateWithoutTagOrdersDataInput
@@ -904,7 +937,25 @@ input CollectionUpdateWithoutAuthorDataInput {
   ungroupedThingsOrder: CollectionUpdateungroupedThingsOrderInput
   tagOrders: TagOrderUpdateManyWithoutForCollectionInput
   expandedCards: CollectionUpdateexpandedCardsInput
-  columnOrders: ColumnOrderUpdateManyInput
+  columnOrders: ColumnOrderUpdateManyWithoutInCollectionInput
+  tagColumnOrders: ColumnOrderUpdateManyInput
+  thingQueryCursor: String
+}
+
+input CollectionUpdateWithoutColumnOrdersDataInput {
+  title: String
+  author: MemberUpdateOneRequiredWithoutCollectionsInput
+  editors: MemberUpdateManyWithoutCollectionsCanEditInput
+  viewers: MemberUpdateManyWithoutCollectionsCanViewInput
+  privacy: PrivacySetting
+  filterString: String
+  hiddenThings: ThingUpdateManyInput
+  hiddenTags: TagUpdateManyInput
+  hiddenGroups: CollectionGroupUpdateManyInput
+  userGroups: CollectionGroupUpdateManyWithoutInCollectionInput
+  ungroupedThingsOrder: CollectionUpdateungroupedThingsOrderInput
+  tagOrders: TagOrderUpdateManyWithoutForCollectionInput
+  expandedCards: CollectionUpdateexpandedCardsInput
   tagColumnOrders: ColumnOrderUpdateManyInput
   thingQueryCursor: String
 }
@@ -922,7 +973,7 @@ input CollectionUpdateWithoutEditorsDataInput {
   ungroupedThingsOrder: CollectionUpdateungroupedThingsOrderInput
   tagOrders: TagOrderUpdateManyWithoutForCollectionInput
   expandedCards: CollectionUpdateexpandedCardsInput
-  columnOrders: ColumnOrderUpdateManyInput
+  columnOrders: ColumnOrderUpdateManyWithoutInCollectionInput
   tagColumnOrders: ColumnOrderUpdateManyInput
   thingQueryCursor: String
 }
@@ -940,7 +991,7 @@ input CollectionUpdateWithoutTagOrdersDataInput {
   userGroups: CollectionGroupUpdateManyWithoutInCollectionInput
   ungroupedThingsOrder: CollectionUpdateungroupedThingsOrderInput
   expandedCards: CollectionUpdateexpandedCardsInput
-  columnOrders: ColumnOrderUpdateManyInput
+  columnOrders: ColumnOrderUpdateManyWithoutInCollectionInput
   tagColumnOrders: ColumnOrderUpdateManyInput
   thingQueryCursor: String
 }
@@ -958,7 +1009,7 @@ input CollectionUpdateWithoutUserGroupsDataInput {
   ungroupedThingsOrder: CollectionUpdateungroupedThingsOrderInput
   tagOrders: TagOrderUpdateManyWithoutForCollectionInput
   expandedCards: CollectionUpdateexpandedCardsInput
-  columnOrders: ColumnOrderUpdateManyInput
+  columnOrders: ColumnOrderUpdateManyWithoutInCollectionInput
   tagColumnOrders: ColumnOrderUpdateManyInput
   thingQueryCursor: String
 }
@@ -976,7 +1027,7 @@ input CollectionUpdateWithoutViewersDataInput {
   ungroupedThingsOrder: CollectionUpdateungroupedThingsOrderInput
   tagOrders: TagOrderUpdateManyWithoutForCollectionInput
   expandedCards: CollectionUpdateexpandedCardsInput
-  columnOrders: ColumnOrderUpdateManyInput
+  columnOrders: ColumnOrderUpdateManyWithoutInCollectionInput
   tagColumnOrders: ColumnOrderUpdateManyInput
   thingQueryCursor: String
 }
@@ -999,6 +1050,11 @@ input CollectionUpdateWithWhereUniqueWithoutViewersInput {
 input CollectionUpsertNestedInput {
   update: CollectionUpdateDataInput!
   create: CollectionCreateInput!
+}
+
+input CollectionUpsertWithoutColumnOrdersInput {
+  update: CollectionUpdateWithoutColumnOrdersDataInput!
+  create: CollectionCreateWithoutColumnOrdersInput!
 }
 
 input CollectionUpsertWithoutTagOrdersInput {
@@ -1146,6 +1202,7 @@ input CollectionWhereUniqueInput {
 type ColumnOrder {
   id: ID!
   order: [String!]!
+  inCollection: Collection
 }
 
 type ColumnOrderConnection {
@@ -1157,6 +1214,7 @@ type ColumnOrderConnection {
 input ColumnOrderCreateInput {
   id: ID
   order: ColumnOrderCreateorderInput
+  inCollection: CollectionCreateOneWithoutColumnOrdersInput
 }
 
 input ColumnOrderCreateManyInput {
@@ -1164,8 +1222,18 @@ input ColumnOrderCreateManyInput {
   connect: [ColumnOrderWhereUniqueInput!]
 }
 
+input ColumnOrderCreateManyWithoutInCollectionInput {
+  create: [ColumnOrderCreateWithoutInCollectionInput!]
+  connect: [ColumnOrderWhereUniqueInput!]
+}
+
 input ColumnOrderCreateorderInput {
   set: [String!]
+}
+
+input ColumnOrderCreateWithoutInCollectionInput {
+  id: ID
+  order: ColumnOrderCreateorderInput
 }
 
 type ColumnOrderEdge {
@@ -1223,10 +1291,12 @@ input ColumnOrderSubscriptionWhereInput {
 
 input ColumnOrderUpdateDataInput {
   order: ColumnOrderUpdateorderInput
+  inCollection: CollectionUpdateOneWithoutColumnOrdersInput
 }
 
 input ColumnOrderUpdateInput {
   order: ColumnOrderUpdateorderInput
+  inCollection: CollectionUpdateOneWithoutColumnOrdersInput
 }
 
 input ColumnOrderUpdateManyDataInput {
@@ -1249,6 +1319,18 @@ input ColumnOrderUpdateManyMutationInput {
   order: ColumnOrderUpdateorderInput
 }
 
+input ColumnOrderUpdateManyWithoutInCollectionInput {
+  create: [ColumnOrderCreateWithoutInCollectionInput!]
+  delete: [ColumnOrderWhereUniqueInput!]
+  connect: [ColumnOrderWhereUniqueInput!]
+  set: [ColumnOrderWhereUniqueInput!]
+  disconnect: [ColumnOrderWhereUniqueInput!]
+  update: [ColumnOrderUpdateWithWhereUniqueWithoutInCollectionInput!]
+  upsert: [ColumnOrderUpsertWithWhereUniqueWithoutInCollectionInput!]
+  deleteMany: [ColumnOrderScalarWhereInput!]
+  updateMany: [ColumnOrderUpdateManyWithWhereNestedInput!]
+}
+
 input ColumnOrderUpdateManyWithWhereNestedInput {
   where: ColumnOrderScalarWhereInput!
   data: ColumnOrderUpdateManyDataInput!
@@ -1258,15 +1340,30 @@ input ColumnOrderUpdateorderInput {
   set: [String!]
 }
 
+input ColumnOrderUpdateWithoutInCollectionDataInput {
+  order: ColumnOrderUpdateorderInput
+}
+
 input ColumnOrderUpdateWithWhereUniqueNestedInput {
   where: ColumnOrderWhereUniqueInput!
   data: ColumnOrderUpdateDataInput!
+}
+
+input ColumnOrderUpdateWithWhereUniqueWithoutInCollectionInput {
+  where: ColumnOrderWhereUniqueInput!
+  data: ColumnOrderUpdateWithoutInCollectionDataInput!
 }
 
 input ColumnOrderUpsertWithWhereUniqueNestedInput {
   where: ColumnOrderWhereUniqueInput!
   update: ColumnOrderUpdateDataInput!
   create: ColumnOrderCreateInput!
+}
+
+input ColumnOrderUpsertWithWhereUniqueWithoutInCollectionInput {
+  where: ColumnOrderWhereUniqueInput!
+  update: ColumnOrderUpdateWithoutInCollectionDataInput!
+  create: ColumnOrderCreateWithoutInCollectionInput!
 }
 
 input ColumnOrderWhereInput {
@@ -1284,6 +1381,7 @@ input ColumnOrderWhereInput {
   id_not_starts_with: ID
   id_ends_with: ID
   id_not_ends_with: ID
+  inCollection: CollectionWhereInput
   AND: [ColumnOrderWhereInput!]
   OR: [ColumnOrderWhereInput!]
   NOT: [ColumnOrderWhereInput!]

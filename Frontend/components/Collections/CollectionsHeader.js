@@ -169,25 +169,22 @@ const CollectionsHeader = ({
          onClick={() => {
             const newGroupID = getRandomString(25);
 
-            // First we need to figure out if we have all the columns we're supposed to
-            const columnCount = getColumnCount();
-            let columnToAddToID;
-            if (columnOrders.length >= columnCount) {
-               // If we do, we find the shortest column and add the new group to it
-               columnToAddToID = getShortestColumnID(columnOrders);
+            // We're going to add the group to the first empty column, making a new one if we have to.
+            const firstEmptyColumnIndex = columnOrders.findIndex(
+               orderObj => orderObj.order.length === 0
+            );
 
-               const columnIndex = columnOrders.findIndex(
-                  columnData => columnData.id === columnToAddToID
-               );
-               columnOrders[columnIndex].order.push(newGroupID);
-            } else {
-               // If we don't, we make a new column with our new group in it
+            let columnToAddToID;
+            if (firstEmptyColumnIndex === -1) {
                columnToAddToID = getRandomString(25);
-               columnOrders.unshift({
+               columnOrders.push({
                   __typename: 'ColumnOrder',
                   id: columnToAddToID,
                   order: [newGroupID]
                });
+            } else {
+               columnToAddToID = columnOrders[firstEmptyColumnIndex].id;
+               columnOrders[firstEmptyColumnIndex].order.push(newGroupID);
             }
 
             const now = new Date();

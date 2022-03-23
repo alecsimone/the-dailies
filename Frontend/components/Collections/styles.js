@@ -13,8 +13,14 @@ const StyledNoCollections = styled.section`
 export { StyledNoCollections };
 
 const StyledCollection = styled.section`
+   height: 100%;
+   display: flex;
+   flex-direction: column;
    ${props => props.theme.mobileBreakpoint} {
       padding: 0 2rem;
+      height: calc(
+         100% - 1rem
+      ); /* we want a little space between the scrollbar and the bottom of the screen so it stands out more */
    }
    &.loadingCollection {
       .explanation {
@@ -201,31 +207,46 @@ const StyledCollection = styled.section`
       }
    }
    .collectionBody {
+      flex-grow: 1;
       button.more {
          font-size: ${props => props.theme.bigText};
          padding: 0.5rem 1rem;
          display: block;
          margin: 3rem auto;
       }
+      .groupsWrapper {
+         height: 100%;
+      }
+      .overflowWrapper {
+         overflow: auto;
+         height: 100%;
+         /* scrollbar-width: thin; */
+         scrollbar-color: hsl(210, 10%, 30%) hsl(30, 1%, 4%);
+      }
       .masonryContainer {
          display: flex;
-         flex-wrap: wrap;
          width: 100%;
+         padding: 0 2rem;
          ${props => props.theme.mobileBreakpoint} {
-            flex-wrap: nowrap;
             width: auto;
-            margin-left: -2rem;
+            padding: 0;
          }
          .column {
             max-width: 64rem;
+            min-width: 85%;
+            margin-right: 2rem;
+            padding-bottom: 10rem;
             ${props => props.theme.mobileBreakpoint} {
-               padding-left: 2rem;
+               min-width: 64rem;
+               margin-left: 0;
             }
             flex-grow: 1;
-            .dragging {
+            transition: 0.52s all;
+            &.dragging {
+               transition: 0.25s all;
                background: ${props => setAlpha(props.theme.lightBlack, 0.6)};
             }
-            .dragging,
+            &.dragging,
             .notDragging {
                border-radius: 6px;
             }
@@ -385,6 +406,12 @@ const StyledCard = styled.div`
       }
       &.smallThingCard {
          opacity: 1;
+      }
+      &.small {
+         padding: 0;
+         ${props => props.theme.midScreenBreakpoint} {
+            padding: 1rem 2rem 1.5rem;
+         }
       }
    }
    img {

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Draggable, Droppable } from 'react-beautiful-dnd';
+import { Draggable, Droppable, resetServerContext } from 'react-beautiful-dnd';
 import { useMutation } from '@apollo/react-hooks';
 import {
    desktopBreakpointPx,
@@ -34,69 +34,30 @@ const getItemForID = (id, items) => {
 };
 
 const Columnizer = ({ items, columnOrders, draggingGroup, canEdit }) => {
-   const [columnCount, setColumnCount] = useState(getColumnCount());
-
-   const resizeHandler = () => setColumnCount(getColumnCount());
-
-   useEffect(() => {
-      if (window == null) return;
-
-      window.addEventListener('resize', resizeHandler);
-      return () => window.removeEventListener('resize', resizeHandler);
-   }, [resizeHandler]);
-
    if (items.length === 0) return null;
 
-   // If we have more columnOrders than the current columnCount, we need to distribute the groups from the excess columns into the necessary columns
-   const necessaryOrders = [...columnOrders];
+   let columnsPlusABlank;
    if (
-      necessaryOrders.length > columnCount ||
-      necessaryOrders.length > items.length
+      columnOrders.length > 0 &&
+      columnOrders[columnOrders.length - 1].order.length > 0
    ) {
-      // First we figure out which is lower, the number of columns we have or the number of items
-      const lowerNumber =
-         columnCount < items.length ? columnCount : items.length;
-
-      // Then we need to create an array which will hold any columns we don't have room for, so we can redistribute their items later
-      let uncolumnedItems = [];
-
-      // And we need to figure out how many unnecessary columns we have
-      const unnecessaryOrdersCount = necessaryOrders.length - lowerNumber;
-
-      // Then we need to remove that many columns, starting with any empty columns and then working back from the end of the array
-      for (let i = unnecessaryOrdersCount; i > 0; i -= 1) {
-         // First we check for any empty columns
-         let columnToRemoveIndex = necessaryOrders.findIndex(
-            column => column?.order?.length === 0
-         );
-
-         // If we don't have any empty columns, we take from the end of the array
-         if (columnToRemoveIndex === -1) {
-            columnToRemoveIndex = necessaryOrders.length - 1;
+      columnsPlusABlank = [
+         ...columnOrders,
+         {
+            __typename: 'ColumnOrder',
+            id: 'blankColumn',
+            order: []
          }
-
-         const removedColumns = necessaryOrders.splice(columnToRemoveIndex, 1);
-         uncolumnedItems = uncolumnedItems.concat(removedColumns[0].order);
-      }
-
-      uncolumnedItems.forEach(item => {
-         const shortestColumnID = getShortestColumnID(necessaryOrders);
-         const shortestColumnIndex = necessaryOrders.findIndex(
-            columnData => columnData.id === shortestColumnID
-         );
-         if (shortestColumnIndex === -1) {
-            necessaryOrders[0].order.push(item);
-         } else {
-            necessaryOrders[shortestColumnIndex].order.push(item);
-         }
-      });
+      ];
+   } else {
+      columnsPlusABlank = columnOrders;
    }
 
-   const columns = necessaryOrders.map((columnOrderObj, index) => (
+   const columns = columnsPlusABlank.map((columnOrderObj, index) => (
       <div
          id={`id-${columnOrderObj.id}`}
-         className="column"
-         style={{ width: `${100 / columnCount}%` }}
+         className={draggingGroup ? 'column dragging' : 'column'}
+         style={{ width: `${100 / getColumnCount()}%` }}
          key={`columnizerColumn-${index}`}
       >
          <Droppable
@@ -114,7 +75,11 @@ const Columnizer = ({ items, columnOrders, draggingGroup, canEdit }) => {
                >
                   {columnOrderObj.order.length === 0 && (
                      <StyledGroup className="blankGroup">
-                        Drop groups here to add them to this column
+                        Drop groups here to add
+                        {columnOrderObj.id === 'blankColumn'
+                           ? ' a new '
+                           : ' them to this '}
+                        column
                      </StyledGroup>
                   )}
                   {columnOrderObj.order.map((columnItem, itemIndex) => {
@@ -131,7 +96,9 @@ const Columnizer = ({ items, columnOrders, draggingGroup, canEdit }) => {
                            }`}
                            isDragDisabled={!canEdit}
                            index={itemIndex}
-                           key={`${index}-${itemElement.props.groupObj.id}`}
+                           key={`${index}-${getRandomString(12)}-${
+                              itemElement.props.groupObj.id
+                           }`}
                         >
                            {dragProvided => (
                               <div
@@ -153,8 +120,11 @@ const Columnizer = ({ items, columnOrders, draggingGroup, canEdit }) => {
          </Droppable>
       </div>
    ));
-   // }
 
-   return <div className="masonryContainer">{columns}</div>;
+   return (
+      <div className="overflowWrapper">
+         <div className="masonryContainer">{columns}</div>
+      </div>
+   );
 };
 export default Columnizer;
