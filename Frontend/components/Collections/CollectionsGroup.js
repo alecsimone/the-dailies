@@ -19,6 +19,7 @@ import ThingSearchInput from '../ThingParts/ThingSearchInput';
 import { home } from '../../config';
 import ContentIcon from '../Icons/ContentIcon';
 import ArrowIcon from '../Icons/Arrow';
+import { dynamicallyResizeElement } from '../../styles/functions';
 
 const StyledCardList = styled.div``;
 
@@ -52,6 +53,10 @@ const CollectionsGroup = ({
    useEffect(() => {
       setGroupTitle(title);
    }, [title]);
+
+   useEffect(() => {
+      dynamicallyResizeElement(titleRef.current, false);
+   }, []);
 
    const [renameGroupOnCollection] = useMutation(RENAME_GROUP_MUTATION, {
       context: {
@@ -123,6 +128,7 @@ const CollectionsGroup = ({
    ));
 
    const sendNewGroupTitle = e => {
+      if (e.target.value === title) return;
       const newTitle = e.target.value;
 
       const thisGroupIndex = userGroups.findIndex(
@@ -154,12 +160,15 @@ const CollectionsGroup = ({
          <header className="groupHeader">
             {!canEdit && <h4 className="groupTitle">{groupTitle}</h4>}
             {canEdit && (
-               <input
+               <textarea
                   className="groupTitle"
                   placeholder="Group Title"
                   ref={titleRef}
                   value={groupTitle}
-                  onChange={e => setGroupTitle(e.target.value)}
+                  onChange={e => {
+                     setGroupTitle(e.target.value);
+                     dynamicallyResizeElement(e.target, false);
+                  }}
                   onBlur={sendNewGroupTitle}
                   onKeyDown={e => {
                      if (e.key === 'Enter') {

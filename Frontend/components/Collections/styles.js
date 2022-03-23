@@ -279,7 +279,7 @@ const StyledGroup = styled.div`
       justify-content: space-between;
       margin-bottom: 0;
       h4.groupTitle,
-      input.groupTitle {
+      textarea.groupTitle {
          font-size: ${props => props.theme.bigText};
          font-weight: bold;
          margin: 1.5rem 0;
@@ -287,9 +287,10 @@ const StyledGroup = styled.div`
          flex-grow: 1;
          margin-right: 1rem;
       }
-      input.groupTitle {
+      textarea.groupTitle {
+         resize: none;
          border: none;
-         margin-bottom: calc(1.5rem + 1px);
+         margin: 0;
          &:focus {
             border-bottom: 1px solid ${props => props.theme.mainText};
             outline: none;
@@ -346,6 +347,8 @@ const StyledGroup = styled.div`
       }
       input {
          width: 40rem;
+         min-width: 0px;
+         flex-shrink: 1;
          flex-grow: 1;
          font-size: ${props => props.theme.smallText};
       }
