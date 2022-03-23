@@ -208,6 +208,7 @@ const StyledCollection = styled.section`
    }
    .collectionBody {
       flex-grow: 1;
+      overflow-y: auto;
       button.more {
          font-size: ${props => props.theme.bigText};
          padding: 0.5rem 1rem;
@@ -235,20 +236,18 @@ const StyledCollection = styled.section`
             max-width: 64rem;
             min-width: 85%;
             margin-right: 2rem;
-            padding-bottom: 10rem;
             ${props => props.theme.mobileBreakpoint} {
                min-width: 64rem;
                margin-left: 0;
             }
             flex-grow: 1;
-            transition: 0.52s all;
-            &.dragging {
-               transition: 0.25s all;
-               background: ${props => setAlpha(props.theme.lightBlack, 0.6)};
-            }
-            &.dragging,
-            .notDragging {
-               border-radius: 6px;
+            .dropArea {
+               transition: 0.52s all;
+               padding-bottom: 16rem;
+               &.dragging {
+                  transition: 0.25s all;
+                  background: ${props => setAlpha(props.theme.lightBlack, 0.6)};
+               }
             }
          }
          .smallThingCard {

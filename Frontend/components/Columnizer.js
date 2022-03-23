@@ -56,7 +56,7 @@ const Columnizer = ({ items, columnOrders, draggingGroup, canEdit }) => {
    const columns = columnsPlusABlank.map((columnOrderObj, index) => (
       <div
          id={`id-${columnOrderObj.id}`}
-         className={draggingGroup ? 'column dragging' : 'column'}
+         className="column"
          style={{ width: `${100 / getColumnCount()}%` }}
          key={`columnizerColumn-${index}`}
       >
@@ -71,7 +71,7 @@ const Columnizer = ({ items, columnOrders, draggingGroup, canEdit }) => {
                   ref={provided.innerRef}
                   key={index}
                   {...provided.droppableProps}
-                  className={draggingGroup ? 'dragging' : 'notDragging'}
+                  className="dropArea"
                >
                   {columnOrderObj.order.length === 0 && (
                      <StyledGroup className="blankGroup">

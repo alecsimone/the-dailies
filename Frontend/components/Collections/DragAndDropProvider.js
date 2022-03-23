@@ -54,7 +54,7 @@ const DragAndDropProvider = ({ children }) => {
    const dragEndHelper = ({ source, destination, draggableId, type }) => {
       if (type === 'group') {
          const allColumns = document.querySelectorAll(
-            '.collectionBody .column'
+            '.collectionBody .column .dropArea'
          );
          allColumns.forEach(column => {
             column.classList.remove('dragging');
@@ -480,7 +480,7 @@ const DragAndDropProvider = ({ children }) => {
    const dragStartHelper = ({ source, type, draggableId, mode }) => {
       if (type === 'group') {
          const allColumns = document.querySelectorAll(
-            '.collectionBody .column'
+            '.collectionBody .column .dropArea'
          );
          allColumns.forEach(column => {
             column.classList.add('dragging');
