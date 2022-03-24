@@ -269,6 +269,7 @@ const StyledCollection = styled.section`
             margin-right: 2rem;
             ${props => props.theme.mobileBreakpoint} {
                min-width: 64rem;
+               max-width: min(64rem, 80%);
                margin-left: 0;
             }
             flex-grow: 1;
