@@ -5,7 +5,6 @@ import { Draggable } from 'react-beautiful-dnd';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
 import { getRandomString } from '../../lib/TextHandling';
-import { dynamicallyResizeElement, successFlash } from '../../styles/functions';
 import useMe from '../Account/useMe';
 import ExplodingLink from '../ExplodingLink';
 import X from '../Icons/X';

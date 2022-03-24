@@ -32,27 +32,27 @@ const Page = ({ children, pageProps }) => {
    const [viewportHeight, setViewportHeight] = useState(0);
 
    // We're going to use the experimental visualViewport property to try to deal with the collapsing address bars on mobile browsers
-   const adjustViewport = () => {
-      // The idea is to create a custom css property that is equivalent to the vh unit, but that we set ourselves based on the visualViewport height
-      const vh = window.visualViewport.height * 0.01;
-      if (vh !== viewportHeight) {
-         document.documentElement.style.setProperty('--vh', `${vh}px`);
-         setViewportHeight(vh);
-      }
-   };
+   // const adjustViewport = () => {
+   //    // The idea is to create a custom css property that is equivalent to the vh unit, but that we set ourselves based on the visualViewport height
+   //    const vh = window.visualViewport.height * 0.01;
+   //    if (vh !== viewportHeight) {
+   //       document.documentElement.style.setProperty('--vh', `${vh}px`);
+   //       setViewportHeight(vh);
+   //    }
+   // };
 
    // This effect will implement that custom vh property by putting listeners on touchmove and resize to update the vh property
-   useEffect(() => {
-      if (!process.browser) return; // We don't want to do anything if we're not in a browser though
-      if (window.visualViewport == null) return; // And because the property is still experimental, a lot of browsers won't support it and we need to make sure they do before using it
+   // useEffect(() => {
+   //    if (!process.browser) return; // We don't want to do anything if we're not in a browser though
+   //    if (window.visualViewport == null) return; // And because the property is still experimental, a lot of browsers won't support it and we need to make sure they do before using it
 
-      const vh = window.visualViewport.height * 0.01;
-      document.documentElement.style.setProperty('--vh', `${vh}px`);
+   //    const vh = window.visualViewport.height * 0.01;
+   //    document.documentElement.style.setProperty('--vh', `${vh}px`);
 
-      window.addEventListener('touchmove', adjustViewport);
-      window.addEventListener('resize', adjustViewport);
-      window.visualViewport.addEventListener('resize', adjustViewport);
-   }, [adjustViewport]);
+   //    window.addEventListener('touchmove', adjustViewport);
+   //    window.addEventListener('resize', adjustViewport);
+   //    window.visualViewport.addEventListener('resize', adjustViewport);
+   // }, [adjustViewport]);
 
    // Little tool to block the initial render so we can profile it
    // const [initialRenderBlock, setInitialRenderBlock] = useState(true);

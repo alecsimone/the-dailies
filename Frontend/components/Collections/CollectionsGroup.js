@@ -33,6 +33,7 @@ const CollectionsGroup = ({
    expandedCards,
    canEdit
 }) => {
+   console.log(`group ${groupObj.id} render`);
    const { id, includedLinks, notes, title, type, order } = groupObj;
    const {
       loggedInUserID,
