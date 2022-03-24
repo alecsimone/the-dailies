@@ -37,6 +37,9 @@ const StyledHomepage = styled.section`
       ${props => props.theme.scroll};
       ${StyledThingsPage}
       ${props => props.theme.desktopBreakpoint} {
+         padding: 3rem 2rem;
+      }
+      ${props => props.theme.bigScreenBreakpoint} {
          padding: 3rem 8rem;
       }
       ${fullSizedLoadMoreButton}
