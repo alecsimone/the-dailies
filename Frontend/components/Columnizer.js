@@ -4,7 +4,6 @@ import {
    desktopBreakpointPx,
    bigScreenBreakpointPx
 } from '../styles/functions';
-import { getRandomString } from '../lib/TextHandling';
 import { StyledGroup } from './Collections/styles';
 
 const getColumnCount = () => {
@@ -117,9 +116,7 @@ const Columnizer = ({ items, columnOrders, canEdit }) => {
                            }`}
                            isDragDisabled={!canEdit}
                            index={itemIndex}
-                           key={`${index}-${getRandomString(12)}-${
-                              itemElement.props.groupObj.id
-                           }`}
+                           key={`${index}-${itemElement.props.groupObj.id}`}
                         >
                            {dragProvided => (
                               <div
