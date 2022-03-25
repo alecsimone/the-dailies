@@ -378,27 +378,18 @@ const DragAndDropProvider = ({ children }) => {
                fragment: gql`
                   fragment GroupToMove on CollectionGroup {
                      inCollection {
-                        id
-                     }
-                  }
-               `
-            });
-            const collectionID = groupObj.inCollection.id;
-
-            const collectionData = client.readFragment({
-               id: `Collection:${collectionID}`,
-               fragment: gql`
-                  fragment CollectionToMoveOn on Collection {
-                     __typename
-                     id
-                     columnOrders {
                         __typename
                         id
-                        order
+                        columnOrders {
+                           __typename
+                           id
+                           order
+                        }
                      }
                   }
                `
             });
+            const collectionData = groupObj.inCollection;
 
             const sourceColumnID = source.droppableId;
             const sourceOrderIndex = collectionData.columnOrders.findIndex(
@@ -432,7 +423,10 @@ const DragAndDropProvider = ({ children }) => {
             newSourceOrderObj.order = newSourceOrderObj.order.filter(
                existingID => existingID !== groupID
             );
-            if (newSourceOrderObj.order.length === 0) {
+            if (
+               newSourceOrderObj.order.length === 0 &&
+               sourceOrderIndex === collectionData.columnOrders.length - 1
+            ) {
                optimisticResponse.moveGroupToColumn.columnOrders.splice(
                   sourceOrderIndex,
                   1

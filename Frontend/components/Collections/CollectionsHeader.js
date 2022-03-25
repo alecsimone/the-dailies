@@ -3,12 +3,9 @@ import { useRouter } from 'next/router';
 import { useState, useRef, useEffect } from 'react';
 import { getRandomString } from '../../lib/TextHandling';
 import useMe from '../Account/useMe';
-import { getColumnCount } from '../Columnizer';
 import LockIcon from '../Icons/Lock';
 import HamburgerIcon from '../Icons/Hamburger';
-import PrivacyInterface from '../ThingParts/PrivacyInterface';
 import AddCollectionButton from './AddCollectionButton';
-import { getShortestColumnIndex } from './CollectionBody';
 import CollectionPrivacyInterface from './CollectionPrivacyInterface';
 import {
    ADD_GROUP_TO_COLLECTION_MUTATION,
@@ -53,7 +50,6 @@ const CollectionsHeader = ({
    setActiveCollection,
    allCollections,
    activeCollection,
-   setThingFilterString,
    canEdit
 }) => {
    const [collectionTitle, setCollectionTitle] = useState(

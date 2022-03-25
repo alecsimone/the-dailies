@@ -246,9 +246,6 @@ const StyledCollection = styled.section`
          display: block;
          margin: 3rem auto;
       }
-      .groupsWrapper {
-         height: 100%;
-      }
       .overflowWrapper {
          overflow: auto;
          height: 100%;
@@ -468,9 +465,6 @@ const StyledCard = styled.div`
    .cardManagementBar {
       display: flex;
       justify-content: space-between;
-      &.noCopy {
-         justify-content: flex-end;
-      }
       align-items: center;
       font-size: ${props => props.theme.miniText};
       padding: 1.5rem 1rem;
@@ -481,6 +475,11 @@ const StyledCard = styled.div`
          cursor: pointer;
          &:hover {
             opacity: 0.8;
+         }
+         &:only-child {
+            margin-left: calc(
+               100% - ${props => props.theme.smallText}
+            ); /* If there's no copy content interface, we need to push the X all the way to the right */
          }
       }
       .copyInterface {

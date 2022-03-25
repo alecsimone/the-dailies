@@ -34,15 +34,6 @@ const SPECIFIC_COLLECTION_QUERY = gql`
 `;
 export { SPECIFIC_COLLECTION_QUERY };
 
-const MY_BIG_THINGS_QUERY = gql`
-   query MY_THINGS_QUERY($cursor: String, $forCollection: ID) {
-      myThings(cursor: $cursor, forCollection: $forCollection) {
-         ${fullThingFields}
-      }
-   }
-`;
-export { MY_BIG_THINGS_QUERY };
-
 const ADD_COLLECTION_MUTATION = gql`
    mutation ADD_COLLECTION_MUTATION {
       addCollection {
@@ -131,30 +122,23 @@ const DELETE_GROUP_FROM_COLLECTION_MUTATION = gql`
 export { DELETE_GROUP_FROM_COLLECTION_MUTATION };
 
 const RENAME_GROUP_MUTATION = gql`
-   mutation RENAME_GROUP_MUTATION($collectionID: ID!, $groupID: String!, $newTitle: String!) {
-      renameGroupOnCollection(collectionID: $collectionID, groupID: $groupID, newTitle: $newTitle) {
+   mutation RENAME_GROUP_MUTATION(
+      $collectionID: ID!
+      $groupID: String!
+      $newTitle: String!
+   ) {
+      renameGroupOnCollection(
+         collectionID: $collectionID
+         groupID: $groupID
+         newTitle: $newTitle
+      ) {
          __typename
          id
-         userGroups {
-            ${collectionGroupFields}
-         }
+         title
       }
    }
 `;
 export { RENAME_GROUP_MUTATION };
-
-const COPY_THING_TO_GROUP_MUTATION = gql`
-   mutation COPY_THING_TO_GROUP_MUTATION($collectionID: ID!, $thingID: ID!, $targetGroupID: String!) {
-      copyThingToCollectionGroup(collectionID: $collectionID, thingID: $thingID, targetGroupID: $targetGroupID) {
-         __typename
-         id
-         userGroups {
-            ${collectionGroupFields}
-         }
-      }
-   }
-`;
-export { COPY_THING_TO_GROUP_MUTATION };
 
 const ADD_LINK_TO_GROUP_MUTATION = gql`
    mutation ADD_LINK_TO_GROUP_MUTATION($url: String!, $groupID: ID!, $position: Int) {
@@ -268,15 +252,6 @@ const REORDER_COLUMN_MUTATION = gql`
    }
 `;
 export { REORDER_COLUMN_MUTATION };
-
-const ADD_TAX_BY_ID_MUTATION = gql`
-   mutation ADD_TAX_BY_ID_MUTATION($tax: ID!, $thingID: ID!, $personal: Boolean) {
-      addTaxToThingById(tax: $tax, thingID: $thingID, personal: $personal) {
-         ${thingCardFields}
-      }
-   }
-`; // Requested fields have to be thingCardFields instead of smallThingCardFields because smallThingCardFields doesn't include partOfTags, so this won't actually tell us anything about the new tags
-export { ADD_TAX_BY_ID_MUTATION };
 
 const ADD_NOTE_MUTATION = gql`
    mutation ADD_NOTE_MUTATION($groupID: ID!, $position: Int) {

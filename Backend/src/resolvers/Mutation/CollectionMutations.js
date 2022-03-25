@@ -606,108 +606,34 @@ async function renameGroupOnCollection(
    }
 
    // first we need to change the title of the provided group
-   await ctx.db.mutation.updateCollectionGroup({
-      where: {
-         id: groupID
-      },
-      data: {
-         title: newTitle
-      }
-   });
-
-   // Then we need to return the selected collection
-   const updatedCollection = await ctx.db.query.collection(
+   const updatedGroup = await ctx.db.mutation.updateCollectionGroup(
       {
          where: {
-            id: collectionID
+            id: groupID
+         },
+         data: {
+            title: newTitle
          }
       },
-      `{id userGroups {${collectionGroupFields}}}`
+      info
    );
+
    publishCollectionUpdate(collectionID, ctx);
-   return updatedCollection;
+   return updatedGroup;
+
+   // // Then we need to return the selected collection
+   // const updatedCollection = await ctx.db.query.collection(
+   //    {
+   //       where: {
+   //          id: collectionID
+   //       }
+   //    },
+   //    `{id userGroups {${collectionGroupFields}}}`
+   // );
+   // publishCollectionUpdate(collectionID, ctx);
+   // return updatedCollection;
 }
 exports.renameGroupOnCollection = renameGroupOnCollection;
-
-async function copyThingToCollectionGroup(
-   parent,
-   { collectionID, thingID, targetGroupID },
-   ctx,
-   info
-) {
-   await loggedInGate(ctx).catch(() => {
-      throw new AuthenticationError('You must be logged in to do that!');
-   });
-   fullMemberGate(ctx.req.member);
-
-   const canEdit = await checkCollectionPermissions(
-      collectionID,
-      'collection',
-      'edit',
-      ctx
-   );
-   if (!canEdit) {
-      throw new AuthenticationError(
-         "You don't have permission to edit this collection."
-      );
-   }
-
-   // First we need to pull the provided group so we can get its order array
-   const oldGroup = await ctx.db.query.collectionGroup(
-      {
-         where: {
-            id: targetGroupID
-         }
-      },
-      `{order, things {id}}`
-   );
-
-   const { order, things } = oldGroup;
-
-   let newOrder;
-   if (order == null) {
-      newOrder = things.map(thing => thing.id);
-      newOrder.sort((a, b) => {
-         if (a < b) {
-            return 1;
-         }
-         return -1;
-      });
-      newOrder.push(thingID);
-   } else {
-      newOrder = [...order, thingID];
-   }
-
-   // first we need to connect the thing to the provided group
-   await ctx.db.mutation.updateCollectionGroup({
-      where: {
-         id: targetGroupID
-      },
-      data: {
-         things: {
-            connect: {
-               id: thingID
-            }
-         },
-         order: {
-            set: newOrder
-         }
-      }
-   });
-
-   // Then we need to return the selected collection
-   const updatedCollection = await ctx.db.query.collection(
-      {
-         where: {
-            id: collectionID
-         }
-      },
-      `{id userGroups {${collectionGroupFields}}}`
-   );
-   publishCollectionUpdate(collectionID, ctx);
-   return updatedCollection;
-}
-exports.copyThingToCollectionGroup = copyThingToCollectionGroup;
 
 async function addLinkToCollectionGroup(
    parent,

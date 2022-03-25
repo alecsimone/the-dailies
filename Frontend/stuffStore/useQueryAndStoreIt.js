@@ -1,6 +1,4 @@
 import { useLazyQuery, useQuery } from '@apollo/react-hooks';
-import { useEffect } from 'react';
-import { useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { upsertStuff, upsertStuffArray } from './stuffSlice';
 

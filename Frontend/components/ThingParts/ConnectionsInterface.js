@@ -353,7 +353,7 @@ const ConnectionsInterface = ({ thingID }) => {
    const [addConnection, { loading: addConnectionLoading }] = useMutation(
       ADD_CONNECTION_MUTATION,
       {
-         onError: err => alert(err.message)
+         onError: err => console.log(err.message)
       }
    );
 

@@ -1,16 +1,11 @@
-import { useState, useEffect } from 'react';
-import { Draggable, Droppable, resetServerContext } from 'react-beautiful-dnd';
-import { useMutation } from '@apollo/react-hooks';
+import React from 'react';
+import { Draggable, Droppable } from 'react-beautiful-dnd';
 import {
    desktopBreakpointPx,
    bigScreenBreakpointPx
 } from '../styles/functions';
 import { getRandomString } from '../lib/TextHandling';
-import { SET_COLUMN_ORDER_MUTATION } from './Collections/queriesAndMutations';
 import { StyledGroup } from './Collections/styles';
-import LoadingRing from './LoadingRing';
-import { getShortestColumnIndex } from './Collections/CollectionBody';
-import { getShortestColumnID } from './Collections/CollectionsHeader';
 
 const getColumnCount = () => {
    if (!process.browser) return 1;
@@ -33,31 +28,57 @@ const getItemForID = (id, items) => {
    return element;
 };
 
-const Columnizer = ({ items, columnOrders, draggingGroup, canEdit }) => {
+const Columnizer = ({ items, columnOrders, canEdit }) => {
    if (items.length === 0) return null;
 
-   let columnsPlusABlank;
-   if (
-      columnOrders.length > 0 &&
-      columnOrders[columnOrders.length - 1].order.length > 0
-   ) {
-      columnsPlusABlank = [
-         ...columnOrders,
-         {
-            __typename: 'ColumnOrder',
-            id: 'blankColumn',
-            order: []
-         }
-      ];
-   } else {
-      columnsPlusABlank = columnOrders;
-   }
-
-   const columns = columnsPlusABlank.map((columnOrderObj, index) => (
+   const makeColumn = (columnOrderObj, index) => (
       <div
          id={`id-${columnOrderObj.id}`}
          className="column"
-         style={{ width: `${100 / getColumnCount()}%` }}
+         key={`columnizerColumn-${index}`}
+      >
+         <Droppable
+            droppableId={columnOrderObj.id}
+            isDropDisabled={!canEdit}
+            key={index}
+            type="group"
+         >
+            {provided => (
+               <div
+                  ref={provided.innerRef}
+                  key={index}
+                  {...provided.droppableProps}
+                  className="dropArea"
+               >
+                  {columnOrderObj.order.length === 0 && (
+                     <StyledGroup className="blankGroup">
+                        Drop groups here to add
+                        {columnOrderObj.id === 'blankColumn'
+                           ? ' a new '
+                           : ' them to this '}
+                        column
+                     </StyledGroup>
+                  )}
+                  {columnOrderObj.order.map((columnItem, itemIndex) => {
+                     const itemElement = getItemForID(columnItem, items);
+
+                     if (itemElement == null) {
+                        return null;
+                     }
+
+                     return itemElement;
+                  })}
+                  {provided.placeholder}
+               </div>
+            )}
+         </Droppable>
+      </div>
+   );
+
+   const makeColumnProper = (columnOrderObj, index) => (
+      <div
+         id={`id-${columnOrderObj.id}`}
+         className="column"
          key={`columnizerColumn-${index}`}
       >
          <Droppable
@@ -119,7 +140,24 @@ const Columnizer = ({ items, columnOrders, draggingGroup, canEdit }) => {
             )}
          </Droppable>
       </div>
-   ));
+   );
+
+   const columns = columnOrders.map((columnOrderObj, index) =>
+      makeColumn(columnOrderObj, index)
+   );
+
+   if (
+      columnOrders.length > 0 &&
+      columnOrders[columnOrders.length - 1].order.length > 0
+   ) {
+      const blankColumnOrderObj = {
+         __typename: 'ColumnOrder',
+         id: 'blankColumn',
+         order: []
+      };
+      const blankColumn = makeColumn(blankColumnOrderObj, columnOrders.length);
+      columns.push(blankColumn);
+   }
 
    return (
       <div className="overflowWrapper">

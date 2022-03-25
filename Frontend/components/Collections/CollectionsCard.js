@@ -1,9 +1,10 @@
 import { useMutation } from '@apollo/react-hooks';
 import debounce from 'lodash.debounce';
-import { useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
+import gql from 'graphql-tag';
 import { getRandomString } from '../../lib/TextHandling';
 import useMe from '../Account/useMe';
 import ExplodingLink from '../ExplodingLink';
@@ -15,11 +16,12 @@ import {
    COPY_THING_TO_GROUP_MUTATION,
    DELETE_NOTE_MUTATION,
    EDIT_NOTE_MUTATION,
-   HANDLE_CARD_EXPANSION_MUTATION,
    REMOVE_LINK_FROM_COLLECTION_GROUP
 } from './queriesAndMutations';
 import { StyledCard, StyledNote } from './styles';
 import EditThis from '../Icons/EditThis';
+import CopyCardInterface from './CopyCardInterface';
+import { collectionGroupFields } from '../../lib/CardInterfaces';
 
 const StyledButton = styled.button`
    font-size: ${props => props.theme.smallText};
@@ -31,34 +33,15 @@ const StyledButton = styled.button`
    }
 `;
 
-const debouncedNoteChangesHandler = debounce((handler, e) => handler(e), 2000, {
-   leading: false,
-   trailing: true
-});
-
-const CollectionsCard = ({
-   data,
-   index,
-   userGroups,
-   hiddenGroups,
-   groupType,
-   collectionID,
-   groupID,
-   hideThingHandler,
-   isExpanded,
-   canEdit
-}) => {
-   const {
-      loggedInUserID,
-      memberFields: { role }
-   } = useMe('CollectionsCard', 'role');
+const CollectionsCard = ({ data, index, collectionID, groupID, canEdit }) => {
+   const { loggedInUserID } = useMe();
 
    const [showingCopyTargets, setShowingCopyTargets] = useState(false);
 
    const noteRef = useRef(null);
    const [editingNote, setEditingNote] = useState(false);
 
-   const [removeLinkFromGroup] = useMutation(
+   const [removeLinkFromGroup, { client }] = useMutation(
       REMOVE_LINK_FROM_COLLECTION_GROUP,
       {
          onError: err => alert(err.message)
@@ -68,10 +51,6 @@ const CollectionsCard = ({
    const [addLinkToGroup] = useMutation(ADD_LINK_TO_GROUP_MUTATION, {
       onError: err => alert(err.message)
    });
-
-   const [copyThingToCollectionGroup] = useMutation(
-      COPY_THING_TO_GROUP_MUTATION
-   );
 
    const [deleteNote] = useMutation(DELETE_NOTE_MUTATION, {
       onError: err => alert(err.message)
@@ -184,9 +163,13 @@ const CollectionsCard = ({
                                  )
                                     return;
 
-                                 const [thisGroup] = userGroups.filter(
-                                    groupObj => groupObj.id === groupID
-                                 );
+                                 const thisGroup = client.readFragment({
+                                    id: `CollectionGroup:${groupID}`,
+                                    fragment: gql`
+                  fragment GroupForDeleteNote on CollectionGroup {
+                     ${collectionGroupFields}
+                  }`
+                                 });
 
                                  const newGroupObj = JSON.parse(
                                     JSON.stringify(thisGroup)
@@ -221,136 +204,60 @@ const CollectionsCard = ({
 
    const { id, url } = data;
 
-   // We need to make the options for the copy to group interface. You can't copy to a group that the thing is already in, so first we need to filter those groups out of the master groups list
-   let filteredGroups = [];
-   let groupsContainingThingCount = 0;
-   if (groupType === 'manual' && userGroups != null && userGroups.length > 0) {
-      filteredGroups = userGroups.filter(groupObj => {
-         // First we remove any groups that are hidden
-         let groupIsHidden = false;
-         hiddenGroups.forEach(hiddenGroupObj => {
-            if (hiddenGroupObj.id === groupObj.id) {
-               groupIsHidden = true;
-            }
-         });
-         if (groupIsHidden) return false;
+   const UndoButton = ({ url, groupID }) => (
+      <div>
+         Link removed from group.{' '}
+         <StyledButton
+            onClick={() => {
+               const thisGroup = client.readFragment({
+                  id: `CollectionGroup:${groupID}`,
+                  fragment: gql`
+                  fragment GroupForAddLink on CollectionGroup {
+                     ${collectionGroupFields}
+                  }`
+               });
 
-         // Then we remove any groups that have this thing in them
-         let groupHasThisThingAlready = false;
-         groupObj.things.forEach(thing => {
-            if (thing.id === id) {
-               groupHasThisThingAlready = true;
-               groupsContainingThingCount += 1;
-            }
-         });
-         if (groupHasThisThingAlready) return false;
+               const thisGroupWithThisLink = JSON.parse(
+                  JSON.stringify(thisGroup)
+               );
 
-         return true;
-      });
-   }
+               const now = new Date();
+               thisGroupWithThisLink.includedLinks.push({
+                  __typename: 'PersonalLink',
+                  id: `temporary-${getRandomString(12)}`,
+                  url,
+                  owner: {
+                     __typename: 'Member',
+                     id: loggedInUserID
+                  },
+                  title: null,
+                  description: null,
+                  partOfTags: [],
+                  createdAt: now.toISOString(),
+                  updatedAt: now.toISOString()
+               });
 
-   // Then we need to make an option element for each remaining group
-   const copyToGroupOptions = filteredGroups.map(groupObj => (
-      <option value={groupObj.id} key={groupObj.id}>
-         {groupObj.title}
-      </option>
-   ));
-
-   const copyInterface = (
-      <div className="copyInterface">
-         <button onClick={() => setShowingCopyTargets(!showingCopyTargets)}>
-            {showingCopyTargets ? 'close' : 'copy'}
-         </button>
-         {showingCopyTargets && (
-            <select
-               value={null}
-               onChange={e => {
-                  if (e.target.value != null && e.target.value !== '') {
-                     const newUserGroups = [...userGroups];
-                     const targetGroupIndex = newUserGroups.findIndex(
-                        targetGroupObj => targetGroupObj.id === e.target.value
-                     );
-                     newUserGroups[targetGroupIndex].things.push(data);
-
-                     copyThingToCollectionGroup({
-                        variables: {
-                           collectionID,
-                           thingID: id,
-                           targetGroupID: e.target.value
-                        },
-                        optimisticResponse: {
-                           __typename: 'Mutation',
-                           copyThingToCollectionGroup: {
-                              __typename: 'Collection',
-                              id: collectionID,
-                              userGroups: newUserGroups
-                           }
-                        }
-                     });
-                     setShowingCopyTargets(false);
+               addLinkToGroup({
+                  variables: {
+                     url,
+                     groupID
+                  },
+                  optimisticResponse: {
+                     __typename: 'Mutation',
+                     addLinkToCollectionGroup: thisGroupWithThisLink
                   }
-               }}
-            >
-               <option value={null} />
-               {copyToGroupOptions}
-            </select>
-         )}
+               });
+
+               toast('Link added back to group', {
+                  position: 'bottom-center',
+                  autoClose: 3000
+               });
+            }}
+         >
+            Undo
+         </StyledButton>
       </div>
    );
-
-   const UndoButton = ({ url, groupID }) => {
-      console.log(url, groupID);
-      return (
-         <div>
-            Link removed from group.{' '}
-            <StyledButton
-               onClick={() => {
-                  const [thisGroup] = userGroups.filter(
-                     groupObj => groupObj.id === groupID
-                  );
-
-                  const thisGroupWithThisLink = JSON.parse(
-                     JSON.stringify(thisGroup)
-                  );
-
-                  const now = new Date();
-                  thisGroupWithThisLink.includedLinks.push({
-                     __typename: 'PersonalLink',
-                     id: `temporary-${getRandomString(12)}`,
-                     url,
-                     owner: {
-                        __typename: 'Member',
-                        id: loggedInUserID
-                     },
-                     title: null,
-                     description: null,
-                     partOfTags: [],
-                     createdAt: now.toISOString(),
-                     updatedAt: now.toISOString()
-                  });
-
-                  addLinkToGroup({
-                     variables: {
-                        url,
-                        groupID
-                     },
-                     optimisticResponse: {
-                        __typename: 'Mutation',
-                        addLinkToCollectionGroup: thisGroupWithThisLink
-                     }
-                  });
-
-                  toast('Link added back to group', {
-                     position: 'bottom-center',
-                     autoClose: 3000
-                  });
-               }}
-            >
-               Undo
-            </StyledButton>
-         </div>
-      );
-   };
 
    return (
       <Draggable
@@ -369,20 +276,21 @@ const CollectionsCard = ({
             >
                <ExplodingLink url={url} hideCardShortlink />
                {canEdit && (
-                  <div
-                     className={
-                        filteredGroups.length > 0
-                           ? 'cardManagementBar'
-                           : 'cardManagementBar noCopy'
-                     }
-                  >
-                     {filteredGroups.length > 0 && copyInterface}
+                  <div className="cardManagementBar">
+                     <CopyCardInterface
+                        cardData={data}
+                        collectionID={collectionID}
+                     />
                      <X
                         titleText="Remove Link"
                         onClick={() => {
-                           const [thisGroup] = userGroups.filter(
-                              groupObj => groupObj.id === groupID
-                           );
+                           const thisGroup = client.readFragment({
+                              id: `CollectionGroup:${groupID}`,
+                              fragment: gql`
+                  fragment GroupForRemoveLink on CollectionGroup {
+                     ${collectionGroupFields}
+                  }`
+                           });
 
                            const thisGroupWithoutThisLink = JSON.parse(
                               JSON.stringify(thisGroup)
@@ -415,4 +323,4 @@ const CollectionsCard = ({
       </Draggable>
    );
 };
-export default CollectionsCard;
+export default React.memo(CollectionsCard);

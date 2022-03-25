@@ -381,9 +381,11 @@ const fullThingFields = `
       id
       subject {
          id
+         privacy
       }
       object {
          id
+         privacy
       }
       relationship
       strength
