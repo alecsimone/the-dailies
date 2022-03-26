@@ -76,7 +76,7 @@ const StyledHomepage = styled.section`
    }
    .sidebar {
       width: 25%;
-      min-width: 40rem;
+      min-width: 36rem;
       display: none;
       p.emptyThings {
          padding: 0 2rem;
