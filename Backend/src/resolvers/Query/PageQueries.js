@@ -1055,6 +1055,11 @@ async function getRelationsForThing(
       `{${fullThingFields}}`
    );
 
+   const maxCollectionCount =
+      individualCount > totalCount / 3
+         ? Math.round(totalCount / 3)
+         : individualCount;
+
    const safeGroupThings = [];
    for (const groupThingID of inCollectionGroupWithThings) {
       const groupThingData = masterCollectionThingsArray.find(
@@ -1065,7 +1070,7 @@ async function getRelationsForThing(
          alreadyRelatedThingIDs.push(groupThingID);
       }
    }
-   const trimmedGroupThings = safeGroupThings.slice(0, individualCount);
+   const trimmedGroupThings = safeGroupThings.slice(0, maxCollectionCount);
 
    const safeCollectionThings = [];
    for (const collectionThingID of inCollectionWithThings) {
@@ -1079,8 +1084,21 @@ async function getRelationsForThing(
    }
    const trimmedCollectionThings = safeCollectionThings.slice(
       0,
-      individualCount
+      maxCollectionCount
    );
+
+   if (
+      safeAuthorThings.length +
+         trimmedGroupThings.length +
+         trimmedCollectionThings.length >
+      totalCount
+   ) {
+      const authorThingCount =
+         totalCount -
+         trimmedGroupThings.length -
+         trimmedCollectionThings.length;
+      safeAuthorThings = safeAuthorThings.slice(0, authorThingCount);
+   }
 
    // Finally, we need to turn our found things into connections and return them
    const relationsArray = [];
