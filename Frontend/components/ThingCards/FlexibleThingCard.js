@@ -83,10 +83,13 @@ const StyledFlexibleThingCard = styled.article`
    border: none;
    padding: 0;
    ${props => props.theme.mobileBreakpoint} {
-      padding: 1rem 5rem 1.5rem;
+      padding: 1rem 3rem 1.5rem;
       ${props =>
          props.theme
             .thingColors}; /* Feels kinda janky to just put the thingColors in again, but we don't want a border on mobile and this seems like the simplest way to achieve that */
+   }
+   ${props => props.theme.bigScreenBreakpoint} {
+      padding: 1rem 5rem 1.5rem;
    }
    .flexibleThingCard {
       /* max-width: calc(100% - 1rem); */
@@ -95,7 +98,7 @@ const StyledFlexibleThingCard = styled.article`
    &.small {
       border-radius: 0;
       padding: 0;
-      ${props => props.theme.mobileBreakpoint} {
+      ${props => props.theme.midScreenBreakpoint} {
          padding: 1rem 2rem 1.5rem;
       }
       header.flexibleThingHeader {
@@ -193,6 +196,10 @@ const StyledFlexibleThingCard = styled.article`
       margin: 0;
       ${props => props.theme.mobileBreakpoint} {
          padding: 1rem 3rem 1.5rem;
+         margin: -1rem -3rem -1.5rem;
+      }
+      ${props => props.theme.bigScreenBreakpoint} {
+         padding: 1rem 5rem 1.5rem;
          margin: -1rem -5rem -1.5rem;
       }
       max-width: calc(100% + 2rem); /* We need to add 2rem to make up for the negative margin  */
