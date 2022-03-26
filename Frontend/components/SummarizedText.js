@@ -17,13 +17,12 @@ const StyledSummarizedText = styled.div`
    }
    svg#ArrowIcon {
       display: inline;
-      height: calc(
-         ${props => props.theme.smallText} * 1.4
-      ); /* The 1.4 makes it approximately line up with text of the same font size as its height */
+      height: ${props => props.theme.smallText};
       width: auto;
       vertical-align: middle;
       position: relative;
-      bottom: 3px;
+      margin-right: 0.5rem;
+      bottom: 2px;
    }
    .topline {
       border-bottom: 1px solid ${props => props.theme.lowContrastGrey};

@@ -55,11 +55,11 @@ const StyledColorSelector = styled.div`
       }
    }
    .arrowPadding {
-      width: 3rem;
-      height: 3rem;
+      width: ${props => props.theme.smallText};
+      height: ${props => props.theme.smallText};
       position: absolute;
-      right: 0;
-      bottom: 0;
+      right: 0.75rem;
+      bottom: 1rem;
       cursor: pointer;
       .arrow rect {
          fill: ${props => props.theme.lowContrastGrey};

@@ -7,7 +7,7 @@ import ArrowIcon from '../Icons/Arrow';
 const StyledTruncCont = styled.div`
    white-space: pre-wrap;
    svg.arrow.truncContArrow {
-      width: ${props => props.theme.smallHead};
+      width: ${props => props.theme.bigText};
       display: block;
       margin: auto;
       opacity: 0.7;

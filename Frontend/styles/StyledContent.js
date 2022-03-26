@@ -211,7 +211,7 @@ const StyledContent = styled.section`
                         }
                      }
                      svg.arrow.truncContArrow {
-                        width: ${props => props.theme.smallHead};
+                        width: ${props => props.theme.bigText};
                         cursor: pointer;
                         margin: auto;
                         display: block;

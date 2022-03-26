@@ -129,7 +129,13 @@ const StyledContentPieceComment = styled.div`
          display: flex;
          align-items: center;
          svg.siblingSliderArrow {
-            width: ${props => props.theme.bigText};
+            width: ${props => props.theme.smallText};
+            &.prev {
+               margin-right: 0.5rem;
+            }
+            &.next {
+               margin-left: 0.5rem;
+            }
             cursor: pointer;
             rect {
                fill: ${props => setLightness(props.theme.mainText, 70)};
@@ -144,7 +150,7 @@ const StyledContentPieceComment = styled.div`
       svg.commentDisplayControlArrow {
          display: block;
          cursor: pointer;
-         height: ${props => props.theme.bigHead};
+         height: ${props => props.theme.bigText};
          transition: all 0.2s;
          rect {
             fill: ${props => setLightness(props.theme.mainText, 70)};
@@ -273,7 +279,7 @@ const ContentPieceComment = ({
             <div className="siblingSlider">
                {thisCommentIndex > 0 && (
                   <ArrowIcon
-                     className="siblingSliderArrow"
+                     className="siblingSliderArrow prev"
                      pointing="left"
                      onClick={() =>
                         setSelectedComment(
@@ -285,7 +291,7 @@ const ContentPieceComment = ({
                {thisCommentIndex + 1} / {siblingComments.length}
                {thisCommentIndex + 1 < siblingComments.length && (
                   <ArrowIcon
-                     className="siblingSliderArrow"
+                     className="siblingSliderArrow next"
                      pointing="right"
                      onClick={() =>
                         setSelectedComment(

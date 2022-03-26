@@ -32,13 +32,19 @@ const StyledSwiper = styled.div`
       justify-content: center;
       align-items: center;
       margin-top: 1rem;
-      --arrow-width: ${props => props.theme.bigText};
+      --arrow-width: ${props => props.theme.smallText};
       svg.arrow {
          width: var(--arrow-width);
          margin: 0;
          cursor: pointer;
          rect {
             fill: ${props => setLightness(props.theme.mainText, 70)};
+         }
+         &.prev {
+            margin-right: 0.5rem;
+         }
+         &.next {
+            margin-left: 0.5rem;
          }
          &:hover {
             rect {
@@ -194,6 +200,7 @@ const Swiper = ({
             <div className="navigator">
                {currentPosition > 0 && (
                   <ArrowIcon
+                     className="prev"
                      onClick={e => {
                         setCurrentPosition(currentPosition - 1);
                         scrollToTop(e);
@@ -217,6 +224,7 @@ const Swiper = ({
                </span>
                {currentPosition + 1 < elementsArray.length && (
                   <ArrowIcon
+                     className="next"
                      onClick={e => {
                         setCurrentPosition(currentPosition + 1);
                         scrollToTop(e);
