@@ -390,12 +390,15 @@ exports.canSeeThingGate = canSeeThingGate;
 const canSeeContentPiece = async (ctx, pieceData) => {
    // We need to figure out the privacy setting we're going to use. The piece itself may not have a privacy setting, but it might be on a thing that does. It also might be on a tag, and tags are all public.
    let computedPrivacy = pieceData.privacy;
+   let authorKey;
    if (computedPrivacy == null) {
       if (pieceData.onThing != null) {
          computedPrivacy = pieceData.onThing.privacy;
+         authorKey = 'onThing';
       }
       if (pieceData.onTag != null) {
          computedPrivacy = 'Public';
+         authorKey = 'onTag';
       }
    }
 
@@ -404,14 +407,14 @@ const canSeeContentPiece = async (ctx, pieceData) => {
    if (
       computedPrivacy == null ||
       (computedPrivacy !== 'Public' &&
-         (pieceData.author == null ||
-            pieceData.author.id == null ||
+         (pieceData[authorKey].author == null ||
+            pieceData[authorKey].author.id == null ||
             pieceData.individualViewPermissions == null ||
             (computedPrivacy === 'Friends' &&
-               pieceData.author.friends == null) ||
+               pieceData[authorKey].author.friends == null) ||
             (computedPrivacy === 'FriendsOfFriends' &&
-               (pieceData.author.friends == null ||
-                  pieceData.author.friends.some(
+               (pieceData[authorKey].author.friends == null ||
+                  pieceData[authorKey].author.friends.some(
                      friend => friend.friend == null
                   )))))
    ) {
@@ -442,7 +445,7 @@ const canSeeContentPiece = async (ctx, pieceData) => {
 
    const memberID = ctx.req.memberId;
    // If the current member created this piece, they can see it
-   if (memberID === computedData.author.id) {
+   if (memberID === computedData[authorKey].author.id) {
       return true;
    }
 
@@ -470,7 +473,9 @@ const canSeeContentPiece = async (ctx, pieceData) => {
    // If the piece is for friends only, and the current member is not a friend of the author, then they can't see it.
    if (
       computedData.privacy === 'Friends' &&
-      !computedData.author.friends.some(friend => friend.id === memberID)
+      !computedData[authorKey].author.friends.some(
+         friend => friend.id === memberID
+      )
    ) {
       return false;
    }
@@ -478,7 +483,7 @@ const canSeeContentPiece = async (ctx, pieceData) => {
    // If the piece is for friends of friends, and the current member is not a friend of the author nor a friend of any of their friends, then they can't see it
    if (
       computedData.privacy === 'FriendsOfFriends' &&
-      !computedData.author.friends.some(friend => {
+      !computedData[authorKey].author.friends.some(friend => {
          // this function needs to return true if the current member is a friend of the author or a friend of one of their friends
          if (friend.id === memberID) return true;
          if (friend == null) return false;

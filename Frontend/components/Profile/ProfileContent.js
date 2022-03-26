@@ -413,6 +413,7 @@ const ProfileContent = ({ member, isMe, defaultTab }) => {
                   cardSize="regular"
                   scrollingParentSelector=".content"
                   perPage={perPage}
+                  hideConnections
                />
                <LoadMoreButton
                   loading={loadingCreatedThings || createdThingsIsFetchingMore}
@@ -442,6 +443,7 @@ const ProfileContent = ({ member, isMe, defaultTab }) => {
                      cardType="regular"
                      borderSide="top"
                      contentType="single"
+                     hideConnections
                   />
                );
             }
