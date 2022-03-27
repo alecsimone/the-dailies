@@ -91,6 +91,7 @@ const StyledCollection = styled.section`
          flex-wrap: wrap;
          margin: 1rem 0;
          flex-grow: 1;
+         max-width: 100%;
          ${props => props.theme.mobileBreakpoint} {
             flex-wrap: nowrap;
          }
@@ -107,9 +108,11 @@ const StyledCollection = styled.section`
             display: flex;
             align-items: center;
             margin: 1rem 0;
+            max-width: 100%;
             select {
                padding: 0.5rem;
                padding-right: 4rem;
+               max-width: 100%;
             }
             .loadingPlaceholder {
                border: 1px solid ${props => props.theme.lowContrastGrey};
