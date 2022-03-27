@@ -35,23 +35,23 @@ const theme = {
    secondaryAccent: 'hsl(42, 79%, 64%)', // #ecc05b
    warning: 'hsl(0, 75%, 50%)', // #df2020
 
-   mobileBPWidth: `${mobileBreakpointPx}px`,
+   mobileBPWidth: `${mobileBreakpointPx}px`, // 600
    mobileBPWidthRaw: mobileBreakpointPx,
    mobileBreakpoint: `@media screen and (min-width: ${mobileBreakpointPx}px)`,
 
-   desktopBPWidth: `${desktopBreakpointPx}px`,
+   desktopBPWidth: `${desktopBreakpointPx}px`, // 1100
    desktopBPWidthRaw: desktopBreakpointPx,
    desktopBreakpoint: `@media screen and (min-width: ${desktopBreakpointPx}px)`,
 
-   midScreenBPWidth: `${midScreenBreakpointPx}px`,
+   midScreenBPWidth: `${midScreenBreakpointPx}px`, // 1440
    midScreenBPWidthRaw: midScreenBreakpointPx,
    midScreenBreakpoint: `@media screen and (min-width: ${midScreenBreakpointPx}px)`,
 
-   bigScreenBPWidth: `${bigScreenBreakpointPx}px`,
+   bigScreenBPWidth: `${bigScreenBreakpointPx}px`, // 1800
    bigScreenBPWidthRaw: bigScreenBreakpointPx,
    bigScreenBreakpoint: `@media screen and (min-width: ${bigScreenBreakpointPx}px)`,
 
-   massiveScreenBPWidth: `${massiveScreenBreakpointPx}px`,
+   massiveScreenBPWidth: `${massiveScreenBreakpointPx}px`, // 1921
    massiveScreenBPWidthRaw: massiveScreenBreakpointPx,
    massiveScreenBreakpoint: `@media screen and (min-width: ${massiveScreenBreakpointPx}px)`,
 

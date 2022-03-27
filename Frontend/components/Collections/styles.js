@@ -35,21 +35,28 @@ const StyledCollection = styled.section`
       }
    }
    header {
-      margin-bottom: 2rem;
+      display: flex;
+      flex-wrap: wrap;
+      margin: 1rem 0;
       position: relative;
       padding: 0 1rem;
       ${props => props.theme.mobileBreakpoint} {
          padding: 0;
       }
       .top {
+         flex-grow: 1;
+         max-width: 100%;
          display: flex;
          align-items: center;
+         justify-content: space-between;
+         margin: 1rem 0;
+         padding: 0 1rem;
          input.collectionTitle,
          h3.collectionTitle {
             display: block;
-            text-align: center;
+            text-align: left;
             border: none;
-            margin: 2rem auto calc(1.5rem + 1px);
+            margin: 0;
             font-size: ${props => props.theme.smallHead};
             font-weight: bold;
             max-width: 100%;
@@ -69,7 +76,7 @@ const StyledCollection = styled.section`
             border-radius: 3px;
             cursor: pointer;
             flex-shrink: 0;
-            ${props => props.theme.desktopBreakpoint} {
+            ${props => props.theme.mobileBreakpoint} {
                display: none;
             }
             &.showing {
@@ -78,24 +85,27 @@ const StyledCollection = styled.section`
          }
       }
       .headerOptions {
-         margin-top: 1rem;
          display: flex;
          justify-content: space-between;
          align-items: center;
          flex-wrap: wrap;
+         margin: 1rem 0;
+         flex-grow: 1;
          ${props => props.theme.mobileBreakpoint} {
             flex-wrap: nowrap;
          }
+         ${props => props.theme.desktopBreakpoint} {
+            flex-grow: 0;
+         }
          &.hidden {
             display: none;
-            ${props => props.theme.desktopBreakpoint} {
+            ${props => props.theme.mobileBreakpoint} {
                display: flex;
             }
          }
          .left {
             display: flex;
             align-items: center;
-            flex-grow: 1;
             select {
                padding: 0.5rem;
                padding-right: 4rem;
