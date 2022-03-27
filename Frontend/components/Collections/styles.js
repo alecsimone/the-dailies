@@ -278,8 +278,13 @@ const StyledCollection = styled.section`
          overflow-x: auto;
          overflow-y: hidden;
          height: 100%;
-         /* scrollbar-width: thin; */
+         scrollbar-width: thin;
          scrollbar-color: hsl(210, 10%, 30%) hsl(30, 1%, 4%);
+         cursor: grab;
+         &.scrolling {
+            cursor: grabbing;
+            user-select: none;
+         }
       }
       .masonryContainer {
          display: flex;

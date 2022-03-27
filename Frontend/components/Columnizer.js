@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { Draggable, Droppable } from 'react-beautiful-dnd';
 import { getRandomString } from '../lib/TextHandling';
 import {
@@ -34,6 +34,13 @@ const Columnizer = ({
    canEdit,
    addItemButtonFunction
 }) => {
+   const scrollPosRef = useRef({
+      left: 0,
+      x: 0
+   });
+   const [scrolling, setScrolling] = useState(false);
+   const scrollerRef = useRef(null);
+
    if (items.length === 0) return null;
 
    const makeColumn = (columnOrderObj, index) => {
@@ -89,70 +96,27 @@ const Columnizer = ({
       );
    };
 
-   // const makeColumnProper = (columnOrderObj, index) => (
-   //    <div
-   //       id={`id-${columnOrderObj.id}`}
-   //       className="column"
-   //       key={`columnizerColumn-${index}`}
-   //    >
-   //       <Droppable
-   //          droppableId={columnOrderObj.id}
-   //          isDropDisabled={!canEdit}
-   //          key={index}
-   //          type="group"
-   //       >
-   //          {provided => (
-   //             <div
-   //                ref={provided.innerRef}
-   //                key={index}
-   //                {...provided.droppableProps}
-   //                className="dropArea"
-   //             >
-   //                {columnOrderObj.order.length === 0 && (
-   //                   <StyledGroup className="blankGroup">
-   //                      Drop groups here to add
-   //                      {columnOrderObj.id === 'blankColumn'
-   //                         ? ' a new '
-   //                         : ' them to this '}
-   //                      column
-   //                   </StyledGroup>
-   //                )}
-   //                {columnOrderObj.order.map((columnItem, itemIndex) => {
-   //                   const itemElement = getItemForID(columnItem, items);
+   const startDragToScroll = e => {
+      const draggableParent = e.target.closest('[data-rbd-draggable-id]');
+      if (draggableParent == null) {
+         scrollPosRef.current = {
+            left: scrollerRef.current.scrollLeft,
+            x: e.clientX
+         };
+         setScrolling(true);
+      }
+   };
 
-   //                   if (itemElement == null) {
-   //                      return null;
-   //                   }
+   const dragToScroll = e => {
+      if (scrolling) {
+         const dx = e.clientX - scrollPosRef.current.x;
+         scrollerRef.current.scrollLeft = scrollPosRef.current.left - dx;
+      }
+   };
 
-   //                   return (
-   //                      <Draggable
-   //                         draggableId={`${index}-${
-   //                            itemElement.props.groupObj.id
-   //                         }`}
-   //                         isDragDisabled={!canEdit}
-   //                         index={itemIndex}
-   //                         key={`${index}-${itemElement.props.groupObj.id}`}
-   //                      >
-   //                         {dragProvided => (
-   //                            <div
-   //                               {...dragProvided.draggableProps}
-   //                               {...dragProvided.dragHandleProps}
-   //                               ref={dragProvided.innerRef}
-   //                               key={itemIndex}
-   //                               className="groupContainer"
-   //                            >
-   //                               {itemElement}
-   //                            </div>
-   //                         )}
-   //                      </Draggable>
-   //                   );
-   //                })}
-   //                {provided.placeholder}
-   //             </div>
-   //          )}
-   //       </Droppable>
-   //    </div>
-   // );
+   const endDragToScroll = e => {
+      setScrolling(false);
+   };
 
    const columns = columnOrders.map((columnOrderObj, index) =>
       makeColumn(columnOrderObj, index)
@@ -172,7 +136,13 @@ const Columnizer = ({
    }
 
    return (
-      <div className="overflowWrapper">
+      <div
+         className={scrolling ? 'overflowWrapper scrolling' : 'overflowWrapper'}
+         ref={scrollerRef}
+         onMouseDown={startDragToScroll}
+         onMouseMove={dragToScroll}
+         onMouseUp={endDragToScroll}
+      >
          <div className="masonryContainer">{columns}</div>
       </div>
    );
