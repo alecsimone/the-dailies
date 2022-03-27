@@ -1,5 +1,6 @@
 import React from 'react';
 import { Draggable, Droppable } from 'react-beautiful-dnd';
+import { getRandomString } from '../lib/TextHandling';
 import {
    desktopBreakpointPx,
    bigScreenBreakpointPx
@@ -27,117 +28,131 @@ const getItemForID = (id, items) => {
    return element;
 };
 
-const Columnizer = ({ items, columnOrders, canEdit }) => {
+const Columnizer = ({
+   items,
+   columnOrders,
+   canEdit,
+   addItemButtonFunction
+}) => {
    if (items.length === 0) return null;
 
-   const makeColumn = (columnOrderObj, index) => (
-      <div
-         id={`id-${columnOrderObj.id}`}
-         className="column"
-         key={`columnizerColumn-${index}`}
-      >
-         <Droppable
-            droppableId={columnOrderObj.id}
-            isDropDisabled={!canEdit}
-            key={index}
-            type="group"
+   const makeColumn = (columnOrderObj, index) => {
+      const addItemButton = addItemButtonFunction(
+         columnOrderObj.id != null && columnOrderObj.id !== 'blankColumn'
+            ? columnOrderObj.id
+            : getRandomString(25)
+      );
+
+      return (
+         <div
+            id={`id-${columnOrderObj.id}`}
+            className="column"
+            key={`columnizerColumn-${index}`}
          >
-            {provided => (
-               <div
-                  ref={provided.innerRef}
-                  key={index}
-                  {...provided.droppableProps}
-                  className="dropArea"
-               >
-                  {columnOrderObj.order.length === 0 && (
-                     <StyledGroup className="blankGroup">
-                        Drop groups here to add
-                        {columnOrderObj.id === 'blankColumn'
-                           ? ' a new '
-                           : ' them to this '}
-                        column
-                     </StyledGroup>
-                  )}
-                  {columnOrderObj.order.map((columnItem, itemIndex) => {
-                     const itemElement = getItemForID(columnItem, items);
+            <Droppable
+               droppableId={columnOrderObj.id}
+               isDropDisabled={!canEdit}
+               key={index}
+               type="group"
+            >
+               {provided => (
+                  <div
+                     ref={provided.innerRef}
+                     key={index}
+                     {...provided.droppableProps}
+                     className="dropArea"
+                  >
+                     {columnOrderObj.order.length === 0 && (
+                        <StyledGroup className="blankGroup">
+                           Drop groups here to add
+                           {columnOrderObj.id === 'blankColumn'
+                              ? ' a new '
+                              : ' them to this '}
+                           column
+                        </StyledGroup>
+                     )}
+                     {columnOrderObj.order.map((columnItem, itemIndex) => {
+                        const itemElement = getItemForID(columnItem, items);
 
-                     if (itemElement == null) {
-                        return null;
-                     }
+                        if (itemElement == null) {
+                           return null;
+                        }
 
-                     return itemElement;
-                  })}
-                  {provided.placeholder}
-               </div>
-            )}
-         </Droppable>
-      </div>
-   );
+                        return itemElement;
+                     })}
+                     {provided.placeholder}
+                     {addItemButton}
+                  </div>
+               )}
+            </Droppable>
+         </div>
+      );
+   };
 
-   const makeColumnProper = (columnOrderObj, index) => (
-      <div
-         id={`id-${columnOrderObj.id}`}
-         className="column"
-         key={`columnizerColumn-${index}`}
-      >
-         <Droppable
-            droppableId={columnOrderObj.id}
-            isDropDisabled={!canEdit}
-            key={index}
-            type="group"
-         >
-            {provided => (
-               <div
-                  ref={provided.innerRef}
-                  key={index}
-                  {...provided.droppableProps}
-                  className="dropArea"
-               >
-                  {columnOrderObj.order.length === 0 && (
-                     <StyledGroup className="blankGroup">
-                        Drop groups here to add
-                        {columnOrderObj.id === 'blankColumn'
-                           ? ' a new '
-                           : ' them to this '}
-                        column
-                     </StyledGroup>
-                  )}
-                  {columnOrderObj.order.map((columnItem, itemIndex) => {
-                     const itemElement = getItemForID(columnItem, items);
+   // const makeColumnProper = (columnOrderObj, index) => (
+   //    <div
+   //       id={`id-${columnOrderObj.id}`}
+   //       className="column"
+   //       key={`columnizerColumn-${index}`}
+   //    >
+   //       <Droppable
+   //          droppableId={columnOrderObj.id}
+   //          isDropDisabled={!canEdit}
+   //          key={index}
+   //          type="group"
+   //       >
+   //          {provided => (
+   //             <div
+   //                ref={provided.innerRef}
+   //                key={index}
+   //                {...provided.droppableProps}
+   //                className="dropArea"
+   //             >
+   //                {columnOrderObj.order.length === 0 && (
+   //                   <StyledGroup className="blankGroup">
+   //                      Drop groups here to add
+   //                      {columnOrderObj.id === 'blankColumn'
+   //                         ? ' a new '
+   //                         : ' them to this '}
+   //                      column
+   //                   </StyledGroup>
+   //                )}
+   //                {columnOrderObj.order.map((columnItem, itemIndex) => {
+   //                   const itemElement = getItemForID(columnItem, items);
 
-                     if (itemElement == null) {
-                        return null;
-                     }
+   //                   if (itemElement == null) {
+   //                      return null;
+   //                   }
 
-                     return (
-                        <Draggable
-                           draggableId={`${index}-${
-                              itemElement.props.groupObj.id
-                           }`}
-                           isDragDisabled={!canEdit}
-                           index={itemIndex}
-                           key={`${index}-${itemElement.props.groupObj.id}`}
-                        >
-                           {dragProvided => (
-                              <div
-                                 {...dragProvided.draggableProps}
-                                 {...dragProvided.dragHandleProps}
-                                 ref={dragProvided.innerRef}
-                                 key={itemIndex}
-                                 className="groupContainer"
-                              >
-                                 {itemElement}
-                              </div>
-                           )}
-                        </Draggable>
-                     );
-                  })}
-                  {provided.placeholder}
-               </div>
-            )}
-         </Droppable>
-      </div>
-   );
+   //                   return (
+   //                      <Draggable
+   //                         draggableId={`${index}-${
+   //                            itemElement.props.groupObj.id
+   //                         }`}
+   //                         isDragDisabled={!canEdit}
+   //                         index={itemIndex}
+   //                         key={`${index}-${itemElement.props.groupObj.id}`}
+   //                      >
+   //                         {dragProvided => (
+   //                            <div
+   //                               {...dragProvided.draggableProps}
+   //                               {...dragProvided.dragHandleProps}
+   //                               ref={dragProvided.innerRef}
+   //                               key={itemIndex}
+   //                               className="groupContainer"
+   //                            >
+   //                               {itemElement}
+   //                            </div>
+   //                         )}
+   //                      </Draggable>
+   //                   );
+   //                })}
+   //                {provided.placeholder}
+   //             </div>
+   //          )}
+   //       </Droppable>
+   //    </div>
+   // );
 
    const columns = columnOrders.map((columnOrderObj, index) =>
       makeColumn(columnOrderObj, index)

@@ -1,14 +1,12 @@
 import { useMutation } from '@apollo/react-hooks';
 import { useRouter } from 'next/router';
 import { useState, useRef, useEffect } from 'react';
-import { getRandomString } from '../../lib/TextHandling';
 import useMe from '../Account/useMe';
 import LockIcon from '../Icons/Lock';
 import HamburgerIcon from '../Icons/Hamburger';
 import AddCollectionButton from './AddCollectionButton';
 import CollectionPrivacyInterface from './CollectionPrivacyInterface';
 import {
-   ADD_GROUP_TO_COLLECTION_MUTATION,
    DELETE_COLLECTION_MUTATION,
    RENAME_COLLECTION_MUTATION
 } from './queriesAndMutations';
@@ -66,16 +64,7 @@ const CollectionsHeader = ({
 
    const collectionTitleRef = useRef(null);
 
-   const {
-      id,
-      title,
-      userGroups,
-      privacy,
-      viewers,
-      editors,
-      columnOrders,
-      author
-   } = activeCollection;
+   const { id, title, privacy, viewers, editors, author } = activeCollection;
 
    useEffect(() => {
       setCollectionTitle(title);
@@ -87,8 +76,6 @@ const CollectionsHeader = ({
          debounceKey
       }
    });
-
-   const [addGroupToCollection] = useMutation(ADD_GROUP_TO_COLLECTION_MUTATION);
 
    const router = useRouter();
    const [deleteCollection, { loading: deletingCollection }] = useMutation(
@@ -160,70 +147,6 @@ const CollectionsHeader = ({
       >
          <TrashIcon className={deletingCollection ? 'deleting' : 'ready'} />
       </div>
-   );
-
-   const addGroupButton = (
-      <button
-         type="button"
-         onClick={() => {
-            const newGroupID = getRandomString(25);
-
-            // We're going to add the group to the first empty column, making a new one if we have to.
-            const firstEmptyColumnIndex = columnOrders.findIndex(
-               orderObj => orderObj.order.length === 0
-            );
-
-            let columnToAddToID;
-            if (firstEmptyColumnIndex === -1) {
-               columnToAddToID = getRandomString(25);
-               columnOrders.push({
-                  __typename: 'ColumnOrder',
-                  id: columnToAddToID,
-                  order: [newGroupID]
-               });
-            } else {
-               columnToAddToID = columnOrders[firstEmptyColumnIndex].id;
-               columnOrders[firstEmptyColumnIndex].order.push(newGroupID);
-            }
-
-            const now = new Date();
-            const optimisticResponse = {
-               __typename: 'Mutation',
-               addGroupToCollection: {
-                  __typename: 'Collection',
-                  id,
-                  userGroups: [
-                     ...userGroups,
-                     {
-                        __typename: 'CollectionGroup',
-                        id: newGroupID,
-                        title: 'Untitled Group',
-                        includedLinks: [],
-                        inCollection: {
-                           __typename: 'Collection',
-                           id
-                        },
-                        notes: [],
-                        order: [],
-                        createdAt: now.toISOString(),
-                        updatedAt: now.toISOString()
-                     }
-                  ],
-                  columnOrders
-               }
-            };
-            addGroupToCollection({
-               variables: {
-                  collectionID: id,
-                  newGroupID,
-                  columnID: columnToAddToID
-               },
-               optimisticResponse
-            });
-         }}
-      >
-         add group
-      </button>
    );
 
    return (

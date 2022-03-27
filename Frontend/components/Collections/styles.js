@@ -291,6 +291,20 @@ const StyledCollection = styled.section`
                   background: ${props => setAlpha(props.theme.lightBlack, 0.6)};
                }
             }
+            button.addGroupButton {
+               width: 100%;
+               max-width: 18rem;
+               display: block;
+               font-size: ${props => props.theme.smallText};
+               margin: auto;
+               padding: 1rem;
+               background: ${props => setAlpha(props.theme.lightBlack, 0.8)};
+               &:hover {
+                  background: ${props => setAlpha(props.theme.lightBlack, 0.6)};
+               }
+               border: 1px solid
+                  ${props => setAlpha(props.theme.mainText, 0.25)};
+            }
          }
          .smallThingCard {
             max-width: none;
