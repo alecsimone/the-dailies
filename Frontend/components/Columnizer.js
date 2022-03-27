@@ -97,6 +97,7 @@ const Columnizer = ({
    };
 
    const startDragToScroll = e => {
+      // If they're clicking on something that's draggable, we don't want to scroll
       const draggableParent = e.target.closest('[data-rbd-draggable-id]');
       if (draggableParent == null) {
          scrollPosRef.current = {

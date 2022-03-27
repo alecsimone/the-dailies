@@ -44,6 +44,9 @@ const StyledFlexibleFeaturedImage = styled.div`
    text-align: center;
    .featuredImageWrapper {
       position: relative;
+      &.featuredTweet {
+         padding-bottom: 1rem;
+      }
       svg.editThis {
          position: absolute;
          right: 1rem;
@@ -128,7 +131,14 @@ const FlexibleFeaturedImage = ({ canEdit, id, type }) => {
          {featuredImage != null &&
             !disabledCodewords.includes(featuredImage.toLowerCase()) &&
             featuredImage !== '' && (
-               <div className="featuredImageWrapper">
+               <div
+                  className={
+                     featuredImage.includes('twitter.com/') &&
+                     featuredImage.includes('/status/')
+                        ? 'featuredImageWrapper featuredTweet'
+                        : 'featuredImageWrapper'
+                  }
+               >
                   {
                      <ExplodingLink
                         url={featuredImage}
