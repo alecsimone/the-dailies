@@ -11,7 +11,7 @@ import { getMainDefinition } from 'apollo-utilities';
 import { endpoint, endpointNoHTTP } from '../config';
 
 function createClient({ headers, initialState }) {
-   const cache = new InMemoryCache().restore(initialState);
+   const cache = new InMemoryCache().restore(initialState || {});
    cache.writeData({
       data: {}
    });

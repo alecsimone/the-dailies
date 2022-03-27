@@ -274,7 +274,11 @@ const CollectionsCard = ({ data, index, collectionID, groupID, canEdit }) => {
                ref={provided.innerRef}
                key={`${groupID}-${id}`}
             >
-               <ExplodingLink url={url} hideCardShortlink />
+               <ExplodingLink
+                  url={url}
+                  hideCardShortlink
+                  wholeCardLink={false}
+               />
                {canEdit && (
                   <div className="cardManagementBar">
                      <CopyCardInterface

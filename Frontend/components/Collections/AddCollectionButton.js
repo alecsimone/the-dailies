@@ -1,8 +1,9 @@
 import { useMutation } from '@apollo/react-hooks';
 import { useRouter } from 'next/router';
+import X from '../Icons/X';
 import { ADD_COLLECTION_MUTATION } from './queriesAndMutations';
 
-const AddCollectionButton = () => {
+const AddCollectionButton = ({ type = 'text' }) => {
    const router = useRouter();
 
    const [addCollection, { loading }] = useMutation(ADD_COLLECTION_MUTATION, {
@@ -18,6 +19,21 @@ const AddCollectionButton = () => {
          }
       }
    });
+
+   if (type === 'icon') {
+      return (
+         <div className="buttonWrapper">
+            <X
+               color="lowContrastGrey"
+               className={loading ? 'adding' : 'ready'}
+               onClick={() => {
+                  if (loading) return;
+                  addCollection();
+               }}
+            />
+         </div>
+      );
+   }
 
    return (
       <button

@@ -12,6 +12,7 @@ import {
    DELETE_COLLECTION_MUTATION,
    RENAME_COLLECTION_MUTATION
 } from './queriesAndMutations';
+import TrashIcon from '../Icons/Trash';
 
 const getShortestColumnID = columnData => {
    // First we need two placeholder variables
@@ -150,15 +151,15 @@ const CollectionsHeader = ({
    }
 
    const deleteCollectionButton = (
-      <button
-         type="button"
+      <div
+         className="buttonWrapper"
          onClick={() => {
             if (deletingCollection) return;
             deleteCollection();
          }}
       >
-         {deletingCollection ? 'deleting' : 'delete'} collection
-      </button>
+         <TrashIcon className={deletingCollection ? 'deleting' : 'ready'} />
+      </div>
    );
 
    const addGroupButton = (
@@ -285,17 +286,18 @@ const CollectionsHeader = ({
                /> */}
             </div>
             <div className="headerButtons">
-               <AddCollectionButton />
+               <AddCollectionButton type="icon" />
                {canEdit && deleteCollectionButton}
-               {canEdit && addGroupButton}
-               <LockIcon
-                  privacy={privacy}
+               <div
+                  className="buttonWrapper"
                   onClick={() => {
                      if (!canEdit) return;
                      if (author.id !== loggedInUserID) return;
                      setShowingPrivacyInterface(!showingPrivacyInterface);
                   }}
-               />
+               >
+                  <LockIcon privacy={privacy} />
+               </div>
             </div>
          </div>
          {showingPrivacyInterface && (

@@ -21,6 +21,9 @@ const StyledLinkCard = styled.div`
    padding: 1rem;
    border-radius: 4px;
    margin-top: 0.5rem;
+   &.titleLinkOnly {
+      display: flex;
+   }
    a.wrapperLink {
       display: flex;
    }
@@ -98,7 +101,12 @@ const StyledLinkCard = styled.div`
 
 const useLinkData = link => useSelector(state => state.stuff[`Link:${link}`]);
 
-const LinkCard = ({ link, shortlinkHidden, storePersonalLink = false }) => {
+const LinkCard = ({
+   link,
+   shortlinkHidden,
+   storePersonalLink = false,
+   wholeCardLink = true
+}) => {
    const hasData = useSelector(state => state.stuff[`Link:${link}`] != null);
 
    const storedLinkData = useLinkData(link);
@@ -192,49 +200,67 @@ const LinkCard = ({ link, shortlinkHidden, storePersonalLink = false }) => {
       //    hasProperIcon = false;
       // }
 
+      const theLinkCard = (
+         <>
+            <div
+               className={`linkCardInfo ${
+                  image == null && video == null && hasProperIcon
+                     ? 'icon'
+                     : 'poster'
+               }`}
+            >
+               <div className="siteName">
+                  <a href={computedURL} target="_blank">
+                     {siteName}
+                  </a>
+               </div>
+               <a href={computedURL} target="_blank">
+                  <div className="title">{title}</div>
+               </a>
+               <div className="description">{trimmedDescription}</div>
+            </div>
+            {image == null && video == null && icon != null && hasProperIcon && (
+               <div className="linkCardLogo">
+                  <img src={icon} />
+               </div>
+            )}
+            {image != null && (
+               <div className="linkCardPoster">
+                  <img src={image} />
+               </div>
+            )}
+         </>
+      );
+
+      if (wholeCardLink) {
+         return (
+            <StyledLinkCard
+               className={`linkCard ${
+                  image == null && video == null && icon != null
+                     ? 'icon'
+                     : 'poster'
+               }`}
+            >
+               <a
+                  href={computedURL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="wrapperLink"
+               >
+                  {theLinkCard}
+               </a>
+            </StyledLinkCard>
+         );
+      }
       return (
          <StyledLinkCard
-            className={`linkCard ${
+            className={`linkCard titleLinkOnly ${
                image == null && video == null && icon != null
                   ? 'icon'
                   : 'poster'
             }`}
          >
-            <a
-               href={computedURL}
-               target="_blank"
-               rel="noopener noreferrer"
-               className="wrapperLink"
-            >
-               <div
-                  className={`linkCardInfo ${
-                     image == null && video == null && hasProperIcon
-                        ? 'icon'
-                        : 'poster'
-                  }`}
-               >
-                  <div className="siteName">
-                     <a href={computedURL} target="_blank">
-                        {siteName}
-                     </a>
-                  </div>
-                  <div className="title">{title}</div>
-                  <div className="description">{trimmedDescription}</div>
-               </div>
-               {image == null &&
-                  video == null &&
-                  icon != null &&
-                  hasProperIcon && (
-                     <div className="linkCardLogo">
-                        <img src={icon} />
-                     </div>
-                  )}
-               {image != null && (
-                  <div className="linkCardPoster">
-                     <img src={image} />
-                  </div>
-               )}
-            </a>
+            {theLinkCard}
          </StyledLinkCard>
       );
    }

@@ -33,7 +33,8 @@ const ExplodingLink = ({
    nextText,
    showLinkCards,
    hideCardShortlink,
-   linkSource
+   linkSource,
+   wholeCardLink
 }) => {
    if (url == null) return null;
    const lowerCaseURL = url.toLowerCase();
@@ -297,6 +298,7 @@ const ExplodingLink = ({
                link={url}
                shortlinkHidden={hideCardShortlink}
                storePersonalLink={linkSource === 'ContentPiece'}
+               wholeCardLink={wholeCardLink}
             />
          </>
       );

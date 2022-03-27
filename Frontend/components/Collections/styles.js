@@ -137,7 +137,7 @@ const StyledCollection = styled.section`
                   opacity: 1;
                }
             }
-            svg {
+            .buttonWrapper {
                height: ${props => props.theme.smallHead};
                margin-left: 1.5rem;
                cursor: pointer;
@@ -150,6 +150,16 @@ const StyledCollection = styled.section`
                   > * {
                      opacity: 1;
                   }
+               }
+            }
+            svg {
+               height: 100%;
+               &.x {
+                  transform: rotate(45deg);
+               }
+               &.deleting,
+               &.adding {
+                  ${props => props.theme.spin};
                }
             }
          }
@@ -437,6 +447,9 @@ const StyledCard = styled.div`
       max-width: none;
       header {
          display: block;
+         &.flexibleThingHeader .headerTop .titleWrapper {
+            flex-grow: 0;
+         }
       }
       &.smallThingCard {
          opacity: 1;
