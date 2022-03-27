@@ -347,7 +347,7 @@ const StyledGroup = styled.div`
    }
    border-radius: 6px;
    margin-bottom: 2rem;
-   background: ${props => setAlpha(props.theme.lightBlack, 0.8)};
+   background: ${props => props.theme.lightBlack};
    &.blankGroup {
       padding: 2rem;
       text-align: center;
@@ -356,7 +356,15 @@ const StyledGroup = styled.div`
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 0;
+      margin: 0;
+      background: ${props => props.theme.lightBlack};
+      z-index: 3;
+      position: sticky;
+      top: 0;
+      width: calc(100% + 4rem);
+      margin-left: -2rem;
+      padding: 0 2rem;
+      border-radius: 6px;
       h4.groupTitle,
       textarea.groupTitle {
          font-size: ${props => props.theme.bigText};
