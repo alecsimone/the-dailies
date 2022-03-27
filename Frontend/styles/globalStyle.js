@@ -371,6 +371,7 @@ const GlobalStyle = createGlobalStyle`
                transform: translateX(calc(-100% + ${props =>
                   props.theme
                      .smallHead} + 2rem)); // The 2rem is for the 1rem of padding on either side, and the icon is smallHead
+               min-width: 6rem;
                .container {
                   display: none;
                }

@@ -82,9 +82,10 @@ const MemberBox = () => {
          setHomepageThingsBarIsOpen(!homepageThingsBarIsOpen);
          return;
       }
-      if (!thingsSidebarIsOpen && window.outerWidth > desktopBPWidthRaw) {
-         return;
-      }
+      // Not entirely sure what this conditional was for. It used to have isHome && as its first part, but we moved that to a separate conditional to allow opening and closing the my things sidebar on the homepage. I'm not sure if there's any reason for it still, but I'm keeping it for posterity.
+      // if (!thingsSidebarIsOpen && window.outerWidth > desktopBPWidthRaw) {
+      //    return;
+      // }
       if (navSidebarIsOpen === true && thingsSidebarIsOpen === false) {
          setNavSidebarIsOpen(false);
       }
