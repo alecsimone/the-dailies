@@ -170,6 +170,7 @@ const Home = () => {
                cardSize="regular"
                displayType="list"
                hideConnections
+               showEmptyContent={false}
             />
          );
          if (data.allThings && data.allThings.length > 0) {
@@ -194,6 +195,7 @@ const Home = () => {
                cardSize="regular"
                displayType="list"
                hideConnections
+               showEmptyContent={false}
             />
          );
          if (

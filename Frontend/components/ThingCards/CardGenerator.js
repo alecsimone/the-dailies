@@ -12,7 +12,8 @@ const CardGenerator = ({
    noPic,
    draggable,
    groupName,
-   index
+   index,
+   showEmptyContent
 }) => {
    const hasData = useSelector(state => state.stuff[`Thing:${id}`] != null);
 
@@ -35,6 +36,7 @@ const CardGenerator = ({
             draggable={draggable}
             groupName={groupName}
             index={index}
+            showEmptyContent={showEmptyContent}
          />
       );
    }
@@ -52,6 +54,7 @@ const CardGenerator = ({
          draggable={draggable}
          groupName={groupName}
          index={index}
+         showEmptyContent={showEmptyContent}
       />
    );
 };

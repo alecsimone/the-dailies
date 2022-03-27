@@ -476,7 +476,8 @@ const FlexibleThingCard = ({
    noPic,
    draggable,
    groupName,
-   index
+   index,
+   showEmptyContent = true
 }) => {
    // return <div>Card!</div>;
    // console.log(`thing ${thingID} card render`);
@@ -522,7 +523,7 @@ const FlexibleThingCard = ({
    }
 
    const [expansion, setExpansion] = useState({
-      content: expanded && (canEdit || contentCount > 0),
+      content: expanded && ((canEdit && showEmptyContent) || contentCount > 0),
       taxes: expanded && tagCount > 0,
       connections: expanded && hideConnections !== true,
       comments: expanded && commentCount > 0,

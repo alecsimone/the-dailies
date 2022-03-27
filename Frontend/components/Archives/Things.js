@@ -56,7 +56,8 @@ const Things = ({
    borderSide,
    hideConnections,
    draggable = false,
-   groupName = 'unnamed'
+   groupName = 'unnamed',
+   showEmptyContent
 }) => {
    const { desktopBPWidthRaw, bigScreenBPWidthRaw } = useContext(ThemeContext);
 
@@ -87,6 +88,7 @@ const Things = ({
          draggable={draggable}
          groupName={groupName}
          index={index}
+         showEmptyContent={showEmptyContent}
       />
    ));
    if (displayType === 'grid') {

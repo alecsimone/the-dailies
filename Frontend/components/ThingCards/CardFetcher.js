@@ -14,7 +14,8 @@ const CardFetcher = ({
    contentType,
    draggable,
    groupName,
-   index
+   index,
+   showEmptyContent
 }) => {
    const { data, loading, error } = useQueryAndStoreIt(SINGLE_THING_QUERY, {
       variables: {
@@ -48,6 +49,7 @@ const CardFetcher = ({
             draggable={draggable}
             groupName={groupName}
             index={index}
+            showEmptyContent={showEmptyContent}
          />
       );
    }
