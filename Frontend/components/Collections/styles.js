@@ -106,6 +106,7 @@ const StyledCollection = styled.section`
          .left {
             display: flex;
             align-items: center;
+            margin: 1rem 0;
             select {
                padding: 0.5rem;
                padding-right: 4rem;
@@ -133,6 +134,7 @@ const StyledCollection = styled.section`
             display: flex;
             align-items: center;
             justify-content: end;
+            margin: 1rem 0;
             > * {
                background: ${props => setAlpha(props.theme.lightBlack, 0.8)};
                border: 1px solid
