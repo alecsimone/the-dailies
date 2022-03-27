@@ -78,6 +78,14 @@ const StyledHomepage = styled.section`
       width: 25%;
       min-width: 36rem;
       display: none;
+      &.open {
+         transform: translateX(0%);
+      }
+      &.closed {
+         transform: translateX(100%);
+         min-width: 0;
+         width: 0;
+      }
       p.emptyThings {
          padding: 0 2rem;
       }
@@ -124,7 +132,11 @@ const Home = () => {
 
    const [currentFeed, setCurrentFeed] = useState('Top');
 
-   const { setThingsSidebarIsOpen } = useContext(ModalContext);
+   const {
+      setThingsSidebarIsOpen,
+      homepageThingsBarIsOpen,
+      setHomepageThingsBarIsOpen
+   } = useContext(ModalContext);
 
    useEffect(() => setThingsSidebarIsOpen(false), [setThingsSidebarIsOpen]);
 
@@ -252,7 +264,11 @@ const Home = () => {
                />
             )}
          </div>
-         <div className="sidebar">
+         <div
+            className={
+               homepageThingsBarIsOpen ? 'sidebar open' : 'sidebar closed'
+            }
+         >
             <MyThings scrollingSelector=".sidebar" borderSide="left" />
          </div>
       </StyledHomepage>

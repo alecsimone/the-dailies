@@ -48,6 +48,8 @@ const MemberBox = () => {
    const {
       thingsSidebarIsOpen,
       setThingsSidebarIsOpen,
+      homepageThingsBarIsOpen,
+      setHomepageThingsBarIsOpen,
       navSidebarIsOpen,
       setNavSidebarIsOpen,
       isHome
@@ -75,11 +77,12 @@ const MemberBox = () => {
 
    const toggleThingsSidebar = e => {
       e.preventDefault();
-      if (
-         isHome &&
-         !thingsSidebarIsOpen &&
-         window.outerWidth > desktopBPWidthRaw
-      ) {
+      if (isHome) {
+         console.log(!homepageThingsBarIsOpen);
+         setHomepageThingsBarIsOpen(!homepageThingsBarIsOpen);
+         return;
+      }
+      if (!thingsSidebarIsOpen && window.outerWidth > desktopBPWidthRaw) {
          return;
       }
       if (navSidebarIsOpen === true && thingsSidebarIsOpen === false) {

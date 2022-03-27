@@ -47,10 +47,11 @@ const stickifyButtons = (
    bottomBarHeight,
    block
 ) => {
-   if (computedStickingData.scroller.style.width === '') {
-      const scrollerRect = computedStickingData.scroller.getBoundingClientRect();
-      computedStickingData.scroller.style.width = `${scrollerRect.width}px`;
-   }
+   // We were using this code to make sure the sizes of the parents didn't change when we messed around with stickification. Because many of the parents are sized by flexboxes, as the content within them changes their sizes changes, which can be a little unsettling. I think it's most noticeable on the homepage, where once you scroll down the page the my things sidebar shrinks. But hardcoding a width for these scrolling parents also prevents them from resizing sometimes when they should (eg, when hiding the my things sidebar on the homepage), so for now I'm going to disable it and see if things are too annoying without it and we need to find a better way of fixing this.
+   // if (computedStickingData.scroller.style.width === '') {
+   //    const scrollerRect = computedStickingData.scroller.getBoundingClientRect();
+   //    computedStickingData.scroller.style.width = `${scrollerRect.width}px`;
+   // }
 
    const {
       buttonsPlaceholder,

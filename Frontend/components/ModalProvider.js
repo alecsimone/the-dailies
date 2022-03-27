@@ -15,6 +15,8 @@ const ModalProvider = ({
    const [heartPosition, setHeartPosition] = useState(false);
    const [fullHeart, setFullHeart] = useState(true);
 
+   const [homepageThingsBarIsOpen, setHomepageThingsBarIsOpen] = useState(true);
+
    const modalData = {
       content,
       setContent,
@@ -24,6 +26,8 @@ const ModalProvider = ({
       setFullHeart,
       thingsSidebarIsOpen,
       setThingsSidebarIsOpen,
+      homepageThingsBarIsOpen,
+      setHomepageThingsBarIsOpen,
       navSidebarIsOpen,
       setNavSidebarIsOpen,
       isHome
