@@ -33,7 +33,8 @@ const CollectionsPage = ({ query }) => {
       skip: query.id == null
    });
 
-   if (loggedInUserID == null) return <SignupOrLogin explanation styled />;
+   if (loggedInUserID == null && query.id == null)
+      return <SignupOrLogin explanation styled />;
    if (memberLoading) return <LoadingRing />;
 
    if (specificCollectionData) {
@@ -53,7 +54,13 @@ const CollectionsPage = ({ query }) => {
    }
 
    if (specificCollectionError) {
-      return <Error error={specificCollectionError} />;
+      return (
+         <StyledNoCollections>
+            <div className="errorWrapper">
+               <Error error={specificCollectionError} />
+            </div>
+         </StyledNoCollections>
+      );
    }
 
    if (query.id == null && collectionsData) {
@@ -96,7 +103,13 @@ const CollectionsPage = ({ query }) => {
    }
 
    if (collectionsError) {
-      return <Error error={collectionsError} />;
+      return (
+         <StyledNoCollections>
+            <div className="errorWrapper">
+               <Error error={collectionsError} />
+            </div>
+         </StyledNoCollections>
+      );
    }
    return <div>Something went terribly wrong</div>;
 };

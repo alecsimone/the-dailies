@@ -9,6 +9,12 @@ const ErrorStyles = styled.div`
    margin: 2rem 0;
    border: 1px solid rgba(0, 0, 0, 0.05);
    border-left: 5px solid red;
+   &.noSeeThing {
+      border-left: 5px solid ${props => props.theme.lowContrastGrey};
+      p {
+         padding-left: 1rem;
+      }
+   }
    p {
       margin: 0.6rem 0;
    }
@@ -36,6 +42,17 @@ const DisplayError = ({ error }) => {
          </ErrorStyles>
       ));
    }
+
+   if (error.message.includes('permission to see this thing')) {
+      return (
+         <ErrorStyles className="error noSeeThing">
+            <p data-test="graphql-error">
+               {error.message.replace('GraphQL error: ', '')}
+            </p>
+         </ErrorStyles>
+      );
+   }
+
    return (
       <ErrorStyles className="error">
          <p data-test="graphql-error">

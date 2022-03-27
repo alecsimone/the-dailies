@@ -53,7 +53,15 @@ const CardFetcher = ({
    }
 
    if (error) {
-      return <Error error={{ message: `No thing found for ID ${thingID}` }} />;
+      return (
+         <Error
+            error={
+               error.message != null
+                  ? error
+                  : { message: `No thing found for ID ${thingID}` }
+            }
+         />
+      );
    }
 };
 export default CardFetcher;

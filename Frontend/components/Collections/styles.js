@@ -4,6 +4,9 @@ import { setAlpha, setLightness, setSaturation } from '../../styles/functions';
 const StyledNoCollections = styled.section`
    margin-top: 6rem;
    text-align: center;
+   .errorWrapper {
+      padding: 0 6rem;
+   }
    button {
       padding: 1rem;
       font-size: ${props => props.theme.bigText};

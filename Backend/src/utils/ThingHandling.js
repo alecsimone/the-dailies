@@ -383,7 +383,7 @@ const canSeeThingGate = async (where, ctx) => {
    ) {
       return true;
    }
-   throw new Error("You don't have permission to see that thing.");
+   throw new Error("You don't have permission to see this thing.");
 };
 exports.canSeeThingGate = canSeeThingGate;
 
