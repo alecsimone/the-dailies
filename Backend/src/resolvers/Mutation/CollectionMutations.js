@@ -220,6 +220,7 @@ async function addCollection(parent, args, ctx, info) {
       },
       `{id}`
    );
+   const newColumnID = getRandomString(25);
    const newCollection = await ctx.db.mutation
       .createCollection(
          {
@@ -236,6 +237,7 @@ async function addCollection(parent, args, ctx, info) {
                },
                columnOrders: {
                   create: {
+                     id: newColumnID,
                      order: {
                         set: [newGroup.id]
                      }

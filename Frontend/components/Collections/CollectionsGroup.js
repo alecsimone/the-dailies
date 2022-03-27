@@ -85,7 +85,7 @@ const CollectionsGroup = ({ index, groupObj, collectionID, canEdit }) => {
          `
       });
 
-      const { userGroups, columnOrders } = collectionObj;
+      let { userGroups, columnOrders } = collectionObj;
 
       const newUserGroups = userGroups.filter(
          thisGroupObj => thisGroupObj.id !== id
@@ -95,6 +95,23 @@ const CollectionsGroup = ({ index, groupObj, collectionID, canEdit }) => {
             thisID => thisID !== id
          );
       });
+
+      // We need to delete any blank column orders at the end of the array of column orders so we don't have a bunch of blank columns at the end of our collection
+      const columnOrdersToDelete = [];
+      let i = columnOrders.length - 1;
+      let collectionOrder = columnOrders[i].order;
+      while (collectionOrder != null && collectionOrder.length === 0 && i > 0) {
+         collectionOrder = columnOrders[i].order;
+         if (collectionOrder.length === 0) {
+            columnOrdersToDelete.push(columnOrders[i].id);
+         }
+
+         i -= 1;
+      }
+      columnOrders = columnOrders.filter(
+         orderObj => !columnOrdersToDelete.includes(orderObj.id)
+      );
+
       deleteGroupFromCollection({
          variables: {
             collectionID,
@@ -105,7 +122,8 @@ const CollectionsGroup = ({ index, groupObj, collectionID, canEdit }) => {
             deleteGroupFromCollection: {
                __typename: 'Collection',
                id: collectionID,
-               userGroups: newUserGroups
+               userGroups: newUserGroups,
+               columnOrders
             }
          }
       });

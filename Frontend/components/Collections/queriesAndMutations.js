@@ -116,6 +116,11 @@ const DELETE_GROUP_FROM_COLLECTION_MUTATION = gql`
          userGroups {
             ${collectionGroupFields}
          }
+         columnOrders {
+            __typename
+            id
+            order
+         }
       }
    }
 `;

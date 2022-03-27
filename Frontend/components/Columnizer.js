@@ -119,7 +119,28 @@ const Columnizer = ({
       setScrolling(false);
    };
 
-   const columns = columnOrders.map((columnOrderObj, index) =>
+   const orderedColumnOrders = JSON.parse(JSON.stringify(columnOrders)).sort(
+      (a, b) => {
+         // const aIndex = columnOrderOrder.indexOf(a.id);
+         // const bIndex = columnOrderOrder.indexOf(b.id);
+
+         // if (aIndex !== -1 && bIndex !== -1) {
+         //    return aIndex - bIndex;
+         // }
+         // if (aIndex === -1 && bIndex !== -1) {
+         //    return 1;
+         // }
+         // if (bIndex === -1 && aIndex !== -1) {
+         //    return -1;
+         // }
+         if (a.id < b.id) {
+            return -1;
+         }
+         return 1;
+      }
+   );
+
+   const columns = orderedColumnOrders.map((columnOrderObj, index) =>
       makeColumn(columnOrderObj, index)
    );
 

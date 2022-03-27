@@ -95,7 +95,6 @@ const CollectionBody = ({ activeCollection, canEdit }) => {
          </Head>
          <Columnizer
             items={groupElements}
-            collectionID={id}
             columnOrders={columnOrders}
             canEdit={canEdit}
             addItemButtonFunction={makeAddGroupButton}
