@@ -270,7 +270,8 @@ const StyledCollection = styled.section`
          margin: 3rem auto;
       }
       .overflowWrapper {
-         overflow: auto;
+         overflow-x: auto;
+         overflow-y: hidden;
          height: 100%;
          /* scrollbar-width: thin; */
          scrollbar-color: hsl(210, 10%, 30%) hsl(30, 1%, 4%);
@@ -278,6 +279,7 @@ const StyledCollection = styled.section`
       .masonryContainer {
          display: flex;
          width: 100%;
+         max-height: 100%;
          padding: 0 2rem;
          ${props => props.theme.mobileBreakpoint} {
             width: auto;
@@ -287,6 +289,7 @@ const StyledCollection = styled.section`
             max-width: 64rem;
             min-width: 85%;
             margin-right: 2rem;
+            ${props => props.theme.scroll};
             ${props => props.theme.mobileBreakpoint} {
                min-width: 64rem;
                max-width: min(64rem, 80%);
