@@ -242,6 +242,9 @@ async function addCollection(parent, args, ctx, info) {
                         set: [newGroup.id]
                      }
                   }
+               },
+               columnOrderOrder: {
+                  set: [newColumnID]
                }
             }
          },
@@ -436,12 +439,22 @@ async function addGroupToCollection(
       `{order}`
    );
 
+   const { columnOrderOrder } = await ctx.db.query.collection(
+      {
+         where: {
+            id: collectionID
+         }
+      },
+      `{columnOrderOrder}`
+   );
+
    // Then we need to add our new group to that order if it exists, or create a new order with our groupID if it doesn't
    let newColumnOrder;
    if (oldColumnOrder != null) {
       newColumnOrder = [...oldColumnOrder.order, newGroupID];
    } else {
       newColumnOrder = [newGroupID];
+      columnOrderOrder.push(columnID);
    }
 
    // We just need to create a new user group for the provided collection and upsert the new column order
@@ -473,10 +486,13 @@ async function addGroupToCollection(
                      }
                   }
                }
+            },
+            columnOrderOrder: {
+               set: columnOrderOrder
             }
          }
       },
-      `{id userGroups {${collectionGroupFields}} columnOrders {__typename id order}}`
+      info
    );
 
    publishCollectionUpdate(collectionID, ctx);
@@ -548,7 +564,7 @@ async function deleteGroupFromCollection(
          },
          data
       },
-      `{id columnOrders {id order} userGroups {${collectionGroupFields}}}`
+      `{id columnOrders {id order} userGroups {${collectionGroupFields}} columnOrderOrder}`
    );
 
    // We need to delete any blank column orders at the end of the array of column orders so we don't have a bunch of blank columns at the end of our collection
@@ -563,16 +579,29 @@ async function deleteGroupFromCollection(
 
       i -= 1;
    }
+
+   let { columnOrderOrder } = updatedCollection;
+
+   columnOrderOrder = columnOrderOrder.filter(
+      colID => !columnOrdersToDelete.includes(colID)
+   );
+
    if (columnOrdersToDelete.length > 0) {
       await ctx.db.mutation.deleteManyColumnOrders({
          where: {
             id_in: columnOrdersToDelete
          }
       });
-      updatedCollection = await ctx.db.query.collection(
+
+      updatedCollection = await ctx.db.mutation.updateCollection(
          {
             where: {
                id: collectionID
+            },
+            data: {
+               columnOrderOrder: {
+                  set: columnOrderOrder
+               }
             }
          },
          info
@@ -1000,6 +1029,7 @@ async function moveGroupToColumn(
    const updatedColumnsArray = [];
 
    let collectionID;
+   let columnOrderOrder;
    if (sourceColumnID != null) {
       const oldSourceOrderData = await ctx.db.query.columnOrder(
          {
@@ -1007,9 +1037,10 @@ async function moveGroupToColumn(
                id: sourceColumnID
             }
          },
-         `{order inCollection {id}}`
+         `{order inCollection {id columnOrderOrder}}`
       );
       collectionID = oldSourceOrderData.inCollection.id;
+      ({ columnOrderOrder } = oldSourceOrderData.inCollection);
 
       const { order: sourceOrder } = oldSourceOrderData;
       const newSourceOrder = sourceOrder.filter(
@@ -1050,6 +1081,17 @@ async function moveGroupToColumn(
             info
          );
          updatedColumnsArray.push(newColumnOrder);
+         columnOrderOrder.push(newColumnOrder.id);
+         await ctx.db.mutation.updateCollection({
+            where: {
+               id: collectionID
+            },
+            data: {
+               columnOrderOrder: {
+                  set: columnOrderOrder
+               }
+            }
+         });
       } else {
          const oldDestinationOrderData = await ctx.db.query.columnOrder(
             {
@@ -1111,10 +1153,19 @@ async function moveGroupToColumn(
             id_in: columnOrdersToDelete
          }
       });
-      updatedCollection = await ctx.db.query.collection(
+
+      const newColumnOrderOrder = columnOrderOrder.filter(
+         colID => !columnOrdersToDelete.includes(colID)
+      );
+      updatedCollection = await ctx.db.mutation.updateCollection(
          {
             where: {
                id: collectionID
+            },
+            data: {
+               columnOrderOrder: {
+                  set: newColumnOrderOrder
+               }
             }
          },
          info

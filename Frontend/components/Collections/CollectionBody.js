@@ -7,7 +7,21 @@ import CollectionsGroup from './CollectionsGroup';
 import { ADD_GROUP_TO_COLLECTION_MUTATION } from './queriesAndMutations';
 
 const CollectionBody = ({ activeCollection, canEdit }) => {
-   const { id, userGroups, columnOrders, title, author } = activeCollection;
+   const {
+      id,
+      userGroups,
+      columnOrders,
+      columnOrderOrder = [],
+      title,
+      author
+   } = activeCollection;
+   if (columnOrderOrder.length < columnOrders.length) {
+      columnOrders.forEach(orderObj => {
+         if (!columnOrderOrder.includes(orderObj.id)) {
+            columnOrderOrder.push(orderObj.id);
+         }
+      });
+   }
 
    const [addGroupToCollection] = useMutation(ADD_GROUP_TO_COLLECTION_MUTATION);
 
@@ -38,6 +52,7 @@ const CollectionBody = ({ activeCollection, canEdit }) => {
                   id: columnToAddToID,
                   order: [newGroupID]
                });
+               columnOrderOrder.push(columnToAddToID);
             } else {
                columnOrders[columnToAddToIndex].order.push(newGroupID);
             }
@@ -65,7 +80,8 @@ const CollectionBody = ({ activeCollection, canEdit }) => {
                         updatedAt: now.toISOString()
                      }
                   ],
-                  columnOrders
+                  columnOrders,
+                  columnOrderOrder
                }
             };
             addGroupToCollection({
@@ -96,6 +112,7 @@ const CollectionBody = ({ activeCollection, canEdit }) => {
          <Columnizer
             items={groupElements}
             columnOrders={columnOrders}
+            columnOrderOrder={columnOrderOrder}
             canEdit={canEdit}
             addItemButtonFunction={makeAddGroupButton}
          />

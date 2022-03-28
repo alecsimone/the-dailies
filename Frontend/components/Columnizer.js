@@ -31,6 +31,7 @@ const getItemForID = (id, items) => {
 const Columnizer = ({
    items,
    columnOrders,
+   columnOrderOrder,
    canEdit,
    addItemButtonFunction
 }) => {
@@ -121,18 +122,18 @@ const Columnizer = ({
 
    const orderedColumnOrders = JSON.parse(JSON.stringify(columnOrders)).sort(
       (a, b) => {
-         // const aIndex = columnOrderOrder.indexOf(a.id);
-         // const bIndex = columnOrderOrder.indexOf(b.id);
+         const aIndex = columnOrderOrder.indexOf(a.id);
+         const bIndex = columnOrderOrder.indexOf(b.id);
 
-         // if (aIndex !== -1 && bIndex !== -1) {
-         //    return aIndex - bIndex;
-         // }
-         // if (aIndex === -1 && bIndex !== -1) {
-         //    return 1;
-         // }
-         // if (bIndex === -1 && aIndex !== -1) {
-         //    return -1;
-         // }
+         if (aIndex !== -1 && bIndex !== -1) {
+            return aIndex - bIndex;
+         }
+         if (aIndex === -1 && bIndex !== -1) {
+            return 1;
+         }
+         if (bIndex === -1 && aIndex !== -1) {
+            return -1;
+         }
          if (a.id < b.id) {
             return -1;
          }

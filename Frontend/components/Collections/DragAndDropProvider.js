@@ -9,6 +9,7 @@ import {
 } from '../../lib/CardInterfaces';
 import { getRandomString } from '../../lib/TextHandling';
 import useMe from '../Account/useMe';
+import { getColumnOrdersToDelete } from './CollectionsGroup';
 import {
    ADD_LINK_TO_GROUP_MUTATION,
    DELETE_GROUP_FROM_COLLECTION_MUTATION,
@@ -33,7 +34,8 @@ const DragAndDropProvider = ({ children }) => {
    });
 
    const [moveGroupToColumn] = useMutation(MOVE_GROUP_TO_COLUMN_MUTATION, {
-      onError: err => alert(err.message)
+      onError: err => alert(err.message),
+      onCompleted: d => console.log(d.moveGroupToColumn)
    });
 
    const [reorderGroup] = useMutation(REORDER_GROUP_MUTATION, {
@@ -328,6 +330,15 @@ const DragAndDropProvider = ({ children }) => {
                groupObj => groupObj.id !== groupID
             );
 
+            const columnOrdersToDelete = getColumnOrdersToDelete();
+
+            newCollectionObj.columnOrders = newCollectionObj.columnOrders.filter(
+               orderObj => !columnOrdersToDelete.includes(orderObj.id)
+            );
+            newCollectionObj.columnOrderOrder = newCollectionObj.columnOrder.order.filter(
+               colID => !columnOrdersToDelete.includes(colID)
+            );
+
             deleteGroupFromCollection({
                variables: {
                   collectionID,
@@ -385,6 +396,7 @@ const DragAndDropProvider = ({ children }) => {
                            id
                            order
                         }
+                        columnOrderOrder
                      }
                   }
                `
@@ -423,29 +435,24 @@ const DragAndDropProvider = ({ children }) => {
             newSourceOrderObj.order = newSourceOrderObj.order.filter(
                existingID => existingID !== groupID
             );
-            if (
-               newSourceOrderObj.order.length === 0 &&
-               sourceOrderIndex === collectionData.columnOrders.length - 1
-            ) {
-               optimisticResponse.moveGroupToColumn.columnOrders.splice(
-                  sourceOrderIndex,
-                  1
-               );
-            } else {
-               optimisticResponse.moveGroupToColumn.columnOrders[
-                  sourceOrderIndex
-               ] = newSourceOrderObj;
-            }
+
+            optimisticResponse.moveGroupToColumn.columnOrders[
+               sourceOrderIndex
+            ] = newSourceOrderObj;
 
             let newDestinationOrderObj;
             if (destination.droppableId === 'blankColumn') {
+               const newColumnID = getRandomString(25);
                newDestinationOrderObj = {
                   __typename: 'ColumnOrder',
-                  id: getRandomString(16),
+                  id: newColumnID,
                   order: [groupID]
                };
                optimisticResponse.moveGroupToColumn.columnOrders.push(
                   newDestinationOrderObj
+               );
+               optimisticResponse.moveGroupToColumn.columnOrderOrder.push(
+                  newColumnID
                );
             } else {
                newDestinationOrderObj = JSON.parse(
@@ -460,6 +467,18 @@ const DragAndDropProvider = ({ children }) => {
                   destinationOrderIndex
                ] = newDestinationOrderObj;
             }
+
+            const columnOrdersToDelete = getColumnOrdersToDelete(
+               optimisticResponse.moveGroupToColumn.columnOrders
+            );
+
+            optimisticResponse.moveGroupToColumn.columnOrders = optimisticResponse.moveGroupToColumn.columnOrders.filter(
+               orderObj => !columnOrdersToDelete.includes(orderObj.id)
+            );
+
+            optimisticResponse.moveGroupToColumn.columnOrderOrder = collectionData.columnOrderOrder.filter(
+               colID => !columnOrdersToDelete.includes(colID)
+            );
 
             moveGroupToColumn({
                variables,

@@ -27,6 +27,23 @@ import { fullCollectionFields } from '../../lib/CardInterfaces';
 
 const StyledCardList = styled.div``;
 
+const getColumnOrdersToDelete = columnOrders => {
+   const columnOrdersToDelete = [];
+   let i = columnOrders.length - 1;
+   let collectionOrder = columnOrders[i].order;
+   while (collectionOrder != null && collectionOrder.length === 0 && i > 0) {
+      collectionOrder = columnOrders[i].order;
+      if (collectionOrder.length === 0) {
+         columnOrdersToDelete.push(columnOrders[i].id);
+      }
+
+      i -= 1;
+   }
+   return columnOrdersToDelete;
+};
+
+export { getColumnOrdersToDelete };
+
 const CollectionsGroup = ({ index, groupObj, collectionID, canEdit }) => {
    const { id, includedLinks, notes, title, type, order } = groupObj;
    const {
@@ -51,7 +68,7 @@ const CollectionsGroup = ({ index, groupObj, collectionID, canEdit }) => {
 
    useEffect(() => {
       dynamicallyResizeElement(titleRef.current, false);
-   }, []);
+   }); // This used to have an empty dependency array, but we kept getting missized elements, so I took it away. Might be worth putting back if things are getting jittery or slow.
 
    const [renameGroupOnCollection] = useMutation(RENAME_GROUP_MUTATION, {
       context: {
@@ -85,7 +102,7 @@ const CollectionsGroup = ({ index, groupObj, collectionID, canEdit }) => {
          `
       });
 
-      let { userGroups, columnOrders } = collectionObj;
+      let { userGroups, columnOrders, columnOrderOrder } = collectionObj;
 
       const newUserGroups = userGroups.filter(
          thisGroupObj => thisGroupObj.id !== id
@@ -97,19 +114,12 @@ const CollectionsGroup = ({ index, groupObj, collectionID, canEdit }) => {
       });
 
       // We need to delete any blank column orders at the end of the array of column orders so we don't have a bunch of blank columns at the end of our collection
-      const columnOrdersToDelete = [];
-      let i = columnOrders.length - 1;
-      let collectionOrder = columnOrders[i].order;
-      while (collectionOrder != null && collectionOrder.length === 0 && i > 0) {
-         collectionOrder = columnOrders[i].order;
-         if (collectionOrder.length === 0) {
-            columnOrdersToDelete.push(columnOrders[i].id);
-         }
-
-         i -= 1;
-      }
+      const columnOrdersToDelete = getColumnOrdersToDelete(columnOrders);
       columnOrders = columnOrders.filter(
          orderObj => !columnOrdersToDelete.includes(orderObj.id)
+      );
+      columnOrderOrder = columnOrderOrder.filter(
+         colID => !columnOrdersToDelete.includes(colID)
       );
 
       deleteGroupFromCollection({
@@ -123,7 +133,8 @@ const CollectionsGroup = ({ index, groupObj, collectionID, canEdit }) => {
                __typename: 'Collection',
                id: collectionID,
                userGroups: newUserGroups,
-               columnOrders
+               columnOrders,
+               columnOrderOrder
             }
          }
       });

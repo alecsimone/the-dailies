@@ -531,6 +531,7 @@ const fullCollectionFields = `
       id
       order
    }
+   columnOrderOrder
    tagColumnOrders {
       __typename
       id

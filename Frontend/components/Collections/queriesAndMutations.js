@@ -97,6 +97,7 @@ const ADD_GROUP_TO_COLLECTION_MUTATION = gql`
             id
             order
          }
+         columnOrderOrder
       }
    }
 `;
@@ -121,6 +122,7 @@ const DELETE_GROUP_FROM_COLLECTION_MUTATION = gql`
             id
             order
          }
+         columnOrderOrder
       }
    }
 `;
@@ -225,6 +227,7 @@ const MOVE_GROUP_TO_COLUMN_MUTATION = gql`
             id
             order
          }
+         columnOrderOrder
       }
    }
 `;

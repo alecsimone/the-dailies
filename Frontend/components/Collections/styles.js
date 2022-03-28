@@ -62,6 +62,9 @@ const StyledCollection = styled.section`
             max-width: 100%;
             min-width: 0;
             flex-shrink: 1;
+            ${props => props.theme.desktopBreakpoint} {
+               flex-grow: 1;
+            }
             &:focus {
                border-bottom: 1px solid ${props => props.theme.mainText};
                outline: none;
