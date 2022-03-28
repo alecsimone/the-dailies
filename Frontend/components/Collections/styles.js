@@ -364,9 +364,14 @@ const StyledGroup = styled.div`
       z-index: 3;
       position: sticky;
       top: 0;
-      width: calc(100% + 4rem);
-      margin-left: -2rem;
-      padding: 0 2rem;
+      width: calc(100% + 2rem);
+      margin-left: -1rem;
+      padding: 0 1rem;
+      ${props => props.theme.mobileBreakpoint} {
+         width: calc(100% + 4rem);
+         margin-left: -2rem;
+         padding: 0 2rem;
+      }
       border-radius: 6px;
       h4.groupTitle,
       textarea.groupTitle {
