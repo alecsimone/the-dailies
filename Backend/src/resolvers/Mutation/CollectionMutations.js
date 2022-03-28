@@ -2,7 +2,6 @@ const { AuthenticationError } = require('apollo-server-express');
 const { loggedInGate, fullMemberGate } = require('../../utils/Authentication');
 const {
    collectionGroupFields,
-   smallThingCardFields,
    fullPersonalLinkFields,
    fullCollectionFields
 } = require('../../utils/CardInterfaces');
@@ -204,6 +203,38 @@ async function findParentCollectionAndPublishUpdate(dataObj, ctx) {
    }
 }
 
+const getColumnOrderIDsToDelete = (columnOrders, columnOrderOrder) => {
+   // We'll need an array to hold the IDs of the columnOrders we need to delete
+   const columnOrdersToDelete = [];
+
+   // We're going to loop backwards through the columnOrderOrder array, collecting the IDs of any columnOrders that have no groups in them. The idea is that we can have blank columnOrders if they're in the middle of a collection, but we don't want any left at the end of one.
+   let i = columnOrders.length - 1;
+
+   // Our process is going to be getting the next columnOrderID out of the columnOrderOrder array
+   let columnOrderID = columnOrderOrder[i];
+   // Then getting the relevant columnOrder
+   let thisColumnOrder = columnOrders.find(
+      orderObj => orderObj.id === columnOrderID
+   );
+   // And checking if its order is empty
+   let nextOrder = thisColumnOrder.order;
+
+   while (nextOrder != null && nextOrder.length === 0 && i > 0) {
+      columnOrderID = columnOrderOrder[i];
+      thisColumnOrder = columnOrders.find(
+         orderObj => orderObj.id === columnOrderID
+      );
+      nextOrder = thisColumnOrder.order;
+
+      if (nextOrder.length === 0) {
+         columnOrdersToDelete.push(thisColumnOrder.id);
+      }
+
+      i -= 1;
+   }
+   return columnOrdersToDelete;
+};
+
 async function addCollection(parent, args, ctx, info) {
    await loggedInGate(ctx).catch(() => {
       throw new AuthenticationError('You must be logged in to do that!');
@@ -303,18 +334,28 @@ async function deleteCollection(parent, { collectionID }, ctx, info) {
       );
    }
 
-   // First let's delete any groups in the collection
+   // First let's delete any groups and columnOrders in the collection
    await ctx.db.mutation.deleteManyCollectionGroups({
       where: {
-         inCollection: collectionID
+         inCollection: {
+            id: collectionID
+         }
+      }
+   });
+   await ctx.db.mutation.deleteManyColumnOrders({
+      where: {
+         inCollection: {
+            id: collectionID
+         }
       }
    });
 
-   // Then we delete the collection itself. We might need to set the last active collection to something different as well.
+   // Then we delete the collection itself. We might need to set the last active collection to something different as well, so first let's check if the member has any other collections.
    const filteredCollections = collections.filter(
       collection => collection.id !== collectionID
    );
 
+   // We'll make our basic data object for simply deleting the collection
    const data = {
       collections: {
          delete: {
@@ -323,6 +364,7 @@ async function deleteCollection(parent, { collectionID }, ctx, info) {
       }
    };
 
+   // If the collection we're deleting is the member's last active collection, and they have other collections, we'll update our data object to also connect their last collection as their last active one.
    if (
       filteredCollections.length > 0 &&
       lastActiveCollection.id === thisCollection.id
@@ -392,14 +434,17 @@ async function renameCollection(parent, { collectionID, newTitle }, ctx, info) {
    }
 
    // We just need to update the title of the provided collection
-   const updatedCollection = await ctx.db.mutation.updateCollection({
-      where: {
-         id: collectionID
+   const updatedCollection = await ctx.db.mutation.updateCollection(
+      {
+         where: {
+            id: collectionID
+         },
+         data: {
+            title: newTitle
+         }
       },
-      data: {
-         title: newTitle
-      }
-   });
+      info
+   );
 
    publishCollectionUpdate(collectionID, ctx);
    return updatedCollection;
@@ -439,6 +484,7 @@ async function addGroupToCollection(
       `{order}`
    );
 
+   // Then we need to get the columnOrderOrder for the provided collection
    const { columnOrderOrder } = await ctx.db.query.collection(
       {
          where: {
@@ -448,7 +494,7 @@ async function addGroupToCollection(
       `{columnOrderOrder}`
    );
 
-   // Then we need to add our new group to that order if it exists, or create a new order with our groupID if it doesn't
+   // Then we need to add our new group to the column order if it exists, or create a new order with our groupID if it doesn't. If we're creating a new column, we also need to add that column to our columnOrderOrder.
    let newColumnOrder;
    if (oldColumnOrder != null) {
       newColumnOrder = [...oldColumnOrder.order, newGroupID];
@@ -457,7 +503,7 @@ async function addGroupToCollection(
       columnOrderOrder.push(columnID);
    }
 
-   // We just need to create a new user group for the provided collection and upsert the new column order
+   // Finally, we need to create a new user group for the provided collection, upsert the new column order, and update the columnOrderOrder
    const updatedCollection = await ctx.db.mutation.updateCollection(
       {
          where: {
@@ -568,31 +614,26 @@ async function deleteGroupFromCollection(
    );
 
    // We need to delete any blank column orders at the end of the array of column orders so we don't have a bunch of blank columns at the end of our collection
-   const columnOrdersToDelete = [];
-   let i = updatedCollection.columnOrders.length - 1;
-   let collectionOrder = updatedCollection.columnOrders[i].order;
-   while (collectionOrder != null && collectionOrder.length === 0 && i > 0) {
-      collectionOrder = updatedCollection.columnOrders[i].order;
-      if (collectionOrder.length === 0) {
-         columnOrdersToDelete.push(updatedCollection.columnOrders[i].id);
-      }
+   let { columnOrders, columnOrderOrder } = updatedCollection;
+   const columnOrdersToDelete = getColumnOrderIDsToDelete(
+      columnOrders,
+      columnOrderOrder
+   );
 
-      i -= 1;
-   }
-
-   let { columnOrderOrder } = updatedCollection;
-
+   // We'll make a new columnOrderOrder without the deleted columnOrders
    columnOrderOrder = columnOrderOrder.filter(
       colID => !columnOrdersToDelete.includes(colID)
    );
 
    if (columnOrdersToDelete.length > 0) {
+      // Then we'll delete the now unnecessary columnOrders
       await ctx.db.mutation.deleteManyColumnOrders({
          where: {
             id_in: columnOrdersToDelete
          }
       });
 
+      // And update the collection with the new columnOrderOrder
       updatedCollection = await ctx.db.mutation.updateCollection(
          {
             where: {
@@ -651,18 +692,6 @@ async function renameGroupOnCollection(
 
    publishCollectionUpdate(collectionID, ctx);
    return updatedGroup;
-
-   // // Then we need to return the selected collection
-   // const updatedCollection = await ctx.db.query.collection(
-   //    {
-   //       where: {
-   //          id: collectionID
-   //       }
-   //    },
-   //    `{id userGroups {${collectionGroupFields}}}`
-   // );
-   // publishCollectionUpdate(collectionID, ctx);
-   // return updatedCollection;
 }
 exports.renameGroupOnCollection = renameGroupOnCollection;
 
@@ -789,6 +818,19 @@ async function removeLinkFromCollectionGroup(
       );
    }
 
+   const outdatedGroup = await ctx.db.query.collectionGroup(
+      {
+         where: {
+            id: groupID
+         }
+      },
+      `{order}`
+   );
+
+   const newOrder = outdatedGroup.order.filter(
+      oldLinkID => oldLinkID !== linkID
+   );
+
    const updatedGroup = await ctx.db.mutation.updateCollectionGroup(
       {
          where: {
@@ -799,6 +841,9 @@ async function removeLinkFromCollectionGroup(
                disconnect: {
                   id: linkID
                }
+            },
+            order: {
+               set: newOrder
             }
          }
       },
@@ -1441,7 +1486,7 @@ async function editNote(parent, { noteID, newContent }, ctx, info) {
             content: newContent
          }
       },
-      `{__typename id content}`
+      info
    );
    findParentCollectionAndPublishUpdate(updatedNote, ctx);
    return updatedNote;

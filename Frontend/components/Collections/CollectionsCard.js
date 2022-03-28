@@ -1,5 +1,4 @@
-import { useMutation } from '@apollo/react-hooks';
-import debounce from 'lodash.debounce';
+import { useApolloClient, useMutation } from '@apollo/react-hooks';
 import React, { useRef, useState } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
 import { toast } from 'react-toastify';
@@ -13,7 +12,6 @@ import RichTextArea from '../RichTextArea';
 import RichText from '../RichText';
 import {
    ADD_LINK_TO_GROUP_MUTATION,
-   COPY_THING_TO_GROUP_MUTATION,
    DELETE_NOTE_MUTATION,
    EDIT_NOTE_MUTATION,
    REMOVE_LINK_FROM_COLLECTION_GROUP
@@ -36,12 +34,12 @@ const StyledButton = styled.button`
 const CollectionsCard = ({ data, index, collectionID, groupID, canEdit }) => {
    const { loggedInUserID } = useMe();
 
-   const [showingCopyTargets, setShowingCopyTargets] = useState(false);
-
    const noteRef = useRef(null);
    const [editingNote, setEditingNote] = useState(false);
 
-   const [removeLinkFromGroup, { client }] = useMutation(
+   const client = useApolloClient();
+
+   const [removeLinkFromGroup] = useMutation(
       REMOVE_LINK_FROM_COLLECTION_GROUP,
       {
          onError: err => alert(err.message)
@@ -166,9 +164,16 @@ const CollectionsCard = ({ data, index, collectionID, groupID, canEdit }) => {
                                  const thisGroup = client.readFragment({
                                     id: `CollectionGroup:${groupID}`,
                                     fragment: gql`
-                  fragment GroupForDeleteNote on CollectionGroup {
-                     ${collectionGroupFields}
-                  }`
+                                       fragment GroupForDeleteNote on CollectionGroup {
+                                          __typename
+                                          id
+                                          notes {
+                                             __typename
+                                             id
+                                             content
+                                          }
+                                       }
+                                    `
                                  });
 
                                  const newGroupObj = JSON.parse(

@@ -264,7 +264,13 @@ export { REORDER_COLUMN_MUTATION };
 const ADD_NOTE_MUTATION = gql`
    mutation ADD_NOTE_MUTATION($groupID: ID!, $position: Int) {
       addNoteToGroup(groupID: $groupID, position: $position) {
-         ${collectionGroupFields}
+         __typename
+         id
+         notes {
+            __typename
+            id
+            content
+         }
       }
    }
 `;
@@ -273,7 +279,13 @@ export { ADD_NOTE_MUTATION };
 const DELETE_NOTE_MUTATION = gql`
    mutation DELETE_NOTE_MUTATION($noteID: ID!) {
       deleteNote(noteID: $noteID) {
-         ${collectionGroupFields}
+         __typename
+         id
+         notes {
+            __typename
+            id
+            content
+         }
       }
    }
 `;

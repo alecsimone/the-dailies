@@ -5,8 +5,10 @@ import { getRandomString } from '../../lib/TextHandling';
 import Columnizer from '../Columnizer';
 import CollectionsGroup from './CollectionsGroup';
 import { ADD_GROUP_TO_COLLECTION_MUTATION } from './queriesAndMutations';
+import { StyledCollectionBody } from './styles';
 
 const CollectionBody = ({ activeCollection, canEdit }) => {
+   // Another pretty simple component. This one exists just to create the items that will populate Columnizer, to handle adding groups, and to set the page Head data (page title and opengraph data).
    const {
       id,
       userGroups,
@@ -15,6 +17,8 @@ const CollectionBody = ({ activeCollection, canEdit }) => {
       title,
       author
    } = activeCollection;
+
+   // Theoretically, we should always be getting a columnOrderOrder that orders every column. On the off chance we don't though, this little block is here to make up the differences. It's probably unecessary, so it's pretty quick and dirty, but it was helpful when introducing columnOrderOrders and it could be a nice little failsafe at some point too I guess.
    if (columnOrderOrder.length < columnOrders.length) {
       columnOrders.forEach(orderObj => {
          if (!columnOrderOrder.includes(orderObj.id)) {
@@ -40,13 +44,16 @@ const CollectionBody = ({ activeCollection, canEdit }) => {
          className="addGroupButton"
          type="button"
          onClick={() => {
+            // First we make an ID for the new group we're adding, so we can use it in multiple places
             const newGroupID = getRandomString(25);
 
+            // Then we check if the column we're adding the group to already exists or if we need to make a new one
             const columnToAddToIndex = columnOrders.findIndex(
                orderObj => orderObj.id === columnToAddToID
             );
 
             if (columnToAddToIndex === -1) {
+               // If the column doesn't exist, we make a new order for it and add it to our columnOrderOrder
                columnOrders.push({
                   __typename: 'ColumnOrder',
                   id: columnToAddToID,
@@ -54,9 +61,11 @@ const CollectionBody = ({ activeCollection, canEdit }) => {
                });
                columnOrderOrder.push(columnToAddToID);
             } else {
+               // If it does exist, we can simply add the new group to its order
                columnOrders[columnToAddToIndex].order.push(newGroupID);
             }
 
+            // Then we just need to make an object for the new group and add it into our userGroups, along with the new columnOrders and columnOrderOrder, in our optimistic response.
             const now = new Date();
             const optimisticResponse = {
                __typename: 'Mutation',
@@ -99,7 +108,7 @@ const CollectionBody = ({ activeCollection, canEdit }) => {
    );
 
    return (
-      <section className="collectionBody">
+      <StyledCollectionBody>
          <Head>
             <title>{title} - Ouryou</title>
             <meta property="og:title" content={title} />
@@ -116,7 +125,7 @@ const CollectionBody = ({ activeCollection, canEdit }) => {
             canEdit={canEdit}
             addItemButtonFunction={makeAddGroupButton}
          />
-      </section>
+      </StyledCollectionBody>
    );
 };
 export default React.memo(CollectionBody);

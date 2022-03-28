@@ -26,6 +26,7 @@ const CopyCardInterface = ({ cardData, collectionID }) => {
       `
    });
 
+   // First we need to figure out if there are any groups that don't have this card in them already and make an array of the groups that don't.
    let filteredGroups = [];
    if (userGroups != null && userGroups.length > 0) {
       filteredGroups = userGroups.filter(groupObj => {
@@ -40,6 +41,8 @@ const CopyCardInterface = ({ cardData, collectionID }) => {
       });
    }
 
+   if (filteredGroups.length === 0) return null;
+
    // Then we need to make an option element for each remaining group
    const copyToGroupOptions = filteredGroups.map(groupObj => (
       <option value={groupObj.id} key={groupObj.id}>
@@ -47,7 +50,11 @@ const CopyCardInterface = ({ cardData, collectionID }) => {
       </option>
    ));
 
-   if (filteredGroups == null || filteredGroups.length === 0) return null;
+   copyToGroupOptions.unshift(
+      <option value="prompt" key="selectGroup">
+         Select Group
+      </option>
+   );
 
    return (
       <div className="copyInterface">
@@ -56,14 +63,19 @@ const CopyCardInterface = ({ cardData, collectionID }) => {
          </button>
          {showingCopyTargets && (
             <select
-               value={null}
+               value="prompt"
                onChange={e => {
-                  if (e.target.value != null && e.target.value !== '') {
+                  if (
+                     e.target.value != null &&
+                     e.target.value !== '' &&
+                     e.target.value !== 'prompt'
+                  ) {
                      const newUserGroups = [...userGroups];
                      const targetGroup = newUserGroups.find(
                         targetGroupObj => targetGroupObj.id === e.target.value
                      );
                      targetGroup.includedLinks.push(cardData);
+                     targetGroup.order.push(cardData.id);
 
                      addLinkToCollectionGroup({
                         variables: {
@@ -79,7 +91,6 @@ const CopyCardInterface = ({ cardData, collectionID }) => {
                   }
                }}
             >
-               <option value={null} />
                {copyToGroupOptions}
             </select>
          )}

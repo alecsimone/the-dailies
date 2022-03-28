@@ -34,312 +34,323 @@ const StyledCollection = styled.section`
          line-height: normal;
       }
    }
-   header {
+`;
+export { StyledCollection };
+
+const StyledCollectionHeader = styled.header`
+   display: flex;
+   flex-wrap: wrap;
+   margin: 1rem 0;
+   position: relative;
+   padding: 0 1rem;
+   ${props => props.theme.mobileBreakpoint} {
+      padding: 0;
+   }
+   .top {
+      flex-grow: 1;
+      max-width: 100%;
       display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 1rem 0;
+      padding: 0 1rem;
+      input.collectionTitle,
+      h3.collectionTitle {
+         display: block;
+         text-align: left;
+         border: none;
+         margin: 0;
+         font-size: ${props => props.theme.smallHead};
+         font-weight: bold;
+         max-width: 100%;
+         min-width: 0;
+         flex-shrink: 1;
+         ${props => props.theme.desktopBreakpoint} {
+            flex-grow: 1;
+         }
+         &:focus {
+            border-bottom: 1px solid ${props => props.theme.mainText};
+            outline: none;
+            margin-bottom: 0;
+         }
+      }
+      input.collectionTitle {
+         padding-bottom: 1px;
+         &:focus {
+            padding-bottom: 0;
+         }
+      }
+      svg {
+         height: ${props => props.theme.smallHead};
+         background: ${props => setAlpha(props.theme.lightBlack, 0.8)};
+         border: 1px solid ${props => setAlpha(props.theme.mainText, 0.25)};
+         padding: 0.75rem;
+         border-radius: 3px;
+         cursor: pointer;
+         flex-shrink: 0;
+         ${props => props.theme.mobileBreakpoint} {
+            display: none;
+         }
+         &.showing {
+            background: ${props => setAlpha(props.theme.lightBlack, 0.6)};
+         }
+      }
+   }
+   .headerOptions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       flex-wrap: wrap;
       margin: 1rem 0;
-      position: relative;
-      padding: 0 1rem;
+      flex-grow: 1;
+      max-width: 100%;
       ${props => props.theme.mobileBreakpoint} {
-         padding: 0;
+         flex-wrap: nowrap;
       }
-      .top {
-         flex-grow: 1;
-         max-width: 100%;
+      ${props => props.theme.desktopBreakpoint} {
+         flex-grow: 0;
+      }
+      &.hidden {
+         display: none;
+         ${props => props.theme.mobileBreakpoint} {
+            display: flex;
+         }
+      }
+      .left {
          display: flex;
          align-items: center;
-         justify-content: space-between;
          margin: 1rem 0;
-         padding: 0 1rem;
-         input.collectionTitle,
-         h3.collectionTitle {
-            display: block;
-            text-align: left;
-            border: none;
-            margin: 0;
-            font-size: ${props => props.theme.smallHead};
-            font-weight: bold;
+         max-width: 100%;
+         select {
+            padding: 0.5rem;
+            padding-right: 4rem;
             max-width: 100%;
-            min-width: 0;
-            flex-shrink: 1;
-            ${props => props.theme.desktopBreakpoint} {
-               flex-grow: 1;
-            }
-            &:focus {
-               border-bottom: 1px solid ${props => props.theme.mainText};
-               outline: none;
-               margin-bottom: 1.5rem;
+         }
+         .loadingPlaceholder {
+            border: 1px solid ${props => props.theme.lowContrastGrey};
+            border-radius: 3px;
+            color: ${props => props.theme.mainText};
+            line-height: normal;
+            font-weight: 400;
+            padding: 0.5rem calc(0.5rem + 4px); // On firefox at least, the browser adds 4px of padding to the left of an option, which seems to extend the padding on the select. So I added 4px here to make it match a bit better
+         }
+         input {
+            font-size: ${props => props.theme.smallText};
+            text-align: center;
+            flex-grow: 1;
+            max-width: 48rem;
+            margin: 0 3rem 2rem;
+            ${props => props.theme.mobileBreakpoint} {
+               margin: 0 3rem;
             }
          }
-         svg {
-            height: ${props => props.theme.smallHead};
+      }
+      .headerButtons {
+         display: flex;
+         align-items: center;
+         justify-content: end;
+         margin: 1rem 0;
+         > * {
             background: ${props => setAlpha(props.theme.lightBlack, 0.8)};
             border: 1px solid ${props => setAlpha(props.theme.mainText, 0.25)};
-            padding: 0.75rem;
-            border-radius: 3px;
+         }
+         button {
+            font-size: ${props => props.theme.smallText};
+            padding: 0.5rem;
+            opacity: 0.8;
+            margin-left: 2rem;
+            &:hover {
+               opacity: 1;
+            }
+         }
+         .buttonWrapper {
+            height: ${props => props.theme.smallHead};
+            margin-left: 1.5rem;
             cursor: pointer;
-            flex-shrink: 0;
-            ${props => props.theme.mobileBreakpoint} {
-               display: none;
-            }
-            &.showing {
-               background: ${props => setAlpha(props.theme.lightBlack, 0.6)};
-            }
-         }
-      }
-      .headerOptions {
-         display: flex;
-         justify-content: space-between;
-         align-items: center;
-         flex-wrap: wrap;
-         margin: 1rem 0;
-         flex-grow: 1;
-         max-width: 100%;
-         ${props => props.theme.mobileBreakpoint} {
-            flex-wrap: nowrap;
-         }
-         ${props => props.theme.desktopBreakpoint} {
-            flex-grow: 0;
-         }
-         &.hidden {
-            display: none;
-            ${props => props.theme.mobileBreakpoint} {
-               display: flex;
-            }
-         }
-         .left {
-            display: flex;
-            align-items: center;
-            margin: 1rem 0;
-            max-width: 100%;
-            select {
-               padding: 0.5rem;
-               padding-right: 4rem;
-               max-width: 100%;
-            }
-            .loadingPlaceholder {
-               border: 1px solid ${props => props.theme.lowContrastGrey};
-               border-radius: 3px;
-               color: ${props => props.theme.mainText};
-               line-height: normal;
-               font-weight: 400;
-               padding: 0.5rem calc(0.5rem + 4px); // On firefox at least, the browser adds 4px of padding to the left of an option, which seems to extend the padding on the select. So I added 4px here to make it match a bit better
-            }
-            input {
-               font-size: ${props => props.theme.smallText};
-               text-align: center;
-               flex-grow: 1;
-               max-width: 48rem;
-               margin: 0 3rem 2rem;
-               ${props => props.theme.mobileBreakpoint} {
-                  margin: 0 3rem;
-               }
-            }
-         }
-         .headerButtons {
-            display: flex;
-            align-items: center;
-            justify-content: end;
-            margin: 1rem 0;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
             > * {
-               background: ${props => setAlpha(props.theme.lightBlack, 0.8)};
-               border: 1px solid
-                  ${props => setAlpha(props.theme.mainText, 0.25)};
-            }
-            button {
-               font-size: ${props => props.theme.smallText};
-               padding: 0.5rem;
                opacity: 0.8;
-               margin-left: 2rem;
-               &:hover {
+            }
+            &:hover {
+               > * {
                   opacity: 1;
                }
             }
-            .buttonWrapper {
-               height: ${props => props.theme.smallHead};
-               margin-left: 1.5rem;
-               cursor: pointer;
-               padding: 0.5rem 1rem;
-               border-radius: 4px;
-               > * {
-                  opacity: 0.8;
-               }
-               &:hover {
-                  > * {
-                     opacity: 1;
-                  }
-               }
+         }
+         svg {
+            height: 100%;
+            &.x {
+               transform: rotate(45deg);
             }
-            svg {
-               height: 100%;
-               &.x {
-                  transform: rotate(45deg);
-               }
-               &.deleting,
-               &.adding {
-                  ${props => props.theme.spin};
-               }
+            &.deleting {
+               ${props => props.theme.twist};
+            }
+            &.adding {
+               ${props => props.theme.spin};
             }
          }
       }
-      .privacyInterfaceWrapper {
-         text-align: center;
-         margin-top: 1rem;
-         position: absolute;
-         z-index: 2;
-         right: 0;
-         width: 60rem;
-         max-width: 100%;
-         ${props => props.theme.desktopBreakpoint} {
-            max-width: 40%;
+   }
+   .privacyInterfaceWrapper {
+      text-align: center;
+      margin-top: 1rem;
+      position: absolute;
+      z-index: 2;
+      right: 0;
+      top: calc(100% - 2rem);
+      width: 60rem;
+      max-width: 100%;
+      ${props => props.theme.desktopBreakpoint} {
+         max-width: 40%;
+      }
+      .privacyInterface {
+         width: 100%;
+         display: inline-block;
+         padding: 2rem 4rem;
+         background: ${props => props.theme.lightBlack};
+         border: 2px solid ${props => props.theme.lowContrastGrey};
+         border-radius: 3px;
+         box-shadow: 0 0 3px black;
+         .privacySelectorGroup {
+            span {
+               margin-right: 2rem;
+            }
          }
-         .privacyInterface {
+         input {
+            display: block;
+            font-size: ${props => props.theme.smallText};
             width: 100%;
-            display: inline-block;
-            padding: 2rem 4rem;
-            background: ${props => props.theme.lightBlack};
-            border: 2px solid ${props => props.theme.lowContrastGrey};
-            border-radius: 3px;
-            box-shadow: 0 0 3px black;
-            .privacySelectorGroup {
-               span {
-                  margin-right: 2rem;
+         }
+         .addPeopleBox {
+            .permissionLine {
+               margin: 2rem 0;
+               display: flex;
+               align-items: center;
+               justify-content: space-between;
+               .existingCount {
+                  width: 15rem;
+                  cursor: pointer;
                }
-            }
-            input {
-               display: block;
-               font-size: ${props => props.theme.smallText};
-               width: 100%;
-            }
-            .addPeopleBox {
-               .permissionLine {
-                  margin: 2rem 0;
-                  display: flex;
-                  align-items: center;
-                  justify-content: space-between;
-                  .existingCount {
-                     width: 15rem;
-                     cursor: pointer;
-                  }
-                  .searchBox {
-                     position: relative;
+               .searchBox {
+                  position: relative;
+                  width: 100%;
+                  flex-grow: 1;
+                  .searchResults {
+                     z-index: 2;
+                     position: absolute;
                      width: 100%;
-                     flex-grow: 1;
-                     .searchResults {
-                        z-index: 2;
-                        position: absolute;
-                        width: 100%;
-                        top: 100%;
-                        background: ${props => props.theme.lightBlack};
-                        .memberSearchResult {
-                           padding: 1rem 0;
-                           border: 1px solid
+                     top: 100%;
+                     background: ${props => props.theme.lightBlack};
+                     .memberSearchResult {
+                        padding: 1rem 0;
+                        border: 1px solid
+                           ${props => props.theme.lowContrastGrey};
+                        cursor: pointer;
+                        &.highlighted,
+                        &:hover {
+                           background: ${props => props.theme.majorColor};
+                        }
+                        &:last-child {
+                           border-bottom: 2px solid
                               ${props => props.theme.lowContrastGrey};
-                           cursor: pointer;
-                           &.highlighted,
-                           &:hover {
-                              background: ${props => props.theme.majorColor};
-                           }
-                           &:last-child {
-                              border-bottom: 2px solid
-                                 ${props => props.theme.lowContrastGrey};
-                           }
                         }
                      }
                   }
                }
-               .extraPerson {
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  margin: 1rem 0;
-                  svg {
-                     height: ${props => props.theme.smallText};
-                     margin-left: 2rem;
-                     padding-top: 3px;
-                     opacity: 0.6;
-                     cursor: pointer;
-                     &:hover {
-                        opacity: 0.85;
-                     }
+            }
+            .extraPerson {
+               display: flex;
+               align-items: center;
+               justify-content: center;
+               margin: 1rem 0;
+               svg {
+                  height: ${props => props.theme.smallText};
+                  margin-left: 2rem;
+                  padding-top: 3px;
+                  opacity: 0.6;
+                  cursor: pointer;
+                  &:hover {
+                     opacity: 0.85;
                   }
                }
             }
          }
       }
    }
-   .collectionBody {
-      flex-grow: 1;
-      overflow-y: auto;
-      button.more {
-         font-size: ${props => props.theme.bigText};
-         padding: 0.5rem 1rem;
-         display: block;
-         margin: 3rem auto;
+`;
+export { StyledCollectionHeader };
+
+const StyledCollectionBody = styled.section`
+   flex-grow: 1;
+   overflow-y: auto;
+   button.more {
+      font-size: ${props => props.theme.bigText};
+      padding: 0.5rem 1rem;
+      display: block;
+      margin: 3rem auto;
+   }
+   .overflowWrapper {
+      overflow-x: auto;
+      overflow-y: hidden;
+      height: 100%;
+      scrollbar-width: thin;
+      scrollbar-color: hsl(210, 10%, 30%) hsl(30, 1%, 4%);
+      cursor: grab;
+      &.scrolling {
+         cursor: grabbing;
+         user-select: none;
       }
-      .overflowWrapper {
-         overflow-x: auto;
-         overflow-y: hidden;
-         height: 100%;
-         scrollbar-width: thin;
-         scrollbar-color: hsl(210, 10%, 30%) hsl(30, 1%, 4%);
-         cursor: grab;
-         &.scrolling {
-            cursor: grabbing;
-            user-select: none;
-         }
+   }
+   .masonryContainer {
+      display: flex;
+      width: 100%;
+      max-height: 100%;
+      padding: 0 2rem;
+      ${props => props.theme.mobileBreakpoint} {
+         width: auto;
+         padding: 0;
       }
-      .masonryContainer {
-         display: flex;
-         width: 100%;
-         max-height: 100%;
-         padding: 0 2rem;
+      .column {
+         max-width: 64rem;
+         min-width: 85%;
+         margin-right: 2rem;
+         ${props => props.theme.scroll};
          ${props => props.theme.mobileBreakpoint} {
-            width: auto;
-            padding: 0;
+            min-width: 64rem;
+            max-width: min(64rem, 80%);
+            margin-left: 0;
          }
-         .column {
-            max-width: 64rem;
-            min-width: 85%;
-            margin-right: 2rem;
-            ${props => props.theme.scroll};
-            ${props => props.theme.mobileBreakpoint} {
-               min-width: 64rem;
-               max-width: min(64rem, 80%);
-               margin-left: 0;
-            }
-            flex-grow: 1;
-            .dropArea {
-               transition: 0.52s all;
-               padding-bottom: 16rem;
-               &.dragging {
-                  transition: 0.25s all;
-                  background: ${props => setAlpha(props.theme.lightBlack, 0.6)};
-               }
-            }
-            button.addGroupButton {
-               width: 100%;
-               max-width: 18rem;
-               display: block;
-               font-size: ${props => props.theme.smallText};
-               margin: auto;
-               padding: 1rem;
-               background: ${props => setAlpha(props.theme.lightBlack, 0.8)};
-               &:hover {
-                  background: ${props => setAlpha(props.theme.lightBlack, 0.6)};
-               }
-               border: 1px solid
-                  ${props => setAlpha(props.theme.mainText, 0.25)};
+         flex-grow: 1;
+         .dropArea {
+            transition: 0.52s all;
+            padding-bottom: 16rem;
+            &.dragging {
+               transition: 0.25s all;
+               background: ${props => setAlpha(props.theme.lightBlack, 0.6)};
             }
          }
-         .smallThingCard {
-            max-width: none;
-            opacity: 1;
+         button.addGroupButton {
+            width: 100%;
+            max-width: 18rem;
+            display: block;
+            font-size: ${props => props.theme.smallText};
+            margin: auto;
+            padding: 1rem;
+            background: ${props => setAlpha(props.theme.lightBlack, 0.8)};
+            &:hover {
+               background: ${props => setAlpha(props.theme.lightBlack, 0.6)};
+            }
+            border: 1px solid ${props => setAlpha(props.theme.mainText, 0.25)};
          }
+      }
+      .smallThingCard {
+         max-width: none;
+         opacity: 1;
       }
    }
 `;
-export { StyledCollection };
+export { StyledCollectionBody };
 
 const StyledGroup = styled.div`
    width: 100%;
@@ -603,9 +614,8 @@ const StyledNote = styled.div`
       justify-content: flex-end;
       padding: 1rem;
       svg {
-         height: ${props => props.theme.smallHead};
+         height: ${props => props.theme.smallText};
          opacity: 0.4;
-         padding: 0.5rem;
          cursor: pointer;
          &:hover {
             opacity: 0.8;

@@ -1,7 +1,12 @@
 import { useContext } from 'react';
 import { ThemeContext } from 'styled-components';
 
-const SearchIcon = ({ onClick, className, color = 'lowContrastGrey' }) => {
+const SearchIcon = ({
+   onClick,
+   className,
+   color = 'lowContrastGrey',
+   titleText
+}) => {
    const theme = useContext(ThemeContext);
    let computedColor;
    if (theme[color] != null) {
@@ -20,6 +25,11 @@ const SearchIcon = ({ onClick, className, color = 'lowContrastGrey' }) => {
          viewBox="0 0 200 200"
          onClick={onClick}
       >
+         {titleText != null ? (
+            <title>{titleText}</title>
+         ) : (
+            <title>Search</title>
+         )}
          <circle
             cx="80.39"
             cy="80.89"

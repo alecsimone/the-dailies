@@ -1,9 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { useMutation } from '@apollo/react-hooks';
-import { Droppable } from 'react-beautiful-dnd';
+import { useApolloClient, useMutation } from '@apollo/react-hooks';
+import { Droppable, Draggable } from 'react-beautiful-dnd';
 import styled from 'styled-components';
 import gql from 'graphql-tag';
-import { Draggable } from 'react-beautiful-dnd';
 import { StyledGroup } from './styles';
 import CollectionsCard from './CollectionsCard';
 import {
@@ -27,14 +26,31 @@ import { fullCollectionFields } from '../../lib/CardInterfaces';
 
 const StyledCardList = styled.div``;
 
-const getColumnOrdersToDelete = columnOrders => {
+const getColumnOrderIDsToDelete = (columnOrders, columnOrderOrder) => {
+   // We'll need an array to hold the IDs of the columnOrders we need to delete
    const columnOrdersToDelete = [];
+
+   // We're going to loop backwards through the columnOrderOrder array, collecting the IDs of any columnOrders that have no groups in them. The idea is that we can have blank columnOrders if they're in the middle of a collection, but we don't want any left at the end of one.
    let i = columnOrders.length - 1;
-   let collectionOrder = columnOrders[i].order;
-   while (collectionOrder != null && collectionOrder.length === 0 && i > 0) {
-      collectionOrder = columnOrders[i].order;
-      if (collectionOrder.length === 0) {
-         columnOrdersToDelete.push(columnOrders[i].id);
+
+   // Our process is going to be getting the next columnOrderID out of the columnOrderOrder array
+   let columnOrderID = columnOrderOrder[i];
+   // Then getting the relevant columnOrder
+   let thisColumnOrder = columnOrders.find(
+      orderObj => orderObj.id === columnOrderID
+   );
+   // And checking if its order is empty
+   let nextOrder = thisColumnOrder.order;
+
+   while (nextOrder != null && nextOrder.length === 0 && i > 0) {
+      columnOrderID = columnOrderOrder[i];
+      thisColumnOrder = columnOrders.find(
+         orderObj => orderObj.id === columnOrderID
+      );
+      nextOrder = thisColumnOrder.order;
+
+      if (nextOrder.length === 0) {
+         columnOrdersToDelete.push(thisColumnOrder.id);
       }
 
       i -= 1;
@@ -42,7 +58,7 @@ const getColumnOrdersToDelete = columnOrders => {
    return columnOrdersToDelete;
 };
 
-export { getColumnOrdersToDelete };
+export { getColumnOrderIDsToDelete };
 
 const CollectionsGroup = ({ index, groupObj, collectionID, canEdit }) => {
    const { id, includedLinks, notes, title, type, order } = groupObj;
@@ -51,24 +67,25 @@ const CollectionsGroup = ({ index, groupObj, collectionID, canEdit }) => {
       memberFields: { displayName }
    } = useMe('CollectionsGroup', 'displayName');
 
-   const [showingCards, setShowingCards] = useState(true);
+   const [showingCards, setShowingCards] = useState(true); // Allows us to collapse the group
 
    const [groupTitle, setGroupTitle] = useState(title);
    const titleRef = useRef(null);
 
-   const [searchingThings, setSearchingThings] = useState(false);
+   const [searchingThings, setSearchingThings] = useState(false); // Allows us to toggle the input in the footer between adding links and searching things
 
    const [linkToAdd, setLinkToAdd] = useState('');
 
    const groupRef = useRef(null);
 
    useEffect(() => {
+      // We need this effect to change the group title when the subscription updates it
       setGroupTitle(title);
    }, [title]);
 
    useEffect(() => {
       dynamicallyResizeElement(titleRef.current, false);
-   }); // This used to have an empty dependency array, but we kept getting missized elements, so I took it away. Might be worth putting back if things are getting jittery or slow.
+   }); // This used to have an empty dependency array, but we kept getting missized elements, so I took it away. Might be worth putting back if things are getting jittery or slow. Or if it doesn't solve the problem.
 
    const [renameGroupOnCollection] = useMutation(RENAME_GROUP_MUTATION, {
       context: {
@@ -80,18 +97,17 @@ const CollectionsGroup = ({ index, groupObj, collectionID, canEdit }) => {
       onError: err => alert(err.message)
    });
 
-   const [deleteGroupFromCollection, { client }] = useMutation(
-      DELETE_GROUP_FROM_COLLECTION_MUTATION,
-      {
-         context: {
-            debounceKey: id
-         }
-      }
+   const [deleteGroupFromCollection] = useMutation(
+      DELETE_GROUP_FROM_COLLECTION_MUTATION
    );
+
+   const client = useApolloClient();
 
    const deleteGroupHandler = (title, groupID) => {
       if (!confirm(`Are you sure you want to remove the group ${title}?`))
          return;
+
+      // First let's get the full collection data. We don't want to pass in all the userGroups, because then this group would rerender when we change any of them, so we're going to get them out of the cache here.
       const collectionObj = client.readFragment({
          id: `Collection:${collectionID}`,
          fragment: gql`
@@ -104,6 +120,7 @@ const CollectionsGroup = ({ index, groupObj, collectionID, canEdit }) => {
 
       let { userGroups, columnOrders, columnOrderOrder } = collectionObj;
 
+      // Then we filter this group out from our userGroups and columnOrders
       const newUserGroups = userGroups.filter(
          thisGroupObj => thisGroupObj.id !== id
       );
@@ -114,7 +131,10 @@ const CollectionsGroup = ({ index, groupObj, collectionID, canEdit }) => {
       });
 
       // We need to delete any blank column orders at the end of the array of column orders so we don't have a bunch of blank columns at the end of our collection
-      const columnOrdersToDelete = getColumnOrdersToDelete(columnOrders);
+      const columnOrdersToDelete = getColumnOrderIDsToDelete(
+         columnOrders,
+         columnOrderOrder
+      );
       columnOrders = columnOrders.filter(
          orderObj => !columnOrdersToDelete.includes(orderObj.id)
       );
@@ -179,16 +199,13 @@ const CollectionsGroup = ({ index, groupObj, collectionID, canEdit }) => {
       setLinkToAdd('');
    };
 
-   // Then we need to filter that array again, because some things that are part of the collection will have been removed by the Filter Things input in the CollectionHeader. Those will be undefined when they're converted to FullThingData, so we just remove any undefined items from the array
-   // filteredFullThingData = filteredFullThingData.filter(data => data != null);
-
    const linksAndNotes = includedLinks.concat(notes);
 
    const sortedItems = groupSort(linksAndNotes, order);
-   const linkElements = sortedItems.map((item, index) => (
+   const cardElements = sortedItems.map((item, cardIndex) => (
       <CollectionsCard
          data={item}
-         index={index}
+         index={cardIndex}
          key={item.id}
          groupType={type}
          collectionID={collectionID}
@@ -217,6 +234,89 @@ const CollectionsGroup = ({ index, groupObj, collectionID, canEdit }) => {
          }
       });
    };
+
+   const searchThingsInput = (
+      <ThingSearchInput
+         placeholder="search things to add"
+         onChosenResult={selectedPost => {
+            const thingID = selectedPost.id;
+            const url = `${home}/thing?id=${thingID}`;
+
+            const newGroupObj = JSON.parse(JSON.stringify(groupObj));
+
+            const now = new Date();
+            const temporaryID = `temporary-${getRandomString(12)}`;
+
+            newGroupObj.includedLinks.push({
+               __typename: 'PersonalLink',
+               id: temporaryID,
+               url,
+               owner: {
+                  __typename: 'Member',
+                  id: loggedInUserID
+               },
+               title: null,
+               description: null,
+               partOfTags: [],
+               createdAt: now.toISOString(),
+               updatedAt: now.toISOString()
+            });
+
+            newGroupObj.order.push(temporaryID);
+
+            addLinkToCollectionGroup({
+               variables: {
+                  url,
+                  groupID: id
+               },
+               optimisticResponse: {
+                  __typename: 'Mutation',
+                  addLinkToCollectionGroup: newGroupObj
+               }
+            });
+         }}
+         additionalResultsFilter={thingData => {
+            let isAlreadyIncluded = false;
+            includedLinks.forEach(includedLink => {
+               if (includedLink.url.includes(`/thing?id=${thingData.id}`)) {
+                  isAlreadyIncluded = true;
+               }
+            });
+            return !isAlreadyIncluded;
+         }}
+      />
+   );
+
+   const addNoteButton = (
+      <div
+         className="contentIconWrapper"
+         onClick={() => {
+            const newGroupObj = JSON.parse(JSON.stringify(groupObj));
+
+            const temporaryID = `note-${getRandomString(12)}`;
+
+            newGroupObj.notes.push({
+               __typename: 'Note',
+               id: temporaryID,
+               content: 'New note'
+            });
+            newGroupObj.order.push(temporaryID);
+
+            addNoteToGroup({
+               variables: {
+                  groupID: id
+               },
+               optimisticResponse: {
+                  __typename: 'Mutation',
+                  addNoteToGroup: newGroupObj
+               }
+            });
+         }}
+      >
+         <ContentIcon />
+         <div className="badge">+</div>
+      </div>
+   );
 
    return (
       <Draggable
@@ -266,6 +366,11 @@ const CollectionsGroup = ({ index, groupObj, collectionID, canEdit }) => {
                      {canEdit && (
                         <div className="buttons">
                            <ArrowIcon
+                              titleText={
+                                 showingCards
+                                    ? 'Collapse Group'
+                                    : 'Expand Group'
+                              }
                               pointing={showingCards ? 'up' : 'down'}
                               onClick={() => setShowingCards(!showingCards)}
                            />
@@ -290,12 +395,12 @@ const CollectionsGroup = ({ index, groupObj, collectionID, canEdit }) => {
                               key={id}
                               {...provided.droppableProps}
                            >
-                              {linkElements.length === 0 && (
+                              {cardElements.length === 0 && (
                                  <div className="blankSpace">
                                     Drop cards here to add them to this group
                                  </div>
                               )}
-                              {linkElements}
+                              {cardElements}
                               {provided.placeholder}
                            </StyledCardList>
                         )}
@@ -312,106 +417,21 @@ const CollectionsGroup = ({ index, groupObj, collectionID, canEdit }) => {
                               onKeyDown={handleLinkInputKeydown}
                            />
                         )}
-                        {searchingThings && (
-                           <ThingSearchInput
-                              placeholder="search things to add"
-                              onChosenResult={selectedPost => {
-                                 const thingID = selectedPost.id;
-                                 const url = `${home}/thing?id=${thingID}`;
-
-                                 const newGroupObj = JSON.parse(
-                                    JSON.stringify(groupObj)
-                                 );
-
-                                 const now = new Date();
-                                 const temporaryID = `temporary-${getRandomString(
-                                    12
-                                 )}`;
-
-                                 newGroupObj.includedLinks.push({
-                                    __typename: 'PersonalLink',
-                                    id: temporaryID,
-                                    url,
-                                    owner: {
-                                       __typename: 'Member',
-                                       id: loggedInUserID
-                                    },
-                                    title: null,
-                                    description: null,
-                                    partOfTags: [],
-                                    createdAt: now.toISOString(),
-                                    updatedAt: now.toISOString()
-                                 });
-
-                                 newGroupObj.order.push(temporaryID);
-
-                                 addLinkToCollectionGroup({
-                                    variables: {
-                                       url,
-                                       groupID: id
-                                    },
-                                    optimisticResponse: {
-                                       __typename: 'Mutation',
-                                       addLinkToCollectionGroup: newGroupObj
-                                    }
-                                 });
-                              }}
-                              additionalResultsFilter={thingData => {
-                                 let isAlreadyIncluded = false;
-                                 includedLinks.forEach(includedLink => {
-                                    if (
-                                       includedLink.url.includes(thingData.id)
-                                    ) {
-                                       isAlreadyIncluded = true;
-                                    }
-                                 });
-                                 return !isAlreadyIncluded;
-                              }}
-                           />
-                        )}
+                        {searchingThings && searchThingsInput}
                         <div className="buttons">
                            {!searchingThings && (
                               <SearchIcon
                                  onClick={() => setSearchingThings(true)}
+                                 titleText="Switch input to search things"
                               />
                            )}
                            {searchingThings && (
                               <LinkIcon
                                  onClick={() => setSearchingThings(false)}
+                                 titleText="Switch input to add links"
                               />
                            )}
-                           <div
-                              className="contentIconWrapper"
-                              onClick={() => {
-                                 const newGroupObj = JSON.parse(
-                                    JSON.stringify(groupObj)
-                                 );
-
-                                 const temporaryID = `note-${getRandomString(
-                                    12
-                                 )}`;
-
-                                 newGroupObj.notes.push({
-                                    __typename: 'Note',
-                                    id: temporaryID,
-                                    content: 'New note'
-                                 });
-                                 newGroupObj.order.push(temporaryID);
-
-                                 addNoteToGroup({
-                                    variables: {
-                                       groupID: id
-                                    },
-                                    optimisticResponse: {
-                                       __typename: 'Mutation',
-                                       addNoteToGroup: newGroupObj
-                                    }
-                                 });
-                              }}
-                           >
-                              <ContentIcon />
-                              <div className="badge">+</div>
-                           </div>
+                           {addNoteButton}
                         </div>
                      </footer>
                   )}

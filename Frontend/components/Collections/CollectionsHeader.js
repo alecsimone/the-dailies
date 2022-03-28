@@ -1,6 +1,6 @@
 import { useMutation } from '@apollo/react-hooks';
 import { useRouter } from 'next/router';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import useMe from '../Account/useMe';
 import LockIcon from '../Icons/Lock';
 import HamburgerIcon from '../Icons/Hamburger';
@@ -11,39 +11,7 @@ import {
    RENAME_COLLECTION_MUTATION
 } from './queriesAndMutations';
 import TrashIcon from '../Icons/Trash';
-
-const getShortestColumnID = columnData => {
-   // First we need two placeholder variables
-   let lowestHeight = 0;
-   let lowestHeightID;
-   if (!process.browser) return columnData[0].id;
-
-   // Then we need to loop through each column
-   columnData.forEach((data, index) => {
-      // We need to get the height for each column. First we grab the column container, but these will all have the same height
-      const thisContainer = document.querySelector(`#id-${data.id}`);
-
-      if (thisContainer != null) {
-         // So next we get their first child, which will only have as much height as its contents need
-         const thisElement = thisContainer.firstElementChild;
-
-         const height = thisElement != null ? thisElement.offsetHeight : 0;
-
-         // If the height of all the groups in this column is less than the lowest height we've found so far (or if this is the first column), we need to set our placeholder values to that of this column
-         if (index === 0 || lowestHeight > height) {
-            lowestHeight = height;
-            lowestHeightID = data.id;
-         }
-      } else if (lowestHeight !== 0) {
-         lowestHeight = 0;
-         lowestHeightID = data.id;
-      }
-   });
-
-   // Then we just return the ID of the lowest column
-   return lowestHeightID;
-};
-export { getShortestColumnID };
+import { StyledCollectionHeader } from './styles';
 
 const CollectionsHeader = ({
    setActiveCollection,
@@ -62,20 +30,14 @@ const CollectionsHeader = ({
 
    const { loggedInUserID } = useMe();
 
-   const collectionTitleRef = useRef(null);
-
    const { id, title, privacy, viewers, editors, author } = activeCollection;
 
    useEffect(() => {
+      // We need this so that new subscription data can update the title
       setCollectionTitle(title);
    }, [title]);
 
-   const debounceKey = id;
-   const [renameCollection] = useMutation(RENAME_COLLECTION_MUTATION, {
-      context: {
-         debounceKey
-      }
-   });
+   const [renameCollection] = useMutation(RENAME_COLLECTION_MUTATION);
 
    const router = useRouter();
    const [deleteCollection, { loading: deletingCollection }] = useMutation(
@@ -90,6 +52,7 @@ const CollectionsHeader = ({
             };
 
             if (data.deleteCollection.lastActiveCollection != null) {
+               // If they have a new lastActiveCollection and we don't get routed to it automatically (which we would if they're viewing the current last active collection but not if they're viewing a specifically requested collection), we'll route to it manually
                destination.query = {
                   id: data.deleteCollection.lastActiveCollection.id
                };
@@ -101,13 +64,16 @@ const CollectionsHeader = ({
                   router.push(destination);
                }
             } else {
+               // If they don't have a new lastActiveCollection, we'll just take them back to the collections page
                router.push(destination);
             }
          }
       }
    );
 
+   // Next we need to make the collections selector. We'll start by making an option element for each of the member's existing collections.
    const collectionsOptions = allCollections.map(collectionObj => (
+      // The only tricky thing here is that for the collection that's currently being displayed, we want to use the collectionTitle state (which is updated with every change to it) instead of the title from its collectionObj (which is only updated after the mutation fires when the input blurs)
       <option value={collectionObj.id} key={collectionObj.id}>
          {collectionObj.id === id ? collectionTitle : collectionObj.title}
       </option>
@@ -119,6 +85,7 @@ const CollectionsHeader = ({
          <select
             value={id}
             onChange={e => {
+               // Because we need to get the data for the new collection from the server, we're not going to bother with an optimistic response here. And because we are setting the lastActiveCollection, we don't need to route to the new colelction specifically, we can just route back to the collections page.
                setActiveCollection({
                   variables: {
                      collectionID: e.target.value
@@ -149,47 +116,48 @@ const CollectionsHeader = ({
       </div>
    );
 
+   const titleInput = (
+      <input
+         type="text"
+         className="collectionTitle"
+         value={collectionTitle}
+         onChange={e => {
+            setCollectionTitle(e.target.value);
+         }}
+         onKeyDown={e => {
+            if (e.key === 'Enter') {
+               e.target.blur();
+            }
+         }}
+         onBlur={e => {
+            if (e.target.value.trim() === '') {
+               e.preventDefault();
+               alert('Please enter a name for this collection');
+               return;
+            }
+            renameCollection({
+               variables: {
+                  collectionID: id,
+                  newTitle: e.target.value
+               },
+               optimisticResponse: {
+                  __typename: 'Mutation',
+                  renameCollection: {
+                     __typename: 'Collection',
+                     id,
+                     title: e.target.value
+                  }
+               }
+            });
+         }}
+      />
+   );
+
    return (
-      <header>
+      <StyledCollectionHeader>
          <div className="top">
             {!canEdit && <h3 className="collectionTitle">{collectionTitle}</h3>}
-            {canEdit && (
-               <input
-                  type="text"
-                  className="collectionTitle"
-                  ref={collectionTitleRef}
-                  value={collectionTitle}
-                  onChange={e => {
-                     setCollectionTitle(e.target.value);
-                  }}
-                  onKeyDown={e => {
-                     if (e.key === 'Enter') {
-                        collectionTitleRef.current.blur();
-                     }
-                  }}
-                  onBlur={e => {
-                     if (e.target.value.trim() === '') {
-                        e.preventDefault();
-                        alert('Please enter a name for this collection');
-                        return;
-                     }
-                     renameCollection({
-                        variables: {
-                           collectionID: id,
-                           newTitle: e.target.value
-                        },
-                        optimisticResponse: {
-                           __typename: 'Mutation',
-                           renameCollection: {
-                              __typename: 'Collection',
-                              id,
-                              title: e.target.value
-                           }
-                        }
-                     });
-                  }}
-               />
-            )}
+            {canEdit && titleInput}
             <HamburgerIcon
                className={showingOptions ? 'showing' : 'hidden'}
                onClick={() => setShowingOptions(!showingOptions)}
@@ -200,14 +168,7 @@ const CollectionsHeader = ({
                showingOptions ? 'headerOptions showing' : 'headerOptions hidden'
             }
          >
-            <div className="left">
-               {collectionSelector}
-               {/* <input
-                  type="text"
-                  placeholder="Filter Things"
-                  onChange={e => setThingFilterString(e.target.value)}
-               /> */}
-            </div>
+            <div className="left">{collectionSelector}</div>
             <div className="headerButtons">
                <AddCollectionButton type="icon" />
                {canEdit && deleteCollectionButton}
@@ -233,7 +194,7 @@ const CollectionsHeader = ({
                />
             </div>
          )}
-      </header>
+      </StyledCollectionHeader>
    );
 };
 export default CollectionsHeader;

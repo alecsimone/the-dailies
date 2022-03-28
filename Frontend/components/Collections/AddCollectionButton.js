@@ -8,7 +8,10 @@ const AddCollectionButton = ({ type = 'text' }) => {
 
    const [addCollection, { loading }] = useMutation(ADD_COLLECTION_MUTATION, {
       onCompleted: data => {
+         // We're going to grab the ID of the new collection out of our response data. We're getting back a Member object with a new lastActiveCollection, because that will automatically redirect us if the member is viewing their last active collection already.
          const newCollectionID = data.addCollection.lastActiveCollection.id;
+
+         // If they're not, we'll redirect them
          if (router.query.id != null && router.query.id !== newCollectionID) {
             router.push({
                pathname: '/collections',

@@ -8,6 +8,7 @@ import {
 } from '../../lib/ThingHandling';
 import useMe from '../Account/useMe';
 import { myThingsQueryCount, MY_THINGS_QUERY } from '../Archives/MyThings';
+import { expectedPrivacyOptions } from '../Collections/CollectionPrivacyInterface';
 
 const GET_PRIVACY_OPTIONS_QUERY = gql`
    query enumValuesOfPrivacySetting {
@@ -83,20 +84,15 @@ const PrivacyDropdown = ({ initialPrivacy, id, type }) => {
       });
    };
 
-   let privacyOptions;
    const {
       loading: privacyOptionsLoading,
       error: privacyOptionsError,
-      data: privacyOptionsData
+      data: privacyOptionsData = expectedPrivacyOptions
    } = useQuery(GET_PRIVACY_OPTIONS_QUERY);
 
-   if (privacyOptionsLoading) {
-      privacyOptions = <MetaOption name={initialPrivacy} />;
-   } else {
-      privacyOptions = privacyOptionsData.__type.enumValues.map(option => (
-         <MetaOption name={option.name} key={option.name} />
-      ));
-   }
+   const privacyOptions = privacyOptionsData.__type.enumValues.map(option => (
+      <MetaOption name={option.name} key={option.name} />
+   ));
 
    return (
       <select

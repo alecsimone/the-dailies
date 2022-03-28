@@ -91,22 +91,25 @@ type Mutation {
   deleteCollection(collectionID: ID!): Member
   setActiveCollection(collectionID: ID!): Member
   renameCollection(collectionID: ID! newTitle: String!): Collection
-  addGroupToCollection(collectionID: ID!, newGroupID: String!, columnID: String!): Collection
-  deleteGroupFromCollection(collectionID: ID! groupID: String!): Collection
-  renameGroupOnCollection(collectionID: ID!, groupID: String!, newTitle: String!): CollectionGroup
-  addLinkToCollectionGroup(url: String!, groupID: ID!, position: Int): CollectionGroup
-  removeLinkFromCollectionGroup(linkID: ID!, groupID: ID!): CollectionGroup
-  reorderGroups(groupOneID: ID, newOrderOne: [String!], groupTwoID: ID, newOrderTwo: [String!]): [CollectionGroup!]
-  moveCardToGroup(linkID: ID!, cardType: String, sourceGroupID: ID, destinationGroupID: ID, newPosition: Int): [CollectionGroup!]
-  moveGroupToColumn(groupID: ID!, sourceColumnID: ID, destinationColumnID: ID, newPosition: Int): Collection
-  reorderGroup(groupID: ID!, linkID: ID!, newPosition: Int!): CollectionGroup
-  reorderColumn(columnID: ID!, groupID: ID!, newPosition: Int!): ColumnOrder
-  addNoteToGroup(groupID: ID!, position: Int): CollectionGroup
-  deleteNote(noteID: ID!): CollectionGroup
-  editNote(noteID: ID!, newContent: String!): Note
   setCollectionPrivacy(collectionID: ID!, privacy: PrivacySetting!): Collection
   addIndividualPermissionToCollection(collectionID: ID!, memberID: ID!, permissionType: String!): Collection
   removeIndividualPermissionFromCollection(collectionID: ID!, memberID: ID!, permissionType: String!): Collection
+
+  addGroupToCollection(collectionID: ID!, newGroupID: String!, columnID: String!): Collection
+  deleteGroupFromCollection(collectionID: ID! groupID: String!): Collection
+  renameGroupOnCollection(collectionID: ID!, groupID: String!, newTitle: String!): CollectionGroup
+  reorderGroups(groupOneID: ID, newOrderOne: [String!], groupTwoID: ID, newOrderTwo: [String!]): [CollectionGroup!]
+  moveGroupToColumn(groupID: ID!, sourceColumnID: ID, destinationColumnID: ID, newPosition: Int): Collection
+  reorderColumn(columnID: ID!, groupID: ID!, newPosition: Int!): ColumnOrder
+
+  addLinkToCollectionGroup(url: String!, groupID: ID!, position: Int): CollectionGroup
+  removeLinkFromCollectionGroup(linkID: ID!, groupID: ID!): CollectionGroup
+  moveCardToGroup(linkID: ID!, cardType: String, sourceGroupID: ID, destinationGroupID: ID, newPosition: Int): [CollectionGroup!]
+  reorderGroup(groupID: ID!, linkID: ID!, newPosition: Int!): CollectionGroup
+
+  addNoteToGroup(groupID: ID!, position: Int): CollectionGroup
+  deleteNote(noteID: ID!): CollectionGroup
+  editNote(noteID: ID!, newContent: String!): Note
 
   addConnection(subjectID: ID!, objectID: ID!, relationship: String!, strength: Int): [Thing!]
   deleteConnection(connectionID: ID!): [Thing!],

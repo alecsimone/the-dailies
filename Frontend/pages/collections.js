@@ -14,6 +14,7 @@ import useMe from '../components/Account/useMe';
 const CollectionsPage = ({ query }) => {
    const { loggedInUserID, memberLoading } = useMe();
 
+   // There are two potential queries we might be running. The first we have to run as long as we have a logged in user. It gets basic information about all of the current member's collections so that we can display them in the collections selector interface that allows the member to change collections, then it also gets full information about their last active collection, which will be displayed unless the URL query specified a different collection to be displayed.
    const {
       data: collectionsData,
       loading: collectionsLoading,
@@ -22,6 +23,7 @@ const CollectionsPage = ({ query }) => {
       skip: loggedInUserID == null
    });
 
+   // If the URL query does specify a different collection to display, this query will fetch it
    const {
       data: specificCollectionData,
       loading: specificCollectionLoading,
@@ -33,17 +35,27 @@ const CollectionsPage = ({ query }) => {
       skip: query.id == null
    });
 
+   // Only logged in members can use the collections app, but anyone can view a specific collection (assuming it's public, which will be checked on the backend)
    if (loggedInUserID == null && query.id == null)
       return <SignupOrLogin explanation styled />;
    if (memberLoading) return <LoadingRing />;
 
+   // Since the specificCollection query overrides the general collections query, we check for its data first
    if (specificCollectionData) {
+      // We need to know if the logged in user is an editor of this collection. If they're the author of the collection, they definitely are, so we'll start there.
+      let isEditor =
+         specificCollectionData.getCollection.author.id === loggedInUserID;
+      specificCollectionData.getCollection.editors.forEach(editorObj => {
+         if (isEditor) return; // Once we know they're an editor, there's no need for any more loops.
+         if (editorObj.id === loggedInUserID) {
+            isEditor = true;
+         }
+      });
+
       return (
          <Collections
             activeCollection={specificCollectionData.getCollection}
-            canEdit={
-               specificCollectionData.getCollection.author.id === loggedInUserID
-            }
+            canEdit={isEditor}
             allCollections={
                collectionsData != null
                   ? collectionsData.getCollections.collections
@@ -63,6 +75,7 @@ const CollectionsPage = ({ query }) => {
       );
    }
 
+   // We only want to display the last active collection if there was no specific collection requested. Even though we already returned a node if we have specific collection data, that condition wouldn't pass if we're loading specificCollectionData but not collectionsData, thus we do a query.id == null check here as well.
    if (query.id == null && collectionsData) {
       const {
          lastActiveCollection: activeCollection,
@@ -82,6 +95,7 @@ const CollectionsPage = ({ query }) => {
       }
 
       if (query.id == null && process.browser) {
+         // If the member did not request a specific collection, we still want to update the URL in the browser to represent the current collection so that it may be shared easily, but we don't want to reload the page.
          window.history.pushState(
             'Collections',
             '',
@@ -89,10 +103,19 @@ const CollectionsPage = ({ query }) => {
          );
       }
 
+      // We need to know if the logged in user is an editor of this collection. If they're the author of the collection, they definitely are, so we'll start there.
+      let isEditor = activeCollection.author.id === loggedInUserID;
+      specificCollectionData.getCollection.editors.forEach(editorObj => {
+         if (isEditor) return; // Once we know they're an editor, there's no need for any more loops.
+         if (editorObj.id === loggedInUserID) {
+            isEditor = true;
+         }
+      });
+
       return (
          <Collections
             activeCollection={activeCollection}
-            canEdit={activeCollection.author.id === loggedInUserID}
+            canEdit={isEditor}
             allCollections={collections}
          />
       );

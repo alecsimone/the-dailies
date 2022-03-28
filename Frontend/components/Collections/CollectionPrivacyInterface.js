@@ -1,4 +1,3 @@
-import styled from 'styled-components';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 import { useRef, useState } from 'react';
@@ -82,6 +81,31 @@ const debouncedMemberSearch = debounce(
    }
 );
 
+const expectedPrivacyOptions = {
+   __type: {
+      __typename: '__Type',
+      enumValues: [
+         {
+            __typename: '__EnumValue',
+            name: 'Public'
+         },
+         {
+            __typename: '__EnumValue',
+            name: 'Private'
+         },
+         {
+            __typename: '__EnumValue',
+            name: 'Friends'
+         },
+         {
+            __typename: '__EnumValue',
+            name: 'FriendsOfFriends'
+         }
+      ]
+   }
+};
+export { expectedPrivacyOptions };
+
 const CollectionPrivacyInterface = ({
    collectionID,
    initialPrivacy,
@@ -90,24 +114,31 @@ const CollectionPrivacyInterface = ({
 }) => {
    const { loggedInUserID } = useMe();
 
+   // The state for our inputs
    const [viewersInput, setViewersInput] = useState('');
    const [editorsInput, setEditorsInput] = useState('');
+
+   // State and a ref to keep track of which input is currently controlling the search and results
    const [activeSearchElement, setActiveSearchElement] = useState(null);
    const activeSearchElementRef = useRef(activeSearchElement);
 
+   // State to keep track of if we're displaying the individuals added to either category
    const [showingExtraViewers, setShowingExtraViewers] = useState(false);
    const [showingExtraEditors, setShowingExtraEditors] = useState(false);
 
+   // Refs to keep track of the viewers and editors so that event callbacks can have up to date data
    const viewersRef = useRef(viewers);
    const editorsRef = useRef(editors);
 
-   let privacyOptions;
+   // The options for our privacy selector come from an enum, the possible values of which we're going to fetch with this query
+   // However, these privacy options are pretty stable, so we're going to hard code in an initial data object we can use so we don't get a blank selector at first
    const {
       loading: privacyOptionsLoading,
       error: privacyOptionsError,
-      data: privacyOptionsData
+      data: privacyOptionsData = expectedPrivacyOptions
    } = useQuery(GET_PRIVACY_OPTIONS_QUERY);
 
+   // We have a custom hook that helps us with displaying and itneracting with search results, which we'll use here.
    const {
       postSearchResults: memberSearchResults,
       setPostSearchResults: setMemberSearchResults,
@@ -123,16 +154,21 @@ const CollectionPrivacyInterface = ({
       {
          onCompleted: data => {
             const filteredData = data.searchMembers.filter(member => {
+               // We don't want to show the currently logged in member in our search results
                if (member.id === loggedInUserID) return false;
+
+               // And we don't want to show anyone who currently has the relevant permission
                let hasPermission = false;
                if (activeSearchElement === 'viewers') {
                   viewers.forEach(individualViewer => {
+                     if (hasPermission) return; // To avoid unnecessary loops
                      if (individualViewer.id === member.id) {
                         hasPermission = true;
                      }
                   });
                } else if (activeSearchElement === 'editors') {
                   editors.forEach(individualEditor => {
+                     if (hasPermission) return; // To avoid unnecessary loops
                      if (individualEditor.id === member.id) {
                         hasPermission = true;
                      }
@@ -140,6 +176,7 @@ const CollectionPrivacyInterface = ({
                }
                return !hasPermission;
             });
+            // Then we want to get just the first 10 results and put them into the relevant state and ref.
             const trimmedData = filteredData.slice(0, 10);
             setMemberSearchResults(trimmedData);
             searchResultsRef.current = trimmedData;
@@ -165,13 +202,9 @@ const CollectionPrivacyInterface = ({
       }
    );
 
-   if (privacyOptionsLoading) {
-      privacyOptions = <MetaOption name={initialPrivacy} />;
-   } else {
-      privacyOptions = privacyOptionsData.__type.enumValues.map(option => (
-         <MetaOption name={option.name} key={option.name} />
-      ));
-   }
+   const privacyOptions = privacyOptionsData.__type.enumValues.map(option => (
+      <MetaOption name={option.name} key={option.name} />
+   ));
 
    const selectPrivacy = e => {
       const {
@@ -242,7 +275,6 @@ const CollectionPrivacyInterface = ({
 
       const selectedMember = searchResultsRef.current[index];
 
-      console.log(viewers, editors);
       const newViewers = [...viewersRef.current];
       const newEditors = [...editorsRef.current];
       if (activeSearchElementRef.current === 'viewers') {
@@ -356,7 +388,6 @@ const CollectionPrivacyInterface = ({
    return (
       <div className="privacyInterface">
          <div className="privacySelectorGroup">
-            <span>Privacy</span>
             <select value={initialPrivacy} onChange={selectPrivacy}>
                {privacyOptions}
             </select>

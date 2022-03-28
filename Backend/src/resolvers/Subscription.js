@@ -40,7 +40,7 @@ const Subscription = {
    collection: {
       subscribe: withFilter(
          (parent, { id }, ctx, info) => ctx.pubsub.asyncIterator('collection'),
-         (payload, variables) => variables.id == payload.collection.node.id
+         (payload, variables) => variables.id === payload.collection.node.id
       )
    }
 };

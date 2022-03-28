@@ -534,32 +534,45 @@ async function search(
 exports.search = search;
 
 async function ensureColumnsAreOrdered(collectionObj, ctx) {
+   // We're going to loop over every userGroup and make sure it shows up in a columnOrder somewhere.
    const { userGroups, columnOrders } = collectionObj;
 
    let hasUnorderedGroups = false;
    const newOrder = [];
+
+   // We're going to loop over every group
    userGroups.forEach(groupObj => {
       let groupIsOrdered = false;
+
+      // First we check if it's in at least one columnOrder
       columnOrders.forEach(orderObj => {
-         if (groupIsOrdered) return;
+         if (groupIsOrdered) return; // To avoid unnecessary loops
          if (orderObj.order.includes(groupObj.id)) {
             groupIsOrdered = true;
          }
       });
+
+      // If it is not in a columnOrder, we need to add it to one.
       if (!groupIsOrdered) {
          hasUnorderedGroups = true;
          if (columnOrders.length > 0) {
+            // If they have columnOrders already, we add it to the first one
             columnOrders[0].order.push(groupObj.id);
          } else {
+            // If they don't, we make a new one
             newOrder.push(groupObj.id);
          }
       }
    });
+
+   // If there were no unordered groups, we're done here
    if (!hasUnorderedGroups) return collectionObj;
 
-   let newCollectionObj;
+   // If there were unordered groups, we need to update the collection to put them in their new order
+   let updatedCollection;
    if (newOrder.length > 0) {
-      newCollectionObj = await ctx.db.mutation.updateCollection(
+      // If we had to make a new columnOrder because there weren't any, we do so
+      updatedCollection = await ctx.db.mutation.updateCollection(
          {
             where: {
                id: collectionObj.id
@@ -577,7 +590,8 @@ async function ensureColumnsAreOrdered(collectionObj, ctx) {
          `{${fullCollectionFields}}`
       );
    } else {
-      newCollectionObj = collectionObj;
+      // If they already had a columnOrder we could add the unordered groups into, we have to update that columnOrder
+      updatedCollection = collectionObj;
       await ctx.db.mutation.updateColumnOrder({
          where: {
             id: columnOrders[0].id
@@ -590,7 +604,8 @@ async function ensureColumnsAreOrdered(collectionObj, ctx) {
       });
    }
 
-   return newCollectionObj;
+   // Then we send back the updatedCollection
+   return updatedCollection;
 }
 
 async function getCollections(parent, args, ctx, info) {
@@ -613,13 +628,14 @@ async function getCollections(parent, args, ctx, info) {
       myCollections.lastActiveCollection == null &&
       myCollections.collections.length > 0
    ) {
-      // If they have collections, but the lastActiveCollection is null for some reason, let's set one of their collections to be last active
+      // If they have collections, but the lastActiveCollection is null for some reason, let's set their newest collection to be last active
       const { collections } = myCollections;
       collections.sort((a, b) => {
          const aDate = new Date(a.createdAt);
          const bDate = new Date(b.createdAt);
          return bDate - aDate;
       });
+      const latestCollectionID = collections[0].id;
 
       const updatedMember = await ctx.db.mutation.updateMember(
          {
@@ -629,7 +645,7 @@ async function getCollections(parent, args, ctx, info) {
             data: {
                lastActiveCollection: {
                   connect: {
-                     id: collections[0].id
+                     id: latestCollectionID
                   }
                }
             }
@@ -639,6 +655,7 @@ async function getCollections(parent, args, ctx, info) {
       return updatedMember;
    }
 
+   // Finally, we make sure all the userGroups in this collection are included in a column order
    myCollections.lastActiveCollection = ensureColumnsAreOrdered(
       myCollections.lastActiveCollection,
       ctx
@@ -649,6 +666,7 @@ async function getCollections(parent, args, ctx, info) {
 exports.getCollections = getCollections;
 
 async function getCollection(parent, { id }, ctx, info) {
+   // First we make sure the member has permission to view this collection
    const canView = await checkCollectionPermissions(
       id,
       'collection',
@@ -663,6 +681,7 @@ async function getCollection(parent, { id }, ctx, info) {
       );
    }
 
+   // And if they do, we send back the collection
    let collectionData = await ctx.db.query.collection(
       {
          where: {
@@ -672,6 +691,7 @@ async function getCollection(parent, { id }, ctx, info) {
       `{${fullCollectionFields}}`
    );
 
+   // After making sure all the columns are ordered, of course.
    collectionData = ensureColumnsAreOrdered(collectionData, ctx);
 
    return collectionData;

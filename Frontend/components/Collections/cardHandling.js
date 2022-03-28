@@ -33,15 +33,15 @@ const groupSort = (items, order) => {
          const aIndex = order.indexOf(a.id != null ? a.id : a);
          const bIndex = order.indexOf(b.id != null ? b.id : b);
 
-         if (aIndex === -1) {
+         if (aIndex !== -1 && bIndex !== -1) {
+            return aIndex - bIndex;
+         }
+         if (aIndex === -1 && bIndex !== -1) {
             return 1;
          }
-
-         if (bIndex === -1) {
+         if (bIndex === -1 && aIndex !== -1) {
             return -1;
          }
-
-         return aIndex - bIndex;
       }
       return sortByID(a, b);
    });
