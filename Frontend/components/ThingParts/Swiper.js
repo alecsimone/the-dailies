@@ -96,6 +96,24 @@ const Swiper = ({
       }));
    }, [overridePosition]);
 
+   const touchBlocker = e => {
+      e.preventDefault();
+      return false;
+   };
+
+   const swiperRef = useRef(null);
+
+   useEffect(() => {
+      swiperRef.current.addEventListener('touchmove', touchBlocker, {
+         passive: false
+      });
+      return () => {
+         if (swiperRef.current != null) {
+            swiperRef.current.removeEventListener('touchMove', touchBlocker);
+         }
+      };
+   });
+
    const animationRef = useRef('0px');
 
    const previousElementExists =
@@ -104,6 +122,11 @@ const Swiper = ({
 
    const [touchStart, setTouchStart] = useState(0);
    const [touchEnd, setTouchEnd] = useState(0);
+
+   const scrollPosRef = useRef({
+      top: 0,
+      y: 0
+   });
 
    let initialTranslationAmount = -100;
    if (!previousElementExists) {
@@ -160,15 +183,30 @@ const Swiper = ({
 
    const elements = (
       <div
+         ref={swiperRef}
          className="overflowWrapper"
          onTouchStart={e => {
             // e.stopPropagation();
             setTouchStart(e.touches[0].clientX);
             setTouchEnd(e.touches[0].clientX);
+
+            scrollPosRef.current = {
+               top: getScrollingParent(swiperRef.current).scrollTop,
+               y: e.touches[0].clientY
+            };
          }}
          onTouchMove={e => {
             // e.stopPropagation();
             setTouchEnd(e.touches[0].clientX);
+
+            if (
+               touchEnd - touchStart < minimumTranslationDistance * 0.5 &&
+               touchEnd - touchStart > minimumTranslationDistance * -0.5
+            ) {
+               const dy = e.touches[0].clientY - scrollPosRef.current.y;
+               getScrollingParent(swiperRef.current).scrollTop =
+                  scrollPosRef.current.top - dy;
+            }
          }}
          onTouchEnd={e => {
             // e.stopPropagation();
