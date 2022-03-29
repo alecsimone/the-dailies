@@ -290,7 +290,6 @@ enum Role {
   Unverified
 }
 
-// If we change these, make sure to update the expectedPrivacyOptions object, which should be found in CollectionsPrivacyInterface.js on the frontend
 enum PrivacySetting {
    Public
    Private

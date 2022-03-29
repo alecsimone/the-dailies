@@ -105,7 +105,7 @@ const CollectionsPage = ({ query }) => {
 
       // We need to know if the logged in user is an editor of this collection. If they're the author of the collection, they definitely are, so we'll start there.
       let isEditor = activeCollection.author.id === loggedInUserID;
-      specificCollectionData.getCollection.editors.forEach(editorObj => {
+      activeCollection.editors.forEach(editorObj => {
          if (isEditor) return; // Once we know they're an editor, there's no need for any more loops.
          if (editorObj.id === loggedInUserID) {
             isEditor = true;
