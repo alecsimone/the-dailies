@@ -75,16 +75,21 @@ const StyledHomepage = styled.section`
       }
    }
    .sidebar {
-      width: 25%;
-      min-width: 36rem;
-      display: none;
+      display: block;
+      width: 100%;
+      position: absolute;
+      z-index: 10;
       &.open {
          transform: translateX(0%);
+         transition: transform 0.2s linear;
       }
       &.closed {
          transform: translateX(100%);
-         min-width: 0;
+         transition: transform 0.2s linear, width 0s linear 0.25s,
+            min-width 0s linear 0.25s, opacity 0s linear 0.25s;
          width: 0;
+         min-width: 0;
+         opacity: 0;
       }
       p.emptyThings {
          padding: 0 2rem;
@@ -93,8 +98,10 @@ const StyledHomepage = styled.section`
          margin: 0;
       }
       ${props => props.theme.desktopBreakpoint} {
+         position: relative;
          max-height: 100%;
-         display: block;
+         width: 25%;
+         min-width: 36rem;
          background: ${props => props.theme.midBlack};
          overflow: hidden;
          ${props => props.theme.scroll};
@@ -132,11 +139,9 @@ const Home = () => {
 
    const [currentFeed, setCurrentFeed] = useState('Top');
 
-   const {
-      setThingsSidebarIsOpen,
-      homepageThingsBarIsOpen,
-      setHomepageThingsBarIsOpen
-   } = useContext(ModalContext);
+   const { setThingsSidebarIsOpen, homepageThingsBarIsOpen } = useContext(
+      ModalContext
+   );
 
    useEffect(() => setThingsSidebarIsOpen(false), [setThingsSidebarIsOpen]);
 

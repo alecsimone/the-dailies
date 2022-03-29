@@ -340,7 +340,7 @@ const GlobalStyle = createGlobalStyle`
          top: calc(6.75rem + 1px);
          z-index: 99;
          ${props => props.theme.scroll};
-         transition: transform .25s;
+         transition: transform .2s;
          &.visible {
             transform: translateX(0%);
          }

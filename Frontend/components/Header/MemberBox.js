@@ -78,7 +78,6 @@ const MemberBox = () => {
    const toggleThingsSidebar = e => {
       e.preventDefault();
       if (isHome) {
-         console.log(!homepageThingsBarIsOpen);
          setHomepageThingsBarIsOpen(!homepageThingsBarIsOpen);
          return;
       }
