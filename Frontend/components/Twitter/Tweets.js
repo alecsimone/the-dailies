@@ -199,7 +199,7 @@ const StyledTweets = styled.section`
                ${props => props.theme.scroll};
                max-height: calc(
                   100vh - var(--tweeter-header-height) - var(--header-height) -
-                     2.25rem * 1.6
+                     2.25rem * 1.6 - 3.75rem
                ); /* the 2.25rem * 1.6 is for the list info bar, which has a font size of 2.25rem and a line height of 1.6. I can't currently explain the extra 3.75rem we had to take off */
                .tweetsContainer {
                   padding: 0 0 5rem;

@@ -480,7 +480,7 @@ const GlobalStyle = createGlobalStyle`
          &.threadEnder {
             border-radius: 0 0 3px 3px;
             &:last-child {
-                  margin-bottom: 3rem;
+                  margin-bottom: 5rem;
                }
          }
       }
