@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { minimumTranslationDistance } from '../../config';
 import { getScrollingParent } from '../../Stickifier/useStickifier';
@@ -69,14 +70,37 @@ const Swiper = ({
    overridePosition = 0,
    onSwipe
 }) => {
-   const [currentPosition, setCurrentPosition] = useState(overridePosition);
+   // const [currentPosition, setCurrentPosition] = useState(overridePosition);
+
+   const [positionObject, setPositionObject] = useState({
+      position: overridePosition,
+      direction: 'none'
+   });
+   const setCurrentPosition = position => {
+      setPositionObject(prev => ({
+         direction: prev.position > position ? 'right' : 'left',
+         position
+      }));
+   };
+   const setSwipeDirection = direction => {
+      setPositionObject(prev => ({
+         ...prev,
+         direction
+      }));
+   };
 
    useEffect(() => {
-      setCurrentPosition(overridePosition);
+      setPositionObject(prev => ({
+         ...prev,
+         position: overridePosition
+      }));
    }, [overridePosition]);
 
-   const previousElementExists = elementsArray[currentPosition - 1] != null;
-   const nextElementExists = elementsArray[currentPosition + 1] != null;
+   const animationRef = useRef('0px');
+
+   const previousElementExists =
+      elementsArray[positionObject.position - 1] != null;
+   const nextElementExists = elementsArray[positionObject.position + 1] != null;
 
    const [touchStart, setTouchStart] = useState(0);
    const [touchEnd, setTouchEnd] = useState(0);
@@ -127,6 +151,13 @@ const Swiper = ({
       }
    };
 
+   let initialAnimationPosition = '0px';
+   if (positionObject.direction === 'right') {
+      initialAnimationPosition = `calc(-100% + ${animationRef.current})`;
+   } else if (positionObject.direction === 'left') {
+      initialAnimationPosition = `calc(100% + ${animationRef.current})`;
+   }
+
    const elements = (
       <div
          className="overflowWrapper"
@@ -143,7 +174,8 @@ const Swiper = ({
             // e.stopPropagation();
             if (touchEnd - touchStart > swipeThreshold) {
                if (previousElementExists) {
-                  setCurrentPosition(currentPosition - 1);
+                  setCurrentPosition(positionObject.position - 1);
+                  setSwipeDirection('right');
                   scrollToTop(e);
                   if (onSwipe != null) {
                      onSwipe();
@@ -151,13 +183,15 @@ const Swiper = ({
                }
             } else if (touchEnd - touchStart < swipeThreshold * -1) {
                if (nextElementExists) {
-                  setCurrentPosition(currentPosition + 1);
+                  setCurrentPosition(positionObject.position + 1);
+                  setSwipeDirection('left');
                   scrollToTop(e);
                   if (onSwipe != null) {
                      onSwipe();
                   }
                }
             }
+            animationRef.current = `${calculatedTranslation}px`;
             setTouchStart(0);
             setTouchEnd(0);
          }}
@@ -170,15 +204,24 @@ const Swiper = ({
                   }`}
                   style={{ transform: `translateX(${finalTranslation})` }}
                >
-                  {elementsArray[currentPosition - 1]}
+                  {elementsArray[positionObject.position - 1]}
                </div>
             )}
-            <div
-               className="currentElement"
-               style={{ transform: `translateX(${finalTranslation})` }}
+            <motion.div
+               key={elementsArray[positionObject.position].key}
+               initial={{
+                  x: initialAnimationPosition
+               }}
+               animate={{ x: '0%' }}
+               transition={{ duration: 0.1 }}
             >
-               {elementsArray[currentPosition]}
-            </div>
+               <div
+                  className="currentElement"
+                  style={{ transform: `translateX(${finalTranslation})` }}
+               >
+                  {elementsArray[positionObject.position]}
+               </div>
+            </motion.div>
             {nextElementExists && (
                <div
                   className={`nextElement ${
@@ -186,7 +229,7 @@ const Swiper = ({
                   }`}
                   style={{ transform: `translateX(${finalTranslation})` }}
                >
-                  {elementsArray[currentPosition + 1]}
+                  {elementsArray[positionObject.position + 1]}
                </div>
             )}
          </div>
@@ -198,11 +241,11 @@ const Swiper = ({
          {elements}
          {elementsArray.length > 1 && !hideNavigator && (
             <div className="navigator">
-               {currentPosition > 0 && (
+               {positionObject.position > 0 && (
                   <ArrowIcon
                      className="prev"
                      onClick={e => {
-                        setCurrentPosition(currentPosition - 1);
+                        setCurrentPosition(positionObject.position - 1);
                         scrollToTop(e);
                         if (onSwipe != null) {
                            onSwipe();
@@ -213,20 +256,20 @@ const Swiper = ({
                )}
                <span
                   className={`sliderText${
-                     currentPosition === 0 ? ' noLeft' : ''
+                     positionObject.position === 0 ? ' noLeft' : ''
                   }${
-                     currentPosition + 1 === elementsArray.length
+                     positionObject.position + 1 === elementsArray.length
                         ? ' noRight'
                         : ''
                   }`}
                >
-                  {currentPosition + 1} / {elementsArray.length}
+                  {positionObject.position + 1} / {elementsArray.length}
                </span>
-               {currentPosition + 1 < elementsArray.length && (
+               {positionObject.position + 1 < elementsArray.length && (
                   <ArrowIcon
                      className="next"
                      onClick={e => {
-                        setCurrentPosition(currentPosition + 1);
+                        setCurrentPosition(positionObject.position + 1);
                         scrollToTop(e);
                         if (onSwipe != null) {
                            onSwipe();
