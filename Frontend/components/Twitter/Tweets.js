@@ -120,8 +120,9 @@ const StyledTweets = styled.section`
             border-radius: 3px;
             position: relative;
             width: 100%;
-            flex-grow: 1;
             min-width: 45rem;
+            max-width: 100rem;
+            flex-grow: 1;
             /* max-width: 100rem; */
             height: 100%;
             overflow: hidden;
