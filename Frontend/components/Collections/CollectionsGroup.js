@@ -4,7 +4,7 @@ import { Droppable, Draggable } from 'react-beautiful-dnd';
 import styled from 'styled-components';
 import gql from 'graphql-tag';
 import { StyledGroup } from './styles';
-import CollectionsCard from './CollectionsCard';
+import CollectionsCard, { isTouchEnabled } from './CollectionsCard';
 import {
    RENAME_GROUP_MUTATION,
    ADD_LINK_TO_GROUP_MUTATION,
@@ -321,7 +321,7 @@ const CollectionsGroup = ({ index, groupObj, collectionID, canEdit }) => {
    return (
       <Draggable
          draggableId={`${index}-${id}`}
-         isDragDisabled={!canEdit}
+         isDragDisabled={!canEdit || isTouchEnabled()}
          index={index}
          key={`${index}-${id}`}
       >

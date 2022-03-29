@@ -32,6 +32,7 @@ import ConnectionsInterface from '../ThingParts/ConnectionsInterface';
 import ConnectionsIcon from '../Icons/Connections';
 import useMe from '../Account/useMe';
 import { getRandomString } from '../../lib/TextHandling';
+import { isTouchEnabled } from '../Collections/CollectionsCard';
 
 const DELETE_THING_MUTATION = gql`
    mutation DELETE_THING_MUTATION($id: ID!) {
@@ -983,6 +984,7 @@ const FlexibleThingCard = ({
          <Draggable
             key={`thingCard-${thingID}`}
             key={`thingCard-${getRandomString(8)}-${groupName}-${thingID}`}
+            isDragDisabled={isTouchEnabled()}
             draggableId={`thingCard-${groupName}-${thingID}`}
             index={index != null ? index : 1}
          >

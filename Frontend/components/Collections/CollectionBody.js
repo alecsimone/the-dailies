@@ -9,7 +9,6 @@ import { ADD_GROUP_TO_COLLECTION_MUTATION } from './queriesAndMutations';
 import { StyledCollectionBody } from './styles';
 
 const resizeAllGroupTitles = () => {
-   console.log('hello');
    const groupTitles = document.querySelectorAll('textarea.groupTitle');
    for (const groupTitle of groupTitles) {
       dynamicallyResizeElement(groupTitle, false);

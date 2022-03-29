@@ -31,6 +31,13 @@ const StyledButton = styled.button`
    }
 `;
 
+const isTouchEnabled = () =>
+   process.browser &&
+   ('ontouchstart' in window ||
+      navigator.matchTouchPoints > 0 ||
+      navigator.msMaxTouchPoints > 0);
+export { isTouchEnabled };
+
 const CollectionsCard = ({ data, index, collectionID, groupID, canEdit }) => {
    const { loggedInUserID } = useMe();
 
@@ -89,7 +96,7 @@ const CollectionsCard = ({ data, index, collectionID, groupID, canEdit }) => {
       return (
          <Draggable
             draggableId={`${groupID}-note-${noteID}`}
-            isDragDisabled={!canEdit}
+            isDragDisabled={!canEdit || isTouchEnabled()}
             index={index}
             key={`${groupID}-${noteID}`}
          >
@@ -267,7 +274,7 @@ const CollectionsCard = ({ data, index, collectionID, groupID, canEdit }) => {
    return (
       <Draggable
          draggableId={`${groupID}-${id}`}
-         isDragDisabled={!canEdit}
+         isDragDisabled={!canEdit || isTouchEnabled()}
          index={index}
          key={`${groupID}-${id}`}
       >
