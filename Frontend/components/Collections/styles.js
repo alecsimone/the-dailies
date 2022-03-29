@@ -312,14 +312,25 @@ const StyledCollectionBody = styled.section`
          padding: 0;
       }
       .column {
-         max-width: 64rem;
-         min-width: 85%;
-         margin-right: 2rem;
          ${props => props.theme.scroll};
-         ${props => props.theme.mobileBreakpoint} {
-            min-width: 64rem;
-            max-width: min(64rem, 80%);
-            margin-left: 0;
+         margin-right: 2rem;
+         min-width: min(90%, 80rem);
+         width: 90%;
+         @media screen and (min-width: 800px) {
+            min-width: min(70%, 80rem);
+            width: 70%;
+         }
+         ${props => props.theme.desktopBreakpoint} {
+            min-width: min(60%, 80rem);
+            width: 60%;
+         }
+         @media screen and (min-width: 1600px) {
+            min-width: min(45%, 80rem);
+            width: 45%;
+         }
+         @media screen and (min-width: 2400px) {
+            min-width: min(30%, 80rem);
+            width: 30%;
          }
          flex-grow: 1;
          .dropArea {

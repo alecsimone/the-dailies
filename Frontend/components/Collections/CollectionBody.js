@@ -1,11 +1,20 @@
 import { useMutation } from '@apollo/react-hooks';
 import Head from 'next/head';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { getRandomString } from '../../lib/TextHandling';
+import { dynamicallyResizeElement } from '../../styles/functions';
 import Columnizer from '../Columnizer';
 import CollectionsGroup from './CollectionsGroup';
 import { ADD_GROUP_TO_COLLECTION_MUTATION } from './queriesAndMutations';
 import { StyledCollectionBody } from './styles';
+
+const resizeAllGroupTitles = () => {
+   console.log('hello');
+   const groupTitles = document.querySelectorAll('textarea.groupTitle');
+   for (const groupTitle of groupTitles) {
+      dynamicallyResizeElement(groupTitle, false);
+   }
+};
 
 const CollectionBody = ({ activeCollection, canEdit }) => {
    // Another pretty simple component. This one exists just to create the items that will populate Columnizer, to handle adding groups, and to set the page Head data (page title and opengraph data).
@@ -17,6 +26,11 @@ const CollectionBody = ({ activeCollection, canEdit }) => {
       title,
       author
    } = activeCollection;
+
+   useEffect(() => {
+      window.addEventListener('resize', resizeAllGroupTitles);
+      return () => window.removeEventListener('resize', resizeAllGroupTitles);
+   }, []);
 
    // Theoretically, we should always be getting a columnOrderOrder that orders every column. On the off chance we don't though, this little block is here to make up the differences. It's probably unecessary, so it's pretty quick and dirty, but it was helpful when introducing columnOrderOrders and it could be a nice little failsafe at some point too I guess.
    if (columnOrderOrder.length < columnOrders.length) {
