@@ -335,10 +335,19 @@ const StyledCollectionBody = styled.section`
          flex-grow: 1;
          .dropArea {
             transition: 0.52s all;
-            padding-bottom: 16rem;
+            padding-bottom: 4rem;
+            .addGroupButton {
+               margin: 0 auto;
+               transition: margin 0.25s ease-out;
+            }
             &.dragging {
+               /* padding-bottom: 16rem; */
                transition: 0.25s all;
                background: ${props => setAlpha(props.theme.lightBlack, 0.6)};
+               .addGroupButton {
+                  margin: 16rem auto 0 auto;
+                  transition: margin 0.25s ease-out;
+               }
             }
          }
          button.addGroupButton {

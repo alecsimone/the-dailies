@@ -121,7 +121,7 @@ const CollectionBody = ({ activeCollection, canEdit }) => {
    );
 
    return (
-      <StyledCollectionBody>
+      <StyledCollectionBody className="collectionBody">
          <Head>
             <title>{title} - Ouryou</title>
             <meta property="og:title" content={title} />

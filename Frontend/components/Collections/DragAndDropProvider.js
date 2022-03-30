@@ -33,8 +33,7 @@ const DragAndDropProvider = ({ children }) => {
    });
 
    const [moveGroupToColumn] = useMutation(MOVE_GROUP_TO_COLUMN_MUTATION, {
-      onError: err => alert(err.message),
-      onCompleted: d => console.log(d.moveGroupToColumn)
+      onError: err => alert(err.message)
    });
 
    const [reorderGroup] = useMutation(REORDER_GROUP_MUTATION, {
