@@ -46,6 +46,9 @@ const StyledNavSidebar = styled.section`
          justify-content: flex-start;
       }
    }
+   &.desktopHidden {
+      cursor: pointer;
+   }
    a {
       &:hover {
          text-decoration: none;
@@ -220,7 +223,14 @@ const NavSidebar = () => {
    }
 
    return (
-      <StyledNavSidebar className={className}>
+      <StyledNavSidebar
+         className={className}
+         onClick={() => {
+            if (desktopIsHidden) {
+               setDesktopIsHidden(!desktopIsHidden);
+            }
+         }}
+      >
          <div className="container">
             <Link href="/">
                <a
