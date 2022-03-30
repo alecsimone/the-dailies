@@ -372,7 +372,7 @@ const StyledGroup = styled.div`
    }
    border-radius: 6px;
    margin-bottom: 2rem;
-   --group-background: hsla(210, 10%, 8%);
+   --group-background: hsla(210, 10%, 8.5%);
    background: var(--group-background);
    /* background: ${props => props.theme.lightBlack}; */
    &.blankGroup {
@@ -380,9 +380,6 @@ const StyledGroup = styled.div`
       text-align: center;
    }
    .blankSpace {
-      border-radius: 4px;
-   }
-   .noteWrapper {
       border-radius: 4px;
    }
    header.groupHeader {
@@ -569,49 +566,14 @@ const StyledCard = styled.div`
       }
       article {
          border-bottom: none;
-      }
-   }
-   .cardManagementBar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: ${props => props.theme.miniText};
-      padding: 1.5rem 1rem;
-      line-height: 1;
-      svg.x {
-         height: ${props => props.theme.smallText};
-         opacity: 0.4;
-         cursor: pointer;
-         &:hover {
-            opacity: 0.8;
-         }
-         &:only-child {
-            margin-left: calc(
-               100% - ${props => props.theme.smallText}
-            ); /* If there's no copy content interface, we need to push the X all the way to the right */
-         }
-      }
-      .copyInterface {
-         display: flex;
-         align-items: center;
-         select {
-            padding: 0.5rem;
-            padding-right: 4rem;
-            margin-left: 2rem;
-            font-size: ${props => props.theme.miniText};
-            cursor: pointer;
-         }
-         option {
+         &.small {
+            border-radius: 4px;
+            header.flexibleThingHeader {
+               border-radius: 4px;
+            }
          }
       }
    }
-`;
-export { StyledCard };
-
-const StyledNote = styled.div`
-   margin-bottom: 2rem;
-   background: ${props => props.theme.midBlack};
-   width: 100%;
    .postButtonWrapper {
       display: flex;
       justify-content: space-between;
@@ -654,5 +616,39 @@ const StyledNote = styled.div`
          }
       }
    }
+   .cardManagementBar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: ${props => props.theme.miniText};
+      padding: 1.5rem 1rem;
+      line-height: 1;
+      svg.x {
+         height: ${props => props.theme.smallText};
+         opacity: 0.4;
+         cursor: pointer;
+         &:hover {
+            opacity: 0.8;
+         }
+         &:only-child {
+            margin-left: calc(
+               100% - ${props => props.theme.smallText}
+            ); /* If there's no copy content interface, we need to push the X all the way to the right */
+         }
+      }
+      .copyInterface {
+         display: flex;
+         align-items: center;
+         select {
+            padding: 0.5rem;
+            padding-right: 4rem;
+            margin-left: 2rem;
+            font-size: ${props => props.theme.miniText};
+            cursor: pointer;
+         }
+         option {
+         }
+      }
+   }
 `;
-export { StyledNote };
+export { StyledCard };

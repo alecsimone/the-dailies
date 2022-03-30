@@ -101,7 +101,7 @@ const CollectionsCard = ({ data, index, collectionID, groupID, canEdit }) => {
             key={`${groupID}-${noteID}`}
          >
             {provided => (
-               <StyledNote
+               <StyledCard
                   className="noteWrapper"
                   ref={provided.innerRef}
                   {...provided.draggableProps}
@@ -208,7 +208,7 @@ const CollectionsCard = ({ data, index, collectionID, groupID, canEdit }) => {
                         </div>
                      </footer>
                   )}
-               </StyledNote>
+               </StyledCard>
             )}
          </Draggable>
       );
