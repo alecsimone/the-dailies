@@ -44,6 +44,7 @@ const Columnizer = ({
             id={`id-${columnOrderObj.id}`}
             className="column"
             key={`columnizerColumn-${index}`}
+            // onScroll={e => console.log(e.target.scrollTop)}
          >
             <Droppable
                droppableId={columnOrderObj.id}

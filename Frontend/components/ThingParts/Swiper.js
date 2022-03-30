@@ -96,6 +96,7 @@ const Swiper = ({
       }));
    }, [overridePosition]);
 
+   // I briefly experimented with blocking vertical scrolling while swiping. For some reason, this touchBlocker function would not work if I put a conditional in it, which meant I had to totally override the native scroll behavior, which would've been too much effort to do well, so I scrapped it.
    // const touchBlocker = e => {
    //    e.preventDefault();
    //    return false;
@@ -152,20 +153,23 @@ const Swiper = ({
       const scrollingParent = getScrollingParent(e.target);
 
       const contentElement = e.target.closest('.swiper');
+      console.log(contentElement);
 
       const contentElementRect = contentElement.getBoundingClientRect();
 
       if (contentElementRect.top < 0) {
-         let totalOffset = contentElement.offsetTop;
+         let totalOffset = contentElement.offsetTop - scrollingParent.offsetTop;
          let parent = contentElement.offsetParent;
-         while (parent != null) {
+         while (parent != null && !parent.contains(scrollingParent)) {
             totalOffset += parent.offsetTop;
             parent = parent.offsetParent;
+            console.log(parent);
          }
 
          const oneRem = getOneRem();
 
-         scrollingParent.scrollTop = totalOffset - oneRem * 10;
+         console.log(totalOffset);
+         scrollingParent.scrollTop = totalOffset - oneRem * 6;
       }
    };
 
