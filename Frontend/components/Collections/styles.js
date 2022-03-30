@@ -372,29 +372,40 @@ const StyledGroup = styled.div`
    }
    border-radius: 6px;
    margin-bottom: 2rem;
-   background: ${props => props.theme.lightBlack};
+   --group-background: hsla(210, 10%, 8%);
+   background: var(--group-background);
+   /* background: ${props => props.theme.lightBlack}; */
    &.blankGroup {
       padding: 2rem;
       text-align: center;
+   }
+   .blankSpace {
+      border-radius: 4px;
+   }
+   .noteWrapper {
+      border-radius: 4px;
    }
    header.groupHeader {
       display: flex;
       align-items: center;
       justify-content: space-between;
       margin: 0;
-      background: ${props => props.theme.lightBlack};
+      background: var(--group-background);
+      /* background: ${props => props.theme.lightBlack}; */
       z-index: 3;
       position: sticky;
       top: 0;
       width: calc(100% + 2rem);
       margin-left: -1rem;
+      margin-bottom: 1rem;
       padding: 0 1rem;
+      box-shadow: 0 0 2px ${props => props.theme.deepBlack};
       ${props => props.theme.mobileBreakpoint} {
          width: calc(100% + 4rem);
          margin-left: -2rem;
          padding: 0 2rem;
       }
-      border-radius: 6px;
+      border-radius: 6px 6px 0 0;
       h4.groupTitle,
       textarea.groupTitle {
          font-size: ${props => props.theme.bigText};
@@ -515,6 +526,13 @@ const StyledCard = styled.div`
    }
    background: ${props => props.theme.midBlack};
    width: 100%;
+   border-radius: 4px;
+   article.small {
+      border-radius: 4px 4px 0 0;
+   }
+   .cardManagementBar {
+      border-radius: 0 0 4px 4px;
+   }
    article {
       width: 100%;
       border-right: none;
