@@ -6,7 +6,8 @@ const {
    isExplodingLink,
    disabledCodewords,
    editPermissionGate,
-   lengthenTikTokURL
+   lengthenTikTokURL,
+   sleep
 } = require('../../../utils/ThingHandling');
 const { sendNotification} = require('../MemberMutations')
 const {
@@ -265,7 +266,7 @@ async function newBlankThing(parent, args, ctx, info) {
 }
 exports.newBlankThing = newBlankThing;
 
-async function addContentPiece(parent, { content, id, type }, ctx, info) {
+async function addContentPiece(parent, { content, id, type, isAddToStart }, ctx, info) {
    await loggedInGate(ctx).catch(() => {
       throw new AuthenticationError('You must be logged in to do that!');
    });
@@ -275,22 +276,60 @@ async function addContentPiece(parent, { content, id, type }, ctx, info) {
       console.log(err);
    });
 
+   await sleep(5000);
+   // We need to check the content piece for any links and then add any we find as personal links for the current member
    const [connect, create] = await getLinksToCard(content, ctx);
 
    content = await replaceLinkWithText(content);
 
-   const dataObj = {
-      content: {
-         create: {
+   const { content: oldContentArray, contentOrder } = await ctx.db.query[type.toLowerCase()](
+      {where: {
+         id
+      }},
+      `{content {id} contentOrder}`
+   );
+
+   const contentOrderCopy = [...contentOrder];
+   oldContentArray.forEach(pieceObj => {
+      if (!contentOrder.includes(pieceObj.id)) {
+         contentOrderCopy.push(pieceObj.id);
+      }
+   });
+
+   const newPieceObj = await ctx.db.mutation.createContentPiece(
+      {
+         data: {
             content,
             links: {
                connect,
                create
             }
          }
+      }
+   );
+
+   if (isAddToStart) {
+      contentOrderCopy.unshift(newPieceObj.id);
+   } else {
+      contentOrderCopy.push(newPieceObj.id);
+   }
+
+   const dataObj = {
+      content: {
+         connect: {
+            id: newPieceObj.id
+         }
       },
-      unsavedNewContent: null
+      contentOrder: {
+         set: contentOrderCopy
+      }
    };
+
+   if (isAddToStart) {
+      dataObj.addToStartUnsavedNewContent = null;
+   } else {
+      dataObj.unsavedNewContent = null;
+   }
    const updatedThing = await properUpdateStuff(dataObj, id, type, ctx).catch(err => {
       console.log(err);
    });
@@ -298,7 +337,7 @@ async function addContentPiece(parent, { content, id, type }, ctx, info) {
 }
 exports.addContentPiece = addContentPiece;
 
-async function storeUnsavedThingChanges(parent, {id, unsavedContent}, ctx, info) {
+async function storeUnsavedThingChanges(parent, {id, unsavedContent, isAddToStart}, ctx, info) {
    await loggedInGate(ctx).catch(() => {
       throw new AuthenticationError('You must be logged in to do that!');
    });
@@ -309,13 +348,22 @@ async function storeUnsavedThingChanges(parent, {id, unsavedContent}, ctx, info)
    });
 
    const dataObj = {
-      unsavedNewContent: unsavedContent
+      [isAddToStart ? 'addToStartUnsavedNewContent' : 'unsavedNewContent']: unsavedContent
    }
 
-   const updatedThing = await properUpdateStuff(dataObj, id, 'Thing', ctx).catch(err => {
-      console.log(err);
-   });
-   return updatedThing;
+   // We don't really need any updated data back from this mutation on the client side, so we're just going to return a SuccessMessage. And we won't publish a subscription update for this one either, because doing so causes some problems (namely it creates conflicts between new content piece optimistic responses and the new thing data that comes in when we publish the subscription update), so we're just doing a straight update here.
+   // const updatedThing = await properUpdateStuff(dataObj, id, 'Thing', ctx).catch(err => {
+   //    console.log(err);
+   // });
+   await ctx.db.mutation.updateThing(
+      {
+         where: {
+            id
+         },
+         data: dataObj
+      }
+   );
+   return {message: "unsaved changes stored!"};
 }
 exports.storeUnsavedThingChanges = storeUnsavedThingChanges;
 

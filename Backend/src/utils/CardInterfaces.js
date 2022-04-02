@@ -275,6 +275,7 @@ const fullThingFields = `
       ${contentPieceFields}
    }
    unsavedNewContent
+   addToStartUnsavedNewContent
    copiedInContent {
       ${contentPieceFields}
    }

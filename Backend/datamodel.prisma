@@ -7,6 +7,7 @@ type Thing {
   link: String
   content: [ContentPiece!] @scalarList(strategy:RELATION) @relation(name: "OriginalThingForContentPiece")
   unsavedNewContent: String
+  addToStartUnsavedNewContent: String
   copiedInContent: [ContentPiece] @relation(name: "ThingsAddedToForContentPiece")
   contentOrder: [String!] @scalarList(strategy:RELATION)
   summary: String

@@ -9,6 +9,41 @@ const StyledContent = styled.section`
       padding: 1rem 2rem;
       padding-top: 0;
    }
+   .addToStartWrapper {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      flex-wrap: wrap;
+      transition: background 0.1s;
+      &.open {
+         background: ${props => props.theme.midBlack};
+         border: 1px solid
+            ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
+         border-radius: 0.5rem;
+      }
+      padding: 0 2rem;
+      ${props => props.theme.mobileBreakpoint} {
+         padding: 1rem 2rem;
+      }
+      ${props => props.theme.desktopBreakpoint} {
+         padding: 1rem 3rem;
+      }
+      button.addToStartToggle {
+         border: 1px solid ${props => props.theme.mainText};
+         opacity: 0.6;
+         margin-left: 3rem;
+         &:hover {
+            opacity: 1;
+         }
+      }
+      .contentWrapper {
+         flex-grow: 1;
+         display: block;
+         form {
+            margin: 1.5rem auto 3rem;
+         }
+      }
+   }
    .contentSectionWrapper {
       padding: 0;
       padding-bottom: 2rem;
@@ -16,7 +51,7 @@ const StyledContent = styled.section`
       border-top: 1px solid
          ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
       ${props => props.theme.mobileBreakpoint} {
-         padding: 1rem 0;
+         padding: 1rem;
          border: 1px solid
             ${props => setAlpha(props.theme.lowContrastGrey, 0.25)};
          border-radius: 0.5rem;

@@ -154,7 +154,7 @@ const RichTextArea = ({
    const { setContent } = useContext(ModalContext);
 
    const secondMiddleOrRightClickListener = e => {
-      if (inputRef.current == null) return;
+      if (inputRef.current == null || setEditable == null) return;
       if (e.button === 1 || e.button === 2) {
          if (originalText.current !== inputRef.current.value) {
             setContent(
@@ -686,7 +686,11 @@ const RichTextArea = ({
                   closeResults();
                }}
                onMouseUp={e => {
-                  if (e.button === 0 && (e.ctrlKey || e.metaKey)) {
+                  if (
+                     e.button === 0 &&
+                     (e.ctrlKey || e.metaKey) &&
+                     setEditable != null
+                  ) {
                      window.setTimeout(() => {
                         setEditable(false);
                      }, 1);

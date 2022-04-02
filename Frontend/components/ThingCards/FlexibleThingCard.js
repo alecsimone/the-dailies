@@ -447,7 +447,7 @@ const StyledFlexibleThingCard = styled.article`
          margin-top: -1rem;
       }
       .content {
-         margin-top: 5rem;
+         margin-top: 3rem;
          margin-bottom: 1rem;
          padding: 0;
       }

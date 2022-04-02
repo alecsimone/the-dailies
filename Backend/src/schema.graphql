@@ -40,8 +40,8 @@ type Mutation {
   requestReset(email: String!): Member
   changePassword(id: String!, code: String!, password: String!): Member!
 
-  addContentPiece(content: String, id: ID!, type: String!): Stuff
-  storeUnsavedThingChanges(id: ID!, unsavedContent: String!): Stuff
+  addContentPiece(content: String, id: ID!, type: String!, isAddToStart: Boolean): Stuff
+  storeUnsavedThingChanges(id: ID!, unsavedContent: String!, isAddToStart: Boolean): SuccessMessage
   deleteContentPiece(contentPieceID: ID!, id: ID!, type: String!): Stuff
   editContentPiece(contentPieceID: ID!, content: String!, id: ID!, type: String!): Stuff
   storeUnsavedContentPieceChanges(pieceId: ID!, thingId: ID!, unsavedContent: String!): Stuff

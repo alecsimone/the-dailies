@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@apollo/react-hooks';
+import { useApolloClient, useMutation, useQuery } from '@apollo/react-hooks';
 import React, { useEffect, useRef, useState } from 'react';
 import { Droppable } from 'react-beautiful-dnd';
 import { useSelector } from 'react-redux';
@@ -46,6 +46,9 @@ const useContentData = (thingID, type) => {
    contentData.unsavedNewContent = useSelector(
       state => state.stuff[`${type}:${thingID}`].unsavedNewContent
    );
+   contentData.addToStartUnsavedNewContent = useSelector(
+      state => state.stuff[`${type}:${thingID}`].addToStartUnsavedNewContent
+   );
    return contentData;
 };
 
@@ -55,7 +58,8 @@ const Content = ({ contentType, canEdit, linkedPiece, stuffID, type }) => {
       content,
       copiedInContent,
       contentOrder,
-      unsavedNewContent
+      unsavedNewContent,
+      addToStartUnsavedNewContent
    } = useContentData(stuffID, type);
    // First we'll set up our mutation hooks
    const [storeUnsavedThingChanges] = useMutation(
@@ -65,11 +69,12 @@ const Content = ({ contentType, canEdit, linkedPiece, stuffID, type }) => {
       }
    );
 
-   const unsavedChangesHandler = async e => {
+   const unsavedChangesHandler = async (e, isAddToStart = false) => {
       await storeUnsavedThingChanges({
          variables: {
             id: stuffID,
-            unsavedContent: e.target.value
+            unsavedContent: e.target.value,
+            isAddToStart
          }
       }).catch(err => {
          alert(err.message);
@@ -79,6 +84,7 @@ const Content = ({ contentType, canEdit, linkedPiece, stuffID, type }) => {
    const [addContentPiece] = useMutation(ADD_CONTENTPIECE_MUTATION, {
       onError: err => alert(err.message)
    });
+   const client = useApolloClient();
 
    const [deleteContentPiece] = useMutation(DELETE_CONTENTPIECE_MUTATION, {
       onError: err => alert(err.message)
@@ -130,6 +136,10 @@ const Content = ({ contentType, canEdit, linkedPiece, stuffID, type }) => {
    const [editContentPiece] = useMutation(EDIT_CONTENTPIECE_MUTATION, {
       onError: err => alert(err.message)
    });
+
+   const [showingAddToStart, setShowingAddToStart] = useState(
+      addToStartUnsavedNewContent != null && addToStartUnsavedNewContent !== ''
+   );
 
    const editPiece = async (contentPieceID, newContent) => {
       const contentCopy = JSON.parse(JSON.stringify(fullContent));
@@ -205,19 +215,20 @@ const Content = ({ contentType, canEdit, linkedPiece, stuffID, type }) => {
 
    // This ref will be passed down to the RichTextArea that sits at the bottom of content and allows members to add a new content piece, and we'll use it to get the value for our sendNewContentPiece mutation
    const inputRef = useRef(null);
+   const addToStartInputRef = useRef(null);
 
    const stickifierIDRef = useRef(useStickifier(thisComponentRef.current));
 
-   const sendNewContentPieceHandler = () => {
+   const sendNewContentPieceHandler = (isAddToStart = false) => {
       sendNewContentPiece(
-         inputRef,
+         client,
+         isAddToStart ? addToStartInputRef : inputRef,
          content,
          dynamicallyResizeElement,
          addContentPiece,
          stuffID,
          type,
-         SINGLE_THING_QUERY,
-         SINGLE_TAX_QUERY
+         isAddToStart
       );
    };
 
@@ -388,6 +399,37 @@ const Content = ({ contentType, canEdit, linkedPiece, stuffID, type }) => {
 
    return (
       <StyledContent className="content">
+         {canEdit && showingAddContentForm && (
+            <div
+               className={`addToStartWrapper ${
+                  showingAddToStart ? 'open' : 'closed'
+               }`}
+            >
+               {showingAddToStart && (
+                  <div className="contentWrapper">
+                     <RichTextArea
+                        text=""
+                        postText={() => sendNewContentPieceHandler(true)}
+                        placeholder="Add content"
+                        buttonText="add"
+                        id={`${stuffID}-content`}
+                        inputRef={addToStartInputRef}
+                        unsavedChangesHandler={e =>
+                           unsavedChangesHandler(e, true)
+                        }
+                        unsavedContent={addToStartUnsavedNewContent}
+                        alwaysShowExtras
+                     />
+                  </div>
+               )}
+               <button
+                  className="addToStartToggle"
+                  onClick={() => setShowingAddToStart(!showingAddToStart)}
+               >
+                  {showingAddToStart ? 'close' : 'add to start'}
+               </button>
+            </div>
+         )}
          <div className="contentSectionWrapper" ref={thisComponentRef}>
             {contentElements}
             {canEdit && showingAddContentForm && (
@@ -403,7 +445,9 @@ const Content = ({ contentType, canEdit, linkedPiece, stuffID, type }) => {
                         buttonText="add"
                         id={`${stuffID}-content`}
                         inputRef={inputRef}
-                        unsavedChangesHandler={unsavedChangesHandler}
+                        unsavedChangesHandler={e =>
+                           unsavedChangesHandler(e, false)
+                        }
                         unsavedContent={unsavedNewContent}
                         alwaysShowExtras={false}
                      />
