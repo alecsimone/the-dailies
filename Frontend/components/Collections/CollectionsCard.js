@@ -274,7 +274,7 @@ const CollectionsCard = ({ data, index, collectionID, groupID, canEdit }) => {
    return (
       <Draggable
          draggableId={`${groupID}-${id}`}
-         isDragDisabled={!canEdit || isTouchEnabled()}
+         isDragDisabled={!canEdit}
          index={index}
          key={`${groupID}-${id}`}
       >

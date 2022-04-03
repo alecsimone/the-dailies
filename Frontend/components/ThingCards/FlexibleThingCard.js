@@ -984,7 +984,6 @@ const FlexibleThingCard = ({
          <Draggable
             key={`thingCard-${thingID}`}
             key={`thingCard-${getRandomString(8)}-${groupName}-${thingID}`}
-            isDragDisabled={isTouchEnabled()}
             draggableId={`thingCard-${groupName}-${thingID}`}
             index={index != null ? index : 1}
          >
