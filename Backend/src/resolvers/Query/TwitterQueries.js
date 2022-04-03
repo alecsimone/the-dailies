@@ -238,30 +238,39 @@ const getLinkData = async (parent, { url, storePersonalLink }, ctx, info) => {
       });
    }
 
-   if (storePersonalLink) {
-      const existingPersonalLink = await ctx.db.query.personalLink(
-         {
-            where: {
-               url
-            }
-         },
-         `{id}`
-      );
-      if (existingPersonalLink == null) {
-         ctx.db.mutation.createPersonalLink({
-            data: {
-               url,
-               owner: {
-                  connect: {
-                     id: ctx.req.memberId
-                  }
-               },
-               title: linkData.title,
-               description: linkData.description
-            }
-         });
-      }
-   }
+   // if (storePersonalLink) {
+   //    const existingPersonalLink = await ctx.db.query.personalLink(
+   //       {
+   //          where: {
+   //             AND: [
+   //                {
+   //                   owner: {
+   //                      id: ctx.req.memberId
+   //                   }
+   //                },
+   //                {
+   //                   url
+   //                }
+   //             ]
+   //          }
+   //       },
+   //       `{id}`
+   //    );
+   //    if (existingPersonalLink == null) {
+   //       ctx.db.mutation.createPersonalLink({
+   //          data: {
+   //             url,
+   //             owner: {
+   //                connect: {
+   //                   id: ctx.req.memberId
+   //                }
+   //             },
+   //             title: linkData.title,
+   //             description: linkData.description
+   //          }
+   //       });
+   //    }
+   // }
 
    if (linkData.id == null) {
       linkData.id = 'newLink';

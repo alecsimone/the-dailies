@@ -108,6 +108,32 @@ const getLinksToCard = async (text, ctx) => {
                });
                create.push(linkData);
             }
+            const [isPersonalLink] = await ctx.db.query.personalLinks({
+               where: {
+                  AND: [
+                     {
+                        url: matchedText
+                     },
+                     {
+                        owner: {
+                           id: ctx.req.memberId
+                        }
+                     }
+                  ]
+               }
+            });
+            if (isPersonalLink == null) {
+               await ctx.db.mutation.createPersonalLink({
+                  data: {
+                     url: matchedText,
+                     owner: {
+                        connect: {
+                           id: ctx.req.memberId
+                        }
+                     }
+                  }
+               });
+            }
          }
       }
    }

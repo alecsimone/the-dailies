@@ -297,7 +297,6 @@ const ExplodingLink = ({
             <LinkCard
                link={url}
                shortlinkHidden={hideCardShortlink}
-               storePersonalLink={linkSource === 'ContentPiece'}
                wholeCardLink={wholeCardLink}
             />
          </>

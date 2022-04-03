@@ -251,7 +251,7 @@ type Link {
 
 type PersonalLink {
    id: ID! @id @unique
-   url: String! @unique
+   url: String!
    owner: Member!
    title: String
    description: String

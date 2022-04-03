@@ -372,9 +372,9 @@ const StyledGroup = styled.div`
    }
    border-radius: 6px;
    margin-bottom: 2rem;
-   --group-background: hsla(210, 10%, 8.5%);
-   background: var(--group-background);
-   /* background: ${props => props.theme.lightBlack}; */
+   /* --group-background: hsla(210, 10%, 8.5%); */
+   /* background: var(--group-background); */
+   background: ${props => setAlpha(props.theme.lightBlack, 0.6)};
    &.blankGroup {
       padding: 2rem;
       text-align: center;
@@ -387,8 +387,8 @@ const StyledGroup = styled.div`
       align-items: center;
       justify-content: space-between;
       margin: 0;
-      background: var(--group-background);
-      /* background: ${props => props.theme.lightBlack}; */
+      /* background: var(--group-background); */
+      background: ${props => props.theme.lightBlack};
       z-index: 3;
       position: sticky;
       top: 0;

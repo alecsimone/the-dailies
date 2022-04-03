@@ -276,7 +276,6 @@ async function addContentPiece(parent, { content, id, type, isAddToStart }, ctx,
       console.log(err);
    });
 
-   await sleep(5000);
    // We need to check the content piece for any links and then add any we find as personal links for the current member
    const [connect, create] = await getLinksToCard(content, ctx);
 
@@ -620,10 +619,19 @@ async function setFeaturedImage(
    };
 
    const url = featuredImage;
-   const existingPersonalLink = await ctx.db.query.personalLink(
+   const existingPersonalLink = await ctx.db.query.personalLinks(
       {
          where: {
-            url
+            AND: [
+               {
+                  owner: {
+                     id: ctx.req.memberId
+                  }
+               },
+               {
+                  url
+               }
+            ]
          }
       },
       `{${fullPersonalLinkFields}}`

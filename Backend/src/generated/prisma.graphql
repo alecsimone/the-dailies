@@ -8341,7 +8341,6 @@ input PersonalLinkWhereInput {
 
 input PersonalLinkWhereUniqueInput {
   id: ID
-  url: String
 }
 
 enum PrivacySetting {
