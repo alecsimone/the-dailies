@@ -107,6 +107,7 @@ const DragAndDropProvider = ({ children }) => {
          const cardBeingDragged = document.querySelector('.isBeingDragged');
          cardBeingDragged.classList.remove('isBeingDragged');
       }
+
       if (type === 'group') {
          const allColumns = document.querySelectorAll(
             '.collectionBody .column .dropArea'
@@ -132,6 +133,16 @@ const DragAndDropProvider = ({ children }) => {
                loggedInUserID,
                addLinkToCollectionGroup
             );
+            if (isTouchEnabled()) {
+               // If they're using a touch screen, we want to hide the my things bar after a successful drop
+               setThingsSidebarIsOpen(false);
+               const myThingsBar = document.querySelector('.myThingsBar');
+               myThingsBar.style.display = 'none';
+               window.setTimeout(
+                  () => (myThingsBar.style.display = 'block'),
+                  10
+               );
+            }
          } else if (source.droppableId === destination.droppableId) {
             reorderCards(client, source, destination, itemID, reorderGroup);
          } else {

@@ -340,15 +340,6 @@ const StyledCollectionBody = styled.section`
                margin: 0 auto;
                transition: margin 0.25s ease-out;
             }
-            &.dragging {
-               /* padding-bottom: 16rem; */
-               transition: 0.25s all;
-               background: ${props => setAlpha(props.theme.lightBlack, 0.6)};
-               .addGroupButton {
-                  margin: 16rem auto 0 auto;
-                  transition: margin 0.25s ease-out;
-               }
-            }
          }
          button.addGroupButton {
             width: 100%;
@@ -527,18 +518,19 @@ const StyledGroup = styled.div`
 export { StyledGroup };
 
 const StyledCard = styled.div`
+   margin-bottom: 3px;
    ${props => props.theme.mobileBreakpoint} {
       margin-bottom: 2rem;
+      border-radius: 4px;
+      article.small {
+         border-radius: 4px 4px 0 0;
+      }
+      .cardManagementBar {
+         border-radius: 0 0 4px 4px;
+      }
    }
    background: ${props => props.theme.midBlack};
    width: 100%;
-   border-radius: 4px;
-   article.small {
-      border-radius: 4px 4px 0 0;
-   }
-   .cardManagementBar {
-      border-radius: 0 0 4px 4px;
-   }
    article {
       width: 100%;
       border-right: none;
@@ -597,8 +589,12 @@ const StyledCard = styled.div`
    }
    .textWrapper {
       padding: 1rem;
-      border-bottom: 2px solid
+      border-bottom: 1px solid
          ${props => setAlpha(props.theme.lowContrastGrey, 0.2)};
+      ${props => props.theme.mobileBreakpoint} {
+         border-bottom: 2px solid
+            ${props => setAlpha(props.theme.lowContrastGrey, 0.2)};
+      }
       white-space: pre-wrap;
    }
    textarea {
