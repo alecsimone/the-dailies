@@ -524,6 +524,10 @@ const sendNewContentPiece = async (
    const header = document.getElementById('header');
    const headerHeight = header.offsetHeight;
 
-   scroller.scrollTop = totalOffset - headerHeight - 2 * getOneRem();
+   const scrollDestination = totalOffset - headerHeight - 2 * getOneRem();
+   window.setTimeout(() => {
+      scroller.scrollTop = scrollDestination;
+   }, 1);
+   // scroller.scrollTop = 403;
 };
 export { sendNewContentPiece };

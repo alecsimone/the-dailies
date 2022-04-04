@@ -80,7 +80,12 @@ const Page = ({ children, pageProps }) => {
                         <GlobalStyle />
                         <section className="threeColumns">
                            <NavSidebar />
-                           <div className="mainSection">{children}</div>
+                           <div
+                              className="mainSection"
+                              onScroll={e => console.log(e.target.scrollTop)}
+                           >
+                              {children}
+                           </div>
                            <div
                               className={
                                  thingsSidebarIsOpen
