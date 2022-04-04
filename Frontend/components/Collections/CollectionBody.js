@@ -42,9 +42,9 @@ const CollectionBody = ({ activeCollection, canEdit }) => {
 
    const [addGroupToCollection] = useMutation(ADD_GROUP_TO_COLLECTION_MUTATION);
 
-   const groupElements = userGroups.map((groupObj, index) => (
+   const groupElements = userGroups.map(groupObj => (
       <CollectionsGroup
-         index={index}
+         // Note that we're ommitting the index prop here so it can be provided by the column when it's actually put in order
          groupObj={groupObj}
          key={groupObj.id}
          collectionID={id}

@@ -323,7 +323,7 @@ const CollectionsGroup = ({ index, groupObj, collectionID, canEdit }) => {
          draggableId={`${index}-${id}`}
          isDragDisabled={!canEdit || isTouchEnabled()}
          index={index}
-         key={`${index}-${id}`}
+         key={id}
       >
          {dragProvided => (
             <div

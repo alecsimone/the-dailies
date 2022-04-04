@@ -68,14 +68,18 @@ const Columnizer = ({
                            column
                         </StyledGroup>
                      )}
-                     {columnOrderObj.order.map(columnItem => {
+                     {columnOrderObj.order.map((columnItem, index) => {
                         const itemElement = getItemForID(columnItem, items);
 
                         if (itemElement == null) {
                            return null;
                         }
 
-                        return itemElement;
+                        const indexedGroup = React.cloneElement(itemElement, {
+                           index
+                        });
+
+                        return indexedGroup;
                      })}
                      {provided.placeholder}
                      {addItemButton}
