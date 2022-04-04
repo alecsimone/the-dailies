@@ -221,9 +221,6 @@ const StyledFlexibleThingCard = styled.article`
                height: 100%;
                object-fit: contain;
                cursor: pointer;
-               ${props => props.theme.mobileBreakpoint} {
-                  object-fit: cover;
-               }
             }
          }
          &.withThumb {
