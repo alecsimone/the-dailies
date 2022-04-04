@@ -3163,6 +3163,8 @@ type Link {
   onContentPiece: ContentPiece
   onComment: Comment
   onTweet: Tweet
+  createdAt: DateTime
+  updatedAt: DateTime
 }
 
 type LinkConnection {
@@ -3267,6 +3269,10 @@ enum LinkOrderByInput {
   url_DESC
   ogURL_ASC
   ogURL_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
 }
 
 type LinkPreviousValues {
@@ -3279,6 +3285,8 @@ type LinkPreviousValues {
   siteName: String
   url: String
   ogURL: String
+  createdAt: DateTime
+  updatedAt: DateTime
 }
 
 input LinkScalarWhereInput {
@@ -3408,6 +3416,22 @@ input LinkScalarWhereInput {
   ogURL_not_starts_with: String
   ogURL_ends_with: String
   ogURL_not_ends_with: String
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
   AND: [LinkScalarWhereInput!]
   OR: [LinkScalarWhereInput!]
   NOT: [LinkScalarWhereInput!]
@@ -4128,6 +4152,22 @@ input LinkWhereInput {
   onContentPiece: ContentPieceWhereInput
   onComment: CommentWhereInput
   onTweet: TweetWhereInput
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
   AND: [LinkWhereInput!]
   OR: [LinkWhereInput!]
   NOT: [LinkWhereInput!]

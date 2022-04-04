@@ -78,7 +78,8 @@ const {
 const {
    addLinkToArchive,
    addTagToPersonalLink,
-   editPersonalLink
+   editPersonalLink,
+   refreshLink
 } = require('./Mutation/LinkArchiveMutations');
 
 const Mutations = {
@@ -147,6 +148,7 @@ const Mutations = {
    addLinkToArchive,
    addTagToPersonalLink,
    editPersonalLink,
+   refreshLink,
    addNoteToGroup,
    deleteNote,
    editNote,

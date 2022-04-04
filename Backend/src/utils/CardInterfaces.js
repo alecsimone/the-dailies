@@ -1,4 +1,5 @@
 const linkFields = `
+   __typename
    id
    title
    description
@@ -8,6 +9,7 @@ const linkFields = `
    siteName
    url
    ogURL
+   updatedAt
 `;
 exports.linkFields = linkFields;
 

@@ -1,13 +1,15 @@
 const linkFields = `
+   __typename
    id
-      title
-      description
-      icon
-      video
-      image
-      siteName
-      url
-      ogURL
+   title
+   description
+   icon
+   video
+   image
+   siteName
+   url
+   ogURL
+   updatedAt
 `;
 export { linkFields };
 

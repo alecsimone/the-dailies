@@ -1,7 +1,10 @@
 const { AuthenticationError } = require('apollo-server-express');
 const ogs = require('open-graph-scraper');
 const { fullMemberGate, loggedInGate } = require('../../utils/Authentication');
-const { fullPersonalLinkFields } = require('../../utils/CardInterfaces');
+const {
+   fullPersonalLinkFields,
+   linkFields
+} = require('../../utils/CardInterfaces');
 const { sleep } = require('../../utils/ThingHandling');
 const { getLinkData } = require('../Query/TwitterQueries');
 const { publishMeUpdate } = require('./MemberMutations');
@@ -228,3 +231,74 @@ async function editPersonalLink(
    return updatedLink;
 }
 exports.editPersonalLink = editPersonalLink;
+
+async function refreshLink(parent, { url }, ctx, info) {
+   // Only full members can update a link
+   await loggedInGate(ctx).catch(() => {
+      throw new AuthenticationError('You must be logged in to do that!');
+   });
+   fullMemberGate(ctx.req.member);
+
+   // First we have to get all the previous link data, because we need to know if it's outdated enough to update yet
+   const existingLink = await ctx.db.query.link(
+      {
+         where: {
+            url
+         }
+      },
+      `{${linkFields}}`
+   );
+
+   if (existingLink == null) {
+      throw new Error(
+         "Something has gone wrong, we can't find that link anymore."
+      );
+   }
+
+   const { updatedAt } = existingLink;
+
+   // We only want to update the link if it's more than 3 hours old so we don't do too much fetching.
+   let canBeUpdated = false;
+   if (updatedAt == null) {
+      canBeUpdated = true;
+   } else {
+      const now = new Date();
+      const updatedAtDate = new Date(updatedAt);
+
+      const updatedAgo = now.getTime() - updatedAtDate.getTime();
+      if (updatedAgo > 1000 * 60 * 60 * 3) {
+         canBeUpdated = true;
+      }
+   }
+
+   if (!canBeUpdated) {
+      console.log("can't be updated");
+   }
+   if (!canBeUpdated) return;
+
+   const ogLinkData = {
+      url
+   };
+   const options = { url };
+   await ogs(options, (error, results, response) => {
+      ogLinkData.title = results.ogTitle;
+      ogLinkData.description = results.ogDescription;
+      ogLinkData.video = results.ogVideo ? results.ogVideo.url : null;
+      ogLinkData.image = results.ogImage ? results.ogImage.url : null;
+      ogLinkData.icon = results.favicon;
+      ogLinkData.siteName = results.ogSiteName;
+      ogLinkData.ogURL = results.ogUrl;
+   });
+
+   const updatedLink = await ctx.db.mutation.updateLink(
+      {
+         where: {
+            url
+         },
+         data: ogLinkData
+      },
+      `{${linkFields}}`
+   );
+   return updatedLink;
+}
+exports.refreshLink = refreshLink;

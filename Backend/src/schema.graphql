@@ -118,6 +118,7 @@ type Mutation {
   addLinkToArchive(url: String!, tags: String): Member
   addTagToPersonalLink(linkID: ID!, tagToAdd: String!): PersonalLink
   editPersonalLink(linkID: ID!, title: String, description: String): PersonalLink
+  refreshLink(url: String!): Link
 }
 
 union Stuff = Thing | Tag | Stack | Comment | ContentPiece

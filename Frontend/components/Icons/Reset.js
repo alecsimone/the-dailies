@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { ThemeContext } from 'styled-components';
 
-const ResetIcon = ({ onClick, className }) => {
+const ResetIcon = ({ onClick, className, titleText }) => {
    const { lowContrastGrey } = useContext(ThemeContext);
    return (
       <svg
@@ -12,6 +12,7 @@ const ResetIcon = ({ onClick, className }) => {
          viewBox="0 0 200 200"
          onClick={onClick}
       >
+         {titleText != null && <title>{titleText}</title>}
          <path
             d="M27.56,133.69A79.19,79.19,0,1,0,99.25,21C74.88,21,52.54,33.75,38,51L32,69"
             fill="none"

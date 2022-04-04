@@ -1,4 +1,4 @@
-import { useQuery } from '@apollo/react-hooks';
+import { useMutation, useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
@@ -7,10 +7,20 @@ import useQueryAndStoreIt from '../stuffStore/useQueryAndStoreIt';
 import { setAlpha, setLightness } from '../styles/functions';
 import LoadingRing from './LoadingRing';
 import ShortLink from './ThingParts/ShortLink';
+import ResetIcon from './Icons/Reset';
+import useMe from './Account/useMe';
 
 const LINK_DATA_QUERY = gql`
    query LINK_DATA_QUERY($url: String!, $storePersonalLink: Boolean) {
       getLinkData(url: $url, storePersonalLink: $storePersonalLink) {
+         ${linkFields}
+      }
+   }
+`;
+
+const REFRESH_LINK_MUTATION = gql`
+   mutation REFRESH_LINK_MUTATION($url: String!) {
+      refreshLink(url: $url) {
          ${linkFields}
       }
    }
@@ -21,6 +31,7 @@ const StyledLinkCard = styled.div`
    padding: 1rem;
    border-radius: 4px;
    margin-top: 0.5rem;
+   position: relative;
    &.titleLinkOnly {
       display: flex;
    }
@@ -35,6 +46,20 @@ const StyledLinkCard = styled.div`
       &:hover {
          text-decoration: none;
          color: ${props => props.theme.mainText};
+      }
+   }
+   svg.updateCard {
+      width: ${props => props.theme.tinyText};
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      cursor: pointer;
+      opacity: 0.5;
+      &:hover {
+         opacity: 0.8;
+      }
+      &.loading {
+         ${props => props.theme.spinBackward};
       }
    }
    .siteName a,
@@ -108,8 +133,19 @@ const LinkCard = ({
    wholeCardLink = true
 }) => {
    const hasData = useSelector(state => state.stuff[`Link:${link}`] != null);
+   const { loggedInUserID } = useMe();
 
    const storedLinkData = useLinkData(link);
+
+   const [refreshLink, { loading: refreshLoading }] = useMutation(
+      REFRESH_LINK_MUTATION,
+      {
+         variables: {
+            url: link
+         },
+         onError: err => alert(err.message)
+      }
+   );
 
    const { data, loading, error } = useQueryAndStoreIt(LINK_DATA_QUERY, {
       // const { data, loading, error } = useQuery(LINK_DATA_QUERY, {
@@ -117,7 +153,7 @@ const LinkCard = ({
          url: link,
          storePersonalLink
       },
-      skip: hasData || link == null
+      skip: (hasData && !refreshLoading) || link == null
    });
 
    if (link == null) return null;
@@ -127,7 +163,7 @@ const LinkCard = ({
       computedData = data.getLinkData;
    }
 
-   if (loading) {
+   if (loading && !refreshLoading) {
       return (
          <StyledLinkCard>
             <div className="linkCardInfo icon">
@@ -143,13 +179,15 @@ const LinkCard = ({
 
    if (computedData != null) {
       const {
+         id,
          ogURL,
          siteName,
          title,
          description,
          image,
          video,
-         icon
+         icon,
+         updatedAt
       } = computedData;
 
       let computedURL = ogURL;
@@ -163,6 +201,19 @@ const LinkCard = ({
          computedURL = link;
       }
 
+      let canBeUpdated = false;
+      if (updatedAt == null) {
+         canBeUpdated = true;
+      } else {
+         const now = new Date();
+         const updatedAtDate = new Date(updatedAt);
+
+         const updatedAgo = now.getTime() - updatedAtDate.getTime();
+         if (updatedAgo > 1000 * 60 * 60 * 3) {
+            canBeUpdated = true;
+         }
+      }
+
       if (
          siteName == null &&
          title == null &&
@@ -173,6 +224,17 @@ const LinkCard = ({
          if (shortlinkHidden) {
             return (
                <StyledLinkCard className="linkCard">
+                  {canBeUpdated && loggedInUserID != null && (
+                     <ResetIcon
+                        className={
+                           refreshLoading ? 'updateCard loading' : 'updateCard'
+                        }
+                        onClick={e => {
+                           e.preventDefault();
+                           refreshLink();
+                        }}
+                     />
+                  )}
                   <ShortLink link={link} limit={80} />
                </StyledLinkCard>
             );
@@ -202,6 +264,17 @@ const LinkCard = ({
 
       const theLinkCard = (
          <>
+            {canBeUpdated && loggedInUserID != null && (
+               <ResetIcon
+                  className={
+                     refreshLoading ? 'updateCard loading' : 'updateCard'
+                  }
+                  onClick={e => {
+                     e.preventDefault();
+                     refreshLink();
+                  }}
+               />
+            )}
             <div
                className={`linkCardInfo ${
                   image == null && video == null && hasProperIcon
