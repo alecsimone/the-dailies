@@ -80,12 +80,10 @@ const MyThings = ({ setShowingSidebar, scrollingSelector, borderSide }) => {
          variables: myThingsQueryVariables
       }
    );
-   console.log(data);
 
    const dispatch = useDispatch();
    const { data: subscriptionData } = useSubscription(MY_THINGS_SUBSCRIPTION, {
       onSubscriptionData: ({ client, subscriptionData }) => {
-         console.log(subscriptionData);
          const changedThing = subscriptionData.data.myThings.node;
 
          if (subscriptionData.data.myThings.updatedFields[0] === 'create') {
@@ -115,7 +113,6 @@ const MyThings = ({ setShowingSidebar, scrollingSelector, borderSide }) => {
             return;
          }
 
-         console.log(subscriptionData.data.myThings.updatedFields[0]);
          if (subscriptionData.data.myThings.updatedFields[0] === 'delete') {
             // We need to get the cached results for our myThings query so we can take this thing out if it's in there
             const { myThings } = client.readQuery({
@@ -127,10 +124,8 @@ const MyThings = ({ setShowingSidebar, scrollingSelector, borderSide }) => {
                oldThing => oldThing.id !== changedThing.id
             );
 
-            console.log(filteredThings.length, myThings.length);
             if (filteredThings.length === myThings.length) return;
 
-            console.log(filteredThings);
             client.writeQuery({
                query: MY_THINGS_QUERY,
                variables: myThingsQueryVariables,
@@ -186,7 +181,6 @@ const MyThings = ({ setShowingSidebar, scrollingSelector, borderSide }) => {
          if (broadcastView) {
             myThings = myThings.filter(thing => thing.privacy !== 'Private');
          }
-         console.log(myThings);
 
          return (
             <StyledMyThings
