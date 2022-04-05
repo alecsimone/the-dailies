@@ -779,7 +779,7 @@ async function getRelationsForThing(
    );
 
    const individualCount = Math.floor(
-      totalCount / (theThingToRelate.partOfTags.length + 1) // the +1 is to count same author as relations too
+      totalCount / (theThingToRelate.partOfTags.length + 1) // the +1 is to count same author relations too
    );
 
    // Then we need to get all the links in the thing

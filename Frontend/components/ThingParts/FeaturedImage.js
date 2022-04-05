@@ -64,8 +64,9 @@ const StyledFlexibleFeaturedImage = styled.div`
       img,
       video {
          width: 100%;
+         max-width: 100rem;
          height: 100%;
-         object-fit: cover;
+         object-fit: contain;
          z-index: 0;
       }
    }
