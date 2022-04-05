@@ -52,6 +52,7 @@ const MY_THINGS_SUBSCRIPTION = gql`
          node {
             ${fullThingFields}
          }
+         updatedFields
       }
    }
 `;
@@ -79,33 +80,63 @@ const MyThings = ({ setShowingSidebar, scrollingSelector, borderSide }) => {
          variables: myThingsQueryVariables
       }
    );
+   console.log(data);
 
    const dispatch = useDispatch();
    const { data: subscriptionData } = useSubscription(MY_THINGS_SUBSCRIPTION, {
       onSubscriptionData: ({ client, subscriptionData }) => {
-         const newThing = subscriptionData.data.myThings.node;
-         // First we need to add the new thing to our stuffStore
-         dispatch(upsertStuff(newThing));
+         console.log(subscriptionData);
+         const changedThing = subscriptionData.data.myThings.node;
 
-         // Then we need to add it to the cached results for our myThings query
-         const { myThings } = client.readQuery({
-            query: MY_THINGS_QUERY,
-            variables: myThingsQueryVariables
-         });
+         if (subscriptionData.data.myThings.updatedFields[0] === 'create') {
+            // // First we need to add the new thing to our stuffStore
+            dispatch(upsertStuff(changedThing));
 
-         const existingThing = myThings.find(
-            oldThing => oldThing.id === newThing.id
-         );
+            // Then we need to add it to the cached results for our myThings query
+            const { myThings } = client.readQuery({
+               query: MY_THINGS_QUERY,
+               variables: myThingsQueryVariables
+            });
 
-         if (existingThing != null) return;
+            const existingThing = myThings.find(
+               oldThing => oldThing.id === changedThing.id
+            );
 
-         myThings.push(newThing);
+            if (existingThing != null) return;
 
-         client.writeQuery({
-            query: MY_THINGS_QUERY,
-            variables: myThingsQueryVariables,
-            data: myThings
-         });
+            const myThingsCopy = JSON.parse(JSON.stringify(myThings));
+            myThingsCopy.push(changedThing);
+
+            client.writeQuery({
+               query: MY_THINGS_QUERY,
+               variables: myThingsQueryVariables,
+               data: { myThings: myThingsCopy }
+            });
+            return;
+         }
+
+         console.log(subscriptionData.data.myThings.updatedFields[0]);
+         if (subscriptionData.data.myThings.updatedFields[0] === 'delete') {
+            // We need to get the cached results for our myThings query so we can take this thing out if it's in there
+            const { myThings } = client.readQuery({
+               query: MY_THINGS_QUERY,
+               variables: myThingsQueryVariables
+            });
+
+            const filteredThings = myThings.filter(
+               oldThing => oldThing.id !== changedThing.id
+            );
+
+            console.log(filteredThings.length, myThings.length);
+            if (filteredThings.length === myThings.length) return;
+
+            console.log(filteredThings);
+            client.writeQuery({
+               query: MY_THINGS_QUERY,
+               variables: myThingsQueryVariables,
+               data: { myThings: filteredThings }
+            });
+         }
       }
    });
 
@@ -155,6 +186,7 @@ const MyThings = ({ setShowingSidebar, scrollingSelector, borderSide }) => {
          if (broadcastView) {
             myThings = myThings.filter(thing => thing.privacy !== 'Private');
          }
+         console.log(myThings);
 
          return (
             <StyledMyThings

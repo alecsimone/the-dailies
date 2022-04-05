@@ -204,11 +204,11 @@ async function properUpdateStuff(dataObj, id, type, ctx) {
       const newThing = await makeNewThing(dataObj, ctx);
 
       // Then we need to publish an update to the myThings subscription to let it know there's a new thing to add
-      ctx.pubsub.publish('myThings', {
-         myThings: {
-            node: newThing
-         }
-      });
+      // ctx.pubsub.publish('myThings', {
+      //    myThings: {
+      //       node: newThing
+      //    }
+      // });
 
       return newThing;
    }
@@ -237,14 +237,14 @@ async function properUpdateStuff(dataObj, id, type, ctx) {
    ).catch(err => {
       throw new Error(err.message);
    });
-   if (type === 'Thing') {
-      ctx.pubsub.publish('myThings', {
-         myThings: {
-            node: updatedStuff,
-            updatedFields: ['edit']
-         }
-      });
-   }
+   // if (type === 'Thing') {
+   //    ctx.pubsub.publish('myThings', {
+   //       myThings: {
+   //          node: updatedStuff,
+   //          updatedFields: ['edit']
+   //       }
+   //    });
+   // }
    return updatedStuff;
 }
 exports.properUpdateStuff = properUpdateStuff;

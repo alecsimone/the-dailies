@@ -96,18 +96,25 @@ const Things = ({
          </StyledThings>
       );
    }
+   if (draggable) {
+      return (
+         <Droppable droppableId={groupName} type="card">
+            {provided => (
+               <StyledThings
+                  className={`things ${displayType}`}
+                  ref={provided.innerRef}
+                  {...provided.droppableProps}
+               >
+                  {thingCards}
+               </StyledThings>
+            )}
+         </Droppable>
+      );
+   }
    return (
-      <Droppable droppableId={groupName} type="card">
-         {provided => (
-            <StyledThings
-               className={`things ${displayType}`}
-               ref={provided.innerRef}
-               {...provided.droppableProps}
-            >
-               {thingCards}
-            </StyledThings>
-         )}
-      </Droppable>
+      <StyledThings className={`things ${displayType}`}>
+         {thingCards}
+      </StyledThings>
    );
 };
 Things.propTypes = {

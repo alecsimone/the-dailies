@@ -9,7 +9,7 @@ type Thing {
   unsavedNewContent: String
   addToStartUnsavedNewContent: String
   copiedInContent: [ContentPiece] @relation(name: "ThingsAddedToForContentPiece")
-  contentOrder: [String!] @scalarList(strategy:RELATION)
+  contentOrder: [String] @scalarList(strategy:RELATION)
   summary: String
   partOfTags: [Tag]
   partOfStacks: [Stack]

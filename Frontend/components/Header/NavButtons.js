@@ -69,10 +69,10 @@ const NavButtons = ({ showSearch, setShowSearch, search }) => {
          const newPostButton = document.querySelector('.newPost');
          newPostButton.classList.remove('loading');
       },
-      refetchQueries: [
-         { query: ALL_THINGS_QUERY },
-         { query: MY_THINGS_QUERY, variables: { count: myThingsQueryCount } }
-      ],
+      // refetchQueries: [
+      //    { query: ALL_THINGS_QUERY },
+      //    { query: MY_THINGS_QUERY, variables: { count: myThingsQueryCount } }
+      // ],
       onError: err => {
          const newPostButton = document.querySelector('.newPost');
          newPostButton.classList.remove('loading');

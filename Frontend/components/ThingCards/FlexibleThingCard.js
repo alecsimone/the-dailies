@@ -18,7 +18,7 @@ import ArrowIcon from '../Icons/Arrow';
 import TrashIcon from '../Icons/Trash';
 import ColorSelector from '../ThingParts/ColorSelector';
 import VoteBar from '../ThingParts/VoteBar';
-import { smallThingCardFields } from '../../lib/CardInterfaces';
+import { fullThingFields } from '../../lib/CardInterfaces';
 import { ALL_THINGS_QUERY, disabledCodewords } from '../../lib/ThingHandling';
 import FeaturedImage from '../ThingParts/FeaturedImage';
 import { isVideo } from '../../lib/UrlHandling';
@@ -37,7 +37,7 @@ import { isTouchEnabled } from '../Collections/CollectionsCard';
 const DELETE_THING_MUTATION = gql`
    mutation DELETE_THING_MUTATION($id: ID!) {
       deleteThing(id: $id) {
-         ${smallThingCardFields}
+         ${fullThingFields}
       }
    }
 `;
@@ -608,10 +608,10 @@ const FlexibleThingCard = ({
                });
             }
          },
-         refetchQueries: [
-            { query: ALL_THINGS_QUERY },
-            { query: MY_THINGS_QUERY, variables: { count: myThingsQueryCount } }
-         ],
+         // refetchQueries: [
+         //    { query: ALL_THINGS_QUERY },
+         //    { query: MY_THINGS_QUERY, variables: { count: myThingsQueryCount } }
+         // ],
          onError: err => alert(err.message)
       }
    );

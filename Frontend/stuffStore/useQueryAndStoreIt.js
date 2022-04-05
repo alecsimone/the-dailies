@@ -9,6 +9,7 @@ const useQueryAndStoreIt = (query, optionsObject) => {
    const response = useQuery(query, optionsObject);
 
    const { data } = response;
+   // console.log(data, query.definitions[0].name.value);
    if (data) {
       // First we need to pull the actual data out of our data object. It will be stored under a key we don't know the name of, but we can just loop through every key (it will probably be the only one)
       const dataKeys = Object.keys(data);
@@ -17,13 +18,16 @@ const useQueryAndStoreIt = (query, optionsObject) => {
             if (data[key].__typename === 'Member') {
                const memberThings = data[key].createdThings;
                if (memberThings != null) {
+                  // console.log('dispatch new stuff array', data[key]);
                   dispatch(upsertStuffArray(memberThings));
                }
                const memberVotes = data[key].votes;
                if (memberVotes != null) {
+                  // console.log('dispatch new stuff array', data[key]);
                   dispatch(upsertStuffArray(memberVotes));
                }
             } else if (key === 'getLinkData') {
+               // console.log('dispatch new stuff', data[key]);
                dispatch(upsertStuff(data[key]));
             } else if (Array.isArray(data[key])) {
                // console.log('dispatch new stuff array', data[key]);

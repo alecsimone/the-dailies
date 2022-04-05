@@ -81,19 +81,21 @@ const Page = ({ children, pageProps }) => {
                         <section className="threeColumns">
                            <NavSidebar />
                            <div className="mainSection">{children}</div>
-                           <div
-                              className={
-                                 thingsSidebarIsOpen
-                                    ? 'myThingsBar visible'
-                                    : 'myThingsBar hidden'
-                              }
-                           >
-                              <MyThings
-                                 setShowingSidebar={setThingsSidebarIsOpen}
-                                 scrollingSelector=".myThingsBar"
-                                 borderSide="left"
-                              />
-                           </div>
+                           {!isHome && (
+                              <div
+                                 className={
+                                    thingsSidebarIsOpen
+                                       ? 'myThingsBar visible'
+                                       : 'myThingsBar hidden'
+                                 }
+                              >
+                                 <MyThings
+                                    setShowingSidebar={setThingsSidebarIsOpen}
+                                    scrollingSelector=".myThingsBar"
+                                    borderSide="left"
+                                 />
+                              </div>
+                           )}
                         </section>
                         <Modal />
                         <HeartPopUp />
