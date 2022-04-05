@@ -278,70 +278,64 @@ const CollectionsCard = ({ data, index, collectionID, groupID, canEdit }) => {
          index={index}
          key={`${groupID}-${id}`}
       >
-         {provided => {
-            console.log(provided);
-            return (
-               <StyledCard
-                  className={canEdit ? 'cardWrapper' : 'cardWrapper noEdit'}
-                  {...provided.draggableProps}
-                  {...provided.dragHandleProps}
-                  ref={provided.innerRef}
-                  key={`${groupID}-${id}`}
-               >
-                  <ExplodingLink
-                     url={url}
-                     hideCardShortlink
-                     wholeCardLink={false}
-                  />
-                  {canEdit && (
-                     <div className="cardManagementBar">
-                        <CopyCardInterface
-                           cardData={data}
-                           collectionID={collectionID}
-                        />
-                        <X
-                           titleText="Remove Link"
-                           onClick={() => {
-                              const thisGroup = client.readFragment({
-                                 id: `CollectionGroup:${groupID}`,
-                                 fragment: gql`
+         {provided => (
+            <StyledCard
+               className={canEdit ? 'cardWrapper' : 'cardWrapper noEdit'}
+               {...provided.draggableProps}
+               {...provided.dragHandleProps}
+               ref={provided.innerRef}
+               key={`${groupID}-${id}`}
+            >
+               <ExplodingLink
+                  url={url}
+                  hideCardShortlink
+                  wholeCardLink={false}
+               />
+               {canEdit && (
+                  <div className="cardManagementBar">
+                     <CopyCardInterface
+                        cardData={data}
+                        collectionID={collectionID}
+                     />
+                     <X
+                        titleText="Remove Link"
+                        onClick={() => {
+                           const thisGroup = client.readFragment({
+                              id: `CollectionGroup:${groupID}`,
+                              fragment: gql`
                   fragment GroupForRemoveLink on CollectionGroup {
                      ${collectionGroupFields}
                   }`
-                              });
+                           });
 
-                              const thisGroupWithoutThisLink = JSON.parse(
-                                 JSON.stringify(thisGroup)
-                              );
-                              thisGroupWithoutThisLink.includedLinks = thisGroupWithoutThisLink.includedLinks.filter(
-                                 linkObj => linkObj.id !== id
-                              );
+                           const thisGroupWithoutThisLink = JSON.parse(
+                              JSON.stringify(thisGroup)
+                           );
+                           thisGroupWithoutThisLink.includedLinks = thisGroupWithoutThisLink.includedLinks.filter(
+                              linkObj => linkObj.id !== id
+                           );
 
-                              removeLinkFromGroup({
-                                 variables: {
-                                    linkID: id,
-                                    groupID
-                                 },
-                                 optimisticResponse: {
-                                    __typename: 'Mutation',
-                                    removeLinkFromCollectionGroup: thisGroupWithoutThisLink
-                                 }
-                              });
+                           removeLinkFromGroup({
+                              variables: {
+                                 linkID: id,
+                                 groupID
+                              },
+                              optimisticResponse: {
+                                 __typename: 'Mutation',
+                                 removeLinkFromCollectionGroup: thisGroupWithoutThisLink
+                              }
+                           });
 
-                              toast(
-                                 <UndoButton url={url} groupID={groupID} />,
-                                 {
-                                    position: 'bottom-center',
-                                    autoClose: 3000
-                                 }
-                              );
-                           }}
-                        />
-                     </div>
-                  )}
-               </StyledCard>
-            );
-         }}
+                           toast(<UndoButton url={url} groupID={groupID} />, {
+                              position: 'bottom-center',
+                              autoClose: 3000
+                           });
+                        }}
+                     />
+                  </div>
+               )}
+            </StyledCard>
+         )}
       </Draggable>
    );
 };
