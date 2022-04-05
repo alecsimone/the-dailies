@@ -175,6 +175,14 @@ async function makeNewThing(dataObj, ctx) {
       const newUpdatedAt = now.toISOString();
       dataObj.manualUpdatedAt = newUpdatedAt;
    }
+   if (dataObj.contentOrder == null) {
+      if (dataObj.content == null) {
+         dataObj.contentOrder = [];
+      } else {
+         const contentOrder = dataObj.content.map(piece => piece.id);
+         dataObj.contentOrder = contentOrder;
+      }
+   }
    const newThing = await ctx.db.mutation
       .createThing(
          {
@@ -194,6 +202,14 @@ async function properUpdateStuff(dataObj, id, type, ctx) {
       const newUpdatedAt = now.toISOString();
       dataObj.manualUpdatedAt = newUpdatedAt;
       const newThing = await makeNewThing(dataObj, ctx);
+
+      // Then we need to publish an update to the myThings subscription to let it know there's a new thing to add
+      ctx.pubsub.publish('myThings', {
+         myThings: {
+            node: newThing
+         }
+      });
+
       return newThing;
    }
 

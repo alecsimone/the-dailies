@@ -1,9 +1,10 @@
 import gql from 'graphql-tag';
 import styled from 'styled-components';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery, useSubscription } from '@apollo/react-hooks';
 import { useContext } from 'react';
 import Link from 'next/link';
 import router from 'next/router';
+import { useDispatch } from 'react-redux';
 import Things from './Things';
 import LoadingRing from '../LoadingRing';
 import ErrorMessage from '../ErrorMessage';
@@ -21,6 +22,7 @@ import useMe from '../Account/useMe';
 import PlaceholderThings from '../PlaceholderThings';
 import useQueryAndStoreIt from '../../stuffStore/useQueryAndStoreIt';
 import { fullSizedLoadMoreButton } from '../../styles/styleFragments';
+import { upsertStuff } from '../../stuffStore/stuffSlice';
 
 const StyledMyThings = styled.div`
    article.flexibleThingCard {
@@ -44,6 +46,16 @@ const MY_THINGS_QUERY = gql`
 `;
 export { MY_THINGS_QUERY };
 
+const MY_THINGS_SUBSCRIPTION = gql`
+   subscription MY_THINGS_SUBSCRIPTION {
+      myThings {
+         node {
+            ${fullThingFields}
+         }
+      }
+   }
+`;
+
 const myThingsQueryCount = 10;
 export { myThingsQueryCount };
 
@@ -55,16 +67,47 @@ const MyThings = ({ setShowingSidebar, scrollingSelector, borderSide }) => {
    } = useMe('MyThings', 'broadcastView');
    const { setContent } = useContext(ModalContext);
 
+   const myThingsQueryVariables = {
+      count: myThingsQueryCount
+   };
+
    const { data, loading, error, fetchMore } = useQueryAndStoreIt(
       MY_THINGS_QUERY,
       {
          ssr: false,
          skip: loggedInUserID == null && !memberLoading,
-         variables: {
-            count: myThingsQueryCount
-         }
+         variables: myThingsQueryVariables
       }
    );
+
+   const dispatch = useDispatch();
+   const { data: subscriptionData } = useSubscription(MY_THINGS_SUBSCRIPTION, {
+      onSubscriptionData: ({ client, subscriptionData }) => {
+         const newThing = subscriptionData.data.myThings.node;
+         // First we need to add the new thing to our stuffStore
+         dispatch(upsertStuff(newThing));
+
+         // Then we need to add it to the cached results for our myThings query
+         const { myThings } = client.readQuery({
+            query: MY_THINGS_QUERY,
+            variables: myThingsQueryVariables
+         });
+
+         const existingThing = myThings.find(
+            oldThing => oldThing.id === newThing.id
+         );
+
+         if (existingThing != null) return;
+
+         myThings.push(newThing);
+
+         client.writeQuery({
+            query: MY_THINGS_QUERY,
+            variables: myThingsQueryVariables,
+            data: myThings
+         });
+      }
+   });
 
    const {
       scrollerRef,

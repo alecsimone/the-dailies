@@ -153,7 +153,6 @@ const Swiper = ({
       const scrollingParent = getScrollingParent(e.target);
 
       const contentElement = e.target.closest('.swiper');
-      console.log(contentElement);
 
       const contentElementRect = contentElement.getBoundingClientRect();
 
@@ -179,6 +178,8 @@ const Swiper = ({
    } else if (positionObject.direction === 'left') {
       initialAnimationPosition = `calc(100% + ${animationRef.current})`;
    }
+
+   if (elementsArray.length === 0) return null;
 
    const elements = (
       <div

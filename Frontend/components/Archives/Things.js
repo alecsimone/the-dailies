@@ -4,10 +4,8 @@ import Masonry from 'react-masonry-css';
 import { useContext } from 'react';
 import { Droppable } from 'react-beautiful-dnd';
 import { setAlpha } from '../../styles/functions';
-import FlexibleThingCard from '../ThingCards/FlexibleThingCard';
 import useMe from '../Account/useMe';
 import CardGenerator from '../ThingCards/CardGenerator';
-import { getRandomString } from '../../lib/TextHandling';
 
 const StyledThings = styled.div`
    margin: auto;
@@ -66,20 +64,9 @@ const Things = ({
       memberFields: { role }
    } = useMe('Things', 'role');
 
-   // const thingCards = things.map(thing => (
-   //    <FlexibleThingCard
-   //       key={thing.id}
-   //       expanded={cardSize === 'regular'}
-   //       thingID={thing.id}
-   //       contentType="single"
-   //       titleLink
-   //       borderSide={borderSide}
-   //       noPic={noPic}
-   //    />
-   // ));
    const thingCards = things.map((thing, index) => (
       <CardGenerator
-         id={thing.id}
+         id={thing.id != null ? thing.id : thing}
          cardType={cardSize}
          hideConnections={hideConnections}
          contentType={contentType}
