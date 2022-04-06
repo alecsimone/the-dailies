@@ -109,6 +109,8 @@ const Columnizer = ({
          const dx = e.clientX - scrollPosRef.current.x;
          // scrollPosRef.current.left represents how far the element was scrolled at the start of the drag, and dx represents how far we've dragged so far. So we subtract the dragged distance from the initial scroll value to get the new scroll value.
          scrollerRef.current.scrollLeft = scrollPosRef.current.left - dx;
+      } else if (scrolling) {
+         setScrolling(false);
       }
    };
 

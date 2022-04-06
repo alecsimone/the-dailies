@@ -243,13 +243,13 @@ const GlobalStyle = createGlobalStyle`
    blockquote {
       margin: 2rem 0;
       display: block;
-      font-style: italic;
-      opacity: 0.9;
-      background: ${setAlpha(setSaturation(theme.majorColor, 25), 0.15)};
+      /* opacity: 0.9; */
+      font-style: normal;
+      background: ${setAlpha(setSaturation(theme.majorColor, 25), 0.1)};
       padding: 2rem;
       border-radius: 3px;
       border: 2px solid ${setAlpha(theme.lowContrastGrey, 0.2)};
-      border-left: 0.4rem solid ${setSaturation(theme.majorColor, 40)};
+      border-left: 0.4rem solid ${setSaturation(theme.majorColor, 60)};
    }
    ul {
       list-style: none;
