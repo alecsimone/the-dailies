@@ -104,7 +104,7 @@ const Columnizer = ({
    };
 
    const dragToScroll = e => {
-      if (scrolling) {
+      if (scrolling && e.buttons >= 1) {
          // First we figure out how far the mouse has dragged during this scroll by subtracting the mouse position at the start of the click from its current position
          const dx = e.clientX - scrollPosRef.current.x;
          // scrollPosRef.current.left represents how far the element was scrolled at the start of the drag, and dx represents how far we've dragged so far. So we subtract the dragged distance from the initial scroll value to get the new scroll value.
