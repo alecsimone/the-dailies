@@ -608,7 +608,6 @@ const ConnectionsInterface = ({ thingID }) => {
       </div>
    ));
 
-   console.log(collectionsData);
    let collectionLinkElements;
    if (collectionsData && collectionsData.getCollectionsForThing) {
       collectionLinkElements = collectionsData.getCollectionsForThing.map(

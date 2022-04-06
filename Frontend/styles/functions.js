@@ -79,7 +79,8 @@ const dynamicallyResizeElement = (el, padded = true) => {
    const oneRem = getOneRem();
    const padding = padded ? oneRem : 0;
    el.style.height = `${el.scrollHeight + padding}px`;
-   mainSection.scrollTo({ top: oldScrollTop, behavior: 'smooth' });
+   console.log('actually I think this is the one');
+   mainSection.scrollTop = oldScrollTop;
 };
 export { dynamicallyResizeElement };
 
