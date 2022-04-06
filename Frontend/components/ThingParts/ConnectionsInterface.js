@@ -635,7 +635,7 @@ const ConnectionsInterface = ({ thingID }) => {
    if (data) {
       return (
          <StyledConnectionsInterface>
-            {collectionsData && (
+            {collectionsData && collectionLinkElements.length > 0 && (
                <div className="inCollections">
                   In collection{collectionLinkElements.length > 1 && 's'}:{' '}
                   {collectionLinkElements}
