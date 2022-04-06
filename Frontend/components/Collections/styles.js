@@ -196,7 +196,7 @@ const StyledCollectionHeader = styled.header`
       text-align: center;
       margin-top: 1rem;
       position: absolute;
-      z-index: 2;
+      z-index: 4;
       right: 0;
       top: calc(100% - 2rem);
       width: 60rem;

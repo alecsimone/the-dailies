@@ -1188,6 +1188,53 @@ async function getRelationsForThing(
 }
 exports.getRelationsForThing = getRelationsForThing;
 
+async function getCollectionsForThing(
+   parent,
+   { thingID, totalCount = 4 },
+   ctx,
+   info
+) {
+   const thingLinkURL = `${
+      process.env.FRONTEND_URL_NOHTTP
+   }/thing?id=${thingID}`;
+   const linksData = await ctx.db.query.personalLinks(
+      {
+         where: {
+            url_contains: thingLinkURL // We don't want to do an exact URL search just to allow for different permutations someone might have used when adding the thing to the collection
+         }
+      },
+      `{inCollectionGroups { inCollection { id title } }}`
+   );
+
+   const collectionsArray = [];
+   linksData.forEach(linkData => {
+      if (linkData != null && linkData.inCollectionGroups != null) {
+         linkData.inCollectionGroups.forEach(groupObj => {
+            if (groupObj.inCollection != null) {
+               collectionsArray.push(groupObj.inCollection);
+            }
+         });
+      }
+   });
+
+   const filteredCollections = [];
+   for (const collection of collectionsArray) {
+      if (
+         await checkCollectionPermissions(
+            collection.id,
+            'collection',
+            'view',
+            ctx
+         )
+      ) {
+         filteredCollections.push(collection);
+      }
+   }
+
+   return filteredCollections;
+}
+exports.getCollectionsForThing = getCollectionsForThing;
+
 async function getLinkArchive(parent, args, ctx, info) {
    await loggedInGate(ctx).catch(() => {
       throw new AuthenticationError('You must be logged in to do that!');

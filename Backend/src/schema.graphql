@@ -24,6 +24,7 @@ type Query {
    moreMemberVotes(memberID: String!, cursor: String, count: Int): [Vote]
    getLinkData(url: String!, storePersonalLink: Boolean): Link
    getRelationsForThing(thingID: ID!, totalCount: Int): [Connection]
+   getCollectionsForThing(thingID: ID!, totalCount: Int): [Collection]
    getLinkArchive: Member
 }
 

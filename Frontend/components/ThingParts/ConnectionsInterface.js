@@ -1,15 +1,17 @@
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation, useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
+import Link from 'next/link';
 import { useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
-import { homeNoHTTP } from '../../config';
+import { home, homeNoHTTP } from '../../config';
 import { fullThingFields } from '../../lib/CardInterfaces';
 import { getRandomString } from '../../lib/TextHandling';
 import { getThingIdFromLink, urlFinder } from '../../lib/UrlHandling';
 import useQueryAndStoreIt from '../../stuffStore/useQueryAndStoreIt';
+import { setAlpha } from '../../styles/functions';
 import useMe from '../Account/useMe';
-import { bracketCheck } from '../ExplodingLink';
+import ExplodingLink, { bracketCheck } from '../ExplodingLink';
 import X from '../Icons/X';
 import PlaceholderThings from '../PlaceholderThings';
 import Connection from './Connection';
@@ -78,9 +80,27 @@ const GET_RELATIONS_QUERY = gql`
    }
 `;
 
+const COLLECTIONS_FOR_THING_QUERY = gql`
+   query COLLECTIONS_FOR_THING_QUERY($thingID: ID!, $totalCount: Int) {
+      getCollectionsForThing(thingID: $thingID, totalCount: $totalCount) {
+         id
+         title
+      }
+   }
+`;
+
 const StyledConnectionsInterface = styled.div`
    padding-bottom: 2rem;
    margin: 2rem 0;
+   .inCollections {
+      margin-bottom: 2rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      a {
+         margin-left: 0.5rem;
+      }
+   }
    .existingConnections {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(42rem, 1fr));
@@ -321,7 +341,7 @@ const ConnectionsInterface = ({ thingID }) => {
 
    const loggedInUserID = useMe();
 
-   const { loading, error, data } = useQueryAndStoreIt(GET_RELATIONS_QUERY, {
+   const { loading, error, data } = useQuery(GET_RELATIONS_QUERY, {
       variables: { thingID },
       ssr: false
       // onCompleted: data => console.log(data)
@@ -330,6 +350,14 @@ const ConnectionsInterface = ({ thingID }) => {
    if (data != null) {
       relations = data.getRelationsForThing;
    }
+
+   const {
+      loading: collectionsLoading,
+      error: collectionsError,
+      data: collectionsData
+   } = useQuery(COLLECTIONS_FOR_THING_QUERY, {
+      variables: { thingID, totalCount: 4 }
+   });
 
    const defaultState = {
       subject: thingTitle,
@@ -580,9 +608,40 @@ const ConnectionsInterface = ({ thingID }) => {
       </div>
    ));
 
+   console.log(collectionsData);
+   let collectionLinkElements;
+   if (collectionsData && collectionsData.getCollectionsForThing) {
+      collectionLinkElements = collectionsData.getCollectionsForThing.map(
+         (collectionObj, index) => {
+            const { id, title } = collectionObj;
+            if (index === collectionsData.getCollectionsForThing.length - 1) {
+               return (
+                  <Link href={{ pathname: '/collections', query: { id } }}>
+                     <a>{title}</a>
+                  </Link>
+               );
+            }
+            return (
+               <>
+                  <Link href={{ pathname: '/collections', query: { id } }}>
+                     <a>{title}</a>
+                  </Link>
+                  {', '}
+               </>
+            );
+         }
+      );
+   }
+
    if (data) {
       return (
          <StyledConnectionsInterface>
+            {collectionsData && (
+               <div className="inCollections">
+                  In collection{collectionLinkElements.length > 1 && 's'}:{' '}
+                  {collectionLinkElements}
+               </div>
+            )}
             {allConnections.length > 0 && (
                <div className="existingConnections">{connectionElements}</div>
             )}

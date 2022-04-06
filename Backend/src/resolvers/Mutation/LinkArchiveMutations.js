@@ -271,9 +271,6 @@ async function refreshLink(parent, { url }, ctx, info) {
       }
    }
 
-   if (!canBeUpdated) {
-      console.log("can't be updated");
-   }
    if (!canBeUpdated) return;
 
    const ogLinkData = {

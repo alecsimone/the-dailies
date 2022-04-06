@@ -10,6 +10,7 @@ const {
    fetchTweet
 } = require('../../utils/Twitter');
 const { loggedInGate, fullMemberGate } = require('../../utils/Authentication');
+const { getRandomString } = require('../../utils/TextHandling');
 
 async function finishTwitterLogin(parent, { token, verifier }, ctx, info) {
    const tw = new LoginWithTwitter({
@@ -208,6 +209,15 @@ exports.getTweetsForList = getTweetsForList;
 
 const getLinkData = async (parent, { url, storePersonalLink }, ctx, info) => {
    if (url.includes('bloomberg.com')) return null; // Bloomberg links don't let non-humans scrape them
+
+   if (url.includes('localhost:6969/')) {
+      return {
+         __typename: 'Link',
+         id: `localLink-${getRandomString(8)}`,
+         title: 'Local Link',
+         description: 'A local link that we made'
+      };
+   }
 
    let linkData = await ctx.db.query.link(
       {

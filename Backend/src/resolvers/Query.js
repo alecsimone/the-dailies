@@ -10,6 +10,7 @@ const {
    getCollections,
    getCollection,
    getRelationsForThing,
+   getCollectionsForThing,
    getLinkArchive
 } = require('./Query/PageQueries');
 const {
@@ -53,6 +54,7 @@ const Query = {
    getCollection,
    getLinkData,
    getRelationsForThing,
+   getCollectionsForThing,
    getLinkArchive
 };
 
