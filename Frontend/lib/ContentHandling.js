@@ -356,7 +356,7 @@ const changeContentButKeepInFrame = (
    changeFunction();
 
    if (contentRect.top < 0) {
-      scrollingContainer.scrollTop = totalOffset;
+      scrollingContainer.scrollTo({ top: totalOffset, behavior: 'smooth' });
    }
 };
 export { changeContentButKeepInFrame };
@@ -396,7 +396,10 @@ const editContentButKeepInFrame = (setEditable, value, wrapper) => {
    const headerHeight = header.offsetHeight;
 
    if (wrapperRect.top < 0) {
-      scroller.scrollTop = totalOffset - headerHeight;
+      scroller.scrollTo({
+         top: totalOffset - headerHeight,
+         behavior: 'smooth'
+      });
    }
 
    setEditable(value);
@@ -526,8 +529,7 @@ const sendNewContentPiece = async (
 
    const scrollDestination = totalOffset - headerHeight - 2 * getOneRem();
    window.setTimeout(() => {
-      scroller.scrollTop = scrollDestination;
+      scroller.scrollTo({ top: scrollDestination, behavior: 'smooth' });
    }, 1);
-   // scroller.scrollTop = 403;
 };
 export { sendNewContentPiece };

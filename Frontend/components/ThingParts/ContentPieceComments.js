@@ -219,7 +219,7 @@ const ContentPieceComment = ({
             key={comment.id}
             onClick={() => {
                setCommentView('full');
-               containerRef.current.scrollTop = 0;
+               containerRef.current.scrollTo({ top: 0, behavior: 'smooth' });
                setSelectedComment(comment.id);
             }}
          >
@@ -252,7 +252,7 @@ const ContentPieceComment = ({
          );
       } else {
          setCommentView('collapsed');
-         containerRef.current.scrollTop = 0;
+         containerRef.current.scrollTo({ top: 0, behavior: 'smooth' });
          return null;
       }
 
@@ -351,13 +351,22 @@ const ContentPieceComment = ({
                   onClick={() => {
                      if (commentView === 'collapsed') {
                         setCommentView('expanded');
-                        containerRef.current.scrollTop = 0;
+                        containerRef.current.scrollTo({
+                           top: 0,
+                           behavior: 'smooth'
+                        });
                      } else if (commentView === 'expanded') {
                         setCommentView('collapsed');
-                        containerRef.current.scrollTop = 0;
+                        containerRef.current.scrollTo({
+                           top: 0,
+                           behavior: 'smooth'
+                        });
                      } else if (commentView === 'full') {
                         setCommentView('expanded');
-                        containerRef.current.scrollTop = 0;
+                        containerRef.current.scrollTo({
+                           top: 0,
+                           behavior: 'smooth'
+                        });
                         setSelectedComment(false);
                      }
                   }}

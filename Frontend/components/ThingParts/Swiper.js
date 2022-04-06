@@ -168,7 +168,11 @@ const Swiper = ({
          const oneRem = getOneRem();
 
          console.log(totalOffset);
-         scrollingParent.scrollTop = totalOffset - oneRem * 6;
+         // scrollingParent.scrollTop = totalOffset - oneRem * 6;
+         scrollingParent.scrollTo({
+            top: totalOffset - oneRem * 6,
+            behavior: 'smooth'
+         });
       }
    };
 

@@ -537,7 +537,7 @@ const FlexibleThingCard = ({
       toggleDirection: initialToggleDirection
    });
 
-   const [truncContExpanded, setTruncContExpanded] = useState(false);
+   const [truncContExpanded, setTruncContExpanded] = useState(false); // We define these here so that the content icon can set truncContExpanded to be true
 
    const expansionHandler = (property, value) => {
       if (property === 'toggleDirection') {
