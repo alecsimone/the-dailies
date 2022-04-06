@@ -270,18 +270,35 @@ async function refreshLink(parent, { url }, ctx, info) {
          canBeUpdated = true;
       }
    }
+   // canBeUpdated = true;
 
    if (!canBeUpdated) return;
 
    const ogLinkData = {
       url
    };
-   const options = { url };
+   const options = { url, allMedia: true, timeout: 30000 };
    await ogs(options, (error, results, response) => {
       ogLinkData.title = results.ogTitle;
       ogLinkData.description = results.ogDescription;
-      ogLinkData.video = results.ogVideo ? results.ogVideo.url : null;
-      ogLinkData.image = results.ogImage ? results.ogImage.url : null;
+      if (results.ogVideo) {
+         if (Array.isArray(results.ogVideo)) {
+            ogLinkData.video = results.ogVideo[0].url;
+         } else {
+            ogLinkData.video = results.ogVideo.url;
+         }
+      } else {
+         ogLinkData.video = null;
+      }
+      if (results.ogImage) {
+         if (Array.isArray(results.ogImage)) {
+            ogLinkData.image = results.ogImage[0].url;
+         } else {
+            ogLinkData.image = results.ogImage.url;
+         }
+      } else {
+         ogLinkData.image = null;
+      }
       ogLinkData.icon = results.favicon;
       ogLinkData.siteName = results.ogSiteName;
       ogLinkData.ogURL = results.ogUrl;

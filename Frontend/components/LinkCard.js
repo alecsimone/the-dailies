@@ -118,7 +118,7 @@ const StyledLinkCard = styled.div`
       img {
          width: 100%;
          max-height: 36rem;
-         object-fit: contain;
+         object-fit: cover;
          object-position: center center;
          border-radius: 0 0 4px 4px;
       }
@@ -217,6 +217,7 @@ const LinkCard = ({
             canBeUpdated = true;
          }
       }
+      // canBeUpdated = true;
 
       if (
          siteName == null &&
