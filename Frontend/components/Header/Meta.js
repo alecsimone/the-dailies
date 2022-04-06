@@ -25,7 +25,7 @@ const Meta = () => (
       />
       <link rel="manifest" href="/site.webmanifest?v=2" />
       <link rel="mask-icon" href="/safari-pinned-tab.svg?v=2" color="#0066cc" />
-      <link rel="shortcut icon" href="/favicon.ico?v=2" />
+      <link rel="shortcut icon" href={`${home}/favicon.ico?v=2`} />
       <meta name="msapplication-TileColor" content="#030303" />
       <meta name="theme-color" content="#0066cc" />
       <link rel="stylesheet" type="text/css" href="/nprogress.css" />
