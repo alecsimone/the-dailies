@@ -537,6 +537,8 @@ const FlexibleThingCard = ({
       toggleDirection: initialToggleDirection
    });
 
+   const [truncContExpanded, setTruncContExpanded] = useState(false);
+
    const expansionHandler = (property, value) => {
       if (property === 'toggleDirection') {
          // Toggle direction directly represents the direction the toggle expansion arrow points, which tells the user what it is going to do. So if the toggle direction is up, we want to collapse all the other values, i.e. set them to false, and if it's down we want to set them to true. Then we set toggle direction to its opposite
@@ -788,9 +790,10 @@ const FlexibleThingCard = ({
                         className={`thingCardButton ${
                            expansion.content ? 'expanded' : 'collapsed'
                         }`}
-                        onClick={() =>
-                           expansionHandler('content', !expansion.content)
-                        }
+                        onClick={() => {
+                           expansionHandler('content', !expansion.content);
+                           setTruncContExpanded(true);
+                        }}
                      >
                         <div className="counterParent">
                            <ContentIcon
@@ -958,6 +961,8 @@ const FlexibleThingCard = ({
                      linkedPiece={linkedPiece}
                      stuffID={thingID}
                      type="Thing"
+                     truncContExpanded={truncContExpanded}
+                     setTruncContExpanded={setTruncContExpanded}
                   />
                )}
                {expansion.comments && (

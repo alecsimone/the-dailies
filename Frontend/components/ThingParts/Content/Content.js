@@ -52,7 +52,15 @@ const useContentData = (thingID, type) => {
    return contentData;
 };
 
-const Content = ({ contentType, canEdit, linkedPiece, stuffID, type }) => {
+const Content = ({
+   contentType,
+   canEdit,
+   linkedPiece,
+   stuffID,
+   type,
+   truncContExpanded,
+   setTruncContExpanded
+}) => {
    // console.log('content render');
    const {
       content,
@@ -231,8 +239,6 @@ const Content = ({ contentType, canEdit, linkedPiece, stuffID, type }) => {
          isAddToStart
       );
    };
-
-   const [truncContExpanded, setTruncContExpanded] = useState(false);
 
    if ((content == null || content.length === 0) && !canEdit) return null;
 
