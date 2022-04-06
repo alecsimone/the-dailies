@@ -157,8 +157,6 @@ const LinkCard = ({
       skip: (hasData && !refreshLoading) || link == null
    });
 
-   console.log(data);
-
    if (link == null) return null;
 
    let computedData = storedLinkData;
@@ -192,7 +190,6 @@ const LinkCard = ({
          icon,
          updatedAt
       } = computedData;
-      console.log(computedData);
 
       let computedURL = ogURL;
       if (computedURL == null) {

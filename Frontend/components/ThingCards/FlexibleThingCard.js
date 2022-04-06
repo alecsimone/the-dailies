@@ -346,7 +346,8 @@ const StyledFlexibleThingCard = styled.article`
                   bottom: calc(${props => props.theme.tinyText} * -0.25);
                   right: calc(${props => props.theme.tinyText} * -0.25);
                   background: ${props =>
-                     setSaturation(setAlpha(props.theme.majorColor, 0.7), 50)};
+                     setSaturation(setAlpha(props.theme.majorColor, 0.8), 50)};
+                  outline: 1px solid ${props => props.theme.lowContrastGrey};
                   line-height: 1;
                   height: ${props => props.theme.tinyText};
                   width: ${props => props.theme.tinyText};
