@@ -3,12 +3,12 @@ const { randomBytes } = require('crypto');
 const { promisify } = require('util');
 const jwt = require('jsonwebtoken');
 const { AuthenticationError } = require('apollo-server-express');
+const SibApiV3Sdk = require('sib-api-v3-sdk');
 const { loggedInGate, fullMemberGate } = require('../../utils/Authentication');
 const {
    basicMemberFields,
    profileFields
 } = require('../../utils/CardInterfaces');
-const SibApiV3Sdk = require('sib-api-v3-sdk');
 
 async function publishMeUpdate(ctx) {
    const newMe = await ctx.db.query
@@ -70,31 +70,36 @@ async function startSignup(parent, args, ctx, info) {
    apiKey.apiKey = process.env.MAIL_API_KEY;
 
    const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
-   let sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
+   const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
 
-   sendSmtpEmail = {
-      to: [
-         {
-            email: args.email,
-            name: args.displayName
-         }
-      ],
-      templateId: 1,
-      params: {
-         domain: process.env.FRONTEND_URL,
-         memberId: member.id,
-         verificationToken
+   sendSmtpEmail.to = [
+      {
+         email: args.email,
+         name: args.displayName
       }
+   ];
+   sendSmtpEmail.templateId = 1;
+   sendSmtpEmail.params = {
+      domain: process.env.FRONTEND_URL,
+      memberId: member.id,
+      verificationToken
    };
 
-   apiInstance.sendTransacEmail(sendSmtpEmail).then(
-      function(data) {
-         console.log(`API called successfully. Returned data: ${data}`);
-      },
-      function(error) {
-         console.error(error);
-      }
-   );
+   apiInstance
+      .sendTransacEmail(sendSmtpEmail)
+      .then(
+         function(data) {
+            console.log(`Send In Blue API called successfully`);
+            console.log(data);
+         },
+         function(error) {
+            console.error(error);
+            throw new Error(
+               'Something has gone terribly wrong with your signup'
+            );
+         }
+      )
+      .catch(err => console.log(err));
 
    const token = jwt.sign({ memberId: member.id }, process.env.APP_SECRET);
    ctx.res.cookie('token', token, {
@@ -184,31 +189,36 @@ async function requestReset(parent, { email }, ctx, info) {
    apiKey.apiKey = process.env.MAIL_API_KEY;
 
    const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
-   let sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
+   const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
 
-   sendSmtpEmail = {
-      to: [
-         {
-            email,
-            name: existingMember.displayName
-         }
-      ],
-      templateId: 2,
-      params: {
-         domain: process.env.FRONTEND_URL,
-         memberId: existingMember.id,
-         resetToken
+   sendSmtpEmail.to = [
+      {
+         email,
+         name: existingMember.displayName
       }
+   ];
+   sendSmtpEmail.templateId = 2;
+   sendSmtpEmail.params = {
+      domain: process.env.FRONTEND_URL,
+      memberId: existingMember.id,
+      resetToken
    };
 
-   apiInstance.sendTransacEmail(sendSmtpEmail).then(
-      function(data) {
-         console.log(`API called successfully. Returned data: ${data}`);
-      },
-      function(error) {
-         console.error(error);
-      }
-   );
+   apiInstance
+      .sendTransacEmail(sendSmtpEmail)
+      .then(
+         function(data) {
+            console.log(`Send In Blue API called successfully`);
+            console.log(data);
+         },
+         function(error) {
+            console.error(error);
+            throw new Error(
+               'Something has gone terribly wrong with your password reset'
+            );
+         }
+      )
+      .catch(err => console.log(err));
    return null;
 }
 exports.requestReset = requestReset;
