@@ -184,7 +184,7 @@ const CollectionsHeader = ({
                </div>
             </div>
          </div>
-         {showingPrivacyInterface && (
+         {showingPrivacyInterface && showingOptions && (
             <div className="privacyInterfaceWrapper">
                <CollectionPrivacyInterface
                   collectionID={id}
