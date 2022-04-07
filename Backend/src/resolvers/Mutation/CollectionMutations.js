@@ -1516,7 +1516,7 @@ async function setCollectionPrivacy(
       );
    }
 
-   const updatedCollection = ctx.db.mutation.updateCollection(
+   const updatedCollection = await ctx.db.mutation.updateCollection(
       {
          where: {
             id: collectionID
