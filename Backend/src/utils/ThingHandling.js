@@ -945,3 +945,16 @@ const getLinksFromContent = contentArray => {
    return linkedThingIDs;
 };
 exports.getLinksFromContent = getLinksFromContent;
+
+const relationFilterFunction = async (thing, alreadyRelatedThingIDs, ctx) => {
+   if (await canSeeThing(ctx, thing)) {
+      // We don't want to let the thing through if it's the same as the original thing
+      if (alreadyRelatedThingIDs.includes(thing.id)) return false;
+
+      // Otherwise, we'll let it through
+      return true;
+   }
+   // If they can't see the thing, don't let it through
+   return false;
+};
+exports.relationFilterFunction = relationFilterFunction;

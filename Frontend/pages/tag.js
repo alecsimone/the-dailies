@@ -165,6 +165,7 @@ const tag = ({ query: { title } }) => {
                <Things
                   things={sortedThings}
                   displayType="list"
+                  hideConnections
                   scrollingParentSelector=".mainSection"
                   perPage={perPage}
                   {...displayProps}

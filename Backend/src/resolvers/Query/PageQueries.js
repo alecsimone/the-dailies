@@ -16,7 +16,8 @@ const {
    filterContentPiecesForPrivacy,
    supplementFilteredQuery,
    getLinksFromContent,
-   getThingIdFromLink
+   getThingIdFromLink,
+   relationFilterFunction
 } = require('../../utils/ThingHandling');
 const {
    checkCollectionPermissions
@@ -708,8 +709,8 @@ async function getRelationsForThing(
    // First we need to make sure the current user has permission to view this thing
    await canSeeThingGate({ id: thingID }, ctx);
 
-   // Next we want to figure out how many things we want to fetch, which will be the total count evenly distributed among the relations (ie, among all the tags and the author)
-   // So first let's get the tags for the thing, and we might as well grab the author while we're at it
+   // Next we want to figure out how many things we want to fetch, which will be the totalCount evenly distributed among the relations (ie, among all the tags and the author)
+   // So first let's get the tags for the thing, and we might as well grab the author, the content, and the existing connections while we're at it
    const theThingToRelate = await ctx.db.query.thing(
       {
          where: {
@@ -777,141 +778,59 @@ async function getRelationsForThing(
          }
       }`
    );
+   // Let's pull some things out of this now for future convenience
+   const {
+      author,
+      partOfTags: tags,
+      content,
+      copiedInContent,
+      subjectConnections,
+      objectConnections
+   } = theThingToRelate;
+   const authorThings = author.createdThings;
 
-   let individualCount = Math.floor(
-      totalCount / (theThingToRelate.partOfTags.length + 1) // the +1 is to count same author relations too
+   let individualCount = Math.ceil(
+      // We want to have plenty of related things, so we're using ceil instead of floor / round
+      totalCount / (tags.length + 1) // the +1 is to count same author relations too
    );
    if (individualCount < 2) {
+      // Because we want plenty of related things, we're going to make sure we get at least 2 of every kind of relation
       individualCount = 2;
    }
 
-   // Then we need to get all the links in the thing
-   const fullContent = theThingToRelate.content.concat(
-      theThingToRelate.copiedInContent
-   );
+   // Then we need to get the IDs of all the things that are already connected to our thing
+
+   // First we need to get all the links in the thing
+   const fullContent = content.concat(copiedInContent);
    const contentLinkIDs = getLinksFromContent(fullContent);
 
-   const authorThings = theThingToRelate.author.createdThings;
+   // Then we need to get the ids of all the existing connections
+   const subjectConnectionIDs = subjectConnections.map(
+      connection => connection.object.id
+   );
+   const objectConnectionIDs = objectConnections.map(
+      connection => connection.subject.id
+   );
 
-   const authorFilterFunction = async authorThing => {
-      if (await canSeeThing(ctx, authorThing)) {
-         // We don't want to let the thing through if it's the same as the original thing
-         if (authorThing.id === thingID) return false;
-
-         // We also don't want to let it through if it's already connected to the thing
-         let isAlreadyConnected = false;
-         theThingToRelate.subjectConnections.forEach(connection => {
-            if (connection.object.id === authorThing.id) {
-               isAlreadyConnected = true;
-            }
-         });
-         if (isAlreadyConnected) return false;
-
-         theThingToRelate.objectConnections.forEach(connection => {
-            if (connection.subject.id === authorThing.id) {
-               isAlreadyConnected = true;
-            }
-         });
-         if (isAlreadyConnected) return false;
-
-         // Nor do we want to let it through if it's linked in the thing
-         if (contentLinkIDs.includes(authorThing.id)) return false;
-
-         // Otherwise, we'll let it through
-         return true;
-      }
-      // If they can't see the thing, don't let it through
-      return false;
-   };
-
-   let safeAuthorThings = [];
-   for (const authorThing of authorThings) {
-      if (await authorFilterFunction(authorThing)) {
-         safeAuthorThings.push(authorThing);
-      }
-   }
-
-   if (safeAuthorThings.length < individualCount && authorThings.length > 0) {
-      const queryObj = {
-         where: {
-            AND: [
-               {
-                  author: {
-                     id: theThingToRelate.author.id
-                  }
-               }
-            ]
-         },
-         first: individualCount - safeAuthorThings.length,
-         orderBy: 'manualUpdatedAt_DESC'
-      };
-
-      const supplementaryThings = await supplementFilteredQuery(
-         ctx,
-         'things',
-         queryObj,
-         `{${fullThingFields}}`,
-         authorFilterFunction,
-         'manualUpdatedAt_lt',
-         authorThings[authorThings.length - 1].manualUpdatedAt,
-         'manualUpdatedAt',
-         individualCount - safeAuthorThings.length
-      );
-
-      safeAuthorThings = safeAuthorThings.concat(supplementaryThings);
-   } else if (safeAuthorThings.length > individualCount) {
-      safeAuthorThings = safeAuthorThings.slice(0, individualCount);
-   }
-
-   // And the most recent things for each tag on the thing
-   let alreadyRelatedThingIDs = safeAuthorThings.map(thing => thing.id);
+   // Then we put them all together
+   let alreadyRelatedThingIDs = contentLinkIDs
+      .concat(subjectConnectionIDs)
+      .concat(objectConnectionIDs);
+   // And add the thing we're working with too
    alreadyRelatedThingIDs.push(thingID);
 
-   const tags = theThingToRelate.partOfTags;
+   // Now it's time to process the things we've got and make our relations
 
-   const tagFilterFunction = async tagThing => {
-      if (await canSeeThing(ctx, tagThing)) {
-         // We don't want to let the thing through if it's the original thing or one of our author things
-         if (alreadyRelatedThingIDs.includes(tagThing.id)) {
-            return false;
-         }
-
-         // We also don't want to let it through if it's already connected to the thing
-         let isAlreadyConnected = false;
-         theThingToRelate.subjectConnections.forEach(connection => {
-            if (connection.object.id === tagThing.id) isAlreadyConnected = true;
-         });
-         if (isAlreadyConnected) {
-            return false;
-         }
-
-         theThingToRelate.objectConnections.forEach(connection => {
-            if (connection.subject.id === tagThing.id)
-               isAlreadyConnected = true;
-         });
-         if (isAlreadyConnected) {
-            return false;
-         }
-
-         // Nor do we want to let it through if it's linked in the thing
-         if (contentLinkIDs.includes(tagThing.id)) {
-            return false;
-         }
-
-         // If we don't have any reason not to let it through, then we let it through
-         return true;
-      }
-      // If they can't see the thing, don't let it through
-      return false;
-   };
-
+   // First we'll go through the tags on the thing. We'll need to make an object for each tag with two properties: tagID, and things, which will hold the connected things for that tag. Each of those objects will be added to our tagObjects array.
    const tagObjects = [];
    for (const tag of tags) {
       const tagThings = tag.connectedThings;
 
       let safeTagThings = [];
       for (const tagThing of tagThings) {
-         if (await tagFilterFunction(tagThing)) {
+         if (
+            await relationFilterFunction(tagThing, alreadyRelatedThingIDs, ctx)
+         ) {
             safeTagThings.push(tagThing);
             alreadyRelatedThingIDs.push(tagThing.id);
          }
@@ -937,7 +856,8 @@ async function getRelationsForThing(
             'things',
             queryObj,
             `{${fullThingFields}}`,
-            tagFilterFunction,
+            newThing =>
+               relationFilterFunction(newThing, alreadyRelatedThingIDs, ctx),
             'manualUpdatedAt_lt',
             tagThings[tagThings.length - 1].manualUpdatedAt,
             'manualUpdatedAt',
@@ -945,19 +865,29 @@ async function getRelationsForThing(
          );
 
          safeTagThings = safeTagThings.concat(supplementaryThings);
+         const newThingIDs = supplementaryThings.map(newThing => newThing.id);
+         alreadyRelatedThingIDs.concat(newThingIDs);
          tagObjects.push({ tagID: tag.id, things: safeTagThings });
-
-         const newUsedThings = safeTagThings.map(tagThing => tagThing.id);
-         alreadyRelatedThingIDs = alreadyRelatedThingIDs.concat(newUsedThings);
       } else {
-         safeTagThings = safeTagThings.slice(0, individualCount);
-         tagObjects.push({ tagID: tag.id, things: safeTagThings });
+         // if we got too may things, we want to trim our safeTagThings
+         const trimmedTagThings = safeTagThings.slice(0, individualCount);
 
-         const newUsedThings = safeTagThings.map(tagThing => tagThing.id);
-         alreadyRelatedThingIDs = alreadyRelatedThingIDs.concat(newUsedThings);
+         // We also need to remove the things that get trimmed off from our alreadyConnectedThings array
+         const thingsToRemove = safeTagThings.slice(individualCount);
+         const idsToRemove = thingsToRemove.map(
+            thingToRemove => thingToRemove.id
+         );
+         alreadyRelatedThingIDs = alreadyRelatedThingIDs.filter(
+            relatedThingID => !idsToRemove.includes(relatedThingID)
+         );
+
+         // Then we can push the object for this tag into our tagObjects array
+         tagObjects.push({ tagID: tag.id, things: trimmedTagThings });
       }
    }
 
+   // Next we want to make relations for any things that are in a collection or a collection group with our provided thing.
+   // Collections are made up of personal links (not things directly) so we have to use a loose search that would catch any link to the provided thing
    const collectionLinks = await ctx.db.query.personalLinks(
       {
          where: {
@@ -985,9 +915,9 @@ async function getRelationsForThing(
       }`
    );
 
-   const inCollectionGroupWithThings = [];
-   const inGroups = [];
-   const inCollectionWithThings = [];
+   const inCollectionGroupWithThings = []; // This will keep track of the things that are in a group with the provided thing
+   const inGroups = []; // This will keep track of the groups we've checked for things. This is important because once we're going through collections, we want to skip the groups the provided thing is in.
+   const inCollectionWithThings = []; // This will keep track of the things that are in a collection with the provided thing
 
    collectionLinks.forEach(collectionLinkObj => {
       if (collectionLinkObj == null) return;
@@ -997,14 +927,14 @@ async function getRelationsForThing(
          if (groupObj == null) return;
          if (inGroups.includes(groupObj.id)) return;
          inGroups.push(groupObj.id);
-         // For each group, first we need to loop over the links that are in that group
+         // For each group, first we need to loop over the links that are in that group, figure out if they're links to a thing, and if they are, pop them in our inCollectionGroupWithThings array
          if (groupObj.includedLinks != null) {
             groupObj.includedLinks.forEach(linkObj => {
                const linkThingID = getThingIdFromLink(linkObj.url);
                if (
-                  linkThingID != null &&
-                  linkThingID !== thingID &&
-                  !inCollectionGroupWithThings.includes(linkThingID)
+                  linkThingID != null && // The link exists
+                  !alreadyRelatedThingIDs.includes(linkThingID) && // We haven't already related it
+                  !inCollectionGroupWithThings.includes(linkThingID) // We haven't added it in this step without pushing it to alreadyRelatedThings
                ) {
                   inCollectionGroupWithThings.push(linkThingID);
                }
@@ -1015,60 +945,39 @@ async function getRelationsForThing(
             const collectionObj = groupObj.inCollection;
             if (collectionObj == null) return;
 
+            // Then we need to loop over every group in that collection (skipping ones we already know have the provided thing)
             collectionObj.userGroups.forEach(collectionGroupObj => {
                if (collectionGroupObj == null) return;
                if (collectionGroupObj.id == null) return;
                if (inGroups.includes(collectionGroupObj.id)) return;
 
-               collectionGroupObj.includedLinks.forEach(
-                  collectionGroupLinkObj => {
-                     const linkThingID = getThingIdFromLink(
-                        collectionGroupLinkObj.url
-                     );
-                     if (
-                        linkThingID != null &&
-                        !inCollectionWithThings.includes(linkThingID)
-                     ) {
-                        inCollectionWithThings.push(linkThingID);
+               // For each group, first we need to loop over the links that are in that group, figure out if they're links to a thing, and if they are, pop them in our inCollectionWithThings array
+               if (groupObj.includedLinks != null) {
+                  collectionGroupObj.includedLinks.forEach(
+                     collectionGroupLinkObj => {
+                        const linkThingID = getThingIdFromLink(
+                           collectionGroupLinkObj.url
+                        );
+                        if (
+                           linkThingID != null && // The link is to a thing
+                           !alreadyRelatedThingIDs.includes(linkThingID) && // We haven't already related it
+                           !inCollectionWithThings.includes(linkThingID) // We haven't added it in this step without pushing it to alreadyRelatedThings
+                        ) {
+                           inCollectionWithThings.push(linkThingID);
+                        }
                      }
-                  }
-               );
+                  );
+               }
             });
          }
       });
    });
-   const groupFilterFunction = async groupThing => {
-      if (await canSeeThing(ctx, groupThing)) {
-         // We don't want to let the thing through if it's already related
-         if (alreadyRelatedThingIDs.includes(groupThing.id)) return false;
 
-         // We also don't want to let it through if it's already connected to the thing
-         let isAlreadyConnected = false;
-         theThingToRelate.subjectConnections.forEach(connection => {
-            if (connection.object.id === groupThing.id)
-               isAlreadyConnected = true;
-         });
-         if (isAlreadyConnected) return false;
-
-         theThingToRelate.objectConnections.forEach(connection => {
-            if (connection.subject.id === groupThing.id)
-               isAlreadyConnected = true;
-         });
-         if (isAlreadyConnected) return false;
-
-         // Nor do we want to let it through if it's linked in the thing
-         if (contentLinkIDs.includes(groupThing.id)) return false;
-
-         // If we don't have any reason not to let it through, then we let it through
-         return true;
-      }
-      // If they can't see the thing, don't let it through
-      return false;
-   };
-
+   // Next we'll make an array with all the IDs of all the things that are in either a collection or a collection group with our provided thing
    const masterCollectionThingIDsArray = inCollectionGroupWithThings.concat(
       inCollectionWithThings
    );
+   // And then we'll get the full data for all of those things
    const masterCollectionThingsArray = await ctx.db.query.things(
       {
          where: {
@@ -1078,38 +987,119 @@ async function getRelationsForThing(
       `{${fullThingFields}}`
    );
 
+   // Next we need to figure out how many things we want from each of collections and collection groups
    const maxCollectionCount =
       individualCount > totalCount / 3
-         ? Math.round(totalCount / 3)
+         ? Math.ceil(totalCount / 3)
          : individualCount;
 
    const safeGroupThings = [];
    for (const groupThingID of inCollectionGroupWithThings) {
+      // First we get the data for each thing from our masterCollectionThingsArray
       const groupThingData = masterCollectionThingsArray.find(
          thingObj => thingObj.id === groupThingID
       );
-      if (await groupFilterFunction(groupThingData)) {
+      // Then we check if it passes our filter function
+      if (
+         await relationFilterFunction(
+            groupThingData,
+            alreadyRelatedThingIDs,
+            ctx
+         )
+      ) {
+         // And add it to our safeGroupThings array if it does
          safeGroupThings.push(groupThingData);
-         alreadyRelatedThingIDs.push(groupThingID);
       }
    }
    const trimmedGroupThings = safeGroupThings.slice(0, maxCollectionCount);
+   const newGroupThingIDs = trimmedGroupThings.map(newThing => newThing.id);
+   alreadyRelatedThingIDs = alreadyRelatedThingIDs.concat(newGroupThingIDs);
 
    const safeCollectionThings = [];
    for (const collectionThingID of inCollectionWithThings) {
+      // First we get the data for each thing from our masterCollectionThingsArray
       const collectionThingData = masterCollectionThingsArray.find(
          thingObj => thingObj.id === collectionThingID
       );
-      if (await groupFilterFunction(collectionThingData)) {
+      // Then we check if it passes our filter function
+      if (
+         await relationFilterFunction(
+            collectionThingData,
+            alreadyRelatedThingIDs,
+            ctx
+         )
+      ) {
+         // And add it to our safeCollectionThings array if it does
          safeCollectionThings.push(collectionThingData);
-         alreadyRelatedThingIDs.push(collectionThingID);
       }
    }
    const trimmedCollectionThings = safeCollectionThings.slice(
       0,
       maxCollectionCount
    );
+   const newCollectionThingIDs = trimmedCollectionThings.map(
+      newThing => newThing.id
+   );
+   alreadyRelatedThingIDs = alreadyRelatedThingIDs.concat(
+      newCollectionThingIDs
+   );
 
+   // Finally, we'll do things by the same author
+   let safeAuthorThings = [];
+   for (const authorThing of authorThings) {
+      if (
+         await relationFilterFunction(authorThing, alreadyRelatedThingIDs, ctx)
+      ) {
+         safeAuthorThings.push(authorThing);
+         alreadyRelatedThingIDs.push(authorThing.id);
+      }
+   }
+
+   // If we didn't get enough author things in our initial query (after filtering them), we'll supplement the query
+   if (safeAuthorThings.length < individualCount && authorThings.length > 0) {
+      const queryObj = {
+         where: {
+            AND: [
+               {
+                  author: {
+                     id: author.id
+                  }
+               }
+            ]
+         },
+         first: individualCount - safeAuthorThings.length,
+         orderBy: 'manualUpdatedAt_DESC'
+      };
+
+      const supplementaryThings = await supplementFilteredQuery(
+         ctx,
+         'things',
+         queryObj,
+         `{${fullThingFields}}`,
+         newThing =>
+            relationFilterFunction(newThing, alreadyRelatedThingIDs, ctx),
+         'manualUpdatedAt_lt',
+         authorThings[authorThings.length - 1].manualUpdatedAt,
+         'manualUpdatedAt',
+         individualCount - safeAuthorThings.length
+      );
+
+      safeAuthorThings = safeAuthorThings.concat(supplementaryThings);
+      const newThingIDs = supplementaryThings.map(newThing => newThing.id);
+      alreadyRelatedThingIDs.concat(newThingIDs);
+   } else if (safeAuthorThings.length > individualCount) {
+      // If we got too many things, we want to trim our safeAuthorThings
+      safeAuthorThings = safeAuthorThings.slice(0, individualCount);
+
+      // We also need to remove the things that get trimmed off from our alreadyConnectedThings array
+      const thingsToRemove = safeAuthorThings.slice(individualCount);
+      const idsToRemove = thingsToRemove.map(thingToRemove => thingToRemove.id);
+      alreadyRelatedThingIDs = alreadyRelatedThingIDs.filter(
+         relatedThingID => !idsToRemove.includes(relatedThingID)
+      );
+   }
+
+   // If we have more relations than the total count just between our author, group, and collection things, we want to trim our author things list down till we have the right number
    if (
       safeAuthorThings.length +
          trimmedGroupThings.length +
@@ -1132,7 +1122,7 @@ async function getRelationsForThing(
          id: `new-${getRandomString(32)}`,
          subject: theThingToRelate,
          object: authorThing,
-         relationship: `also written by ${theThingToRelate.author.displayName}`,
+         relationship: `also written by ${author.displayName}`,
          strength: 0,
          createdAt
       };
@@ -1142,11 +1132,9 @@ async function getRelationsForThing(
    for (const tagObj of tagObjects) {
       const { tagID, things } = tagObj;
 
-      const tagIndexInOriginalThing = theThingToRelate.partOfTags.findIndex(
-         tag => tag.id === tagID
-      );
-      const tagName =
-         theThingToRelate.partOfTags[tagIndexInOriginalThing].title;
+      // We need to figure out the name of this tag by finding it in our original list of tags and then getting its title
+      const tagIndexInOriginalThing = tags.findIndex(tag => tag.id === tagID);
+      const tagName = tags[tagIndexInOriginalThing].title;
 
       things.forEach(tagThing => {
          const relation = {
