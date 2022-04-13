@@ -106,7 +106,7 @@ const NavButtons = ({ showSearch, setShowSearch, search }) => {
                id="newPostButton"
                onClick={e => {
                   e.preventDefault();
-                  const plusIcon = e.target.parentNode;
+                  const plusIcon = e.target.closest('.newPost');
                   if (!plusIcon.classList.contains('loading')) {
                      plusIcon.classList.add('loading');
                      newBlankThing();
