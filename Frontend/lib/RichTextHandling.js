@@ -387,11 +387,11 @@ const tabTheText = target => {
       if (lastNewLineIndex === -1) {
          // If there are no new lines, we start at the beginning of the string
          target.setSelectionRange(0, 0);
-         document.execCommand('insertText', false, '        ');
+         document.execCommand('insertText', false, '    ');
       } else {
          // If there are new lines, we start at the beginning of the last new line before the cursor
          target.setSelectionRange(lastNewLineIndex + 1, lastNewLineIndex + 1);
-         document.execCommand('insertText', false, '        ');
+         document.execCommand('insertText', false, '    ');
       }
       newSelectionStart = selectionStart + 8;
       newSelectionEnd = selectionEnd + 8;
@@ -400,13 +400,13 @@ const tabTheText = target => {
       let spacesPastLastTab;
       if (lastNewLineIndex === -1) {
          // If there is no new line before the cursor, we start counting characters at the beginning of the string
-         spacesPastLastTab = selectionStart % 8;
+         spacesPastLastTab = selectionStart % 4;
       } else {
          // If there is a new line, we start counting characters there
          const charactersSinceNewLine = selectionStart - lastNewLineIndex;
-         spacesPastLastTab = charactersSinceNewLine % 8;
+         spacesPastLastTab = charactersSinceNewLine % 4;
       }
-      const spacesToNextTab = 8 - spacesPastLastTab;
+      const spacesToNextTab = 4 - spacesPastLastTab;
       let spacesToAdd = '';
       for (let i = 0; i < spacesToNextTab; i += 1) {
          spacesToAdd += ' ';

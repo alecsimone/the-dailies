@@ -172,8 +172,8 @@ const StyledContent = styled.section`
                      &.ncts {
                         width: 100%;
                         .contentWrapper {
-                           max-width: 60%;
-                           min-width: 60%;
+                           max-width: min(60%, 1000px);
+                           min-width: min(60%, 1000px);
                            .flexibleThingCard {
                               .contentBlock.clickToShowComments {
                                  .contentWrapper {
@@ -275,7 +275,6 @@ const StyledContent = styled.section`
                         margin-right: 2rem;
                         z-index: 2;
                         .theActualContent {
-                           max-width: 900px;
                            width: 100%;
                            position: relative;
                            form {
@@ -477,11 +476,11 @@ const StyledContent = styled.section`
             }
             ${props => props.theme.desktopBreakpoint} {
                --votersHeight: 5rem;
-               width: calc(60% + 2.5rem);
+               width: calc(min(60%, 1000px) + 2.5rem);
                margin-left: -3rem; /* At this screen width, contentBlock has 3rem of padding, so we need to make up for that */
             }
             ${props => props.theme.midScreenBreakpoint} {
-               width: calc(60% + 3rem);
+               width: calc(min(60%, 1000px) + 3rem);
             }
             &.withVoters {
                margin-top: var(--votersHeight, 4rem);

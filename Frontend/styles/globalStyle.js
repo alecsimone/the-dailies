@@ -251,6 +251,18 @@ const GlobalStyle = createGlobalStyle`
       border: 2px solid ${setAlpha(theme.lowContrastGrey, 0.2)};
       border-left: 0.4rem solid ${setSaturation(theme.majorColor, 60)};
    }
+   pre {
+     margin: 1rem 0;
+     border: 1px solid ${props => setAlpha(props.theme.lowContrastGrey, 0.4)};
+     background: ${props => props.theme.deepBlack};
+   }
+   code {
+     margin: 1rem;
+     border-radius: 3px;
+     display: block;
+     overflow: auto;
+      scrollbar-width: thin;
+   }
    ul {
       list-style: none;
       margin: 1rem 0;

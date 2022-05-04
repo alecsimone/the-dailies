@@ -1,0 +1,144 @@
+/**
+ * prism.js tomorrow night eighties for JavaScript, CoffeeScript, CSS and HTML
+ * Based on https://github.com/chriskempson/tomorrow-theme
+ * @author Rose Pritchard
+ */
+
+code[class*="language-"],
+pre[class*="language-"] {
+  color: hsla(210, 3%, 90%, 0.95);
+  /* background: none; */
+  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+  font-size: 1em;
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  word-wrap: normal;
+  line-height: 1.5;
+
+  -moz-tab-size: 4;
+  -o-tab-size: 4;
+  tab-size: 4;
+
+  -webkit-hyphens: none;
+  -moz-hyphens: none;
+  -ms-hyphens: none;
+  hyphens: none;
+
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+  border-radius: 3px;
+}
+
+:not(pre)>code[class*="language-"],
+pre[class*="language-"] {
+  /* background: hsl(210, 20%, 8%);
+    We're going to add the background in our globalStyle instead
+   */
+}
+
+/* Inline code */
+:not(pre)>code[class*="language-"] {
+  padding: .1em;
+  border-radius: .3em;
+  white-space: normal;
+}
+
+.token.comment,
+.token.block-comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+  color: #999;
+}
+
+.token.punctuation {
+  /* color: #E6DB74; */
+}
+
+.token.important,
+.token.atrule,
+.token.keyword,
+.token.element,
+.token.unit,
+.token.builtin {
+  color: #F92672;
+}
+
+.token.boolean,
+.token.number,
+.token.null {
+  color: #AE81FF;
+}
+
+.token.selector,
+.token.function {
+  color: #A6E22E;
+}
+
+.token.operator,
+.token.entity,
+.token.url {
+  color: #F92672;
+}
+
+.token.squareBrackets,
+.token.property,
+.token.stringValue,
+.token.calc,
+.token.declarations {
+  color: #66D9EF;
+}
+
+.token.declarations {
+  font-style: italic;
+}
+
+.token.parens {
+  color: #e6b422;
+}
+
+.token.tag,
+.token.attr-name,
+.token.namespace,
+.token.deleted {
+  color: #e2777a;
+}
+
+.token.function-name {
+  color: #6196cc;
+}
+
+.token.class-name,
+.token.constant,
+.token.symbol {
+  color: #f8c555;
+}
+
+.token.string,
+.token.char,
+.token.attr-value,
+.token.regex,
+.token.variable {
+  color: #7ec699;
+}
+
+.token.important,
+.token.bold {
+  font-weight: bold;
+}
+
+.token.italic {
+  font-style: italic;
+}
+
+.token.entity {
+  cursor: help;
+}
+
+.token.inserted {
+  color: green;
+}

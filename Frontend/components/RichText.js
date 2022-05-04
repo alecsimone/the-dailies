@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useEffect } from 'react';
+import Prism from 'prismjs';
 import ExplodingLink from './ExplodingLink';
 import SummarizedText from './SummarizedText';
 import {
@@ -17,6 +18,31 @@ import {
 } from '../lib/TextHandling';
 import { urlFinder } from '../lib/UrlHandling';
 
+Prism.languages['custom-js'] = Prism.languages.extend('js', {
+   punctuation: /[,.;]+/,
+   keyword: /if|else|return|async|await/,
+   null: /null/,
+   squareBrackets: /[\[\]]+/,
+   parens: /[()]/,
+   declarations: /const|let|var|alert|confirm/
+});
+
+Prism.languages['custom-css'] = Prism.languages.extend('css', {
+   unit: /px|rem|em|%|deg/,
+   number: /[0-9.]/,
+   element: RegExp('^[a-z]+', 'm'),
+   selector: /\.[a-z]{1}[a-zA-Z0-9.\-\_]*/m,
+   calc: /calc/,
+   parens: /[()]/,
+   punctuation: /[{};:,]/,
+   operator: /[+\-*/]/,
+   function: {
+      pattern: /(^|[^-a-z0-9])(?!calc)[-a-z0-9]+(?=\()/i,
+      lookbehind: true
+   },
+   stringValue: /[ ]*[a-z;]+/
+});
+
 const RichText = ({
    text,
    priorText,
@@ -27,13 +53,15 @@ const RichText = ({
 }) => {
    let fixedText = replaceReddit(replaceEmails(replaceTwitterMentions(text)));
 
+   useEffect(() => Prism.highlightAll());
+
    if (
       text == null ||
       typeof text !== 'string' ||
       text === '' ||
       !process.browser
    ) {
-      return fixedText;
+      return <p>{fixedText}</p>;
    }
 
    // Replace any html entities that may have found their way into our text with their human readable equivalents
@@ -96,6 +124,23 @@ const RichText = ({
                      summaryText={summaryText}
                   />
                );
+            }
+
+            if (tag.groups.code != null) {
+               let inputLang = tag.groups.codelang;
+               if (inputLang === 'js') {
+                  inputLang = 'custom-js';
+               } else if (inputLang === 'css') {
+                  inputLang = 'custom-css';
+               }
+               elementsArray.push(
+                  <pre>
+                     <code className={`language-${inputLang}`}>
+                        {tag.groups.codeTextContent}
+                     </code>
+                  </pre>
+               );
+               // trimEndingText = true;
             }
 
             if (tag.groups.stars != null) {

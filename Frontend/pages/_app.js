@@ -2,6 +2,7 @@ import App from 'next/app';
 import { ApolloProvider } from '@apollo/react-hooks';
 import { Provider } from 'react-redux';
 import { resetServerContext } from 'react-beautiful-dnd';
+import '../styles/prism-theme.css';
 import Page from '../components/Page';
 import apolloCreator from '../lib/apolloCreator';
 import stuffStore from '../stuffStore/configureStore';
