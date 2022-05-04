@@ -83,23 +83,7 @@
           [
             "prismjs",
             {
-              "languages": [
-                "javascript",
-                "css",
-                "markup",
-                "graphql",
-                "http",
-                "json",
-                "md",
-                "url",
-                "sql",
-                "sass",
-                "scss",
-                "regex",
-                "jsx",
-                "tsx",
-                "typescript"
-              ],
+              "languages": "all",
               "plugins": [
                 "line-numbers"
               ],
@@ -133,7 +117,8 @@
     }
   },
   "devDependencies": {
-    "babel-plugin-styled-components": "^1.10.6"
+    "babel-plugin-styled-components": "^1.10.6",
+    "babel-plugin-prismjs": "^2.1.0"
   },
   "cacheDirectories": [
     ".next/cache"

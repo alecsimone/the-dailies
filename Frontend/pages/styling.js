@@ -165,6 +165,29 @@ const Styling = props => (
                </p>
             </li>
             <li>
+               <h4>Code</h4>
+               <p>
+                  Enclosing a code block in a {'<code>'} tag,{' '}
+                  <span className="emphasis">
+                     {`<code lang="js">`}like so{`</code>`}
+                  </span>{' '}
+                  will make a code block with syntax highlighting.
+               </p>
+               <p>
+                  Make sure to include the lang="" parameter (and that you use
+                  double quotes) along with the name of the language your code
+                  is written in. For a list of available languages, see{' '}
+                  <a
+                     href="https://prismjs.com/#supported-languages"
+                     target="_blank"
+                     rel="noopener noreferrer"
+                  >
+                     here
+                  </a>
+                  .
+               </p>
+            </li>
+            <li>
                <h4>Bracket Links</h4>
                <p>
                   You can just paste a link in and it will work properly, but if
