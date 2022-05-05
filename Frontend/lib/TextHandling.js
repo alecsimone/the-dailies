@@ -17,7 +17,7 @@ export { testBrowserForNegativeLookarounds };
 
 const replaceTwitterMentions = rawText => {
    const mentionSearchString = new RegExp(
-      `@(?:(?<username>\\w+)(?!\\w*\\.(?:${topLevelDomains})))`,
+      `(?<= )@(?:(?<username>\\w+)(?!\\w*\\.(?:${topLevelDomains})))`,
       'gim' // Match an @ followed by at least one word character, not followed by any top level domains (which would suggest it's an email)
    );
 
