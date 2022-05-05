@@ -101,6 +101,14 @@ pre[class*="language-"] {
   color: #e6b422;
 }
 
+.token.curlyBraces {
+  color: #d1a05a;
+}
+
+.token.props {
+  color: #FD971F;
+}
+
 .token.tag,
 .token.attr-name,
 .token.namespace,
@@ -118,7 +126,10 @@ pre[class*="language-"] {
   color: #f8c555;
 }
 
-.token.string,
+.token.string {
+  color: #E6DB74;
+}
+
 .token.char,
 .token.attr-value,
 .token.regex,

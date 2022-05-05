@@ -28,19 +28,41 @@ Prism.languages['custom-js'] = Prism.languages.extend('js', {
 });
 
 Prism.languages['custom-css'] = Prism.languages.extend('css', {
-   unit: /px|rem|em|%|deg/,
-   number: /[0-9.]/,
-   element: RegExp('^[a-z]+', 'm'),
-   selector: /\.[a-z]{1}[a-zA-Z0-9.\-\_]*/m,
+   number: { pattern: /[0-9]+[.0-9]*/, greedy: true },
+   interpolations: {
+      pattern: /(\$){.+?}|(\$){[^{}0-9]+|[^{}0-9\n]+\}/,
+      greedy: true,
+      lookbehind: true,
+      inside: {
+         function: {
+            pattern: /(^|[^-a-z0-9])[-a-z0-9]+(?=\()/i,
+            lookbehind: true
+         },
+         curlyBraces: /[{}]/,
+         parens: /[()]/,
+         number: { pattern: /[0-9]+[.0-9]*/, greedy: true },
+         props: /props/
+      }
+   },
+   unit: {
+      pattern: /([0-9]+)(px|rem|em|%|deg)/,
+      lookbehind: true,
+      greedy: true
+   },
+   element: /^([a-z]{2,}|a|p)(?=[ .]*)/gm,
+   selector: /[.:]{1}[a-z]{1}[a-zA-Z0-9.\-\_]* /m,
    calc: /calc/,
    parens: /[()]/,
-   punctuation: /[{};:,]/,
-   operator: /[+\-*/]/,
+   punctuation: /[;:,]/,
    function: {
       pattern: /(^|[^-a-z0-9])(?!calc)[-a-z0-9]+(?=\()/i,
-      lookbehind: true
+      lookbehind: true,
+      inside: {
+         parens: /[()]/
+      }
    },
-   stringValue: /[ ]*[a-z;]+/
+   stringValue: /[ ]+[a-z;\-]+/,
+   operator: /[+\-*/$&]/
 });
 
 const RichText = ({
