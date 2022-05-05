@@ -257,7 +257,7 @@ const GlobalStyle = createGlobalStyle`
      background: ${props => props.theme.deepBlack};
    }
    code {
-     margin: 1rem;
+     margin: 1.5rem 2rem;
      border-radius: 3px;
      display: block;
      overflow: auto;
