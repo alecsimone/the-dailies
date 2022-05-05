@@ -75,7 +75,6 @@ const RichText = ({
 }) => {
    let fixedText = replaceReddit(replaceEmails(replaceTwitterMentions(text)));
 
-   console.log(Prism);
    useEffect(() => {
       Prism.highlightAll();
    });
