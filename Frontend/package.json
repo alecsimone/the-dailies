@@ -87,7 +87,6 @@
               "plugins": [
                 "line-numbers"
               ],
-              "theme": "okaidia",
               "css": true
             }
           ]
