@@ -55,7 +55,8 @@ pre[class*="language-"] {
   color: #999;
 }
 
-.token.punctuation {
+.token.punctuation,
+.token.builtin {
   /* color: #E6DB74; */
 }
 
@@ -63,8 +64,7 @@ pre[class*="language-"] {
 .token.atrule,
 .token.keyword,
 .token.element,
-.token.unit,
-.token.builtin {
+.token.unit {
   color: #F92672;
 }
 
@@ -75,6 +75,8 @@ pre[class*="language-"] {
 }
 
 .token.selector,
+.token.class-name,
+.token.constant,
 .token.function {
   color: #A6E22E;
 }
@@ -121,8 +123,6 @@ pre[class*="language-"] {
   color: #6196cc;
 }
 
-.token.class-name,
-.token.constant,
 .token.symbol {
   color: #f8c555;
 }

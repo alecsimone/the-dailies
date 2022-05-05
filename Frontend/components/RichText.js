@@ -18,13 +18,18 @@ import {
 } from '../lib/TextHandling';
 import { urlFinder } from '../lib/UrlHandling';
 
-Prism.languages['custom-js'] = Prism.languages.extend('js', {
+const jstsExtension = {
    punctuation: /[,.;]+/,
-   keyword: /if|else|return|async|await/,
+   keyword: /if|else|return|async|await|import|export|default/,
    null: /null/,
    squareBrackets: /[\[\]]+/,
+   curlyBraces: /[{}]/,
    parens: /[()]/,
-   declarations: /const|let|var|alert|confirm/
+   declarations: /const|let|var|alert|confirm|interface/
+};
+Prism.languages['custom-js'] = Prism.languages.extend('js', jstsExtension);
+Prism.languages['custom-ts'] = Prism.languages.extend('ts', {
+   ...jstsExtension
 });
 
 Prism.languages['custom-css'] = Prism.languages.extend('css', {
@@ -156,6 +161,8 @@ const RichText = ({
                let inputLang = tag.groups.codelang;
                if (inputLang === 'js') {
                   inputLang = 'custom-js';
+               } else if (inputLang === 'ts') {
+                  inputLang = 'custom-ts';
                } else if (inputLang === 'css') {
                   inputLang = 'custom-css';
                }
