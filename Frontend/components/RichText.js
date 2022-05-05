@@ -30,7 +30,7 @@ Prism.languages['custom-js'] = Prism.languages.extend('js', {
 Prism.languages['custom-css'] = Prism.languages.extend('css', {
    number: { pattern: /[0-9]+[.0-9]*/, greedy: true },
    interpolations: {
-      pattern: /(\$){.+?}|(\$){[^{}0-9]+|[^{}0-9\n]+\}/,
+      pattern: /(\$){.+?}/,
       greedy: true,
       lookbehind: true,
       inside: {
@@ -157,7 +157,7 @@ const RichText = ({
                }
                elementsArray.push(
                   <pre>
-                     <code className={`language-${inputLang}`}>
+                     <code className={`language-${inputLang} line-numbers`}>
                         {tag.groups.codeTextContent.trim()}
                      </code>
                   </pre>

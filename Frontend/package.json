@@ -79,16 +79,6 @@
               "ssr": true,
               "displayName": true
             }
-          ],
-          [
-            "prismjs",
-            {
-              "languages": "all",
-              "plugins": [
-                "line-numbers"
-              ],
-              "css": true
-            }
           ]
         ]
       },
