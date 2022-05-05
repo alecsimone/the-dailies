@@ -164,7 +164,7 @@ const RichText = ({
                      </code>
                   </pre>
                );
-               // trimEndingText = true;
+               trimEndingText = true;
             }
 
             if (tag.groups.stars != null) {
