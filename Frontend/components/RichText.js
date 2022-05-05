@@ -136,7 +136,7 @@ const RichText = ({
                elementsArray.push(
                   <pre>
                      <code className={`language-${inputLang}`}>
-                        {tag.groups.codeTextContent}
+                        {tag.groups.codeTextContent.trim()}
                      </code>
                   </pre>
                );
