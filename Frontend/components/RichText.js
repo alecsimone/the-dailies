@@ -75,7 +75,10 @@ const RichText = ({
 }) => {
    let fixedText = replaceReddit(replaceEmails(replaceTwitterMentions(text)));
 
-   useEffect(() => Prism.highlightAll());
+   console.log(Prism);
+   useEffect(() => {
+      Prism.highlightAll();
+   });
 
    if (
       text == null ||
@@ -157,7 +160,7 @@ const RichText = ({
                }
                elementsArray.push(
                   <pre>
-                     <code className={`language-${inputLang} line-numbers`}>
+                     <code className={`language-${inputLang}`}>
                         {tag.groups.codeTextContent.trim()}
                      </code>
                   </pre>
