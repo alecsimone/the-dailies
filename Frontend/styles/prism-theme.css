@@ -88,6 +88,7 @@ pre[class*="language-"] {
 .token.squareBrackets,
 .token.property,
 .token.stringValue,
+.token.color,
 .token.calc,
 .token.declarations {
   color: #66D9EF;

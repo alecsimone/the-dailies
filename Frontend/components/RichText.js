@@ -49,7 +49,9 @@ Prism.languages['custom-css'] = Prism.languages.extend('css', {
       lookbehind: true,
       greedy: true
    },
-   element: /^([a-z]{2,}|a|p)(?=[ .]*)/gm,
+   element: {
+      pattern: /(div|article|input|textarea|a(?=[ .]+)|p(?=[ .]+)|header|footer|h1|h2|h3|h4|h5|h6|main|nav|section|blockquote|li(?=[ .]+)|ul(?=[ .]+)|ol(?=[ .]+)|span|strong|img|video|svg|button|fieldset|form(?=[ .]+)|label|optgroup|option|select)/m
+   },
    selector: /[.:]{1}[a-z]{1}[a-zA-Z0-9.\-\_]* /m,
    calc: /calc/,
    parens: /[()]/,
@@ -61,7 +63,7 @@ Prism.languages['custom-css'] = Prism.languages.extend('css', {
          parens: /[()]/
       }
    },
-   stringValue: /[ ]+[a-z;\-]+/,
+   stringValue: /[ -]*[a-z;\-]+/,
    operator: /[+\-*/$&]/
 });
 
