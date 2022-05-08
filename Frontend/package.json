@@ -28,7 +28,7 @@
     "graphql": "^14.5.8",
     "graphql-tag": "^2.10.1",
     "lodash.debounce": "^4.0.8",
-    "next": "^10.0.1",
+    "next": "^12.1.0",
     "next-with-apollo": "^4.3.0",
     "nprogress": "^0.2.0",
     "prismjs": "^1.28.0",
