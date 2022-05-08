@@ -25,7 +25,7 @@ const jstsExtension = {
    squareBrackets: /[\[\]]+/,
    curlyBraces: /[{}]/,
    parens: /[()]/,
-   declarations: /const|let|var|alert|confirm|interface/
+   declarations: /const|let|var|alert|confirm|interface|type|number|string/
 };
 Prism.languages['custom-js'] = Prism.languages.extend('js', jstsExtension);
 Prism.languages['custom-ts'] = Prism.languages.extend('ts', {
